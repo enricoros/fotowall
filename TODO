@@ -1,3 +1,8 @@
+Newest:
+-> display on-screen selection for picture frame
+-> perform rectangular image composition based on an input picture (color, pattern)
+-> perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
+
 -> add an overlay html help when going on the lower-left corner
 
 Suggested by Contrast on kde-look's page:
