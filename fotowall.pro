@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET =
+TARGET = fotowall
 DEPENDPATH += .
 INCLUDEPATH += .
 MOC_DIR = .bin
@@ -28,3 +28,11 @@ RESOURCES += \
  fotowall.qrc
 
 #win32: RC_FILE = fotowall.rc
+
+# default path for installation
+target.path = /usr/bin
+icon.files = data/fotowall.png
+icon.path = /usr/share/pixmaps
+dfile.files = data/fotowall.desktop
+dfile.path = /usr/share/applications
+INSTALLS += target icon dfile
