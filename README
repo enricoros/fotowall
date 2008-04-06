@@ -1,0 +1,29 @@
+*** FotoWall ***
+
+FotoWall is a creative tool that allows you to layout your photos or pictures
+in a personal way. You can add pictures, then resize, move, change colors,
+text, shadows, etc..
+For more news:
+  http://code.google.com/p/fotowall
+
+
+*** Building ***
+
+This FotoWall packages provides source code; to make an executable out of the
+sources you have to know a little about programming or ask one of your friends
+to do it ;-) Or just grab an 'executable package' from the project homepage.
+
+In Linux/X11, Mac, or Windows, install the latest Qt development packages that
+you will find on http://www.trolltech.com:
+ - on linux this is tested with Qt 4.3 and GCC 4.0+
+ - on windows this is tested witn Qt 4.3 and MSVC Express 2005 and 2008
+ - on mac this was not tested, report me if it simply works out of the box ;-)
+
+Just open a command prompt (win), shell (linux, mac) and go the sources
+location and issue the followings command
+ - qmake
+ - make   (or nmake, if your're on windows)
+ 
+The executable will be build and you can start Enjoying FotoWall! ;-)
+
+
