@@ -4,6 +4,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 MOC_DIR = .bin
 OBJECTS_DIR = .bin
+RCC_DIR = .bin
 UI_DIR = .bin
 
 # Input
@@ -22,3 +23,8 @@ SOURCES += \
 
 FORMS += \
  FotoWall.ui
+
+RESOURCES += \
+ fotowall.qrc
+
+#win32: RC_FILE = fotowall.rc

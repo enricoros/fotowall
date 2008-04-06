@@ -57,6 +57,7 @@ FotoWall::FotoWall(QWidget * parent)
     , m_scene(0)
 {
     setupUi(this);
+    setWindowIcon( QIcon(":/data/icon.png") );
 
     // create our custom scene
     m_scene = new FWScene(this);
