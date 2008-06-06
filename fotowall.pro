@@ -27,6 +27,11 @@ FORMS += \
 RESOURCES += \
  fotowall.qrc
 
+TRANSLATIONS += \
+ translations/fotowall_en.ts \
+ translations/fotowall_it.ts \
+ translations/fotowall_fr.ts
+
 #win32: RC_FILE = fotowall.rc
 
 # default path for installation

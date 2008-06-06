@@ -13,11 +13,18 @@
  ***************************************************************************/
 
 #include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 #include "FotoWall.h"
 
 int main( int argc, char ** args )
 {
     QApplication app(argc, args);
+
+    QTranslator translator;
+    translator.load( QString( "translations/fotowall_%1" ).arg( QLocale::system().name() ) );
+    app.installTranslator(&translator);
+
     FotoWall fw;
     fw.show();
     return app.exec();

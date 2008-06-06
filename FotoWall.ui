@@ -16,13 +16,22 @@
    <property name="spacing" >
     <number>0</number>
    </property>
-   <property name="margin" >
+   <property name="leftMargin" >
+    <number>0</number>
+   </property>
+   <property name="topMargin" >
+    <number>0</number>
+   </property>
+   <property name="rightMargin" >
+    <number>0</number>
+   </property>
+   <property name="bottomMargin" >
     <number>0</number>
    </property>
    <item>
     <widget class="QFrame" name="cmdFrame" >
      <property name="styleSheet" >
-      <string notr="true" >QFrame {
+      <string>QFrame {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
 }</string>
      </property>
@@ -33,7 +42,7 @@
       <item>
        <widget class="QLabel" name="label" >
         <property name="styleSheet" >
-         <string notr="true" >background-color: transparent</string>
+         <string>background-color: transparent</string>
         </property>
         <property name="text" >
          <string>Title</string>
@@ -92,7 +101,7 @@
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" >
          <size>
           <width>16</width>
           <height>20</height>
@@ -228,7 +237,7 @@
          </palette>
         </property>
         <property name="text" >
-         <string>Render PNG</string>
+         <string>Render Poster</string>
         </property>
        </widget>
       </item>
