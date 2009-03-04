@@ -14,7 +14,7 @@
 
 #include "FWScene.h"
 #include "FWFoto.h"
-#include "frames/StandardFrame.h"
+#include "frames/HeartFrame.h"
 #include "ColorPickerItem.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
@@ -121,7 +121,7 @@ void FWScene::restore(QDataStream & data)
     int photos = 0;
     data >> photos;
     for (int i = 0; i < photos; i++) {
-        StandardFrame * frame = new StandardFrame();
+        Frame * frame = new HeartFrame();
         FWFoto * foto = new FWFoto(frame);
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
@@ -167,7 +167,7 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     int count = localFiles.size();
     for (int i = 0; i < count; i++) {
         double delta = 30.0 * ((double)i - ((double)count - 1.0) / 2.0);
-        StandardFrame * frame = new StandardFrame();
+        Frame * frame = new HeartFrame();
         FWFoto * foto = new FWFoto(frame);
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);

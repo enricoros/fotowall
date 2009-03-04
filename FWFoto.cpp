@@ -141,13 +141,15 @@ QRectF FWFoto::boundingRect() const
 void FWFoto::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // draw the dia background
-    m_frame->paint(painter, boundingRect().toRect());
-
+    QRect frameRect = boundingRect().toRect();
+    m_frame->paint(painter, frameRect);
     if (!m_photo)
         return;
+    if (m_frame->clipContents())
+        painter->setClipPath(m_frame->contentsClipPath(frameRect));
 
     // draw high-resolution photo when exporting png
-    QRect targetRect(-m_size.width()/2 + FW_MARGIN, -m_size.height()/2 + FW_MARGIN, m_size.width() - 2*FW_MARGIN, m_size.height() - 2*FW_MARGIN - FW_LABH);
+    QRect targetRect = m_frame->contentsRect(frameRect);
     if (globalExportingFlag) {
         painter->drawPixmap(targetRect, *m_photo);
         return;

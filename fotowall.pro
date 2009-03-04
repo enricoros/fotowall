@@ -13,14 +13,16 @@ HEADERS += ColorPickerItem.h \
     FWFoto.h \
     FWScene.h \
     frames/Frame.h \
-    frames/StandardFrame.h
+    frames/StandardFrame.h \
+    frames/HeartFrame.h
 SOURCES += main.cpp \
     ColorPickerItem.cpp \
     FotoWall.cpp \
     FWFoto.cpp \
     FWScene.cpp \
     frames/Frame.cpp \
-    frames/StandardFrame.cpp
+    frames/StandardFrame.cpp \
+    frames/HeartFrame.cpp
 FORMS += FotoWall.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_en.ts \
