@@ -3,7 +3,7 @@
  *   This file is part of the FotoWall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
- *   Copyright (C) 2007-2008 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,6 +14,7 @@
 
 #include "FWScene.h"
 #include "FWFoto.h"
+#include "frames/StandardFrame.h"
 #include "ColorPickerItem.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
@@ -120,7 +121,8 @@ void FWScene::restore(QDataStream & data)
     int photos = 0;
     data >> photos;
     for (int i = 0; i < photos; i++) {
-        FWFoto * foto = new FWFoto();
+        StandardFrame * frame = new StandardFrame();
+        FWFoto * foto = new FWFoto(frame);
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
         foto->restore(data);
@@ -165,7 +167,8 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     int count = localFiles.size();
     for (int i = 0; i < count; i++) {
         double delta = 30.0 * ((double)i - ((double)count - 1.0) / 2.0);
-        FWFoto * foto = new FWFoto();
+        StandardFrame * frame = new StandardFrame();
+        FWFoto * foto = new FWFoto(frame);
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
         foto->setPos(event->scenePos() + QPointF(delta, delta) );

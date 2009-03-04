@@ -3,7 +3,7 @@
  *   This file is part of the FotoWall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
- *   Copyright (C) 2007-2008 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "FWFoto.h"
+#include "frames/Frame.h"
 #include <QPainter>
 #include <QFileInfo>
 #include <QDebug>
@@ -44,14 +45,15 @@ class MyTextItem : public QGraphicsTextItem {
             qWarning("Icepted");
             painter->save();
             painter->setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform );
-            
+
             QGraphicsTextItem::paint(painter, option, widget);
             painter->restore();
         }
 };
 
-FWFoto::FWFoto(QGraphicsItem * parent)
+FWFoto::FWFoto( Frame * frame, QGraphicsItem * parent )
     : QGraphicsItem(parent)
+    , m_frame( frame )
     , m_photo(0)
     , m_size(200, 150)
     , m_scaleRefreshTimer(0)
@@ -78,6 +80,7 @@ FWFoto::FWFoto(QGraphicsItem * parent)
 
 FWFoto::~FWFoto()
 {
+    delete m_frame;
 }
 
 void FWFoto::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
@@ -138,12 +141,7 @@ QRectF FWFoto::boundingRect() const
 void FWFoto::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // draw the dia background
-    //painter->fillRect(boundingRect(), QColor(0,0,0,64));
-    QLinearGradient lg(0, -m_size.height() / 2, 0, m_size.height() / 2);
-    lg.setColorAt(0.0, QColor(128,128,128, 200));
-    lg.setColorAt(1.0, QColor(255,255,255, 200));
-    painter->fillRect(boundingRect(), lg);
-    //painter->fillRect(boundingRect().adjusted(5, 5, -5, -5), lg);
+    m_frame->paint(painter, boundingRect().toRect());
 
     if (!m_photo)
         return;

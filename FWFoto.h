@@ -3,7 +3,7 @@
  *   This file is part of the FotoWall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
- *   Copyright (C) 2007-2008 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,6 +19,7 @@
 #include <QBrush>
 #include <QPointF>
 #include <QObject>
+class Frame;
 class FWButton;
 class QGraphicsTextItem;
 
@@ -27,7 +28,7 @@ class FWFoto : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        FWFoto( QGraphicsItem * parent = 0 );
+        FWFoto(Frame * frame, QGraphicsItem * parent = 0);
         ~FWFoto();
 
         // photo
@@ -48,6 +49,7 @@ class FWFoto : public QObject, public QGraphicsItem
 
     private:
         void relayoutContents();
+        Frame *     m_frame;
         QString     m_fileName;
         QPixmap *   m_photo;
         QPixmap     m_cachedPhoto;

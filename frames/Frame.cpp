@@ -3,7 +3,7 @@
  *   This file is part of the FotoWall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
- *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,33 +12,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FotoWall_h__
-#define __FotoWall_h__
+#include "Frame.h"
+#include <QRectF>
 
-#include <QWidget>
-#include <QLabel>
-
-#include "ui_FotoWall.h"
-#include <QGraphicsView>
-class FWScene;
-
-class FotoWall : public QWidget, public Ui::FotoWall
+QRect Frame::contentsRect(const QRect & frameRect) const
 {
-    Q_OBJECT
-    public:
-        FotoWall(QWidget * parent = 0);
-        ~FotoWall();
+    return frameRect.adjusted(5, 5, -5, -30);
+}
 
-    private:
-        QGraphicsView * m_view;
-        FWScene *       m_scene;
+bool Frame::clipContents() const
+{
+    return false;
+}
 
-    private Q_SLOTS:
-        void on_loadButton_clicked();
-        void on_saveButton_clicked();
-        void on_pngButton_clicked();
-        void on_quitButton_clicked();
-        void on_titleEdit_textChanged( const QString & text );
-};
+QPainterPath Frame::contentsClipPath(const QRect & frameRect) const
+{
+    QPainterPath path;
+    path.addRect(contentsRect(frameRect));
+    return path;
+}
 
-#endif
+bool Frame::isShaped() const
+{
+    return false;
+}
+
+QPainterPath Frame::frameShape(const QRect & frameRect) const
+{
+    QPainterPath path;
+    path.addRect(frameRect);
+    return path;
+}
+
+QRect Frame::buttonsRect(const QRect & geometry)
+{
+    return QRect(geometry.right() - 40, geometry.bottom() - 20, 30, 10);
+}

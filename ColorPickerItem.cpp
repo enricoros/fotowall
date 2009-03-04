@@ -4,7 +4,7 @@
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Copyright (C)                                                         *
- *       2007-2008 by Enrico Ros <enrico.ros@gmail.com>                    *
+ *       2007-2009 by Enrico Ros <enrico.ros@gmail.com>                    *
  *       2007 Riccardo Iaconelli <ruphy@kde.org>                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

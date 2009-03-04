@@ -3,7 +3,7 @@
  *   This file is part of the FotoWall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
- *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,33 +12,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FotoWall_h__
-#define __FotoWall_h__
+#ifndef __Frame_h__
+#define __Frame_h__
 
-#include <QWidget>
-#include <QLabel>
+#include <QPainterPath>
+#include <QRect>
+class QPainter;
 
-#include "ui_FotoWall.h"
-#include <QGraphicsView>
-class FWScene;
-
-class FotoWall : public QWidget, public Ui::FotoWall
-{
-    Q_OBJECT
+/**
+    \brief Paints the frame, selects the clipping region and controls position.
+    G: geometry
+    P: painting
+*/
+class Frame {
     public:
-        FotoWall(QWidget * parent = 0);
-        ~FotoWall();
+        // G: contents geometry
+        virtual QRect contentsRect(const QRect & frameRect) const;
 
-    private:
-        QGraphicsView * m_view;
-        FWScene *       m_scene;
+        // G: contents clipping
+        virtual bool clipContents() const;
+        virtual QPainterPath contentsClipPath(const QRect & frameRect) const;
 
-    private Q_SLOTS:
-        void on_loadButton_clicked();
-        void on_saveButton_clicked();
-        void on_pngButton_clicked();
-        void on_quitButton_clicked();
-        void on_titleEdit_textChanged( const QString & text );
+        // G: frame shape
+        virtual bool isShaped() const;
+        virtual QPainterPath frameShape(const QRect & frameRect) const;
+
+        // G: button placement
+        virtual QRect buttonsRect(const QRect & geometry);
+
+        // P: painting
+        virtual void paint(QPainter * painter, const QRect & geometry) = 0;
 };
 
 #endif
