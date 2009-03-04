@@ -72,8 +72,8 @@ QPainterPath HeartFrame::frameShape(const QRect & frameRect) const
 
 void HeartFrame::layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const
 {
-    double x[] = { 0.85, 0.92 };
-    double y[] = { 0.16, 0.22 };
+    double x[] = { 0.92, 0.85 };
+    double y[] = { 0.22, 0.16 };
     for ( int i = 0; i < buttons.size() && i < 2; i++ ) {
         QGraphicsItem * button = buttons[ i ];
         button->setPos( frameRect.left() + (int)((float)frameRect.width() * x[i]),
@@ -83,8 +83,9 @@ void HeartFrame::layoutButtons(QList<QGraphicsItem *> buttons, const QRect & fra
 
 void HeartFrame::paint(QPainter * painter, const QRect & frameRect)
 {
-    QLinearGradient lg(0, frameRect.top(), 0, frameRect.height() / 2);
-    lg.setColorAt(0.0, Qt::red);
+    QLinearGradient lg(0, frameRect.top(), frameRect.width() / 8, frameRect.height() / 2);
+    lg.setColorAt(0.0, QColor(196,00,00));
+    lg.setColorAt(0.3, Qt::red);
     lg.setColorAt(1.0, QColor(128,00,00));
 
     QPainterPath path = heartPath(frameRect);

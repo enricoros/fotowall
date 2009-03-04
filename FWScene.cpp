@@ -121,8 +121,8 @@ void FWScene::restore(QDataStream & data)
     int photos = 0;
     data >> photos;
     for (int i = 0; i < photos; i++) {
-        Frame * frame = new HeartFrame();
-        FWFoto * foto = new FWFoto(frame);
+        FWFoto * foto = new FWFoto();
+        foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
         foto->restore(data);
@@ -167,8 +167,8 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     int count = localFiles.size();
     for (int i = 0; i < count; i++) {
         double delta = 30.0 * ((double)i - ((double)count - 1.0) / 2.0);
-        Frame * frame = new StandardFrame();
-        FWFoto * foto = new FWFoto(frame);
+        FWFoto * foto = new FWFoto();
+        foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
         foto->setPos(event->scenePos() + QPointF(delta, delta) );

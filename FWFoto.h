@@ -17,6 +17,7 @@
 
 #include <QGraphicsItem>
 #include <QBrush>
+#include <QIcon>
 #include <QPointF>
 #include <QObject>
 class Frame;
@@ -28,11 +29,14 @@ class FWFoto : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        FWFoto(Frame * frame, QGraphicsItem * parent = 0);
+        FWFoto(QGraphicsItem * parent = 0);
         ~FWFoto();
 
         // photo
         void loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
+
+        // frame
+        void setFrame(Frame * frame);
 
         // save/restore
         void save(QDataStream & data) const;
@@ -72,7 +76,7 @@ class FWButton : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        FWButton( FWFoto * parent, const QBrush & brush );
+        FWButton( FWFoto * parent, const QBrush & brush, const QIcon & icon );
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
@@ -88,6 +92,7 @@ class FWButton : public QObject, public QGraphicsItem
 
     private:
         FWFoto *    m_parent;
+        QIcon       m_icon;
         QBrush      m_brush;
         QPointF     m_startPos;
 };

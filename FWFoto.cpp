@@ -43,9 +43,9 @@ class MyTextItem : public QGraphicsTextItem {
         }
 };
 
-FWFoto::FWFoto( Frame * frame, QGraphicsItem * parent )
+FWFoto::FWFoto(QGraphicsItem * parent)
     : QGraphicsItem(parent)
-    , m_frame( frame )
+    , m_frame(0)
     , m_photo(0)
     , m_size(200, 150)
     , m_scaleRefreshTimer(0)
@@ -54,11 +54,11 @@ FWFoto::FWFoto( Frame * frame, QGraphicsItem * parent )
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable);
 
     // create child items
-    m_scaleButton = new FWButton(this, Qt::red);
+    m_scaleButton = new FWButton(this, Qt::red, QIcon(":/data/transform-scale.png"));
     connect(m_scaleButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotResize(const QPointF&)));
     connect(m_scaleButton, SIGNAL(reset()), this, SLOT(slotResetAspectRatio()));
 
-    m_rotateButton = new FWButton(this, Qt::green);
+    m_rotateButton = new FWButton(this, Qt::green, QIcon(":/data/transform-rotate.png"));
     connect(m_rotateButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotRotate(const QPointF&)));
     connect(m_rotateButton, SIGNAL(reset()), this, SLOT(slotResetRotation()));
 
@@ -91,6 +91,15 @@ void FWFoto::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
         slotResetAspectRatio();
     if (setName)
         m_textItem->setPlainText(QFileInfo(fileName).fileName().section('.', 0, 0) + QString("..."));
+    update();
+}
+
+void FWFoto::setFrame(Frame * frame)
+{
+    delete m_frame;
+    m_frame = frame;
+    slotResetAspectRatio();
+    relayoutContents();
     update();
 }
 
@@ -135,6 +144,8 @@ QRectF FWFoto::boundingRect() const
 void FWFoto::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // draw the dia background
+    if (!m_frame)
+        return;
     QRect frameRect = boundingRect().toRect();
     m_frame->paint(painter, frameRect);
     if (!m_photo)
@@ -177,6 +188,8 @@ void FWFoto::keyPressEvent(QKeyEvent * event)
 
 void FWFoto::relayoutContents()
 {
+    if (!m_frame)
+        return;
     QList<QGraphicsItem *> buttons;
     buttons.append(m_scaleButton);
     buttons.append(m_rotateButton);
@@ -232,7 +245,7 @@ void FWFoto::slotRotate(const QPointF & controlPoint)
 void FWFoto::slotResetAspectRatio()
 {
     // get the new size
-    if (!m_photo || m_photo->isNull())
+    if (!m_photo || m_photo->isNull() || !m_frame)
         return;
     QSize newSize = m_frame->sizeForContentsRatio(m_size.width(), (qreal)m_photo->width() / (qreal)m_photo->height());
     if (newSize == m_size)
@@ -260,11 +273,13 @@ void FWFoto::slotResizeEnded()
 
 
 
-FWButton::FWButton(FWFoto * parent, const QBrush & brush)
+FWButton::FWButton(FWFoto * parent, const QBrush & brush, const QIcon & icon)
     : QGraphicsItem(parent)
+    , m_icon(icon)
     , m_brush(brush)
 {
     setAcceptsHoverEvents(true);
+    setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
 }
 
 QRectF FWButton::boundingRect() const
@@ -276,10 +291,16 @@ void FWButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option
 {
     if (globalExportingFlag)
         return;
-    painter->setBrush(m_brush);
-    painter->setPen(Qt::white);
-    painter->setOpacity((option->state & QStyle::State_MouseOver) ? 0.8 : 0.2);
-    painter->drawEllipse(boundingRect());
+    bool over = option->state & QStyle::State_MouseOver;
+    /*if (over) {
+        painter->setOpacity(0.5);
+        painter->setBrush(m_brush);
+        painter->setPen(Qt::white);
+        painter->drawRect(boundingRect());
+    }*/
+    painter->setOpacity(over ? 1.0 : 0.2);
+    if (!m_icon.isNull())
+        m_icon.paint(painter, boundingRect().toRect(), Qt::AlignCenter, over ? QIcon::Active : QIcon::Normal);
     painter->setOpacity(1.0);
 }
 

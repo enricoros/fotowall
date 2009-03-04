@@ -1,5 +1,8 @@
 <RCC>
-  <qresource prefix="/" >
-    <file>data/fotowall.png</file>
-  </qresource>
+    <qresource prefix="/" >
+        <file>data/fotowall.png</file>
+        <file>data/transform-scale.png</file>
+        <file>data/transform-rotate.png</file>
+        <file>data/transform-move.png</file>
+    </qresource>
 </RCC>
