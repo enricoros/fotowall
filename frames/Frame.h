@@ -15,8 +15,11 @@
 #ifndef __Frame_h__
 #define __Frame_h__
 
+#include <QGraphicsItem>
+#include <QList>
 #include <QPainterPath>
 #include <QRect>
+#include <QSize>
 class QPainter;
 
 /**
@@ -27,6 +30,7 @@ class QPainter;
 class Frame {
     public:
         // G: contents geometry
+        virtual QSize sizeForContentsRatio(int width, qreal ratio) const;
         virtual QRect contentsRect(const QRect & frameRect) const;
 
         // G: contents clipping
@@ -37,8 +41,9 @@ class Frame {
         virtual bool isShaped() const;
         virtual QPainterPath frameShape(const QRect & frameRect) const;
 
-        // G: button placement
-        virtual QRect buttonsRect(const QRect & geometry);
+        // G: layouting sub-items
+        virtual void layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const = 0;
+        virtual void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const = 0;
 
         // P: painting
         virtual void paint(QPainter * painter, const QRect & geometry) = 0;

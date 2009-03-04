@@ -63,7 +63,7 @@ class FWFoto : public QObject, public QGraphicsItem
     private Q_SLOTS:
         void slotResize(const QPointF & controlPoint);
         void slotRotate(const QPointF & controlPoint);
-        void slotResetSize();
+        void slotResetAspectRatio();
         void slotResetRotation();
         void slotResizeEnded();
 };

@@ -27,8 +27,8 @@ static QPainterPath heartPath(const QRect & r)
            p2x = p1x,
            p2y = top + height,
            h4 = height / 4,
-           skew = 0, //width / 8
-           offs = height / 10;
+           skew = 0 * width / 20,
+           offs = height / 20;
     QPainterPath path;
     path.moveTo( p1x, p1y - offs );
     path.cubicTo( p1x, top, left + width, top, left + width, p1y );
@@ -36,6 +36,11 @@ static QPainterPath heartPath(const QRect & r)
     path.cubicTo( p2x + skew, p2y - h4, left, p1y + h4, left, p1y );
     path.cubicTo( left, top, p1x, top, p1x, p1y - offs );
     return path;
+}
+
+QSize HeartFrame::sizeForContentsRatio(int width, qreal ratio) const
+{
+    return StandardFrame::sizeForContentsRatio(width, ratio);
 }
 
 QRect HeartFrame::contentsRect(const QRect & frameRect) const
@@ -65,18 +70,25 @@ QPainterPath HeartFrame::frameShape(const QRect & frameRect) const
     return heartPath(frameRect);
 }
 
-/*QRect HeartFrame::buttonsRect(const QRect & geometry)
+void HeartFrame::layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const
 {
-}*/
+    double x[] = { 0.85, 0.92 };
+    double y[] = { 0.16, 0.22 };
+    for ( int i = 0; i < buttons.size() && i < 2; i++ ) {
+        QGraphicsItem * button = buttons[ i ];
+        button->setPos( frameRect.left() + (int)((float)frameRect.width() * x[i]),
+                        frameRect.top() + (int)((float)frameRect.height() * y[i]));
+    }
+}
 
 void HeartFrame::paint(QPainter * painter, const QRect & frameRect)
 {
     QLinearGradient lg(0, frameRect.top(), 0, frameRect.height() / 2);
     lg.setColorAt(0.0, Qt::red);
-    lg.setColorAt(1.0, QColor(255,50,50, 200));
+    lg.setColorAt(1.0, QColor(128,00,00));
 
     QPainterPath path = heartPath(frameRect);
-    painter->setPen(QPen(Qt::black, 1));
+    painter->setPen(QPen(QColor(64, 0, 0), 1.0));
     painter->setBrush(lg);
     painter->drawPath(path);
 }

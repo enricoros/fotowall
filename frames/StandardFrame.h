@@ -22,6 +22,10 @@ class StandardFrame : public Frame
 {
     public:
         // ::Frame
+        QSize sizeForContentsRatio(int width, qreal ratio) const;
+        QRect contentsRect(const QRect & frameRect) const;
+        void layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const;
+        void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
         void paint(QPainter * painter, const QRect & frameRect);
 
 };

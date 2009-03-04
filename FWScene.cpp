@@ -167,7 +167,7 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     int count = localFiles.size();
     for (int i = 0; i < count; i++) {
         double delta = 30.0 * ((double)i - ((double)count - 1.0) / 2.0);
-        Frame * frame = new HeartFrame();
+        Frame * frame = new StandardFrame();
         FWFoto * foto = new FWFoto(frame);
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);

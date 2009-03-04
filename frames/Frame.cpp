@@ -15,9 +15,14 @@
 #include "Frame.h"
 #include <QRectF>
 
+QSize Frame::sizeForContentsRatio(int width, qreal ratio) const
+{
+    return QSize(width, (int)((qreal)width / ratio));
+}
+
 QRect Frame::contentsRect(const QRect & frameRect) const
 {
-    return frameRect.adjusted(5, 5, -5, -30);
+    return frameRect;
 }
 
 bool Frame::clipContents() const
@@ -44,7 +49,3 @@ QPainterPath Frame::frameShape(const QRect & frameRect) const
     return path;
 }
 
-QRect Frame::buttonsRect(const QRect & geometry)
-{
-    return QRect(geometry.right() - 40, geometry.bottom() - 20, 30, 10);
-}

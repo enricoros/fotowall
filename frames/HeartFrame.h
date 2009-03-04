@@ -15,19 +15,20 @@
 #ifndef __HeartFrame_h__
 #define __HeartFrame_h__
 
-#include "Frame.h"
+#include "StandardFrame.h"
 class QPainter;
 
-class HeartFrame : public Frame
+class HeartFrame : public StandardFrame
 {
     public:
         // ::Frame
+        QSize sizeForContentsRatio(int width, qreal ratio) const;
         QRect contentsRect(const QRect & frameRect) const;
         bool clipContents() const;
         QPainterPath contentsClipPath(const QRect & frameRect) const;
         bool isShaped() const;
         QPainterPath frameShape(const QRect & frameRect) const;
-        //QRect buttonsRect(const QRect & geometry);
+        void layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const;
         void paint(QPainter * painter, const QRect & frameRect);
 };
 

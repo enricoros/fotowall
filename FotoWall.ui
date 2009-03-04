@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>FotoWall</class>
- <widget class="QWidget" name="FotoWall" >
-  <property name="geometry" >
+ <widget class="QWidget" name="FotoWall">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,57 +10,48 @@
     <height>522</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>FotoWall 0.21</string>
+  <property name="windowTitle">
+   <string>FotoWall 0.3</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="spacing" >
+  <layout class="QVBoxLayout">
+   <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin" >
-    <number>0</number>
-   </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
-    <widget class="QFrame" name="cmdFrame" >
-     <property name="styleSheet" >
+    <widget class="QFrame" name="cmdFrame">
+     <property name="styleSheet">
       <string>QFrame {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
 }</string>
      </property>
-     <property name="frameShape" >
+     <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
-     <layout class="QHBoxLayout" >
+     <layout class="QHBoxLayout">
       <item>
-       <widget class="QLabel" name="label" >
-        <property name="styleSheet" >
+       <widget class="QLabel" name="label">
+        <property name="styleSheet">
          <string>background-color: transparent</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Title</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>titleEdit</cstring>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="titleEdit" >
-        <property name="palette" >
+       <widget class="QLineEdit" name="titleEdit">
+        <property name="palette">
          <palette>
           <active>
-           <colorrole role="Base" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>255</red>
               <green>255</green>
               <blue>255</blue>
@@ -68,9 +60,9 @@
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Base" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>255</red>
               <green>255</green>
               <blue>255</blue>
@@ -79,9 +71,9 @@
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Base" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="255" >
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
               <red>255</red>
               <green>255</green>
               <blue>255</blue>
@@ -91,17 +83,17 @@
           </disabled>
          </palette>
         </property>
-        <property name="text" >
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>16</width>
           <height>20</height>
@@ -110,13 +102,13 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="loadButton" >
-        <property name="palette" >
+       <widget class="QPushButton" name="loadButton">
+        <property name="palette">
          <palette>
           <active>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -125,9 +117,9 @@
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -136,9 +128,9 @@
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -148,19 +140,19 @@
           </disabled>
          </palette>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Load ...</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="saveButton" >
-        <property name="palette" >
+       <widget class="QPushButton" name="saveButton">
+        <property name="palette">
          <palette>
           <active>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -169,9 +161,9 @@
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -180,9 +172,9 @@
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -192,19 +184,19 @@
           </disabled>
          </palette>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Save ...</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pngButton" >
-        <property name="palette" >
+       <widget class="QPushButton" name="pngButton">
+        <property name="palette">
          <palette>
           <active>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -213,9 +205,9 @@
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -224,9 +216,9 @@
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -236,19 +228,19 @@
           </disabled>
          </palette>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Render Poster</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="quitButton" >
-        <property name="palette" >
+       <widget class="QPushButton" name="quitButton">
+        <property name="palette">
          <palette>
           <active>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -257,9 +249,9 @@
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -268,9 +260,9 @@
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Button" >
-            <brush brushstyle="SolidPattern" >
-             <color alpha="160" >
+           <colorrole role="Button">
+            <brush brushstyle="SolidPattern">
+             <color alpha="160">
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -280,7 +272,7 @@
           </disabled>
          </palette>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Quit</string>
         </property>
        </widget>
@@ -289,9 +281,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" native="1" name="centralWidget" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+    <widget class="QWidget" name="centralWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
