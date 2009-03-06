@@ -40,7 +40,7 @@ class PictureItem : public QObject, public QGraphicsItem
 
         // save/restore
         void save(QDataStream & data) const;
-        void restore(QDataStream & data);
+        bool restore(QDataStream & data);
 
         // misc
         void ensureVisible(const QRectF & viewportRect);

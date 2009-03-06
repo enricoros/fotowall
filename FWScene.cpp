@@ -129,7 +129,10 @@ void FWScene::restore(QDataStream & data)
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
-        foto->restore(data);
+        if (!foto->restore(data)) {
+            delete foto;
+            continue;
+        }
         m_photos.append(foto);
     }
 
@@ -179,7 +182,10 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
         addItem(foto);
         foto->setPos(event->scenePos() + QPointF(delta, delta) );
         foto->setZValue(++zLevel);
-        foto->loadPhoto(localFiles[i], true, true);
+        if (!foto->loadPhoto(localFiles[i], true, true)) {
+            delete foto;
+            continue;
+        }
         foto->show();
         m_photos.append(foto);
     }

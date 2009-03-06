@@ -117,7 +117,7 @@ void PictureItem::save(QDataStream & data) const
     data << m_textItem->toPlainText();
 }
 
-void PictureItem::restore(QDataStream & data)
+bool PictureItem::restore(QDataStream & data)
 {
     prepareGeometryChange();
     data >> m_size;
@@ -133,11 +133,12 @@ void PictureItem::restore(QDataStream & data)
     setZValue(zVal);
     QString fileName;
     data >> fileName;
-    loadPhoto(fileName);
+    bool ok = loadPhoto(fileName);
     QString text;
     data >> text;
     m_textItem->setPlainText(text);
     update();
+    return ok;
 }
 
 void PictureItem::ensureVisible(const QRectF & rect)
