@@ -6,6 +6,9 @@ MOC_DIR = .bin
 OBJECTS_DIR = .bin
 RCC_DIR = .bin
 UI_DIR = .bin
+QT = core \
+    gui \
+    svg
 
 # Input
 HEADERS += ColorPickerItem.h \
@@ -14,7 +17,8 @@ HEADERS += ColorPickerItem.h \
     FWScene.h \
     frames/Frame.h \
     frames/StandardFrame.h \
-    frames/HeartFrame.h
+    frames/HeartFrame.h \
+    frames/PlasmaFrame.h
 SOURCES += main.cpp \
     ColorPickerItem.cpp \
     FotoWall.cpp \
@@ -22,7 +26,8 @@ SOURCES += main.cpp \
     FWScene.cpp \
     frames/Frame.cpp \
     frames/StandardFrame.cpp \
-    frames/HeartFrame.cpp
+    frames/HeartFrame.cpp \
+    frames/PlasmaFrame.cpp
 FORMS += FotoWall.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_en.ts \

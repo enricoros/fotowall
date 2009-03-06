@@ -14,6 +14,7 @@
 
 #include "FWScene.h"
 #include "FWFoto.h"
+#include "frames/PlasmaFrame.h"
 #include "frames/HeartFrame.h"
 #include "ColorPickerItem.h"
 #include <QDebug>
@@ -122,7 +123,8 @@ void FWScene::restore(QDataStream & data)
     data >> photos;
     for (int i = 0; i < photos; i++) {
         FWFoto * foto = new FWFoto();
-        foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
+        //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
         foto->restore(data);
@@ -168,7 +170,9 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     for (int i = 0; i < count; i++) {
         double delta = 30.0 * ((double)i - ((double)count - 1.0) / 2.0);
         FWFoto * foto = new FWFoto();
-        foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
+        //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
+        //foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
         foto->setPos(event->scenePos() + QPointF(delta, delta) );
