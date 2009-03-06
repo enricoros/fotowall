@@ -143,6 +143,13 @@ void FWScene::restore(QDataStream & data)
 /// Drag & Drop pictures
 void FWScene::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
+    // handle event in children
+    event->ignore();
+    QGraphicsScene::dragEnterEvent(event);
+    if (event->isAccepted())
+        return;
+
+    // accept PNGs or JPEGs
     if (event->mimeData() && event->mimeData()->hasUrls()) {
         foreach (QUrl url, event->mimeData()->urls()) {
             QString sUrl = url.toString();
@@ -152,16 +159,28 @@ void FWScene::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             }
         }
     }
-    event->ignore();
 }
 
 void FWScene::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
+    // handle event in children
+    event->ignore();
+    QGraphicsScene::dragMoveEvent(event);
+    if (event->isAccepted())
+        return;
+
+    // or accept an initiated drag
     event->accept();
 }
 
 void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
+    // handle event in children
+    event->ignore();
+    QGraphicsScene::dropEvent(event);
+    if (event->isAccepted())
+        return;
+
     event->accept();
 
     QStringList localFiles;

@@ -52,6 +52,7 @@ PictureItem::PictureItem(QGraphicsItem * parent)
 {
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable);
     setAcceptHoverEvents(true);
+    setAcceptDrops(true);
 
     // create child items
     m_scaleButton = new ButtonItem(this, Qt::red, QIcon(":/data/transform-scale.png"));
@@ -82,6 +83,7 @@ PictureItem::~PictureItem()
 bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
 {
     delete m_photo;
+    m_cachedPhoto = QPixmap();
     m_photo = new QPixmap(fileName);
     if (m_photo->isNull()) {
         delete m_photo;
@@ -167,6 +169,39 @@ void PictureItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     m_scaleButton->hide();
     m_rotateButton->hide();
+}
+
+void PictureItem::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
+{
+    // accept PNGs or JPEGs
+    if (event->mimeData() && event->mimeData()->hasUrls()) {
+        foreach (QUrl url, event->mimeData()->urls()) {
+            QString sUrl = url.toString();
+            if (sUrl.contains(".png", Qt::CaseInsensitive) || sUrl.contains(".jpg", Qt::CaseInsensitive)) {
+                event->accept();
+                return;
+            }
+        }
+    }
+}
+
+void PictureItem::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
+{
+    event->accept();
+}
+
+void PictureItem::dropEvent(QGraphicsSceneDragDropEvent * event)
+{
+    // load the first valid picture PNG or JPG file
+    foreach (QUrl url, event->mimeData()->urls()) {
+        QString fileName = url.toLocalFile();
+        if (QFile::exists(fileName) && (fileName.contains(".png", Qt::CaseInsensitive) || fileName.contains(".jpg", Qt::CaseInsensitive))) {
+            if (loadPhoto(fileName, true, false)) {
+                event->accept();
+                return;
+            }
+        }
+    }
 }
 
 void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)

@@ -24,7 +24,9 @@ class Frame;
 class ButtonItem;
 class QGraphicsTextItem;
 
-// resizable "photo" item
+/**
+    \brief Transformable picture, with lots of gadgets
+*/
 class PictureItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -47,8 +49,11 @@ class PictureItem : public QObject, public QGraphicsItem
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
-        void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-        void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+        void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+        void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+        void dragEnterEvent(QGraphicsSceneDragDropEvent * event);
+        void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
+        void dropEvent(QGraphicsSceneDragDropEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
         void wheelEvent(QGraphicsSceneWheelEvent * event);
         void keyPressEvent(QKeyEvent * event);
