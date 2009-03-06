@@ -52,13 +52,16 @@ FWFoto::FWFoto(QGraphicsItem * parent)
     , m_scaling(false)
 {
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable);
+    setAcceptHoverEvents(true);
 
     // create child items
     m_scaleButton = new FWButton(this, Qt::red, QIcon(":/data/transform-scale.png"));
+    m_scaleButton->hide();
     connect(m_scaleButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotResize(const QPointF&)));
     connect(m_scaleButton, SIGNAL(reset()), this, SLOT(slotResetAspectRatio()));
 
     m_rotateButton = new FWButton(this, Qt::green, QIcon(":/data/transform-rotate.png"));
+    m_rotateButton->hide();
     connect(m_rotateButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotRotate(const QPointF&)));
     connect(m_rotateButton, SIGNAL(reset()), this, SLOT(slotResetRotation()));
 
@@ -139,6 +142,18 @@ void FWFoto::restore(QDataStream & data)
 QRectF FWFoto::boundingRect() const
 {
     return QRectF(-m_size.width()/2, -m_size.height()/2, m_size.width(), m_size.height());
+}
+
+void FWFoto::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+{
+    m_scaleButton->show();
+    m_rotateButton->show();
+}
+
+void FWFoto::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+{
+    m_scaleButton->hide();
+    m_rotateButton->hide();
 }
 
 void FWFoto::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
@@ -292,22 +307,21 @@ void FWButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option
     if (globalExportingFlag)
         return;
     bool over = option->state & QStyle::State_MouseOver;
-    /*if (over) {
-        painter->setOpacity(0.5);
-        painter->setBrush(m_brush);
-        painter->setPen(Qt::white);
-        painter->drawRect(boundingRect());
-    }*/
-    painter->setOpacity(over ? 1.0 : 0.2);
+    if (over) {
+        if (m_startPos.isNull())
+            painter->fillRect(boundingRect().adjusted(-1, -1, 1, 1), m_brush);
+        else
+            painter->fillRect(boundingRect().adjusted(-1, -1, 1, 1), Qt::white);
+    }
     if (!m_icon.isNull())
         m_icon.paint(painter, boundingRect().toRect(), Qt::AlignCenter, over ? QIcon::Active : QIcon::Normal);
-    painter->setOpacity(1.0);
 }
 
 void FWButton::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
     m_startPos = event->scenePos();
+    update();
 }
 
 void FWButton::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
@@ -322,6 +336,7 @@ void FWButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
     m_startPos = QPointF();
+    update();
 }
 
 void FWButton::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)

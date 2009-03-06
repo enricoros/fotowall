@@ -44,9 +44,11 @@ class FWFoto : public QObject, public QGraphicsItem
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
-        void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-        void wheelEvent( QGraphicsSceneWheelEvent * event );
-        void keyPressEvent( QKeyEvent * event );
+        void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+        void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+        void wheelEvent(QGraphicsSceneWheelEvent * event);
+        void keyPressEvent(QKeyEvent * event);
 
     Q_SIGNALS:
         void deletePressed();
