@@ -61,6 +61,7 @@ class PictureItem : public QObject, public QGraphicsItem
 
     Q_SIGNALS:
         void deleteMe();
+        void raiseMe();
 
     private:
         void relayoutContents();
@@ -71,6 +72,7 @@ class PictureItem : public QObject, public QGraphicsItem
         QSize       m_size;
         ButtonItem *  m_scaleButton;
         ButtonItem *  m_rotateButton;
+        ButtonItem *  m_frontButton;
         ButtonItem *  m_deleteButton;
         QGraphicsTextItem * m_textItem;
         QTimer *    m_scaleRefreshTimer;

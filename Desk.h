@@ -59,6 +59,7 @@ class Desk : public QGraphicsScene
 
     private Q_SLOTS:
         void slotDeleteFoto();
+        void slotRaiseFoto();
         void slotTitleColorChanged();
         void slotForeColorChanged();
         void slotGradColorChanged();

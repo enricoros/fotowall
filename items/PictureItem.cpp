@@ -65,6 +65,10 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     connect(m_rotateButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotRotate(const QPointF&)));
     connect(m_rotateButton, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
 
+    m_frontButton = new ButtonItem(this, Qt::blue, QIcon(":/data/action-order-front.png"));
+    m_frontButton->hide();
+    connect(m_frontButton, SIGNAL(clicked()), this, SIGNAL(raiseMe()));
+
     m_deleteButton = new ButtonItem(this, Qt::red, QIcon(":/data/action-delete.png"));
     m_deleteButton->hide();
     connect(m_deleteButton, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
@@ -167,6 +171,7 @@ void PictureItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     m_scaleButton->show();
     m_rotateButton->show();
+    m_frontButton->show();
     m_deleteButton->show();
 }
 
@@ -174,6 +179,7 @@ void PictureItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     m_scaleButton->hide();
     m_rotateButton->hide();
+    m_frontButton->hide();
     m_deleteButton->hide();
 }
 
@@ -278,7 +284,7 @@ void PictureItem::relayoutContents()
 
     // layout buttons and text
     QList<QGraphicsItem *> buttons;
-    buttons << m_scaleButton << m_rotateButton << m_deleteButton;
+    buttons << m_scaleButton << m_rotateButton << m_frontButton << m_deleteButton;
     m_frame->layoutButtons(buttons, boundingRect().toRect());
     m_frame->layoutText(m_textItem, boundingRect().toRect());
 }

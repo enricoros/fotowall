@@ -128,6 +128,7 @@ void Desk::restore(QDataStream & data)
         //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeleteFoto()));
+        connect(foto, SIGNAL(raiseMe()), this, SLOT(slotRaiseFoto()));
         addItem(foto);
         if (!foto->restore(data)) {
             delete foto;
@@ -198,6 +199,7 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         //foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
         connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeleteFoto()));
+        connect(foto, SIGNAL(raiseMe()), this, SLOT(slotRaiseFoto()));
         addItem(foto);
         foto->setPos(event->scenePos() + QPointF(delta, delta) );
         foto->setZValue(++zLevel);
@@ -272,6 +274,13 @@ void Desk::slotDeleteFoto()
     m_photos.removeAll(foto);
     removeItem(foto);
     foto->deleteLater();
+}
+
+void Desk::slotRaiseFoto()
+{
+    PictureItem * foto = dynamic_cast<PictureItem *>(sender());
+    if (foto)
+        foto->setZValue(++zLevel);
 }
 
 void Desk::slotTitleColorChanged()
