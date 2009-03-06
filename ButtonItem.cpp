@@ -67,13 +67,16 @@ void ButtonItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 void ButtonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
+    bool dragging = !m_startPos.isNull();
     m_startPos = QPointF();
     update();
+    if (dragging)
+        emit clicked();
 }
 
 void ButtonItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
-    emit reset();
+    emit doubleClicked();
 }
 

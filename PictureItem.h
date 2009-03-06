@@ -60,7 +60,7 @@ class PictureItem : public QObject, public QGraphicsItem
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
     Q_SIGNALS:
-        void deletePressed();
+        void deleteMe();
 
     private:
         void relayoutContents();
@@ -71,6 +71,7 @@ class PictureItem : public QObject, public QGraphicsItem
         QSize       m_size;
         ButtonItem *  m_scaleButton;
         ButtonItem *  m_rotateButton;
+        ButtonItem *  m_deleteButton;
         QGraphicsTextItem * m_textItem;
         QTimer *    m_scaleRefreshTimer;
         bool        m_scaling;

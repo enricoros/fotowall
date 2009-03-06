@@ -55,15 +55,19 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     setAcceptDrops(true);
 
     // create child items
-    m_scaleButton = new ButtonItem(this, Qt::red, QIcon(":/data/transform-scale.png"));
+    m_scaleButton = new ButtonItem(this, Qt::green, QIcon(":/data/action-scale.png"));
     m_scaleButton->hide();
     connect(m_scaleButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotResize(const QPointF&)));
-    connect(m_scaleButton, SIGNAL(reset()), this, SLOT(slotResetAspectRatio()));
+    connect(m_scaleButton, SIGNAL(doubleClicked()), this, SLOT(slotResetAspectRatio()));
 
-    m_rotateButton = new ButtonItem(this, Qt::green, QIcon(":/data/transform-rotate.png"));
+    m_rotateButton = new ButtonItem(this, Qt::green, QIcon(":/data/action-rotate.png"));
     m_rotateButton->hide();
     connect(m_rotateButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotRotate(const QPointF&)));
-    connect(m_rotateButton, SIGNAL(reset()), this, SLOT(slotResetRotation()));
+    connect(m_rotateButton, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
+
+    m_deleteButton = new ButtonItem(this, Qt::red, QIcon(":/data/action-delete.png"));
+    m_deleteButton->hide();
+    connect(m_deleteButton, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
 
     m_textItem = new MyTextItem(this);
     m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -163,12 +167,14 @@ void PictureItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     m_scaleButton->show();
     m_rotateButton->show();
+    m_deleteButton->show();
 }
 
 void PictureItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     m_scaleButton->hide();
     m_rotateButton->hide();
+    m_deleteButton->hide();
 }
 
 void PictureItem::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
@@ -245,7 +251,7 @@ void PictureItem::wheelEvent(QGraphicsSceneWheelEvent * event)
 void PictureItem::keyPressEvent(QKeyEvent * event)
 {
     if (event->key() == Qt::Key_Delete)
-        emit deletePressed();
+        emit deleteMe();
     event->accept();
 }
 
@@ -272,8 +278,7 @@ void PictureItem::relayoutContents()
 
     // layout buttons and text
     QList<QGraphicsItem *> buttons;
-    buttons.append(m_scaleButton);
-    buttons.append(m_rotateButton);
+    buttons << m_scaleButton << m_rotateButton << m_deleteButton;
     m_frame->layoutButtons(buttons, boundingRect().toRect());
     m_frame->layoutText(m_textItem, boundingRect().toRect());
 }

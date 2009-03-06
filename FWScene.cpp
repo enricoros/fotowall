@@ -127,7 +127,7 @@ void FWScene::restore(QDataStream & data)
         PictureItem * foto = new PictureItem();
         //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
-        connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
+        connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
         if (!foto->restore(data)) {
             delete foto;
@@ -191,13 +191,13 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 
     int count = localFiles.size();
+    double delta = 0;
     for (int i = 0; i < count; i++) {
-        double delta = 30.0 * ((double)i - ((double)count - 1.0) / 2.0);
         PictureItem * foto = new PictureItem();
         //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         //foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
-        connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
+        connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeleteFoto()));
         addItem(foto);
         foto->setPos(event->scenePos() + QPointF(delta, delta) );
         foto->setZValue(++zLevel);
@@ -207,6 +207,7 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
         }
         foto->show();
         m_photos.append(foto);
+        delta += 30;
     }
 }
 

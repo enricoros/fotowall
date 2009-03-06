@@ -36,7 +36,8 @@ class ButtonItem : public QObject, public QGraphicsItem
 
     Q_SIGNALS:
         void dragging(const QPointF & point);
-        void reset();
+        void clicked();
+        void doubleClicked();
 
     private:
         QIcon       m_icon;
