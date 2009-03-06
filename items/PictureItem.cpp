@@ -108,6 +108,13 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     return true;
 }
 
+QPixmap PictureItem::renderPhoto(const QSize & size) const
+{
+    if (m_photo)
+        return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    return QPixmap();
+}
+
 void PictureItem::setFrame(Frame * frame)
 {
     delete m_frame;
@@ -246,6 +253,13 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*o
         painter->setRenderHints(QPainter::SmoothPixmapTransform);
         painter->drawPixmap(targetRect.topLeft(), m_cachedPhoto);
     }
+}
+
+void PictureItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+{
+    if (m_frame)
+        if (m_frame->contentsRect(boundingRect().toRect()).contains(event->pos().toPoint()))
+            emit backgroundMe();
 }
 
 void PictureItem::wheelEvent(QGraphicsSceneWheelEvent * event)

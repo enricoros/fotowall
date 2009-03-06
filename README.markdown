@@ -24,8 +24,6 @@ This is the current list of requested features. If you have more of them, or any
 
 Special requests:
 
-* more frame types (stamp, heart, star, ..) (David Eccher)
-* double-click on a picture -> set it as background, and vice-versa (Alberto Scarpa)
 * click left/right/top/bottom to mirror the photo on that axis (Alberto Scarpa)
 * checkbox for a "beginner mode" (Alberto Scarpa)
 
@@ -94,6 +92,7 @@ Unreleased Version; New Stuff:
 
 * Reflections are coming...
 * More Frame types (default, heart, Plasma backgrounds) [David Eccher]
+* DoubleClick on a picture -> set it as background, and vice-versa [Alberto Scarpa]
 * More pretty (plasma icons) and usable (behavior) frame buttons
 * New buttons: "Raise to Front" [Superstoned], "Delete"
 * Pictures stay on-screen

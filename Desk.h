@@ -18,6 +18,7 @@
 #include <QGraphicsScene>
 #include <QDataStream>
 #include <QPainter>
+#include <QPixmap>
 #include <QRect>
 class PictureItem;
 class ColorPickerItem;
@@ -44,11 +45,13 @@ class Desk : public QGraphicsScene
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
         void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
         void dropEvent( QGraphicsSceneDragDropEvent * event );
+        void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * mouseEvent );
         void drawBackground( QPainter * painter, const QRectF & rect );
         void drawForeground( QPainter * painter, const QRectF & rect );
 
     private:
-        QList<PictureItem *> m_photos;
+        QList<PictureItem *> m_pictures;
+        PictureItem * m_backPicture;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;
@@ -56,10 +59,13 @@ class Desk : public QGraphicsScene
         QSize m_size;
         QRectF m_rect;
         QString m_titleText;
+        QPixmap m_backCache;
 
     private Q_SLOTS:
-        void slotDeleteFoto();
-        void slotRaiseFoto();
+        void slotDeletePicture();
+        void slotRaisePicture();
+        void slotBackgroundPicture();
+
         void slotTitleColorChanged();
         void slotForeColorChanged();
         void slotGradColorChanged();

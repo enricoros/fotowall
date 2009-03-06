@@ -31,6 +31,7 @@ static int zLevel = 0;
 
 Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
+    , m_backPicture(0)
 {
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
@@ -72,8 +73,9 @@ Desk::~Desk()
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
     delete m_grad2ColorPicker;
-    qDeleteAll(m_photos);
-    m_photos.clear();
+    qDeleteAll(m_pictures);
+    m_pictures.clear();
+    m_backPicture = 0;
 }
 
 
@@ -84,7 +86,7 @@ void Desk::resize(const QSize & size)
     m_titleColorPicker->setPos((size.width() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(size.width() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
-    foreach (PictureItem * picture, m_photos)
+    foreach (PictureItem * picture, m_pictures)
         picture->ensureVisible(m_rect);
     setSceneRect(m_rect);
 }
@@ -99,9 +101,11 @@ void Desk::save(QDataStream & data) const
     data << m_titleText;
 
     // save the photos
-    data << m_photos.size();
-    foreach (PictureItem * foto, m_photos)
+    data << m_pictures.size();
+    foreach (PictureItem * foto, m_pictures)
         foto->save(data);
+
+    // TODO: save background
 }
 
 void Desk::restore(QDataStream & data)
@@ -118,23 +122,27 @@ void Desk::restore(QDataStream & data)
     m_grad2ColorPicker->setColor(color);
     data >> m_titleText;
 
+    // FIXME: restore background
+
     // restore the photos
-    qDeleteAll(m_photos);
-    m_photos.clear();
+    qDeleteAll(m_pictures);
+    m_pictures.clear();
+    m_backPicture = 0;
     int photos = 0;
     data >> photos;
     for (int i = 0; i < photos; i++) {
         PictureItem * foto = new PictureItem();
         //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
-        connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeleteFoto()));
-        connect(foto, SIGNAL(raiseMe()), this, SLOT(slotRaiseFoto()));
+        connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+        connect(foto, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(foto, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
         addItem(foto);
         if (!foto->restore(data)) {
             delete foto;
             continue;
         }
-        m_photos.append(foto);
+        m_pictures.append(foto);
     }
 
     update();
@@ -198,8 +206,9 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         //foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
-        connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeleteFoto()));
-        connect(foto, SIGNAL(raiseMe()), this, SLOT(slotRaiseFoto()));
+        connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+        connect(foto, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(foto, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
         addItem(foto);
         foto->setPos(event->scenePos() + QPointF(delta, delta) );
         foto->setZValue(++zLevel);
@@ -208,15 +217,44 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
             continue;
         }
         foto->show();
-        m_photos.append(foto);
+        m_pictures.append(foto);
         delta += 30;
     }
 }
 
+void Desk::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
+{
+    // first dispatch doubleclick to items
+    mouseEvent->ignore();
+    QGraphicsScene::mouseDoubleClickEvent(mouseEvent);
+    if (mouseEvent->isAccepted())
+        return;
+
+    // unset the background picture, if present
+    if (m_backPicture) {
+        m_backPicture->show();
+        m_backPicture = 0;
+        m_backCache = QPixmap();
+        update();
+    }
+}
 
 /// Scene Background & Foreground
 void Desk::drawBackground(QPainter * painter, const QRectF & rect)
 {
+    // draw picture if requested
+    if (m_backPicture) {
+        // regenerate cache if needed
+        QSize sceneSize = sceneRect().size().toSize();
+        if (m_backCache.isNull() || m_backCache.size() != sceneSize)
+            m_backCache = m_backPicture->renderPhoto(sceneSize);
+
+        // paint cached background
+        QRect targetRect = rect.toRect();
+        painter->drawPixmap(targetRect, m_backCache, targetRect);
+        return;
+    }
+
     // draw background
     QLinearGradient lg(m_rect.topLeft(), m_rect.bottomLeft());
     lg.setColorAt(0.0, m_grad1ColorPicker->color());
@@ -265,22 +303,45 @@ void Desk::setTitleText(const QString & text)
 
 
 /// Slots
-void Desk::slotDeleteFoto()
+void Desk::slotDeletePicture()
 {
-    PictureItem * foto = dynamic_cast<PictureItem *>(sender());
-    if (!foto)
+    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    if (!picture)
         return;
 
-    m_photos.removeAll(foto);
-    removeItem(foto);
-    foto->deleteLater();
+    // unset background if deleting picture
+    if (m_backPicture == picture) {
+        m_backPicture = 0;
+        m_backCache = QPixmap();
+        update();
+    }
+    m_pictures.removeAll(picture);
+    removeItem(picture);
+    picture->deleteLater();
 }
 
-void Desk::slotRaiseFoto()
+void Desk::slotRaisePicture()
 {
-    PictureItem * foto = dynamic_cast<PictureItem *>(sender());
-    if (foto)
-        foto->setZValue(++zLevel);
+    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    if (picture)
+        picture->setZValue(++zLevel);
+}
+
+void Desk::slotBackgroundPicture()
+{
+    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    if (!picture)
+        return;
+
+    // re-show previous background
+    if (m_backPicture)
+        m_backPicture->show();
+
+    // hide current background picture
+    m_backPicture = picture;
+    m_backPicture->hide();
+    m_backCache = QPixmap();
+    update();
 }
 
 void Desk::slotTitleColorChanged()

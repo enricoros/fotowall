@@ -36,6 +36,7 @@ class PictureItem : public QObject, public QGraphicsItem
 
         // photo
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
+        QPixmap renderPhoto(const QSize & size) const;
 
         // frame
         void setFrame(Frame * frame);
@@ -55,6 +56,7 @@ class PictureItem : public QObject, public QGraphicsItem
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void wheelEvent(QGraphicsSceneWheelEvent * event);
         void keyPressEvent(QKeyEvent * event);
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
@@ -62,6 +64,7 @@ class PictureItem : public QObject, public QGraphicsItem
     Q_SIGNALS:
         void deleteMe();
         void raiseMe();
+        void backgroundMe();
 
     private:
         void relayoutContents();
