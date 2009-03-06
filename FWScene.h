@@ -19,7 +19,7 @@
 #include <QDataStream>
 #include <QPainter>
 #include <QRect>
-class FWFoto;
+class PictureItem;
 class ColorPickerItem;
 
 class FWScene : public QGraphicsScene
@@ -48,7 +48,7 @@ class FWScene : public QGraphicsScene
         void drawForeground( QPainter * painter, const QRectF & rect );
 
     private:
-        QList<FWFoto *> m_photos;
+        QList<PictureItem *> m_photos;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;

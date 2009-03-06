@@ -13,7 +13,7 @@
  ***************************************************************************/
 
 #include "FWScene.h"
-#include "FWFoto.h"
+#include "PictureItem.h"
 #include "frames/PlasmaFrame.h"
 #include "frames/HeartFrame.h"
 #include "ColorPickerItem.h"
@@ -84,6 +84,8 @@ void FWScene::resize(const QSize & size)
     m_titleColorPicker->setPos((size.width() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(size.width() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
+    foreach (PictureItem * picture, m_photos)
+        picture->ensureVisible(m_rect);
     setSceneRect(m_rect);
 }
 
@@ -98,7 +100,7 @@ void FWScene::save(QDataStream & data) const
 
     // save the photos
     data << m_photos.size();
-    foreach (FWFoto * foto, m_photos)
+    foreach (PictureItem * foto, m_photos)
         foto->save(data);
 }
 
@@ -122,7 +124,7 @@ void FWScene::restore(QDataStream & data)
     int photos = 0;
     data >> photos;
     for (int i = 0; i < photos; i++) {
-        FWFoto * foto = new FWFoto();
+        PictureItem * foto = new PictureItem();
         //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
@@ -169,7 +171,7 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     int count = localFiles.size();
     for (int i = 0; i < count; i++) {
         double delta = 30.0 * ((double)i - ((double)count - 1.0) / 2.0);
-        FWFoto * foto = new FWFoto();
+        PictureItem * foto = new PictureItem();
         //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         //foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
@@ -237,7 +239,7 @@ void FWScene::setTitleText(const QString & text)
 /// Slots
 void FWScene::slotDeleteFoto()
 {
-    FWFoto * foto = dynamic_cast<FWFoto *>(sender());
+    PictureItem * foto = dynamic_cast<PictureItem *>(sender());
     if (!foto)
         return;
 

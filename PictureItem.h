@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FWFoto_h__
-#define __FWFoto_h__
+#ifndef __PictureItem_h__
+#define __PictureItem_h__
 
 #include <QGraphicsItem>
 #include <QBrush>
@@ -21,19 +21,19 @@
 #include <QPointF>
 #include <QObject>
 class Frame;
-class FWButton;
+class ButtonItem;
 class QGraphicsTextItem;
 
 // resizable "photo" item
-class FWFoto : public QObject, public QGraphicsItem
+class PictureItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        FWFoto(QGraphicsItem * parent = 0);
-        ~FWFoto();
+        PictureItem(QGraphicsItem * parent = 0);
+        ~PictureItem();
 
         // photo
-        void loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
+        bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
 
         // frame
         void setFrame(Frame * frame);
@@ -42,6 +42,9 @@ class FWFoto : public QObject, public QGraphicsItem
         void save(QDataStream & data) const;
         void restore(QDataStream & data);
 
+        // misc
+        void ensureVisible(const QRectF & viewportRect);
+
         // ::QGraphicsItem
         QRectF boundingRect() const;
         void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
@@ -49,6 +52,7 @@ class FWFoto : public QObject, public QGraphicsItem
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
         void wheelEvent(QGraphicsSceneWheelEvent * event);
         void keyPressEvent(QKeyEvent * event);
+        QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
     Q_SIGNALS:
         void deletePressed();
@@ -60,8 +64,8 @@ class FWFoto : public QObject, public QGraphicsItem
         QPixmap *   m_photo;
         QPixmap     m_cachedPhoto;
         QSize       m_size;
-        FWButton *  m_scaleButton;
-        FWButton *  m_rotateButton;
+        ButtonItem *  m_scaleButton;
+        ButtonItem *  m_rotateButton;
         QGraphicsTextItem * m_textItem;
         QTimer *    m_scaleRefreshTimer;
         bool        m_scaling;
@@ -72,31 +76,6 @@ class FWFoto : public QObject, public QGraphicsItem
         void slotResetAspectRatio();
         void slotResetRotation();
         void slotResizeEnded();
-};
-
-class FWButton : public QObject, public QGraphicsItem
-{
-    Q_OBJECT
-    public:
-        FWButton( FWFoto * parent, const QBrush & brush, const QIcon & icon );
-
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-        void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
-        void mousePressEvent( QGraphicsSceneMouseEvent * event );
-        void mouseReleaseEvent( QGraphicsSceneMouseEvent * event );
-        void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * event );
-
-    Q_SIGNALS:
-        void dragging(const QPointF & point);
-        void reset();
-
-    private:
-        FWFoto *    m_parent;
-        QIcon       m_icon;
-        QBrush      m_brush;
-        QPointF     m_startPos;
 };
 
 #endif

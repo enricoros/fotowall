@@ -12,18 +12,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "FWFoto.h"
+#include "PictureItem.h"
+#include "ButtonItem.h"
 #include "frames/Frame.h"
 #include <QFileInfo>
+#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QPainter>
-#include <QStyleOptionGraphicsItem>
 #include <QTimer>
 #include <QUrl>
 #include <math.h>
-
-#define notImplemented() {qWarning("%s:%d: %s NOT Implemented!", __FILE__, __LINE__, __FUNCTION__);}
 
 // from FotoWall.cpp
 extern bool globalExportingFlag;
@@ -43,7 +42,7 @@ class MyTextItem : public QGraphicsTextItem {
         }
 };
 
-FWFoto::FWFoto(QGraphicsItem * parent)
+PictureItem::PictureItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_frame(0)
     , m_photo(0)
@@ -55,12 +54,12 @@ FWFoto::FWFoto(QGraphicsItem * parent)
     setAcceptHoverEvents(true);
 
     // create child items
-    m_scaleButton = new FWButton(this, Qt::red, QIcon(":/data/transform-scale.png"));
+    m_scaleButton = new ButtonItem(this, Qt::red, QIcon(":/data/transform-scale.png"));
     m_scaleButton->hide();
     connect(m_scaleButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotResize(const QPointF&)));
     connect(m_scaleButton, SIGNAL(reset()), this, SLOT(slotResetAspectRatio()));
 
-    m_rotateButton = new FWButton(this, Qt::green, QIcon(":/data/transform-rotate.png"));
+    m_rotateButton = new ButtonItem(this, Qt::green, QIcon(":/data/transform-rotate.png"));
     m_rotateButton->hide();
     connect(m_rotateButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotRotate(const QPointF&)));
     connect(m_rotateButton, SIGNAL(reset()), this, SLOT(slotResetRotation()));
@@ -75,12 +74,12 @@ FWFoto::FWFoto(QGraphicsItem * parent)
     relayoutContents();
 }
 
-FWFoto::~FWFoto()
+PictureItem::~PictureItem()
 {
     delete m_frame;
 }
 
-void FWFoto::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
+bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
 {
     delete m_photo;
     m_photo = new QPixmap(fileName);
@@ -88,6 +87,7 @@ void FWFoto::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
         delete m_photo;
         m_photo = 0;
         m_fileName = QString();
+        return false;
     }
     m_fileName = fileName;
     if (keepRatio)
@@ -95,9 +95,10 @@ void FWFoto::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
     if (setName)
         m_textItem->setPlainText(QFileInfo(fileName).fileName().section('.', 0, 0) + QString("..."));
     update();
+    return true;
 }
 
-void FWFoto::setFrame(Frame * frame)
+void PictureItem::setFrame(Frame * frame)
 {
     delete m_frame;
     m_frame = frame;
@@ -106,7 +107,7 @@ void FWFoto::setFrame(Frame * frame)
     update();
 }
 
-void FWFoto::save(QDataStream & data) const
+void PictureItem::save(QDataStream & data) const
 {
     data << m_size;
     data << pos();
@@ -116,7 +117,7 @@ void FWFoto::save(QDataStream & data) const
     data << m_textItem->toPlainText();
 }
 
-void FWFoto::restore(QDataStream & data)
+void PictureItem::restore(QDataStream & data)
 {
     prepareGeometryChange();
     data >> m_size;
@@ -139,24 +140,35 @@ void FWFoto::restore(QDataStream & data)
     update();
 }
 
-QRectF FWFoto::boundingRect() const
+void PictureItem::ensureVisible(const QRectF & rect)
+{
+    // keep the center inside the scene rect
+    QPointF center = pos();
+    if (!rect.contains(center)) {
+        center.setX(qBound(rect.left(), center.x(), rect.right()));
+        center.setY(qBound(rect.top(), center.y(), rect.bottom()));
+        setPos(center);
+    }
+}
+
+QRectF PictureItem::boundingRect() const
 {
     return QRectF(-m_size.width()/2, -m_size.height()/2, m_size.width(), m_size.height());
 }
 
-void FWFoto::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+void PictureItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     m_scaleButton->show();
     m_rotateButton->show();
 }
 
-void FWFoto::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+void PictureItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     m_scaleButton->hide();
     m_rotateButton->hide();
 }
 
-void FWFoto::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // draw the dia background
     if (!m_frame)
@@ -188,23 +200,41 @@ void FWFoto::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option
     }
 }
 
-void FWFoto::wheelEvent(QGraphicsSceneWheelEvent * event)
+void PictureItem::wheelEvent(QGraphicsSceneWheelEvent * event)
 {
     int newZValue = (int)(zValue() - event->delta() / 120);
     setZValue(newZValue);
 }
 
-void FWFoto::keyPressEvent(QKeyEvent * event)
+void PictureItem::keyPressEvent(QKeyEvent * event)
 {
     if (event->key() == Qt::Key_Delete)
         emit deletePressed();
     event->accept();
 }
 
-void FWFoto::relayoutContents()
+QVariant PictureItem::itemChange(GraphicsItemChange change, const QVariant & value)
+{
+    // keep the center inside the scene rect..
+    if (change == ItemPositionChange && scene()) {
+        QPointF newPos = value.toPointF();
+        QRectF rect = scene()->sceneRect();
+        if (!rect.contains(newPos)) {
+            newPos.setX(qBound(rect.left(), newPos.x(), rect.right()));
+            newPos.setY(qBound(rect.top(), newPos.y(), rect.bottom()));
+            return newPos;
+        }
+    }
+    // ..or just apply the value
+    return QGraphicsItem::itemChange(change, value);
+}
+
+void PictureItem::relayoutContents()
 {
     if (!m_frame)
         return;
+
+    // layout buttons and text
     QList<QGraphicsItem *> buttons;
     buttons.append(m_scaleButton);
     buttons.append(m_rotateButton);
@@ -212,7 +242,7 @@ void FWFoto::relayoutContents()
     m_frame->layoutText(m_textItem, boundingRect().toRect());
 }
 
-void FWFoto::slotResize(const QPointF & controlPoint)
+void PictureItem::slotResize(const QPointF & controlPoint)
 {
     QPoint newPos = mapFromScene(controlPoint).toPoint();
     QPoint oldPos = m_scaleButton->pos().toPoint();
@@ -244,7 +274,7 @@ void FWFoto::slotResize(const QPointF & controlPoint)
     m_scaleRefreshTimer->start(400);
 }
 
-void FWFoto::slotRotate(const QPointF & controlPoint)
+void PictureItem::slotRotate(const QPointF & controlPoint)
 {
     QPointF newPos = mapFromScene(controlPoint);
     QPointF refPos = m_rotateButton->pos();
@@ -254,10 +284,10 @@ void FWFoto::slotRotate(const QPointF & controlPoint)
     // set item rotation (set rotation relative to current)
     qreal refAngle = atan2(refPos.y(), refPos.x());
     qreal newAngle = atan2(newPos.y(), newPos.x());
-    rotate(180.0 * (newAngle - refAngle) / M_PI);
+    rotate(57.29577951308232 * (newAngle - refAngle)); // 180 * a / M_PI
 }
 
-void FWFoto::slotResetAspectRatio()
+void PictureItem::slotResetAspectRatio()
 {
     // get the new size
     if (!m_photo || m_photo->isNull() || !m_frame)
@@ -273,75 +303,14 @@ void FWFoto::slotResetAspectRatio()
     update();
 }
 
-void FWFoto::slotResetRotation()
+void PictureItem::slotResetRotation()
 {
     QTransform ident;
     setTransform(ident, false);
 }
 
-void FWFoto::slotResizeEnded()
+void PictureItem::slotResizeEnded()
 {
     m_scaling = false;
     update();
 }
-
-
-
-
-FWButton::FWButton(FWFoto * parent, const QBrush & brush, const QIcon & icon)
-    : QGraphicsItem(parent)
-    , m_icon(icon)
-    , m_brush(brush)
-{
-    setAcceptsHoverEvents(true);
-    setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
-}
-
-QRectF FWButton::boundingRect() const
-{
-    return QRectF(-8, -8, 16, 16);
-}
-
-void FWButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
-{
-    if (globalExportingFlag)
-        return;
-    bool over = option->state & QStyle::State_MouseOver;
-    if (over) {
-        if (m_startPos.isNull())
-            painter->fillRect(boundingRect().adjusted(-1, -1, 1, 1), m_brush);
-        else
-            painter->fillRect(boundingRect().adjusted(-1, -1, 1, 1), Qt::white);
-    }
-    if (!m_icon.isNull())
-        m_icon.paint(painter, boundingRect().toRect(), Qt::AlignCenter, over ? QIcon::Active : QIcon::Normal);
-}
-
-void FWButton::mousePressEvent(QGraphicsSceneMouseEvent * event)
-{
-    event->accept();
-    m_startPos = event->scenePos();
-    update();
-}
-
-void FWButton::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-{
-    if (m_startPos.isNull())
-        return;
-    event->accept();
-    emit dragging(event->scenePos());
-}
-
-void FWButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
-{
-    event->accept();
-    m_startPos = QPointF();
-    update();
-}
-
-void FWButton::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
-{
-    event->accept();
-    emit reset();
-}
-

@@ -13,21 +13,23 @@ QT = core \
 # Input
 HEADERS += ColorPickerItem.h \
     FotoWall.h \
-    FWFoto.h \
+    PictureItem.h \
     FWScene.h \
     frames/Frame.h \
     frames/StandardFrame.h \
     frames/HeartFrame.h \
-    frames/PlasmaFrame.h
+    frames/PlasmaFrame.h \
+    ButtonItem.h
 SOURCES += main.cpp \
     ColorPickerItem.cpp \
     FotoWall.cpp \
-    FWFoto.cpp \
+    PictureItem.cpp \
     FWScene.cpp \
     frames/Frame.cpp \
     frames/StandardFrame.cpp \
     frames/HeartFrame.cpp \
-    frames/PlasmaFrame.cpp
+    frames/PlasmaFrame.cpp \
+    ButtonItem.cpp
 FORMS += FotoWall.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_en.ts \

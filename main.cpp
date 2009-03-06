@@ -17,6 +17,8 @@
 #include <QLocale>
 #include "FotoWall.h"
 
+#define notImplemented() {qWarning("%s:%d: %s NOT Implemented!", __FILE__, __LINE__, __FUNCTION__);}
+
 int main( int argc, char ** args )
 {
     QApplication app(argc, args);
