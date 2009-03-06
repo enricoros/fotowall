@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FWScene_h__
-#define __FWScene_h__
+#ifndef __Desk_h__
+#define __Desk_h__
 
 #include <QGraphicsScene>
 #include <QDataStream>
@@ -22,12 +22,12 @@
 class PictureItem;
 class ColorPickerItem;
 
-class FWScene : public QGraphicsScene
+class Desk : public QGraphicsScene
 {
     Q_OBJECT
     public:
-        FWScene(QObject * parent = 0);
-        ~FWScene();
+        Desk(QObject * parent = 0);
+        ~Desk();
 
         // resize the scene to 0,0,size
         void resize(const QSize & size);

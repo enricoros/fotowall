@@ -13,7 +13,7 @@
  ***************************************************************************/
 
 #include "FotoWall.h"
-#include "FWScene.h"
+#include "Desk.h"
 #include <QCoreApplication>
 #include <QVBoxLayout>
 #include <QDebug>
@@ -28,9 +28,9 @@ bool globalExportingFlag = false;
 
 class FWGraphicsView : public QGraphicsView {
     public:
-        FWGraphicsView(FWScene * scene, QWidget * parent)
-            : QGraphicsView(scene, parent)
-            , m_scene(scene)
+        FWGraphicsView(Desk * desk, QWidget * parent)
+            : QGraphicsView(desk, parent)
+            , m_desk(desk)
         {
             setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -43,27 +43,27 @@ class FWGraphicsView : public QGraphicsView {
 
     protected:
         void resizeEvent(QResizeEvent * /*event*/) {
-            m_scene->resize(contentsRect().size());
+            m_desk->resize(contentsRect().size());
         }
 
     private:
-        FWScene * m_scene;
+        Desk * m_desk;
 };
 
 
 FotoWall::FotoWall(QWidget * parent)
     : QWidget(parent)
     , m_view(0)
-    , m_scene(0)
+    , m_desk(0)
 {
     setupUi(this);
     setWindowIcon( QIcon(":/data/fotowall.png") );
 
-    // create our custom scene
-    m_scene = new FWScene(this);
+    // create our custom desk
+    m_desk = new Desk(this);
 
     // add the graphicsview
-    m_view = new FWGraphicsView(m_scene, centralWidget);
+    m_view = new FWGraphicsView(m_desk, centralWidget);
     QVBoxLayout * lay = new QVBoxLayout(centralWidget);
     lay->setSpacing(0);
     lay->setMargin(0);
@@ -76,12 +76,12 @@ FotoWall::~FotoWall()
     QFile file("autosave.lay");
     !file.open(QIODevice::WriteOnly);
     QDataStream out(&file);
-    m_scene->save(out);
+    m_desk->save(out);
     file.close();
 
     // delete everything
     delete m_view;
-    delete m_scene;
+    delete m_desk;
 }
 
 
@@ -97,8 +97,8 @@ void FotoWall::on_loadButton_clicked()
         return;
     }
     QDataStream in(&file);
-    m_scene->restore(in);
-    titleEdit->setText(m_scene->titleText());
+    m_desk->restore(in);
+    titleEdit->setText(m_desk->titleText());
 }
 
 void FotoWall::on_saveButton_clicked()
@@ -115,7 +115,7 @@ void FotoWall::on_saveButton_clicked()
         return;
     }
     QDataStream out(&file);
-    m_scene->save(out);
+    m_desk->save(out);
 }
 
 #include <QDialog>
@@ -153,8 +153,8 @@ void FotoWall::on_pngButton_clicked()
 
     // get the rendering size
     SizeDialog * sd = new SizeDialog(this);
-    sd->wSpin->setValue(m_scene->width());
-    sd->hSpin->setValue(m_scene->height());
+    sd->wSpin->setValue(m_desk->width());
+    sd->hSpin->setValue(m_desk->height());
     if (!sd->exec())
         return;
     int destW = sd->wSpin->value();
@@ -167,7 +167,7 @@ void FotoWall::on_pngButton_clicked()
     image.fill(0);
     QPainter imagePainter(&image);
     imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_scene->render(&imagePainter, image.rect(), m_scene->sceneRect(), Qt::KeepAspectRatio);
+    m_desk->render(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
     imagePainter.end();
     globalExportingFlag = false;
 
@@ -189,6 +189,6 @@ void FotoWall::on_quitButton_clicked()
 
 void FotoWall::on_titleEdit_textChanged(const QString & text)
 {
-    m_scene->setTitleText(text);
+    m_desk->setTitleText(text);
 }
 

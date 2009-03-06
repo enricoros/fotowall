@@ -20,7 +20,7 @@
 
 #include "ui_FotoWall.h"
 #include <QGraphicsView>
-class FWScene;
+class Desk;
 
 class FotoWall : public QWidget, public Ui::FotoWall
 {
@@ -31,7 +31,7 @@ class FotoWall : public QWidget, public Ui::FotoWall
 
     private:
         QGraphicsView * m_view;
-        FWScene *       m_scene;
+        Desk *       m_desk;
 
     private Q_SLOTS:
         void on_loadButton_clicked();

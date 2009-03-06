@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "FWScene.h"
+#include "Desk.h"
 #include "PictureItem.h"
 #include "frames/PlasmaFrame.h"
 #include "frames/HeartFrame.h"
@@ -29,7 +29,7 @@ static int zLevel = 0;
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-FWScene::FWScene(QObject * parent)
+Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
 {
     // create colorpickers
@@ -66,7 +66,7 @@ FWScene::FWScene(QObject * parent)
     addItem(m_grad2ColorPicker);
 }
 
-FWScene::~FWScene()
+Desk::~Desk()
 {
     delete m_titleColorPicker;
     delete m_foreColorPicker;
@@ -77,7 +77,7 @@ FWScene::~FWScene()
 }
 
 
-void FWScene::resize(const QSize & size)
+void Desk::resize(const QSize & size)
 {
     m_size = size;
     m_rect = QRectF(0, 0, m_size.width(), m_size.height());
@@ -89,7 +89,7 @@ void FWScene::resize(const QSize & size)
     setSceneRect(m_rect);
 }
 
-void FWScene::save(QDataStream & data) const
+void Desk::save(QDataStream & data) const
 {
     // save own data
     data << m_titleColorPicker->color();
@@ -104,7 +104,7 @@ void FWScene::save(QDataStream & data) const
         foto->save(data);
 }
 
-void FWScene::restore(QDataStream & data)
+void Desk::restore(QDataStream & data)
 {
     // restore own data
     QColor color;
@@ -141,7 +141,7 @@ void FWScene::restore(QDataStream & data)
 
 
 /// Drag & Drop pictures
-void FWScene::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
+void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
     // handle event in children
     event->ignore();
@@ -161,7 +161,7 @@ void FWScene::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     }
 }
 
-void FWScene::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
+void Desk::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     // handle event in children
     event->ignore();
@@ -173,7 +173,7 @@ void FWScene::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
     event->accept();
 }
 
-void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
+void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     // handle event in children
     event->ignore();
@@ -213,7 +213,7 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
 
 
 /// Scene Background & Foreground
-void FWScene::drawBackground(QPainter * painter, const QRectF & rect)
+void Desk::drawBackground(QPainter * painter, const QRectF & rect)
 {
     // draw background
     QLinearGradient lg(m_rect.topLeft(), m_rect.bottomLeft());
@@ -224,7 +224,7 @@ void FWScene::drawBackground(QPainter * painter, const QRectF & rect)
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 }
 
-void FWScene::drawForeground(QPainter * painter, const QRectF & /*rect*/)
+void Desk::drawForeground(QPainter * painter, const QRectF & /*rect*/)
 {
     // draw header/footer
     QColor hColor = m_foreColorPicker->color();
@@ -250,12 +250,12 @@ void FWScene::drawForeground(QPainter * painter, const QRectF & /*rect*/)
 
 
 /// Title
-QString FWScene::titleText() const
+QString Desk::titleText() const
 {
     return m_titleText;
 }
 
-void FWScene::setTitleText(const QString & text)
+void Desk::setTitleText(const QString & text)
 {
     m_titleText = text;
     update(0, 0, m_size.width(), 50);
@@ -263,7 +263,7 @@ void FWScene::setTitleText(const QString & text)
 
 
 /// Slots
-void FWScene::slotDeleteFoto()
+void Desk::slotDeleteFoto()
 {
     PictureItem * foto = dynamic_cast<PictureItem *>(sender());
     if (!foto)
@@ -274,18 +274,18 @@ void FWScene::slotDeleteFoto()
     foto->deleteLater();
 }
 
-void FWScene::slotTitleColorChanged()
+void Desk::slotTitleColorChanged()
 {
     update(0, 0, m_size.width(), 50);
 }
 
-void FWScene::slotForeColorChanged()
+void Desk::slotForeColorChanged()
 {
     update(0, 0, m_size.width(), 50);
     update(0, m_size.height() - 50, m_size.width(), 50);
 }
 
-void FWScene::slotGradColorChanged()
+void Desk::slotGradColorChanged()
 {
     update();
 }

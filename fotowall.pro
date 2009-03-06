@@ -11,33 +11,23 @@ QT = core \
     svg
 
 # Input
-HEADERS += ColorPickerItem.h \
-    FotoWall.h \
-    PictureItem.h \
-    FWScene.h \
-    frames/Frame.h \
-    frames/StandardFrame.h \
-    frames/HeartFrame.h \
-    frames/PlasmaFrame.h \
-    ButtonItem.h
+HEADERS += Desk.h \
+    FotoWall.h
 SOURCES += main.cpp \
-    ColorPickerItem.cpp \
-    FotoWall.cpp \
-    PictureItem.cpp \
-    FWScene.cpp \
-    frames/Frame.cpp \
-    frames/StandardFrame.cpp \
-    frames/HeartFrame.cpp \
-    frames/PlasmaFrame.cpp \
-    ButtonItem.cpp
+    Desk.cpp \
+    FotoWall.cpp
 FORMS += FotoWall.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_en.ts \
     translations/fotowall_it.ts \
     translations/fotowall_fr.ts
 
+# Components
+include(items/items.pri)
+include(frames/frames.pri)
+
 # installation on Linux
-unix { 
+unix {
     target.path = /usr/bin
     icon.files = data/fotowall.png
     icon.path = /usr/share/pixmaps
