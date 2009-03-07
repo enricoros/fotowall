@@ -12,8 +12,7 @@ Sharing Ideas
 
 I hope to expand the program as soon as I can, since there is many room for improvement and the code is kept clean and small.
 
-- You can join the development.. the whole stuff is done with Qt 4.4 (planning
-  to move to Qt 4.5 as soon as they're released officially) using the
+- You can join the development.. the whole stuff is done with Qt 4.5 using the
   GraphicsView framework.
 - And if you have any Idea or Suggestion, just drop me a line, on the project
   homepage or by mail at  enrico.ros@gmail.com ;-)
@@ -102,7 +101,7 @@ Unreleased Version; New Stuff:
 News
 ----
 
-**2009-03-02** PhotoWall is now on GitHub. Development will continue here. Changes are coming soon!
+**2009-03-02** FotoWall is now on GitHub. Development will continue here. Changes are coming soon!
 
 **2008-09-03** Peter Upfold put together a great ScreenCast of the application!!
 

@@ -39,4 +39,7 @@ unix {
 }
 
 # deployment on Windows
-win32:RC_FILE = fotowall.rc
+win32 {
+    CONFIG += embed_manifest_exe
+    RC_FILE = fotowall.rc
+}
