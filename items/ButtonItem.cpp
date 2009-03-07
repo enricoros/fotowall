@@ -61,7 +61,7 @@ void ButtonItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
     if (m_startPos.isNull())
         return;
     event->accept();
-    emit dragging(event->scenePos());
+    emit dragging(event->scenePos(), event->modifiers());
 }
 
 void ButtonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)

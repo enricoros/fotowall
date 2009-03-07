@@ -35,7 +35,7 @@ class ButtonItem : public QObject, public QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
     Q_SIGNALS:
-        void dragging(const QPointF & point);
+        void dragging(const QPointF & point, Qt::KeyboardModifiers modifiers);
         void clicked();
         void doubleClicked();
 

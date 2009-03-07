@@ -57,12 +57,12 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     // create child items
     m_scaleButton = new ButtonItem(this, Qt::green, QIcon(":/data/action-scale.png"));
     m_scaleButton->hide();
-    connect(m_scaleButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotResize(const QPointF&)));
+    connect(m_scaleButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotResize(const QPointF&,Qt::KeyboardModifiers)));
     connect(m_scaleButton, SIGNAL(doubleClicked()), this, SLOT(slotResetAspectRatio()));
 
     m_rotateButton = new ButtonItem(this, Qt::green, QIcon(":/data/action-rotate.png"));
     m_rotateButton->hide();
-    connect(m_rotateButton, SIGNAL(dragging(const QPointF&)), this, SLOT(slotRotate(const QPointF&)));
+    connect(m_rotateButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&)));
     connect(m_rotateButton, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
 
     m_frontButton = new ButtonItem(this, Qt::blue, QIcon(":/data/action-order-front.png"));
@@ -286,7 +286,7 @@ void PictureItem::relayoutContents()
     m_frame->layoutText(m_textItem, boundingRect().toRect());
 }
 
-void PictureItem::slotResize(const QPointF & controlPoint)
+void PictureItem::slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
 {
     QPoint newPos = mapFromScene(controlPoint).toPoint();
     QPoint oldPos = m_scaleButton->pos().toPoint();
@@ -295,10 +295,12 @@ void PictureItem::slotResize(const QPointF & controlPoint)
 
     // determine the new size
     QSize newSize((m_size.width() * newPos.x()) / oldPos.x(), (m_size.height() * newPos.y()) / oldPos.y());
-    if (newSize.width() < 100)
-        newSize.setWidth(100);
-    if (newSize.height() < 100)
-        newSize.setHeight(100);
+    if (modifiers != Qt::NoModifier && m_photo)
+        newSize.setHeight((m_photo->height() * m_size.width()) / m_photo->width());
+    if (newSize.width() < 160)
+        newSize.setWidth(160);
+    if (newSize.height() < 90)
+        newSize.setHeight(90);
     if (newSize == m_size)
         return;
 

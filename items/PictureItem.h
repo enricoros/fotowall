@@ -81,8 +81,8 @@ class PictureItem : public QObject, public QGraphicsItem
         bool        m_scaling;
 
     private Q_SLOTS:
-        void slotResize(const QPointF & controlPoint);
         void slotRotate(const QPointF & controlPoint);
+        void slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotResetAspectRatio();
         void slotResetRotation();
         void slotResizeEnded();
