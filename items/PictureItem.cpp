@@ -190,20 +190,6 @@ void PictureItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
     m_deleteButton->hide();
 }
 
-void PictureItem::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
-{
-    // accept PNGs or JPEGs
-    if (event->mimeData() && event->mimeData()->hasUrls()) {
-        foreach (QUrl url, event->mimeData()->urls()) {
-            QString sUrl = url.toString();
-            if (sUrl.contains(".png", Qt::CaseInsensitive) || sUrl.contains(".jpg", Qt::CaseInsensitive)) {
-                event->accept();
-                return;
-            }
-        }
-    }
-}
-
 void PictureItem::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     event->accept();
@@ -211,14 +197,11 @@ void PictureItem::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 
 void PictureItem::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
-    // load the first valid picture PNG or JPG file
+    // load the first valid picture
     foreach (QUrl url, event->mimeData()->urls()) {
-        QString fileName = url.toLocalFile();
-        if (QFile::exists(fileName) && (fileName.contains(".png", Qt::CaseInsensitive) || fileName.contains(".jpg", Qt::CaseInsensitive))) {
-            if (loadPhoto(fileName, true, false)) {
-                event->accept();
-                return;
-            }
+        if (loadPhoto(url.toLocalFile(), true, false)) {
+            event->accept();
+            return;
         }
     }
 }

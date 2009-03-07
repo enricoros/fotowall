@@ -74,10 +74,11 @@ FotoWall::~FotoWall()
 {
     // dump current layout
     QFile file("autosave.lay");
-    !file.open(QIODevice::WriteOnly);
-    QDataStream out(&file);
-    m_desk->save(out);
-    file.close();
+    if (file.open(QIODevice::WriteOnly)) {
+        QDataStream out(&file);
+        m_desk->save(out);
+        file.close();
+    }
 
     // delete everything
     delete m_view;

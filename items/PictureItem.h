@@ -52,7 +52,6 @@ class PictureItem : public QObject, public QGraphicsItem
         QRectF boundingRect() const;
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
         void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
-        void dragEnterEvent(QGraphicsSceneDragDropEvent * event);
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);

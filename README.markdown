@@ -90,6 +90,7 @@ ChangeLog
 Unreleased Version; New Stuff:
 
 * Reflections are coming...
+* More image types (bmp, tiff, gif, ...)
 * More Frame types (default, heart, Plasma backgrounds) [David Eccher]
 * DoubleClick on a picture -> set it as background, and vice-versa [Alberto Scarpa]
 * More pretty (plasma icons) and usable (behavior) frame buttons

@@ -19,6 +19,7 @@
 #include "ColorPickerItem.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
+#include <QImageReader>
 #include <QMimeData>
 #include <QUrl>
 #include <QList>
@@ -131,38 +132,44 @@ void Desk::restore(QDataStream & data)
     int photos = 0;
     data >> photos;
     for (int i = 0; i < photos; i++) {
-        PictureItem * foto = new PictureItem();
-        //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
-        connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        connect(foto, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
-        connect(foto, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
-        addItem(foto);
-        if (!foto->restore(data)) {
-            delete foto;
+        PictureItem * p = new PictureItem();
+        //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
+        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
+        addItem(p);
+        if (!p->restore(data)) {
+            delete p;
             continue;
         }
-        m_pictures.append(foto);
+        m_pictures.append(p);
     }
 
     update();
 }
 
-
 /// Drag & Drop pictures
 void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
-    // handle event in children
-    event->ignore();
+    // dispatch to children but accept it only for pictures
     QGraphicsScene::dragEnterEvent(event);
-    if (event->isAccepted())
+    event->ignore();
+
+    // skip bad mimes
+    if (!event->mimeData() || !event->mimeData()->hasUrls())
         return;
 
-    // accept PNGs or JPEGs
-    if (event->mimeData() && event->mimeData()->hasUrls()) {
-        foreach (QUrl url, event->mimeData()->urls()) {
-            QString sUrl = url.toString();
-            if (sUrl.contains(".png", Qt::CaseInsensitive) || sUrl.contains(".jpg", Qt::CaseInsensitive)) {
+    // get supported images extensions
+    QStringList extensions;
+    foreach (const QByteArray & format, QImageReader::supportedImageFormats())
+        extensions.append( "." + format );
+
+    // match each picture with urls
+    foreach (const QUrl & url, event->mimeData()->urls()) {
+        QString localFile = url.toLocalFile();
+        foreach (const QString & extension, extensions) {
+            if (localFile.endsWith(extension, Qt::CaseInsensitive)) {
                 event->accept();
                 return;
             }
@@ -172,52 +179,49 @@ void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 
 void Desk::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
-    // handle event in children
+    // dispatch to children
     event->ignore();
     QGraphicsScene::dragMoveEvent(event);
-    if (event->isAccepted())
-        return;
 
-    // or accept an initiated drag
-    event->accept();
+    // or accept event for the Desk
+    if (!event->isAccepted()) {
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
+    }
 }
 
 void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
-    // handle event in children
+    // dispatch to children
     event->ignore();
     QGraphicsScene::dropEvent(event);
     if (event->isAccepted())
         return;
 
+    // or handle as a Desk drop event
     event->accept();
-
-    QStringList localFiles;
-    foreach (QUrl url, event->mimeData()->urls()) {
-        QString fileName = url.toLocalFile();
-        if (QFile::exists(fileName))
-            localFiles << fileName;
-    }
-
-    int count = localFiles.size();
     double delta = 0;
-    for (int i = 0; i < count; i++) {
-        PictureItem * foto = new PictureItem();
-        //foto->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        foto->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
-        //foto->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
-        connect(foto, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        connect(foto, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
-        connect(foto, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
-        addItem(foto);
-        foto->setPos(event->scenePos() + QPointF(delta, delta) );
-        foto->setZValue(++zLevel);
-        if (!foto->loadPhoto(localFiles[i], true, true)) {
-            delete foto;
+    foreach (const QUrl & url, event->mimeData()->urls()) {
+        QString localFile = url.toLocalFile();
+        if (!QFile::exists(localFile))
+            continue;
+
+        PictureItem * p = new PictureItem();
+        //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
+        //p->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
+        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
+        addItem(p);
+        p->setPos(event->scenePos() + QPointF(delta, delta) );
+        p->setZValue(++zLevel);
+        if (!p->loadPhoto(localFile, true, true)) {
+            delete p;
             continue;
         }
-        foto->show();
-        m_pictures.append(foto);
+        p->show();
+        m_pictures.append(p);
         delta += 30;
     }
 }
