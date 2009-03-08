@@ -64,6 +64,7 @@ class PictureItem : public QObject, public QGraphicsItem
         void deleteMe();
         void raiseMe();
         void backgroundMe();
+        void gfxChange();
 
     private:
         void relayoutContents();
@@ -77,6 +78,7 @@ class PictureItem : public QObject, public QGraphicsItem
         ButtonItem * m_scaleButton;
         ButtonItem * m_rotateButton;
         QGraphicsTextItem * m_textItem;
+        QTimer *    m_gfxChangeSignalTimer;
         QTimer *    m_scaleRefreshTimer;
         bool        m_scaling;
 

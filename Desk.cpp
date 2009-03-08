@@ -219,7 +219,7 @@ void Desk::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
         event->accept();
     }
 }
-
+#include "MirrorItem.h"
 void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     // dispatch to children
@@ -254,6 +254,7 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         p->show();
         m_pictures.append(p);
         delta += 30;
+        (new MirrorItem(p))->show();
     }
 }
 

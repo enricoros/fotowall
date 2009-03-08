@@ -12,9 +12,9 @@ ChangeLog
 
 Unreleased Version 0.3; New Stuff:
 
-* Reflections are coming...
 * More Frame types (default, heart, Plasma backgrounds) [David Eccher]
 * More Image Formats (bmp, tiff, gif, ...) [Superstoned]
+* Reflections, and really cool ones
 * Mirror the photo by clicking on an axis [Alberto Scarpa]
 * DoubleClick on a picture -> set it as background, and vice-versa [Alberto Scarpa]
 * More pretty (plasma icons) and usable (behavior) frame buttons

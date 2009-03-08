@@ -42,15 +42,27 @@ class MyTextItem : public QGraphicsTextItem {
         }
 };
 
+#define GFX_CHANGED \
+    if (m_gfxChangeSignalTimer) \
+        m_gfxChangeSignalTimer->start();
+
 PictureItem::PictureItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_frame(0)
     , m_photo(0)
     , m_opaquePhoto(false)
     , m_size(200, 150)
+    , m_gfxChangeSignalTimer(0)
     , m_scaleRefreshTimer(0)
     , m_scaling(false)
 {
+    // the buffered graphics changes timer
+    m_gfxChangeSignalTimer = new QTimer(this);
+    m_gfxChangeSignalTimer->setInterval(0);
+    m_gfxChangeSignalTimer->setSingleShot(true);
+    connect(m_gfxChangeSignalTimer, SIGNAL(timeout()), this, SIGNAL(gfxChange()));
+
+    // customize item's behavior
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable);
     setAcceptHoverEvents(true);
     setAcceptDrops(true);
@@ -120,6 +132,7 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     if (setName)
         m_textItem->setPlainText(QFileInfo(fileName).fileName().section('.', 0, 0) + QString("..."));
     update();
+    GFX_CHANGED
     return true;
 }
 
@@ -137,6 +150,7 @@ void PictureItem::setFrame(Frame * frame)
     slotResetAspectRatio();
     relayoutContents();
     update();
+    GFX_CHANGED
 }
 
 void PictureItem::save(QDataStream & data) const
@@ -281,6 +295,17 @@ void PictureItem::keyPressEvent(QKeyEvent * event)
 
 QVariant PictureItem::itemChange(GraphicsItemChange change, const QVariant & value)
 {
+    // notify about graphics changes
+    if (change == ItemTransformHasChanged ||
+        change == ItemPositionHasChanged ||
+        change == ItemVisibleHasChanged ||
+        change == ItemEnabledHasChanged ||
+        change == ItemSelectedHasChanged ||
+        change == ItemParentHasChanged ||
+        change == ItemOpacityHasChanged ) {
+        GFX_CHANGED
+    }
+
     // keep the center inside the scene rect..
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
@@ -330,6 +355,7 @@ void PictureItem::slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers
     m_size = newSize;
     relayoutContents();
     update();
+    GFX_CHANGED
 
     // start refresh timer
     if (!m_scaleRefreshTimer) {
@@ -348,6 +374,7 @@ void PictureItem::slotFlipHorizontally()
     delete oldPhoto;
     m_cachedPhoto = QPixmap();
     update();
+    GFX_CHANGED
 }
 
 void PictureItem::slotFlipVertically()
@@ -358,6 +385,7 @@ void PictureItem::slotFlipVertically()
     delete oldPhoto;
     m_cachedPhoto = QPixmap();
     update();
+    GFX_CHANGED
 }
 
 void PictureItem::slotRotate(const QPointF & controlPoint)
@@ -387,6 +415,7 @@ void PictureItem::slotResetAspectRatio()
     m_size = newSize;
     relayoutContents();
     update();
+    GFX_CHANGED
 }
 
 void PictureItem::slotResetRotation()
@@ -399,4 +428,5 @@ void PictureItem::slotResizeEnded()
 {
     m_scaling = false;
     update();
+    GFX_CHANGED
 }
