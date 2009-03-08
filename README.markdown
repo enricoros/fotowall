@@ -7,6 +7,23 @@ For more news: http://code.google.com/p/fotowall
 *Focus is on simplicity, express your creativity! ;-)*
 
 
+ChangeLog
+---------
+
+Unreleased Version 0.3; New Stuff:
+
+* Reflections are coming...
+* More Frame types (default, heart, Plasma backgrounds) [David Eccher]
+* More Image Formats (bmp, tiff, gif, ...) [Superstoned]
+* Mirror the photo by clicking on an axis [Alberto Scarpa]
+* DoubleClick on a picture -> set it as background, and vice-versa [Alberto Scarpa]
+* More pretty (plasma icons) and usable (behavior) frame buttons
+* New buttons: "Raise to Front" [Superstoned], "Delete"
+* Fixed-ratio resize: hold CTRL while resizing
+* Drag&Drop: better behavior and can change a picture inside an existing frame too
+* Pictures stay on-screen
+
+
 Sharing Ideas
 -------------
 
@@ -19,7 +36,7 @@ I hope to expand the program as soon as I can, since there is many room for impr
 
 ### Current Wishlist
 
-This is the current list of requested features. If you have more of them, or any other idea, just press the "Issues" button and add your entry!! ;-)
+This is the current list of requested features.
 
 Special requests:
 
@@ -70,32 +87,15 @@ you will find on http://www.trolltech.com:
 Just open a command prompt (win), shell (linux, mac) and go the sources
 location and issue the followings commands:
 
-   qmake
-   make   (or nmake, if you're on windows)
+- qmake  (or qmake-qt4 if your system is weird)
+- make   (or nmake, if you're on windows)
 
-The executable will be build and you can start Enjoying FotoWall! ;-)
-
+The executable will be built and you can start Enjoying FotoWall! ;-)
 
 ### Notes for the Windows Download
 
-You must have the Microsoft Visual Studio 2008 Redistributable package (1.7MB) installed in your system, otherwise you will get an error. Click here for downloading the file
-
-
-ChangeLog
----------
-
-Unreleased Version; New Stuff:
-
-* Reflections are coming...
-* More Frame types (default, heart, Plasma backgrounds) [David Eccher]
-* More Image Formats (bmp, tiff, gif, ...) [Superstoned]
-* Mirror the photo by clicking on an axis [Alberto Scarpa]
-* DoubleClick on a picture -> set it as background, and vice-versa [Alberto Scarpa]
-* More pretty (plasma icons) and usable (behavior) frame buttons
-* New buttons: "Raise to Front" [Superstoned], "Delete"
-* Fixed-ratio resize: hold CTRL while resizing
-* Drag&Drop: better behavior and can change a picture inside an existing frame too
-* Pictures stay on-screen
+You must have the Microsoft Visual Studio 2008 Redistributable package (1.7MB) installed in your system, otherwise you will get an error.
+Click here for downloading the file: http://www.microsoft.com/downloads/details.aspx?familyid=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF
 
 
 News
@@ -118,4 +118,3 @@ I really appreciate that, even if I don't have time right now to check and apply
 Changes in this release are: relicensing and a new program icon
 
 **2008-04-06** Imported the project into Google Code
-
