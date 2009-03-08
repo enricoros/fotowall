@@ -132,6 +132,7 @@ void Desk::restore(QDataStream & data)
     int photos = 0;
     data >> photos;
     for (int i = 0; i < photos; i++) {
+        // HACK: unify the loading code (1)
         PictureItem * p = new PictureItem();
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
@@ -148,6 +149,35 @@ void Desk::restore(QDataStream & data)
 
     update();
 }
+
+void Desk::loadPictures(const QStringList & fileNames)
+{
+    double delta = 0;
+    foreach (const QString & localFile, fileNames) {
+        if (!QFile::exists(localFile))
+            continue;
+
+        // HACK: unify the loading code (2)
+        PictureItem * p = new PictureItem();
+        //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
+        //p->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
+        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
+        addItem(p);
+        p->setPos(sceneRect().center().toPoint() + QPointF(delta, delta) );
+        p->setZValue(++zLevel);
+        if (!p->loadPhoto(localFile, true, true)) {
+            delete p;
+            continue;
+        }
+        p->show();
+        m_pictures.append(p);
+        delta += 30;
+    }
+}
+
 
 /// Drag & Drop pictures
 void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
@@ -206,6 +236,7 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         if (!QFile::exists(localFile))
             continue;
 
+        // HACK: unify the loading code (3)
         PictureItem * p = new PictureItem();
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));

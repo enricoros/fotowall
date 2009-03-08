@@ -15,13 +15,15 @@
 #include "FotoWall.h"
 #include "Desk.h"
 #include <QCoreApplication>
-#include <QVBoxLayout>
-#include <QDebug>
+#include <QDir>
 #include <QDragEnterEvent>
 #include <QFileDialog>
-#include <QDir>
 #include <QFile>
+#include <QImageReader>
+#include <QInputDialog>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 // static global variable
 bool globalExportingFlag = false;
@@ -86,6 +88,28 @@ FotoWall::~FotoWall()
 }
 
 
+void FotoWall::on_addPictures_clicked()
+{
+    // build the extensions list
+    QString extensions;
+    foreach (const QByteArray & format, QImageReader::supportedImageFormats())
+        extensions += "*." + format + " ";
+
+    // show the files dialog
+    QStringList fileNames = QFileDialog::getOpenFileNames(centralWidget, tr("Select one or more pictures to add"), QString(), tr("Images (%1)").arg(extensions));
+    if (!fileNames.isEmpty())
+        m_desk->loadPictures(fileNames);
+}
+
+void FotoWall::on_setTitle_clicked()
+{
+    QString title = m_desk->titleText();
+    bool ok = false;
+    title = QInputDialog::getText(cmdFrame, tr("Title"), tr("Insert the title"), QLineEdit::Normal, title, &ok);
+    if (ok)
+        m_desk->setTitleText(title);
+}
+
 void FotoWall::on_loadButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select Layout file"), QDir::current().path(), "Layouts (*.lay)");
@@ -99,7 +123,6 @@ void FotoWall::on_loadButton_clicked()
     }
     QDataStream in(&file);
     m_desk->restore(in);
-    titleEdit->setText(m_desk->titleText());
 }
 
 void FotoWall::on_saveButton_clicked()
@@ -187,9 +210,3 @@ void FotoWall::on_quitButton_clicked()
 {
     QCoreApplication::quit();
 }
-
-void FotoWall::on_titleEdit_textChanged(const QString & text)
-{
-    m_desk->setTitleText(text);
-}
-

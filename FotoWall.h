@@ -31,14 +31,15 @@ class FotoWall : public QWidget, public Ui::FotoWall
 
     private:
         QGraphicsView * m_view;
-        Desk *       m_desk;
+        Desk *          m_desk;
 
     private Q_SLOTS:
+        void on_addPictures_clicked();
+        void on_setTitle_clicked();
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_pngButton_clicked();
         void on_quitButton_clicked();
-        void on_titleEdit_textChanged( const QString & text );
 };
 
 #endif

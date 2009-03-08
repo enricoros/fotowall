@@ -57,24 +57,20 @@ PictureItem::PictureItem(QGraphicsItem * parent)
 
     // create child items
     m_scaleButton = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
-    m_scaleButton->hide();
     connect(m_scaleButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotResize(const QPointF&,Qt::KeyboardModifiers)));
     connect(m_scaleButton, SIGNAL(doubleClicked()), this, SLOT(slotResetAspectRatio()));
     m_controls << m_scaleButton;
 
     m_rotateButton = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
-    m_rotateButton->hide();
     connect(m_rotateButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&)));
     connect(m_rotateButton, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
     m_controls << m_rotateButton;
 
     ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
-    bFront->hide();
     connect(bFront, SIGNAL(clicked()), this, SIGNAL(raiseMe()));
     m_controls << bFront;
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
-    bDelete->hide();
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
     m_controls << bDelete;
 
@@ -95,6 +91,8 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     m_textItem->setFont(f);
     m_textItem->setPlainText(tr("..."));
 
+    // hide and relayout buttons
+    hoverLeaveEvent(0 /*HACK*/);
     relayoutContents();
 }
 
