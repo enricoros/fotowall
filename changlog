@@ -1,0 +1,35 @@
+Fotowall 0.21 to 0.22
+In this files, there is a summary of all the change made by Tanguy Arnaud
+
+-> main.cpp -> replaced show() by showMaximized()
+
+-> add slot on_addPictures_clicked which call the new function FWScene::loadPicures. 
+	Now, you can also add Pictures whith the "Add pictures" button
+
+-> add the checkbox "Picture border" to show/hide the rect around the Picture.
+	It call the slot on_pictureBorderCheckbox_clicked wich set the global var drawPictureBorder   to true or false
+	I add a test in the FWFoto::paint.
+	FWButton::paint have also been modified : when drawPictureBorder is true, the button is at the corner of the picture's rect, when false, it's just   	 under the picture's corner.
+
+-> FWScene::save and FWScene::restore heve also been modified to save if the pictures' border must or not be shown
+
+-> add the checkbox "Best qualtity" to show the image like in the PNG render. 
+	It call the slot on_qualiteCheckbox_clicked which change the global globalExportingFlag to true or false
+
+->  I change the FWScene::drawForeground, line 197 to 200, because I doesn't want to have the color rect.
+
+-> I've implemented the proportionnal resize : Ctrl + drag and drop on the resize button.
+	I've modify the FWFoto::keyPressEvent function by adding the Ctrl key pressed test which set the bool m_CtrlKey to true.
+	I've added FWFoto::keyReleaseEvent function which set the bool m_CtrlKey to false
+	FWFoto::slotResize have also been modified by adding a test : if m_CtrlKey is true, then this slot call FWFoto::slotResizeProportional.
+
+
+Fotowall 0.22 to 0.23
+-> Image effects : 	- invert colors
+-> Image transformation : rotate, vertical flip, horizontal flip
+-> Adding possibility to save one picture by pressing S
+-> Addind menu bar
+-> Button with icons instead of ellipse
+-> Now, you can set background pictures to one of the FWFoto
+
+					

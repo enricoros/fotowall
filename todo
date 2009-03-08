@@ -1,9 +1,9 @@
 -> add an overlay html help when going on the lower-left corner
 
 Suggested by Contrast on kde-look's page:
--> maintain aspect ratio when resizing by using shift or control when resizing
--> add an "add image" dialog (have a quick way of adding photos)
--> rotate the pictures on their z-axis
+-> maintain aspect ratio when resizing by using shift or control when resizing  *** DONE BY Tanguy Arnaud *****
+-> add an "add image" dialog (have a quick way of adding photos)  *** DONE BY Tanguy Arnaud ****
+-> rotate the pictures on their z-axis  *** DONE BY Tanguy Arnaud ***
 -> add the "color changing stuff" to the picture themselves
 -> set a background picture (push a button and the picture goes into background in place of the gradient!)
   -> AL: doppioclick su foto -> background, 2-click su background->foto
@@ -20,12 +20,12 @@ Suggested by TeeAhr1 on kde-look's page:
 -> custom fonts
 
 Suggested by Al on his bed:
--> click left/right/top/bottom to mirror the photo on that axis (flippamento!)
+-> click left/right/top/bottom to mirror the photo on that axis (flippamento!)   *** DONE, but just with the menu and shortcuts ***
 -> checkbox con il "beginner mode" (solo per aiutare Al!)
 -> use some matthias kretz's magic to make reflections
 
 Suggested by David:
--> Altri tipi di bordo (francobollo, cuore, stella, ..)
+-> Altri tipi di bordo (francobollo, cuore, stella, ..) *** DONE BY Tanguy Arnaud"
 
 Suggested by Timo via mail:
 -> set the headers to GPLv2

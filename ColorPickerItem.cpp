@@ -50,8 +50,7 @@ ColorPickerItem::ColorPickerItem(int width, int height, QGraphicsItem * parent)
     setAcceptsHoverEvents(true);
 }
 
-void ColorPickerItem::setColor(const QColor & color)
-{
+void ColorPickerItem::setColor(const QColor & color) {
     m_hue = color.hueF();
     m_sat = color.saturationF();
     m_val = color.valueF();
@@ -62,27 +61,25 @@ void ColorPickerItem::setColor(const QColor & color)
     update();
 }
 
-QColor ColorPickerItem::color() const
-{
+QColor ColorPickerItem::color() const {
     return QColor::fromHsvF(m_hue, m_sat, m_val);
 }
 
-void ColorPickerItem::setAnimated(bool animated)
-{
+void ColorPickerItem::setAnimated(bool animated) {
     if (m_isAnimated == animated)
         return;
 
     // start animations
     m_isAnimated = animated;
     if (animated) {
-        if (!m_timeLine) {
-            m_timeLine = new QTimeLine(300, this);
-            m_timeLine->setStartFrame(0);
-            m_timeLine->setEndFrame(100);
-            m_timeLine->setUpdateInterval(20);
-            connect(m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(slotAnimateScale(int)));
-        }
-        updateTransform();
+	    if (!m_timeLine) {
+		    m_timeLine = new QTimeLine(300, this);
+		    m_timeLine->setStartFrame(0);
+		    m_timeLine->setEndFrame(100);
+		    m_timeLine->setUpdateInterval(20);
+		    connect(m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(slotAnimateScale(int)));
+	    }
+	    updateTransform();
     }
 
     // destroy animations
@@ -94,31 +91,26 @@ void ColorPickerItem::setAnimated(bool animated)
     }
 }
 
-bool ColorPickerItem::animated() const
-{
+bool ColorPickerItem::animated() const {
     return m_isAnimated;
 }
 
-void ColorPickerItem::setAnchor(Anchor anchor)
-{
+void ColorPickerItem::setAnchor(Anchor anchor) {
     if (m_anchor != anchor) {
         m_anchor = anchor;
         updateTransform();
     }
 }
 
-ColorPickerItem::Anchor ColorPickerItem::anchor() const
-{
+ColorPickerItem::Anchor ColorPickerItem::anchor() const {
     return m_anchor;
 }
 
-QRectF ColorPickerItem::boundingRect() const
-{
+QRectF ColorPickerItem::boundingRect() const {
     return QRect(0, 0, m_size.width(), m_size.height());
 }
 
-void ColorPickerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
-{
+void ColorPickerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
     if (m_isAnimated) {
 #if 1
         // HACK - hide when small
@@ -209,21 +201,17 @@ void ColorPickerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     painter->setRenderHints(QPainter::Antialiasing, false);
 }
 
-void ColorPickerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
-{
+void ColorPickerItem::mousePressEvent(QGraphicsSceneMouseEvent * event) {
     if (event->button() == Qt::LeftButton)
         pickColor(event->pos().toPoint());
 }
 
-void ColorPickerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-{
+void ColorPickerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event) {
     if (event->buttons() & Qt::LeftButton)
         pickColor(event->pos().toPoint());
 }
 
-
-void ColorPickerItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
-{
+void ColorPickerItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/) {
     if (m_timeLine) {
         m_timeLine->setDirection(QTimeLine::Forward);
         if (m_timeLine->state() != QTimeLine::Running)
@@ -231,8 +219,7 @@ void ColorPickerItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
     }
 }
 
-void ColorPickerItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
-{
+void ColorPickerItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/) {
     if (m_timeLine) {
         m_timeLine->setDirection(QTimeLine::Backward);
         if (m_timeLine->state() != QTimeLine::Running)
@@ -240,8 +227,7 @@ void ColorPickerItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
     }
 }
 
-void ColorPickerItem::pickColor(const QPoint & pos)
-{
+void ColorPickerItem::pickColor(const QPoint & pos) {
     // check for change on the hue-sat wheel
     if (m_hueSatRect.contains(pos)) {
         qreal newHue = (pos.x() - m_hueSatRect.x()) / (qreal)(m_hueSatRect.width() /*-1*/);
@@ -270,8 +256,7 @@ void ColorPickerItem::pickColor(const QPoint & pos)
     }
 }
 
-void ColorPickerItem::regenHueSatPixmap()
-{
+void ColorPickerItem::regenHueSatPixmap() {
     // generate the h-s spectrum
     int width = m_hueSatRect.width();
     int height = m_hueSatRect.height();
@@ -286,8 +271,7 @@ void ColorPickerItem::regenHueSatPixmap()
     m_hueSatPixmap = QPixmap::fromImage(hueSatSpectrum);
 }
 
-void ColorPickerItem::regenValPixmap()
-{
+void ColorPickerItem::regenValPixmap() {
     // generate the value gradient
     int width = m_valRect.width();
     int height = m_valRect.height();
@@ -302,8 +286,7 @@ void ColorPickerItem::regenValPixmap()
     m_valPixmap = QPixmap::fromImage(valSpectrum);
 }
 
-void ColorPickerItem::updateTransform()
-{
+void ColorPickerItem::updateTransform() {
     // this should not happen.. but.. just in case!
     if (!m_isAnimated) {
         setTransform(QTransform());
@@ -340,8 +323,7 @@ void ColorPickerItem::updateTransform()
     setTransform(t);
 }
 
-void ColorPickerItem::slotAnimateScale(int step)
-{
+void ColorPickerItem::slotAnimateScale(int step) {
     m_scale = (qreal)step / 100.0;
     updateTransform();
 }

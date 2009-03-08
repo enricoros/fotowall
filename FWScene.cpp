@@ -4,8 +4,9 @@
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Copyright (C) 2007-2008 by Enrico Ros <enrico.ros@gmail.com>          *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
+ *  Modified by Tanguy Arnaud <phparnsk8@gmail.com>, see CHANGLOG to have  *
+ *  summary of the modification.										   *	
+ *  This program is free software; you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
@@ -21,49 +22,51 @@
 #include <QUrl>
 #include <QList>
 #include <QFile>
+#include <QMessageBox>
+#include <QInputDialog>
 
 static int zLevel = 0;
 
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-FWScene::FWScene(QObject * parent)
-    : QGraphicsScene(parent)
+FWScene::FWScene(QObject * parent) : QGraphicsScene(parent)
 {
-    // create colorpickers
-    m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
-    m_titleColorPicker->setColor(Qt::gray);
-    m_titleColorPicker->setAnimated(true);
-    m_titleColorPicker->setAnchor(ColorPickerItem::AnchorTop);
-    m_titleColorPicker->setZValue(10000);
-    connect(m_titleColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotTitleColorChanged()));
-    addItem(m_titleColorPicker);
+	m_imgSelectedNumber = -1; //no selected image
 
-    m_foreColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
-    m_foreColorPicker->setColor(QColor(128, 128, 128));
-    m_foreColorPicker->setAnimated(true);
-    m_foreColorPicker->setAnchor(ColorPickerItem::AnchorTopLeft);
-    m_foreColorPicker->setZValue(10000);
-    connect(m_foreColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotForeColorChanged()));
-    addItem(m_foreColorPicker);
+	// create colorpickers
+	m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
+	m_titleColorPicker->setColor(Qt::red);
+	m_titleColorPicker->setAnimated(true);
+	m_titleColorPicker->setAnchor(ColorPickerItem::AnchorTop);
+	m_titleColorPicker->setZValue(10000);
+	connect(m_titleColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotTitleColorChanged()));
+	addItem(m_titleColorPicker);
 
-    m_grad1ColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
-    m_grad1ColorPicker->setColor(QColor(192, 192, 192));
-    m_grad1ColorPicker->setAnimated(true);
-    m_grad1ColorPicker->setAnchor(ColorPickerItem::AnchorTopRight);
-    m_grad1ColorPicker->setZValue(10000);
-    connect(m_grad1ColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotGradColorChanged()));
-    addItem(m_grad1ColorPicker);
+	m_foreColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
+	m_foreColorPicker->setColor(QColor(128,128,128));
+	m_foreColorPicker->setAnimated(true);
+	m_foreColorPicker->setAnchor(ColorPickerItem::AnchorTopLeft);
+	m_foreColorPicker->setZValue(10000);
+	connect(m_foreColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotForeColorChanged()));
+	addItem(m_foreColorPicker);
 
-    m_grad2ColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
-    m_grad2ColorPicker->setColor(QColor(80, 80, 80));
-    m_grad2ColorPicker->setAnimated(true);
-    m_grad2ColorPicker->setAnchor(ColorPickerItem::AnchorBottomRight);
-    m_grad2ColorPicker->setZValue(10000);
-    connect(m_grad2ColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotGradColorChanged()));
-    addItem(m_grad2ColorPicker);
+	m_grad1ColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
+	m_grad1ColorPicker->setColor(QColor(192, 192, 192));
+	m_grad1ColorPicker->setAnimated(true);
+	m_grad1ColorPicker->setAnchor(ColorPickerItem::AnchorTopRight);
+	m_grad1ColorPicker->setZValue(10000);
+	connect(m_grad1ColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotGradColorChanged()));
+	addItem(m_grad1ColorPicker);
+
+	m_grad2ColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
+	m_grad2ColorPicker->setColor(QColor(80, 80, 80));
+	m_grad2ColorPicker->setAnimated(true);
+	m_grad2ColorPicker->setAnchor(ColorPickerItem::AnchorBottomRight);
+	m_grad2ColorPicker->setZValue(10000);
+	connect(m_grad2ColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotGradColorChanged()));
+	addItem(m_grad2ColorPicker);
 }
-
 FWScene::~FWScene()
 {
     delete m_titleColorPicker;
@@ -75,8 +78,7 @@ FWScene::~FWScene()
 }
 
 
-void FWScene::resize(const QSize & size)
-{
+void FWScene::resize(const QSize & size) {
     m_size = size;
     m_rect = QRectF(0, 0, m_size.width(), m_size.height());
     m_titleColorPicker->setPos((size.width() - COLORPICKER_W) / 2.0, 10);
@@ -84,9 +86,7 @@ void FWScene::resize(const QSize & size)
     m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
     setSceneRect(m_rect);
 }
-
-void FWScene::save(QDataStream & data) const
-{
+void FWScene::save(QDataStream & data) const {
     // save own data
     data << m_titleColorPicker->color();
     data << m_foreColorPicker->color();
@@ -99,9 +99,7 @@ void FWScene::save(QDataStream & data) const
     foreach (FWFoto * foto, m_photos)
         foto->save(data);
 }
-
-void FWScene::restore(QDataStream & data)
-{
+void FWScene::restore(QDataStream & data) {
     // restore own data
     QColor color;
     data >> color;
@@ -129,11 +127,11 @@ void FWScene::restore(QDataStream & data)
 
     update();
 }
-
+void FWScene::setCurentImageAsBackground() {
+}
 
 /// Drag & Drop pictures
-void FWScene::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
-{
+void FWScene::dragEnterEvent(QGraphicsSceneDragDropEvent * event) {
     if (event->mimeData() && event->mimeData()->hasUrls()) {
         foreach (QUrl url, event->mimeData()->urls()) {
             QString sUrl = url.toString();
@@ -145,14 +143,10 @@ void FWScene::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     }
     event->ignore();
 }
-
-void FWScene::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
-{
-    event->accept();
+void FWScene::dragMoveEvent(QGraphicsSceneDragDropEvent * event) {
+	event->accept();
 }
-
-void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
-{
+void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event) {
     event->accept();
 
     QStringList localFiles;
@@ -167,31 +161,30 @@ void FWScene::dropEvent(QGraphicsSceneDragDropEvent * event)
         double delta = 30.0 * ((double)i - ((double)count - 1.0) / 2.0);
         FWFoto * foto = new FWFoto();
         connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
+		connect(foto, SIGNAL(imageSelected(int)), this, SLOT(slotImageSelected(int)));
         addItem(foto);
         foto->setPos(event->scenePos() + QPointF(delta, delta) );
         foto->setZValue(++zLevel);
         foto->loadPhoto(localFiles[i], true, true);
+		foto->setImgNum(m_photos.size());
         foto->show();
         m_photos.append(foto);
     }
 }
 
-
 /// Scene Background & Foreground
-void FWScene::drawBackground(QPainter * painter, const QRectF & rect)
-{
-    // draw background
-    QLinearGradient lg(m_rect.topLeft(), m_rect.bottomLeft());
-    lg.setColorAt(0.0, m_grad1ColorPicker->color());
-    lg.setColorAt(1.0, m_grad2ColorPicker->color());
-    painter->setCompositionMode(QPainter::CompositionMode_Source);
-    painter->fillRect(rect, lg);
-    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+void FWScene::drawBackground(QPainter * painter, const QRectF & rect) {
+		// draw background
+		QLinearGradient lg(m_rect.topLeft(), m_rect.bottomLeft());
+		lg.setColorAt(0.0, m_grad1ColorPicker->color());
+		lg.setColorAt(1.0, m_grad2ColorPicker->color());
+		painter->setCompositionMode(QPainter::CompositionMode_Source);
+		painter->fillRect(rect, lg);
+		painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 }
-
-void FWScene::drawForeground(QPainter * painter, const QRectF & /*rect*/)
-{
+void FWScene::drawForeground(QPainter * painter, const QRectF & /*rect*/) {
     // draw header/footer
+	// Show the title and footer color band	
     QColor hColor = m_foreColorPicker->color();
     hColor.setAlpha(128);
     painter->fillRect(0, 0, m_size.width(), 50, hColor);
@@ -215,21 +208,37 @@ void FWScene::drawForeground(QPainter * painter, const QRectF & /*rect*/)
 
 
 /// Title
-QString FWScene::titleText() const
-{
+QString FWScene::titleText() const {
     return m_titleText;
 }
-
-void FWScene::setTitleText(const QString & text)
-{
+void FWScene::setTitleText(const QString & text) {
     m_titleText = text;
     update(0, 0, m_size.width(), 50);
 }
 
+void FWScene::loadPictures(QStringList *fileNames) {
+	//Add pictures to the view
+	QPoint lastPoint(width()/2,height()/2);
+	for (int i=0;i<fileNames->size();i++) {
+		FWFoto *foto = new FWFoto;
+		foto->loadPhoto(fileNames->at(i));
+		addItem(foto);
+		connect(foto, SIGNAL(deletePressed()), this, SLOT(slotDeleteFoto()));
+		connect(foto, SIGNAL(imageSelected(int)), this, SLOT(slotImageSelected(int)));
+		lastPoint.setX(lastPoint.x()+20); lastPoint.setY(lastPoint.y()+20);
+		foto->setPos(lastPoint);
+		foto->setZValue(0);
+		foto->setImgNum(m_photos.size());
+		foto->show();
+		m_photos.append(foto);
+
+
+	}
+
+	}
 
 /// Slots
-void FWScene::slotDeleteFoto()
-{
+void FWScene::slotDeleteFoto() {
     FWFoto * foto = dynamic_cast<FWFoto *>(sender());
     if (!foto)
         return;
@@ -238,19 +247,70 @@ void FWScene::slotDeleteFoto()
     removeItem(foto);
     foto->deleteLater();
 }
-
-void FWScene::slotTitleColorChanged()
-{
+void FWScene::slotTitleColorChanged() {
     update(0, 0, m_size.width(), 50);
 }
-
-void FWScene::slotForeColorChanged()
-{
+void FWScene::slotForeColorChanged() {
     update(0, 0, m_size.width(), 50);
     update(0, m_size.height() - 50, m_size.width(), 50);
 }
-
-void FWScene::slotGradColorChanged()
-{
+void FWScene::slotGradColorChanged() {
     update();
+}
+void FWScene::slotImageSelected(int imgNum) {
+	m_imgSelectedNumber = imgNum;
+}
+
+void FWScene::slotCallChangeImageBackground(QString imagePath) {
+	if (m_imgSelectedNumber != -1) 
+		m_photos[m_imgSelectedNumber]->setBackgroundPhoto(imagePath);
+	else
+		QMessageBox::warning(0,tr("Error"),tr("You must select a picture for this action."));
+
+}
+
+
+void FWScene::callSlotToNVG() {
+	if (m_imgSelectedNumber != -1) 
+		m_photos[m_imgSelectedNumber]->slotToNVG();
+	else
+		QMessageBox::warning(0,tr("Error"),tr("You must select a picture for this action"));
+}
+void FWScene::callSlotToBlackAndWhite() {
+	if (m_imgSelectedNumber != -1) 
+		m_photos[m_imgSelectedNumber]->slotToBlackAndWhite();
+	else
+		QMessageBox::warning(0,tr("Error"),tr("You must select a picture for this action"));
+}
+void FWScene::callSlotLuminosity() {
+	if (m_imgSelectedNumber != -1) {
+		int value = QInputDialog::getInteger(0, tr("Luminosity value"), tr("This value will be added to the current color of each pixel to modify the luminosity of the image"), 50, -255,255);
+		m_photos[m_imgSelectedNumber]->slotLuminosity(value);
+	}
+	else
+		QMessageBox::warning(0,tr("Error"),tr("You must select a picture for this action"));
+}
+void FWScene::callSlotInvertColors() {
+	if (m_imgSelectedNumber != -1) 
+		m_photos[m_imgSelectedNumber]->slotInvertColors();
+	else
+		QMessageBox::warning(0,tr("Error"),tr("You must select a picture for this action"));
+}
+void FWScene::callSlotFlipH() {
+	if (m_imgSelectedNumber != -1) 
+		m_photos[m_imgSelectedNumber]->slotFlipH();
+	else
+		QMessageBox::warning(0,tr("Error"),tr("You must select a picture for this action"));
+}
+void FWScene::callSlotFlipV() {
+	if (m_imgSelectedNumber != -1) 
+		m_photos[m_imgSelectedNumber]->slotFlipV();
+	else
+		QMessageBox::warning(0,tr("Error"),tr("You must select a picture for this action"));
+}
+void FWScene::callSlotRotate(int angle) {
+	if(m_imgSelectedNumber != -1)
+		m_photos[m_imgSelectedNumber]->slotRotate(angle);
+	else
+		QMessageBox::warning(0,tr("Error"),tr("You must select a picture for this action"));
 }

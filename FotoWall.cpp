@@ -4,7 +4,9 @@
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Copyright (C) 2007-2008 by Enrico Ros <enrico.ros@gmail.com>          *
- *                                                                         *
+ *   Modified by Tanguy Arnaud <phparnsk8@gmail.com>, see CHANGLOG to have *
+ *   summary of the modification.										   *
+ *   																	   *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -22,13 +24,15 @@
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>
-
+#include "ui_Aide.h"
+#include "SizeDialog.h"
+	#include "BackgroundChooser.h"
 // static global variable
 bool globalExportingFlag = false;
-
+bool drawPictureBorder = true;
 class FWGraphicsView : public QGraphicsView {
     public:
-        FWGraphicsView(FWScene * scene, QWidget * parent)
+        FWGraphicsView(FWScene * scene, QWidget* parent)
             : QGraphicsView(scene, parent)
             , m_scene(scene)
         {
@@ -51,27 +55,42 @@ class FWGraphicsView : public QGraphicsView {
 };
 
 
-FotoWall::FotoWall(QWidget * parent)
-    : QWidget(parent)
+FotoWall::FotoWall(QMainWindow* parent)
+    : QMainWindow(parent)
     , m_view(0)
     , m_scene(0)
 {
-    setupUi(this);
-    setWindowIcon( QIcon(":/data/icon.png") );
+	setupUi(this);
+	setWindowIcon( QIcon(":/data/icon.png") );
+	setWindowTitle ("Fotowall 0.23");
 
-    // create our custom scene
-    m_scene = new FWScene(this);
 
-    // add the graphicsview
-    m_view = new FWGraphicsView(m_scene, centralWidget);
-    QVBoxLayout * lay = new QVBoxLayout(centralWidget);
-    lay->setSpacing(0);
-    lay->setMargin(0);
-    lay->addWidget(m_view);
+	// create our custom scene
+	m_scene = new FWScene(this);
+
+	QWidget* w = new QWidget; //The main widget in which the layouts are
+
+	// add the graphicsview
+	m_view = new FWGraphicsView(m_scene, Widget);
+
+	QVBoxLayout *vLay = new QVBoxLayout; 
+	vLay->setSpacing(0);
+	vLay->setMargin(0);
+	vLay->addWidget(cmdFrame);
+	vLay->addWidget(Widget);
+	w->setLayout(vLay);
+
+	QVBoxLayout * lay = new QVBoxLayout(Widget);
+	lay->setSpacing(0);
+	lay->setMargin(0);
+	lay->addWidget(m_view);
+
+	setCentralWidget(w);
+	connect(actionLoad, SIGNAL(triggered()), this, SLOT(on_loadButton_clicked()));
+	connect(actionSave, SIGNAL(triggered()), this, SLOT(on_saveButton_clicked()));
+	connect(actionQuit, SIGNAL(triggered()), this, SLOT(on_quitButton_clicked()));
 }
-
-FotoWall::~FotoWall()
-{
+FotoWall::~FotoWall() {
     // dump current layout
     QFile file("autosave.lay");
     !file.open(QIODevice::WriteOnly);
@@ -84,9 +103,7 @@ FotoWall::~FotoWall()
     delete m_scene;
 }
 
-
-void FotoWall::on_loadButton_clicked()
-{
+void FotoWall::on_loadButton_clicked() {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select Layout file"), QDir::current().path(), "Layouts (*.lay)");
     if (fileName.isNull())
         return;
@@ -100,9 +117,23 @@ void FotoWall::on_loadButton_clicked()
     m_scene->restore(in);
     titleEdit->setText(m_scene->titleText());
 }
+void FotoWall::on_addPictures_clicked() {
+    QStringList fileNames = QFileDialog::getOpenFileNames(this , tr("Select Picture File(s)"), QDir::current().path(), "Pictures (*.png *.jpg *.bmp)");
+    if (fileNames.isEmpty())
+        return;
 
-void FotoWall::on_saveButton_clicked()
-{
+		//Load all the selected pictures
+		m_scene->loadPictures(&fileNames);
+	
+}
+void FotoWall::on_pictureBorderCheckbox_clicked() {
+	if (pictureBorderCheckbox->isChecked()) 
+		drawPictureBorder = true;
+	else
+		drawPictureBorder = false;
+	m_scene->FWupdate();
+}
+void FotoWall::on_saveButton_clicked() {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Select Layout file"), QDir::current().path(), "Layouts (*.lay)");
     if (fileName.isNull())
         return;
@@ -118,34 +149,10 @@ void FotoWall::on_saveButton_clicked()
     m_scene->save(out);
 }
 
-#include <QDialog>
-#include <QSpinBox>
-class SizeDialog : public QDialog {
-    public:
-        SizeDialog(QWidget * parent = 0)
-            : QDialog(parent)
-        {
-            setWindowTitle(tr("Select Resolution"));
 
-            wSpin = new QSpinBox(this);
-            wSpin->setRange(100, 10000);
-            hSpin = new QSpinBox(this);
-            hSpin->setRange(100, 10000);
-            QPushButton * closeButton = new QPushButton(tr("OK"), this);
-            connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
 
-            QHBoxLayout * lay = new QHBoxLayout(this);
-            lay->addWidget(wSpin);
-            lay->addWidget(hSpin);
-            lay->addWidget(closeButton);
-        }
-        QSpinBox * wSpin;
-        QSpinBox * hSpin;
-};
-
-void FotoWall::on_pngButton_clicked()
-{
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Name a PNG file"), QDir::current().path(), "PNG Image (*.png)");
+void FotoWall::on_pngButton_clicked() {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Name of PNG file"), QDir::current().path(), "PNG Image (*.png)");
     if (fileName.isNull())
         return;
     if (!fileName.endsWith(".png", Qt::CaseInsensitive))
@@ -178,17 +185,54 @@ void FotoWall::on_pngButton_clicked()
         QMessageBox::warning(this, tr("Rendering Save Error"), tr("Error rendering to this file"));
         return;
     }
-    int size = QFile(fileName).size();
+    float size = QFile(fileName).size();
     QMessageBox::information(this, tr("Image rendered"), tr("The target image is %1 bytes long").arg(size));
 }
-
-void FotoWall::on_quitButton_clicked()
-{
-    QCoreApplication::quit();
+void FotoWall::on_quitButton_clicked() {
+	qApp->quit();
 }
-
-void FotoWall::on_titleEdit_textChanged(const QString & text)
-{
+void FotoWall::on_titleEdit_textChanged(const QString & text) {
     m_scene->setTitleText(text);
 }
+void FotoWall::on_pictureBackgroundButton_clicked() {
+QDialog *parent = new QDialog(this);
+BackgroundChooser *backgroundChooser = new BackgroundChooser("data/backgrounds/", parent);
+connect(backgroundChooser, SIGNAL(signalImageChoosed(QString)), m_scene, SLOT(slotCallChangeImageBackground(QString)));
+parent->exec();
+}
 
+void FotoWall::on_actionBlack_and_White_triggered() {
+	m_scene->callSlotToBlackAndWhite();
+}
+void FotoWall::on_actionNVG_triggered() {
+	m_scene->callSlotToNVG();
+}
+
+void FotoWall::on_actionLuminosity_triggered() {
+	m_scene->callSlotLuminosity();
+}
+void FotoWall::on_actionInvert_colors_triggered() {
+	m_scene->callSlotInvertColors();
+}
+void FotoWall::on_actionHorizontal_flip_triggered() {
+	m_scene->callSlotFlipH();
+}
+void FotoWall::on_actionVertical_flip_triggered() {
+	m_scene->callSlotFlipV();
+}
+void FotoWall::on_actionRotate_90_left_triggered() {
+	m_scene->callSlotRotate(-90);
+}
+void FotoWall::on_actionRotate_90_right_triggered() {
+	m_scene->callSlotRotate(90);
+}
+void FotoWall::on_actionSet_as_background_triggered() {
+	m_scene->setCurentImageAsBackground();
+}
+
+void FotoWall::on_actionDocumentation_triggered() {
+	QDialog *fenetre = new QDialog;
+    Ui::HelpDialog ui;
+    ui.setupUi(fenetre);
+	fenetre->show();
+}
