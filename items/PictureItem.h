@@ -71,16 +71,18 @@ class PictureItem : public QObject, public QGraphicsItem
         QString     m_fileName;
         QPixmap *   m_photo;
         QPixmap     m_cachedPhoto;
+        bool        m_opaquePhoto;
         QSize       m_size;
-        ButtonItem *  m_scaleButton;
-        ButtonItem *  m_rotateButton;
-        ButtonItem *  m_frontButton;
-        ButtonItem *  m_deleteButton;
+        QList<ButtonItem *> m_controls;
+        ButtonItem * m_scaleButton;
+        ButtonItem * m_rotateButton;
         QGraphicsTextItem * m_textItem;
         QTimer *    m_scaleRefreshTimer;
         bool        m_scaling;
 
     private Q_SLOTS:
+        void slotFlipHorizontally();
+        void slotFlipVertically();
         void slotRotate(const QPointF & controlPoint);
         void slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotResetAspectRatio();

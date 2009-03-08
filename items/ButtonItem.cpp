@@ -20,13 +20,30 @@
 // from FotoWall.cpp
 extern bool globalExportingFlag;
 
-ButtonItem::ButtonItem(QGraphicsItem * parent, const QBrush & brush, const QIcon & icon)
+ButtonItem::ButtonItem(Type type, const QBrush & brush, const QIcon & icon, QGraphicsItem * parent)
     : QGraphicsItem(parent)
+    , m_type(type)
     , m_icon(icon)
     , m_brush(brush)
 {
     setAcceptsHoverEvents(true);
-    setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+    if (type == Control)
+        setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+}
+
+ButtonItem::Type ButtonItem::buttonType() const
+{
+    return m_type;
+}
+
+int ButtonItem::width() const
+{
+    return 16;
+}
+
+int ButtonItem::height() const
+{
+    return 16;
 }
 
 QRectF ButtonItem::boundingRect() const
@@ -45,8 +62,11 @@ void ButtonItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         else
             painter->fillRect(boundingRect().adjusted(-1, -1, 1, 1), Qt::white);
     }
-    if (!m_icon.isNull())
+    if (!m_icon.isNull()) {
+        painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
         m_icon.paint(painter, boundingRect().toRect(), Qt::AlignCenter, over ? QIcon::Active : QIcon::Normal);
+        painter->setRenderHint(QPainter::SmoothPixmapTransform, false);
+    }
 }
 
 void ButtonItem::mousePressEvent(QGraphicsSceneMouseEvent * event)

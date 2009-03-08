@@ -23,14 +23,13 @@ This is the current list of requested features. If you have more of them, or any
 
 Special requests:
 
-* click left/right/top/bottom to mirror the photo on that axis (Alberto Scarpa)
 * checkbox for a "beginner mode" (Alberto Scarpa)
 
 Newest:
 
 * add effects to photos
 * place the title anywhere
-* display on-screen selection for picture frame
+* display on-screen selection for pictures
 * perform rectangular image composition based on an input picture (color, pattern)
 * perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
 * add an overlay html help when going on the lower-left corner
@@ -90,6 +89,7 @@ Unreleased Version; New Stuff:
 * Reflections are coming...
 * More Frame types (default, heart, Plasma backgrounds) [David Eccher]
 * More Image Formats (bmp, tiff, gif, ...) [Superstoned]
+* Mirror the photo by clicking on an axis [Alberto Scarpa]
 * DoubleClick on a picture -> set it as background, and vice-versa [Alberto Scarpa]
 * More pretty (plasma icons) and usable (behavior) frame buttons
 * New buttons: "Raise to Front" [Superstoned], "Delete"

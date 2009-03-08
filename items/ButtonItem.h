@@ -24,7 +24,12 @@ class ButtonItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        ButtonItem(QGraphicsItem * parent, const QBrush & brush, const QIcon & icon);
+        enum Type {Control, FlipV, FlipH};
+        ButtonItem(Type type, const QBrush & brush, const QIcon & icon, QGraphicsItem * parent);
+
+        Type buttonType() const;
+        int width() const;
+        int height() const;
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
@@ -40,6 +45,7 @@ class ButtonItem : public QObject, public QGraphicsItem
         void doubleClicked();
 
     private:
+        Type        m_type;
         QIcon       m_icon;
         QBrush      m_brush;
         QPointF     m_startPos;

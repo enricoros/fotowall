@@ -20,6 +20,7 @@
 #include <QPainterPath>
 #include <QRect>
 #include <QSize>
+#include "ButtonItem.h"
 class QPainter;
 
 /**
@@ -42,11 +43,11 @@ class Frame {
         virtual QPainterPath frameShape(const QRect & frameRect) const;
 
         // G: layouting sub-items
-        virtual void layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const = 0;
+        virtual void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const = 0;
         virtual void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const = 0;
 
         // P: painting
-        virtual void paint(QPainter * painter, const QRect & geometry) = 0;
+        virtual void paint(QPainter * painter, const QRect & geometry, bool opaqueContents) = 0;
 };
 
 #endif

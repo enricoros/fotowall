@@ -29,9 +29,9 @@ class PlasmaFrame : public Frame
 
         // ::Frame
         QRect contentsRect(const QRect & frameRect) const;
-        void layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const;
+        void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
         void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void paint(QPainter * painter, const QRect & frameRect);
+        void paint(QPainter * painter, const QRect & frameRect, bool opaqueContents);
 
     private:
         PlasmaFramePrivate * d;

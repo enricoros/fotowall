@@ -34,15 +34,29 @@ QRect StandardFrame::contentsRect(const QRect & frameRect) const
     return frameRect.adjusted(FW_MARGIN, FW_MARGIN, -FW_MARGIN, -FW_MARGIN - FW_LABH);
 }
 
-void StandardFrame::layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const
+void StandardFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const
 {
-    int bottom = frameRect.bottom() - 5;
-    int right = frameRect.right() - 5;
-    int spacing = 5;
-    foreach (QGraphicsItem * button, buttons) {
-        QSize bSize = button->boundingRect().size().toSize();
-        button->setPos(right - bSize.width(), bottom - bSize.height());
-        right -= bSize.width() + spacing;
+    const int spacing = 4;
+    int left = frameRect.left() + FW_MARGIN;
+    int top = frameRect.top() + FW_MARGIN;
+    int right = frameRect.right() - FW_MARGIN;
+    int bottom = frameRect.bottom() - FW_MARGIN;
+    int offset = right;
+    foreach (ButtonItem * button, buttons) {
+        switch (button->buttonType()) {
+            case ButtonItem::FlipH:
+                button->setPos(right - button->width() / 2, (top + bottom) / 2);
+                break;
+
+            case ButtonItem::FlipV:
+                button->setPos((left + right) / 2, top + button->height() / 2);
+                break;
+
+            default:
+                button->setPos(offset - button->width() / 2, bottom - button->height() / 2);
+                offset -= button->width() + spacing;
+                break;
+        }
     }
 }
 
@@ -51,7 +65,7 @@ void StandardFrame::layoutText(QGraphicsItem * textItem, const QRect & frameRect
     textItem->setPos(frameRect.left() + FW_MARGIN, frameRect.bottom() - FW_MARGIN - FW_LABH + FW_MARGIN);
 }
 
-void StandardFrame::paint(QPainter * painter, const QRect & frameRect)
+void StandardFrame::paint(QPainter * painter, const QRect & frameRect, bool /*opaqueContents*/)
 {
     //painter->fillRect(boundingRect(), QColor(0,0,0,64));
     QLinearGradient lg(0, frameRect.top(), 0, frameRect.height() / 2);

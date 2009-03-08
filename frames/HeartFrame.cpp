@@ -70,7 +70,7 @@ QPainterPath HeartFrame::frameShape(const QRect & frameRect) const
     return heartPath(frameRect);
 }
 
-void HeartFrame::layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const
+void HeartFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const
 {
     double x[] = { 0.92, 0.85 };
     double y[] = { 0.22, 0.16 };
@@ -81,7 +81,7 @@ void HeartFrame::layoutButtons(QList<QGraphicsItem *> buttons, const QRect & fra
     }
 }
 
-void HeartFrame::paint(QPainter * painter, const QRect & frameRect)
+void HeartFrame::paint(QPainter * painter, const QRect & frameRect, bool /*opaqueContents*/)
 {
     QLinearGradient lg(0, frameRect.top(), frameRect.width() / 8, frameRect.height() / 2);
     lg.setColorAt(0.0, QColor(196,00,00));

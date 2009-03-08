@@ -46,6 +46,7 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_frame(0)
     , m_photo(0)
+    , m_opaquePhoto(false)
     , m_size(200, 150)
     , m_scaleRefreshTimer(0)
     , m_scaling(false)
@@ -55,23 +56,37 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     setAcceptDrops(true);
 
     // create child items
-    m_scaleButton = new ButtonItem(this, Qt::green, QIcon(":/data/action-scale.png"));
+    m_scaleButton = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
     m_scaleButton->hide();
     connect(m_scaleButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotResize(const QPointF&,Qt::KeyboardModifiers)));
     connect(m_scaleButton, SIGNAL(doubleClicked()), this, SLOT(slotResetAspectRatio()));
+    m_controls << m_scaleButton;
 
-    m_rotateButton = new ButtonItem(this, Qt::green, QIcon(":/data/action-rotate.png"));
+    m_rotateButton = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
     m_rotateButton->hide();
     connect(m_rotateButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&)));
     connect(m_rotateButton, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
+    m_controls << m_rotateButton;
 
-    m_frontButton = new ButtonItem(this, Qt::blue, QIcon(":/data/action-order-front.png"));
-    m_frontButton->hide();
-    connect(m_frontButton, SIGNAL(clicked()), this, SIGNAL(raiseMe()));
+    ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
+    bFront->hide();
+    connect(bFront, SIGNAL(clicked()), this, SIGNAL(raiseMe()));
+    m_controls << bFront;
 
-    m_deleteButton = new ButtonItem(this, Qt::red, QIcon(":/data/action-delete.png"));
-    m_deleteButton->hide();
-    connect(m_deleteButton, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
+    ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
+    bDelete->hide();
+    connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
+    m_controls << bDelete;
+
+    ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-right.png"), this);
+    bFlipH->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+    connect(bFlipH, SIGNAL(clicked()), this, SLOT(slotFlipHorizontally()));
+    m_controls << bFlipH;
+
+    ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-up.png"), this);
+    bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+    connect(bFlipV, SIGNAL(clicked()), this, SLOT(slotFlipVertically()));
+    m_controls << bFlipV;
 
     m_textItem = new MyTextItem(this);
     m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -92,6 +107,7 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
 {
     delete m_photo;
     m_cachedPhoto = QPixmap();
+    m_opaquePhoto = false;
     m_photo = new QPixmap(fileName);
     if (m_photo->isNull()) {
         delete m_photo;
@@ -99,6 +115,7 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
         m_fileName = QString();
         return false;
     }
+    m_opaquePhoto = !m_photo->hasAlpha();
     m_fileName = fileName;
     if (keepRatio)
         slotResetAspectRatio();
@@ -176,18 +193,14 @@ QRectF PictureItem::boundingRect() const
 
 void PictureItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
-    m_scaleButton->show();
-    m_rotateButton->show();
-    m_frontButton->show();
-    m_deleteButton->show();
+    foreach (ButtonItem * button, m_controls)
+        button->show();
 }
 
 void PictureItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
-    m_scaleButton->hide();
-    m_rotateButton->hide();
-    m_frontButton->hide();
-    m_deleteButton->hide();
+    foreach (ButtonItem * button, m_controls)
+        button->hide();
 }
 
 void PictureItem::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
@@ -208,18 +221,24 @@ void PictureItem::dropEvent(QGraphicsSceneDragDropEvent * event)
 
 void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    // draw the dia background
+    // draw the Frame (background)
     if (!m_frame)
         return;
     QRect frameRect = boundingRect().toRect();
-    m_frame->paint(painter, frameRect);
+    m_frame->paint(painter, frameRect, m_opaquePhoto);
     if (!m_photo)
         return;
+
+    // use clip path for contents, if set
     if (m_frame->clipContents())
         painter->setClipPath(m_frame->contentsClipPath(frameRect));
-    QRect targetRect = m_frame->contentsRect(frameRect);
+
+    // blit if opaque picture
+    if (m_opaquePhoto)
+        painter->setCompositionMode(QPainter::CompositionMode_Source);
 
     // draw high-resolution photo when exporting png
+    QRect targetRect = m_frame->contentsRect(frameRect);
     if (globalExportingFlag) {
         painter->setRenderHints(QPainter::SmoothPixmapTransform);
         painter->drawPixmap(targetRect, *m_photo);
@@ -236,6 +255,10 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*o
         painter->setRenderHints(QPainter::SmoothPixmapTransform);
         painter->drawPixmap(targetRect.topLeft(), m_cachedPhoto);
     }
+
+    // restore status
+    if (m_opaquePhoto)
+        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 }
 
 void PictureItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
@@ -278,12 +301,11 @@ void PictureItem::relayoutContents()
 {
     if (!m_frame)
         return;
+    QRect frameRect = boundingRect().toRect();
 
-    // layout buttons and text
-    QList<QGraphicsItem *> buttons;
-    buttons << m_scaleButton << m_rotateButton << m_frontButton << m_deleteButton;
-    m_frame->layoutButtons(buttons, boundingRect().toRect());
-    m_frame->layoutText(m_textItem, boundingRect().toRect());
+    // layout all buttons and text
+    m_frame->layoutButtons(m_controls, frameRect);
+    m_frame->layoutText(m_textItem, frameRect);
 }
 
 void PictureItem::slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
@@ -318,6 +340,26 @@ void PictureItem::slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers
         m_scaleRefreshTimer->setSingleShot(true);
     }
     m_scaleRefreshTimer->start(400);
+}
+
+void PictureItem::slotFlipHorizontally()
+{
+    // delete the Photo and and recreate an H-mirrored one
+    QPixmap * oldPhoto = m_photo;
+    m_photo = new QPixmap(QPixmap::fromImage(oldPhoto->toImage().mirrored(true, false)));
+    delete oldPhoto;
+    m_cachedPhoto = QPixmap();
+    update();
+}
+
+void PictureItem::slotFlipVertically()
+{
+    // delete the Photo and and recreate a V-mirrored one
+    QPixmap * oldPhoto = m_photo;
+    m_photo = new QPixmap(QPixmap::fromImage(oldPhoto->toImage().mirrored(false, true)));
+    delete oldPhoto;
+    m_cachedPhoto = QPixmap();
+    update();
 }
 
 void PictureItem::slotRotate(const QPointF & controlPoint)

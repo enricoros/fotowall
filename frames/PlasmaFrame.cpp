@@ -47,7 +47,7 @@ struct PlasmaFramePrivate {
             return value;
         return svg->boundsOnElement(element).height();
     }
-    void draw(QPainter * painter, const QRect & frameRect)
+    void draw(QPainter * painter, const QRect & frameRect, bool opaqueContents) const
     {
         // left column
         int l = frameRect.left();
@@ -60,7 +60,7 @@ struct PlasmaFramePrivate {
         svg->render(painter, "top",         QRect(l+w1,     t,      wx, h1));
         svg->render(painter, "topright",    QRect(l+w1+wx,  t,      w3, h1));
         svg->render(painter, "left",        QRect(l,        t+h1,   w1, hx));
-        if (padL > w1 || padT > h1 || padR > w3 || padB > h3)
+        if (padL > w1 || padT > h1 || padR > w3 || padB > h3 || !opaqueContents)
             svg->render(painter, "center",  QRect(l+w1,     t+h1,   wx, hx));
         svg->render(painter, "right",       QRect(l+w1+wx,  t+h1,   w3, hx));
         svg->render(painter, "bottomleft",  QRect(l,        t+h1+hx,w1, h3));
@@ -111,15 +111,29 @@ QRect PlasmaFrame::contentsRect(const QRect & frameRect) const
     return frameRect.adjusted(d->padL, d->padT, -d->padR, -d->padB);
 }
 
-void PlasmaFrame::layoutButtons(QList<QGraphicsItem *> buttons, const QRect & frameRect) const
+void PlasmaFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const
 {
     const int spacing = 4;
-    int bottom = frameRect.bottom() - d->padB;
+    int left = frameRect.left() + d->padL;
+    int top = frameRect.top() + d->padT;
     int right = frameRect.right() - d->padR;
-    foreach (QGraphicsItem * button, buttons) {
-        QSize bSize = button->boundingRect().size().toSize();
-        button->setPos(right - bSize.width() / 2, bottom - bSize.height() / 2);
-        right -= bSize.width() + spacing;
+    int bottom = frameRect.bottom() - d->padB;
+    int offset = right;
+    foreach (ButtonItem * button, buttons) {
+        switch (button->buttonType()) {
+            case ButtonItem::FlipH:
+                button->setPos(right - button->width() / 2, (top + bottom) / 2);
+                break;
+
+            case ButtonItem::FlipV:
+                button->setPos((left + right) / 2, top + button->height() / 2);
+                break;
+
+            default:
+                button->setPos(offset - button->width() / 2, bottom - button->height() / 2);
+                offset -= button->width() + spacing;
+                break;
+        }
     }
 }
 
@@ -128,8 +142,8 @@ void PlasmaFrame::layoutText(QGraphicsItem * textItem, const QRect & frameRect) 
     textItem->setPos( frameRect.left() + d->padL, frameRect.center().y() - textItem->boundingRect().size().height() / 2 );
 }
 
-void PlasmaFrame::paint(QPainter * painter, const QRect & frameRect)
+void PlasmaFrame::paint(QPainter * painter, const QRect & frameRect, bool opaqueContents)
 {
     //painter->fillRect(frameRect,Qt::red);
-    d->draw(painter, frameRect);
+    d->draw(painter, frameRect, opaqueContents);
 }
