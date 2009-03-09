@@ -48,6 +48,9 @@ class Frame {
 
         // P: painting
         virtual void paint(QPainter * painter, const QRect & geometry, bool opaqueContents) = 0;
+
+        // unbreak stuff
+        virtual ~Frame();
 };
 
 #endif

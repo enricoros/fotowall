@@ -12,29 +12,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __PlasmaFrame_h__
-#define __PlasmaFrame_h__
+#ifndef __PicturePropertiesItem_h__
+#define __PicturePropertiesItem_h__
 
-#include "StandardFrame.h"
-class QPainter;
-struct PlasmaFramePrivate;
+#include <QGraphicsProxyWidget>
+#include "PictureItem.h"
+class Frame;
 
-class PlasmaFrame : public Frame
-{
+namespace Ui { class PicturePropertiesItem; }
+
+class PicturePropertiesItem : public QGraphicsProxyWidget {
+    Q_OBJECT
     public:
-        PlasmaFrame(const QString & fileName = ":/plasma-frames/1.svg");
-        ~PlasmaFrame();
+        PicturePropertiesItem(PictureItem * pictureItem, QGraphicsItem * parent = 0);
+        ~PicturePropertiesItem();
 
-        bool isValid() const;
+        // set which item to edit
+        void setPictureItem(PictureItem * pictureItem);
+        PictureItem * pictureItem() const;
 
-        // ::Frame
-        QRect contentsRect(const QRect & frameRect) const;
-        void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
-        void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void paint(QPainter * painter, const QRect & frameRect, bool opaqueContents);
+        // load from/apply to the properties of the current valid item
+        void loadProperties();
+        void applyProperties();
+
+    protected:
+        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
 
     private:
-        PlasmaFramePrivate * d;
+        Ui::PicturePropertiesItem * m_ui;
+        PictureItem *               m_pictureItem;
+        Frame *                     m_frame;
+
+    private slots:
+        void on_buttonBox_rejected();
+        void on_buttonBox_accepted();
 };
 
 #endif

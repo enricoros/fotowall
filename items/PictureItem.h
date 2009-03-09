@@ -61,10 +61,11 @@ class PictureItem : public QObject, public QGraphicsItem
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
     Q_SIGNALS:
-        void deleteMe();
-        void raiseMe();
-        void backgroundMe();
         void gfxChange();
+        void configureMe();
+        void backgroundMe();
+        void raiseMe();
+        void deleteMe();
 
     private:
         void relayoutContents();

@@ -49,3 +49,6 @@ QPainterPath Frame::frameShape(const QRect & frameRect) const
     return path;
 }
 
+Frame::~Frame()
+{
+}

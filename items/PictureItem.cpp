@@ -82,6 +82,10 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     connect(bFront, SIGNAL(clicked()), this, SIGNAL(raiseMe()));
     m_controls << bFront;
 
+    ButtonItem * bConf = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-configure.png"), this);
+    connect(bConf, SIGNAL(clicked()), this, SIGNAL(configureMe()));
+    m_controls << bConf;
+
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
     m_controls << bDelete;

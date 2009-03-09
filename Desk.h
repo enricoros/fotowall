@@ -63,9 +63,10 @@ class Desk : public QGraphicsScene
         QPixmap m_backCache;
 
     private Q_SLOTS:
-        void slotDeletePicture();
-        void slotRaisePicture();
+        void slotConfigurePicture();
         void slotBackgroundPicture();
+        void slotRaisePicture();
+        void slotDeletePicture();
 
         void slotTitleColorChanged();
         void slotForeColorChanged();

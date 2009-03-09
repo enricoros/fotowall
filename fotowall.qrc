@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/" >
         <file>data/fotowall.png</file>
+        <file>data/action-configure.png</file>
         <file>data/action-delete.png</file>
         <file>data/action-move.png</file>
         <file>data/action-order-front.png</file>

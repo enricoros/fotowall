@@ -162,9 +162,10 @@ void Desk::loadPictures(const QStringList & fileNames)
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         //p->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
-        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(configureMe()), this, SLOT(slotConfigurePicture()));
         connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
+        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
         addItem(p);
         p->setPos(sceneRect().center().toPoint() + QPointF(delta, delta) );
         p->setZValue(++zLevel);
@@ -241,9 +242,10 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         //p->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
-        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(configureMe()), this, SLOT(slotConfigurePicture()));
         connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
+        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
         addItem(p);
         p->setPos(event->scenePos() + QPointF(delta, delta) );
         p->setZValue(++zLevel);
@@ -339,28 +341,18 @@ void Desk::setTitleText(const QString & text)
 
 
 /// Slots
-void Desk::slotDeletePicture()
+#include "PicturePropertiesItem.h"
+void Desk::slotConfigurePicture()
 {
     PictureItem * picture = dynamic_cast<PictureItem *>(sender());
     if (!picture)
         return;
 
-    // unset background if deleting picture
-    if (m_backPicture == picture) {
-        m_backPicture = 0;
-        m_backCache = QPixmap();
-        update();
-    }
-    m_pictures.removeAll(picture);
-    removeItem(picture);
-    picture->deleteLater();
-}
-
-void Desk::slotRaisePicture()
-{
-    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
-    if (picture)
-        picture->setZValue(++zLevel);
+    // create the properties item
+    PicturePropertiesItem * pItem = new PicturePropertiesItem(picture);
+    pItem->setPos(picture->pos());
+    pItem->show();
+    addItem(pItem);
 }
 
 void Desk::slotBackgroundPicture()
@@ -378,6 +370,30 @@ void Desk::slotBackgroundPicture()
     m_backPicture->hide();
     m_backCache = QPixmap();
     update();
+}
+
+void Desk::slotRaisePicture()
+{
+    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    if (picture)
+        picture->setZValue(++zLevel);
+}
+
+void Desk::slotDeletePicture()
+{
+    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    if (!picture)
+        return;
+
+    // unset background if deleting picture
+    if (m_backPicture == picture) {
+        m_backPicture = 0;
+        m_backCache = QPixmap();
+        update();
+    }
+    m_pictures.removeAll(picture);
+    removeItem(picture);
+    picture->deleteLater();
 }
 
 void Desk::slotTitleColorChanged()

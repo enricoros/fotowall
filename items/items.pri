@@ -4,8 +4,11 @@ DEPENDPATH += $$PWD
 HEADERS += ButtonItem.h \
     ColorPickerItem.h \
     PictureItem.h \
-    MirrorItem.h
+    MirrorItem.h \
+    PicturePropertiesItem.h
 SOURCES += ButtonItem.cpp \
     ColorPickerItem.cpp \
     PictureItem.cpp \
-    MirrorItem.cpp
+    MirrorItem.cpp \
+    PicturePropertiesItem.cpp
+FORMS += PicturePropertiesItem.ui
