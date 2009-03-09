@@ -45,7 +45,7 @@ QRectF MirrorItem::boundingRect() const
 {
     return m_boundingRect;
 }
-#include <QDebug>
+
 void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
     // generate Reflection pixmap, if needed
@@ -56,43 +56,14 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         m_pixmap.fill(Qt::transparent);
 
         // find out the Transform chain to mirror a rotated item
-        QRectF itemRect = m_item->boundingRect();
-        QPolygonF scenePolygon = m_item->mapToScene(itemRect);
-        QRectF sceneRectF = scenePolygon.boundingRect();
+        QRectF sceneRectF = m_item->mapToScene(m_item->boundingRect()).boundingRect();
+        QTransform tFromItem = m_item->transform() * QTransform::fromTranslate(m_item->pos().x(), m_item->pos().y());
+        QTransform tFromPixmap = QTransform(1, 0, 0, -1, sceneRectF.left(), sceneRectF.bottom());
+        QTransform tItemToPixmap = tFromItem * tFromPixmap.inverted();
 
-#if 0
-        QTransform itemTransform = m_item->transform();
-        itemTransform.translate(m_item->pos().x(), m_item->pos().y());
-
-        QTransform pixmapTransform = QTransform(1, 0, 0, -1, 0, 0);
-        pixmapTransform.translate(sceneRectF.left(), sceneRectF.top());
-
-
-//        QTransform pixmapTransform(1, 0, 0, -1, 0, 0);
-
-        QTransform mirrorTransform = pixmapTransform.inverted() * itemTransform;
-        qWarning() << itemTransform << pixmapTransform << sceneRectF.top();
-
-//        mirrorTransform.translate(sceneRectF.width() / 2, sceneRectF.height() / 2);
-////        mirrorTransform.translate(sceneRectF.width() / 2, sceneRectF.height() / 2);
-//        mirrorTransform = m_item->transform().inverted();
-//        qWarning() << m_item->transform() << mirrorTransform;
-//        mirrorTransform.translate(-sceneRectF.width() / 2, -sceneRectF.height() / 2);
-
-//        QTransform mirrorTransform;// = m_item->transform().inverted();
-
-#else
-        QTransform itemTransform = m_item->transform();
-        QPointF xAxis = itemTransform.map(QPointF(1.0, 0.0));
-        double zRotation = atan2(xAxis.y(), xAxis.x());
-
-        QTransform mirrorTransform;
-        mirrorTransform.translate(sceneRectF.width() / 2, sceneRectF.height() / 2);
-        mirrorTransform.rotateRadians(-zRotation);
-#endif
-
+        // draw the transformed item onto the pixmap
         QPainter p(&m_pixmap);
-        p.setTransform(mirrorTransform);
+        p.setTransform(tItemToPixmap);
         m_item->paint(&p, 0, 0);
         p.end();
 
