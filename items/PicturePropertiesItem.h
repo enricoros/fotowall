@@ -16,6 +16,7 @@
 #define __PicturePropertiesItem_h__
 
 #include <QGraphicsProxyWidget>
+#include <QBasicTimer>
 #include "PictureItem.h"
 class Frame;
 
@@ -37,15 +38,19 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
 
     protected:
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+        void timerEvent(QTimerEvent *);
 
     private:
         Ui::PicturePropertiesItem * m_ui;
         PictureItem *               m_pictureItem;
         Frame *                     m_frame;
+        int                         m_aniStep;
+        bool                        m_aniDirection;
+        QBasicTimer                 m_aniTimer;
 
     private slots:
-        void on_buttonBox_rejected();
-        void on_buttonBox_accepted();
+        void slotClickedOk();
+        void slotClickedCancel();
 };
 
 #endif

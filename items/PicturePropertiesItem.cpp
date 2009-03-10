@@ -23,19 +23,27 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     , m_ui(new Ui::PicturePropertiesItem())
     , m_pictureItem(0)
     , m_frame(new PlasmaFrame())
+    , m_aniStep(0)
+    , m_aniDirection(true)
 {
-    // setup the gfx inside the widget
+    // WIDGET setup
     QWidget * widget = new QWidget();
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
     m_ui->setupUi(widget);
+    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotClickedOk()));
+    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(slotClickedCancel()));
 
     // load values
     if (pictureItem)
         setPictureItem(pictureItem);
 
-    // set the widget as our content
+    // ITEM setup
     setWidget(widget);
     setZValue(99999);
+    setFlags(QGraphicsItem::ItemIsFocusable);
+
+    // Transition setup
+    m_aniTimer.start(20, this);
 }
 
 PicturePropertiesItem::~PicturePropertiesItem()
@@ -67,22 +75,61 @@ void PicturePropertiesItem::applyProperties()
 
 void PicturePropertiesItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
+    if (m_aniStep < 10)
+        return;
+
     // draw custom background
     m_frame->paint(painter, boundingRect().toRect(), false);
 
     // unbreak parent
+    //painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     QGraphicsProxyWidget::paint(painter, option, widget);
 }
 
-void PicturePropertiesItem::on_buttonBox_accepted()
+void PicturePropertiesItem::timerEvent(QTimerEvent * event)
 {
-    // apply and close
-    applyProperties();
-    hide();
+    // only act on our events
+    if (event->timerId() == m_aniTimer.timerId()) {
+        if (m_aniDirection) {
+            m_aniStep += 5;
+            if (m_aniStep >= 100) {
+                m_aniStep = 100;
+                resetTransform();
+                m_aniTimer.stop();
+            } else {
+                qreal xCenter = boundingRect().center().x();
+                setTransform(QTransform().translate(xCenter, 0).rotate((90*(100-m_aniStep)*(100-m_aniStep)) / 10000, Qt::XAxis).translate(-xCenter, 0));
+            }
+        } else {
+            m_aniStep -= 5;
+            if (m_aniStep <= 0) {
+                m_aniStep = 0;
+                resetTransform();
+                m_aniTimer.stop();
+                // CHECK if this is the right place
+                hide();
+            } else {
+                qreal xCenter = boundingRect().center().x();
+                qreal bottom = boundingRect().bottom();
+                setTransform(QTransform().translate(xCenter, bottom).rotate(90 - (90*m_aniStep) / 100, Qt::XAxis).translate(-xCenter, -bottom));
+            }
+        }
+    }
+    QObject::timerEvent(event);
 }
 
-void PicturePropertiesItem::on_buttonBox_rejected()
+void PicturePropertiesItem::slotClickedOk()
 {
-    // close only
-    hide();
+    // apply and closure animation
+    applyProperties();
+    m_aniDirection = false;
+    m_aniTimer.start(20, this);
 }
+
+void PicturePropertiesItem::slotClickedCancel()
+{
+    // closure animation only
+    m_aniDirection = false;
+    m_aniTimer.start(20, this);
+}
+
