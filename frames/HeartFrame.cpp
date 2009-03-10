@@ -38,6 +38,11 @@ static QPainterPath heartPath(const QRect & r)
     return path;
 }
 
+quint32 HeartFrame::frameClass() const
+{
+    return 0x0002;
+}
+
 QSize HeartFrame::sizeForContentsRatio(int width, qreal ratio) const
 {
     return StandardFrame::sizeForContentsRatio(width, ratio);

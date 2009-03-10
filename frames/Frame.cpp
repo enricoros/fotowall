@@ -49,6 +49,16 @@ QPainterPath Frame::frameShape(const QRect & frameRect) const
     return path;
 }
 
+QPixmap Frame::preview(int width, int height)
+{
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter pixPainter(&pixmap);
+    paint(&pixPainter, QRect(0, 0, 128, 128), false);
+    pixPainter.end();
+    return pixmap.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+}
+
 Frame::~Frame()
 {
 }

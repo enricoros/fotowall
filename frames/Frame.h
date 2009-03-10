@@ -18,6 +18,7 @@
 #include <QGraphicsItem>
 #include <QList>
 #include <QPainterPath>
+#include <QPainter>
 #include <QRect>
 #include <QSize>
 #include "ButtonItem.h"
@@ -30,6 +31,9 @@ class QPainter;
 */
 class Frame {
     public:
+        // class identification
+        virtual quint32 frameClass() const = 0;
+
         // G: contents geometry
         virtual QSize sizeForContentsRatio(int width, qreal ratio) const;
         virtual QRect contentsRect(const QRect & frameRect) const;
@@ -48,6 +52,7 @@ class Frame {
 
         // P: painting
         virtual void paint(QPainter * painter, const QRect & geometry, bool opaqueContents) = 0;
+        QPixmap preview(int width = 32, int height = 32);
 
         // unbreak stuff
         virtual ~Frame();

@@ -23,6 +23,11 @@
 #define FW_MARGIN   10
 #define FW_LABH     30
 
+quint32 StandardFrame::frameClass() const
+{
+    return 0x0001;
+}
+
 QSize StandardFrame::sizeForContentsRatio(int width, qreal ratio) const
 {
     int hfw = (int)(((qreal)width - FW_MARGIN - FW_MARGIN) / ratio);

@@ -22,12 +22,13 @@ struct PlasmaFramePrivate;
 class PlasmaFrame : public Frame
 {
     public:
-        PlasmaFrame(const QString & fileName = ":/plasma-frames/1.svg");
+        PlasmaFrame(quint32 frameClass, const QString & fileName);
         ~PlasmaFrame();
 
         bool isValid() const;
 
         // ::Frame
+        quint32 frameClass() const;
         QRect contentsRect(const QRect & frameRect) const;
         void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
         void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;

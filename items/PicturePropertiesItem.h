@@ -19,6 +19,7 @@
 #include <QBasicTimer>
 #include "PictureItem.h"
 class Frame;
+class QListWidgetItem;
 
 namespace Ui { class PicturePropertiesItem; }
 
@@ -37,6 +38,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         void applyProperties();
 
     protected:
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
         void timerEvent(QTimerEvent *);
 
@@ -49,6 +51,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         QBasicTimer                 m_aniTimer;
 
     private slots:
+        void slotFrameSelected(QListWidgetItem * item);
         void slotClickedOk();
         void slotClickedCancel();
 };

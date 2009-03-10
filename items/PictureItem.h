@@ -40,6 +40,7 @@ class PictureItem : public QObject, public QGraphicsItem
 
         // frame
         void setFrame(Frame * frame);
+        quint32 frameClass() const;
 
         // save/restore
         void save(QDataStream & data) const;
@@ -55,6 +56,7 @@ class PictureItem : public QObject, public QGraphicsItem
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void wheelEvent(QGraphicsSceneWheelEvent * event);
         void keyPressEvent(QKeyEvent * event);

@@ -22,6 +22,7 @@ class StandardFrame : public Frame
 {
     public:
         // ::Frame
+        quint32 frameClass() const;
         QSize sizeForContentsRatio(int width, qreal ratio) const;
         QRect contentsRect(const QRect & frameRect) const;
         void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;

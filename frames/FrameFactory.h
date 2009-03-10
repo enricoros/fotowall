@@ -12,25 +12,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HeartFrame_h__
-#define __HeartFrame_h__
+#ifndef __FrameFactory_h__
+#define __FrameFactory_h__
 
-#include "StandardFrame.h"
-class QPainter;
+#include <QMap>
+#include <QString>
+#include "Frame.h"
 
-class HeartFrame : public StandardFrame
+class FrameFactory
 {
     public:
-        // ::Frame
-        quint32 frameClass() const;
-        QSize sizeForContentsRatio(int width, qreal ratio) const;
-        QRect contentsRect(const QRect & frameRect) const;
-        bool clipContents() const;
-        QPainterPath contentsClipPath(const QRect & frameRect) const;
-        bool isShaped() const;
-        QPainterPath frameShape(const QRect & frameRect) const;
-        void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
-        void paint(QPainter * painter, const QRect & frameRect, bool opaqueContents);
+        // enumerate all available frames
+        static QList<quint32> classes();
+
+        // create a frame
+        static Frame * createFrame(quint32 frameClass);
+        static Frame * defaultFrame();
+
+        // add new types
+        static void addSvgFrame(const QString & fileName);
+
+        // change the default class
+        static quint32 defaultFrameClass();
+        static void setDefaultFrameClass(quint32 frameClass);
+
+    private:
+        quint32 m_defaultClass;
+        quint32 m_svgClassIndex;
+        QMap<quint32, QString> m_svgMap;
+
+
+    public:
+        FrameFactory();
+        ~FrameFactory();
 };
 
 #endif

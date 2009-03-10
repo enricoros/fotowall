@@ -14,8 +14,7 @@
 
 #include "Desk.h"
 #include "PictureItem.h"
-#include "frames/PlasmaFrame.h"
-#include "frames/HeartFrame.h"
+#include "frames/FrameFactory.h"
 #include "ColorPickerItem.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
@@ -135,7 +134,6 @@ void Desk::restore(QDataStream & data)
         // HACK: unify the loading code (1)
         PictureItem * p = new PictureItem();
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
         connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
         connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
         connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
@@ -160,8 +158,6 @@ void Desk::loadPictures(const QStringList & fileNames)
         // HACK: unify the loading code (2)
         PictureItem * p = new PictureItem();
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
-        //p->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
         connect(p, SIGNAL(configureMe()), this, SLOT(slotConfigurePicture()));
         connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
         connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
@@ -240,8 +236,6 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         // HACK: unify the loading code (3)
         PictureItem * p = new PictureItem();
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        p->setFrame(new PlasmaFrame(":/plasma-frames/1.svg"));
-        //p->setFrame((qrand() % 2) ? new HeartFrame() : new StandardFrame());
         connect(p, SIGNAL(configureMe()), this, SLOT(slotConfigurePicture()));
         connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
         connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));

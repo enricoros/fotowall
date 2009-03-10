@@ -1,16 +1,21 @@
 <RCC>
     <qresource prefix="/" >
-        <file>data/fotowall.png</file>
+        <file>data/action-add.png</file>
         <file>data/action-configure.png</file>
         <file>data/action-delete.png</file>
+        <file>data/action-flip-horizontal.png</file>
+        <file>data/action-flip-vertical.png</file>
         <file>data/action-move.png</file>
+        <file>data/action-order-back.png</file>
         <file>data/action-order-front.png</file>
+        <file>data/action-order-lower.png</file>
+        <file>data/action-order-raise.png</file>
+        <file>data/action-remove.png</file>
+        <file>data/action-right.png</file>
         <file>data/action-rotate.png</file>
         <file>data/action-scale.png</file>
-        <file>data/action-add.png</file>
-        <file>data/action-remove.png</file>
         <file>data/action-up.png</file>
-        <file>data/action-right.png</file>
+        <file>data/fotowall.png</file>
     </qresource>
     <qresource prefix="/plasma-frames" >
         <file alias="1.svg" >data/frame-plasma-1.svg</file>

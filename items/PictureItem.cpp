@@ -14,7 +14,7 @@
 
 #include "PictureItem.h"
 #include "ButtonItem.h"
-#include "frames/Frame.h"
+#include "frames/FrameFactory.h"
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -90,12 +90,12 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
     m_controls << bDelete;
 
-    ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-right.png"), this);
+    ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
     bFlipH->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     connect(bFlipH, SIGNAL(clicked()), this, SLOT(slotFlipHorizontally()));
     m_controls << bFlipH;
 
-    ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-up.png"), this);
+    ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-flip-vertical.png"), this);
     bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     connect(bFlipV, SIGNAL(clicked()), this, SLOT(slotFlipVertically()));
     m_controls << bFlipV;
@@ -106,6 +106,10 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     f.setPointSizeF(7.5);
     m_textItem->setFont(f);
     m_textItem->setPlainText(tr("..."));
+
+    // create default frame
+    Frame * frame = FrameFactory::defaultFrame();
+    setFrame(frame);
 
     // hide and relayout buttons
     hoverLeaveEvent(0 /*HACK*/);
@@ -155,6 +159,11 @@ void PictureItem::setFrame(Frame * frame)
     relayoutContents();
     update();
     GFX_CHANGED
+}
+
+quint32 PictureItem::frameClass() const
+{
+    return m_frame->frameClass();
 }
 
 void PictureItem::save(QDataStream & data) const
@@ -277,11 +286,18 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*o
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 }
 
+void PictureItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+    if (event->button() == Qt::RightButton)
+        emit configureMe();
+    QGraphicsItem::mousePressEvent(event);
+}
+
 void PictureItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-    if (m_frame)
-        if (m_frame->contentsRect(boundingRect().toRect()).contains(event->pos().toPoint()))
-            emit backgroundMe();
+    if (m_frame && m_frame->contentsRect(boundingRect().toRect()).contains(event->pos().toPoint()))
+        emit backgroundMe();
+    QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
 void PictureItem::wheelEvent(QGraphicsSceneWheelEvent * event)

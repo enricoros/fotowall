@@ -23,6 +23,7 @@ struct PlasmaFramePrivate {
     int h1, h2, h3;
     int padL, padT, padR, padB;
     bool stretchBorders;
+    quint32 frameClass;
 
     PlasmaFramePrivate()
         : svg(0),w1(0),w2(0),w3(0)
@@ -70,7 +71,7 @@ struct PlasmaFramePrivate {
 };
 
 
-PlasmaFrame::PlasmaFrame(const QString & fileName)
+PlasmaFrame::PlasmaFrame(quint32 frameClass, const QString & fileName)
     : d(new PlasmaFramePrivate())
 {
     // create the renderer
@@ -94,6 +95,7 @@ PlasmaFrame::PlasmaFrame(const QString & fileName)
     d->padR = d->widthOf("hint-right-margin", d->w3);
     d->padB = d->heightOf("hint-bottom-margin", d->h3);
     d->stretchBorders = d->svg->elementExists("hint-stretch-borders");
+    d->frameClass = frameClass;
 }
 
 PlasmaFrame::~PlasmaFrame()
@@ -104,6 +106,11 @@ PlasmaFrame::~PlasmaFrame()
 bool PlasmaFrame::isValid() const
 {
     return d->svg;
+}
+
+quint32 PlasmaFrame::frameClass() const
+{
+    return d->frameClass;
 }
 
 QRect PlasmaFrame::contentsRect(const QRect & frameRect) const
