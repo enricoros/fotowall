@@ -23,7 +23,7 @@
 PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphicsItem * parent)
     : QGraphicsProxyWidget(parent)
     , m_ui(new Ui::PicturePropertiesItem())
-    , m_pictureItem(0)
+    , m_pictureItem(pictureItem)
     , m_frame(FrameFactory::defaultPanelFrame())
     , m_aniStep(0)
     , m_aniDirection(true)
@@ -46,13 +46,15 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
         item->setData(Qt::UserRole, frameClass);
     }
 
-    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotClickedOk()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(slotClickedCancel()));
+    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotClose()));
+    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(slotClose()));
     connect(m_ui->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotFrameSelected(QListWidgetItem*)));
+    connect(m_ui->reflection, SIGNAL(toggled(bool)), this, SLOT(slotToggleMirror(bool)));
+    connect(m_ui->invertButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipVertically()));
+    connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipHorizontally()));
 
     // load values
-    if (pictureItem)
-        setPictureItem(pictureItem);
+    loadProperties();
 
     // ITEM setup
     setWidget(widget);
@@ -68,12 +70,6 @@ PicturePropertiesItem::~PicturePropertiesItem()
     delete m_ui;
 }
 
-void PicturePropertiesItem::setPictureItem(PictureItem * pictureItem)
-{
-    m_pictureItem = pictureItem;
-    loadProperties();
-}
-
 PictureItem * PicturePropertiesItem::pictureItem() const
 {
     return m_pictureItem;
@@ -81,8 +77,6 @@ PictureItem * PicturePropertiesItem::pictureItem() const
 
 void PicturePropertiesItem::loadProperties()
 {
-    qWarning("NOT IMPLEMENTED 1");
-
     // select the frame
     quint32 frameClass = m_pictureItem->frameClass();
     for (int i = 0; i < m_ui->listWidget->count(); ++i) {
@@ -93,11 +87,8 @@ void PicturePropertiesItem::loadProperties()
         }
     }
 
-}
-
-void PicturePropertiesItem::applyProperties()
-{
-    qWarning("NOT IMPLEMENTED 2");
+    // read other properties
+    m_ui->reflection->setChecked(m_pictureItem->mirrorEnabled());
 }
 
 void PicturePropertiesItem::keepInBoundaries(const QRect & rect)
@@ -111,7 +102,7 @@ void PicturePropertiesItem::keepInBoundaries(const QRect & rect)
 void PicturePropertiesItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
-        slotClickedOk();
+        slotClose();
     QGraphicsProxyWidget::mousePressEvent(event);
 }
 
@@ -164,6 +155,23 @@ void PicturePropertiesItem::timerEvent(QTimerEvent * event)
     QObject::timerEvent(event);
 }
 
+void PicturePropertiesItem::slotStackFront()
+{
+    //m_pictureItem->
+}
+
+void PicturePropertiesItem::slotStackRaise()
+{
+}
+
+void PicturePropertiesItem::slotStackLower()
+{
+}
+
+void PicturePropertiesItem::slotStackBack()
+{
+}
+
 void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
 {
     // get the frame class
@@ -179,18 +187,14 @@ void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
         m_pictureItem->setFrame(frame);
 }
 
-void PicturePropertiesItem::slotClickedOk()
+void PicturePropertiesItem::slotToggleMirror(bool enabled)
 {
-    // apply and closure animation
-    applyProperties();
+    m_pictureItem->setMirrorEnabled(enabled);
+}
+
+void PicturePropertiesItem::slotClose()
+{
+    // closure animation
     m_aniDirection = false;
     m_aniTimer.start(20, this);
 }
-
-void PicturePropertiesItem::slotClickedCancel()
-{
-    // closure animation only
-    m_aniDirection = false;
-    m_aniTimer.start(20, this);
-}
-

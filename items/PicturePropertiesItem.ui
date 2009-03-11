@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>312</width>
-    <height>269</height>
+    <height>238</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -113,7 +113,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QToolButton" name="toolButton_4">
+       <widget class="QToolButton" name="invertButton">
         <property name="text">
          <string>Invert</string>
         </property>
@@ -127,9 +127,9 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QToolButton" name="toolButton_3">
+       <widget class="QToolButton" name="flipButton">
         <property name="text">
-         <string>Mirror</string>
+         <string>Flip</string>
         </property>
         <property name="icon">
          <iconset resource="../fotowall.qrc">
@@ -140,47 +140,14 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QToolButton" name="toolButton_2">
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QToolButton" name="toolButton_5">
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QToolButton" name="toolButton_6">
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="5">
-       <widget class="QCheckBox" name="checkBox">
+      <item row="1" column="0" colspan="4">
+       <widget class="QCheckBox" name="reflection">
         <property name="text">
          <string>Show Reflection</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
+      <item row="0" column="3">
        <spacer name="horizontalSpacer_5">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -194,16 +161,6 @@
        </spacer>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="pushButton">
-     <property name="text">
-      <string>Use as background</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item>

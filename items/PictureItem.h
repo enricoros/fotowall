@@ -91,9 +91,11 @@ class PictureItem : public QObject, public QGraphicsItem
         QTimer *    m_scaleRefreshTimer;
         bool        m_scaling;
 
-    private Q_SLOTS:
+    public Q_SLOTS:
         void slotFlipHorizontally();
         void slotFlipVertically();
+
+    private Q_SLOTS:
         void slotConfigure();
         void slotRotate(const QPointF & controlPoint);
         void slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);

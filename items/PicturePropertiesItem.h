@@ -29,13 +29,11 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         PicturePropertiesItem(PictureItem * pictureItem, QGraphicsItem * parent = 0);
         ~PicturePropertiesItem();
 
-        // set which item to edit
-        void setPictureItem(PictureItem * pictureItem);
+        // the watched item
         PictureItem * pictureItem() const;
 
         // load from/apply to the properties of the current valid item
         void loadProperties();
-        void applyProperties();
 
         // misc
         void keepInBoundaries(const QRect & rect);
@@ -57,9 +55,13 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         QBasicTimer                 m_aniTimer;
 
     private Q_SLOTS:
+        void slotStackFront();
+        void slotStackRaise();
+        void slotStackLower();
+        void slotStackBack();
         void slotFrameSelected(QListWidgetItem * item);
-        void slotClickedOk();
-        void slotClickedCancel();
+        void slotToggleMirror(bool enabled);
+        void slotClose();
 };
 
 #endif
