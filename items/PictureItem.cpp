@@ -81,7 +81,7 @@ PictureItem::PictureItem(QGraphicsScene * scene, QGraphicsItem * parent)
     m_controlItems << m_rotateButton;
 
     ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
-    connect(bFront, SIGNAL(clicked()), this, SIGNAL(raiseMe()));
+    connect(bFront, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
     m_controlItems << bFront;
 
     ButtonItem * bConf = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-configure.png"), this);
@@ -353,6 +353,10 @@ QVariant PictureItem::itemChange(GraphicsItemChange change, const QVariant & val
         GFX_CHANGED
     }
 
+    // set mirror z level when it changes
+    if (change == ItemZValueHasChanged && m_mirrorItem)
+        m_mirrorItem->setZValue(zValue());
+
     // keep the center inside the scene rect..
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
@@ -433,6 +437,26 @@ void PictureItem::slotFlipVertically()
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED
+}
+
+void PictureItem::slotStackFront()
+{
+    emit changeStack(1);
+}
+
+void PictureItem::slotStackRaise()
+{
+    emit changeStack(2);
+}
+
+void PictureItem::slotStackLower()
+{
+    emit changeStack(3);
+}
+
+void PictureItem::slotStackBack()
+{
+    emit changeStack(4);
 }
 
 void PictureItem::slotConfigure()

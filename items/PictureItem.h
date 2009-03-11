@@ -70,8 +70,8 @@ class PictureItem : public QObject, public QGraphicsItem
     Q_SIGNALS:
         void gfxChange();
         void configureMe(const QPoint & scenePoint);
+        void changeStack(int);
         void backgroundMe();
-        void raiseMe();
         void deleteMe();
 
     private:
@@ -94,6 +94,10 @@ class PictureItem : public QObject, public QGraphicsItem
     public Q_SLOTS:
         void slotFlipHorizontally();
         void slotFlipVertically();
+        void slotStackFront();
+        void slotStackRaise();
+        void slotStackLower();
+        void slotStackBack();
 
     private Q_SLOTS:
         void slotConfigure();

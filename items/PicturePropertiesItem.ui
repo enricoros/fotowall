@@ -17,7 +17,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QToolButton" name="toolButton_7">
+      <widget class="QToolButton" name="front">
        <property name="text">
         <string>Front</string>
        </property>
@@ -31,7 +31,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton_8">
+      <widget class="QToolButton" name="raise">
        <property name="text">
         <string>Raise</string>
        </property>
@@ -45,7 +45,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton_9">
+      <widget class="QToolButton" name="lower">
        <property name="text">
         <string>Lower</string>
        </property>
@@ -59,7 +59,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton_10">
+      <widget class="QToolButton" name="back">
        <property name="text">
         <string>Back</string>
        </property>

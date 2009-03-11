@@ -25,8 +25,6 @@
 #include <QList>
 #include <QFile>
 
-static int zLevel = 0;
-
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
@@ -139,18 +137,12 @@ void Desk::restore(QDataStream & data)
     int photos = 0;
     data >> photos;
     for (int i = 0; i < photos; i++) {
-        // HACK: unify the loading code (1)
-        PictureItem * p = new PictureItem(this);
-        //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
-        connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
-        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
-        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+        // create picture and restore data
+        PictureItem * p = createPicture(QPoint());
         if (!p->restore(data)) {
+            m_pictures.removeAll(p);
             delete p;
-            continue;
         }
-        m_pictures.append(p);
     }
 
     update();
@@ -158,27 +150,18 @@ void Desk::restore(QDataStream & data)
 
 void Desk::loadPictures(const QStringList & fileNames)
 {
-    double delta = 0;
+    QPoint pos = sceneRect().center().toPoint();
     foreach (const QString & localFile, fileNames) {
         if (!QFile::exists(localFile))
             continue;
 
-        // HACK: unify the loading code (2)
-        PictureItem * p = new PictureItem(this);
-        //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
-        connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
-        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
-        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        p->setPos(sceneRect().center().toPoint() + QPointF(delta, delta) );
-        p->setZValue(++zLevel);
+        // create picture and load the file
+        PictureItem * p = createPicture(pos);
         if (!p->loadPhoto(localFile, true, true)) {
+            m_pictures.removeAll(p);
             delete p;
-            continue;
-        }
-        p->show();
-        m_pictures.append(p);
-        delta += 30;
+        } else
+            pos += QPoint(30, 30);
     }
 }
 
@@ -234,28 +217,19 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
 
     // or handle as a Desk drop event
     event->accept();
-    double delta = 0;
+    QPoint pos = event->pos().toPoint();
     foreach (const QUrl & url, event->mimeData()->urls()) {
         QString localFile = url.toLocalFile();
         if (!QFile::exists(localFile))
             continue;
 
-        // HACK: unify the loading code (3)
-        PictureItem * p = new PictureItem(this);
-        //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        connect(p, SIGNAL(configureMe()), this, SLOT(slotConfigurePicture()));
-        connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
-        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
-        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        p->setPos(event->scenePos() + QPointF(delta, delta) );
-        p->setZValue(++zLevel);
+        // create picture and load the file
+        PictureItem * p = createPicture(pos);
         if (!p->loadPhoto(localFile, true, true)) {
+            m_pictures.removeAll(p);
             delete p;
-            continue;
-        }
-        p->show();
-        m_pictures.append(p);
-        delta += 30;
+        } else
+            pos += QPoint(30, 30);
     }
 }
 
@@ -325,6 +299,20 @@ void Desk::drawForeground(QPainter * painter, const QRectF & /*rect*/)
     painter->drawText(QRect(0, 0, m_size.width(), 50), Qt::AlignCenter, m_titleText);
 }
 
+PictureItem * Desk::createPicture(const QPoint & pos)
+{
+    PictureItem * p = new PictureItem(this);
+    connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
+    connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
+    connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackPicture(int)));
+    connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+    //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    p->setPos(pos);
+    p->setZValue(m_pictures.isEmpty() ? 1 : (m_pictures.last()->zValue() + 1));
+    p->show();
+    m_pictures.append(p);
+    return p;
+}
 
 /// Title
 QString Desk::titleText() const
@@ -380,11 +368,38 @@ void Desk::slotBackgroundPicture()
     update();
 }
 
-void Desk::slotRaisePicture()
+void Desk::slotStackPicture(int op)
 {
     PictureItem * picture = dynamic_cast<PictureItem *>(sender());
-    if (picture)
-        picture->setZValue(++zLevel);
+    if (!picture || m_pictures.size() < 2)
+        return;
+
+    // move items
+    int size = m_pictures.size();
+    int index = m_pictures.indexOf(picture);
+    switch (op) {
+        case 1: // front
+            m_pictures.swap(index, size - 1);
+            break;
+        case 2: // raise
+            if (index >= size - 1)
+                return;
+            m_pictures.swap(index, index + 1);
+            break;
+        case 3: // lower
+            if (index <= 0)
+                return;
+            m_pictures.swap(index, index - 1);
+            break;
+        case 4: // back
+            m_pictures.swap(index, 0);
+            break;
+    }
+
+    // reassign z-levels
+    int z = 1;
+    foreach (PictureItem * picture, m_pictures)
+        picture->setZValue(z++);
 }
 
 void Desk::slotDeletePicture()

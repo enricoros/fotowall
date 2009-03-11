@@ -55,10 +55,6 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         QBasicTimer                 m_aniTimer;
 
     private Q_SLOTS:
-        void slotStackFront();
-        void slotStackRaise();
-        void slotStackLower();
-        void slotStackBack();
         void slotFrameSelected(QListWidgetItem * item);
         void slotToggleMirror(bool enabled);
         void slotClose();

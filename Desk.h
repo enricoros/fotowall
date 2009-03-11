@@ -52,6 +52,7 @@ class Desk : public QGraphicsScene
         void drawForeground( QPainter * painter, const QRectF & rect );
 
     private:
+        PictureItem * createPicture(const QPoint & pos);
         QList<PictureItem *> m_pictures;
         QList<PicturePropertiesItem *> m_properties;
         PictureItem * m_backPicture;
@@ -67,7 +68,7 @@ class Desk : public QGraphicsScene
     private Q_SLOTS:
         void slotConfigurePicture(const QPoint & scenePoint);
         void slotBackgroundPicture();
-        void slotRaisePicture();
+        void slotStackPicture(int);
         void slotDeletePicture();
         void slotDeleteProperties();
 

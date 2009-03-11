@@ -50,6 +50,10 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(slotClose()));
     connect(m_ui->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotFrameSelected(QListWidgetItem*)));
     connect(m_ui->reflection, SIGNAL(toggled(bool)), this, SLOT(slotToggleMirror(bool)));
+    connect(m_ui->front, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackFront()));
+    connect(m_ui->raise, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackRaise()));
+    connect(m_ui->lower, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackLower()));
+    connect(m_ui->back, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackBack()));
     connect(m_ui->invertButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipVertically()));
     connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipHorizontally()));
 
@@ -153,23 +157,6 @@ void PicturePropertiesItem::timerEvent(QTimerEvent * event)
         }
     }
     QObject::timerEvent(event);
-}
-
-void PicturePropertiesItem::slotStackFront()
-{
-    //m_pictureItem->
-}
-
-void PicturePropertiesItem::slotStackRaise()
-{
-}
-
-void PicturePropertiesItem::slotStackLower()
-{
-}
-
-void PicturePropertiesItem::slotStackBack()
-{
 }
 
 void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
