@@ -14,6 +14,7 @@
 
 #include "Desk.h"
 #include "ColorPickerItem.h"
+#include "HighlightItem.h"
 #include "PictureItem.h"
 #include "PicturePropertiesItem.h"
 #include "frames/FrameFactory.h"
@@ -165,6 +166,19 @@ void Desk::loadPictures(const QStringList & fileNames)
     }
 }
 
+#define HIGHLIGHT(pos) \
+    {HighlightItem * hi = new HighlightItem(); \
+    addItem(hi); \
+    hi->setPos(pos); \
+    hi->show();}
+void Desk::showHelp()
+{
+    QRectF r = sceneRect();
+    HIGHLIGHT(r.topLeft());
+    HIGHLIGHT(r.topRight())
+    HIGHLIGHT(r.bottomRight())
+    HIGHLIGHT(QPointF(r.center().x(), r.top()));
+}
 
 /// Drag & Drop pictures
 void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)

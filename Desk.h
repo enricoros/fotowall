@@ -38,10 +38,11 @@ class Desk : public QGraphicsScene
         QString titleText() const;
         void setTitleText(const QString & text);
 
-        // save, restore, load
+        // save, restore, load, help
         void save(QDataStream & data) const;
         void restore(QDataStream & data);
         void loadPictures(const QStringList & fileNames);
+        void showHelp();
 
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );

@@ -12,36 +12,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FotoWall_h__
-#define __FotoWall_h__
+#ifndef __HighLightItem_h__
+#define __HighLightItem_h__
 
-#include <QWidget>
-#include <QLabel>
+#include <QObject>
+#include <QGraphicsItem>
+#include <QBasicTimer>
 
-#include "ui_FotoWall.h"
-#include <QGraphicsView>
-class Desk;
-
-class FotoWall : public QWidget
+class HighlightItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        FotoWall(QWidget * parent = 0);
-        ~FotoWall();
+        HighlightItem();
+
+        // ::QGraphicsItem
+        QRectF boundingRect() const;
+        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+
+        // ::QObject
+        void timerEvent(QTimerEvent * event);
 
     private:
-        Ui::FotoWall *  ui;
-        QGraphicsView * m_view;
-        Desk *          m_desk;
-
-    private Q_SLOTS:
-        void on_addPictures_clicked();
-        void on_setTitle_clicked();
-        void on_helpLabel_linkActivated(const QString & link);
-        void on_loadButton_clicked();
-        void on_saveButton_clicked();
-        void on_pngButton_clicked();
-        void on_quitButton_clicked();
+        void resize(double rad);
+        QBasicTimer m_timer;
+        int m_phase;
+        double m_radius;
 };
 
 #endif

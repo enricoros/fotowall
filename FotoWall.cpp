@@ -55,18 +55,20 @@ class FWGraphicsView : public QGraphicsView {
 
 FotoWall::FotoWall(QWidget * parent)
     : QWidget(parent)
+    , ui(new Ui::FotoWall())
     , m_view(0)
     , m_desk(0)
 {
-    setupUi(this);
+    // init ui
+    ui->setupUi(this);
     setWindowIcon( QIcon(":/data/fotowall.png") );
 
     // create our custom desk
     m_desk = new Desk(this);
 
     // add the graphicsview
-    m_view = new FWGraphicsView(m_desk, centralWidget);
-    QVBoxLayout * lay = new QVBoxLayout(centralWidget);
+    m_view = new FWGraphicsView(m_desk, ui->centralWidget);
+    QVBoxLayout * lay = new QVBoxLayout(ui->centralWidget);
     lay->setSpacing(0);
     lay->setMargin(0);
     lay->addWidget(m_view);
@@ -85,6 +87,7 @@ FotoWall::~FotoWall()
     // delete everything
     delete m_view;
     delete m_desk;
+    delete ui;
 }
 
 
@@ -96,7 +99,7 @@ void FotoWall::on_addPictures_clicked()
         extensions += "*." + format + " ";
 
     // show the files dialog
-    QStringList fileNames = QFileDialog::getOpenFileNames(centralWidget, tr("Select one or more pictures to add"), QString(), tr("Images (%1)").arg(extensions));
+    QStringList fileNames = QFileDialog::getOpenFileNames(ui->centralWidget, tr("Select one or more pictures to add"), QString(), tr("Images (%1)").arg(extensions));
     if (!fileNames.isEmpty())
         m_desk->loadPictures(fileNames);
 }
@@ -105,9 +108,14 @@ void FotoWall::on_setTitle_clicked()
 {
     QString title = m_desk->titleText();
     bool ok = false;
-    title = QInputDialog::getText(cmdFrame, tr("Title"), tr("Insert the title"), QLineEdit::Normal, title, &ok);
+    title = QInputDialog::getText(ui->cmdFrame, tr("Title"), tr("Insert the title"), QLineEdit::Normal, title, &ok);
     if (ok)
         m_desk->setTitleText(title);
+}
+
+void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)
+{
+    m_desk->showHelp();
 }
 
 void FotoWall::on_loadButton_clicked()
