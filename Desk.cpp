@@ -13,9 +13,10 @@
  ***************************************************************************/
 
 #include "Desk.h"
-#include "PictureItem.h"
-#include "frames/FrameFactory.h"
 #include "ColorPickerItem.h"
+#include "PictureItem.h"
+#include "PicturePropertiesItem.h"
+#include "frames/FrameFactory.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 #include <QImageReader>
@@ -81,13 +82,20 @@ Desk::~Desk()
 
 void Desk::resize(const QSize & size)
 {
+    // relayout contents
     m_size = size;
     m_rect = QRectF(0, 0, m_size.width(), m_size.height());
     m_titleColorPicker->setPos((size.width() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(size.width() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
+
+    // ensure visibility
     foreach (PictureItem * picture, m_pictures)
         picture->ensureVisible(m_rect);
+    foreach (PicturePropertiesItem * properties, m_properties)
+        properties->keepInBoundaries(m_rect.toRect());
+
+    // change my rect
     setSceneRect(m_rect);
 }
 
@@ -132,12 +140,12 @@ void Desk::restore(QDataStream & data)
     data >> photos;
     for (int i = 0; i < photos; i++) {
         // HACK: unify the loading code (1)
-        PictureItem * p = new PictureItem();
+        PictureItem * p = new PictureItem(this);
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
         connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
-        addItem(p);
+        connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
+        connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
         if (!p->restore(data)) {
             delete p;
             continue;
@@ -156,13 +164,12 @@ void Desk::loadPictures(const QStringList & fileNames)
             continue;
 
         // HACK: unify the loading code (2)
-        PictureItem * p = new PictureItem();
+        PictureItem * p = new PictureItem(this);
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        connect(p, SIGNAL(configureMe()), this, SLOT(slotConfigurePicture()));
+        connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
         connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
         connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
         connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        addItem(p);
         p->setPos(sceneRect().center().toPoint() + QPointF(delta, delta) );
         p->setZValue(++zLevel);
         if (!p->loadPhoto(localFile, true, true)) {
@@ -216,7 +223,7 @@ void Desk::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
         event->accept();
     }
 }
-#include "MirrorItem.h"
+
 void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     // dispatch to children
@@ -234,13 +241,12 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
             continue;
 
         // HACK: unify the loading code (3)
-        PictureItem * p = new PictureItem();
+        PictureItem * p = new PictureItem(this);
         //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         connect(p, SIGNAL(configureMe()), this, SLOT(slotConfigurePicture()));
         connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
         connect(p, SIGNAL(raiseMe()), this, SLOT(slotRaisePicture()));
         connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
-        addItem(p);
         p->setPos(event->scenePos() + QPointF(delta, delta) );
         p->setZValue(++zLevel);
         if (!p->loadPhoto(localFile, true, true)) {
@@ -250,7 +256,6 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         p->show();
         m_pictures.append(p);
         delta += 30;
-        (new MirrorItem(p))->show();
     }
 }
 
@@ -335,18 +340,27 @@ void Desk::setTitleText(const QString & text)
 
 
 /// Slots
-#include "PicturePropertiesItem.h"
-void Desk::slotConfigurePicture()
+void Desk::slotConfigurePicture(const QPoint & scenePoint)
 {
     PictureItem * picture = dynamic_cast<PictureItem *>(sender());
     if (!picture)
         return;
 
+    // skip if an item is already present
+    foreach (PicturePropertiesItem * item, m_properties)
+        if (item->pictureItem() == picture)
+            return;
+
     // create the properties item
-    PicturePropertiesItem * pItem = new PicturePropertiesItem(picture);
-    pItem->setPos(picture->pos());
-    pItem->show();
-    addItem(pItem);
+    PicturePropertiesItem * pp = new PicturePropertiesItem(picture);
+    connect(pp, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
+    addItem(pp);
+    pp->show();
+    pp->setPos(scenePoint - QPoint(10, 10));
+    pp->keepInBoundaries(sceneRect().toRect());
+
+    // add to the internal list
+    m_properties.append(pp);
 }
 
 void Desk::slotBackgroundPicture()
@@ -379,15 +393,40 @@ void Desk::slotDeletePicture()
     if (!picture)
         return;
 
-    // unset background if deleting picture
+    // unset background if deleting its picture
     if (m_backPicture == picture) {
         m_backPicture = 0;
         m_backCache = QPixmap();
         update();
     }
+
+    // remove property if deleting its picture
+    QList<PicturePropertiesItem *>::iterator ppIt = m_properties.begin();
+    while (ppIt != m_properties.end()) {
+        PicturePropertiesItem * pp = *ppIt;
+        if (pp->pictureItem() == picture) {
+            delete pp;
+            ppIt = m_properties.erase(ppIt);
+        } else
+            ++ppIt;
+    }
+
+    // unlink picture from lists, myself(the Scene) and memory
     m_pictures.removeAll(picture);
     removeItem(picture);
     picture->deleteLater();
+}
+
+void Desk::slotDeleteProperties()
+{
+    PicturePropertiesItem * properties = dynamic_cast<PicturePropertiesItem *>(sender());
+    if (!properties)
+        return;
+
+    // unlink picture from lists, myself(the Scene) and memory
+    m_properties.removeAll(properties);
+    removeItem(properties);
+    properties->deleteLater();
 }
 
 void Desk::slotTitleColorChanged()

@@ -37,6 +37,12 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         void loadProperties();
         void applyProperties();
 
+        // misc
+        void keepInBoundaries(const QRect & rect);
+
+    Q_SIGNALS:
+        void closed();
+
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
@@ -50,7 +56,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         bool                        m_aniDirection;
         QBasicTimer                 m_aniTimer;
 
-    private slots:
+    private Q_SLOTS:
         void slotFrameSelected(QListWidgetItem * item);
         void slotClickedOk();
         void slotClickedCancel();

@@ -86,6 +86,12 @@ void HeartFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frameR
     }
 }
 
+void HeartFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect*/) const
+{
+    textItem->hide();
+    //textItem->setPos( frameRect.left() + d->padL, frameRect.center().y() - textItem->boundingRect().size().height() / 2 );
+}
+
 void HeartFrame::paint(QPainter * painter, const QRect & frameRect, bool /*opaqueContents*/)
 {
     QLinearGradient lg(0, frameRect.top(), frameRect.width() / 8, frameRect.height() / 2);

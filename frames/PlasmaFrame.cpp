@@ -144,9 +144,10 @@ void PlasmaFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frame
     }
 }
 
-void PlasmaFrame::layoutText(QGraphicsItem * textItem, const QRect & frameRect) const
+void PlasmaFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect*/) const
 {
-    textItem->setPos( frameRect.left() + d->padL, frameRect.center().y() - textItem->boundingRect().size().height() / 2 );
+    textItem->hide();
+    //textItem->setPos( frameRect.left() + d->padL, frameRect.center().y() - textItem->boundingRect().size().height() / 2 );
 }
 
 void PlasmaFrame::paint(QPainter * painter, const QRect & frameRect, bool opaqueContents)

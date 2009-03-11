@@ -25,7 +25,8 @@ Q_GLOBAL_STATIC(FrameFactory, d)
 #define SVG_BASE_CLASS 0x1000
 #define FRAME_SVG_1 ":/plasma-frames/1.svg"
 #define FRAME_SVG_2 ":/plasma-frames/2.svg"
-#define DEFAULT_FRAME 0x1000
+#define DEFAULT_PANEL_FRAME SVG_BASE_CLASS
+#define DEFAULT_PICTURE_FRAME FRAME_DEF
 
 
 // STATICS
@@ -50,9 +51,14 @@ Frame * FrameFactory::createFrame(quint32 frameClass)
     return 0;
 }
 
-Frame * FrameFactory::defaultFrame()
+Frame * FrameFactory::defaultPanelFrame()
 {
-    return createFrame(d()->m_defaultClass);
+    return createFrame(d()->m_defaultPanel);
+}
+
+Frame * FrameFactory::defaultPictureFrame()
+{
+    return createFrame(d()->m_defaultPicture);
 }
 
 void FrameFactory::addSvgFrame(const QString & fileName)
@@ -60,19 +66,30 @@ void FrameFactory::addSvgFrame(const QString & fileName)
     d()->m_svgMap[ d()->m_svgClassIndex++ ] = fileName;
 }
 
-quint32 FrameFactory::defaultFrameClass()
+quint32 FrameFactory::defaultPanelClass()
 {
-    return d()->m_defaultClass;
+    return d()->m_defaultPanel;
 }
 
-void FrameFactory::setDefaultFrameClass(quint32 frameClass)
+void FrameFactory::setDefaultPanelClass(quint32 frameClass)
 {
-    d()->m_defaultClass = frameClass;
+    d()->m_defaultPanel = frameClass;
+}
+
+quint32 FrameFactory::defaultPictureClass()
+{
+    return d()->m_defaultPicture;
+}
+
+void FrameFactory::setDefaultPictureClass(quint32 frameClass)
+{
+    d()->m_defaultPicture = frameClass;
 }
 
 // class impl
 FrameFactory::FrameFactory()
-    : m_defaultClass(DEFAULT_FRAME)
+    : m_defaultPanel(DEFAULT_PANEL_FRAME)
+    , m_defaultPicture(DEFAULT_PICTURE_FRAME)
 {
     // init default frames
     m_svgClassIndex = SVG_BASE_CLASS;

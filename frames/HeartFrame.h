@@ -30,6 +30,7 @@ class HeartFrame : public StandardFrame
         bool isShaped() const;
         QPainterPath frameShape(const QRect & frameRect) const;
         void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
+        void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
         void paint(QPainter * painter, const QRect & frameRect, bool opaqueContents);
 };
 

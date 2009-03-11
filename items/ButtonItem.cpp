@@ -27,8 +27,8 @@ ButtonItem::ButtonItem(Type type, const QBrush & brush, const QIcon & icon, QGra
     , m_brush(brush)
 {
     setAcceptsHoverEvents(true);
-    if (type == Control)
-        setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+    //if (type == Control)
+    //    setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
 }
 
 ButtonItem::Type ButtonItem::buttonType() const

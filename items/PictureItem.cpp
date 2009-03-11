@@ -14,6 +14,7 @@
 
 #include "PictureItem.h"
 #include "ButtonItem.h"
+#include "MirrorItem.h"
 #include "frames/FrameFactory.h"
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -46,12 +47,13 @@ class MyTextItem : public QGraphicsTextItem {
     if (m_gfxChangeSignalTimer) \
         m_gfxChangeSignalTimer->start();
 
-PictureItem::PictureItem(QGraphicsItem * parent)
+PictureItem::PictureItem(QGraphicsScene * scene, QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_frame(0)
     , m_photo(0)
     , m_opaquePhoto(false)
     , m_size(200, 150)
+    , m_mirrorItem(0)
     , m_gfxChangeSignalTimer(0)
     , m_scaleRefreshTimer(0)
     , m_scaling(false)
@@ -71,34 +73,34 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     m_scaleButton = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
     connect(m_scaleButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotResize(const QPointF&,Qt::KeyboardModifiers)));
     connect(m_scaleButton, SIGNAL(doubleClicked()), this, SLOT(slotResetAspectRatio()));
-    m_controls << m_scaleButton;
+    m_controlItems << m_scaleButton;
 
     m_rotateButton = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
     connect(m_rotateButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&)));
     connect(m_rotateButton, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
-    m_controls << m_rotateButton;
+    m_controlItems << m_rotateButton;
 
     ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
     connect(bFront, SIGNAL(clicked()), this, SIGNAL(raiseMe()));
-    m_controls << bFront;
+    m_controlItems << bFront;
 
     ButtonItem * bConf = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-configure.png"), this);
-    connect(bConf, SIGNAL(clicked()), this, SIGNAL(configureMe()));
-    m_controls << bConf;
+    connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
+    m_controlItems << bConf;
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
-    m_controls << bDelete;
+    m_controlItems << bDelete;
 
     ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
     bFlipH->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     connect(bFlipH, SIGNAL(clicked()), this, SLOT(slotFlipHorizontally()));
-    m_controls << bFlipH;
+    m_controlItems << bFlipH;
 
     ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-flip-vertical.png"), this);
     bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     connect(bFlipV, SIGNAL(clicked()), this, SLOT(slotFlipVertically()));
-    m_controls << bFlipV;
+    m_controlItems << bFlipV;
 
     m_textItem = new MyTextItem(this);
     m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -108,17 +110,25 @@ PictureItem::PictureItem(QGraphicsItem * parent)
     m_textItem->setPlainText(tr("..."));
 
     // create default frame
-    Frame * frame = FrameFactory::defaultFrame();
+    Frame * frame = FrameFactory::defaultPictureFrame();
     setFrame(frame);
 
     // hide and relayout buttons
     hoverLeaveEvent(0 /*HACK*/);
     relayoutContents();
+
+    // add to the scene
+    scene->addItem(this);
+
+    // display mirror
+    setMirrorEnabled(true);
 }
 
 PictureItem::~PictureItem()
 {
+    delete m_mirrorItem;
     delete m_frame;
+    delete m_photo;
 }
 
 bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
@@ -164,6 +174,23 @@ void PictureItem::setFrame(Frame * frame)
 quint32 PictureItem::frameClass() const
 {
     return m_frame->frameClass();
+}
+
+bool PictureItem::mirrorEnabled() const
+{
+    return m_mirrorItem;
+}
+
+void PictureItem::setMirrorEnabled(bool enabled)
+{
+    if (m_mirrorItem && !enabled) {
+        m_mirrorItem->deleteLater();
+        m_mirrorItem = 0;
+    }
+    if (enabled && !m_mirrorItem) {
+        m_mirrorItem = new MirrorItem(this);
+        m_mirrorItem->show();
+    }
 }
 
 void PictureItem::save(QDataStream & data) const
@@ -218,13 +245,13 @@ QRectF PictureItem::boundingRect() const
 
 void PictureItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
-    foreach (ButtonItem * button, m_controls)
+    foreach (ButtonItem * button, m_controlItems)
         button->show();
 }
 
 void PictureItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
-    foreach (ButtonItem * button, m_controls)
+    foreach (ButtonItem * button, m_controlItems)
         button->hide();
 }
 
@@ -289,7 +316,7 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*o
 void PictureItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
-        emit configureMe();
+        emit configureMe(event->scenePos().toPoint());
     QGraphicsItem::mousePressEvent(event);
 }
 
@@ -347,7 +374,7 @@ void PictureItem::relayoutContents()
     QRect frameRect = boundingRect().toRect();
 
     // layout all buttons and text
-    m_frame->layoutButtons(m_controls, frameRect);
+    m_frame->layoutButtons(m_controlItems, frameRect);
     m_frame->layoutText(m_textItem, frameRect);
 }
 
@@ -406,6 +433,14 @@ void PictureItem::slotFlipVertically()
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED
+}
+
+void PictureItem::slotConfigure()
+{
+    ButtonItem * item = dynamic_cast<ButtonItem *>(sender());
+    if (!item)
+        return;
+    emit configureMe(item->scenePos().toPoint());
 }
 
 void PictureItem::slotRotate(const QPointF & controlPoint)

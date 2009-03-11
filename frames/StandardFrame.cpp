@@ -67,6 +67,7 @@ void StandardFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & fra
 
 void StandardFrame::layoutText(QGraphicsItem * textItem, const QRect & frameRect) const
 {
+    textItem->show();
     textItem->setPos(frameRect.left() + FW_MARGIN, frameRect.bottom() - FW_MARGIN - FW_LABH + FW_MARGIN);
 }
 

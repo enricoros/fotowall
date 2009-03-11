@@ -20,8 +20,9 @@
 #include <QIcon>
 #include <QPointF>
 #include <QObject>
-class Frame;
 class ButtonItem;
+class Frame;
+class MirrorItem;
 class QGraphicsTextItem;
 
 /**
@@ -31,7 +32,7 @@ class PictureItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        PictureItem(QGraphicsItem * parent = 0);
+        PictureItem(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~PictureItem();
 
         // photo
@@ -41,6 +42,10 @@ class PictureItem : public QObject, public QGraphicsItem
         // frame
         void setFrame(Frame * frame);
         quint32 frameClass() const;
+
+        // mirror
+        bool mirrorEnabled() const;
+        void setMirrorEnabled(bool enabled);
 
         // save/restore
         void save(QDataStream & data) const;
@@ -64,7 +69,7 @@ class PictureItem : public QObject, public QGraphicsItem
 
     Q_SIGNALS:
         void gfxChange();
-        void configureMe();
+        void configureMe(const QPoint & scenePoint);
         void backgroundMe();
         void raiseMe();
         void deleteMe();
@@ -77,10 +82,11 @@ class PictureItem : public QObject, public QGraphicsItem
         QPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;
         QSize       m_size;
-        QList<ButtonItem *> m_controls;
+        QList<ButtonItem *> m_controlItems;
         ButtonItem * m_scaleButton;
         ButtonItem * m_rotateButton;
         QGraphicsTextItem * m_textItem;
+        MirrorItem * m_mirrorItem;
         QTimer *    m_gfxChangeSignalTimer;
         QTimer *    m_scaleRefreshTimer;
         bool        m_scaling;
@@ -88,6 +94,7 @@ class PictureItem : public QObject, public QGraphicsItem
     private Q_SLOTS:
         void slotFlipHorizontally();
         void slotFlipVertically();
+        void slotConfigure();
         void slotRotate(const QPointF & controlPoint);
         void slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotResetAspectRatio();

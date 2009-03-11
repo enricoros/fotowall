@@ -21,6 +21,7 @@
 #include <QPixmap>
 #include <QRect>
 class PictureItem;
+class PicturePropertiesItem;
 class ColorPickerItem;
 
 class Desk : public QGraphicsScene
@@ -52,6 +53,7 @@ class Desk : public QGraphicsScene
 
     private:
         QList<PictureItem *> m_pictures;
+        QList<PicturePropertiesItem *> m_properties;
         PictureItem * m_backPicture;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
@@ -63,10 +65,11 @@ class Desk : public QGraphicsScene
         QPixmap m_backCache;
 
     private Q_SLOTS:
-        void slotConfigurePicture();
+        void slotConfigurePicture(const QPoint & scenePoint);
         void slotBackgroundPicture();
         void slotRaisePicture();
         void slotDeletePicture();
+        void slotDeleteProperties();
 
         void slotTitleColorChanged();
         void slotForeColorChanged();

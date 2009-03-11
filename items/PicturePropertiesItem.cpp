@@ -24,7 +24,7 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     : QGraphicsProxyWidget(parent)
     , m_ui(new Ui::PicturePropertiesItem())
     , m_pictureItem(0)
-    , m_frame(FrameFactory::defaultFrame())
+    , m_frame(FrameFactory::defaultPanelFrame())
     , m_aniStep(0)
     , m_aniDirection(true)
 {
@@ -87,7 +87,7 @@ void PicturePropertiesItem::loadProperties()
     quint32 frameClass = m_pictureItem->frameClass();
     for (int i = 0; i < m_ui->listWidget->count(); ++i) {
         QListWidgetItem * item = m_ui->listWidget->item(i);
-        if (item->data(Qt::UserRole).toInt() == frameClass) {
+        if (item->data(Qt::UserRole).toUInt() == frameClass) {
             item->setSelected(true);
             break;
         }
@@ -98,6 +98,14 @@ void PicturePropertiesItem::loadProperties()
 void PicturePropertiesItem::applyProperties()
 {
     qWarning("NOT IMPLEMENTED 2");
+}
+
+void PicturePropertiesItem::keepInBoundaries(const QRect & rect)
+{
+    QRect r = mapToScene(boundingRect()).boundingRect().toRect();
+    r.setLeft(qBound(rect.left(), r.left(), rect.right() - r.width()));
+    r.setTop(qBound(rect.top(), r.top(), rect.bottom() - r.height()));
+    setPos(r.topLeft());
 }
 
 void PicturePropertiesItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
@@ -116,8 +124,10 @@ void PicturePropertiesItem::paint(QPainter * painter, const QStyleOptionGraphics
     m_frame->paint(painter, boundingRect().toRect(), false);
 
     // unbreak parent
+#if 0
     if (m_aniStep >= 10 && m_aniStep <= 90)
         painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+#endif
     QGraphicsProxyWidget::paint(painter, option, widget);
 }
 
@@ -127,26 +137,28 @@ void PicturePropertiesItem::timerEvent(QTimerEvent * event)
     if (event->timerId() == m_aniTimer.timerId()) {
         if (m_aniDirection) {
             m_aniStep += 5;
+            // end of FadeIn
             if (m_aniStep >= 100) {
                 m_aniStep = 100;
                 resetTransform();
                 m_aniTimer.stop();
-            } else {
-                qreal xCenter = boundingRect().center().x();
-                setTransform(QTransform().translate(xCenter, 0).rotate((90*(100-m_aniStep)*(100-m_aniStep)) / 10000, Qt::XAxis).translate(-xCenter, 0));
+                return;
             }
+            qreal xCenter = boundingRect().center().x();
+            setTransform(QTransform().translate(xCenter, 0).rotate((90*(100-m_aniStep)*(100-m_aniStep)) / 10000, Qt::XAxis).translate(-xCenter, 0));
         } else {
-            m_aniStep -= 5;
+            m_aniStep -= 10;
+            // end of FadeOut
             if (m_aniStep <= 0) {
                 m_aniStep = 0;
                 resetTransform();
                 m_aniTimer.stop();
-                // CHECK if this is the right place
-                hide();
-            } else {
-                qreal xCenter = boundingRect().center().x();
-                setTransform(QTransform().translate(xCenter, 0).rotate(-90 + (90*m_aniStep*m_aniStep) / 10000, Qt::XAxis).translate(-xCenter, 0));
+                emit closed();
+                return;
             }
+            qreal xCenter = boundingRect().center().x();
+            qreal yCenter = boundingRect().center().y();
+            setTransform(QTransform().translate(xCenter, yCenter).rotate(-90 + (90*m_aniStep*m_aniStep) / 10000, Qt::XAxis).translate(-xCenter, -yCenter));
         }
     }
     QObject::timerEvent(event);

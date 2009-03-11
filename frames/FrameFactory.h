@@ -27,17 +27,21 @@ class FrameFactory
 
         // create a frame
         static Frame * createFrame(quint32 frameClass);
-        static Frame * defaultFrame();
+        static Frame * defaultPanelFrame();
+        static Frame * defaultPictureFrame();
 
         // add new types
         static void addSvgFrame(const QString & fileName);
 
         // change the default class
-        static quint32 defaultFrameClass();
-        static void setDefaultFrameClass(quint32 frameClass);
+        static quint32 defaultPanelClass();
+        static void setDefaultPanelClass(quint32 frameClass);
+        static quint32 defaultPictureClass();
+        static void setDefaultPictureClass(quint32 frameClass);
 
     private:
-        quint32 m_defaultClass;
+        quint32 m_defaultPanel;
+        quint32 m_defaultPicture;
         quint32 m_svgClassIndex;
         QMap<quint32, QString> m_svgMap;
 
