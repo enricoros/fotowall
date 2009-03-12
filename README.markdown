@@ -10,7 +10,11 @@ For more news: http://code.google.com/p/fotowall
 ChangeLog
 ---------
 
-Unreleased Version 0.3; New Stuff:
+Unreleased Version:
+
+* ...
+
+Version 0.3:
 
 * Configuration Panel: right click on an image and edit properties
 * More Frame types (default, heart, Plasma backgrounds) [David Eccher]
