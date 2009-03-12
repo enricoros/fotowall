@@ -35,6 +35,9 @@ class PictureItem : public QObject, public QGraphicsItem
         PictureItem(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~PictureItem();
 
+        // TEMP: replace with globals
+        static bool s_defaultMirrorEnabled;
+
         // photo
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
         QPixmap renderPhoto(const QSize & size) const;

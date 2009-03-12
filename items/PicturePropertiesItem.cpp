@@ -177,6 +177,7 @@ void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
 
 void PicturePropertiesItem::slotToggleMirror(bool enabled)
 {
+    PictureItem::s_defaultMirrorEnabled = enabled;
     m_pictureItem->setMirrorEnabled(enabled);
 }
 

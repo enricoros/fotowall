@@ -31,7 +31,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
 {
     // set instance to this
     Q_ASSERT(!s_instance);
-    s_instance = 0;
+    s_instance = this;
 
     // show fancy help in internal browser
     BrowserItem * bi = new BrowserItem(this);
@@ -42,6 +42,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
 
 HelpItem::~HelpItem()
 {
+    s_instance = 0;
     delete m_frame;
 }
 
@@ -52,14 +53,12 @@ QRectF HelpItem::boundingRect() const
 
 void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
+    painter->fillRect(m_frame->contentsRect(boundingRect().toRect()), QColor(255, 255, 255, 64));
     m_frame->paint(painter, boundingRect().toRect(), false);
 }
 
 void HelpItem::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
-    // unregister instance
-    s_instance = 0;
-
     // this seems safe.. let's hope it doesn't change
     delete this;
 }

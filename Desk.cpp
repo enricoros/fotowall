@@ -33,7 +33,6 @@
 Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
     , m_backPicture(0)
-    , m_helpItem(0)
 {
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
@@ -71,7 +70,7 @@ Desk::Desk(QObject * parent)
 
 Desk::~Desk()
 {
-    delete m_helpItem;
+    delete HelpItem::instance();
     delete m_titleColorPicker;
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
@@ -90,8 +89,8 @@ void Desk::resize(const QSize & size)
     m_titleColorPicker->setPos((size.width() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(size.width() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
-    if (m_helpItem)
-        m_helpItem->setPos(m_rect.center().toPoint());
+    if (HelpItem::instance())
+        HelpItem::instance()->setPos(m_rect.center().toPoint());
 
     // ensure visibility
     foreach (PictureItem * picture, m_pictures)
@@ -246,7 +245,7 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
 
     // or handle as a Desk drop event
     event->accept();
-    QPoint pos = event->pos().toPoint();
+    QPoint pos = event->scenePos().toPoint();
     foreach (const QUrl & url, event->mimeData()->urls()) {
         QString localFile = url.toLocalFile();
         if (!QFile::exists(localFile))

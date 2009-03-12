@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>514</width>
-    <height>365</height>
+    <width>587</width>
+    <height>322</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
    <item>
     <widget class="QFrame" name="cmdFrame">
      <property name="styleSheet">
-      <string>QFrame {
+      <string>#cmdFrame {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
 }</string>
      </property>
@@ -50,10 +50,27 @@
         <property name="text">
          <string>set title</string>
         </property>
+        <property name="icon">
+         <iconset resource="fotowall.qrc">
+          <normaloff>:/data/action-add.png</normaloff>:/data/action-add.png</iconset>
+        </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="spacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>16</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
        <widget class="QLabel" name="helpLabel">
@@ -121,6 +138,13 @@ p, li { white-space: pre-wrap; }
         <property name="text">
          <string>render</string>
         </property>
+        <property name="icon">
+         <iconset resource="fotowall.qrc">
+          <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
+        </property>
        </widget>
       </item>
       <item>
@@ -164,6 +188,9 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>load</string>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
@@ -209,6 +236,9 @@ p, li { white-space: pre-wrap; }
         <property name="text">
          <string>save</string>
         </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
+        </property>
        </widget>
       </item>
       <item>
@@ -252,6 +282,13 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>quit</string>
+        </property>
+        <property name="icon">
+         <iconset resource="fotowall.qrc">
+          <normaloff>:/data/action-delete.png</normaloff>:/data/action-delete.png</iconset>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>

@@ -28,6 +28,9 @@
 // from FotoWall.cpp
 extern bool globalExportingFlag;
 
+// init statics
+bool PictureItem::s_defaultMirrorEnabled = true;
+
 class MyTextItem : public QGraphicsTextItem {
     public:
         MyTextItem(QGraphicsItem * parent = 0)
@@ -121,7 +124,7 @@ PictureItem::PictureItem(QGraphicsScene * scene, QGraphicsItem * parent)
     scene->addItem(this);
 
     // display mirror
-    setMirrorEnabled(true);
+    setMirrorEnabled(s_defaultMirrorEnabled);
 }
 
 PictureItem::~PictureItem()
