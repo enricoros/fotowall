@@ -20,6 +20,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRect>
+class HelpItem;
 class PictureItem;
 class PicturePropertiesItem;
 class ColorPickerItem;
@@ -61,6 +62,7 @@ class Desk : public QGraphicsScene
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;
         ColorPickerItem * m_grad2ColorPicker;
+        HelpItem * m_helpItem;
         QSize m_size;
         QRectF m_rect;
         QString m_titleText;

@@ -12,6 +12,7 @@ ChangeLog
 
 Unreleased Version 0.3; New Stuff:
 
+* Configuration Panel: right click on an image and edit properties
 * More Frame types (default, heart, Plasma backgrounds) [David Eccher]
 * More Image Formats (bmp, tiff, gif, ...) [Superstoned]
 * Reflections, and really cool ones
@@ -20,6 +21,7 @@ Unreleased Version 0.3; New Stuff:
 * More pretty (plasma icons) and usable (behavior) frame buttons
 * New buttons: "Raise to Front" [Superstoned], "Delete"
 * Fixed-ratio resize: hold CTRL while resizing
+* Tiny visual help
 * Drag&Drop: better behavior and can change a picture inside an existing frame too
 * Pictures stay on-screen
 
@@ -54,14 +56,11 @@ Newest:
 
 Suggested by Contrast on kde-look's page:
 
-* add an "add image" dialog (have a quick way of adding photos)
 * rotate the pictures on their z-axis
 * add the "color changing stuff" to the picture themselves
-* set a background picture (push a button and the picture goes into background in place of the gradient!)
 
 Suggested by Superstoned on kde-look's page:
 
-* document the scroll-wheel
 * change the color of the photos (middle colors changer?)
 * color changers: it'd be good if it was easier to find them (maybe just use buttons?). animations are cool, thoug...
 
@@ -73,7 +72,7 @@ Suggested by TeeAhr1 on kde-look's page:
 Building
 --------
 
-This FotoWall packages provides source code; to make an executable out of the
+This FotoWall package provides source code; to make an executable out of the
 sources you have to know a little about programming or ask one of your friends
 to do it ;-) Or just grab an 'executable package' from the project homepage.
 
@@ -100,6 +99,8 @@ Click here for downloading the file: http://www.microsoft.com/downloads/details.
 
 News
 ----
+
+**2009-03-11** The 0.3 release is really near.
 
 **2009-03-02** FotoWall is now on GitHub. Development will continue here. Changes are coming soon!
 

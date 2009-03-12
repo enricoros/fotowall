@@ -45,7 +45,7 @@ void HighlightItem::timerEvent(QTimerEvent * event)
 
         // resize
         prepareGeometryChange();
-        m_radius = sqrt((m_phase * 300) % 10000);
+        m_radius = sqrt((m_phase * 200) % 10000);
         update();
 
         // stop after 100 steps

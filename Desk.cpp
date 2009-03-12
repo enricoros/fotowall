@@ -14,6 +14,7 @@
 
 #include "Desk.h"
 #include "ColorPickerItem.h"
+#include "HelpItem.h"
 #include "HighlightItem.h"
 #include "PictureItem.h"
 #include "PicturePropertiesItem.h"
@@ -32,6 +33,7 @@
 Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
     , m_backPicture(0)
+    , m_helpItem(0)
 {
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
@@ -69,6 +71,7 @@ Desk::Desk(QObject * parent)
 
 Desk::~Desk()
 {
+    delete m_helpItem;
     delete m_titleColorPicker;
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
@@ -87,6 +90,8 @@ void Desk::resize(const QSize & size)
     m_titleColorPicker->setPos((size.width() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(size.width() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
+    if (m_helpItem)
+        m_helpItem->setPos(m_rect.center());
 
     // ensure visibility
     foreach (PictureItem * picture, m_pictures)
@@ -173,11 +178,20 @@ void Desk::loadPictures(const QStringList & fileNames)
     hi->show();}
 void Desk::showHelp()
 {
+    // blink items
     QRectF r = sceneRect();
     HIGHLIGHT(r.topLeft());
     HIGHLIGHT(r.topRight())
     HIGHLIGHT(r.bottomRight())
     HIGHLIGHT(QPointF(r.center().x(), r.top()));
+
+    // show help item if not already shown
+    if (!m_helpItem) {
+        m_helpItem = new HelpItem();
+        m_helpItem->setPos(r.center());
+        m_helpItem->show();
+        addItem(m_helpItem);
+    }
 }
 
 /// Drag & Drop pictures

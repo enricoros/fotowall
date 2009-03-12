@@ -327,10 +327,8 @@ void PictureItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-void PictureItem::wheelEvent(QGraphicsSceneWheelEvent * event)
+void PictureItem::wheelEvent(QGraphicsSceneWheelEvent * /*event*/)
 {
-    int newZValue = (int)(zValue() - event->delta() / 120);
-    setZValue(newZValue);
 }
 
 void PictureItem::keyPressEvent(QKeyEvent * event)
@@ -354,8 +352,10 @@ QVariant PictureItem::itemChange(GraphicsItemChange change, const QVariant & val
     }
 
     // set mirror z level when it changes
-    if (change == ItemZValueHasChanged && m_mirrorItem)
+    if (m_mirrorItem && change == ItemZValueHasChanged)
         m_mirrorItem->setZValue(zValue());
+    if (m_mirrorItem && change == ItemVisibleHasChanged)
+        m_mirrorItem->setVisible(isVisible());
 
     // keep the center inside the scene rect..
     if (change == ItemPositionChange && scene()) {
