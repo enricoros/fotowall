@@ -21,8 +21,7 @@ SOURCES += main.cpp \
 FORMS += FotoWall.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_en.ts \
-    translations/fotowall_it.ts \
-    translations/fotowall_fr.ts
+    translations/fotowall_it.ts
 
 # Components
 include(items/items.pri)
@@ -31,13 +30,16 @@ include(frames/frames.pri)
 # installation on Linux
 unix {
     target.path = /usr/bin
-    icon.files = data/fotowall.png
+    icon.files = fotowall.png
     icon.path = /usr/share/pixmaps
-    dfile.files = data/fotowall.desktop
+    dfile.files = fotowall.desktop
     dfile.path = /usr/share/applications
+    man.files = fotowall.1
+    man.path = /usr/share/man/man1
     INSTALLS += target \
         icon \
-        dfile
+        dfile \
+        man
 }
 
 # deployment on Windows

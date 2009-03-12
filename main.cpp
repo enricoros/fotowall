@@ -28,7 +28,7 @@ int main( int argc, char ** args )
     app.setOrganizationName("Enrico Ros");
 
     QTranslator translator;
-    translator.load( QString( "translations/fotowall_%1" ).arg( QLocale::system().name() ) );
+    translator.load( QString( ":/translations/fotowall_%1" ).arg( QLocale::system().name() ) );
     app.installTranslator(&translator);
 
     QSettings s;
