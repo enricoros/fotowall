@@ -8,7 +8,8 @@ RCC_DIR = .bin
 UI_DIR = .bin
 QT = core \
     gui \
-    svg
+    svg \
+    webkit
 
 # Input
 HEADERS += Desk.h \

@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "HelpItem.h"
+#include "BrowserItem.h"
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 #include "frames/FrameFactory.h"
@@ -20,6 +21,11 @@
 HelpItem::HelpItem()
     : m_frame(FrameFactory::defaultPanelFrame())
 {
+    // show fancy help in internal browser
+    BrowserItem * bi = new BrowserItem(this);
+    bi->setGeometry(m_frame->contentsRect(boundingRect().toRect()));
+    bi->browse("qrc:/data/help.html");
+    bi->setReadOnly(true);
 }
 
 HelpItem::~HelpItem()

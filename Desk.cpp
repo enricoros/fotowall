@@ -91,7 +91,7 @@ void Desk::resize(const QSize & size)
     m_grad1ColorPicker->setPos(size.width() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
     if (m_helpItem)
-        m_helpItem->setPos(m_rect.center());
+        m_helpItem->setPos(m_rect.center().toPoint());
 
     // ensure visibility
     foreach (PictureItem * picture, m_pictures)
@@ -188,7 +188,7 @@ void Desk::showHelp()
     // show help item if not already shown
     if (!m_helpItem) {
         m_helpItem = new HelpItem();
-        m_helpItem->setPos(r.center());
+        m_helpItem->setPos(r.center().toPoint());
         m_helpItem->show();
         addItem(m_helpItem);
     }
