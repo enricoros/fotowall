@@ -90,6 +90,10 @@ FotoWall::~FotoWall()
     delete ui;
 }
 
+void FotoWall::showHelp()
+{
+    m_desk->showHelp();
+}
 
 void FotoWall::on_addPictures_clicked()
 {
@@ -159,6 +163,7 @@ class SizeDialog : public QDialog {
         {
             setWindowTitle(tr("Select Resolution"));
 
+            QLabel * label = new QLabel(tr("The aspect ratio must be kept"), this);
             wSpin = new QSpinBox(this);
             wSpin->setRange(100, 10000);
             hSpin = new QSpinBox(this);
@@ -167,6 +172,7 @@ class SizeDialog : public QDialog {
             connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
 
             QHBoxLayout * lay = new QHBoxLayout(this);
+            lay->addWidget(label);
             lay->addWidget(wSpin);
             lay->addWidget(hSpin);
             lay->addWidget(closeButton);
@@ -177,6 +183,7 @@ class SizeDialog : public QDialog {
 
 void FotoWall::on_pngButton_clicked()
 {
+    QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.4.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
     QString fileName = QFileDialog::getSaveFileName(this, tr("Name a PNG file"), QDir::current().path(), "PNG Image (*.png)");
     if (fileName.isNull())
         return;

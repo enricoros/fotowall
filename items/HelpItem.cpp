@@ -18,9 +18,21 @@
 #include <QGraphicsSceneMouseEvent>
 #include "frames/FrameFactory.h"
 
-HelpItem::HelpItem()
-    : m_frame(FrameFactory::defaultPanelFrame())
+// initialize statics
+static HelpItem * s_instance = 0;
+HelpItem * HelpItem::instance()
 {
+    return s_instance;
+}
+
+HelpItem::HelpItem(QGraphicsItem * parent)
+    : QGraphicsItem(parent)
+    , m_frame(FrameFactory::defaultPanelFrame())
+{
+    // set instance to this
+    Q_ASSERT(!s_instance);
+    s_instance = 0;
+
     // show fancy help in internal browser
     BrowserItem * bi = new BrowserItem(this);
     bi->setGeometry(m_frame->contentsRect(boundingRect().toRect()));
@@ -35,7 +47,7 @@ HelpItem::~HelpItem()
 
 QRectF HelpItem::boundingRect() const
 {
-    return QRectF(-160, -150, 320, 300);
+    return QRectF(-280, -150, 560, 300);
 }
 
 void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
@@ -45,6 +57,9 @@ void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*opti
 
 void HelpItem::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
-    hide();
-    // ..reset the HelpItem pointer in Desk
+    // unregister instance
+    s_instance = 0;
+
+    // this seems safe.. let's hope it doesn't change
+    delete this;
 }

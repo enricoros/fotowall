@@ -29,6 +29,8 @@ class FotoWall : public QWidget
         FotoWall(QWidget * parent = 0);
         ~FotoWall();
 
+        void showHelp();
+
     private:
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;

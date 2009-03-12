@@ -21,8 +21,11 @@ class Frame;
 class HelpItem : public QGraphicsItem
 {
     public:
-        HelpItem();
+        HelpItem(QGraphicsItem * parent = 0);
         ~HelpItem();
+
+        // the actual instance, helps to have a single element
+        static HelpItem * instance();
 
         // ::QGraphicsItem
         QRectF boundingRect() const;

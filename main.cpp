@@ -15,6 +15,7 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
+#include <QSettings>
 #include "FotoWall.h"
 
 #define notImplemented() {qWarning("%s:%d: %s NOT Implemented!", __FILE__, __LINE__, __FUNCTION__);}
@@ -22,12 +23,23 @@
 int main( int argc, char ** args )
 {
     QApplication app(argc, args);
+    app.setApplicationName("Fotowall");
+    app.setApplicationVersion("0.3");
+    app.setOrganizationName("Enrico Ros");
 
     QTranslator translator;
     translator.load( QString( "translations/fotowall_%1" ).arg( QLocale::system().name() ) );
     app.installTranslator(&translator);
 
+    QSettings s;
+    bool firstTime = s.value("fotowall/firstTime", true).toBool();
+    s.setValue("fotowall/firstTime", false);
+
     FotoWall fw;
+    fw.resize(700, 500);
     fw.show();
+    if (firstTime)
+        fw.showHelp();
+
     return app.exec();
 }

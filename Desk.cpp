@@ -186,11 +186,12 @@ void Desk::showHelp()
     HIGHLIGHT(QPointF(r.center().x(), r.top()));
 
     // show help item if not already shown
-    if (!m_helpItem) {
-        m_helpItem = new HelpItem();
-        m_helpItem->setPos(r.center().toPoint());
-        m_helpItem->show();
-        addItem(m_helpItem);
+    if (!HelpItem::instance()) {
+        HelpItem * h = new HelpItem();
+        h->setPos(r.center().toPoint());
+        h->setZValue(10000);
+        h->show();
+        addItem(h);
     }
 }
 
