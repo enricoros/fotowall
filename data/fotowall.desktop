@@ -1,8 +1,9 @@
 [Desktop Entry]
-Categories=AudioVideo;Player;Video;Qt;KDE
-Exec=fotowall %f
-GenericName=Photo Collage Creator
-Comment=Create collages from a set of pictures
-Icon=fotowall
 Name=FotoWall
+GenericName=FotoWall
+Comment=Photo collection creativity tool
+Exec=fotowall
+Icon=fotowall
+Terminal=false
 Type=Application
+Categories=Graphics;Publishing;
