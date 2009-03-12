@@ -57,6 +57,8 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     connect(m_ui->background, SIGNAL(clicked()), m_pictureItem, SIGNAL(backgroundMe()));
     connect(m_ui->invertButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipVertically()));
     connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipHorizontally()));
+    connect(m_ui->save, SIGNAL(clicked()), m_pictureItem, SLOT(slotSave()));
+    connect(m_ui->del, SIGNAL(clicked()), m_pictureItem, SIGNAL(deleteMe()));
 
     // load values
     loadProperties();

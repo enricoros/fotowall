@@ -101,6 +101,7 @@ class PictureItem : public QObject, public QGraphicsItem
         void slotStackRaise();
         void slotStackLower();
         void slotStackBack();
+        void slotSave();
 
     private Q_SLOTS:
         void slotConfigure();

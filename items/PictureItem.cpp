@@ -16,10 +16,12 @@
 #include "ButtonItem.h"
 #include "MirrorItem.h"
 #include "frames/FrameFactory.h"
+#include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QPainter>
 #include <QTimer>
 #include <QUrl>
@@ -107,8 +109,8 @@ PictureItem::PictureItem(QGraphicsScene * scene, QGraphicsItem * parent)
 
     m_textItem = new MyTextItem(this);
     m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
-    QFont f("Serif");
-    f.setPointSizeF(7.5);
+    QFont f("Sans Serif");
+    //f.setPointSizeF(7.5);
     m_textItem->setFont(f);
     m_textItem->setPlainText(tr("..."));
 
@@ -461,6 +463,52 @@ void PictureItem::slotStackLower()
 void PictureItem::slotStackBack()
 {
     emit changeStack(4);
+}
+
+void PictureItem::slotSave()
+{
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the file name"), QDir::current().path(), "PNG Image (*.png)");
+    if (fileName.isNull())
+        return;
+    if (!fileName.endsWith(".png", Qt::CaseInsensitive))
+        fileName += ".png";
+
+    // find out the Transform chain to mirror a rotated item
+    QRectF sceneRectF = mapToScene(boundingRect()).boundingRect();
+    QTransform tFromItem = transform() * QTransform::fromTranslate(pos().x(), pos().y());
+    QTransform tFromPixmap = QTransform(1, 0, 0, 1, sceneRectF.left(), sceneRectF.top());
+    QTransform tItemToPixmap = tFromItem * tFromPixmap.inverted();
+
+    // render on the image
+    int iHeight = (int)sceneRectF.height();
+    if (m_mirrorItem)
+        iHeight += (int)m_mirrorItem->boundingRect().height();
+    QImage image((int)sceneRectF.width(), iHeight, QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
+
+    // enable hi-q rendering
+    bool prevFlag = globalExportingFlag;
+    globalExportingFlag = true;
+
+    // draw the transformed item onto the pixmap
+    QPainter p(&image);
+    p.setRenderHint(QPainter::Antialiasing, true);
+    p.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    p.setTransform(tItemToPixmap);
+    paint(&p, 0, 0);
+    if (m_mirrorItem) {
+        p.resetTransform();
+        p.translate(0, (qreal)((int)sceneRectF.height()));
+        m_mirrorItem->paint(&p, 0, 0);
+    }
+    p.end();
+    globalExportingFlag = prevFlag;
+
+    // save image and check errors
+    if (!image.save(fileName, "PNG") || !QFile::exists(fileName)) {
+        QMessageBox::warning(0, tr("Picture Save Error"), tr("Error saving picture to the file %1").arg(fileName));
+        return;
+    }
 }
 
 void PictureItem::slotConfigure()

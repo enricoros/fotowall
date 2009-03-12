@@ -19,7 +19,8 @@ Unreleased Version 0.3; New Stuff:
 * Mirror the photo by clicking on an axis [Alberto Scarpa]
 * DoubleClick on a picture -> set it as background, and vice-versa [Alberto Scarpa]
 * More pretty (plasma icons) and usable (behavior) frame buttons
-* New buttons: "Raise to Front" [Superstoned], "Delete"
+* Stacking order [Superstoned]
+* Export a single picture as-you-see-it on disk
 * Fixed-ratio resize: hold CTRL while resizing
 * Visual Help [Alberto Scarpa]
 * Drag&Drop: better behavior and can change a picture inside an existing frame too

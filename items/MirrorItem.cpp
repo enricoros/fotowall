@@ -65,7 +65,7 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         // draw the transformed item onto the pixmap
         QPainter p(&m_pixmap);
         p.setRenderHint(QPainter::Antialiasing, true);
-        p.setTransform(tItemToPixmap);
+        p.setTransform(tItemToPixmap, true);
         m_copy->paint(&p, 0, 0);
         p.end();
 
@@ -82,7 +82,10 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
     }
 
     // draw the reflection pixmap
-    painter->drawPixmap(option->rect, m_pixmap, option->rect);
+    if (!option)
+        painter->drawPixmap(0, 0, m_pixmap);
+    else
+        painter->drawPixmap(option->rect, m_pixmap, option->rect);
 }
 
 void MirrorItem::slotCopyChanged() // PictureItem independant
