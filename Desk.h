@@ -20,6 +20,8 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRect>
+class HelpItem;
+class HighlightItem;
 class PictureItem;
 class PicturePropertiesItem;
 class ColorPickerItem;
@@ -56,6 +58,8 @@ class Desk : public QGraphicsScene
         PictureItem * createPicture(const QPoint & pos);
         QList<PictureItem *> m_pictures;
         QList<PicturePropertiesItem *> m_properties;
+        QList<HighlightItem *> m_highlightItems;
+        HelpItem * m_helpItem;
         PictureItem * m_backPicture;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
@@ -76,6 +80,8 @@ class Desk : public QGraphicsScene
         void slotTitleColorChanged();
         void slotForeColorChanged();
         void slotGradColorChanged();
+
+        void slotCloseHelp();
 };
 
 #endif

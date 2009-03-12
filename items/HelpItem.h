@@ -15,22 +15,24 @@
 #ifndef __HelpItem_h__
 #define __HelpItem_h__
 
+#include <QObject>
 #include <QGraphicsItem>
 class Frame;
 
-class HelpItem : public QGraphicsItem
+class HelpItem : public QObject, public QGraphicsItem
 {
+    Q_OBJECT
     public:
         HelpItem(QGraphicsItem * parent = 0);
         ~HelpItem();
-
-        // the actual instance, helps to have a single element
-        static HelpItem * instance();
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
+
+    Q_SIGNALS:
+        void closeMe();
 
     private:
         Frame * m_frame;

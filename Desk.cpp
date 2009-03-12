@@ -32,6 +32,7 @@
 
 Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
+    , m_helpItem(0)
     , m_backPicture(0)
 {
     // create colorpickers
@@ -70,7 +71,8 @@ Desk::Desk(QObject * parent)
 
 Desk::~Desk()
 {
-    delete HelpItem::instance();
+    qDeleteAll(m_highlightItems);
+    delete m_helpItem;
     delete m_titleColorPicker;
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
@@ -89,8 +91,10 @@ void Desk::resize(const QSize & size)
     m_titleColorPicker->setPos((size.width() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(size.width() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
-    if (HelpItem::instance())
-        HelpItem::instance()->setPos(m_rect.center().toPoint());
+    if (m_helpItem)
+        m_helpItem->setPos(m_rect.center().toPoint());
+    foreach (HighlightItem * highlight, m_highlightItems)
+        highlight->reposition(m_rect);
 
     // ensure visibility
     foreach (PictureItem * picture, m_pictures)
@@ -170,28 +174,34 @@ void Desk::loadPictures(const QStringList & fileNames)
     }
 }
 
-#define HIGHLIGHT(pos) \
-    {HighlightItem * hi = new HighlightItem(); \
-    addItem(hi); \
-    hi->setPos(pos); \
-    hi->show();}
+#define HIGHLIGHT(x, y) \
+    { \
+        HighlightItem * highlight = new HighlightItem(); \
+        m_highlightItems.append(highlight); \
+        addItem(highlight); \
+        highlight->setZValue(10000); \
+        highlight->setPosF(x, y); \
+        highlight->show(); \
+    }
+
 void Desk::showHelp()
 {
-    // blink items
-    QRectF r = sceneRect();
-    HIGHLIGHT(r.topLeft());
-    HIGHLIGHT(r.topRight())
-    HIGHLIGHT(r.bottomRight())
-    HIGHLIGHT(QPointF(r.center().x(), r.top()));
+    if (m_helpItem)
+        return;
 
-    // show help item if not already shown
-    if (!HelpItem::instance()) {
-        HelpItem * h = new HelpItem();
-        h->setPos(r.center().toPoint());
-        h->setZValue(10000);
-        h->show();
-        addItem(h);
-    }
+    // help item
+    m_helpItem = new HelpItem();
+    connect(m_helpItem, SIGNAL(closeMe()), this, SLOT(slotCloseHelp()));
+    addItem(m_helpItem);
+    m_helpItem->setZValue(10001);
+    m_helpItem->setPos(sceneRect().center().toPoint());
+    m_helpItem->show();
+
+    // blink items
+    HIGHLIGHT(0.0, 0.0);
+    HIGHLIGHT(0.5, 0.0);
+    HIGHLIGHT(1.0, 0.0);
+    HIGHLIGHT(1.0, 1.0);
 }
 
 /// Drag & Drop pictures
@@ -486,4 +496,13 @@ void Desk::slotForeColorChanged()
 void Desk::slotGradColorChanged()
 {
     update();
+}
+
+void Desk::slotCloseHelp()
+{
+    m_helpItem->deleteLater();
+    m_helpItem = 0;
+    foreach (HighlightItem * highlight, m_highlightItems)
+        highlight->deleteAfterAnimation();
+    m_highlightItems.clear();
 }

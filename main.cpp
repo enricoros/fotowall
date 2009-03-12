@@ -37,7 +37,7 @@ int main( int argc, char ** args )
 
     FotoWall fw;
     fw.resize(700, 500);
-    fw.show();
+    fw.showMaximized();
     if (firstTime)
         fw.showHelp();
 

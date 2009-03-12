@@ -21,7 +21,7 @@ Unreleased Version 0.3; New Stuff:
 * More pretty (plasma icons) and usable (behavior) frame buttons
 * New buttons: "Raise to Front" [Superstoned], "Delete"
 * Fixed-ratio resize: hold CTRL while resizing
-* Tiny visual help
+* Visual Help [Alberto Scarpa]
 * Drag&Drop: better behavior and can change a picture inside an existing frame too
 * Pictures stay on-screen
 
@@ -39,10 +39,6 @@ I hope to expand the program as soon as I can, since there is many room for impr
 ### Current Wishlist
 
 This is the current list of requested features.
-
-Special requests:
-
-* checkbox for a "beginner mode" (Alberto Scarpa)
 
 Newest:
 

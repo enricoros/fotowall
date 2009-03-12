@@ -13,16 +13,47 @@
  ***************************************************************************/
 
 #include "HighlightItem.h"
+#include <QGraphicsScene>
 #include <QPainter>
 #include <QTimerEvent>
 #include <math.h>
 
-HighlightItem::HighlightItem()
-    : QGraphicsItem()
+HighlightItem::HighlightItem(QGraphicsItem * parent)
+    : QGraphicsItem(parent)
+    , m_unset(true)
+    , m_xn(0)
+    , m_yn(0)
     , m_phase(0)
     , m_radius(1)
+    , m_closing(false)
 {
     m_timer.start(30, this);
+}
+
+void HighlightItem::setPos(double x, double y)
+{
+    QRectF pr = parentRect();
+    m_xn = (x - pr.left()) / (double)pr.width();
+    m_yn = (y - pr.top()) / (double)pr.height();
+    reposition();
+}
+
+void HighlightItem::setPosF(double xn, double yn)
+{
+    m_xn = xn;
+    m_yn = yn;
+    reposition();
+}
+
+void HighlightItem::reposition(const QRectF & rect)
+{
+    QRectF pr = rect.isNull() ? parentRect() : rect;
+    QGraphicsItem::setPos((int)(pr.left() + m_xn * pr.width()), (int)(pr.top() + m_yn * pr.height()));
+}
+
+void HighlightItem::deleteAfterAnimation()
+{
+    m_closing = true;
 }
 
 QRectF HighlightItem::boundingRect() const
@@ -40,19 +71,32 @@ void HighlightItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /
 
 void HighlightItem::timerEvent(QTimerEvent * event)
 {
-    if (event->timerId() == m_timer.timerId()) {
-        m_phase++;
+    if (event->timerId() != m_timer.timerId())
+        return QObject::timerEvent(event);
 
-        // resize
-        prepareGeometryChange();
-        m_radius = sqrt((double)((m_phase * 200) % 10000));
-        update();
+    // advance phase
+    m_phase++;
 
-        // stop after 100 steps
-        if (m_phase > 100) {
+    // resize
+    prepareGeometryChange();
+    m_radius = sqrt((double)(m_phase * 200));
+    update();
+
+    // wrap around @50 {rad=100}
+    if (m_phase > 50) {
+        m_phase = 0;
+        if (m_closing) {
             m_timer.stop();
             deleteLater();
         }
     }
-    QObject::timerEvent(event);
+}
+
+QRectF HighlightItem::parentRect() const
+{
+    if (parentItem())
+        return parentItem()->boundingRect();
+    else if (scene())
+        return scene()->sceneRect();
+    return QRectF(0, 0, 10, 10);
 }
