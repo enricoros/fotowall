@@ -25,6 +25,7 @@ Q_GLOBAL_STATIC(FrameFactory, d)
 #define SVG_BASE_CLASS 0x1000
 #define FRAME_SVG_1 ":/plasma-frames/1.svg"
 #define FRAME_SVG_2 ":/plasma-frames/2.svg"
+#define FRAME_SVG_3 ":/plasma-frames/3.svg"
 #define DEFAULT_PANEL_FRAME SVG_BASE_CLASS
 #define DEFAULT_PICTURE_FRAME FRAME_DEF
 
@@ -95,6 +96,7 @@ FrameFactory::FrameFactory()
     m_svgClassIndex = SVG_BASE_CLASS;
     m_svgMap[m_svgClassIndex++] = FRAME_SVG_1;
     m_svgMap[m_svgClassIndex++] = FRAME_SVG_2;
+    m_svgMap[m_svgClassIndex++] = FRAME_SVG_3;
 
     // add stored frames
     QSettings s;

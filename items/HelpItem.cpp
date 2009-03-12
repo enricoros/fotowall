@@ -27,7 +27,7 @@ HelpItem * HelpItem::instance()
 
 HelpItem::HelpItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)
-    , m_frame(FrameFactory::defaultPanelFrame())
+    , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
 {
     // set instance to this
     Q_ASSERT(!s_instance);
@@ -53,7 +53,6 @@ QRectF HelpItem::boundingRect() const
 
 void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    painter->fillRect(m_frame->contentsRect(boundingRect().toRect()), QColor(255, 255, 255, 64));
     m_frame->paint(painter, boundingRect().toRect(), false);
 }
 
