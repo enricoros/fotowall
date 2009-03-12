@@ -9,6 +9,7 @@ UI_DIR = .bin
 QT = core \
     gui \
     svg \
+    network \
     webkit
 
 # Input

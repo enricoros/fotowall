@@ -16,11 +16,10 @@
 #define __FotoWall_h__
 
 #include <QWidget>
-#include <QLabel>
-
-#include "ui_FotoWall.h"
 #include <QGraphicsView>
+#include "ui_FotoWall.h"
 class Desk;
+class QNetworkReply;
 
 class FotoWall : public QWidget
 {
@@ -30,6 +29,7 @@ class FotoWall : public QWidget
         ~FotoWall();
 
         void showHelp();
+        void checkForTutorial();
 
     private:
         Ui::FotoWall *  ui;
@@ -40,10 +40,12 @@ class FotoWall : public QWidget
         void on_addPictures_clicked();
         void on_setTitle_clicked();
         void on_helpLabel_linkActivated(const QString & link);
+        void on_tutorialLabel_linkActivated(const QString & link);
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_pngButton_clicked();
         void on_quitButton_clicked();
+        void slotCheckTutorial(QNetworkReply * reply);
 };
 
 #endif

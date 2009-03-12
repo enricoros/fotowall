@@ -16,14 +16,22 @@
 #include "Desk.h"
 #include <QCoreApplication>
 #include <QDir>
+#include <QDesktopServices>
 #include <QDragEnterEvent>
 #include <QFileDialog>
 #include <QFile>
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QPushButton>
 #include <QVBoxLayout>
+
+// current location and 'check string' for the tutorial
+#define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
+#define TUTORIAL_STRING "Peter walks you through how to use Fotowall"
 
 // static global variable
 bool globalExportingFlag = false;
@@ -61,6 +69,7 @@ FotoWall::FotoWall(QWidget * parent)
 {
     // init ui
     ui->setupUi(this);
+    ui->tutorialLabel->setVisible(false);
     setWindowIcon( QIcon(":/data/fotowall.png") );
 
     // create our custom desk
@@ -72,6 +81,9 @@ FotoWall::FotoWall(QWidget * parent)
     lay->setSpacing(0);
     lay->setMargin(0);
     lay->addWidget(m_view);
+
+    // enable the tutorial, if present
+    checkForTutorial();
 }
 
 FotoWall::~FotoWall()
@@ -93,6 +105,17 @@ FotoWall::~FotoWall()
 void FotoWall::showHelp()
 {
     m_desk->showHelp();
+}
+
+void FotoWall::checkForTutorial()
+{
+    // hide the tutorial link
+    ui->tutorialLabel->setVisible(false);
+
+    // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
+    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(slotCheckTutorial(QNetworkReply*)));
+    manager->get(QNetworkRequest(TUTORIAL_URL));
 }
 
 void FotoWall::on_addPictures_clicked()
@@ -120,6 +143,13 @@ void FotoWall::on_setTitle_clicked()
 void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)
 {
     m_desk->showHelp();
+}
+
+void FotoWall::on_tutorialLabel_linkActivated(const QString & /*link*/)
+{
+    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
+    if (answer == QMessageBox::Yes)
+        QDesktopServices::openUrl(TUTORIAL_URL);
 }
 
 void FotoWall::on_loadButton_clicked()
@@ -224,4 +254,14 @@ void FotoWall::on_pngButton_clicked()
 void FotoWall::on_quitButton_clicked()
 {
     QCoreApplication::quit();
+}
+
+void FotoWall::slotCheckTutorial(QNetworkReply * reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+        return;
+
+    QString htmlCode = reply->readAll();
+    bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
+    ui->tutorialLabel->setVisible(tutorialValid);
 }

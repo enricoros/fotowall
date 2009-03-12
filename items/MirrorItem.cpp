@@ -59,7 +59,7 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         // find out the Transform chain to mirror a rotated item
         QRectF sceneRectF = m_copy->mapToScene(m_copy->boundingRect()).boundingRect();
         QTransform tFromItem = m_copy->transform() * QTransform::fromTranslate(m_copy->pos().x(), m_copy->pos().y());
-        QTransform tFromPixmap = QTransform(1, 0, 0, -1, sceneRectF.left(), sceneRectF.bottom());
+        QTransform tFromPixmap = QTransform(1, 0, 0, -1.0, sceneRectF.left(), sceneRectF.bottom());
         QTransform tItemToPixmap = tFromItem * tFromPixmap.inverted();
 
         // draw the transformed item onto the pixmap

@@ -168,6 +168,7 @@ void PictureItem::setFrame(Frame * frame)
 {
     delete m_frame;
     m_frame = frame;
+    FrameFactory::setDefaultPictureClass(m_frame->frameClass());
     slotResetAspectRatio();
     relayoutContents();
     update();
