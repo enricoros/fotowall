@@ -152,8 +152,11 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     m_fileName = fileName;
     if (keepRatio)
         slotResetAspectRatio();
-    if (setName)
-        m_textItem->setPlainText(QFileInfo(fileName).fileName().section('.', 0, 0) + QString("..."));
+    if (setName) {
+        QString string = QFileInfo(fileName).fileName().section('.', 0, 0);
+        string = string.mid(0, 10);
+        m_textItem->setPlainText(string + " ...");
+    }
     update();
     GFX_CHANGED
     return true;
@@ -291,9 +294,11 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*o
     if (m_frame->clipContents())
         painter->setClipPath(m_frame->contentsClipPath(frameRect));
 
-    // blit if opaque picture
-    if (m_opaquePhoto)
-        painter->setCompositionMode(QPainter::CompositionMode_Source);
+    // blit if opaque picture (disabled for 4.5 too, since it relies too much on raster, i think)
+#if QT_VERSION >= 0x040500
+//    if (m_opaquePhoto)
+//        painter->setCompositionMode(QPainter::CompositionMode_Source);
+#endif
 
     // draw high-resolution photo when exporting png
     QRect targetRect = m_frame->contentsRect(frameRect);
@@ -315,8 +320,10 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*o
     }
 
     // restore status
-    if (m_opaquePhoto)
-        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+#if QT_VERSION >= 0x040500
+//    if (m_opaquePhoto)
+//        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+#endif
 }
 
 void PictureItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
@@ -352,8 +359,10 @@ QVariant PictureItem::itemChange(GraphicsItemChange change, const QVariant & val
         change == ItemVisibleHasChanged ||
         change == ItemEnabledHasChanged ||
         change == ItemSelectedHasChanged ||
-        change == ItemParentHasChanged ||
-        change == ItemOpacityHasChanged ) {
+#if QT_VERSION >= 0x040500
+        change == ItemOpacityHasChanged ||
+#endif
+        change == ItemParentHasChanged ) {
         GFX_CHANGED
     }
 
@@ -475,7 +484,7 @@ void PictureItem::slotSave()
 
     // find out the Transform chain to mirror a rotated item
     QRectF sceneRectF = mapToScene(boundingRect()).boundingRect();
-    QTransform tFromItem = transform() * QTransform::fromTranslate(pos().x(), pos().y());
+    QTransform tFromItem = transform() * QTransform(1, 0, 0, 1, pos().x(), pos().y());
     QTransform tFromPixmap = QTransform(1, 0, 0, 1, sceneRectF.left(), sceneRectF.top());
     QTransform tItemToPixmap = tFromItem * tFromPixmap.inverted();
 

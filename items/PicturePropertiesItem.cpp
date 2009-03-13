@@ -30,7 +30,11 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
 {
     // WIDGET setup
     QWidget * widget = new QWidget();
+#if QT_VERSION < 0x040500
+    widget->setAttribute(Qt::WA_NoSystemBackground, true);
+#else
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
+#endif
     m_ui->setupUi(widget);
 
     // add frame items to the listview
@@ -119,7 +123,11 @@ void PicturePropertiesItem::paint(QPainter * painter, const QStyleOptionGraphics
         return;
 
     // draw custom background
+#if QT_VERSION < 0x040500 
+    painter->fillRect(option->rect, QColor(250, 250, 250, 190));
+#else
     m_frame->paint(painter, boundingRect().toRect(), false);
+#endif
 
     // unbreak parent
 #if 0

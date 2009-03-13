@@ -36,7 +36,11 @@ BrowserItem::BrowserItem(QGraphicsItem * parent)
 {
     // set the page as transparent and link it
     QPalette pal;
+#if QT_VERSION < 0x040500
+    pal.setBrush(QPalette::Window, Qt::transparent);
+#else
     pal.setBrush(QPalette::Base, Qt::transparent);
+#endif
     m_webPage->setPalette(pal);
     connect(m_webPage, SIGNAL(linkClicked(const QUrl &)), this, SIGNAL(linkClicked(const QUrl &)));
     connect(m_webPage, SIGNAL(scrollRequested(int,int,const QRect&)), this, SLOT(slotScrollRequested(int,int,const QRect&)));

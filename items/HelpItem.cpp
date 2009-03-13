@@ -36,7 +36,7 @@ HelpItem::~HelpItem()
 
 QRectF HelpItem::boundingRect() const
 {
-    return QRectF(-280, -150, 560, 300);
+    return QRectF(-280, -160, 560, 320);
 }
 
 void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
