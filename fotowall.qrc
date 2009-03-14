@@ -20,6 +20,7 @@
         <file>data/help.html</file>
         <file>translations/fotowall_en.qm</file>
         <file>translations/fotowall_it.qm</file>
+        <file>translations/fotowall_pt_BR.qm</file>
     </qresource>
     <qresource prefix="/plasma-frames" >
         <file alias="1.svg" >data/frame-plasma-1.svg</file>

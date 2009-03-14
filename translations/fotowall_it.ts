@@ -216,17 +216,17 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="470"/>
+        <location filename="../items/PictureItem.cpp" line="479"/>
         <source>Choose the file name</source>
         <translation>Sceglere il nome del file</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="509"/>
+        <location filename="../items/PictureItem.cpp" line="518"/>
         <source>Picture Save Error</source>
         <translation>Errore salvando l&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="509"/>
+        <location filename="../items/PictureItem.cpp" line="518"/>
         <source>Error saving picture to the file %1</source>
         <translation>Errore salvando l&apos;immagine sul file %1</translation>
     </message>

@@ -21,7 +21,8 @@ SOURCES += main.cpp \
 FORMS += FotoWall.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_en.ts \
-    translations/fotowall_it.ts
+    translations/fotowall_it.ts \
+    translations/fotowall_pt_BR.ts
 
 # Components
 include(items/items.pri)
