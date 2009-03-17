@@ -19,6 +19,7 @@
 #include <QBasicTimer>
 #include "PictureItem.h"
 class Frame;
+class QAbstractButton;
 class QListWidgetItem;
 
 namespace Ui { class PicturePropertiesItem; }
@@ -40,6 +41,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
 
     Q_SIGNALS:
         void closed();
+        void applyAll(quint32 frameClass, bool mirrored);
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
@@ -57,7 +59,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
     private Q_SLOTS:
         void slotFrameSelected(QListWidgetItem * item);
         void slotToggleMirror(bool enabled);
-        void slotClose();
+        void slotClose(QAbstractButton * button);
 };
 
 #endif

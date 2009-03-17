@@ -380,6 +380,7 @@ void Desk::slotConfigurePicture(const QPoint & scenePoint)
     // create the properties item
     PicturePropertiesItem * pp = new PicturePropertiesItem(picture);
     connect(pp, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
+    connect(pp, SIGNAL(applyAll(quint32,bool)), this, SLOT(slotApplyAll(quint32,bool)));
     addItem(pp);
     pp->show();
     pp->setPos(scenePoint - QPoint(10, 10));
@@ -480,6 +481,18 @@ void Desk::slotDeleteProperties()
     m_properties.removeAll(properties);
     removeItem(properties);
     properties->deleteLater();
+}
+
+void Desk::slotApplyAll(quint32 frameClass, bool mirrored)
+{
+    foreach (PictureItem * picture, m_pictures) {
+        // change Frame
+        Frame * frame = FrameFactory::createFrame(frameClass);
+        if (frame)
+            picture->setFrame(frame);
+        // change Mirror status
+        picture->setMirrorEnabled(mirrored);
+    }
 }
 
 void Desk::slotTitleColorChanged()

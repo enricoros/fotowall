@@ -52,20 +52,27 @@ Newest:
 * display on-screen selection for pictures
 * perform rectangular image composition based on an input picture (color, pattern)
 * perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
-* add an overlay html help when going on the lower-left corner
-* make reflections (dunno where.. just make them :D)
 
-Suggested by Contrast on kde-look's page:
+Suggested by MartinKN on kde-apps's page:
+
+* First thing is to set defaults for "old layoutfiles" from 0.21 or before ... set defaults for new files / objects ...
+* text: with static linebreaks or dynamic breaking lines
+* text: left / right / center
+* text: fix button occusion, if too long
+* options: apply to all
+* layouts: fix interaction with current content
+
+Suggested by Contrast on kde-apps's page:
 
 * rotate the pictures on their z-axis
 * add the "color changing stuff" to the picture themselves
 
-Suggested by Superstoned on kde-look's page:
+Suggested by Superstoned on kde-apps's page:
 
 * change the color of the photos (middle colors changer?)
 * color changers: it'd be good if it was easier to find them (maybe just use buttons?). animations are cool, thoug...
 
-Suggested by TeeAhr1 on kde-look's page:
+Suggested by TeeAhr1 on kde-apps's page:
 
 * custom fonts
 

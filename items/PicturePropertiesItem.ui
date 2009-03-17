@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>312</width>
-    <height>240</height>
+    <width>308</width>
+    <height>263</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,19 +72,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
     </layout>
    </item>
    <item>
@@ -107,12 +94,19 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="reflection">
+     <property name="text">
+      <string>Show Reflection</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Effects</string>
+      <string/>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
        <widget class="QToolButton" name="invertButton">
         <property name="text">
          <string>Invert</string>
@@ -126,7 +120,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item>
        <widget class="QToolButton" name="flipButton">
         <property name="text">
          <string>Flip</string>
@@ -140,7 +134,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item>
        <spacer name="horizontalSpacer_5">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -153,74 +147,72 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="2">
-       <widget class="QCheckBox" name="reflection">
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QToolButton" name="background">
         <property name="text">
-         <string>Show Reflection</string>
+         <string>Background</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../fotowall.qrc">
+          <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QToolButton" name="save">
+        <property name="text">
+         <string>Save</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../fotowall.qrc">
+          <normaloff>:/data/action-save.png</normaloff>:/data/action-save.png</iconset>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="2">
+       <widget class="QToolButton" name="del">
+        <property name="text">
+         <string>Delete</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../fotowall.qrc">
+          <normaloff>:/data/action-delete.png</normaloff>:/data/action-delete.png</iconset>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QToolButton" name="background">
-       <property name="text">
-        <string>background</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../fotowall.qrc">
-         <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="save">
-       <property name="text">
-        <string>save</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../fotowall.qrc">
-         <normaloff>:/data/action-save.png</normaloff>:/data/action-save.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="del">
-       <property name="text">
-        <string>delete</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../fotowall.qrc">
-         <normaloff>:/data/action-delete.png</normaloff>:/data/action-delete.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_6">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

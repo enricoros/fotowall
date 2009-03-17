@@ -76,6 +76,7 @@ class Desk : public QGraphicsScene
         void slotStackPicture(int);
         void slotDeletePicture();
         void slotDeleteProperties();
+        void slotApplyAll(quint32 frameClass, bool mirrored);
 
         void slotTitleColorChanged();
         void slotForeColorChanged();

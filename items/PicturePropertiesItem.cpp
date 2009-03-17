@@ -18,6 +18,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QListWidgetItem>
 #include <QPainter>
+#include <QPushButton>
+#include <QStyle>
 #include <QWidget>
 
 PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphicsItem * parent)
@@ -36,6 +38,12 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
 #endif
     m_ui->setupUi(widget);
+    m_ui->buttonBox->clear();
+    QPushButton * applyButton = new QPushButton(style()->standardIcon(QStyle::SP_DialogApplyButton), tr("Apply to All"));
+    applyButton->setProperty("applyall", true);
+    m_ui->buttonBox->addButton(applyButton, QDialogButtonBox::ApplyRole);
+    QPushButton * closeButton = new QPushButton(style()->standardIcon(QStyle::SP_DialogCloseButton), tr("Close"));
+    m_ui->buttonBox->addButton(closeButton, QDialogButtonBox::RejectRole);
 
     // add frame items to the listview
     foreach (quint32 frameClass, FrameFactory::classes()) {
@@ -50,8 +58,7 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
         item->setData(Qt::UserRole, frameClass);
     }
 
-    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotClose()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(slotClose()));
+    connect(m_ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(slotClose(QAbstractButton*)));
     connect(m_ui->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotFrameSelected(QListWidgetItem*)));
     connect(m_ui->reflection, SIGNAL(toggled(bool)), this, SLOT(slotToggleMirror(bool)));
     connect(m_ui->front, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackFront()));
@@ -62,7 +69,7 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     connect(m_ui->invertButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipVertically()));
     connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipHorizontally()));
     connect(m_ui->save, SIGNAL(clicked()), m_pictureItem, SLOT(slotSave()));
-    connect(m_ui->del, SIGNAL(clicked()), m_pictureItem, SIGNAL(deleteMe()));
+    connect(m_ui->del, SIGNAL(clicked()), m_pictureItem, SIGNAL(deleteMe()), Qt::QueuedConnection);
 
     // load values
     loadProperties();
@@ -113,7 +120,7 @@ void PicturePropertiesItem::keepInBoundaries(const QRect & rect)
 void PicturePropertiesItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
-        slotClose();
+        slotClose(0);
     QGraphicsProxyWidget::mousePressEvent(event);
 }
 
@@ -123,7 +130,7 @@ void PicturePropertiesItem::paint(QPainter * painter, const QStyleOptionGraphics
         return;
 
     // draw custom background
-#if QT_VERSION < 0x040500 
+#if QT_VERSION < 0x040500
     painter->fillRect(option->rect, QColor(250, 250, 250, 190));
 #else
     m_frame->paint(painter, boundingRect().toRect(), false);
@@ -191,8 +198,12 @@ void PicturePropertiesItem::slotToggleMirror(bool enabled)
     m_pictureItem->setMirrorEnabled(enabled);
 }
 
-void PicturePropertiesItem::slotClose()
+void PicturePropertiesItem::slotClose(QAbstractButton * button)
 {
+    // apply to all if pressed
+    if (button && button->property("applyall").toBool() == true)
+        emit applyAll(m_pictureItem->frameClass(), m_pictureItem->mirrorEnabled());
+
     // closure animation
     m_aniDirection = false;
     m_aniTimer.start(20, this);
