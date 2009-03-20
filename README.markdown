@@ -10,9 +10,15 @@ For more news: http://code.google.com/p/fotowall
 ChangeLog
 ---------
 
-Unreleased Version:
+Unreleased Version
 
-* ...
+* German translation [Martin]
+* Apply properties to All
+
+Version 0.3.1:
+
+* build with Qt 4.4
+* Brazilian translation [Marcio Moraes]
 
 Version 0.3:
 
@@ -43,8 +49,6 @@ I hope to expand the program as soon as I can, since there is many room for impr
 
 ### Current Wishlist
 
-This is the current list of requested features.
-
 Newest:
 
 * add effects to photos
@@ -59,7 +63,6 @@ Suggested by MartinKN on kde-apps's page:
 * text: with static linebreaks or dynamic breaking lines
 * text: left / right / center
 * text: fix button occusion, if too long
-* options: apply to all
 * layouts: fix interaction with current content
 
 Suggested by Contrast on kde-apps's page:

@@ -18,6 +18,7 @@
         <file>data/action-up.png</file>
         <file>data/fotowall.png</file>
         <file>data/help.html</file>
+        <file>translations/fotowall_de.qm</file>
         <file>translations/fotowall_en.qm</file>
         <file>translations/fotowall_it.qm</file>
         <file>translations/fotowall_pt_BR.qm</file>
