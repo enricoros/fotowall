@@ -26,6 +26,7 @@
 #include <QUrl>
 #include <QList>
 #include <QFile>
+#include <QListWidgetItem>
 
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
@@ -381,6 +382,7 @@ void Desk::slotConfigurePicture(const QPoint & scenePoint)
     PicturePropertiesItem * pp = new PicturePropertiesItem(picture);
     connect(pp, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
     connect(pp, SIGNAL(applyAll(quint32,bool)), this, SLOT(slotApplyAll(quint32,bool)));
+    connect(pp, SIGNAL(applyEffectToAll(QListWidgetItem *)), this, SLOT(slotApplyEffectToAll(QListWidgetItem *)));
     addItem(pp);
     pp->show();
     pp->setPos(scenePoint - QPoint(10, 10));
@@ -492,6 +494,12 @@ void Desk::slotApplyAll(quint32 frameClass, bool mirrored)
             picture->setFrame(frame);
         // change Mirror status
         picture->setMirrorEnabled(mirrored);
+    }
+}
+
+void Desk::slotApplyEffectToAll(QListWidgetItem *effect) {
+    foreach (PictureItem * picture, m_pictures) {
+         picture->slotApplyEffect(effect);
     }
 }
 

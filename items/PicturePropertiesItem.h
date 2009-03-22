@@ -36,12 +36,16 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         // load from/apply to the properties of the current valid item
         void loadProperties();
 
+        // Load the list of effects available.
+        void loadEffectsList();
+
         // misc
         void keepInBoundaries(const QRect & rect);
 
     Q_SIGNALS:
         void closed();
         void applyAll(quint32 frameClass, bool mirrored);
+        void applyEffectToAll(QListWidgetItem *);
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
