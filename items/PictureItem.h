@@ -20,6 +20,9 @@
 #include <QIcon>
 #include <QPointF>
 #include <QObject>
+#include "CPixmap.h"
+
+class QListWidgetItem;
 class ButtonItem;
 class Frame;
 class MirrorItem;
@@ -40,7 +43,7 @@ class PictureItem : public QObject, public QGraphicsItem
 
         // photo
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
-        QPixmap renderPhoto(const QSize & size) const;
+        CPixmap renderPhoto(const QSize & size) const;
 
         // frame
         void setFrame(Frame * frame);
@@ -81,8 +84,8 @@ class PictureItem : public QObject, public QGraphicsItem
         void relayoutContents();
         Frame *     m_frame;
         QString     m_fileName;
-        QPixmap *   m_photo;
-        QPixmap     m_cachedPhoto;
+        CPixmap *   m_photo;
+        CPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;
         QSize       m_size;
         QList<ButtonItem *> m_controlItems;
@@ -97,6 +100,7 @@ class PictureItem : public QObject, public QGraphicsItem
     public Q_SLOTS:
         void slotFlipHorizontally();
         void slotFlipVertically();
+        void slotApplyEffect(QListWidgetItem *);
         void slotStackFront();
         void slotStackRaise();
         void slotStackLower();

@@ -21,6 +21,8 @@
 #include <QPushButton>
 #include <QStyle>
 #include <QWidget>
+#include <QSettings>
+#include <QDebug>
 
 PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphicsItem * parent)
     : QGraphicsProxyWidget(parent)
@@ -70,6 +72,7 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipHorizontally()));
     connect(m_ui->save, SIGNAL(clicked()), m_pictureItem, SLOT(slotSave()));
     connect(m_ui->del, SIGNAL(clicked()), m_pictureItem, SIGNAL(deleteMe()), Qt::QueuedConnection);
+    connect(m_ui->effectsListWidget, SIGNAL(itemActivated(QListWidgetItem *)), m_pictureItem, SLOT(slotApplyEffect(QListWidgetItem *)));
 
     // load values
     loadProperties();
@@ -80,12 +83,32 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
 
     // Transition setup
     m_aniTimer.start(20, this);
+
+    // FIXME : Not to be put here
+    loadEffectsList();
+    m_ui->effectsListWidget->setViewMode(QListView::IconMode);
+    m_ui->effectsListWidget->setIconSize(QSize(80,80));
 }
 
 PicturePropertiesItem::~PicturePropertiesItem()
 {
     delete m_frame;
     delete m_ui;
+}
+
+void PicturePropertiesItem::loadEffectsList() {
+   // Read the effect config list (ini file).
+   QSettings settings("./data/effects-icons/effects.ini", QSettings::IniFormat, this);
+   int effectNumber = settings.value("Number").toInt();
+   QString group;
+   for ( int i=0; i< effectNumber; i++) {
+      settings.beginGroup(group.setNum(i));
+      settings.value("Name").toString();
+      // Add a new item in the view
+      QListWidgetItem *item = new QListWidgetItem(QIcon(settings.value("Icon").toString()), settings.value("Name").toString(), m_ui->effectsListWidget);
+      item->setToolTip(settings.value("Description").toString());
+      settings.endGroup();
+   }
 }
 
 PictureItem * PicturePropertiesItem::pictureItem() const

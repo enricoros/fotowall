@@ -25,7 +25,9 @@
 #include <QPainter>
 #include <QTimer>
 #include <QUrl>
+#include <QListWidgetItem>
 #include <math.h>
+#include <QDebug>
 
 // from FotoWall.cpp
 extern bool globalExportingFlag;
@@ -139,9 +141,9 @@ PictureItem::~PictureItem()
 bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
 {
     delete m_photo;
-    m_cachedPhoto = QPixmap();
+    m_cachedPhoto = CPixmap();
     m_opaquePhoto = false;
-    m_photo = new QPixmap(fileName);
+    m_photo = new CPixmap(fileName);
     if (m_photo->isNull()) {
         delete m_photo;
         m_photo = 0;
@@ -162,11 +164,11 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     return true;
 }
 
-QPixmap PictureItem::renderPhoto(const QSize & size) const
+CPixmap PictureItem::renderPhoto(const QSize & size) const
 {
     if (m_photo)
         return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    return QPixmap();
+    return CPixmap();
 }
 
 void PictureItem::setFrame(Frame * frame)
@@ -435,10 +437,10 @@ void PictureItem::slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers
 void PictureItem::slotFlipHorizontally()
 {
     // delete the Photo and and recreate an H-mirrored one
-    QPixmap * oldPhoto = m_photo;
-    m_photo = new QPixmap(QPixmap::fromImage(oldPhoto->toImage().mirrored(true, false)));
+    CPixmap * oldPhoto = m_photo;
+    m_photo = new CPixmap(CPixmap::fromImage(oldPhoto->toImage().mirrored(true, false)));
     delete oldPhoto;
-    m_cachedPhoto = QPixmap();
+    m_cachedPhoto = CPixmap();
     update();
     GFX_CHANGED
 }
@@ -446,12 +448,28 @@ void PictureItem::slotFlipHorizontally()
 void PictureItem::slotFlipVertically()
 {
     // delete the Photo and and recreate a V-mirrored one
-    QPixmap * oldPhoto = m_photo;
-    m_photo = new QPixmap(QPixmap::fromImage(oldPhoto->toImage().mirrored(false, true)));
+    CPixmap * oldPhoto = m_photo;
+    m_photo = new CPixmap(CPixmap::fromImage(oldPhoto->toImage().mirrored(false, true)));
     delete oldPhoto;
-    m_cachedPhoto = QPixmap();
+    m_cachedPhoto = CPixmap();
     update();
     GFX_CHANGED
+}
+
+void PictureItem::slotApplyEffect(QListWidgetItem *item) {
+   qDebug() << "photo effect " << item->text();
+    if(item->text() == "NVG") {
+   qDebug() << "effect " << item->text();
+        m_photo->toNVG();
+    } else if (item->text() == "Black and White") {
+   qDebug() << "effect " << item->text();
+       m_photo->toBlackAndWhite();
+    } else if (item->text() == "Invert colors") {
+   qDebug() << "effect " << item->text();
+       m_photo->invertColors();
+    }
+    m_cachedPhoto = CPixmap();
+    update();
 }
 
 void PictureItem::slotStackFront()

@@ -8,7 +8,8 @@ HEADERS += ButtonItem.h \
     MirrorItem.h \
     PicturePropertiesItem.h \
     HighlightItem.h \
-    HelpItem.h
+    HelpItem.h \
+    CPixmap.h
 SOURCES += ButtonItem.cpp \
     BrowserItem.cpp \
     ColorPickerItem.cpp \
@@ -16,5 +17,6 @@ SOURCES += ButtonItem.cpp \
     MirrorItem.cpp \
     PicturePropertiesItem.cpp \
     HighlightItem.cpp \
-    HelpItem.cpp
+    HelpItem.cpp \
+    CPixmap.cpp
 FORMS += PicturePropertiesItem.ui
