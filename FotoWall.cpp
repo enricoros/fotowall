@@ -49,7 +49,8 @@ class FWGraphicsView : public QGraphicsView {
             setDragMode(QGraphicsView::NoDrag);
             setAcceptDrops(true);
             setFrameStyle(QFrame::NoFrame);
-            setCacheMode(CacheBackground);
+            // can't activate the cache mode by default, since it inhibits dynamical background picture changing
+            //setCacheMode(CacheBackground);
         }
 
     protected:
