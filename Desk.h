@@ -25,6 +25,7 @@ class HighlightItem;
 class PictureItem;
 class PicturePropertiesItem;
 class ColorPickerItem;
+class QListWidgetItem;
 
 class Desk : public QGraphicsScene
 {
@@ -76,7 +77,10 @@ class Desk : public QGraphicsScene
         void slotStackPicture(int);
         void slotDeletePicture();
         void slotDeleteProperties();
+        // Apply a frame to all images
         void slotApplyAll(quint32 frameClass, bool mirrored);
+        // Apply an effect to all images.
+        void slotApplyEffectToAll(QListWidgetItem *);
 
         void slotTitleColorChanged();
         void slotForeColorChanged();

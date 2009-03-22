@@ -45,6 +45,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
     Q_SIGNALS:
         void closed();
         void applyAll(quint32 frameClass, bool mirrored);
+        void applyEffectToAll(QListWidgetItem *);
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);

@@ -224,8 +224,16 @@ void PicturePropertiesItem::slotToggleMirror(bool enabled)
 void PicturePropertiesItem::slotClose(QAbstractButton * button)
 {
     // apply to all if pressed
-    if (button && button->property("applyall").toBool() == true)
-        emit applyAll(m_pictureItem->frameClass(), m_pictureItem->mirrorEnabled());
+    if (button && button->property("applyall").toBool() == true) {
+       emit applyAll(m_pictureItem->frameClass(), m_pictureItem->mirrorEnabled());
+
+       QList<QListWidgetItem *> selectedEffects = m_ui->effectsListWidget->selectedItems();
+       QList<QListWidgetItem *>::iterator it = selectedEffects.begin();
+       for (; it != selectedEffects.end(); it++) {
+          emit applyEffectToAll(*it);
+       }
+    }
+
 
     // closure animation
     m_aniDirection = false;
