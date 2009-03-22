@@ -27,7 +27,6 @@
 #include <QUrl>
 #include <QListWidgetItem>
 #include <math.h>
-#include <QDebug>
 
 // from FotoWall.cpp
 extern bool globalExportingFlag;
@@ -457,15 +456,11 @@ void PictureItem::slotFlipVertically()
 }
 
 void PictureItem::slotApplyEffect(QListWidgetItem *item) {
-   qDebug() << "photo effect " << item->text();
     if(item->text() == "NVG") {
-   qDebug() << "effect " << item->text();
         m_photo->toNVG();
     } else if (item->text() == "Black and White") {
-   qDebug() << "effect " << item->text();
        m_photo->toBlackAndWhite();
     } else if (item->text() == "Invert colors") {
-   qDebug() << "effect " << item->text();
        m_photo->invertColors();
     }
     m_cachedPhoto = CPixmap();
