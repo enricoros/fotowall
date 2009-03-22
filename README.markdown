@@ -12,6 +12,7 @@ ChangeLog
 
 Unreleased Version
 
+* French Translation [Tanguy Arnaud]
 * German translation [Martin]
 * Apply properties to All
 

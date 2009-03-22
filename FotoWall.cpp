@@ -49,6 +49,7 @@ class FWGraphicsView : public QGraphicsView {
             setDragMode(QGraphicsView::NoDrag);
             setAcceptDrops(true);
             setFrameStyle(QFrame::NoFrame);
+            setCacheMode(CacheBackground);
         }
 
     protected:

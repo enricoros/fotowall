@@ -22,6 +22,7 @@ FORMS += FotoWall.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \
     translations/fotowall_en.ts \
+    translations/fotowall_fr.ts \
     translations/fotowall_it.ts \
     translations/fotowall_pt_BR.ts
 
