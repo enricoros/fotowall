@@ -36,7 +36,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         // load from/apply to the properties of the current valid item
         void loadProperties();
 
-        // Load the list of effects available.
+        // load the list of available effects
         void loadEffectsList();
 
         // misc
@@ -45,7 +45,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
     Q_SIGNALS:
         void closed();
         void applyAll(quint32 frameClass, bool mirrored);
-        void applyEffectToAll(QListWidgetItem *);
+        void applyEffectToAll(quint32 effectClass);
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
@@ -61,6 +61,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         QBasicTimer                 m_aniTimer;
 
     private Q_SLOTS:
+        void slotEffectSelected(QListWidgetItem * item);
         void slotFrameSelected(QListWidgetItem * item);
         void slotToggleMirror(bool enabled);
         void slotClose(QAbstractButton * button);

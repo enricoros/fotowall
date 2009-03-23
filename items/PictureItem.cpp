@@ -25,7 +25,6 @@
 #include <QPainter>
 #include <QTimer>
 #include <QUrl>
-#include <QListWidgetItem>
 #include <math.h>
 
 // from FotoWall.cpp
@@ -140,7 +139,7 @@ PictureItem::~PictureItem()
 bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
 {
     delete m_photo;
-    m_cachedPhoto = CPixmap();
+    m_cachedPhoto = QPixmap();
     m_opaquePhoto = false;
     m_photo = new CPixmap(fileName);
     if (m_photo->isNull()) {
@@ -163,11 +162,11 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     return true;
 }
 
-CPixmap PictureItem::renderPhoto(const QSize & size) const
+QPixmap PictureItem::renderPhoto(const QSize & size) const
 {
     if (m_photo)
         return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    return CPixmap();
+    return QPixmap();
 }
 
 void PictureItem::setFrame(Frame * frame)
@@ -201,6 +200,30 @@ void PictureItem::setMirrorEnabled(bool enabled)
         m_mirrorItem = new MirrorItem(this);
         m_mirrorItem->show();
     }
+}
+
+void PictureItem::setEffect(int effectClass)
+{
+    // apply effect to pixmap
+    switch (effectClass) {
+        case 0:
+            m_photo->invertColors();
+            break;
+        case 1:
+            m_photo->toNVG();
+            break;
+        case 2:
+            m_photo->toBlackAndWhite();
+            break;
+        default:
+            qWarning("PictureItem::setEffect: effect %d is not implemented", effectClass);
+            return;
+    }
+
+    // invalidate cache and repaint
+    m_cachedPhoto = QPixmap();
+    update();
+    GFX_CHANGED
 }
 
 void PictureItem::save(QDataStream & data) const
@@ -439,7 +462,7 @@ void PictureItem::slotFlipHorizontally()
     CPixmap * oldPhoto = m_photo;
     m_photo = new CPixmap(CPixmap::fromImage(oldPhoto->toImage().mirrored(true, false)));
     delete oldPhoto;
-    m_cachedPhoto = CPixmap();
+    m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED
 }
@@ -450,21 +473,9 @@ void PictureItem::slotFlipVertically()
     CPixmap * oldPhoto = m_photo;
     m_photo = new CPixmap(CPixmap::fromImage(oldPhoto->toImage().mirrored(false, true)));
     delete oldPhoto;
-    m_cachedPhoto = CPixmap();
+    m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED
-}
-
-void PictureItem::slotApplyEffect(QListWidgetItem *item) {
-    if(item->text() == "NVG") {
-        m_photo->toNVG();
-    } else if (item->text() == "Black and White") {
-       m_photo->toBlackAndWhite();
-    } else if (item->text() == "Invert colors") {
-       m_photo->invertColors();
-    }
-    m_cachedPhoto = CPixmap();
-    update();
 }
 
 void PictureItem::slotStackFront()

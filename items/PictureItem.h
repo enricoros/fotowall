@@ -22,7 +22,6 @@
 #include <QObject>
 #include "CPixmap.h"
 
-class QListWidgetItem;
 class ButtonItem;
 class Frame;
 class MirrorItem;
@@ -43,7 +42,7 @@ class PictureItem : public QObject, public QGraphicsItem
 
         // photo
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
-        CPixmap renderPhoto(const QSize & size) const;
+        QPixmap renderPhoto(const QSize & size) const;
 
         // frame
         void setFrame(Frame * frame);
@@ -52,6 +51,9 @@ class PictureItem : public QObject, public QGraphicsItem
         // mirror
         bool mirrorEnabled() const;
         void setMirrorEnabled(bool enabled);
+
+        // effect
+        void setEffect(int effectClass);
 
         // save/restore
         void save(QDataStream & data) const;
@@ -85,7 +87,7 @@ class PictureItem : public QObject, public QGraphicsItem
         Frame *     m_frame;
         QString     m_fileName;
         CPixmap *   m_photo;
-        CPixmap     m_cachedPhoto;
+        QPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;
         QSize       m_size;
         QList<ButtonItem *> m_controlItems;
@@ -100,7 +102,6 @@ class PictureItem : public QObject, public QGraphicsItem
     public Q_SLOTS:
         void slotFlipHorizontally();
         void slotFlipVertically();
-        void slotApplyEffect(QListWidgetItem *);
         void slotStackFront();
         void slotStackRaise();
         void slotStackLower();

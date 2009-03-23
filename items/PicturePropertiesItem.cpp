@@ -22,7 +22,6 @@
 #include <QStyle>
 #include <QWidget>
 #include <QSettings>
-#include <QDebug>
 
 PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphicsItem * parent)
     : QGraphicsProxyWidget(parent)
@@ -60,6 +59,9 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
         item->setData(Qt::UserRole, frameClass);
     }
 
+    // add effects items to the listview
+    loadEffectsList();
+
     connect(m_ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(slotClose(QAbstractButton*)));
     connect(m_ui->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotFrameSelected(QListWidgetItem*)));
     connect(m_ui->reflection, SIGNAL(toggled(bool)), this, SLOT(slotToggleMirror(bool)));
@@ -72,7 +74,7 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipHorizontally()));
     connect(m_ui->save, SIGNAL(clicked()), m_pictureItem, SLOT(slotSave()));
     connect(m_ui->del, SIGNAL(clicked()), m_pictureItem, SIGNAL(deleteMe()), Qt::QueuedConnection);
-    connect(m_ui->effectsListWidget, SIGNAL(itemActivated(QListWidgetItem *)), m_pictureItem, SLOT(slotApplyEffect(QListWidgetItem *)));
+    connect(m_ui->effectsListWidget, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(slotEffectSelected(QListWidgetItem*)));
 
     // load values
     loadProperties();
@@ -83,11 +85,6 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
 
     // Transition setup
     m_aniTimer.start(20, this);
-
-    // FIXME : Not to be put here
-    loadEffectsList();
-    m_ui->effectsListWidget->setViewMode(QListView::IconMode);
-    m_ui->effectsListWidget->setIconSize(QSize(80,80));
 }
 
 PicturePropertiesItem::~PicturePropertiesItem()
@@ -96,19 +93,21 @@ PicturePropertiesItem::~PicturePropertiesItem()
     delete m_ui;
 }
 
-void PicturePropertiesItem::loadEffectsList() {
-   // Read the effect config list (ini file).
-   QSettings settings("./data/effects-icons/effects.ini", QSettings::IniFormat, this);
-   int effectNumber = settings.value("Number").toInt();
-   QString group;
-   for ( int i=0; i< effectNumber; i++) {
-      settings.beginGroup(group.setNum(i));
-      settings.value("Name").toString();
-      // Add a new item in the view
-      QListWidgetItem *item = new QListWidgetItem(QIcon(settings.value("Icon").toString()), settings.value("Name").toString(), m_ui->effectsListWidget);
-      item->setToolTip(settings.value("Description").toString());
-      settings.endGroup();
-   }
+void PicturePropertiesItem::loadEffectsList()
+{
+    // Read the effect config list (ini file)
+    QSettings settings(":/data/effects-icons/effects.ini", QSettings::IniFormat);
+    int effectNumber = settings.value("Number").toInt();
+    QString group;
+    for ( int i=0; i< effectNumber; i++) {
+        settings.beginGroup(group.setNum(i));
+        settings.value("Name").toString();
+        // Add a new item in the view
+        QListWidgetItem *item = new QListWidgetItem(QIcon(settings.value("Icon").toString()), settings.value("Name").toString(), m_ui->effectsListWidget);
+        item->setToolTip(settings.value("Description").toString());
+        item->setData(Qt::UserRole, i);
+        settings.endGroup();
+    }
 }
 
 PictureItem * PicturePropertiesItem::pictureItem() const
@@ -200,6 +199,17 @@ void PicturePropertiesItem::timerEvent(QTimerEvent * event)
     QObject::timerEvent(event);
 }
 
+void PicturePropertiesItem::slotEffectSelected(QListWidgetItem * item)
+{
+    // get the effect class
+    if (!item)
+        return;
+    quint32 effectClass = item->data(Qt::UserRole).toUInt();
+
+    // apply the effect
+    m_pictureItem->setEffect(effectClass);
+}
+
 void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
 {
     // get the frame class
@@ -225,15 +235,15 @@ void PicturePropertiesItem::slotClose(QAbstractButton * button)
 {
     // apply to all if pressed
     if (button && button->property("applyall").toBool() == true) {
-       emit applyAll(m_pictureItem->frameClass(), m_pictureItem->mirrorEnabled());
+        emit applyAll(m_pictureItem->frameClass(), m_pictureItem->mirrorEnabled());
 
-       QList<QListWidgetItem *> selectedEffects = m_ui->effectsListWidget->selectedItems();
-       QList<QListWidgetItem *>::iterator it = selectedEffects.begin();
-       for (; it != selectedEffects.end(); it++) {
-          emit applyEffectToAll(*it);
-       }
+        QList<QListWidgetItem *> selectedEffects = m_ui->effectsListWidget->selectedItems();
+        QList<QListWidgetItem *>::iterator it = selectedEffects.begin();
+        for (; it != selectedEffects.end(); it++) {
+            int effectClass = (*it)->data(Qt::UserRole).toUInt();
+            emit applyEffectToAll(effectClass);
+        }
     }
-
 
     // closure animation
     m_aniDirection = false;
