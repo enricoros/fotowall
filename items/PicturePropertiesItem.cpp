@@ -95,19 +95,14 @@ PicturePropertiesItem::~PicturePropertiesItem()
 
 void PicturePropertiesItem::loadEffectsList()
 {
-    // Read the effect config list (ini file)
-    QSettings settings(":/data/effects-icons/effects.ini", QSettings::IniFormat);
-    int effectNumber = settings.value("Number").toInt();
-    QString group;
-    for ( int i=0; i< effectNumber; i++) {
-        settings.beginGroup(group.setNum(i));
-        settings.value("Name").toString();
-        // Add a new item in the view
-        QListWidgetItem *item = new QListWidgetItem(QIcon(settings.value("Icon").toString()), settings.value("Name").toString(), m_ui->effectsListWidget);
-        item->setToolTip(settings.value("Description").toString());
-        item->setData(Qt::UserRole, i);
-        settings.endGroup();
-    }
+    QListWidgetItem *item_invert = new QListWidgetItem(QIcon(":/data/effects-icons/invert-effect.png"), tr("Invert colors"), m_ui->effectsListWidget);
+    item_invert->setToolTip(tr("Invert the colors of the picture"));
+    item_invert->setData(Qt::UserRole, 0);
+    QListWidgetItem *item_nvg = new QListWidgetItem(QIcon(":/data/effects-icons/nvg-effect.png"), tr("NVG"), m_ui->effectsListWidget);
+    item_nvg->setToolTip(tr("Set the colors to levels of grey"));
+    item_nvg->setData(Qt::UserRole, 1);
+    QListWidgetItem *item_black = new QListWidgetItem(QIcon(":/data/effects-icons/black-and-white-effect.png"), tr("Black and White"), m_ui->effectsListWidget);
+    item_black->setData(Qt::UserRole, 2);
 }
 
 PictureItem * PicturePropertiesItem::pictureItem() const

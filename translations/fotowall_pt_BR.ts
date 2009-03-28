@@ -1,100 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="pt_BR">
+<!DOCTYPE TS><TS version="1.1" language="pt_BR">
 <context>
     <name>FotoWall</name>
     <message>
-        <location filename="../FotoWall.cpp" line="130"/>
+        <location filename="../FotoWall.cpp" line="131"/>
         <source>Select one or more pictures to add</source>
         <translation>Selecione uma ou mais figuras para adicionar</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="130"/>
+        <location filename="../FotoWall.cpp" line="131"/>
         <source>Images (%1)</source>
         <translation>(%1) imagens</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="139"/>
+        <location filename="../FotoWall.cpp" line="140"/>
         <source>Insert the title</source>
         <translation>Insira o título</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="151"/>
+        <location filename="../FotoWall.cpp" line="152"/>
         <source>Opening the Web Tutorial</source>
         <translation>Abrindo o Tutorial Web</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="151"/>
+        <location filename="../FotoWall.cpp" line="152"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 Do you want to open the web page?</source>
         <translation>O Tutorial está disponível no Fosswire por Peter Upfold.
 Você deseja abrir a página web?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="158"/>
-        <location filename="../FotoWall.cpp" line="173"/>
+        <location filename="../FotoWall.cpp" line="174"/>
         <source>Select Layout file</source>
         <translation>Selecione um arquivo de Layout</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="164"/>
+        <location filename="../FotoWall.cpp" line="165"/>
         <source>Load Error</source>
         <translation>Erro ao carregar</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="164"/>
+        <location filename="../FotoWall.cpp" line="165"/>
         <source>Error load layout from this file</source>
         <translation>Erro ao carregar layout desse arquivo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="181"/>
+        <location filename="../FotoWall.cpp" line="182"/>
         <source>Save Error</source>
         <translation>Erro ao salvar</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="181"/>
+        <location filename="../FotoWall.cpp" line="182"/>
         <source>Error saving layout to this file</source>
         <translation>Erro ao salvar para esse arquivo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="217"/>
+        <location filename="../FotoWall.cpp" line="218"/>
         <source>Warning</source>
         <translation>Aviso</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="217"/>
+        <location filename="../FotoWall.cpp" line="218"/>
         <source>This function is being rewritten for version 0.4.
 In the meantime, while not the optimum, you can still get high quality results ;-)</source>
         <translation>Esta função está sendo reescrita para a versão 0.4.
 Entretanto, embora não o melhor, você ainda pode obter resultados de alta qualidade.</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="218"/>
+        <location filename="../FotoWall.cpp" line="219"/>
         <source>Name a PNG file</source>
         <translation>Escolha o nome do arquivo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="248"/>
+        <location filename="../FotoWall.cpp" line="249"/>
         <source>Rendering Save Error</source>
         <translation>Erro ao salvar renderização</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="248"/>
+        <location filename="../FotoWall.cpp" line="249"/>
         <source>Error rendering to this file</source>
         <translation>Erro ao renderizar para esse arquivo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="252"/>
+        <location filename="../FotoWall.cpp" line="253"/>
         <source>Image rendered</source>
         <translation>Imagem renderizada</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="252"/>
+        <location filename="../FotoWall.cpp" line="253"/>
         <source>The target image is %1 bytes long</source>
         <translation>A imagem alvo está %1 bytes maior</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="139"/>
+        <location filename="../FotoWall.cpp" line="140"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
@@ -177,17 +175,17 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="479"/>
+        <location filename="../items/PictureItem.cpp" line="503"/>
         <source>Choose the file name</source>
         <translation>Escolha o nome do arquivo</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="518"/>
+        <location filename="../items/PictureItem.cpp" line="542"/>
         <source>Picture Save Error</source>
         <translation>Erro ao salvar figura</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="518"/>
+        <location filename="../items/PictureItem.cpp" line="542"/>
         <source>Error saving picture to the file %1</source>
         <translation>Erro ao salvar figura para o arquivo %1</translation>
     </message>
@@ -200,96 +198,135 @@ p, li { white-space: pre-wrap; }
         <translation>Propriedades da figura</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="22"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="34"/>
         <source>Front</source>
         <translation>Frente</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="36"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="48"/>
         <source>Raise</source>
         <translation>Aumentar</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="50"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="62"/>
         <source>Lower</source>
         <translation>Diminuir</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="64"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="76"/>
         <source>Back</source>
         <translation>Voltar</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="162"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="174"/>
         <source>Background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="176"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="188"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="203"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="215"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../items/PicturePropertiesItem.ui" line="235"/>
         <source>Effects</source>
-        <translation type="obsolete">Efeitos</translation>
+        <translation type="unfinished">Efeitos</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="112"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="124"/>
         <source>Invert</source>
         <translation>Inverter</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="126"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="138"/>
         <source>Flip</source>
         <translation>Folhear</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="99"/>
+        <location filename="../items/PicturePropertiesItem.ui" line="92"/>
         <source>Show Reflection</source>
         <translation>Exibir reflexão</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>background</source>
         <translation type="obsolete">Plano de fundo</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>save</source>
         <translation type="obsolete">Salvar</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>delete</source>
         <translation type="obsolete">Excluir</translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.cpp" line="42"/>
+        <location filename="../items/PicturePropertiesItem.cpp" line="43"/>
         <source>Apply to All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.cpp" line="45"/>
+        <location filename="../items/PicturePropertiesItem.cpp" line="46"/>
         <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="98"/>
+        <source>Invert colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="99"/>
+        <source>Invert the colors of the picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="101"/>
+        <source>NVG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="104"/>
+        <source>Black and White</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.ui" line="243"/>
+        <source>Select the effects you want to apply to this picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
+        <source>Set the colors to levels of grey</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SizeDialog</name>
     <message>
-        <location filename="../FotoWall.cpp" line="197"/>
+        <location filename="../FotoWall.cpp" line="198"/>
         <source>The aspect ratio must be kept</source>
         <translation>A proporção deve ser mantida</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="195"/>
+        <location filename="../FotoWall.cpp" line="196"/>
         <source>Select Resolution</source>
         <translation>Selecionar resolução</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="202"/>
+        <location filename="../FotoWall.cpp" line="203"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
