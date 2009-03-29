@@ -2,7 +2,7 @@ FotoWall
 ========
 
 FotoWall is a creative tool that allows you to layout your photos or pictures in a personal way. You can add pictures, then resize, move, change colors, text, shadows, etc..
-For more news: http://code.google.com/p/fotowall
+Check out the [old home page](http://code.google.com/p/fotowall) too.
 
 *Focus is on simplicity, express your creativity! ;-)*
 
@@ -12,7 +12,7 @@ ChangeLog
 
 Version 0.4:
 
-* Windows executable on [http://github.com/enricoros/fotowall/downloads]
+* Windows executable on [github](http://github.com/enricoros/fotowall/downloads)
 * Image Effects (by Tanguy Arnaud)
 * French Translation (by Tanguy Arnaud)
 * German translation [Martin]
@@ -107,7 +107,7 @@ The executable will be built and you can start Enjoying FotoWall! ;-)
 ### Notes for the Windows Download
 
 You must have the Microsoft Visual Studio 2008 Redistributable package (1.7MB) installed in your system, otherwise you will get an error.
-Click here for downloading the file: http://www.microsoft.com/downloads/details.aspx?familyid=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF
+Click [here](http://www.microsoft.com/downloads/details.aspx?familyid=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF) for downloading the file.
 
 
 News
