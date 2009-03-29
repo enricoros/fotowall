@@ -1,70 +1,83 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
  <class>FotoWall</class>
- <widget class="QWidget" name="FotoWall">
-  <property name="geometry">
+ <widget class="QWidget" name="FotoWall" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
+    <width>686</width>
     <height>367</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>FotoWall 0.4</string>
+  <property name="windowTitle" >
+   <string>FotoWall 0.3</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <property name="spacing" >
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="margin" >
     <number>0</number>
    </property>
    <item>
-    <widget class="QFrame" name="cmdFrame">
-     <property name="styleSheet">
-      <string>#cmdFrame {
+    <widget class="QFrame" name="cmdFrame" >
+     <property name="styleSheet" >
+      <string notr="true" >#cmdFrame {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
 }</string>
      </property>
-     <property name="frameShape">
+     <property name="frameShape" >
       <enum>QFrame::NoFrame</enum>
      </property>
-     <layout class="QHBoxLayout">
+     <layout class="QHBoxLayout" >
       <item>
-       <widget class="QToolButton" name="addPictures">
-        <property name="text">
+       <widget class="QComboBox" name="projectType" >
+        <item>
+         <property name="text" >
+          <string>Default</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>CD cover</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="addPictures" >
+        <property name="text" >
          <string>add pictures</string>
         </property>
-        <property name="icon">
-         <iconset resource="fotowall.qrc">
+        <property name="icon" >
+         <iconset resource="../fotowall/fotowall.qrc" >
           <normaloff>:/data/action-add.png</normaloff>:/data/action-add.png</iconset>
         </property>
-        <property name="toolButtonStyle">
+        <property name="toolButtonStyle" >
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="setTitle">
-        <property name="text">
+       <widget class="QToolButton" name="setTitle" >
+        <property name="text" >
          <string>set title</string>
         </property>
-        <property name="icon">
-         <iconset resource="fotowall.qrc">
+        <property name="icon" >
+         <iconset resource="../fotowall/fotowall.qrc" >
           <normaloff>:/data/action-add.png</normaloff>:/data/action-add.png</iconset>
         </property>
-        <property name="toolButtonStyle">
+        <property name="toolButtonStyle" >
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
       <item>
-       <spacer name="spacer">
-        <property name="orientation">
+       <spacer name="spacer" >
+        <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0">
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>16</width>
           <height>20</height>
@@ -73,33 +86,33 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="helpLabel">
-        <property name="text">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+       <widget class="QLabel" name="helpLabel" >
+        <property name="text" >
+         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;introduction&lt;/span&gt;&lt;/a&gt;  &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;a href="help">&lt;span style=" text-decoration: underline; color:#0000ff;">introduction&lt;/span>&lt;/a>  &lt;/p>&lt;/body>&lt;/html></string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="tutorialLabel">
-        <property name="text">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+       <widget class="QLabel" name="tutorialLabel" >
+        <property name="text" >
+         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;tutorial&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;a href="help">&lt;span style=" text-decoration: underline; color:#0000ff;">tutorial&lt;/span>&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
         </property>
        </widget>
       </item>
       <item>
        <spacer>
-        <property name="orientation">
+        <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0">
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>16</width>
           <height>20</height>
@@ -108,13 +121,13 @@ p, li { white-space: pre-wrap; }
        </spacer>
       </item>
       <item>
-       <widget class="QToolButton" name="pngButton">
-        <property name="palette">
+       <widget class="QToolButton" name="pngButton" >
+        <property name="palette" >
          <palette>
           <active>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -123,9 +136,9 @@ p, li { white-space: pre-wrap; }
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -134,9 +147,9 @@ p, li { white-space: pre-wrap; }
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -146,26 +159,26 @@ p, li { white-space: pre-wrap; }
           </disabled>
          </palette>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>render</string>
         </property>
-        <property name="icon">
-         <iconset resource="fotowall.qrc">
+        <property name="icon" >
+         <iconset resource="../fotowall/fotowall.qrc" >
           <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
         </property>
-        <property name="toolButtonStyle">
+        <property name="toolButtonStyle" >
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="loadButton">
-        <property name="palette">
+       <widget class="QToolButton" name="loadButton" >
+        <property name="palette" >
          <palette>
           <active>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -174,9 +187,9 @@ p, li { white-space: pre-wrap; }
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -185,9 +198,9 @@ p, li { white-space: pre-wrap; }
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -197,22 +210,22 @@ p, li { white-space: pre-wrap; }
           </disabled>
          </palette>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>load</string>
         </property>
-        <property name="toolButtonStyle">
+        <property name="toolButtonStyle" >
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="saveButton">
-        <property name="palette">
+       <widget class="QToolButton" name="saveButton" >
+        <property name="palette" >
          <palette>
           <active>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -221,9 +234,9 @@ p, li { white-space: pre-wrap; }
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -232,9 +245,9 @@ p, li { white-space: pre-wrap; }
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -244,22 +257,22 @@ p, li { white-space: pre-wrap; }
           </disabled>
          </palette>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>save</string>
         </property>
-        <property name="toolButtonStyle">
+        <property name="toolButtonStyle" >
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="quitButton">
-        <property name="palette">
+       <widget class="QToolButton" name="quitButton" >
+        <property name="palette" >
          <palette>
           <active>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -268,9 +281,9 @@ p, li { white-space: pre-wrap; }
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -279,9 +292,9 @@ p, li { white-space: pre-wrap; }
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Button">
-            <brush brushstyle="SolidPattern">
-             <color alpha="160">
+           <colorrole role="Button" >
+            <brush brushstyle="SolidPattern" >
+             <color alpha="160" >
               <red>238</red>
               <green>238</green>
               <blue>238</blue>
@@ -291,14 +304,14 @@ p, li { white-space: pre-wrap; }
           </disabled>
          </palette>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>quit</string>
         </property>
-        <property name="icon">
-         <iconset resource="fotowall.qrc">
+        <property name="icon" >
+         <iconset resource="../fotowall/fotowall.qrc" >
           <normaloff>:/data/action-delete.png</normaloff>:/data/action-delete.png</iconset>
         </property>
-        <property name="toolButtonStyle">
+        <property name="toolButtonStyle" >
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
@@ -307,9 +320,9 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="centralWidget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+    <widget class="QWidget" native="1" name="centralWidget" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -319,7 +332,7 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
-  <include location="fotowall.qrc"/>
+  <include location="../fotowall/fotowall.qrc" />
  </resources>
  <connections/>
 </ui>

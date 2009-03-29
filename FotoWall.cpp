@@ -142,6 +142,22 @@ void FotoWall::on_setTitle_clicked()
         m_desk->setTitleText(title);
 }
 
+void FotoWall::on_projectType_currentIndexChanged(int index) 
+{
+    switch (index) {
+        case 0:
+            showMaximized();
+            break;
+
+        case 1:
+            showNormal();
+            // XXX : What is the real size for a CD ? It's a 4.724 inches square.
+            resize(600, 600);
+            m_view->resize(600, 600);
+            break;
+    };
+}
+
 void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)
 {
     m_desk->showHelp();
