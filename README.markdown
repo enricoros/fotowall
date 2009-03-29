@@ -10,9 +10,10 @@ For more news: http://code.google.com/p/fotowall
 ChangeLog
 ---------
 
-Unreleased Version
+Version 0.4:
 
-* French Translation [Tanguy Arnaud]
+* Image Effects (by Tanguy Arnaud)
+* French Translation (by Tanguy Arnaud)
 * German translation [Martin]
 * Apply properties to All
 
@@ -52,7 +53,6 @@ I hope to expand the program as soon as I can, since there is many room for impr
 
 Newest:
 
-* add effects to photos
 * place the title anywhere
 * display on-screen selection for pictures
 * perform rectangular image composition based on an input picture (color, pattern)

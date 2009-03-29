@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="de">
+<!DOCTYPE TS>
+<TS version="2.0" language="de">
 <context>
     <name>FotoWall</name>
     <message>
@@ -30,6 +31,7 @@ Do you want to open the web page?</source>
 Willst Du die Webseite aufrufen?</translation>
     </message>
     <message>
+        <location filename="../FotoWall.cpp" line="159"/>
         <location filename="../FotoWall.cpp" line="174"/>
         <source>Select Layout file</source>
         <translation type="unfinished">Wähle eine Layoutdatei aus</translation>
@@ -98,8 +100,8 @@ Zur Zeit ist die Funktion nicht optimal, bietet aber trotzdem beim Resultat eine
     </message>
     <message>
         <location filename="../FotoWall.ui" line="14"/>
-        <source>FotoWall 0.3</source>
-        <translation>FotoWall 0.3</translation>
+        <source>FotoWall 0.4</source>
+        <translation type="unfinished">FotoWall 0.4</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="26"/>
@@ -198,6 +200,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Bild Eigenschaften</translation>
     </message>
     <message>
+        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
+        <source>Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../items/PicturePropertiesItem.ui" line="34"/>
         <source>Front</source>
         <translation type="unfinished">Vordergrund</translation>
@@ -253,21 +260,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Zeige Reflektionen</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>background</source>
-        <translation type="obsolete">Hintergrund</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>save</source>
-        <translation type="obsolete">Speichern</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>delete</source>
-        <translation type="obsolete">Löschen</translation>
-    </message>
-    <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="43"/>
         <source>Apply to All</source>
         <translation type="unfinished"></translation>
@@ -293,23 +285,18 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
+        <source>Set the colors to levels of gray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="104"/>
         <source>Black and White</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../items/PicturePropertiesItem.ui" line="243"/>
         <source>Select the effects you want to apply to this picture</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
-        <source>Set the colors to levels of grey</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

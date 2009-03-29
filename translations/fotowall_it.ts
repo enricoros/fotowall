@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="it">
-<context>
-    <name>FWFoto</name>
-    <message>
-        <location filename="" line="0"/>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-</context>
+<!DOCTYPE TS>
+<TS version="2.0" language="it">
 <context>
     <name>FotoWall</name>
     <message>
@@ -38,6 +31,7 @@ Do you want to open the web page?</source>
 Vuoi aprire la pagina internet?</translation>
     </message>
     <message>
+        <location filename="../FotoWall.cpp" line="159"/>
         <location filename="../FotoWall.cpp" line="174"/>
         <source>Select Layout file</source>
         <translation>Scegli il file di Disposizione</translation>
@@ -100,53 +94,14 @@ Nel frattempo, anche se non è il risultato migliore, si può ottenere ancora un
         <translation>L&apos;iimagine di destinazione ha %1 byte</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>FotoWall 0.21</source>
-        <translation type="obsolete">FotoWall 0.21</translation>
-    </message>
-    <message>
         <location filename="../FotoWall.cpp" line="140"/>
         <source>Title</source>
         <translation>Titolo</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Load ...</source>
-        <translation type="obsolete">Carica ...</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Save ...</source>
-        <translation type="obsolete">Salva ...</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Quit</source>
-        <translation type="obsolete">Esci</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>QFrame {
-    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
-}</source>
-        <translation type="obsolete">QFrame {
-    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
-}</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>background-color: transparent</source>
-        <translation type="obsolete">background-color: transparent</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Render Poster</source>
-        <translation type="obsolete">Crea un Poster</translation>
-    </message>
-    <message>
         <location filename="../FotoWall.ui" line="14"/>
-        <source>FotoWall 0.3</source>
-        <translation>FotoWall 0.3</translation>
+        <source>FotoWall 0.4</source>
+        <translation>FotoWall 0.4</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="26"/>
@@ -245,6 +200,11 @@ p, li { white-space: pre-wrap; }
         <translation>Proprietà Immagine</translation>
     </message>
     <message>
+        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
+        <source>Properties</source>
+        <translation>Proprietà</translation>
+    </message>
+    <message>
         <location filename="../items/PicturePropertiesItem.ui" line="34"/>
         <source>Front</source>
         <translation>Primo piano</translation>
@@ -282,7 +242,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="235"/>
         <source>Effects</source>
-        <translation type="unfinished">Effetti</translation>
+        <translation>Effetti</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="124"/>
@@ -300,21 +260,6 @@ p, li { white-space: pre-wrap; }
         <translation>Visualizza riflessione</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>background</source>
-        <translation type="obsolete">Sfondo</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>save</source>
-        <translation type="obsolete">Salva</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>delete</source>
-        <translation type="obsolete">Cancella</translation>
-    </message>
-    <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="43"/>
         <source>Apply to All</source>
         <translation>Applica a Tutti</translation>
@@ -327,37 +272,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="98"/>
         <source>Invert colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Negativo</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="99"/>
         <source>Invert the colors of the picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverti i colori dell&apos;immagine</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="101"/>
         <source>NVG</source>
-        <translation type="unfinished"></translation>
+        <translation>Visione Notturna</translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
+        <source>Set the colors to levels of gray</source>
+        <translation>Scala di grigi</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="104"/>
         <source>Black and White</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
-        <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Bianco e Nero</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="243"/>
         <source>Select the effects you want to apply to this picture</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
-        <source>Set the colors to levels of grey</source>
-        <translation type="unfinished"></translation>
+        <translation>Applica degli effetti all&apos;immagine</translation>
     </message>
 </context>
 <context>

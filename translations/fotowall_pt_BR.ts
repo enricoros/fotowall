@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="pt_BR">
+<!DOCTYPE TS>
+<TS version="2.0" language="pt_BR">
 <context>
     <name>FotoWall</name>
     <message>
@@ -30,6 +31,7 @@ Do you want to open the web page?</source>
 Você deseja abrir a página web?</translation>
     </message>
     <message>
+        <location filename="../FotoWall.cpp" line="159"/>
         <location filename="../FotoWall.cpp" line="174"/>
         <source>Select Layout file</source>
         <translation>Selecione um arquivo de Layout</translation>
@@ -98,8 +100,8 @@ Entretanto, embora não o melhor, você ainda pode obter resultados de alta qual
     </message>
     <message>
         <location filename="../FotoWall.ui" line="14"/>
-        <source>FotoWall 0.3</source>
-        <translation>FotoWall 0.3</translation>
+        <source>FotoWall 0.4</source>
+        <translation>FotoWall 0.4</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="26"/>
@@ -198,6 +200,11 @@ p, li { white-space: pre-wrap; }
         <translation>Propriedades da figura</translation>
     </message>
     <message>
+        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
+        <source>Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../items/PicturePropertiesItem.ui" line="34"/>
         <source>Front</source>
         <translation>Frente</translation>
@@ -220,22 +227,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="174"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Plano de fundo</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="188"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="215"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Excluir</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="235"/>
         <source>Effects</source>
-        <translation type="unfinished">Efeitos</translation>
+        <translation>Efeitos</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="124"/>
@@ -251,21 +258,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../items/PicturePropertiesItem.ui" line="92"/>
         <source>Show Reflection</source>
         <translation>Exibir reflexão</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>background</source>
-        <translation type="obsolete">Plano de fundo</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>save</source>
-        <translation type="obsolete">Salvar</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>delete</source>
-        <translation type="obsolete">Excluir</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="43"/>
@@ -293,23 +285,18 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
+        <source>Set the colors to levels of gray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="104"/>
         <source>Black and White</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../items/PicturePropertiesItem.ui" line="243"/>
         <source>Select the effects you want to apply to this picture</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
-        <source>Set the colors to levels of grey</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

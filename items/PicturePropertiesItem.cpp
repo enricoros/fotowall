@@ -99,7 +99,7 @@ void PicturePropertiesItem::loadEffectsList()
     item_invert->setToolTip(tr("Invert the colors of the picture"));
     item_invert->setData(Qt::UserRole, 0);
     QListWidgetItem *item_nvg = new QListWidgetItem(QIcon(":/data/effects-icons/nvg-effect.png"), tr("NVG"), m_ui->effectsListWidget);
-    item_nvg->setToolTip(tr("Set the colors to levels of grey"));
+    item_nvg->setToolTip(tr("Set the colors to levels of gray"));
     item_nvg->setData(Qt::UserRole, 1);
     QListWidgetItem *item_black = new QListWidgetItem(QIcon(":/data/effects-icons/black-and-white-effect.png"), tr("Black and White"), m_ui->effectsListWidget);
     item_black->setData(Qt::UserRole, 2);
