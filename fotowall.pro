@@ -9,8 +9,7 @@ UI_DIR = .bin
 QT = core \
     gui \
     svg \
-    network \
-    webkit
+    network
 
 # Input
 HEADERS += Desk.h \

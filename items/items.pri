@@ -1,8 +1,17 @@
 VPATH += $$PWD
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-HEADERS += ButtonItem.h \
-    BrowserItem.h \
+
+# disabling the webkit component on windows, since I can't static link to it
+win32 {
+    DEFINES += SKIP_QTWEBKIT
+} else {
+    QT += webkit
+    HEADERS += BrowserItem.h
+    SOURCES += BrowserItem.cpp
+}
+
+HEADERS += ButtonItem.h \  
     ColorPickerItem.h \
     PictureItem.h \
     MirrorItem.h \
@@ -11,7 +20,6 @@ HEADERS += ButtonItem.h \
     HelpItem.h \
     CPixmap.h
 SOURCES += ButtonItem.cpp \
-    BrowserItem.cpp \
     ColorPickerItem.cpp \
     PictureItem.cpp \
     MirrorItem.cpp \
