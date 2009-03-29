@@ -23,7 +23,6 @@
 #include <QGraphicsSceneMouseEvent>
 #include "frames/FrameFactory.h"
 #include <QLocale>
-#include <QDebug>
 
 HelpItem::HelpItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)

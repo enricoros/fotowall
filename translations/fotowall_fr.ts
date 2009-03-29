@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr">
-<defaultcodec></defaultcodec>
+<!DOCTYPE TS><TS version="1.1" language="fr">
 <context>
     <name>FotoWall</name>
     <message>
@@ -37,7 +35,6 @@ Do you want to open the web page?</source>
 Voulez vous ouvrir la page Web ?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="159"/>
         <location filename="../FotoWall.cpp" line="174"/>
         <source>Select Layout file</source>
         <translation>Séléctionnez un projet</translation>
@@ -198,17 +195,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="14"/>
         <source>Form</source>
-        <translation>Forme</translation>
+        <translation type="unfinished">Forme</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="24"/>
         <source>Properties</source>
-        <translation>Général</translation>
+        <translation>Propriétés</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="34"/>
         <source>Front</source>
-        <translation type="unfinished">Premier-plan</translation>
+        <translation>Premier-plan</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="48"/>
@@ -223,7 +220,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="76"/>
         <source>Back</source>
-        <translation type="unfinished">Arrière-plan</translation>
+        <translation>Arrière-plan</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="92"/>
@@ -238,12 +235,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="138"/>
         <source>Flip</source>
-        <translation type="unfinished">Retourner</translation>
+        <translation>Retourner</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="174"/>
         <source>Background</source>
-        <translation type="unfinished">Arrière-plan</translation>
+        <translation>Arrière-plan</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="188"/>

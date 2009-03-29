@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="it">
+<!DOCTYPE TS><TS version="1.1" language="it">
 <context>
     <name>FotoWall</name>
     <message>
@@ -31,7 +30,6 @@ Do you want to open the web page?</source>
 Vuoi aprire la pagina internet?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="159"/>
         <location filename="../FotoWall.cpp" line="174"/>
         <source>Select Layout file</source>
         <translation>Scegli il file di Disposizione</translation>
