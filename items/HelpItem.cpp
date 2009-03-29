@@ -13,7 +13,12 @@
  ***************************************************************************/
 
 #include "HelpItem.h"
+#if defined(SKIP_QTWEBKIT)
+#include <QFile>
+#include <QGraphicsTextItem>
+#else
 #include "BrowserItem.h"
+#endif
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 #include "frames/FrameFactory.h"
@@ -22,11 +27,24 @@ HelpItem::HelpItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
 {
+#if defined(SKIP_QTWEBKIT)
+    // get html code
+    QFile htmlFile(":/data/introduction-en.richtext");
+    htmlFile.open(QIODevice::ReadOnly);
+    QString htmlCode = htmlFile.readAll();
+
+    // create an item to display it
+    QGraphicsTextItem * ti = new QGraphicsTextItem(this);
+    ti->setPos(m_frame->contentsRect(boundingRect().toRect()).topLeft());
+    ti->setHtml(htmlCode);
+    ti->setTextInteractionFlags(Qt::NoTextInteraction);
+#else
     // show fancy help in internal browser
     BrowserItem * bi = new BrowserItem(this);
     bi->setGeometry(m_frame->contentsRect(boundingRect().toRect()));
-    bi->browse("qrc:/data/help.html");
+    bi->browse("qrc:/data/introduction-en.html");
     bi->setReadOnly(true);
+#endif
 }
 
 HelpItem::~HelpItem()
