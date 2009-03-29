@@ -13,49 +13,49 @@
  ***************************************************************************/
 
 #include "HelpItem.h"
-#include <QFile>
 #if defined(SKIP_QTWEBKIT)
 #include <QGraphicsTextItem>
 #else
 #include "BrowserItem.h"
 #endif
-#include <QPainter>
-#include <QGraphicsSceneMouseEvent>
-#include "frames/FrameFactory.h"
+#include <QFile>
 #include <QLocale>
+#include <QGraphicsSceneMouseEvent>
+#include <QPainter>
+#include "frames/FrameFactory.h"
+
+/// return the translated intro file, or fall back to english
+static QString translatedIntro(const QString & extension)
+{
+    // return the translated file name...
+    QString langCode = QLocale::system().name().split('_').first();
+    QString fileName = QString(":/data/introduction-%1.%2").arg(langCode, extension);
+    if (QFile::exists(fileName))
+        return fileName;
+
+    // ...or fall back to english
+    return QString(":/data/introduction-en.%1").arg(extension);
+}
 
 HelpItem::HelpItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
 {
-    QLocale location;
-    QString lang = QLocale::languageToString(location.language());
 #if defined(SKIP_QTWEBKIT)
-    // get html code
-    QFile htmlFile(QString(":/data/introduction-%1.richtext").arg(lang));
-    if (!htmlFile.open(QIODevice::ReadOnly)) {
-        htmlFile.setFileName(":/data/introduction-English.richtext");
-        htmlFile.open(QIODevice::ReadOnly)
-    }
-    QString htmlCode = htmlFile.readAll();
+    // get html text
+    QFile htmlFile(translatedIntro("richtext"));
+    htmlFile.open(QIODevice::ReadOnly);
 
     // create an item to display it
     QGraphicsTextItem * ti = new QGraphicsTextItem(this);
     ti->setPos(m_frame->contentsRect(boundingRect().toRect()).topLeft());
-    ti->setHtml(htmlCode);
+    ti->setHtml(htmlFile.readAll());
     ti->setTextInteractionFlags(Qt::NoTextInteraction);
 #else
     // show fancy help in internal browser
     BrowserItem * bi = new BrowserItem(this);
     bi->setGeometry(m_frame->contentsRect(boundingRect().toRect()));
-    // FIXME don't work when you're not in the fotowall directory (i.e with make install)
-    // But how can I test if a qrc exists ?
-    QString url = QString("data/introduction-%1.html").arg(lang);
-    if ( ! QFile::exists(url) ) {
-        bi->browse("qrc:/data/introduction-en.html");
-    } else {
-        bi->browse("qrc:"+url);
-    }
+    bi->browse("qrc" + translatedIntro("html")); // qrc:/data/introduction-LANG.html
     bi->setReadOnly(true);
 #endif
 }
