@@ -12,6 +12,7 @@ ChangeLog
 
 Version 0.4:
 
+* Windows executable on [http://github.com/enricoros/fotowall/downloads]
 * Image Effects (by Tanguy Arnaud)
 * French Translation (by Tanguy Arnaud)
 * German translation [Martin]
@@ -19,7 +20,7 @@ Version 0.4:
 
 Version 0.3.1:
 
-* build with Qt 4.4
+* builds with Qt 4.4
 * Brazilian translation [Marcio Moraes]
 
 Version 0.3:
