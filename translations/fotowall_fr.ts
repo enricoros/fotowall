@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="fr">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr">
 <defaultcodec></defaultcodec>
 <context>
     <name>FotoWall</name>
@@ -36,6 +37,7 @@ Do you want to open the web page?</source>
 Voulez vous ouvrir la page Web ?</translation>
     </message>
     <message>
+        <location filename="../FotoWall.cpp" line="159"/>
         <location filename="../FotoWall.cpp" line="174"/>
         <source>Select Layout file</source>
         <translation>Séléctionnez un projet</translation>
@@ -99,8 +101,8 @@ Pendant ce temps, bien que non optimale, vous pouvez toujours optenir des résul
     </message>
     <message>
         <location filename="../FotoWall.ui" line="14"/>
-        <source>FotoWall 0.3</source>
-        <translation>FotoWall 0.3</translation>
+        <source>FotoWall 0.4</source>
+        <translation>FotoWall 0.4</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="26"/>
@@ -196,7 +198,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Forme</translation>
+        <translation>Forme</translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
+        <source>Properties</source>
+        <translation>Général</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="34"/>
@@ -266,14 +273,14 @@ p, li { white-space: pre-wrap; }
         <translation>NVG</translation>
     </message>
     <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
+        <source>Set the colors to levels of gray</source>
+        <translation>Convertir en niveau de gris</translation>
+    </message>
+    <message>
         <location filename="../items/PicturePropertiesItem.cpp" line="104"/>
         <source>Black and White</source>
         <translation>Noir et blanc</translation>
-    </message>
-    <message>
-        <location filename="../items/PicturePropertiesItem.ui" line="24"/>
-        <source>General</source>
-        <translation>Général</translation>
     </message>
     <message>
         <location filename="../items/PicturePropertiesItem.ui" line="235"/>
@@ -284,11 +291,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../items/PicturePropertiesItem.ui" line="243"/>
         <source>Select the effects you want to apply to this picture</source>
         <translation>Sélectionnez les effets que vous voulez appliquer à cette image</translation>
-    </message>
-    <message>
-        <location filename="../items/PicturePropertiesItem.cpp" line="102"/>
-        <source>Set the colors to levels of grey</source>
-        <translation>Convertir en niveau de gris</translation>
     </message>
 </context>
 <context>
