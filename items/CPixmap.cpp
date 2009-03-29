@@ -20,7 +20,7 @@
  ******************************/
 
 #include "CPixmap.h"
-#include <QtGui>
+#include <QImage>
 
 CPixmap::CPixmap() : m_isNVG(false), m_isBlackAndWhite(false) {
 }
