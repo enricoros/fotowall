@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FotoWall 0.3</string>
+   <string>FotoWall 0.4</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">

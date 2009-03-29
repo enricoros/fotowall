@@ -24,7 +24,7 @@ int main( int argc, char ** args )
 {
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.3");
+    app.setApplicationVersion("0.4");
     app.setOrganizationName("Enrico Ros");
 
     QTranslator translator;
