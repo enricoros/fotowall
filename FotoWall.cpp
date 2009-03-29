@@ -81,6 +81,7 @@ FotoWall::FotoWall(QWidget * parent)
     // add the graphicsview
     m_view = new FWGraphicsView(m_desk, ui->centralWidget);
     QVBoxLayout * lay = new QVBoxLayout(ui->centralWidget);
+    lay->setAlignment(Qt::AlignHCenter);
     lay->setSpacing(0);
     lay->setMargin(0);
     lay->addWidget(m_view);
@@ -148,6 +149,7 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
     switch (index) {
         case 0:
             showMaximized();
+            m_view->setMaximumSize(QSize(16777215,16777215));
             break;
 
         case 1:
