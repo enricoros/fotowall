@@ -28,6 +28,7 @@
 #include <QNetworkReply>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QDebug>
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -151,9 +152,10 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
 
         case 1:
             showNormal();
-            // XXX : What is the real size for a CD ? It's a 4.724 inches square.
-            resize(600, 600);
-            m_view->resize(600, 600);
+            // A CD cover is a 4.75x4.715 inches square. To get the size in pixel, we must multiply by the dpi (dot per inch)
+            resize(4.75 * logicalDpiX(), 4.715 * logicalDpiY());
+            m_view->setMaximumWidth(4.75 * m_view->logicalDpiX());
+            m_view->setMaximumHeight(4.715 * m_view->logicalDpiY());
             break;
     };
 }
