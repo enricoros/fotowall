@@ -47,5 +47,6 @@ unix {
 # deployment on Windows
 win32 {
     CONFIG += embed_manifest_exe
+    QTPLUGIN += qgif qjpeg qsvg qtiff
     RC_FILE = fotowall.rc
 }

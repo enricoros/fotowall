@@ -16,9 +16,15 @@
 #include <QTranslator>
 #include <QLocale>
 #include <QSettings>
+#include <QtPlugin>
 #include "FotoWall.h"
 
-#define notImplemented() {qWarning("%s:%d: %s NOT Implemented!", __FILE__, __LINE__, __FUNCTION__);}
+#ifdef Q_OS_WIN32
+Q_IMPORT_PLUGIN(qgif)
+Q_IMPORT_PLUGIN(qjpeg)
+Q_IMPORT_PLUGIN(qsvg)
+Q_IMPORT_PLUGIN(qtiff)
+#endif
 
 int main( int argc, char ** args )
 {
