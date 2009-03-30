@@ -28,7 +28,9 @@
 #include <QNetworkReply>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <QDebug>
+#include <QX11Info>
+#include <QPrinter>
+#include <QPrintDialog>
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -150,14 +152,16 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
         case 0:
             showMaximized();
             m_view->setMaximumSize(QSize(16777215,16777215));
+            m_projectType = Normal;
             break;
 
         case 1:
             showNormal();
             // A CD cover is a 4.75x4.715 inches square. To get the size in pixel, we must multiply by the dpi (dot per inch)
-            resize(4.75 * logicalDpiX(), 4.715 * logicalDpiY());
+            resize(4.75 * QX11Info::appDpiX (), 4.715 * QX11Info::appDpiY ());
             m_view->setMaximumWidth(4.75 * m_view->logicalDpiX());
             m_view->setMaximumHeight(4.715 * m_view->logicalDpiY());
+            m_projectType = CD;
             break;
     };
 }
@@ -236,6 +240,27 @@ class SizeDialog : public QDialog {
 void FotoWall::on_pngButton_clicked()
 {
     QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.4.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
+
+    // render on the image
+    globalExportingFlag = true;
+
+    // check to project type for saving
+    switch (m_projectType) {
+        case Normal:
+            saveImage();
+            break;
+        case CD:
+            saveCD();
+            break;
+        default:
+            saveImage();
+            break;
+    }
+
+    globalExportingFlag = false;
+}
+
+void FotoWall::saveImage() {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Name a PNG file"), QDir::current().path(), "PNG Image (*.png)");
     if (fileName.isNull())
         return;
@@ -252,15 +277,12 @@ void FotoWall::on_pngButton_clicked()
     int destH = sd->hSpin->value();
     delete sd;
 
-    // render on the image
-    globalExportingFlag = true;
     QImage image(destW, destH, QImage::Format_ARGB32);
     image.fill(0);
     QPainter imagePainter(&image);
     imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     m_desk->render(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
     imagePainter.end();
-    globalExportingFlag = false;
 
     // save image
     image.save(fileName, "PNG");
@@ -271,6 +293,27 @@ void FotoWall::on_pngButton_clicked()
     }
     int size = QFile(fileName).size();
     QMessageBox::information(this, tr("Image rendered"), tr("The target image is %1 bytes long").arg(size));
+}
+
+void FotoWall::saveCD() {
+    // Dimension of the image in pixels. It will be set to 300 dpi by the printer.
+    QImage image(1410, 1410, QImage::Format_ARGB32);
+    image.fill(0);
+
+    QPrinter printer;
+    QPrintDialog printDialog(&printer);
+    bool ok = printDialog.exec();
+    if(!ok) return;
+    else {
+        // 300 dpi resolution for exporting at the right size
+        printer.setResolution(300);
+        QPainter paint(&printer);
+        paint.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+        // Print the image
+        m_desk->render(&paint, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+        paint.end();
+    }
+
 }
 
 void FotoWall::on_quitButton_clicked()
