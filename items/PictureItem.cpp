@@ -215,6 +215,11 @@ void PictureItem::setEffect(int effectClass)
         case 2:
             m_photo->toBlackAndWhite();
             break;
+
+        case 3:
+            m_photo->noEffects();
+            break;
+
         default:
             qWarning("PictureItem::setEffect: effect %d is not implemented", effectClass);
             return;

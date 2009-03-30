@@ -175,17 +175,17 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="503"/>
+        <location filename="../items/PictureItem.cpp" line="508"/>
         <source>Choose the file name</source>
         <translation>Sceglere il nome del file</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="542"/>
+        <location filename="../items/PictureItem.cpp" line="547"/>
         <source>Picture Save Error</source>
         <translation>Errore salvando l&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="542"/>
+        <location filename="../items/PictureItem.cpp" line="547"/>
         <source>Error saving picture to the file %1</source>
         <translation>Errore salvando l&apos;immagine sul file %1</translation>
     </message>
@@ -296,6 +296,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../items/PicturePropertiesItem.ui" line="243"/>
         <source>Select the effects you want to apply to this picture</source>
         <translation>Applica degli effetti all&apos;immagine</translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="106"/>
+        <source>No effects</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

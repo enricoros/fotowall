@@ -35,6 +35,7 @@ public:
    void flipH();
    void flipV();
    void toBlackAndWhite();
+   void noEffects();
    void luminosity(int value);
 
    //accessors
@@ -43,6 +44,7 @@ public:
 
    void setNVG(bool state=false) { m_isNVG = state; }
    void setBlackAndWhite(bool state=false) { m_isBlackAndWhite = state; }
+   void updateImage(QImage &newImage);
 
 private:
    QString m_filePath;

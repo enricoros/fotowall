@@ -48,13 +48,13 @@ void CPixmap::toNVG() {
 		}
 	}
 	 m_isNVG = true;
-	*this = fromImage(dest);
+	updateImage(dest);
 }
 
 void CPixmap::invertColors() {
 	QImage img = this->toImage();
 	img.invertPixels();
-	*this = fromImage(img);
+    updateImage(img);
 }
 
 void CPixmap::flipH() {
@@ -68,7 +68,7 @@ void CPixmap::flipH() {
 			dest.setPixel(width - x,y,pixel);
 		}
 	}
-	*this = fromImage(dest);
+	updateImage(dest);
 }
 void CPixmap::flipV() {
 	QImage img = this->toImage();
@@ -81,7 +81,7 @@ void CPixmap::flipV() {
 			dest.setPixel(x, height - y,pixel);
 		}
 	}
-	*this = fromImage(dest);
+	updateImage(dest);
 }
 
 void CPixmap::toBlackAndWhite() {
@@ -103,7 +103,11 @@ void CPixmap::toBlackAndWhite() {
 		}
 	}
 	m_isBlackAndWhite = true;
-	*this = fromImage(dest);
+	updateImage(dest);
+}
+void CPixmap::noEffects() {
+    //Reload the image to remove the effects
+    if( !m_filePath.isEmpty() ) load(m_filePath);
 }
 
 void CPixmap::luminosity(int value) {
@@ -129,7 +133,11 @@ void CPixmap::luminosity(int value) {
 			dest.setPixel(x,y,pixel.rgb());
 		}
 	}
-	*this = fromImage(dest);
+	updateImage(dest);
 }
 
-
+void CPixmap::updateImage(QImage &newImage) {
+    QString tmpFilePath = m_filePath;
+    *this = fromImage(newImage);
+    m_filePath = tmpFilePath;
+}

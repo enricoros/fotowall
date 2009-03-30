@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="fr">
+<defaultcodec></defaultcodec>
 <context>
     <name>FotoWall</name>
     <message>
@@ -165,17 +166,17 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="503"/>
+        <location filename="../items/PictureItem.cpp" line="508"/>
         <source>Choose the file name</source>
         <translation>Choisissez le nom de fichier</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="542"/>
+        <location filename="../items/PictureItem.cpp" line="547"/>
         <source>Picture Save Error</source>
         <translation>Erreur de sauvegarde de l&apos;image</translation>
     </message>
     <message>
-        <location filename="../items/PictureItem.cpp" line="542"/>
+        <location filename="../items/PictureItem.cpp" line="547"/>
         <source>Error saving picture to the file %1</source>
         <translation>Erreur lors de la sauvegarde dans le fichier %1</translation>
     </message>
@@ -288,6 +289,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../items/PicturePropertiesItem.ui" line="243"/>
         <source>Select the effects you want to apply to this picture</source>
         <translation>Sélectionnez les effets que vous voulez appliquer à cette image</translation>
+    </message>
+    <message>
+        <location filename="../items/PicturePropertiesItem.cpp" line="106"/>
+        <source>No effects</source>
+        <translation>Aucun effet</translation>
     </message>
 </context>
 <context>
