@@ -158,7 +158,8 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
         case 1:
             showNormal();
             // A CD cover is a 4.75x4.715 inches square. To get the size in pixel, we must multiply by the dpi (dot per inch)
-            resize(4.75 * QX11Info::appDpiX (), 4.715 * QX11Info::appDpiY ());
+            // FIXME : It's the right calculation (it works for printing), so the dpi size must be the wrong one, but why ?
+            resize(4.75 * logicalDpiX(), 4.75 * logicalDpiY());
             m_view->setMaximumWidth(4.75 * m_view->logicalDpiX());
             m_view->setMaximumHeight(4.715 * m_view->logicalDpiY());
             m_projectType = CD;
