@@ -20,22 +20,22 @@
 
 #define MIRROR_HEIGHT 100
 
-MirrorItem::MirrorItem(PictureItem * copyItem, QGraphicsItem * parent)
+MirrorItem::MirrorItem(AbstractContentItem * copyItem, QGraphicsItem * parent)
     : QGraphicsItem(parent)
-    , m_copy(copyItem)
+    , m_source(copyItem)
 {
     // read current values
-    m_boundingRect = m_copy->boundingRect();
-    setVisible(m_copy->isVisible());
-    slotCopyChanged();
+    m_boundingRect = m_source->boundingRect();
+    setVisible(m_source->isVisible());
+    slotSourceChanged();
 
     // monitor changes
-    connect(m_copy, SIGNAL(gfxChange()), this, SLOT(slotCopyChanged()));
-    connect(m_copy, SIGNAL(destroyed()), this, SLOT(deleteLater()));
+    connect(m_source, SIGNAL(gfxChange()), this, SLOT(slotSourceChanged()));
+    connect(m_source, SIGNAL(destroyed()), this, SLOT(deleteLater()));
 
     // add to the scame scene
-    Q_ASSERT(m_copy->scene());
-    m_copy->scene()->addItem(this);
+    Q_ASSERT(m_source->scene());
+    m_source->scene()->addItem(this);
 }
 
 MirrorItem::~MirrorItem()
@@ -57,8 +57,8 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         m_pixmap.fill(Qt::transparent);
 
         // find out the Transform chain to mirror a rotated item
-        QRectF sceneRectF = m_copy->mapToScene(m_copy->boundingRect()).boundingRect();
-        QTransform tFromItem = m_copy->transform() * QTransform(1, 0, 0, 1, m_copy->pos().x(), m_copy->pos().y());
+        QRectF sceneRectF = m_source->mapToScene(m_source->boundingRect()).boundingRect();
+        QTransform tFromItem = m_source->transform() * QTransform(1, 0, 0, 1, m_source->pos().x(), m_source->pos().y());
         QTransform tFromPixmap = QTransform(1, 0, 0, -1.0, sceneRectF.left(), sceneRectF.bottom());
         QTransform tItemToPixmap = tFromItem * tFromPixmap.inverted();
 
@@ -66,7 +66,7 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         QPainter p(&m_pixmap);
         p.setRenderHint(QPainter::Antialiasing, true);
         p.setTransform(tItemToPixmap, true);
-        m_copy->paint(&p, 0, 0);
+        m_source->paint(&p, 0, 0);
         p.end();
 
         // add a linear alpha channel to the image
@@ -88,11 +88,11 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         painter->drawPixmap(option->rect, m_pixmap, option->rect);
 }
 
-void MirrorItem::slotCopyChanged() // PictureItem independant
+void MirrorItem::slotSourceChanged() // AbstractContentItem independant
 {
     // find out the item's polygon in scene coordinates
-    QRectF itemRect = m_copy->boundingRect();
-    QPolygonF itemScenePolygon = m_copy->mapToScene(itemRect);
+    QRectF itemRect = m_source->boundingRect();
+    QPolygonF itemScenePolygon = m_source->mapToScene(itemRect);
 
     // resize and reposition as an axis-aligned rect on the bottom of the Picture
     QRect sceneRect = itemScenePolygon.boundingRect().toRect();
@@ -100,7 +100,7 @@ void MirrorItem::slotCopyChanged() // PictureItem independant
     setPos(sceneRect.bottomLeft());
 #else
     setPos(sceneRect.bottomLeft() + QPoint(0, -5));
-    setZValue(m_copy->zValue() - 0.1);
+    setZValue(m_source->zValue() - 0.1);
 #endif
     prepareGeometryChange();
     m_boundingRect = sceneRect.translated(-sceneRect.topLeft());

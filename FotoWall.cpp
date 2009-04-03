@@ -14,6 +14,7 @@
 
 #include "FotoWall.h"
 #include "Desk.h"
+#include "RenderOpts.h"
 #include <QCoreApplication>
 #include <QDir>
 #include <QDesktopServices>
@@ -32,9 +33,6 @@
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
 #define TUTORIAL_STRING "Peter walks you through how to use Fotowall"
-
-// static global variable
-bool globalExportingFlag = false;
 
 class FWGraphicsView : public QGraphicsView {
     public:
@@ -233,14 +231,14 @@ void FotoWall::on_pngButton_clicked()
     delete sd;
 
     // render on the image
-    globalExportingFlag = true;
+    RenderOpts::HQRendering = true;
     QImage image(destW, destH, QImage::Format_ARGB32);
     image.fill(0);
     QPainter imagePainter(&image);
     imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     m_desk->render(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
     imagePainter.end();
-    globalExportingFlag = false;
+    RenderOpts::HQRendering = false;
 
     // save image
     image.save(fileName, "PNG");

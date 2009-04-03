@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "PicturePropertiesItem.h"
+#include "RenderOpts.h"
 #include "ui_PicturePropertiesItem.h"
 #include "frames/FrameFactory.h"
 #include <QGraphicsSceneMouseEvent>
@@ -224,7 +225,7 @@ void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
 
 void PicturePropertiesItem::slotToggleMirror(bool enabled)
 {
-    PictureItem::s_defaultMirrorEnabled = enabled;
+    RenderOpts::LastMirrorEnabled = enabled;
     m_pictureItem->setMirrorEnabled(enabled);
 }
 

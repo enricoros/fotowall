@@ -13,12 +13,10 @@
  ***************************************************************************/
 
 #include "ButtonItem.h"
+#include "RenderOpts.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-
-// from FotoWall.cpp
-extern bool globalExportingFlag;
 
 ButtonItem::ButtonItem(Type type, const QBrush & brush, const QIcon & icon, QGraphicsItem * parent)
     : QGraphicsItem(parent)
@@ -53,7 +51,7 @@ QRectF ButtonItem::boundingRect() const
 
 void ButtonItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
-    if (globalExportingFlag)
+    if (RenderOpts::HQRendering)
         return;
     bool over = option->state & QStyle::State_MouseOver;
     if (over) {

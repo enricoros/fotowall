@@ -12,9 +12,12 @@ QT = core \
     network
 
 # Input
-HEADERS += Desk.h \
-    FotoWall.h
+HEADERS += CPixmap.h \
+    Desk.h \
+    FotoWall.h \
+    RenderOpts.h
 SOURCES += main.cpp \
+    CPixmap.cpp \
     Desk.cpp \
     FotoWall.cpp
 FORMS += FotoWall.ui
@@ -30,7 +33,7 @@ include(items/items.pri)
 include(frames/frames.pri)
 
 # installation on Linux
-unix {
+unix { 
     target.path = /usr/bin
     icon.files = fotowall.png
     icon.path = /usr/share/pixmaps
@@ -45,8 +48,11 @@ unix {
 }
 
 # deployment on Windows
-win32 {
+win32 { 
     CONFIG += embed_manifest_exe
-    QTPLUGIN += qgif qjpeg qsvg qtiff
+    QTPLUGIN += qgif \
+        qjpeg \
+        qsvg \
+        qtiff
     RC_FILE = fotowall.rc
 }

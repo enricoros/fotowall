@@ -18,6 +18,7 @@
 #include <QSettings>
 #include <QtPlugin>
 #include "FotoWall.h"
+#include "RenderOpts.h"
 
 #ifdef Q_OS_WIN32
 Q_IMPORT_PLUGIN(qgif)
@@ -25,6 +26,10 @@ Q_IMPORT_PLUGIN(qjpeg)
 Q_IMPORT_PLUGIN(qsvg)
 Q_IMPORT_PLUGIN(qtiff)
 #endif
+
+// init RenderOpts defaults
+bool RenderOpts::LastMirrorEnabled = true;
+bool RenderOpts::HQRendering = false;
 
 int main( int argc, char ** args )
 {

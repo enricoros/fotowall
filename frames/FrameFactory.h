@@ -45,7 +45,6 @@ class FrameFactory
         quint32 m_svgClassIndex;
         QMap<quint32, QString> m_svgMap;
 
-
     public:
         FrameFactory();
         ~FrameFactory();

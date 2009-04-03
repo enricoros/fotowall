@@ -12,33 +12,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MirrorItem_h__
-#define __MirrorItem_h__
+#ifndef __RenderOpts_h__
+#define __RenderOpts_h__
 
-#include "AbstractContentItem.h"
-
-/**
-    \brief Mirrors a transformed PictureItem
-*/
-class MirrorItem : public QObject, public QGraphicsItem
+class RenderOpts
 {
-    Q_OBJECT
     public:
-        MirrorItem(AbstractContentItem * copyItem, QGraphicsItem * parent = 0);
-        ~MirrorItem();
+        // defaults
+        static bool LastMirrorEnabled;
 
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-        //QVariant itemChange(GraphicsItemChange change, const QVariant & value);
-
-    private:
-        AbstractContentItem * m_source;
-        QRectF m_boundingRect;
-        QPixmap m_pixmap;
-
-    private Q_SLOTS:
-        void slotSourceChanged();
+        // global options
+        static bool HQRendering;
 };
 
 #endif
