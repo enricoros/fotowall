@@ -38,6 +38,7 @@ class FotoWall : public QWidget
 
     private Q_SLOTS:
         void on_addPictures_clicked();
+        void on_addText_clicked();
         void on_setTitle_clicked();
         void on_helpLabel_linkActivated(const QString & link);
         void on_tutorialLabel_linkActivated(const QString & link);

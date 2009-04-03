@@ -174,6 +174,11 @@ void Desk::loadPictures(const QStringList & fileNames)
     }
 }
 
+void Desk::addTextContent()
+{
+    addText("notImplemented() on Text");
+}
+
 #define HIGHLIGHT(x, y) \
     { \
         HighlightItem * highlight = new HighlightItem(); \

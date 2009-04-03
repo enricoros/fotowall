@@ -20,18 +20,13 @@
 
 #define MIRROR_HEIGHT 100
 
-MirrorItem::MirrorItem(AbstractContentItem * copyItem, QGraphicsItem * parent)
+MirrorItem::MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent)
     : QGraphicsItem(parent)
-    , m_source(copyItem)
+    , m_source(sourceItem)
 {
     // read current values
-    m_boundingRect = m_source->boundingRect();
+    sourceUpdated();
     setVisible(m_source->isVisible());
-    slotSourceChanged();
-
-    // monitor changes
-    connect(m_source, SIGNAL(gfxChange()), this, SLOT(slotSourceChanged()));
-    connect(m_source, SIGNAL(destroyed()), this, SLOT(deleteLater()));
 
     // add to the scame scene
     Q_ASSERT(m_source->scene());
@@ -88,7 +83,7 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         painter->drawPixmap(option->rect, m_pixmap, option->rect);
 }
 
-void MirrorItem::slotSourceChanged() // AbstractContentItem independant
+void MirrorItem::sourceUpdated()
 {
     // find out the item's polygon in scene coordinates
     QRectF itemRect = m_source->boundingRect();
@@ -100,12 +95,15 @@ void MirrorItem::slotSourceChanged() // AbstractContentItem independant
     setPos(sceneRect.bottomLeft());
 #else
     setPos(sceneRect.bottomLeft() + QPoint(0, -5));
-    setZValue(m_source->zValue() - 0.1);
 #endif
     prepareGeometryChange();
     m_boundingRect = sceneRect.translated(-sceneRect.topLeft());
     if (m_boundingRect.height() > MIRROR_HEIGHT)
         m_boundingRect.setHeight(MIRROR_HEIGHT);
+
+    // ### updated directly from caller
+    //setVisible(m_source->isVisible());
+    //setZValue(m_source->zValue() - 0.1);
 
     // invalidate current rendering
     m_pixmap = QPixmap();

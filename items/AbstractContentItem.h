@@ -35,6 +35,10 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         AbstractContentItem(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~AbstractContentItem();
 
+        // save/restore
+        virtual void save(QDataStream & data) const;
+        virtual bool restore(QDataStream & data);
+
         // misc
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;
@@ -44,25 +48,12 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         quint32 frameClass() const;
 
         // mirror
-        bool mirrorEnabled() const;
         void setMirrorEnabled(bool enabled);
-
-        // save/restore
-        virtual void save(QDataStream & data) const;
-        virtual bool restore(QDataStream & data);
+        bool mirrorEnabled() const;
 
         // ::QGraphicsItem
-        virtual QRectF boundingRect() const;
-        virtual void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
-        virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
-        virtual void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
-        virtual void dropEvent(QGraphicsSceneDragDropEvent * event);
-        virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-        virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
-        virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-        virtual void wheelEvent(QGraphicsSceneWheelEvent * event);
-        virtual void keyPressEvent(QKeyEvent * event);
-        virtual QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+        QRectF boundingRect() const;
+        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     Q_SIGNALS:
         void gfxChange();
@@ -72,12 +63,25 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         void deleteMe();
 
     protected:
+        // functionalities for subclasses
+        QRect contentsRect() const;
         void GFX_CHANGED();
         void slotResetAspectRatio();
-        Frame *     m_frame;
+        virtual void geometryChanged();
+
+        // ::QGraphicsItem
+        void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+        void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+        void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
+        void dropEvent(QGraphicsSceneDragDropEvent * event);
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+        void wheelEvent(QGraphicsSceneWheelEvent * event);
+        void keyPressEvent(QKeyEvent * event);
+        QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
     private:
-        virtual void relayoutContents();
+        Frame *     m_frame;
         QSize       m_size;
         QList<ButtonItem *> m_controlItems;
         ButtonItem * m_scaleButton;
@@ -93,6 +97,8 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         void slotStackLower();
         void slotStackBack();
         void slotSave();
+
+    protected Q_SLOTS:
         virtual void slotConfigure();
 
     private Q_SLOTS:

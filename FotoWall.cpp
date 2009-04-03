@@ -131,6 +131,11 @@ void FotoWall::on_addPictures_clicked()
         m_desk->loadPictures(fileNames);
 }
 
+void FotoWall::on_addText_clicked()
+{
+    m_desk->addTextContent();
+}
+
 void FotoWall::on_setTitle_clicked()
 {
     QString title = m_desk->titleText();

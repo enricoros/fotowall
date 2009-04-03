@@ -157,14 +157,15 @@ void PictureItem::dropEvent(QGraphicsSceneDragDropEvent * event)
 
 void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
+    // paint parent
     AbstractContentItem::paint(painter, option, widget);
 
+    // skip if no photo
     if (!m_photo)
         return;
 
     // draw high-resolution photo when exporting png
-    QRect frameRect = boundingRect().toRect();
-    QRect targetRect = m_frame->contentsRect(frameRect);
+    QRect targetRect = contentsRect();
     if (RenderOpts::HQRendering) {
         painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
         painter->drawPixmap(targetRect, *m_photo);

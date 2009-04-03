@@ -87,7 +87,7 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
 
     // hide and relayout buttons
     hoverLeaveEvent(0 /*HACK*/);
-    relayoutContents();
+    geometryChanged();
 
     // add to the scene
     scene->addItem(this);
@@ -108,7 +108,7 @@ void AbstractContentItem::setFrame(Frame * frame)
     m_frame = frame;
     FrameFactory::setDefaultPictureClass(m_frame->frameClass());
     slotResetAspectRatio();
-    relayoutContents();
+    geometryChanged();
     update();
     GFX_CHANGED();
 }
@@ -116,11 +116,6 @@ void AbstractContentItem::setFrame(Frame * frame)
 quint32 AbstractContentItem::frameClass() const
 {
     return m_frame->frameClass();
-}
-
-bool AbstractContentItem::mirrorEnabled() const
-{
-    return m_mirrorItem;
 }
 
 void AbstractContentItem::setMirrorEnabled(bool enabled)
@@ -131,8 +126,14 @@ void AbstractContentItem::setMirrorEnabled(bool enabled)
     }
     if (enabled && !m_mirrorItem) {
         m_mirrorItem = new MirrorItem(this);
-        m_mirrorItem->show();
+        connect(this, SIGNAL(gfxChange()), m_mirrorItem, SLOT(sourceUpdated()));
+        connect(this, SIGNAL(destroyed()), m_mirrorItem, SLOT(deleteLater()));
     }
+}
+
+bool AbstractContentItem::mirrorEnabled() const
+{
+    return m_mirrorItem;
 }
 
 void AbstractContentItem::save(QDataStream & /*data*/) const
@@ -153,7 +154,7 @@ bool AbstractContentItem::restore(QDataStream & /*data*/)
     /*
     prepareGeometryChange();
     data >> m_size;
-    relayoutContents();
+    geometryChanged();
     QPointF p;
     data >> p;
     setPos(p);
@@ -300,21 +301,18 @@ QVariant AbstractContentItem::itemChange(GraphicsItemChange change, const QVaria
     return QGraphicsItem::itemChange(change, value);
 }
 
+QRect AbstractContentItem::contentsRect() const
+{
+    QRect cRect = boundingRect().toRect();
+    if (!m_frame)
+        return cRect;
+    return m_frame->contentsRect(cRect);
+}
+
 void AbstractContentItem::GFX_CHANGED()
 {
     if (m_gfxChangeSignalTimer)
         m_gfxChangeSignalTimer->start();
-}
-
-void AbstractContentItem::relayoutContents()
-{
-    if (!m_frame)
-        return;
-    QRect frameRect = boundingRect().toRect();
-
-    // layout all buttons and text
-    m_frame->layoutButtons(m_controlItems, frameRect);
-    ///FIXME m_frame->layoutText(m_textItem, frameRect);
 }
 
 void AbstractContentItem::slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers /*modifiers*/)
@@ -340,7 +338,7 @@ void AbstractContentItem::slotResize(const QPointF & controlPoint, Qt::KeyboardM
     m_transforming = true;
     prepareGeometryChange();
     m_size = newSize;
-    relayoutContents();
+    geometryChanged();
     update();
     GFX_CHANGED();
 
@@ -453,10 +451,21 @@ void AbstractContentItem::slotResetAspectRatio()
     // apply the new size
     prepareGeometryChange();
     m_size = newSize;
-    relayoutContents();
+    geometryChanged();
     update();
     GFX_CHANGED();
     */
+}
+
+void AbstractContentItem::geometryChanged()
+{
+    if (!m_frame)
+        return;
+    QRect frameRect = boundingRect().toRect();
+
+    // layout all buttons and text
+    m_frame->layoutButtons(m_controlItems, frameRect);
+    ///FIXME m_frame->layoutText(m_textItem, frameRect);
 }
 
 void AbstractContentItem::slotResetRotation()

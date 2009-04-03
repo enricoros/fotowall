@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
-    <height>367</height>
+    <width>688</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,10 +38,42 @@
         </property>
         <property name="icon">
          <iconset resource="fotowall.qrc">
-          <normaloff>:/data/action-add.png</normaloff>:/data/action-add.png</iconset>
+          <normaloff>:/data/button-add-image.png</normaloff>:/data/button-add-image.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>64</width>
+          <height>64</height>
+         </size>
         </property>
         <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
+         <enum>Qt::ToolButtonIconOnly</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="addText">
+        <property name="text">
+         <string>set title</string>
+        </property>
+        <property name="icon">
+         <iconset resource="fotowall.qrc">
+          <normaloff>:/data/button-add-text.png</normaloff>:/data/button-add-text.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>64</width>
+          <height>64</height>
+         </size>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonIconOnly</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -50,12 +82,8 @@
         <property name="text">
          <string>set title</string>
         </property>
-        <property name="icon">
-         <iconset resource="fotowall.qrc">
-          <normaloff>:/data/action-add.png</normaloff>:/data/action-add.png</iconset>
-        </property>
         <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
+         <enum>Qt::ToolButtonIconOnly</enum>
         </property>
        </widget>
       </item>

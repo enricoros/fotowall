@@ -55,7 +55,7 @@ class PictureItem : public AbstractContentItem
         void slotFlipHorizontally();
         void slotFlipVertically();
 
-    protected:
+    private:
         virtual void slotConfigure();
 };
 

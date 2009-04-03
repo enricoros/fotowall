@@ -44,6 +44,7 @@ class Desk : public QGraphicsScene
         void save(QDataStream & data) const;
         void restore(QDataStream & data);
         void loadPictures(const QStringList & fileNames);
+        void addTextContent();
         void showHelp();
 
     protected:

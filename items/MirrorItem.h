@@ -24,21 +24,20 @@ class MirrorItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        MirrorItem(AbstractContentItem * copyItem, QGraphicsItem * parent = 0);
+        MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent = 0);
         ~MirrorItem();
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-        //QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+
+    public Q_SLOTS:
+        void sourceUpdated();
 
     private:
-        AbstractContentItem * m_source;
+        QGraphicsItem * m_source;
         QRectF m_boundingRect;
         QPixmap m_pixmap;
-
-    private Q_SLOTS:
-        void slotSourceChanged();
 };
 
 #endif
