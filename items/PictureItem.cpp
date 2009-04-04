@@ -72,7 +72,7 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     m_opaquePhoto = !m_photo->hasAlpha();
     m_fileName = fileName;
     if (keepRatio)
-        slotResetAspectRatio();
+        adjustSize();
     if (setName) {
         QString string = QFileInfo(fileName).fileName().section('.', 0, 0);
         string = string.mid(0, 10);
@@ -81,13 +81,6 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     update();
     GFX_CHANGED();
     return true;
-}
-
-QPixmap PictureItem::renderPhoto(const QSize & size) const
-{
-    if (m_photo)
-        return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    return QPixmap();
 }
 
 void PictureItem::setEffect(int effectClass)
@@ -117,6 +110,13 @@ void PictureItem::setEffect(int effectClass)
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
+}
+
+QPixmap PictureItem::renderPhoto(const QSize & size) const
+{
+    if (m_photo)
+        return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    return QPixmap();
 }
 
 void PictureItem::save(QDataStream & data) const
@@ -204,10 +204,5 @@ void PictureItem::slotFlipVertically()
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
-}
-
-void PictureItem::slotConfigure()
-{
-    AbstractContentItem::slotConfigure();
 }
 

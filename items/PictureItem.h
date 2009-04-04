@@ -29,12 +29,9 @@ class PictureItem : public AbstractContentItem
         PictureItem(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~PictureItem();
 
-        // photo
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
-        QPixmap renderPhoto(const QSize & size) const;
-
-        // effect
         void setEffect(int effectClass);
+        QPixmap renderPhoto(const QSize & size) const;
 
         // ::AbstractContentItem
         void save(QDataStream & data) const;
@@ -51,12 +48,9 @@ class PictureItem : public AbstractContentItem
         bool        m_opaquePhoto;
         QGraphicsTextItem * m_textItem;
 
-    public Q_SLOTS:
+    protected Q_SLOTS:
         void slotFlipHorizontally();
         void slotFlipVertically();
-
-    private:
-        virtual void slotConfigure();
 };
 
 #endif

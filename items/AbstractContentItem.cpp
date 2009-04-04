@@ -31,17 +31,17 @@
 AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_frame(0)
-    , m_size(200, 150)
-    , m_mirrorItem(0)
-    , m_gfxChangeSignalTimer(0)
-    , m_transformRefreshTimer(0)
+    , m_rect(-100, -75, 200, 150)
     , m_transforming(false)
+    , m_transformRefreshTimer(0)
+    , m_gfxChangeTimer(0)
+    , m_mirrorItem(0)
 {
     // the buffered graphics changes timer
-    m_gfxChangeSignalTimer = new QTimer(this);
-    m_gfxChangeSignalTimer->setInterval(0);
-    m_gfxChangeSignalTimer->setSingleShot(true);
-    connect(m_gfxChangeSignalTimer, SIGNAL(timeout()), this, SIGNAL(gfxChange()));
+    m_gfxChangeTimer = new QTimer(this);
+    m_gfxChangeTimer->setInterval(0);
+    m_gfxChangeTimer->setSingleShot(true);
+    connect(m_gfxChangeTimer, SIGNAL(timeout()), this, SIGNAL(gfxChange()));
 
     // customize item's behavior
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable);
@@ -49,15 +49,15 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
     setAcceptDrops(true);
 
     // create child items
-    m_scaleButton = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
-    connect(m_scaleButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotResize(const QPointF&,Qt::KeyboardModifiers)));
-    connect(m_scaleButton, SIGNAL(doubleClicked()), this, SLOT(slotResetAspectRatio()));
-    m_controlItems << m_scaleButton;
+    ButtonItem * bScale = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
+    connect(bScale, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotResize(const QPointF&,Qt::KeyboardModifiers)));
+    connect(bScale, SIGNAL(doubleClicked()), this, SLOT(slotResetRatio()));
+    m_controlItems << bScale;
 
-    m_rotateButton = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
-    connect(m_rotateButton, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&)));
-    connect(m_rotateButton, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
-    m_controlItems << m_rotateButton;
+    ButtonItem * bRotate = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
+    connect(bRotate, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&)));
+    connect(bRotate, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
+    m_controlItems << bRotate;
 
     ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
     connect(bFront, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
@@ -87,7 +87,7 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
 
     // hide and relayout buttons
     hoverLeaveEvent(0 /*HACK*/);
-    geometryChanged();
+    contentGeometryChanged();
 
     // add to the scene
     scene->addItem(this);
@@ -107,8 +107,8 @@ void AbstractContentItem::setFrame(Frame * frame)
     delete m_frame;
     m_frame = frame;
     FrameFactory::setDefaultPictureClass(m_frame->frameClass());
-    slotResetAspectRatio();
-    geometryChanged();
+    adjustSize();
+    contentGeometryChanged();
     update();
     GFX_CHANGED();
 }
@@ -140,7 +140,7 @@ void AbstractContentItem::save(QDataStream & /*data*/) const
 {
     qWarning("NI");
     /*
-    data << m_size;
+    data << m_rect;
     data << pos();
     data << transform();
     data << zValue();
@@ -153,8 +153,8 @@ bool AbstractContentItem::restore(QDataStream & /*data*/)
     qWarning("NI");
     /*
     prepareGeometryChange();
-    data >> m_size;
-    geometryChanged();
+    data >> m_rect;
+    contentGeometryChanged();
     QPointF p;
     data >> p;
     setPos(p);
@@ -171,6 +171,30 @@ bool AbstractContentItem::restore(QDataStream & /*data*/)
     return ok;
     */
     return false;
+}
+
+void AbstractContentItem::adjustSize()
+{
+    // if no frame
+
+
+
+
+    qWarning("NI - FIXME");
+/*    // get the new size
+    if (!m_frame)
+        return;
+    QSize newSize = m_frame->sizeForContentsRatio(m_rect.width(), (qreal)m_photo->width() / (qreal)m_photo->height());
+    if (!newSize.isValid() || newSize == m_rect.size().toSize())
+        return;
+
+    // apply the new size
+    prepareGeometryChange();
+    m_rect = QRectF(-newSize.width() / 2, -newSize.height() / 2, newSize.width(), newSize.height());
+    contentGeometryChanged();
+    update();
+    GFX_CHANGED();
+    */
 }
 
 void AbstractContentItem::ensureVisible(const QRectF & rect)
@@ -191,7 +215,7 @@ bool AbstractContentItem::beingTransformed() const
 
 QRectF AbstractContentItem::boundingRect() const
 {
-    return QRectF(-m_size.width()/2, -m_size.height()/2, m_size.width(), m_size.height());
+    return m_rect;
 }
 
 void AbstractContentItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
@@ -309,46 +333,72 @@ QRect AbstractContentItem::contentsRect() const
     return m_frame->contentsRect(cRect);
 }
 
-void AbstractContentItem::GFX_CHANGED()
+void AbstractContentItem::GFX_CHANGED() const
 {
-    if (m_gfxChangeSignalTimer)
-        m_gfxChangeSignalTimer->start();
+    if (m_gfxChangeTimer)
+        m_gfxChangeTimer->start();
+}
+
+int AbstractContentItem::contentHeightForWidth(int /*width*/) const
+{
+    return -1;
+}
+
+void AbstractContentItem::contentGeometryChanged()
+{
+    if (!m_frame)
+        return;
+    QRect frameRect = boundingRect().toRect();
+
+    // layout all buttons and text
+    m_frame->layoutButtons(m_controlItems, frameRect);
+    ///FIXME m_frame->layoutText(m_textItem, frameRect);
 }
 
 void AbstractContentItem::slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers /*modifiers*/)
 {
+    ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPoint newPos = mapFromScene(controlPoint).toPoint();
-    QPoint oldPos = m_scaleButton->pos().toPoint();
+    QPoint oldPos = button->pos().toPoint();
     if (newPos == oldPos)
         return;
 
     // determine the new size
-    QSize newSize((m_size.width() * newPos.x()) / oldPos.x(), (m_size.height() * newPos.y()) / oldPos.y());
+    int newWidth = (m_rect.width() * newPos.x()) / oldPos.x();
+    int newHeight = (m_rect.height() * newPos.y()) / oldPos.y();
 // FIXME
 ///    if (modifiers != Qt::NoModifier && m_photo)
-///        newSize.setHeight((m_photo->height() * m_size.width()) / m_photo->width());
-    if (newSize.width() < 160)
-        newSize.setWidth(160);
-    if (newSize.height() < 90)
-        newSize.setHeight(90);
-    if (newSize == m_size)
+///        newHeight = (m_photo->height() * m_rect.width()) / m_photo->width();
+    if (newWidth < 160)
+        newWidth = 160;
+    if (newHeight < 90)
+        newHeight = 90;
+    if (newWidth == (int)m_rect.width() && newHeight == (int)m_rect.height())
         return;
 
     // change geometry
     m_transforming = true;
     prepareGeometryChange();
-    m_size = newSize;
-    geometryChanged();
+    m_rect = QRectF(-newWidth / 2, -newHeight / 2, newWidth, newHeight);
+    contentGeometryChanged();
     update();
     GFX_CHANGED();
 
     // start refresh timer
     if (!m_transformRefreshTimer) {
         m_transformRefreshTimer = new QTimer(this);
-        connect(m_transformRefreshTimer, SIGNAL(timeout()), this, SLOT(slotResizeEnded()));
+        connect(m_transformRefreshTimer, SIGNAL(timeout()), this, SLOT(slotTransformEnded()));
         m_transformRefreshTimer->setSingleShot(true);
     }
     m_transformRefreshTimer->start(400);
+}
+
+void AbstractContentItem::slotConfigure()
+{
+    ButtonItem * item = dynamic_cast<ButtonItem *>(sender());
+    if (!item)
+        return;
+    emit configureMe(item->scenePos().toPoint());
 }
 
 void AbstractContentItem::slotStackFront()
@@ -417,18 +467,11 @@ void AbstractContentItem::slotSave()
     }
 }
 
-void AbstractContentItem::slotConfigure()
-{
-    ButtonItem * item = dynamic_cast<ButtonItem *>(sender());
-    if (!item)
-        return;
-    emit configureMe(item->scenePos().toPoint());
-}
-
 void AbstractContentItem::slotRotate(const QPointF & controlPoint)
 {
+    ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPointF newPos = mapFromScene(controlPoint);
-    QPointF refPos = m_rotateButton->pos();
+    QPointF refPos = button->pos();
     if (newPos == refPos)
         return;
 
@@ -438,34 +481,9 @@ void AbstractContentItem::slotRotate(const QPointF & controlPoint)
     rotate(57.29577951308232 * (newAngle - refAngle)); // 180 * a / M_PI
 }
 
-void AbstractContentItem::slotResetAspectRatio()
+void AbstractContentItem::slotResetRatio()
 {
-    qWarning("NI - FIXME");
-/*    // get the new size
-    if (!m_frame)
-        return;
-    QSize newSize = m_frame->sizeForContentsRatio(m_size.width(), (qreal)m_photo->width() / (qreal)m_photo->height());
-    if (!newSize.isValid() || newSize == m_size)
-        return;
-
-    // apply the new size
-    prepareGeometryChange();
-    m_size = newSize;
-    geometryChanged();
-    update();
-    GFX_CHANGED();
-    */
-}
-
-void AbstractContentItem::geometryChanged()
-{
-    if (!m_frame)
-        return;
-    QRect frameRect = boundingRect().toRect();
-
-    // layout all buttons and text
-    m_frame->layoutButtons(m_controlItems, frameRect);
-    ///FIXME m_frame->layoutText(m_textItem, frameRect);
+    adjustSize();
 }
 
 void AbstractContentItem::slotResetRotation()
@@ -474,7 +492,7 @@ void AbstractContentItem::slotResetRotation()
     setTransform(ident, false);
 }
 
-void AbstractContentItem::slotResizeEnded()
+void AbstractContentItem::slotTransformEnded()
 {
     m_transforming = false;
     update();

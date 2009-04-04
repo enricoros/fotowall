@@ -35,19 +35,16 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         AbstractContentItem(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~AbstractContentItem();
 
-        // save/restore
         virtual void save(QDataStream & data) const;
         virtual bool restore(QDataStream & data);
 
-        // misc
+        void adjustSize();
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;
 
-        // frame
         void setFrame(Frame * frame);
         quint32 frameClass() const;
 
-        // mirror
         void setMirrorEnabled(bool enabled);
         bool mirrorEnabled() const;
 
@@ -63,11 +60,13 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         void deleteMe();
 
     protected:
-        // functionalities for subclasses
+        // useful to sunclasses
         QRect contentsRect() const;
-        void GFX_CHANGED();
-        void slotResetAspectRatio();
-        virtual void geometryChanged();
+        void GFX_CHANGED() const;
+
+        // may be reimplemented by subclasses
+        virtual int contentHeightForWidth(int width) const;
+        virtual void contentGeometryChanged();
 
         // ::QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
@@ -80,32 +79,29 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         void keyPressEvent(QKeyEvent * event);
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
-    private:
-        Frame *     m_frame;
-        QSize       m_size;
-        QList<ButtonItem *> m_controlItems;
-        ButtonItem * m_scaleButton;
-        ButtonItem * m_rotateButton;
-        MirrorItem * m_mirrorItem;
-        QTimer *    m_gfxChangeSignalTimer;
-        QTimer *    m_transformRefreshTimer;
-        bool        m_transforming;
-
-    public Q_SLOTS:
+    protected Q_SLOTS:
+        void slotConfigure();
         void slotStackFront();
         void slotStackRaise();
         void slotStackLower();
         void slotStackBack();
         void slotSave();
 
-    protected Q_SLOTS:
-        virtual void slotConfigure();
+    private:
+        QRectF m_rect;
+        Frame * m_frame;
+        QList<ButtonItem *> m_controlItems;
+        bool m_transforming;
+        QTimer * m_transformRefreshTimer;
+        QTimer * m_gfxChangeTimer;
+        MirrorItem * m_mirrorItem;
 
     private Q_SLOTS:
         void slotRotate(const QPointF & controlPoint);
         void slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
+        void slotResetRatio();
         void slotResetRotation();
-        void slotResizeEnded();
+        void slotTransformEnded();
 };
 
 #endif
