@@ -20,11 +20,12 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRect>
+class ColorPickerItem;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
 class PicturePropertiesItem;
-class ColorPickerItem;
+class TextContent;
 
 class Desk : public QGraphicsScene
 {
@@ -57,6 +58,7 @@ class Desk : public QGraphicsScene
 
     private:
         PictureContent * createPicture(const QPoint & pos);
+        TextContent * createText(const QPoint & pos);
         QList<PictureContent *> m_pictures;
         QList<PicturePropertiesItem *> m_properties;
         QList<HighlightItem *> m_highlightItems;

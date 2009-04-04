@@ -57,12 +57,13 @@ void EmptyFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frameR
     }
 }
 
-void EmptyFrame::layoutText(QGraphicsItem * textItem, const QRect & frameRect) const
+void EmptyFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect*/) const
 {
     textItem->hide();
 }
 
-void EmptyFrame::paint(QPainter *painter , const QRect &rect , bool /*opaqueContents*/)
+void EmptyFrame::paint(QPainter *painter, const QRect &rect , bool /*opaqueContents*/)
 {
-    painter->drawRect(rect);
+    // draw aligned antialiased rect (note the offset
+    painter->drawRect(QRectF(rect).adjusted(0.5, 0.5, -0.5, -0.5));
 }

@@ -18,6 +18,7 @@
 #include "HighlightItem.h"
 #include "PictureContent.h"
 #include "PicturePropertiesItem.h"
+#include "TextContent.h"
 #include "frames/FrameFactory.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
@@ -176,7 +177,7 @@ void Desk::loadPictures(const QStringList & fileNames)
 
 void Desk::addTextContent()
 {
-    addText("notImplemented() on Text");
+    createText(sceneRect().center().toPoint());
 }
 
 #define HIGHLIGHT(x, y) \
@@ -355,6 +356,20 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     p->show();
     m_pictures.append(p);
     return p;
+}
+
+TextContent * Desk::createText(const QPoint & pos)
+{
+    TextContent * t = new TextContent(this);
+    connect(t, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
+    connect(t, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
+    connect(t, SIGNAL(changeStack(int)), this, SLOT(slotStackPicture(int)));
+    connect(t, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+    //t->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    t->setPos(pos);
+    t->show();
+    //m_texts.append(t);
+    return t;
 }
 
 /// Title

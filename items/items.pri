@@ -16,7 +16,8 @@ HEADERS += ButtonItem.h \
     PicturePropertiesItem.h \
     HighlightItem.h \
     HelpItem.h \
-    AbstractContent.h
+    AbstractContent.h \
+    TextContent.h
 SOURCES += ButtonItem.cpp \
     ColorPickerItem.cpp \
     PictureContent.cpp \
@@ -24,5 +25,6 @@ SOURCES += ButtonItem.cpp \
     PicturePropertiesItem.cpp \
     HighlightItem.cpp \
     HelpItem.cpp \
-    AbstractContent.cpp
+    AbstractContent.cpp \
+    TextContent.cpp
 FORMS += PicturePropertiesItem.ui
