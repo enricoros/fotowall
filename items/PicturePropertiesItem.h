@@ -17,7 +17,7 @@
 
 #include <QGraphicsProxyWidget>
 #include <QBasicTimer>
-#include "PictureItem.h"
+#include "PictureContent.h"
 class Frame;
 class QAbstractButton;
 class QListWidgetItem;
@@ -27,11 +27,11 @@ namespace Ui { class PicturePropertiesItem; }
 class PicturePropertiesItem : public QGraphicsProxyWidget {
     Q_OBJECT
     public:
-        PicturePropertiesItem(PictureItem * pictureItem, QGraphicsItem * parent = 0);
+        PicturePropertiesItem(PictureContent * pictureContent, QGraphicsItem * parent = 0);
         ~PicturePropertiesItem();
 
         // the watched item
-        PictureItem * pictureItem() const;
+        PictureContent * pictureContent() const;
 
         // load from/apply to the properties of the current valid item
         void loadProperties();
@@ -54,7 +54,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
 
     private:
         Ui::PicturePropertiesItem * m_ui;
-        PictureItem *               m_pictureItem;
+        PictureContent *            m_pictureContent;
         Frame *                     m_frame;
         int                         m_aniStep;
         bool                        m_aniDirection;

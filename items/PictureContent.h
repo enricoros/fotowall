@@ -12,28 +12,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __PictureItem_h__
-#define __PictureItem_h__
+#ifndef __PictureContent_h__
+#define __PictureContent_h__
 
-#include "AbstractContentItem.h"
+#include "AbstractContent.h"
 #include "CPixmap.h"
 class QGraphicsTextItem;
 
 /**
     \brief Transformable picture, with lots of gadgets
 */
-class PictureItem : public AbstractContentItem
+class PictureContent : public AbstractContent
 {
     Q_OBJECT
     public:
-        PictureItem(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-        ~PictureItem();
+        PictureContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        ~PictureContent();
 
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
         void setEffect(int effectClass);
         QPixmap renderPhoto(const QSize & size) const;
 
-        // ::AbstractContentItem
+        // ::AbstractContent
         void save(QDataStream & data) const;
         bool restore(QDataStream & data);
         int contentHeightForWidth(int width) const;
@@ -45,10 +45,10 @@ class PictureItem : public AbstractContentItem
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
-        QString m_fileName;
-        CPixmap * m_photo;
-        QPixmap m_cachedPhoto;
-        bool m_opaquePhoto;
+        QString     m_fileName;
+        CPixmap *   m_photo;
+        QPixmap     m_cachedPhoto;
+        bool        m_opaquePhoto;
 
     private Q_SLOTS:
         void slotFlipHorizontally();

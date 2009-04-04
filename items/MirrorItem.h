@@ -15,10 +15,10 @@
 #ifndef __MirrorItem_h__
 #define __MirrorItem_h__
 
-#include "AbstractContentItem.h"
+#include "AbstractContent.h"
 
 /**
-    \brief Mirrors a transformed PictureItem
+    \brief Mirrors a transformed PictureContent
 */
 class MirrorItem : public QObject, public QGraphicsItem
 {

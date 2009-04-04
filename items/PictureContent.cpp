@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PictureItem.h"
+#include "PictureContent.h"
 #include "ButtonItem.h"
 #include "CPixmap.h"
 #include "RenderOpts.h"
@@ -24,8 +24,8 @@
 #include <QPainter>
 #include <QUrl>
 
-PictureItem::PictureItem(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContentItem(scene, parent)
+PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
+    : AbstractContent(scene, parent)
     , m_photo(0)
     , m_opaquePhoto(false)
 {
@@ -45,12 +45,12 @@ PictureItem::PictureItem(QGraphicsScene * scene, QGraphicsItem * parent)
     addButtonItem(bFlipV);
 }
 
-PictureItem::~PictureItem()
+PictureContent::~PictureContent()
 {
     delete m_photo;
 }
 
-bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
+bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
 {
     delete m_photo;
     m_cachedPhoto = QPixmap();
@@ -76,7 +76,7 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     return true;
 }
 
-void PictureItem::setEffect(int effectClass)
+void PictureContent::setEffect(int effectClass)
 {
     // apply effect to pixmap
     switch (effectClass) {
@@ -93,7 +93,7 @@ void PictureItem::setEffect(int effectClass)
             m_photo->noEffects();
             break;
         default:
-            qWarning("PictureItem::setEffect: effect %d is not implemented", effectClass);
+            qWarning("PictureContent::setEffect: effect %d is not implemented", effectClass);
             return;
     }
 
@@ -103,41 +103,41 @@ void PictureItem::setEffect(int effectClass)
     GFX_CHANGED();
 }
 
-QPixmap PictureItem::renderPhoto(const QSize & size) const
+QPixmap PictureContent::renderPhoto(const QSize & size) const
 {
     if (m_photo)
         return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     return QPixmap();
 }
 
-void PictureItem::save(QDataStream & data) const
+void PictureContent::save(QDataStream & data) const
 {
-    AbstractContentItem::save(data);
+    AbstractContent::save(data);
     data << m_fileName;
 }
 
-bool PictureItem::restore(QDataStream & data)
+bool PictureContent::restore(QDataStream & data)
 {
-    AbstractContentItem::restore(data);
+    AbstractContent::restore(data);
     QString fileName;
     data >> fileName;
     bool ok = loadPhoto(fileName);
     return ok;
 }
 
-int PictureItem::contentHeightForWidth(int width) const
+int PictureContent::contentHeightForWidth(int width) const
 {
     if (!m_photo || m_photo->width() < 1)
         return -1;
     return (m_photo->height() * width) / m_photo->width();
 }
 
-bool PictureItem::contentOpaque() const
+bool PictureContent::contentOpaque() const
 {
     return m_opaquePhoto;
 }
 
-void PictureItem::dropEvent(QGraphicsSceneDragDropEvent * event)
+void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     // load the first valid picture
     foreach (QUrl url, event->mimeData()->urls()) {
@@ -148,16 +148,16 @@ void PictureItem::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 }
 
-void PictureItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     emit backgroundMe();
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     // paint parent
-    AbstractContentItem::paint(painter, option, widget);
+    AbstractContent::paint(painter, option, widget);
 
     // skip if no photo
     if (!m_photo)
@@ -195,7 +195,7 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
 #endif
 }
 
-void PictureItem::slotFlipHorizontally()
+void PictureContent::slotFlipHorizontally()
 {
     // delete the Photo and and recreate an H-mirrored one
     CPixmap * oldPhoto = m_photo;
@@ -206,7 +206,7 @@ void PictureItem::slotFlipHorizontally()
     GFX_CHANGED();
 }
 
-void PictureItem::slotFlipVertically()
+void PictureContent::slotFlipVertically()
 {
     // delete the Photo and and recreate a V-mirrored one
     CPixmap * oldPhoto = m_photo;

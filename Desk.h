@@ -22,7 +22,7 @@
 #include <QRect>
 class HelpItem;
 class HighlightItem;
-class PictureItem;
+class PictureContent;
 class PicturePropertiesItem;
 class ColorPickerItem;
 
@@ -56,12 +56,12 @@ class Desk : public QGraphicsScene
         void drawForeground( QPainter * painter, const QRectF & rect );
 
     private:
-        PictureItem * createPicture(const QPoint & pos);
-        QList<PictureItem *> m_pictures;
+        PictureContent * createPicture(const QPoint & pos);
+        QList<PictureContent *> m_pictures;
         QList<PicturePropertiesItem *> m_properties;
         QList<HighlightItem *> m_highlightItems;
         HelpItem * m_helpItem;
-        PictureItem * m_backPicture;
+        PictureContent * m_backPicture;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;

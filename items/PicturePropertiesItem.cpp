@@ -24,10 +24,10 @@
 #include <QWidget>
 #include <QSettings>
 
-PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphicsItem * parent)
+PicturePropertiesItem::PicturePropertiesItem(PictureContent * pictureContent, QGraphicsItem * parent)
     : QGraphicsProxyWidget(parent)
     , m_ui(new Ui::PicturePropertiesItem())
-    , m_pictureItem(pictureItem)
+    , m_pictureContent(pictureContent)
     , m_frame(FrameFactory::defaultPanelFrame())
     , m_aniStep(0)
     , m_aniDirection(true)
@@ -66,15 +66,15 @@ PicturePropertiesItem::PicturePropertiesItem(PictureItem * pictureItem, QGraphic
     connect(m_ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(slotClose(QAbstractButton*)));
     connect(m_ui->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotFrameSelected(QListWidgetItem*)));
     connect(m_ui->reflection, SIGNAL(toggled(bool)), this, SLOT(slotToggleMirror(bool)));
-    connect(m_ui->front, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackFront()));
-    connect(m_ui->raise, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackRaise()));
-    connect(m_ui->lower, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackLower()));
-    connect(m_ui->back, SIGNAL(clicked()), m_pictureItem, SLOT(slotStackBack()));
-    connect(m_ui->background, SIGNAL(clicked()), m_pictureItem, SIGNAL(backgroundMe()));
-    connect(m_ui->invertButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipVertically()));
-    connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureItem, SLOT(slotFlipHorizontally()));
-    connect(m_ui->save, SIGNAL(clicked()), m_pictureItem, SLOT(slotSave()));
-    connect(m_ui->del, SIGNAL(clicked()), m_pictureItem, SIGNAL(deleteMe()), Qt::QueuedConnection);
+    connect(m_ui->front, SIGNAL(clicked()), m_pictureContent, SLOT(slotStackFront()));
+    connect(m_ui->raise, SIGNAL(clicked()), m_pictureContent, SLOT(slotStackRaise()));
+    connect(m_ui->lower, SIGNAL(clicked()), m_pictureContent, SLOT(slotStackLower()));
+    connect(m_ui->back, SIGNAL(clicked()), m_pictureContent, SLOT(slotStackBack()));
+    connect(m_ui->background, SIGNAL(clicked()), m_pictureContent, SIGNAL(backgroundMe()));
+    connect(m_ui->invertButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipVertically()));
+    connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipHorizontally()));
+    connect(m_ui->save, SIGNAL(clicked()), m_pictureContent, SLOT(slotSave()));
+    connect(m_ui->del, SIGNAL(clicked()), m_pictureContent, SIGNAL(deleteMe()), Qt::QueuedConnection);
     connect(m_ui->effectsListWidget, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(slotEffectSelected(QListWidgetItem*)));
 
     // load values
@@ -108,15 +108,15 @@ void PicturePropertiesItem::loadEffectsList()
     no_effect->setData(Qt::UserRole, 3);
 }
 
-PictureItem * PicturePropertiesItem::pictureItem() const
+PictureContent * PicturePropertiesItem::pictureContent() const
 {
-    return m_pictureItem;
+    return m_pictureContent;
 }
 
 void PicturePropertiesItem::loadProperties()
 {
     // select the frame
-    quint32 frameClass = m_pictureItem->frameClass();
+    quint32 frameClass = m_pictureContent->frameClass();
     for (int i = 0; i < m_ui->listWidget->count(); ++i) {
         QListWidgetItem * item = m_ui->listWidget->item(i);
         if (item->data(Qt::UserRole).toUInt() == frameClass) {
@@ -126,7 +126,7 @@ void PicturePropertiesItem::loadProperties()
     }
 
     // read other properties
-    m_ui->reflection->setChecked(m_pictureItem->mirrorEnabled());
+    m_ui->reflection->setChecked(m_pictureContent->mirrorEnabled());
 }
 
 void PicturePropertiesItem::keepInBoundaries(const QRect & rect)
@@ -205,7 +205,7 @@ void PicturePropertiesItem::slotEffectSelected(QListWidgetItem * item)
     quint32 effectClass = item->data(Qt::UserRole).toUInt();
 
     // apply the effect
-    m_pictureItem->setEffect(effectClass);
+    m_pictureContent->setEffect(effectClass);
 }
 
 void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
@@ -220,20 +220,20 @@ void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
     // create and set the frame
     Frame * frame = FrameFactory::createFrame(frameClass);
     if (frame)
-        m_pictureItem->setFrame(frame);
+        m_pictureContent->setFrame(frame);
 }
 
 void PicturePropertiesItem::slotToggleMirror(bool enabled)
 {
     RenderOpts::LastMirrorEnabled = enabled;
-    m_pictureItem->setMirrorEnabled(enabled);
+    m_pictureContent->setMirrorEnabled(enabled);
 }
 
 void PicturePropertiesItem::slotClose(QAbstractButton * button)
 {
     // apply to all if pressed
     if (button && button->property("applyall").toBool() == true) {
-        emit applyAll(m_pictureItem->frameClass(), m_pictureItem->mirrorEnabled());
+        emit applyAll(m_pictureContent->frameClass(), m_pictureContent->mirrorEnabled());
 
         QList<QListWidgetItem *> selectedEffects = m_ui->effectsListWidget->selectedItems();
         QList<QListWidgetItem *>::iterator it = selectedEffects.begin();

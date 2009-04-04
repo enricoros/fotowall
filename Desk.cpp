@@ -16,7 +16,7 @@
 #include "ColorPickerItem.h"
 #include "HelpItem.h"
 #include "HighlightItem.h"
-#include "PictureItem.h"
+#include "PictureContent.h"
 #include "PicturePropertiesItem.h"
 #include "frames/FrameFactory.h"
 #include <QDebug>
@@ -97,7 +97,7 @@ void Desk::resize(const QSize & size)
         highlight->reposition(m_rect);
 
     // ensure visibility
-    foreach (PictureItem * picture, m_pictures)
+    foreach (PictureContent * picture, m_pictures)
         picture->ensureVisible(m_rect);
     foreach (PicturePropertiesItem * properties, m_properties)
         properties->keepInBoundaries(m_rect.toRect());
@@ -117,7 +117,7 @@ void Desk::save(QDataStream & data) const
 
     // save the photos
     data << m_pictures.size();
-    foreach (PictureItem * foto, m_pictures)
+    foreach (PictureContent * foto, m_pictures)
         foto->save(data);
 
     // TODO: save background
@@ -147,7 +147,7 @@ void Desk::restore(QDataStream & data)
     data >> photos;
     for (int i = 0; i < photos; i++) {
         // create picture and restore data
-        PictureItem * p = createPicture(QPoint());
+        PictureContent * p = createPicture(QPoint());
         if (!p->restore(data)) {
             m_pictures.removeAll(p);
             delete p;
@@ -165,7 +165,7 @@ void Desk::loadPictures(const QStringList & fileNames)
             continue;
 
         // create picture and load the file
-        PictureItem * p = createPicture(pos);
+        PictureContent * p = createPicture(pos);
         if (!p->loadPhoto(localFile, true, true)) {
             m_pictures.removeAll(p);
             delete p;
@@ -267,7 +267,7 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
             continue;
 
         // create picture and load the file
-        PictureItem * p = createPicture(pos);
+        PictureContent * p = createPicture(pos);
         if (!p->loadPhoto(localFile, true, true)) {
             m_pictures.removeAll(p);
             delete p;
@@ -342,9 +342,9 @@ void Desk::drawForeground(QPainter * painter, const QRectF & /*rect*/)
     painter->drawText(QRect(0, 0, m_size.width(), 50), Qt::AlignCenter, m_titleText);
 }
 
-PictureItem * Desk::createPicture(const QPoint & pos)
+PictureContent * Desk::createPicture(const QPoint & pos)
 {
-    PictureItem * p = new PictureItem(this);
+    PictureContent * p = new PictureContent(this);
     connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
     connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
     connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackPicture(int)));
@@ -373,13 +373,13 @@ void Desk::setTitleText(const QString & text)
 /// Slots
 void Desk::slotConfigurePicture(const QPoint & scenePoint)
 {
-    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    PictureContent * picture = dynamic_cast<PictureContent *>(sender());
     if (!picture)
         return;
 
     // skip if an item is already present
     foreach (PicturePropertiesItem * item, m_properties)
-        if (item->pictureItem() == picture)
+        if (item->pictureContent() == picture)
             return;
 
     // create the properties item
@@ -398,7 +398,7 @@ void Desk::slotConfigurePicture(const QPoint & scenePoint)
 
 void Desk::slotBackgroundPicture()
 {
-    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    PictureContent * picture = dynamic_cast<PictureContent *>(sender());
     if (!picture)
         return;
 
@@ -415,7 +415,7 @@ void Desk::slotBackgroundPicture()
 
 void Desk::slotStackPicture(int op)
 {
-    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    PictureContent * picture = dynamic_cast<PictureContent *>(sender());
     if (!picture || m_pictures.size() < 2)
         return;
 
@@ -443,13 +443,13 @@ void Desk::slotStackPicture(int op)
 
     // reassign z-levels
     int z = 1;
-    foreach (PictureItem * picture, m_pictures)
+    foreach (PictureContent * picture, m_pictures)
         picture->setZValue(z++);
 }
 
 void Desk::slotDeletePicture()
 {
-    PictureItem * picture = dynamic_cast<PictureItem *>(sender());
+    PictureContent * picture = dynamic_cast<PictureContent *>(sender());
     if (!picture)
         return;
 
@@ -464,7 +464,7 @@ void Desk::slotDeletePicture()
     QList<PicturePropertiesItem *>::iterator ppIt = m_properties.begin();
     while (ppIt != m_properties.end()) {
         PicturePropertiesItem * pp = *ppIt;
-        if (pp->pictureItem() == picture) {
+        if (pp->pictureContent() == picture) {
             delete pp;
             ppIt = m_properties.erase(ppIt);
         } else
@@ -491,7 +491,7 @@ void Desk::slotDeleteProperties()
 
 void Desk::slotApplyAll(quint32 frameClass, bool mirrored)
 {
-    foreach (PictureItem * picture, m_pictures) {
+    foreach (PictureContent * picture, m_pictures) {
         // change Frame
         Frame * frame = FrameFactory::createFrame(frameClass);
         if (frame)
@@ -503,7 +503,7 @@ void Desk::slotApplyAll(quint32 frameClass, bool mirrored)
 
 void Desk::slotApplyEffectToAll(int effectClass)
 {
-    foreach (PictureItem * picture, m_pictures)
+    foreach (PictureContent * picture, m_pictures)
         picture->setEffect(effectClass);
 }
 

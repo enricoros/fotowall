@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "AbstractContentItem.h"
+#include "AbstractContent.h"
 #include "ButtonItem.h"
 #include "MirrorItem.h"
 #include "RenderOpts.h"
@@ -28,7 +28,7 @@
 #include <QUrl>
 #include <math.h>
 
-AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem * parent)
+AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_rect(-100, -75, 200, 150)
     , m_frame(0)
@@ -89,7 +89,7 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
     setMirrorEnabled(RenderOpts::LastMirrorEnabled);
 }
 
-AbstractContentItem::~AbstractContentItem()
+AbstractContent::~AbstractContent()
 {
     qDeleteAll(m_controlItems);
     delete m_mirrorItem;
@@ -97,7 +97,7 @@ AbstractContentItem::~AbstractContentItem()
     delete m_frame;
 }
 
-void AbstractContentItem::setFrame(Frame * frame)
+void AbstractContent::setFrame(Frame * frame)
 {
     delete m_frame;
     m_frame = frame;
@@ -108,7 +108,7 @@ void AbstractContentItem::setFrame(Frame * frame)
     GFX_CHANGED();
 }
 
-quint32 AbstractContentItem::frameClass() const
+quint32 AbstractContent::frameClass() const
 {
     return m_frame->frameClass();
 }
@@ -129,7 +129,7 @@ class MyTextItem : public QGraphicsTextItem {
         }
 };
 
-void AbstractContentItem::setFrameTextEnabled(bool enabled)
+void AbstractContent::setFrameTextEnabled(bool enabled)
 {
     // create the Text Item, if enabled...
     if (enabled && !m_frameTextItem) {
@@ -148,32 +148,32 @@ void AbstractContentItem::setFrameTextEnabled(bool enabled)
     }
 }
 
-bool AbstractContentItem::frameTextEnabled() const
+bool AbstractContent::frameTextEnabled() const
 {
     return m_frameTextItem;
 }
 
-void AbstractContentItem::setFrameText(const QString & text)
+void AbstractContent::setFrameText(const QString & text)
 {
     if (!m_frameTextItem)
         return;
     m_frameTextItem->setPlainText(text);
 }
 
-QString AbstractContentItem::frameText() const
+QString AbstractContent::frameText() const
 {
     if (!m_frameTextItem)
         return QString();
     return m_frameTextItem->toPlainText();
 }
 
-void AbstractContentItem::addButtonItem(ButtonItem * button)
+void AbstractContent::addButtonItem(ButtonItem * button)
 {
     m_controlItems.append(button);
     layoutChildren();
 }
 
-void AbstractContentItem::setMirrorEnabled(bool enabled)
+void AbstractContent::setMirrorEnabled(bool enabled)
 {
     if (m_mirrorItem && !enabled) {
         m_mirrorItem->deleteLater();
@@ -186,12 +186,12 @@ void AbstractContentItem::setMirrorEnabled(bool enabled)
     }
 }
 
-bool AbstractContentItem::mirrorEnabled() const
+bool AbstractContent::mirrorEnabled() const
 {
     return m_mirrorItem;
 }
 
-void AbstractContentItem::adjustSize()
+void AbstractContent::adjustSize()
 {
     // get contents 'ratio'
     int hfw = contentHeightForWidth(m_rect.width());
@@ -217,7 +217,7 @@ void AbstractContentItem::adjustSize()
     GFX_CHANGED();
 }
 
-void AbstractContentItem::ensureVisible(const QRectF & rect)
+void AbstractContent::ensureVisible(const QRectF & rect)
 {
     // keep the center inside the scene rect
     QPointF center = pos();
@@ -228,12 +228,12 @@ void AbstractContentItem::ensureVisible(const QRectF & rect)
     }
 }
 
-bool AbstractContentItem::beingTransformed() const
+bool AbstractContent::beingTransformed() const
 {
     return m_transforming;
 }
 
-void AbstractContentItem::save(QDataStream & data) const
+void AbstractContent::save(QDataStream & data) const
 {
     data << m_rect;
     data << pos();
@@ -246,7 +246,7 @@ void AbstractContentItem::save(QDataStream & data) const
         data << frameText();
 }
 
-bool AbstractContentItem::restore(QDataStream & data)
+bool AbstractContent::restore(QDataStream & data)
 {
     prepareGeometryChange();
     data >> m_rect;
@@ -275,12 +275,12 @@ bool AbstractContentItem::restore(QDataStream & data)
     return true;
 }
 
-QRectF AbstractContentItem::boundingRect() const
+QRectF AbstractContent::boundingRect() const
 {
     return m_rect;
 }
 
-void AbstractContentItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     if (!m_frame)
         return;
@@ -295,7 +295,7 @@ void AbstractContentItem::paint(QPainter * painter, const QStyleOptionGraphicsIt
         painter->setClipPath(m_frame->contentsClipPath(frameRect));
 }
 
-QRect AbstractContentItem::contentsRect() const
+QRect AbstractContent::contentsRect() const
 {
     if (!m_frame)
         return m_rect.toRect();
@@ -303,59 +303,59 @@ QRect AbstractContentItem::contentsRect() const
     return m_frame->contentsRect(m_rect.toRect());
 }
 
-void AbstractContentItem::GFX_CHANGED() const
+void AbstractContent::GFX_CHANGED() const
 {
     if (m_gfxChangeTimer)
         m_gfxChangeTimer->start();
 }
 
-int AbstractContentItem::contentHeightForWidth(int /*width*/) const
+int AbstractContent::contentHeightForWidth(int /*width*/) const
 {
     return -1;
 }
 
-bool AbstractContentItem::contentOpaque() const
+bool AbstractContent::contentOpaque() const
 {
     return false;
 }
 
-void AbstractContentItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
+void AbstractContent::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     foreach (ButtonItem * button, m_controlItems)
         button->show();
 }
 
-void AbstractContentItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
+void AbstractContent::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     foreach (ButtonItem * button, m_controlItems)
         button->hide();
 }
 
-void AbstractContentItem::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
+void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     event->accept();
 }
 
-void AbstractContentItem::dropEvent(QGraphicsSceneDragDropEvent * event)
+void AbstractContent::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     event->accept();
 }
 
-void AbstractContentItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
         emit configureMe(event->scenePos().toPoint());
     QGraphicsItem::mousePressEvent(event);
 }
 
-void AbstractContentItem::keyPressEvent(QKeyEvent * event)
+void AbstractContent::keyPressEvent(QKeyEvent * event)
 {
     if (event->key() == Qt::Key_Delete)
         emit deleteMe();
     event->accept();
 }
 
-QVariant AbstractContentItem::itemChange(GraphicsItemChange change, const QVariant & value)
+QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant & value)
 {
     // notify about graphics changes
     if (change == ItemTransformHasChanged ||
@@ -390,7 +390,7 @@ QVariant AbstractContentItem::itemChange(GraphicsItemChange change, const QVaria
     return QGraphicsItem::itemChange(change, value);
 }
 
-void AbstractContentItem::slotConfigure()
+void AbstractContent::slotConfigure()
 {
     ButtonItem * item = dynamic_cast<ButtonItem *>(sender());
     if (!item)
@@ -398,27 +398,27 @@ void AbstractContentItem::slotConfigure()
     emit configureMe(item->scenePos().toPoint());
 }
 
-void AbstractContentItem::slotStackFront()
+void AbstractContent::slotStackFront()
 {
     emit changeStack(1);
 }
 
-void AbstractContentItem::slotStackRaise()
+void AbstractContent::slotStackRaise()
 {
     emit changeStack(2);
 }
 
-void AbstractContentItem::slotStackLower()
+void AbstractContent::slotStackLower()
 {
     emit changeStack(3);
 }
 
-void AbstractContentItem::slotStackBack()
+void AbstractContent::slotStackBack()
 {
     emit changeStack(4);
 }
 
-void AbstractContentItem::slotSave()
+void AbstractContent::slotSave()
 {
     QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the file name"), QDir::current().path(), "PNG Image (*.png)");
     if (fileName.isNull())
@@ -464,7 +464,7 @@ void AbstractContentItem::slotSave()
     }
 }
 
-void AbstractContentItem::layoutChildren()
+void AbstractContent::layoutChildren()
 {
     if (!m_frame)
         return;
@@ -478,13 +478,13 @@ void AbstractContentItem::layoutChildren()
         m_frame->layoutText(m_frameTextItem, frameRect);
 }
 
-void AbstractContentItem::slotScaleStarted()
+void AbstractContent::slotScaleStarted()
 {
     if (m_rect.height() > 0)
         m_scaleRatio = (float)m_rect.width() / (float)m_rect.height();
 }
 
-void AbstractContentItem::slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
+void AbstractContent::slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
 {
     ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPoint newPos = mapFromScene(controlPoint).toPoint();
@@ -526,7 +526,7 @@ void AbstractContentItem::slotScale(const QPointF & controlPoint, Qt::KeyboardMo
     m_transformRefreshTimer->start(400);
 }
 
-void AbstractContentItem::slotRotate(const QPointF & controlPoint)
+void AbstractContent::slotRotate(const QPointF & controlPoint)
 {
     ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPointF newPos = mapFromScene(controlPoint);
@@ -540,18 +540,18 @@ void AbstractContentItem::slotRotate(const QPointF & controlPoint)
     rotate(57.29577951308232 * (newAngle - refAngle)); // 180 * a / M_PI
 }
 
-void AbstractContentItem::slotResetRatio()
+void AbstractContent::slotResetRatio()
 {
     adjustSize();
 }
 
-void AbstractContentItem::slotResetRotation()
+void AbstractContent::slotResetRotation()
 {
     QTransform ident;
     setTransform(ident, false);
 }
 
-void AbstractContentItem::slotTransformEnded()
+void AbstractContent::slotTransformEnded()
 {
     m_transforming = false;
     update();

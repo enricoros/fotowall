@@ -11,18 +11,18 @@ else {
 }
 HEADERS += ButtonItem.h \
     ColorPickerItem.h \
-    PictureItem.h \
+    PictureContent.h \
     MirrorItem.h \
     PicturePropertiesItem.h \
     HighlightItem.h \
     HelpItem.h \
-    AbstractContentItem.h
+    AbstractContent.h
 SOURCES += ButtonItem.cpp \
     ColorPickerItem.cpp \
-    PictureItem.cpp \
+    PictureContent.cpp \
     MirrorItem.cpp \
     PicturePropertiesItem.cpp \
     HighlightItem.cpp \
     HelpItem.cpp \
-    AbstractContentItem.cpp
+    AbstractContent.cpp
 FORMS += PicturePropertiesItem.ui

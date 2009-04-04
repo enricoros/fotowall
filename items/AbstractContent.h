@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __AbstractContentItem_h__
-#define __AbstractContentItem_h__
+#ifndef __AbstractContent_h__
+#define __AbstractContent_h__
 
 #include <QGraphicsItem>
 #include <QObject>
@@ -25,12 +25,12 @@ class QPointF;
 
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
-class AbstractContentItem : public QObject, public QGraphicsItem
+class AbstractContent : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        AbstractContentItem(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-        ~AbstractContentItem();
+        AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        ~AbstractContent();
 
         // frame (and frame text)
         void setFrame(Frame * frame);
@@ -92,15 +92,15 @@ class AbstractContentItem : public QObject, public QGraphicsItem
 
     private:
         void layoutChildren();
-        QRectF m_rect;
-        Frame * m_frame;
+        QRectF              m_rect;
+        Frame *             m_frame;
         QGraphicsTextItem * m_frameTextItem;
         QList<ButtonItem *> m_controlItems;
-        float m_scaleRatio;
-        bool m_transforming;
-        QTimer * m_transformRefreshTimer;
-        QTimer * m_gfxChangeTimer;
-        MirrorItem * m_mirrorItem;
+        float               m_scaleRatio;
+        bool                m_transforming;
+        QTimer *            m_transformRefreshTimer;
+        QTimer *            m_gfxChangeTimer;
+        MirrorItem *        m_mirrorItem;
 
     private Q_SLOTS:
         void slotScaleStarted();
