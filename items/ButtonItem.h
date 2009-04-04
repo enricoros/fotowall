@@ -41,6 +41,7 @@ class ButtonItem : public QObject, public QGraphicsItem
 
     Q_SIGNALS:
         void dragging(const QPointF & point, Qt::KeyboardModifiers modifiers);
+        void pressed();
         void clicked();
         void doubleClicked();
 

@@ -19,37 +19,17 @@
 #include <QMimeData>
 #include <QPainter>
 #include <QUrl>
-#include <math.h>
 #include "CPixmap.h"
 #include "RenderOpts.h"
 #include "frames/Frame.h"
-
-class MyTextItem : public QGraphicsTextItem {
-    public:
-        MyTextItem(QGraphicsItem * parent = 0)
-            : QGraphicsTextItem(parent)
-        {
-        }
-
-        void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) {
-            painter->save();
-            painter->setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform );
-            QGraphicsTextItem::paint(painter, option, widget);
-            painter->restore();
-        }
-};
 
 PictureItem::PictureItem(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContentItem(scene, parent)
     , m_photo(0)
     , m_opaquePhoto(false)
 {
-    m_textItem = new MyTextItem(this);
-    m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
-    QFont f("Sans Serif");
-    //f.setPointSizeF(7.5);
-    m_textItem->setFont(f);
-    m_textItem->setPlainText(tr("..."));
+    setFrameTextEnabled(true);
+    setFrameText(tr("..."));
 }
 
 PictureItem::~PictureItem()
@@ -76,7 +56,7 @@ bool PictureItem::loadPhoto(const QString & fileName, bool keepRatio, bool setNa
     if (setName) {
         QString string = QFileInfo(fileName).fileName().section('.', 0, 0);
         string = string.mid(0, 10);
-        m_textItem->setPlainText(string + " ...");
+        setFrameText(string + tr("..."));
     }
     update();
     GFX_CHANGED();
@@ -96,11 +76,9 @@ void PictureItem::setEffect(int effectClass)
         case 2:
             m_photo->toBlackAndWhite();
             break;
-
         case 3:
             m_photo->noEffects();
             break;
-
         default:
             qWarning("PictureItem::setEffect: effect %d is not implemented", effectClass);
             return;
@@ -122,26 +100,28 @@ QPixmap PictureItem::renderPhoto(const QSize & size) const
 void PictureItem::save(QDataStream & data) const
 {
     AbstractContentItem::save(data);
-    /*
     data << m_fileName;
-    data << m_textItem->toPlainText();
-    */
 }
 
 bool PictureItem::restore(QDataStream & data)
 {
     AbstractContentItem::restore(data);
-    /*
     QString fileName;
     data >> fileName;
     bool ok = loadPhoto(fileName);
-    QString text;
-    data >> text;
-    m_textItem->setPlainText(text);
-
     return ok;
-    */
-    return false;
+}
+
+int PictureItem::contentHeightForWidth(int width) const
+{
+    if (!m_photo || m_photo->width() < 1)
+        return -1;
+    return (m_photo->height() * width) / m_photo->width();
+}
+
+bool PictureItem::contentOpaque() const
+{
+    return m_opaquePhoto;
 }
 
 void PictureItem::dropEvent(QGraphicsSceneDragDropEvent * event)
@@ -155,6 +135,12 @@ void PictureItem::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 }
 
+void PictureItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+{
+    emit backgroundMe();
+    QGraphicsItem::mouseDoubleClickEvent(event);
+}
+
 void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     // paint parent
@@ -163,6 +149,13 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     // skip if no photo
     if (!m_photo)
         return;
+
+    // blit if opaque picture
+#if QT_VERSION >= 0x040500
+    //disabled for 4.5 too, since it relies on raster.
+    //if (m_opaquePhoto)
+    //    painter->setCompositionMode(QPainter::CompositionMode_Source);
+#endif
 
     // draw high-resolution photo when exporting png
     QRect targetRect = contentsRect();
@@ -182,6 +175,11 @@ void PictureItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
         painter->setRenderHints(QPainter::SmoothPixmapTransform);
         painter->drawPixmap(targetRect.topLeft(), m_cachedPhoto);
     }
+
+#if QT_VERSION >= 0x040500
+//    if (m_opaquePhoto)
+//        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+#endif
 }
 
 void PictureItem::slotFlipHorizontally()
@@ -205,4 +203,3 @@ void PictureItem::slotFlipVertically()
     update();
     GFX_CHANGED();
 }
-

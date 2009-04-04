@@ -16,18 +16,15 @@
 #define __AbstractContentItem_h__
 
 #include <QGraphicsItem>
-#include <QBrush>
-#include <QIcon>
-#include <QPointF>
 #include <QObject>
-
 class ButtonItem;
 class Frame;
 class MirrorItem;
+class QGraphicsTextItem;
+class QPointF;
 
-/**
-    \brief Transformable picture, with lots of gadgets
-*/
+
+/// \brief Base class of Canvas Item (with lots of gadgets!)
 class AbstractContentItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -44,6 +41,10 @@ class AbstractContentItem : public QObject, public QGraphicsItem
 
         void setFrame(Frame * frame);
         quint32 frameClass() const;
+        void setFrameTextEnabled(bool enabled);
+        bool frameTextEnabled() const;
+        void setFrameText(const QString & text);
+        QString frameText() const;
 
         void setMirrorEnabled(bool enabled);
         bool mirrorEnabled() const;
@@ -66,7 +67,7 @@ class AbstractContentItem : public QObject, public QGraphicsItem
 
         // may be reimplemented by subclasses
         virtual int contentHeightForWidth(int width) const;
-        virtual void contentGeometryChanged();
+        virtual bool contentOpaque() const;
 
         // ::QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
@@ -74,8 +75,6 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
-        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-        void wheelEvent(QGraphicsSceneWheelEvent * event);
         void keyPressEvent(QKeyEvent * event);
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
@@ -88,17 +87,21 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         void slotSave();
 
     private:
+        void layoutChildren();
         QRectF m_rect;
         Frame * m_frame;
+        QGraphicsTextItem * m_frameTextItem;
         QList<ButtonItem *> m_controlItems;
+        float m_scaleRatio;
         bool m_transforming;
         QTimer * m_transformRefreshTimer;
         QTimer * m_gfxChangeTimer;
         MirrorItem * m_mirrorItem;
 
     private Q_SLOTS:
+        void slotScaleStarted();
+        void slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotRotate(const QPointF & controlPoint);
-        void slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotResetRatio();
         void slotResetRotation();
         void slotTransformEnded();

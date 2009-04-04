@@ -30,8 +30,10 @@
 
 AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem * parent)
     : QGraphicsItem(parent)
-    , m_frame(0)
     , m_rect(-100, -75, 200, 150)
+    , m_frame(0)
+    , m_frameTextItem(0)
+    , m_scaleRatio(1.0)
     , m_transforming(false)
     , m_transformRefreshTimer(0)
     , m_gfxChangeTimer(0)
@@ -50,7 +52,8 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
 
     // create child items
     ButtonItem * bScale = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
-    connect(bScale, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotResize(const QPointF&,Qt::KeyboardModifiers)));
+    connect(bScale, SIGNAL(pressed()), this, SLOT(slotScaleStarted()));
+    connect(bScale, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotScale(const QPointF&,Qt::KeyboardModifiers)));
     connect(bScale, SIGNAL(doubleClicked()), this, SLOT(slotResetRatio()));
     m_controlItems << bScale;
 
@@ -85,9 +88,9 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
     Frame * frame = FrameFactory::defaultPictureFrame();
     setFrame(frame);
 
-    // hide and relayout buttons
+    // hide and layoutChildren buttons
     hoverLeaveEvent(0 /*HACK*/);
-    contentGeometryChanged();
+    layoutChildren();
 
     // add to the scene
     scene->addItem(this);
@@ -98,8 +101,94 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
 
 AbstractContentItem::~AbstractContentItem()
 {
+    qDeleteAll(m_controlItems);
     delete m_mirrorItem;
+    delete m_frameTextItem;
     delete m_frame;
+}
+
+void AbstractContentItem::save(QDataStream & data) const
+{
+    data << m_rect;
+    data << pos();
+    data << transform();
+    data << zValue();
+    data << isVisible();
+    bool hasText = frameTextEnabled();
+    data << hasText;
+    if (hasText)
+        data << frameText();
+}
+
+bool AbstractContentItem::restore(QDataStream & data)
+{
+    prepareGeometryChange();
+    data >> m_rect;
+    layoutChildren();
+    QPointF p;
+    data >> p;
+    setPos(p);
+    QTransform t;
+    data >> t;
+    setTransform(t);
+    qreal zVal;
+    data >> zVal;
+    setZValue(zVal);
+    bool visible;
+    data >> visible;
+    setVisible(visible);
+    bool hasText;
+    data >> hasText;
+    setFrameTextEnabled(hasText);
+    if (hasText) {
+        QString text;
+        data >> text;
+        setFrameText(text);
+    }
+    update();
+    return true;
+}
+
+void AbstractContentItem::adjustSize()
+{
+    // get contents 'ratio'
+    int hfw = contentHeightForWidth(m_rect.width());
+    if (hfw < 1)
+        return;
+
+    // compute the new rect
+    QRectF newRect;
+    if (m_frame) {
+        double ratio = m_rect.width() / (double)hfw;
+        QSize s = m_frame->sizeForContentsRatio(m_rect.width(), ratio);
+        newRect = QRectF(-s.width() / 2, -s.height() / 2, s.width(), s.height());
+    } else
+        newRect = QRectF(m_rect.left(), -hfw / 2, m_rect.width(), hfw);
+
+    // apply the new size
+    if (!newRect.isValid() || newRect == m_rect)
+        return;
+    prepareGeometryChange();
+    m_rect = newRect;
+    layoutChildren();
+    update();
+    GFX_CHANGED();
+}
+
+void AbstractContentItem::ensureVisible(const QRectF & rect)
+{
+    // keep the center inside the scene rect
+    QPointF center = pos();
+    if (!rect.contains(center)) {
+        center.setX(qBound(rect.left(), center.x(), rect.right()));
+        center.setY(qBound(rect.top(), center.y(), rect.bottom()));
+        setPos(center);
+    }
+}
+
+bool AbstractContentItem::beingTransformed() const
+{
+    return m_transforming;
 }
 
 void AbstractContentItem::setFrame(Frame * frame)
@@ -108,7 +197,7 @@ void AbstractContentItem::setFrame(Frame * frame)
     m_frame = frame;
     FrameFactory::setDefaultPictureClass(m_frame->frameClass());
     adjustSize();
-    contentGeometryChanged();
+    layoutChildren();
     update();
     GFX_CHANGED();
 }
@@ -116,6 +205,60 @@ void AbstractContentItem::setFrame(Frame * frame)
 quint32 AbstractContentItem::frameClass() const
 {
     return m_frame->frameClass();
+}
+
+#include <QGraphicsTextItem>
+class MyTextItem : public QGraphicsTextItem {
+    public:
+        MyTextItem(QGraphicsItem * parent = 0)
+            : QGraphicsTextItem(parent)
+        {
+        }
+
+        void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) {
+            painter->save();
+            painter->setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform );
+            QGraphicsTextItem::paint(painter, option, widget);
+            painter->restore();
+        }
+};
+
+void AbstractContentItem::setFrameTextEnabled(bool enabled)
+{
+    // create the Text Item, if enabled...
+    if (enabled && !m_frameTextItem) {
+        m_frameTextItem = new MyTextItem(this);
+        m_frameTextItem->setTextInteractionFlags(Qt::TextEditorInteraction);
+        QFont f("Sans Serif");
+        //f.setPointSizeF(7.5);
+        m_frameTextItem->setFont(f);
+        layoutChildren();
+    }
+
+    // ...or destroy it if disabled
+    else if (!enabled && m_frameTextItem) {
+        delete m_frameTextItem;
+        m_frameTextItem = 0;
+    }
+}
+
+bool AbstractContentItem::frameTextEnabled() const
+{
+    return m_frameTextItem;
+}
+
+void AbstractContentItem::setFrameText(const QString & text)
+{
+    if (!m_frameTextItem)
+        return;
+    m_frameTextItem->setPlainText(text);
+}
+
+QString AbstractContentItem::frameText() const
+{
+    if (!m_frameTextItem)
+        return QString();
+    return m_frameTextItem->toPlainText();
 }
 
 void AbstractContentItem::setMirrorEnabled(bool enabled)
@@ -136,86 +279,48 @@ bool AbstractContentItem::mirrorEnabled() const
     return m_mirrorItem;
 }
 
-void AbstractContentItem::save(QDataStream & /*data*/) const
-{
-    qWarning("NI");
-    /*
-    data << m_rect;
-    data << pos();
-    data << transform();
-    data << zValue();
-    data << m_fileName;
-    */
-}
-
-bool AbstractContentItem::restore(QDataStream & /*data*/)
-{
-    qWarning("NI");
-    /*
-    prepareGeometryChange();
-    data >> m_rect;
-    contentGeometryChanged();
-    QPointF p;
-    data >> p;
-    setPos(p);
-    QTransform t;
-    data >> t;
-    setTransform(t);
-    qreal zVal;
-    data >> zVal;
-    setZValue(zVal);
-    QString fileName;
-    data >> fileName;
-    bool ok = loadPhoto(fileName);
-    update();
-    return ok;
-    */
-    return false;
-}
-
-void AbstractContentItem::adjustSize()
-{
-    // if no frame
-
-
-
-
-    qWarning("NI - FIXME");
-/*    // get the new size
-    if (!m_frame)
-        return;
-    QSize newSize = m_frame->sizeForContentsRatio(m_rect.width(), (qreal)m_photo->width() / (qreal)m_photo->height());
-    if (!newSize.isValid() || newSize == m_rect.size().toSize())
-        return;
-
-    // apply the new size
-    prepareGeometryChange();
-    m_rect = QRectF(-newSize.width() / 2, -newSize.height() / 2, newSize.width(), newSize.height());
-    contentGeometryChanged();
-    update();
-    GFX_CHANGED();
-    */
-}
-
-void AbstractContentItem::ensureVisible(const QRectF & rect)
-{
-    // keep the center inside the scene rect
-    QPointF center = pos();
-    if (!rect.contains(center)) {
-        center.setX(qBound(rect.left(), center.x(), rect.right()));
-        center.setY(qBound(rect.top(), center.y(), rect.bottom()));
-        setPos(center);
-    }
-}
-
-bool AbstractContentItem::beingTransformed() const
-{
-    return m_transforming;
-}
-
 QRectF AbstractContentItem::boundingRect() const
 {
     return m_rect;
+}
+
+void AbstractContentItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+{
+    if (!m_frame)
+        return;
+
+    // draw the Frame
+    bool opaqueContent = contentOpaque();
+    QRect frameRect = m_rect.toRect();
+    m_frame->paint(painter, frameRect, opaqueContent);
+
+    // use clip path for contents, if set
+    if (m_frame->clipContents())
+        painter->setClipPath(m_frame->contentsClipPath(frameRect));
+}
+
+QRect AbstractContentItem::contentsRect() const
+{
+    if (!m_frame)
+        return m_rect.toRect();
+
+    return m_frame->contentsRect(m_rect.toRect());
+}
+
+void AbstractContentItem::GFX_CHANGED() const
+{
+    if (m_gfxChangeTimer)
+        m_gfxChangeTimer->start();
+}
+
+int AbstractContentItem::contentHeightForWidth(int /*width*/) const
+{
+    return -1;
+}
+
+bool AbstractContentItem::contentOpaque() const
+{
+    return false;
 }
 
 void AbstractContentItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
@@ -240,47 +345,11 @@ void AbstractContentItem::dropEvent(QGraphicsSceneDragDropEvent * event)
     event->accept();
 }
 
-void AbstractContentItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
-{
-    // draw the Frame (background)
-    if (!m_frame)
-        return;
-    QRect frameRect = boundingRect().toRect();
-    m_frame->paint(painter, frameRect, false /*m_opaquePhoto FIXME */);
-    ///if (!m_photo)
-    ///    return;
-
-    // use clip path for contents, if set
-    if (m_frame->clipContents())
-        painter->setClipPath(m_frame->contentsClipPath(frameRect));
-
-    // blit if opaque picture (disabled for 4.5 too, since it relies too much on raster, i think)
-#if QT_VERSION >= 0x040500
-//    if (m_opaquePhoto)
-//        painter->setCompositionMode(QPainter::CompositionMode_Source);
-    /* Note: missing restore
-//    if (m_opaquePhoto)
-//        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-    */
-#endif
-}
-
 void AbstractContentItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
         emit configureMe(event->scenePos().toPoint());
     QGraphicsItem::mousePressEvent(event);
-}
-
-void AbstractContentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
-{
-    if (m_frame && m_frame->contentsRect(boundingRect().toRect()).contains(event->pos().toPoint()))
-        emit backgroundMe();
-    QGraphicsItem::mouseDoubleClickEvent(event);
-}
-
-void AbstractContentItem::wheelEvent(QGraphicsSceneWheelEvent * /*event*/)
-{
 }
 
 void AbstractContentItem::keyPressEvent(QKeyEvent * event)
@@ -323,74 +392,6 @@ QVariant AbstractContentItem::itemChange(GraphicsItemChange change, const QVaria
     }
     // ..or just apply the value
     return QGraphicsItem::itemChange(change, value);
-}
-
-QRect AbstractContentItem::contentsRect() const
-{
-    QRect cRect = boundingRect().toRect();
-    if (!m_frame)
-        return cRect;
-    return m_frame->contentsRect(cRect);
-}
-
-void AbstractContentItem::GFX_CHANGED() const
-{
-    if (m_gfxChangeTimer)
-        m_gfxChangeTimer->start();
-}
-
-int AbstractContentItem::contentHeightForWidth(int /*width*/) const
-{
-    return -1;
-}
-
-void AbstractContentItem::contentGeometryChanged()
-{
-    if (!m_frame)
-        return;
-    QRect frameRect = boundingRect().toRect();
-
-    // layout all buttons and text
-    m_frame->layoutButtons(m_controlItems, frameRect);
-    ///FIXME m_frame->layoutText(m_textItem, frameRect);
-}
-
-void AbstractContentItem::slotResize(const QPointF & controlPoint, Qt::KeyboardModifiers /*modifiers*/)
-{
-    ButtonItem * button = static_cast<ButtonItem *>(sender());
-    QPoint newPos = mapFromScene(controlPoint).toPoint();
-    QPoint oldPos = button->pos().toPoint();
-    if (newPos == oldPos)
-        return;
-
-    // determine the new size
-    int newWidth = (m_rect.width() * newPos.x()) / oldPos.x();
-    int newHeight = (m_rect.height() * newPos.y()) / oldPos.y();
-// FIXME
-///    if (modifiers != Qt::NoModifier && m_photo)
-///        newHeight = (m_photo->height() * m_rect.width()) / m_photo->width();
-    if (newWidth < 160)
-        newWidth = 160;
-    if (newHeight < 90)
-        newHeight = 90;
-    if (newWidth == (int)m_rect.width() && newHeight == (int)m_rect.height())
-        return;
-
-    // change geometry
-    m_transforming = true;
-    prepareGeometryChange();
-    m_rect = QRectF(-newWidth / 2, -newHeight / 2, newWidth, newHeight);
-    contentGeometryChanged();
-    update();
-    GFX_CHANGED();
-
-    // start refresh timer
-    if (!m_transformRefreshTimer) {
-        m_transformRefreshTimer = new QTimer(this);
-        connect(m_transformRefreshTimer, SIGNAL(timeout()), this, SLOT(slotTransformEnded()));
-        m_transformRefreshTimer->setSingleShot(true);
-    }
-    m_transformRefreshTimer->start(400);
 }
 
 void AbstractContentItem::slotConfigure()
@@ -465,6 +466,68 @@ void AbstractContentItem::slotSave()
         QMessageBox::warning(0, tr("Picture Save Error"), tr("Error saving picture to the file %1").arg(fileName));
         return;
     }
+}
+
+void AbstractContentItem::layoutChildren()
+{
+    if (!m_frame)
+        return;
+
+    // layout all controls
+    QRect frameRect = m_rect.toRect();
+    m_frame->layoutButtons(m_controlItems, frameRect);
+
+    // layout text, if present
+    if (m_frameTextItem)
+        m_frame->layoutText(m_frameTextItem, frameRect);
+}
+
+void AbstractContentItem::slotScaleStarted()
+{
+    if (m_rect.height() > 0)
+        m_scaleRatio = (float)m_rect.width() / (float)m_rect.height();
+}
+
+void AbstractContentItem::slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
+{
+    ButtonItem * button = static_cast<ButtonItem *>(sender());
+    QPoint newPos = mapFromScene(controlPoint).toPoint();
+    QPoint oldPos = button->pos().toPoint();
+    if (newPos == oldPos)
+        return;
+
+    // determine the new size
+    int newWidth = (m_rect.width() * newPos.x()) / oldPos.x();
+    int newHeight = (m_rect.height() * newPos.y()) / oldPos.y();
+    if (modifiers != Qt::NoModifier) {
+        float ratio = (float)newWidth / (float)newHeight;
+        if (ratio > m_scaleRatio)
+            newHeight = newWidth / m_scaleRatio;
+        else
+            newWidth = newHeight * m_scaleRatio;
+    }
+    if (newWidth < 160)
+        newWidth = 160;
+    if (newHeight < 90)
+        newHeight = 90;
+    if (newWidth == (int)m_rect.width() && newHeight == (int)m_rect.height())
+        return;
+
+    // change geometry
+    m_transforming = true;
+    prepareGeometryChange();
+    m_rect = QRectF(-newWidth / 2, -newHeight / 2, newWidth, newHeight);
+    layoutChildren();
+    update();
+    GFX_CHANGED();
+
+    // start refresh timer
+    if (!m_transformRefreshTimer) {
+        m_transformRefreshTimer = new QTimer(this);
+        connect(m_transformRefreshTimer, SIGNAL(timeout()), this, SLOT(slotTransformEnded()));
+        m_transformRefreshTimer->setSingleShot(true);
+    }
+    m_transformRefreshTimer->start(400);
 }
 
 void AbstractContentItem::slotRotate(const QPointF & controlPoint)

@@ -36,17 +36,19 @@ class PictureItem : public AbstractContentItem
         // ::AbstractContentItem
         void save(QDataStream & data) const;
         bool restore(QDataStream & data);
+        int contentHeightForWidth(int width) const;
+        bool contentOpaque() const;
 
         // ::QGraphicsItem
         void dropEvent(QGraphicsSceneDragDropEvent * event);
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
-        QString     m_fileName;
-        CPixmap *   m_photo;
-        QPixmap     m_cachedPhoto;
-        bool        m_opaquePhoto;
-        QGraphicsTextItem * m_textItem;
+        QString m_fileName;
+        CPixmap * m_photo;
+        QPixmap m_cachedPhoto;
+        bool m_opaquePhoto;
 
     protected Q_SLOTS:
         void slotFlipHorizontally();

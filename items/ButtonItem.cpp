@@ -72,6 +72,7 @@ void ButtonItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
     event->accept();
     m_startPos = event->scenePos();
     update();
+    emit pressed();
 }
 
 void ButtonItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
