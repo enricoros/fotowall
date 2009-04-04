@@ -62,9 +62,9 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
     connect(bRotate, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
     m_controlItems << bRotate;
 
-    ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
-    connect(bFront, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
-    m_controlItems << bFront;
+    //ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
+    //connect(bFront, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
+    //m_controlItems << bFront;
 
     ButtonItem * bConf = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-configure.png"), this);
     connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
@@ -73,16 +73,6 @@ AbstractContentItem::AbstractContentItem(QGraphicsScene * scene, QGraphicsItem *
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
     m_controlItems << bDelete;
-
-    ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
-    bFlipH->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
-    connect(bFlipH, SIGNAL(clicked()), this, SLOT(slotFlipHorizontally()));
-    m_controlItems << bFlipH;
-
-    ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-flip-vertical.png"), this);
-    bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
-    connect(bFlipV, SIGNAL(clicked()), this, SLOT(slotFlipVertically()));
-    m_controlItems << bFlipV;
 
     // create default frame
     Frame * frame = FrameFactory::defaultPictureFrame();
@@ -105,90 +95,6 @@ AbstractContentItem::~AbstractContentItem()
     delete m_mirrorItem;
     delete m_frameTextItem;
     delete m_frame;
-}
-
-void AbstractContentItem::save(QDataStream & data) const
-{
-    data << m_rect;
-    data << pos();
-    data << transform();
-    data << zValue();
-    data << isVisible();
-    bool hasText = frameTextEnabled();
-    data << hasText;
-    if (hasText)
-        data << frameText();
-}
-
-bool AbstractContentItem::restore(QDataStream & data)
-{
-    prepareGeometryChange();
-    data >> m_rect;
-    layoutChildren();
-    QPointF p;
-    data >> p;
-    setPos(p);
-    QTransform t;
-    data >> t;
-    setTransform(t);
-    qreal zVal;
-    data >> zVal;
-    setZValue(zVal);
-    bool visible;
-    data >> visible;
-    setVisible(visible);
-    bool hasText;
-    data >> hasText;
-    setFrameTextEnabled(hasText);
-    if (hasText) {
-        QString text;
-        data >> text;
-        setFrameText(text);
-    }
-    update();
-    return true;
-}
-
-void AbstractContentItem::adjustSize()
-{
-    // get contents 'ratio'
-    int hfw = contentHeightForWidth(m_rect.width());
-    if (hfw < 1)
-        return;
-
-    // compute the new rect
-    QRectF newRect;
-    if (m_frame) {
-        double ratio = m_rect.width() / (double)hfw;
-        QSize s = m_frame->sizeForContentsRatio(m_rect.width(), ratio);
-        newRect = QRectF(-s.width() / 2, -s.height() / 2, s.width(), s.height());
-    } else
-        newRect = QRectF(m_rect.left(), -hfw / 2, m_rect.width(), hfw);
-
-    // apply the new size
-    if (!newRect.isValid() || newRect == m_rect)
-        return;
-    prepareGeometryChange();
-    m_rect = newRect;
-    layoutChildren();
-    update();
-    GFX_CHANGED();
-}
-
-void AbstractContentItem::ensureVisible(const QRectF & rect)
-{
-    // keep the center inside the scene rect
-    QPointF center = pos();
-    if (!rect.contains(center)) {
-        center.setX(qBound(rect.left(), center.x(), rect.right()));
-        center.setY(qBound(rect.top(), center.y(), rect.bottom()));
-        setPos(center);
-    }
-}
-
-bool AbstractContentItem::beingTransformed() const
-{
-    return m_transforming;
 }
 
 void AbstractContentItem::setFrame(Frame * frame)
@@ -261,6 +167,12 @@ QString AbstractContentItem::frameText() const
     return m_frameTextItem->toPlainText();
 }
 
+void AbstractContentItem::addButtonItem(ButtonItem * button)
+{
+    m_controlItems.append(button);
+    layoutChildren();
+}
+
 void AbstractContentItem::setMirrorEnabled(bool enabled)
 {
     if (m_mirrorItem && !enabled) {
@@ -277,6 +189,90 @@ void AbstractContentItem::setMirrorEnabled(bool enabled)
 bool AbstractContentItem::mirrorEnabled() const
 {
     return m_mirrorItem;
+}
+
+void AbstractContentItem::adjustSize()
+{
+    // get contents 'ratio'
+    int hfw = contentHeightForWidth(m_rect.width());
+    if (hfw < 1)
+        return;
+
+    // compute the new rect
+    QRectF newRect;
+    if (m_frame) {
+        double ratio = m_rect.width() / (double)hfw;
+        QSize s = m_frame->sizeForContentsRatio(m_rect.width(), ratio);
+        newRect = QRectF(-s.width() / 2, -s.height() / 2, s.width(), s.height());
+    } else
+        newRect = QRectF(m_rect.left(), -hfw / 2, m_rect.width(), hfw);
+
+    // apply the new size
+    if (!newRect.isValid() || newRect == m_rect)
+        return;
+    prepareGeometryChange();
+    m_rect = newRect;
+    layoutChildren();
+    update();
+    GFX_CHANGED();
+}
+
+void AbstractContentItem::ensureVisible(const QRectF & rect)
+{
+    // keep the center inside the scene rect
+    QPointF center = pos();
+    if (!rect.contains(center)) {
+        center.setX(qBound(rect.left(), center.x(), rect.right()));
+        center.setY(qBound(rect.top(), center.y(), rect.bottom()));
+        setPos(center);
+    }
+}
+
+bool AbstractContentItem::beingTransformed() const
+{
+    return m_transforming;
+}
+
+void AbstractContentItem::save(QDataStream & data) const
+{
+    data << m_rect;
+    data << pos();
+    data << transform();
+    data << zValue();
+    data << isVisible();
+    bool hasText = frameTextEnabled();
+    data << hasText;
+    if (hasText)
+        data << frameText();
+}
+
+bool AbstractContentItem::restore(QDataStream & data)
+{
+    prepareGeometryChange();
+    data >> m_rect;
+    layoutChildren();
+    QPointF p;
+    data >> p;
+    setPos(p);
+    QTransform t;
+    data >> t;
+    setTransform(t);
+    qreal zVal;
+    data >> zVal;
+    setZValue(zVal);
+    bool visible;
+    data >> visible;
+    setVisible(visible);
+    bool hasText;
+    data >> hasText;
+    setFrameTextEnabled(hasText);
+    if (hasText) {
+        QString text;
+        data >> text;
+        setFrameText(text);
+    }
+    update();
+    return true;
 }
 
 QRectF AbstractContentItem::boundingRect() const

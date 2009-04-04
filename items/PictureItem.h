@@ -50,7 +50,7 @@ class PictureItem : public AbstractContentItem
         QPixmap m_cachedPhoto;
         bool m_opaquePhoto;
 
-    protected Q_SLOTS:
+    private Q_SLOTS:
         void slotFlipHorizontally();
         void slotFlipVertically();
 };

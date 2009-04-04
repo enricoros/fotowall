@@ -32,22 +32,26 @@ class AbstractContentItem : public QObject, public QGraphicsItem
         AbstractContentItem(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~AbstractContentItem();
 
-        virtual void save(QDataStream & data) const;
-        virtual bool restore(QDataStream & data);
-
-        void adjustSize();
-        void ensureVisible(const QRectF & viewportRect);
-        bool beingTransformed() const;
-
+        // frame (and frame text)
         void setFrame(Frame * frame);
         quint32 frameClass() const;
         void setFrameTextEnabled(bool enabled);
         bool frameTextEnabled() const;
         void setFrameText(const QString & text);
         QString frameText() const;
+        void addButtonItem(ButtonItem * buttonItem);
 
+        // mirror
         void setMirrorEnabled(bool enabled);
         bool mirrorEnabled() const;
+
+        // misc
+        void adjustSize();
+        void ensureVisible(const QRectF & viewportRect);
+        bool beingTransformed() const;
+
+        virtual void save(QDataStream & data) const;
+        virtual bool restore(QDataStream & data);
 
         // ::QGraphicsItem
         QRectF boundingRect() const;

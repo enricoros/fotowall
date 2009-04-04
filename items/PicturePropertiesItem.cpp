@@ -169,7 +169,7 @@ void PicturePropertiesItem::timerEvent(QTimerEvent * event)
     // only act on our events
     if (event->timerId() == m_aniTimer.timerId()) {
         if (m_aniDirection) {
-            m_aniStep += 5;
+            m_aniStep += 10;
             // end of FadeIn
             if (m_aniStep >= 100) {
                 m_aniStep = 100;

@@ -13,23 +13,36 @@
  ***************************************************************************/
 
 #include "PictureItem.h"
+#include "ButtonItem.h"
+#include "CPixmap.h"
+#include "RenderOpts.h"
+#include "frames/Frame.h"
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
 #include <QPainter>
 #include <QUrl>
-#include "CPixmap.h"
-#include "RenderOpts.h"
-#include "frames/Frame.h"
 
 PictureItem::PictureItem(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContentItem(scene, parent)
     , m_photo(0)
     , m_opaquePhoto(false)
 {
+    // enable frame text
     setFrameTextEnabled(true);
     setFrameText(tr("..."));
+
+    // add picture-specific buttons
+    ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
+    bFlipH->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+    connect(bFlipH, SIGNAL(clicked()), this, SLOT(slotFlipHorizontally()));
+    addButtonItem(bFlipH);
+
+    ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-flip-vertical.png"), this);
+    bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+    connect(bFlipV, SIGNAL(clicked()), this, SLOT(slotFlipVertically()));
+    addButtonItem(bFlipV);
 }
 
 PictureItem::~PictureItem()
