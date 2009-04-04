@@ -101,7 +101,8 @@ void AbstractContent::setFrame(Frame * frame)
 {
     delete m_frame;
     m_frame = frame;
-    FrameFactory::setDefaultPictureClass(m_frame->frameClass());
+    if (m_frame)
+        FrameFactory::setDefaultPictureClass(m_frame->frameClass());
     adjustSize();
     layoutChildren();
     update();
@@ -191,6 +192,17 @@ bool AbstractContent::mirrorEnabled() const
     return m_mirrorItem;
 }
 
+void AbstractContent::resize(const QRectF & rect)
+{
+    if (!rect.isValid() || rect == m_rect)
+        return;
+    prepareGeometryChange();
+    m_rect = rect;
+    layoutChildren();
+    update();
+    GFX_CHANGED();
+}
+
 void AbstractContent::adjustSize()
 {
     // get contents 'ratio'
@@ -208,13 +220,7 @@ void AbstractContent::adjustSize()
         newRect = QRectF(m_rect.left(), -hfw / 2, m_rect.width(), hfw);
 
     // apply the new size
-    if (!newRect.isValid() || newRect == m_rect)
-        return;
-    prepareGeometryChange();
-    m_rect = newRect;
-    layoutChildren();
-    update();
-    GFX_CHANGED();
+    resize(newRect);
 }
 
 void AbstractContent::ensureVisible(const QRectF & rect)
@@ -466,8 +472,18 @@ void AbstractContent::slotSave()
 
 void AbstractContent::layoutChildren()
 {
-    if (!m_frame)
+    // layout buttons even if no frame
+    if (!m_frame) {
+        const int margin = 4;
+        const int spacing = 4;
+        int right = m_rect.right() - margin;
+        int bottom = m_rect.bottom() - margin;
+        foreach (ButtonItem * button, m_controlItems) {
+            button->setPos(right - button->width() / 2, bottom - button->height() / 2);
+            right -= button->width() + spacing;
+        }
         return;
+    }
 
     // layout all controls
     QRect frameRect = m_rect.toRect();
@@ -502,20 +518,16 @@ void AbstractContent::slotScale(const QPointF & controlPoint, Qt::KeyboardModifi
         else
             newWidth = newHeight * m_scaleRatio;
     }
-    if (newWidth < 160)
-        newWidth = 160;
-    if (newHeight < 90)
-        newHeight = 90;
+    if (newWidth < 50)
+        newWidth = 50;
+    if (newHeight < 40)
+        newHeight = 40;
     if (newWidth == (int)m_rect.width() && newHeight == (int)m_rect.height())
         return;
 
     // change geometry
     m_transforming = true;
-    prepareGeometryChange();
-    m_rect = QRectF(-newWidth / 2, -newHeight / 2, newWidth, newHeight);
-    layoutChildren();
-    update();
-    GFX_CHANGED();
+    resize(QRectF(-newWidth / 2, -newHeight / 2, newWidth, newHeight));
 
     // start refresh timer
     if (!m_transformRefreshTimer) {

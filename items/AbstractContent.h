@@ -46,6 +46,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         bool mirrorEnabled() const;
 
         // misc
+        void resize(const QRectF & rect);
         void adjustSize();
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;

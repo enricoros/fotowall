@@ -23,21 +23,28 @@
 #include <QMimeData>
 #include <QPainter>
 #include <QUrl>
+#include <QTextDocument>
+#include <QAbstractTextDocumentLayout>
 
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent)
-    , m_textItem(0)
+    , m_text(0)
 {
-    m_textItem = new QGraphicsTextItem("ciao", this);
-    m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
-    QFont f("Sans Serif");
-    //f.setPointSizeF(7.5);
-    m_textItem->setFont(f);
+    setFrame(0);
+    setFrameTextEnabled(false);
+
+    // create a text document
+    m_text = new QTextDocument(this);
+    QAbstractTextDocumentLayout * layout = m_text->documentLayout();
+    connect(layout, SIGNAL(documentSizeChanged(const QSizeF &)), this, SLOT(slotResize(const QSizeF &)));
+
+    // TEMP
+    m_text->setHtml("<body><h1 style='color:#800;'>test</h1>this is a test for the text element<br>HTML TEXT is<br>supported too</body>");
 }
 
 TextContent::~TextContent()
 {
-    delete m_textItem;
+    delete m_text;
 }
 
 void TextContent::save(QDataStream & data) const
@@ -56,5 +63,39 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     AbstractContent::paint(painter, option, widget);
 
     // skip if no photo
-    //m_textItem->paint(painter, option, widget);
+
+/*    painter->save();
+    QRectF r = option->exposedRect;
+    painter->translate(-dd->controlOffset());
+    r.translate(dd->controlOffset());
+*/
+    //QTextDocumentLayout * layout = qobject_cast<QTextDocumentLayout *>(m_text->documentLayout());
+
+    //m_text->documentLayout();
+
+    // the layout might need to expand the root frame to
+    // the viewport if NoWrap is set
+    //if (layout)
+    //    layout->setViewport(boundingRect().toRect());
+
+    QRect rect = boundingRect().toRect();
+    painter->save();
+    painter->translate(-rect.width() / 2, -rect.height() / 2);
+    m_text->drawContents(painter);
+    //if (layout)
+    //    layout->setViewport(QRect());
+
+    painter->restore();
+
+    if (option) {
+        //if (option->state & (QStyle::State_Selected | QStyle::State_HasFocus))
+        //    qt_graphicsItem_highlightSelected(this, painter, option);
+    }
+}
+
+void TextContent::slotResize(const QSizeF & size)
+{
+    int w = size.width() + 4;
+    int h = size.height() + 4;
+    resize(QRectF(-w / 2, -h / 2, w, h));
 }
