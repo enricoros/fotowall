@@ -219,11 +219,14 @@ class SizeDialog : public QDialog {
 void FotoWall::on_pngButton_clicked()
 {
     QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.4.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Name a PNG file"), QDir::current().path(), "PNG Image (*.png)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Name a file"), QDir::current().path(), "Image (*.jpg, *.jpeg, *.png, *.bmp)");
+    QFileInfo fileInfo(fileName);
     if (fileName.isNull())
         return;
-    if (!fileName.endsWith(".png", Qt::CaseInsensitive))
+    if (fileInfo.suffix().isEmpty()) {
+        // If no extension, set a PNG format
         fileName += ".png";
+    }
 
     // get the rendering size
     SizeDialog * sd = new SizeDialog(this);
@@ -246,7 +249,7 @@ void FotoWall::on_pngButton_clicked()
     RenderOpts::HQRendering = false;
 
     // save image
-    image.save(fileName, "PNG");
+    image.save(fileName);
 
     if (!QFile::exists(fileName)) {
         QMessageBox::warning(this, tr("Rendering Save Error"), tr("Error rendering to this file"));
