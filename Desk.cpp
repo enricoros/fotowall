@@ -440,10 +440,28 @@ void Desk::slotStackPicture(int op)
     PictureContent * picture = dynamic_cast<PictureContent *>(sender());
     if (!picture || m_pictures.size() < 2)
         return;
-
-    // move items
     int size = m_pictures.size();
     int index = m_pictures.indexOf(picture);
+
+    // find out insertion indexes over the stacked items
+    QList<QGraphicsItem *> stackedItems = items(picture->sceneBoundingRect(), Qt::IntersectsItemShape);
+    int prevIndex = 0;
+    int nextIndex = size - 1;
+    foreach (QGraphicsItem * item, stackedItems) {
+        // operate only on different Content
+        PictureContent * p = dynamic_cast<PictureContent *>(item);
+        if (!p || p == picture)
+            continue;
+
+        // refine previous/next indexes (close to 'index')
+        int pIdx = m_pictures.indexOf(p);
+        if (pIdx < nextIndex && pIdx > index)
+            nextIndex = pIdx;
+        else if (pIdx > prevIndex && pIdx < index)
+            prevIndex = pIdx;
+    }
+
+    // move items
     switch (op) {
         case 1: // front
             m_pictures.append(m_pictures.takeAt(index));
@@ -451,12 +469,12 @@ void Desk::slotStackPicture(int op)
         case 2: // raise
             if (index >= size - 1)
                 return;
-            m_pictures.swap(index, index + 1);
+            m_pictures.insert(nextIndex, m_pictures.takeAt(index));
             break;
         case 3: // lower
             if (index <= 0)
                 return;
-            m_pictures.swap(index, index - 1);
+            m_pictures.insert(prevIndex, m_pictures.takeAt(index));
             break;
         case 4: // back
             m_pictures.prepend(m_pictures.takeAt(index));
