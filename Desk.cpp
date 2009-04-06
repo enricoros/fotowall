@@ -428,6 +428,13 @@ void Desk::slotBackgroundPicture()
     update();
 }
 
+/*static void dumpPictures(const QString & prefix, const QList<PictureContent *> pics)
+{
+    int i = 0;
+    foreach (const PictureContent * p, pics)
+        qWarning() << prefix << i++ << p->zValue() << (quintptr)p;
+}*/
+
 void Desk::slotStackPicture(int op)
 {
     PictureContent * picture = dynamic_cast<PictureContent *>(sender());
@@ -439,7 +446,7 @@ void Desk::slotStackPicture(int op)
     int index = m_pictures.indexOf(picture);
     switch (op) {
         case 1: // front
-            m_pictures.swap(index, size - 1);
+            m_pictures.append(m_pictures.takeAt(index));
             break;
         case 2: // raise
             if (index >= size - 1)
@@ -452,7 +459,7 @@ void Desk::slotStackPicture(int op)
             m_pictures.swap(index, index - 1);
             break;
         case 4: // back
-            m_pictures.swap(index, 0);
+            m_pictures.prepend(m_pictures.takeAt(index));
             break;
     }
 
