@@ -26,6 +26,9 @@ class TextContent : public AbstractContent
         TextContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~TextContent();
 
+        QString toHtml() const;
+        void setHtml(const QString & htmlCode);
+
         // ::AbstractContent
         void save(QDataStream & data) const;
         bool restore(QDataStream & data);

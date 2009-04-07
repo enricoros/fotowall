@@ -39,15 +39,22 @@
 **
 ****************************************************************************/
 
+#define notImplemented() {qWarning("%s:%d: %s NOT Implemented!", __FILE__, __LINE__, __FUNCTION__);}
+#include <QIcon>
+QIcon createIconSet(const QString & iconName)
+{
+    return QIcon(iconName);
+}
+
+
 #include "richtexteditor_p.h"
-#include "htmlhighlighter_p.h"
-#include "iconselector_p.h"
-#include "ui_addlinkdialog.h"
-#include "abstractsettings_p.h"
-
-#include "iconloader_p.h"
-
-#include <QtDesigner/QDesignerFormEditorInterface>
+ ///#include "htmlhighlighter_p.h"
+ ///#include "iconselector_p.h"
+ ///#include "ui_addlinkdialog.h"
+///#include "abstractsettings_p.h"
+///
+///#include "iconloader_p.h"
+///#include <QtDesigner/QDesignerFormEditorInterface>
 
 #include <QtCore/QList>
 #include <QtCore/QMap>
@@ -72,12 +79,8 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QDialogButtonBox>
 
-QT_BEGIN_NAMESPACE
-
-static const char *RichTextDialogC = "RichTextDialog";
-static const char *Geometry = "Geometry";
-
-namespace qdesigner_internal {
+///static const char *RichTextDialogC = "RichTextDialog";
+///static const char *Geometry = "Geometry";
 
 class RichTextEditor : public QTextEdit
 {
@@ -86,7 +89,7 @@ public:
     RichTextEditor(QWidget *parent = 0);
     void setDefaultFont(const QFont &font);
 
-    QToolBar *createToolBar(QDesignerFormEditorInterface *core, QWidget *parent = 0);
+    QToolBar *createToolBar(QWidget *parent = 0);
 
 public slots:
     void setFontBold(bool b);
@@ -97,7 +100,7 @@ public slots:
 signals:
     void stateChanged();
 };
-
+/**
 class AddLinkDialog : public QDialog
 {
     Q_OBJECT
@@ -166,7 +169,7 @@ void AddLinkDialog::accept()
 
     QDialog::accept();
 }
-
+**/
 class HtmlTextEdit : public QTextEdit
 {
     Q_OBJECT
@@ -275,8 +278,7 @@ class RichTextEditorToolBar : public QToolBar
 {
     Q_OBJECT
 public:
-    RichTextEditorToolBar(QDesignerFormEditorInterface *core,
-                          RichTextEditor *editor,
+    RichTextEditorToolBar(RichTextEditor *editor,
                           QWidget *parent = 0);
 
 public slots:
@@ -306,7 +308,6 @@ private:
     ColorAction *m_color_action;
     QComboBox *m_font_size_input;
 
-    QDesignerFormEditorInterface *m_core;
     QPointer<RichTextEditor> m_editor;
 };
 
@@ -324,15 +325,13 @@ static QAction *createCheckableAction(const QIcon &icon, const QString &text,
     return result;
 }
 
-RichTextEditorToolBar::RichTextEditorToolBar(QDesignerFormEditorInterface *core,
-                                             RichTextEditor *editor,
+RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
                                              QWidget *parent) :
     QToolBar(parent),
     m_link_action(new QAction(this)),
     m_image_action(new QAction(this)),
     m_color_action(new ColorAction(this)),
     m_font_size_input(new QComboBox),
-    m_core(core),
     m_editor(editor)
 {
     // Font size combo box
@@ -498,16 +497,18 @@ void RichTextEditorToolBar::setVAlignSub(bool sub)
 
 void RichTextEditorToolBar::insertLink()
 {
-    AddLinkDialog linkDialog(m_editor, this);
-    linkDialog.showDialog();
-    m_editor->setFocus();
+    notImplemented();
+    //AddLinkDialog linkDialog(m_editor, this);
+    //linkDialog.showDialog();
+    //sm_editor->setFocus();
 }
 
 void RichTextEditorToolBar::insertImage()
 {
-    const QString path = IconSelector::choosePixmapResource(m_core, m_core->resourceModel(), QString(), this);
-    if (!path.isEmpty())
-        m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
+    notImplemented();
+    //const QString path = IconSelector::choosePixmapResource(m_core, m_core->resourceModel(), QString(), this);
+    //if (!path.isEmpty())
+    //    m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
 }
 
 void RichTextEditorToolBar::updateActions()
@@ -559,9 +560,9 @@ RichTextEditor::RichTextEditor(QWidget *parent)
             this, SIGNAL(stateChanged()));
 }
 
-QToolBar *RichTextEditor::createToolBar(QDesignerFormEditorInterface *core, QWidget *parent)
+QToolBar *RichTextEditor::createToolBar(QWidget *parent)
 {
-    return new RichTextEditorToolBar(core, this, parent);
+    return new RichTextEditorToolBar(this, parent);
 }
 
 void RichTextEditor::setFontBold(bool b)
@@ -613,25 +614,24 @@ QString RichTextEditor::text(Qt::TextFormat format) const
     return tester.toHtml() == html ? plain : html;
 }
 
-RichTextEditorDialog::RichTextEditorDialog(QDesignerFormEditorInterface *core, QWidget *parent)  :
+RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     QDialog(parent),
     m_editor(new RichTextEditor()),
     m_text_edit(new HtmlTextEdit),
     m_tab_widget(new QTabWidget),
-    m_state(Clean),
-    m_core(core)
+    m_state(Clean)
 {
     setWindowTitle(tr("Edit text"));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     m_text_edit->setAcceptRichText(false);
-    new HtmlHighlighter(m_text_edit);
+    ///new HtmlHighlighter(m_text_edit);
 
     connect(m_editor, SIGNAL(textChanged()), this, SLOT(richTextChanged()));
     connect(m_text_edit, SIGNAL(textChanged()), this, SLOT(sourceChanged()));
 
     // The toolbar needs to be created after the RichTextEditor
-    QToolBar *tool_bar = m_editor->createToolBar(core);
+    QToolBar *tool_bar = m_editor->createToolBar(this);
     tool_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     QWidget *rich_edit = new QWidget;
@@ -662,23 +662,10 @@ RichTextEditorDialog::RichTextEditorDialog(QDesignerFormEditorInterface *core, Q
     layout->addWidget(buttonBox);
 
     m_editor->setFocus();
-
-    QDesignerSettingsInterface *settings = core->settingsManager();
-    settings->beginGroup(QLatin1String(RichTextDialogC));
-
-    if (settings->contains(QLatin1String(Geometry)))
-        restoreGeometry(settings->value(QLatin1String(Geometry)).toByteArray());
-
-    settings->endGroup();
 }
 
 RichTextEditorDialog::~RichTextEditorDialog()
 {
-    QDesignerSettingsInterface *settings = m_core->settingsManager();
-    settings->beginGroup(QLatin1String(RichTextDialogC));
-
-    settings->setValue(QLatin1String(Geometry), saveGeometry());
-    settings->endGroup();
 }
 
 int RichTextEditorDialog::showDialog()
@@ -750,9 +737,5 @@ void RichTextEditorDialog::sourceChanged()
 {
     m_state = SourceChanged;
 }
-
-} // namespace qdesigner_internal
-
-QT_END_NAMESPACE
 
 #include "richtexteditor.moc"

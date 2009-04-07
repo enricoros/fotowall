@@ -31,9 +31,10 @@ TRANSLATIONS += translations/fotowall_de.ts \
 # Components
 include(items/items.pri)
 include(frames/frames.pri)
+include(3rdparty/richtextedit/richtextedit.pri)
 
 # installation on Linux
-unix { 
+unix {
     target.path = /usr/bin
     icon.files = fotowall.png
     icon.path = /usr/share/pixmaps
@@ -48,7 +49,7 @@ unix {
 }
 
 # deployment on Windows
-win32 { 
+win32 {
     CONFIG += embed_manifest_exe
     QTPLUGIN += qgif \
         qjpeg \

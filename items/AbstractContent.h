@@ -29,7 +29,7 @@ class AbstractContent : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noResize = false);
         ~AbstractContent();
 
         // frame (and frame text)

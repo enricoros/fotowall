@@ -20,6 +20,7 @@
 #include "PicturePropertiesItem.h"
 #include "TextContent.h"
 #include "frames/FrameFactory.h"
+#include "richtexteditor_p.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 #include <QImageReader>
@@ -346,7 +347,7 @@ void Desk::drawForeground(QPainter * painter, const QRectF & /*rect*/)
 PictureContent * Desk::createPicture(const QPoint & pos)
 {
     PictureContent * p = new PictureContent(this);
-    connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
+    connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
     connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
     connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackPicture(int)));
     connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
@@ -361,7 +362,7 @@ PictureContent * Desk::createPicture(const QPoint & pos)
 TextContent * Desk::createText(const QPoint & pos)
 {
     TextContent * t = new TextContent(this);
-    connect(t, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigurePicture(const QPoint &)));
+    connect(t, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
     connect(t, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
     connect(t, SIGNAL(changeStack(int)), this, SLOT(slotStackPicture(int)));
     connect(t, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
@@ -386,29 +387,40 @@ void Desk::setTitleText(const QString & text)
 
 
 /// Slots
-void Desk::slotConfigurePicture(const QPoint & scenePoint)
+void Desk::slotConfigureContent(const QPoint & scenePoint)
 {
     PictureContent * picture = dynamic_cast<PictureContent *>(sender());
-    if (!picture)
+    if (picture) {
+        // skip if an item is already present
+        foreach (PicturePropertiesItem * item, m_properties)
+            if (item->pictureContent() == picture)
+                return;
+
+        // create the properties item
+        PicturePropertiesItem * pp = new PicturePropertiesItem(picture);
+        connect(pp, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
+        connect(pp, SIGNAL(applyAll(quint32,bool)), this, SLOT(slotApplyAll(quint32,bool)));
+        connect(pp, SIGNAL(applyEffectToAll(int)), this, SLOT(slotApplyEffectToAll(int)));
+        addItem(pp);
+        pp->show();
+        pp->setPos(scenePoint - QPoint(10, 10));
+        pp->keepInBoundaries(sceneRect().toRect());
+
+        // add to the internal list
+        m_properties.append(pp);
         return;
+    }
 
-    // skip if an item is already present
-    foreach (PicturePropertiesItem * item, m_properties)
-        if (item->pictureContent() == picture)
-            return;
-
-    // create the properties item
-    PicturePropertiesItem * pp = new PicturePropertiesItem(picture);
-    connect(pp, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
-    connect(pp, SIGNAL(applyAll(quint32,bool)), this, SLOT(slotApplyAll(quint32,bool)));
-    connect(pp, SIGNAL(applyEffectToAll(int)), this, SLOT(slotApplyEffectToAll(int)));
-    addItem(pp);
-    pp->show();
-    pp->setPos(scenePoint - QPoint(10, 10));
-    pp->keepInBoundaries(sceneRect().toRect());
-
-    // add to the internal list
-    m_properties.append(pp);
+    TextContent * text = dynamic_cast<TextContent *>(sender());
+    if (text) {
+        RichTextEditorDialog * editor = new RichTextEditorDialog();
+        editor->move(QCursor::pos());
+        editor->setText(text->toHtml());
+        if (editor->exec() == QDialog::Accepted)
+            text->setHtml(editor->text(Qt::RichText));
+        delete editor;
+        return;
+    }
 }
 
 void Desk::slotBackgroundPicture()

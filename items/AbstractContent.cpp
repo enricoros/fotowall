@@ -28,7 +28,7 @@
 #include <QUrl>
 #include <math.h>
 
-AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent)
+AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noResize)
     : QGraphicsItem(parent)
     , m_rect(-100, -75, 200, 150)
     , m_frame(0)
@@ -51,12 +51,14 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent)
     setAcceptDrops(true);
 
     // create child items
-    ButtonItem * bScale = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
-    bScale->setToolTip(tr("Hold down SHIFT for ignoring aspect ratio.\nDouble click to restore the aspect ratio."));
-    connect(bScale, SIGNAL(pressed()), this, SLOT(slotScaleStarted()));
-    connect(bScale, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotScale(const QPointF&,Qt::KeyboardModifiers)));
-    connect(bScale, SIGNAL(doubleClicked()), this, SLOT(slotResetRatio()));
-    m_controlItems << bScale;
+    if (!noResize) {
+        ButtonItem * bScale = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
+        bScale->setToolTip(tr("Hold down SHIFT for ignoring aspect ratio.\nDouble click to restore the aspect ratio."));
+        connect(bScale, SIGNAL(pressed()), this, SLOT(slotScaleStarted()));
+        connect(bScale, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotScale(const QPointF&,Qt::KeyboardModifiers)));
+        connect(bScale, SIGNAL(doubleClicked()), this, SLOT(slotResetRatio()));
+        m_controlItems << bScale;
+    }
 
     ButtonItem * bRotate = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
     bRotate->setToolTip(tr("Hold down SHIFT to snap the rotation.\nDouble click to align the picture."));

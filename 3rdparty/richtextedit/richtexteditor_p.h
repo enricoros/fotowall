@@ -55,24 +55,17 @@
 
 #include <QtGui/QTextEdit>
 #include <QtGui/QDialog>
-#include "shared_global_p.h"
-
-QT_BEGIN_NAMESPACE
 
 class QTabWidget;
 class QToolBar;
 
-class QDesignerFormEditorInterface;
-
-namespace qdesigner_internal {
-
 class RichTextEditor;
 
-class QDESIGNER_SHARED_EXPORT RichTextEditorDialog : public QDialog
+class RichTextEditorDialog : public QDialog
 {
     Q_OBJECT
 public:
-    RichTextEditorDialog(QDesignerFormEditorInterface *core, QWidget *parent = 0);
+    RichTextEditorDialog(QWidget *parent = 0);
     ~RichTextEditorDialog();
 
     int showDialog();
@@ -92,11 +85,6 @@ private:
     QTextEdit      *m_text_edit;
     QTabWidget     *m_tab_widget;
     State m_state;
-    QDesignerFormEditorInterface *m_core;
 };
-
-} // namespace qdesigner_internal
-
-QT_END_NAMESPACE
 
 #endif // RITCHTEXTEDITOR_H

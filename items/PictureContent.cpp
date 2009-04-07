@@ -25,7 +25,7 @@
 #include <QUrl>
 
 PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent)
+    : AbstractContent(scene, parent, false)
     , m_photo(0)
     , m_opaquePhoto(false)
 {
@@ -33,7 +33,7 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     setFrameTextEnabled(true);
     setFrameText(tr("..."));
 
-    // add picture-specific buttons
+    // add flipping buttons
     ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
     bFlipH->setToolTip(tr("Flip horizontally"));
     bFlipH->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);

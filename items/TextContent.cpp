@@ -17,6 +17,7 @@
 #include "CPixmap.h"
 #include "RenderOpts.h"
 #include "frames/Frame.h"
+#include "richtexteditor_p.h"
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
@@ -27,7 +28,7 @@
 #include <QAbstractTextDocumentLayout>
 
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent)
+    : AbstractContent(scene, parent, true)
     , m_text(0)
 {
     setFrame(0);
@@ -38,13 +39,23 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     QAbstractTextDocumentLayout * layout = m_text->documentLayout();
     connect(layout, SIGNAL(documentSizeChanged(const QSizeF &)), this, SLOT(slotResize(const QSizeF &)));
 
-    // TEMP
-    m_text->setHtml("<body><h1 style='color:#800;'>test</h1>this is a test for the text element<br>HTML TEXT is<br>supported too</body>");
+    // template text
+    m_text->setHtml(tr("<body><pre style='font-size: 12pt; color: #800;'>Insert text here</pre></body>"));
 }
 
 TextContent::~TextContent()
 {
     delete m_text;
+}
+
+QString TextContent::toHtml() const
+{
+    return m_text->toHtml();
+}
+
+void TextContent::setHtml(const QString & htmlCode)
+{
+    m_text->setHtml(htmlCode);
 }
 
 void TextContent::save(QDataStream & data) const
