@@ -11,6 +11,7 @@ ChangeLog
 ---------
 
 Unreleased version:
+
 * ...
 * Save to all the supported image formats (Tanguy Arnaud)
 * Tooltips on buttons and usability fixes [reqby Ilan d'Inca]
