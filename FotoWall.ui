@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
+    <width>695</width>
     <height>367</height>
    </rect>
   </property>
@@ -42,6 +42,11 @@
           <string>CD cover</string>
          </property>
         </item>
+        <item>
+         <property name="text" >
+          <string>DVD cover</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
@@ -50,7 +55,7 @@
          <string>add pictures</string>
         </property>
         <property name="icon" >
-         <iconset resource="../fotowall/fotowall.qrc" >
+         <iconset resource="fotowall.qrc" >
           <normaloff>:/data/action-add.png</normaloff>:/data/action-add.png</iconset>
         </property>
         <property name="toolButtonStyle" >
@@ -64,7 +69,7 @@
          <string>set title</string>
         </property>
         <property name="icon" >
-         <iconset resource="../fotowall/fotowall.qrc" >
+         <iconset resource="fotowall.qrc" >
           <normaloff>:/data/action-add.png</normaloff>:/data/action-add.png</iconset>
         </property>
         <property name="toolButtonStyle" >
@@ -163,7 +168,7 @@ p, li { white-space: pre-wrap; }
          <string>render</string>
         </property>
         <property name="icon" >
-         <iconset resource="../fotowall/fotowall.qrc" >
+         <iconset resource="fotowall.qrc" >
           <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
         </property>
         <property name="toolButtonStyle" >
@@ -308,7 +313,7 @@ p, li { white-space: pre-wrap; }
          <string>quit</string>
         </property>
         <property name="icon" >
-         <iconset resource="../fotowall/fotowall.qrc" >
+         <iconset resource="fotowall.qrc" >
           <normaloff>:/data/action-delete.png</normaloff>:/data/action-delete.png</iconset>
         </property>
         <property name="toolButtonStyle" >
@@ -332,7 +337,7 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
-  <include location="../fotowall/fotowall.qrc" />
+  <include location="fotowall.qrc" />
  </resources>
  <connections/>
 </ui>

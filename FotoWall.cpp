@@ -148,26 +148,43 @@ void FotoWall::on_setTitle_clicked()
 
 void FotoWall::on_projectType_currentIndexChanged(int index) 
 {
+    int w, h;
     switch (index) {
         case 0:
+            //Normal project
             showMaximized();
             m_view->setMaximumSize(QSize(16777215,16777215));
-            m_projectType = Normal;
+            m_desk->setMode(index);
             break;
 
         case 1:
+            // CD cover
             showNormal();
             // A CD cover is a 4.75x4.715 inches square. To get the size in pixel, we must multiply by the dpi (dot per inch)
-            int w = 4.75 * m_view->logicalDpiX();
-            int h = 4.75 * m_view->logicalDpiY();
+            w = 4.75 * m_view->logicalDpiX();
+            h = 4.75 * m_view->logicalDpiY();
             m_view->setMinimumWidth(w);
             m_view->setMaximumWidth(w);
             m_view->setMinimumHeight(h);
             m_view->setMaximumHeight(h);
             resize(w, h);
-            m_projectType = CD;
+            m_desk->setMode(index);
             break;
-    };
+
+       case 2:
+            //DVD cover
+            showNormal();
+            w = 10.83 * m_view->logicalDpiX();
+            h = 7.2 * m_view->logicalDpiY();
+            m_view->setMinimumWidth(w);
+            m_view->setMaximumWidth(w);
+            m_view->setMinimumHeight(h);
+            m_view->setMaximumHeight(h);
+            resize(w, h);
+            m_desk->setMode(index);
+            break;
+
+    }
 }
 
 void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)
@@ -249,13 +266,17 @@ void FotoWall::on_pngButton_clicked()
     globalExportingFlag = true;
 
     // check to project type for saving
-    switch (m_projectType) {
-        case Normal:
+    switch (m_desk->getMode()) {
+        case Desk::ModeNormal:
             saveImage();
             break;
-        case CD:
+        case Desk::ModeCD:
             saveCD();
             break;
+        case Desk::ModeDVD:
+            saveDVD();
+            break;
+
         default:
             saveImage();
             break;
@@ -300,24 +321,48 @@ void FotoWall::saveImage() {
 }
 
 void FotoWall::saveCD() {
-    // Dimension of the image in pixels. It will be set to 300 dpi by the printer.
-    QImage image(1410, 1410, QImage::Format_ARGB32);
-    image.fill(0);
-
     QPrinter printer;
     QPrintDialog printDialog(&printer);
     bool ok = printDialog.exec();
     if(!ok) return;
     else {
-        // 300 dpi resolution for exporting at the right size
+        // dpi resolution for exporting at the right size
         printer.setResolution(300);
+        printer.setPaperSize(QPrinter::A4);
         QPainter paint(&printer);
         paint.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
         // Print the image
-        m_desk->render(&paint, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+        // 1410 is the width in pixels, at 300 dpi of the cover
+        m_desk->render(&paint, QRect(0, 0, 1410, 1410), m_desk->sceneRect(), Qt::KeepAspectRatio);
         paint.end();
     }
+}
 
+void FotoWall::saveDVD() {
+    QPrinter printer;
+    QPrintDialog printDialog(&printer);
+    bool ok = printDialog.exec();
+    if(!ok) return;
+
+    QImage image(3289, 2160, QImage::Format_ARGB32);
+    image.fill(0);
+    QPainter paintimg(&image);
+    paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    // Render on the image
+    m_desk->render(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+    paintimg.end();
+
+    QMatrix matrix;
+    // Rotate the image (because a DVD cover needs to be print in landscape mode).
+    matrix.rotate(90);
+    image = image.transformed(matrix);
+
+    // And then print
+    // dpi resolution for exporting at the right size
+    printer.setResolution(300);
+    printer.setPaperSize(QPrinter::A4);
+    QPainter paint(&printer);
+    paint.drawImage(image.rect(), image);
 }
 
 void FotoWall::on_quitButton_clicked()

@@ -32,13 +32,12 @@ class FotoWall : public QWidget
         void checkForTutorial();
         void saveImage();
         void saveCD();
+        void saveDVD();
 
     private:
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
         Desk *          m_desk;
-        int m_projectType;
-        enum { Normal, CD };
 
     private Q_SLOTS:
         void on_addPictures_clicked();

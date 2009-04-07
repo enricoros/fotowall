@@ -46,6 +46,14 @@ class Desk : public QGraphicsScene
         void loadPictures(const QStringList & fileNames);
         void showHelp();
 
+        void render (QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
+
+        // Get and set the project mode (CD cover, DVD,...).
+        int getMode();
+        void setMode(int);
+        enum Mode { ModeNormal, ModeCD, ModeDVD };
+
+
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
         void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
@@ -53,6 +61,8 @@ class Desk : public QGraphicsScene
         void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * mouseEvent );
         void drawBackground( QPainter * painter, const QRectF & rect );
         void drawForeground( QPainter * painter, const QRectF & rect );
+        void loadNormalMode();
+        void loadDVDMode();
 
     private:
         PictureItem * createPicture(const QPoint & pos);
@@ -69,6 +79,9 @@ class Desk : public QGraphicsScene
         QRectF m_rect;
         QString m_titleText;
         QPixmap m_backCache;
+        int m_projectType;
+        // Used by some modes to show information widgets, which won't be rendered
+        QList<QGraphicsItem *> m_markerItems;
 
     private Q_SLOTS:
         void slotConfigurePicture(const QPoint & scenePoint);

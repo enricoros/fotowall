@@ -21,6 +21,7 @@
 #include "frames/FrameFactory.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
+#include <QGraphicsView>
 #include <QImageReader>
 #include <QMimeData>
 #include <QUrl>
@@ -202,6 +203,65 @@ void Desk::showHelp()
     HIGHLIGHT(0.5, 0.0);
     HIGHLIGHT(1.0, 0.0);
     HIGHLIGHT(1.0, 1.0);
+}
+
+int Desk::getMode() 
+{
+    return m_projectType;
+}
+
+void Desk::setMode(int mode) 
+{
+    if(m_projectType != mode) {
+        m_projectType = mode;
+        switch (mode) {
+            case ModeDVD:
+                loadDVDMode();
+                break;
+            default:
+                loadNormalMode();
+                break;
+        } 
+    }
+}
+
+void Desk::loadNormalMode() {
+    // Remove the information items
+    foreach(QGraphicsItem *item, m_markerItems) {
+        delete item;
+    }
+    m_markerItems.clear();
+}
+
+void Desk::loadDVDMode() {
+    // Add informations items to show the back, front, and side position
+
+    QList<QGraphicsView *> view = views();
+    int faceW = 5.08 * view.at(0)->logicalDpiX();
+    int sideW = 0.67 * view.at(0)->logicalDpiY();
+    m_markerItems.push_back(addLine(faceW, 0, faceW, height()));
+    m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
+
+    QGraphicsTextItem *textBack = addText(tr("Back"), QFont("", 18, -1, true));
+    // XXX : textWidth returns -1 instead of the text size, so text is not at the expected position
+    textBack->setPos(faceW/2 - textBack->textWidth(),height()/2);
+    m_markerItems.push_back(textBack);
+    QGraphicsTextItem *textFront = addText(tr("Front"), QFont("", 18, -1, true));
+    // XXX : textWidth returns -1 instead of the text size, so text is not at the expected position
+    textFront->setPos((faceW+sideW) + faceW/2 - textFront->textWidth(), height()/2);
+    m_markerItems.push_back(textFront);
+}
+
+void Desk::render (QPainter * painter, const QRectF & target, const QRectF & source,
+                Qt::AspectRatioMode aspectRatioMode)
+{
+    foreach(QGraphicsItem *item, m_markerItems) {
+        item->hide();
+    }
+    QGraphicsScene::render ( painter, target , source, aspectRatioMode );
+    foreach(QGraphicsItem *item, m_markerItems) {
+        item->show();
+    }
 }
 
 /// Drag & Drop pictures
