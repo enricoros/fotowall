@@ -325,17 +325,21 @@ void FotoWall::saveCD() {
     QPrintDialog printDialog(&printer);
     bool ok = printDialog.exec();
     if(!ok) return;
-    else {
-        // dpi resolution for exporting at the right size
-        printer.setResolution(300);
-        printer.setPaperSize(QPrinter::A4);
-        QPainter paint(&printer);
-        paint.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-        // Print the image
-        // 1410 is the width in pixels, at 300 dpi of the cover
-        m_desk->render(&paint, QRect(0, 0, 1410, 1410), m_desk->sceneRect(), Qt::KeepAspectRatio);
-        paint.end();
-    }
+
+    QImage image(1410, 1410, QImage::Format_ARGB32);
+    image.fill(0);
+    QPainter paintimg(&image);
+    paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    // Render on the image
+    m_desk->render(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+    paintimg.end();
+
+    // And then print
+    // dpi resolution for exporting at the right size
+    printer.setResolution(300);
+    printer.setPaperSize(QPrinter::A4);
+    QPainter paint(&printer);
+    paint.drawImage(image.rect(), image);
 }
 
 void FotoWall::saveDVD() {
