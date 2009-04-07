@@ -19,19 +19,133 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QListWidgetItem>
 #include <QPainter>
+#include <QPixmapCache>
 #include <QPushButton>
 #include <QStyle>
 #include <QWidget>
 #include <QSettings>
 
+//BEGIN PixmapButton
+class PixmapButton : public QGraphicsItem
+{
+    public:
+        PixmapButton(QGraphicsItem * parent, const QString & normalPixmap, const QString & hoverPixmap, const QString & pressedPixmap = QString());
+
+        QRectF boundingRect() const;
+        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+
+    protected:
+        void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+        void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+        void mousePressEvent(QGraphicsSceneMouseEvent *event);
+        void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+    private:
+        bool m_hovered;
+        bool m_pressed;
+        QPixmap m_bNormal;
+        QPixmap m_bHover;
+        QPixmap m_bPress;
+};
+
+#define CACHED_LOAD(name, pixmap) \
+    if (!QPixmapCache::find(name, pixmap)) { \
+        if (pixmap.load(name)) \
+            QPixmapCache::insert(name, pixmap); \
+    }
+
+PixmapButton::PixmapButton(QGraphicsItem * parent, const QString & normalPixmap, const QString & hoverPixmap, const QString & pressedPixmap)
+    : QGraphicsItem(parent)
+    , m_hovered(false)
+    , m_pressed(false)
+{
+    // load the 3 pixmaps
+    CACHED_LOAD(normalPixmap, m_bNormal);
+    CACHED_LOAD(hoverPixmap, m_bHover);
+    CACHED_LOAD(pressedPixmap, m_bPress);
+    if (m_bHover.isNull())
+        m_bHover = m_bNormal;
+    if (m_bPress.isNull())
+        m_bPress = m_bHover;
+
+    // track mouse events
+    setAcceptHoverEvents(true);
+}
+
+QRectF PixmapButton::boundingRect() const
+{
+    return m_bNormal.rect();
+}
+
+void PixmapButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
+{
+    if (m_pressed)
+        painter->drawPixmap(option->rect, m_bPress, option->rect);
+    else if (m_hovered)
+        painter->drawPixmap(option->rect, m_bHover, option->rect);
+    else
+        painter->drawPixmap(option->rect, m_bNormal, option->rect);
+}
+
+void PixmapButton::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
+{
+    m_hovered = true;
+    update();
+}
+
+void PixmapButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
+{
+    m_hovered = false;
+    update();
+}
+
+void PixmapButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
+{
+    m_pressed = true;
+    update();
+}
+
+void PixmapButton::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+    // check if going inside/outside
+    bool inside = boundingRect().contains(event->pos());
+    if (inside == m_pressed)
+        return;
+    m_pressed = inside;
+    update();
+}
+
+void PixmapButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+    if (!m_pressed)
+        return;
+    m_pressed = false;
+    update();
+
+    // do click
+    if (boundingRect().contains(event->pos())) {
+        // HACK
+        PicturePropertiesItem * pp = dynamic_cast<PicturePropertiesItem *>(parentItem());
+        if (pp)
+            pp->animateClose();
+    }
+}
+//END PixmapButton
+
+
 PicturePropertiesItem::PicturePropertiesItem(PictureContent * pictureContent, QGraphicsItem * parent)
     : QGraphicsProxyWidget(parent)
     , m_ui(new Ui::PicturePropertiesItem())
     , m_pictureContent(pictureContent)
+    , m_closeButton(0)
     , m_frame(FrameFactory::defaultPanelFrame())
     , m_aniStep(0)
     , m_aniDirection(true)
 {
+    // close button
+    m_closeButton = new PixmapButton(this, ":/data/button-close.png", ":/data/button-close-hovered.png", ":/data/button-close-pressed.png");
+
     // WIDGET setup
     QWidget * widget = new QWidget();
 #if QT_VERSION < 0x040500
@@ -44,8 +158,10 @@ PicturePropertiesItem::PicturePropertiesItem(PictureContent * pictureContent, QG
     QPushButton * applyButton = new QPushButton(style()->standardIcon(QStyle::SP_DialogApplyButton), tr("Apply to All"));
     applyButton->setProperty("applyall", true);
     m_ui->buttonBox->addButton(applyButton, QDialogButtonBox::ApplyRole);
+#if 0
     QPushButton * closeButton = new QPushButton(style()->standardIcon(QStyle::SP_DialogCloseButton), tr("Close"));
     m_ui->buttonBox->addButton(closeButton, QDialogButtonBox::RejectRole);
+#endif
 
     // add frame items to the listview
     foreach (quint32 frameClass, FrameFactory::classes()) {
@@ -73,7 +189,7 @@ PicturePropertiesItem::PicturePropertiesItem(PictureContent * pictureContent, QG
     connect(m_ui->background, SIGNAL(clicked()), m_pictureContent, SIGNAL(backgroundMe()));
     connect(m_ui->invertButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipVertically()));
     connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipHorizontally()));
-    connect(m_ui->save, SIGNAL(clicked()), m_pictureContent, SLOT(slotSave()));
+    connect(m_ui->save, SIGNAL(clicked()), m_pictureContent, SLOT(slotSaveAs()));
     connect(m_ui->del, SIGNAL(clicked()), m_pictureContent, SIGNAL(deleteMe()), Qt::QueuedConnection);
     connect(m_ui->effectsListWidget, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(slotEffectSelected(QListWidgetItem*)));
 
@@ -137,6 +253,11 @@ void PicturePropertiesItem::keepInBoundaries(const QRect & rect)
     setPos(r.topLeft());
 }
 
+void PicturePropertiesItem::animateClose()
+{
+    slotClose(0);
+}
+
 void PicturePropertiesItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
@@ -162,6 +283,20 @@ void PicturePropertiesItem::paint(QPainter * painter, const QStyleOptionGraphics
         painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
 #endif
     QGraphicsProxyWidget::paint(painter, option, widget);
+}
+
+void PicturePropertiesItem::resizeEvent(QGraphicsSceneResizeEvent * event)
+{
+    // layout the close button
+    QRect cRect = boundingRect().toRect();
+    if (m_frame)
+        cRect = m_frame->contentsRect(cRect);
+    if (QApplication::isLeftToRight())
+        m_closeButton->setPos(cRect.right() - m_closeButton->boundingRect().width(), cRect.top());
+    else
+        m_closeButton->setPos(cRect.left(), cRect.top());
+
+    QGraphicsProxyWidget::resizeEvent(event);
 }
 
 void PicturePropertiesItem::timerEvent(QTimerEvent * event)

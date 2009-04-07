@@ -35,11 +35,13 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
 
     // add picture-specific buttons
     ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
+    bFlipH->setToolTip(tr("Flip horizontally"));
     bFlipH->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     connect(bFlipH, SIGNAL(clicked()), this, SLOT(slotFlipHorizontally()));
     addButtonItem(bFlipH);
 
     ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-flip-vertical.png"), this);
+    bFlipV->setToolTip(tr("Flip vertically"));
     bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     connect(bFlipV, SIGNAL(clicked()), this, SLOT(slotFlipVertically()));
     addButtonItem(bFlipV);

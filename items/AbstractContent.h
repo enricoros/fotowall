@@ -89,7 +89,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void slotStackRaise();
         void slotStackLower();
         void slotStackBack();
-        void slotSave();
+        void slotSaveAs();
 
     private:
         void layoutChildren();
@@ -106,7 +106,7 @@ class AbstractContent : public QObject, public QGraphicsItem
     private Q_SLOTS:
         void slotScaleStarted();
         void slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
-        void slotRotate(const QPointF & controlPoint);
+        void slotRotate(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotResetRatio();
         void slotResetRotation();
         void slotTransformEnded();

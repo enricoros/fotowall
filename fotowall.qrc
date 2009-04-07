@@ -32,6 +32,9 @@
         <file>translations/fotowall_pt_BR.qm</file>
         <file>data/button-add-image.png</file>
         <file>data/button-add-text.png</file>
+        <file>data/button-close.png</file>
+        <file>data/button-close-hovered.png</file>
+        <file>data/button-close-pressed.png</file>
     </qresource>
     <qresource prefix="/plasma-frames" >
         <file alias="1.svg" >data/frame-plasma-1.svg</file>

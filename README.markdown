@@ -10,6 +10,17 @@ Check out the [old home page](http://code.google.com/p/fotowall) too.
 ChangeLog
 ---------
 
+Unreleased version:
+* ...
+* Save to all the supported image formats (Tanguy Arnaud)
+* Tooltips on buttons and usability fixes [reqby Ilan d'Inca]
+* Close button on Properties windows [reqby Ilan d'Inca]
+* Improved stacking (fixes + relative to neighbourhoods) [reqby Ilan d'Inca]
+* Add the 'No effect' effect removal option (Tanguy Arnaud)
+* French Introduction translation (Tanguy Arnaud)
+* Translation of the Introduction text (Tanguy Arnaud)
+* Fall back to QTextDocument where QtWebkit is not available
+
 Version 0.4:
 
 * Windows executable on [github](http://github.com/enricoros/fotowall/downloads)

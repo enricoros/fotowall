@@ -52,25 +52,30 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent)
 
     // create child items
     ButtonItem * bScale = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
+    bScale->setToolTip(tr("Hold down SHIFT for ignoring aspect ratio.\nDouble click to restore the aspect ratio."));
     connect(bScale, SIGNAL(pressed()), this, SLOT(slotScaleStarted()));
     connect(bScale, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotScale(const QPointF&,Qt::KeyboardModifiers)));
     connect(bScale, SIGNAL(doubleClicked()), this, SLOT(slotResetRatio()));
     m_controlItems << bScale;
 
     ButtonItem * bRotate = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
-    connect(bRotate, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&)));
+    bRotate->setToolTip(tr("Hold down SHIFT to snap the rotation.\nDouble click to align the picture."));
+    connect(bRotate, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&,Qt::KeyboardModifiers)));
     connect(bRotate, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
     m_controlItems << bRotate;
 
     //ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
+    //bFront->setToolTip(tr("Raise"));
     //connect(bFront, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
     //m_controlItems << bFront;
 
     ButtonItem * bConf = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-configure.png"), this);
+    bConf->setToolTip(tr("Change properties..."));
     connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
     m_controlItems << bConf;
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
+    bDelete->setToolTip(tr("Remove"));
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
     m_controlItems << bDelete;
 
@@ -424,12 +429,12 @@ void AbstractContent::slotStackBack()
     emit changeStack(4);
 }
 
-void AbstractContent::slotSave()
+void AbstractContent::slotSaveAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the file name"), QDir::current().path(), "PNG Image (*.png)");
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), QDir::current().path(), tr("Image (*.jpeg *.jpg *.png *.tif *.tiff)"));
     if (fileName.isNull())
         return;
-    if (!fileName.endsWith(".png", Qt::CaseInsensitive))
+    if (!fileName.contains("."))
         fileName += ".png";
 
     // find out the Transform chain to mirror a rotated item
@@ -464,8 +469,8 @@ void AbstractContent::slotSave()
     RenderOpts::HQRendering = prevHQ;
 
     // save image and check errors
-    if (!image.save(fileName, "PNG") || !QFile::exists(fileName)) {
-        QMessageBox::warning(0, tr("Picture Save Error"), tr("Error saving picture to the file %1").arg(fileName));
+    if (!image.save(fileName) || !QFile::exists(fileName)) {
+        QMessageBox::warning(0, tr("Save Error"), tr("Error saving to the file %1").arg(fileName));
         return;
     }
 }
@@ -511,7 +516,8 @@ void AbstractContent::slotScale(const QPointF & controlPoint, Qt::KeyboardModifi
     // determine the new size
     int newWidth = (m_rect.width() * newPos.x()) / oldPos.x();
     int newHeight = (m_rect.height() * newPos.y()) / oldPos.y();
-    if (modifiers != Qt::NoModifier) {
+    // preserve aspect ratio if no modifiers are pressed
+    if (modifiers == Qt::NoModifier) {
         float ratio = (float)newWidth / (float)newHeight;
         if (ratio > m_scaleRatio)
             newHeight = newWidth / m_scaleRatio;
@@ -538,7 +544,7 @@ void AbstractContent::slotScale(const QPointF & controlPoint, Qt::KeyboardModifi
     m_transformRefreshTimer->start(400);
 }
 
-void AbstractContent::slotRotate(const QPointF & controlPoint)
+void AbstractContent::slotRotate(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
 {
     ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPointF newPos = mapFromScene(controlPoint);
@@ -550,6 +556,16 @@ void AbstractContent::slotRotate(const QPointF & controlPoint)
     qreal refAngle = atan2(refPos.y(), refPos.x());
     qreal newAngle = atan2(newPos.y(), newPos.x());
     rotate(57.29577951308232 * (newAngle - refAngle)); // 180 * a / M_PI
+
+    // snap to M_PI/4
+    if (modifiers != Qt::NoModifier) {
+        QTransform t = transform();
+        QPointF ax = t.map(QPointF(1, 0));
+        qreal rotAngle = atan2(ax.y(), ax.x());
+        int fracts = (int)((rotAngle - 0.19635) / 0.39270);
+        rotAngle = (qreal)fracts * 0.39270;
+        setTransform(QTransform().rotateRadians(rotAngle));
+    }
 }
 
 void AbstractContent::slotResetRatio()

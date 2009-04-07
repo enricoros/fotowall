@@ -140,7 +140,7 @@ void FotoWall::on_setTitle_clicked()
 {
     QString title = m_desk->titleText();
     bool ok = false;
-    title = QInputDialog::getText(ui->cmdFrame, tr("Title"), tr("Insert the title"), QLineEdit::Normal, title, &ok);
+    title = QInputDialog::getText(ui->centralWidget, tr("Title"), tr("Insert the title"), QLineEdit::Normal, title, &ok);
     if (ok)
         m_desk->setTitleText(title);
 }
@@ -159,7 +159,7 @@ void FotoWall::on_tutorialLabel_linkActivated(const QString & /*link*/)
 
 void FotoWall::on_loadButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Select Layout file"), QDir::current().path(), "Layouts (*.lay)");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select Layout file"), QString(), "Layouts (*.lay)");
     if (fileName.isNull())
         return;
 
@@ -174,7 +174,7 @@ void FotoWall::on_loadButton_clicked()
 
 void FotoWall::on_saveButton_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Select Layout file"), QDir::current().path(), "Layouts (*.lay)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Select Layout file"), QString(), "Layouts (*.lay)");
     if (fileName.isNull())
         return;
     if (!fileName.endsWith(".lay", Qt::CaseInsensitive))
@@ -216,13 +216,13 @@ class SizeDialog : public QDialog {
         QSpinBox * hSpin;
 };
 
-void FotoWall::on_pngButton_clicked()
+void FotoWall::on_exportButton_clicked()
 {
     QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.4.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Name a PNG file"), QDir::current().path(), "PNG Image (*.png)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), QDir::current().path(), tr("Image (*.jpeg *.jpg *.png *.tif *.tiff)"));
     if (fileName.isNull())
         return;
-    if (!fileName.endsWith(".png", Qt::CaseInsensitive))
+    if (!fileName.contains('.'))
         fileName += ".png";
 
     // get the rendering size
@@ -246,9 +246,7 @@ void FotoWall::on_pngButton_clicked()
     RenderOpts::HQRendering = false;
 
     // save image
-    image.save(fileName, "PNG");
-
-    if (!QFile::exists(fileName)) {
+    if (!image.save(fileName) || !QFile::exists(fileName)) {
         QMessageBox::warning(this, tr("Rendering Save Error"), tr("Error rendering to this file"));
         return;
     }

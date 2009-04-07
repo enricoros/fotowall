@@ -44,7 +44,7 @@ class FotoWall : public QWidget
         void on_tutorialLabel_linkActivated(const QString & link);
         void on_loadButton_clicked();
         void on_saveButton_clicked();
-        void on_pngButton_clicked();
+        void on_exportButton_clicked();
         void on_quitButton_clicked();
         void slotCheckTutorial(QNetworkReply * reply);
 };

@@ -19,6 +19,7 @@
 #include <QBasicTimer>
 #include "PictureContent.h"
 class Frame;
+class PixmapButton;
 class QAbstractButton;
 class QListWidgetItem;
 
@@ -41,6 +42,7 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
 
         // misc
         void keepInBoundaries(const QRect & rect);
+        void animateClose();
 
     Q_SIGNALS:
         void closed();
@@ -50,11 +52,13 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+        void resizeEvent(QGraphicsSceneResizeEvent * event);
         void timerEvent(QTimerEvent *);
 
     private:
         Ui::PicturePropertiesItem * m_ui;
         PictureContent *            m_pictureContent;
+        PixmapButton *              m_closeButton;
         Frame *                     m_frame;
         int                         m_aniStep;
         bool                        m_aniDirection;

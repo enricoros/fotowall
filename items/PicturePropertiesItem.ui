@@ -34,7 +34,7 @@
               <string>Front</string>
              </property>
              <property name="icon">
-              <iconset resource="../fotowall.qrc">
+              <iconset>
                <normaloff>:/data/action-order-front.png</normaloff>:/data/action-order-front.png</iconset>
              </property>
              <property name="toolButtonStyle">
@@ -48,7 +48,7 @@
               <string>Raise</string>
              </property>
              <property name="icon">
-              <iconset resource="../fotowall.qrc">
+              <iconset>
                <normaloff>:/data/action-order-raise.png</normaloff>:/data/action-order-raise.png</iconset>
              </property>
              <property name="toolButtonStyle">
@@ -62,7 +62,7 @@
               <string>Lower</string>
              </property>
              <property name="icon">
-              <iconset resource="../fotowall.qrc">
+              <iconset>
                <normaloff>:/data/action-order-lower.png</normaloff>:/data/action-order-lower.png</iconset>
              </property>
              <property name="toolButtonStyle">
@@ -76,7 +76,7 @@
               <string>Back</string>
              </property>
              <property name="icon">
-              <iconset resource="../fotowall.qrc">
+              <iconset>
                <normaloff>:/data/action-order-back.png</normaloff>:/data/action-order-back.png</iconset>
              </property>
              <property name="toolButtonStyle">
@@ -124,7 +124,7 @@
                <string>Invert</string>
               </property>
               <property name="icon">
-               <iconset resource="../fotowall.qrc">
+               <iconset>
                 <normaloff>:/data/action-flip-vertical.png</normaloff>:/data/action-flip-vertical.png</iconset>
               </property>
               <property name="toolButtonStyle">
@@ -138,7 +138,7 @@
                <string>Flip</string>
               </property>
               <property name="icon">
-               <iconset resource="../fotowall.qrc">
+               <iconset>
                 <normaloff>:/data/action-flip-horizontal.png</normaloff>:/data/action-flip-horizontal.png</iconset>
               </property>
               <property name="toolButtonStyle">
@@ -174,7 +174,7 @@
                <string>Background</string>
               </property>
               <property name="icon">
-               <iconset resource="../fotowall.qrc">
+               <iconset>
                 <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
               </property>
               <property name="toolButtonStyle">
@@ -188,7 +188,7 @@
                <string>Save</string>
               </property>
               <property name="icon">
-               <iconset resource="../fotowall.qrc">
+               <iconset>
                 <normaloff>:/data/action-save.png</normaloff>:/data/action-save.png</iconset>
               </property>
               <property name="toolButtonStyle">
@@ -215,7 +215,7 @@
                <string>Delete</string>
               </property>
               <property name="icon">
-               <iconset resource="../fotowall.qrc">
+               <iconset>
                 <normaloff>:/data/action-delete.png</normaloff>:/data/action-delete.png</iconset>
               </property>
               <property name="toolButtonStyle">
@@ -275,8 +275,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../fotowall.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
