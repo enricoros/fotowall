@@ -22,7 +22,6 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QImageReader>
-#include <QInputDialog>
 #include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -134,15 +133,6 @@ void FotoWall::on_addPictures_clicked()
 void FotoWall::on_addText_clicked()
 {
     m_desk->addTextContent();
-}
-
-void FotoWall::on_setTitle_clicked()
-{
-    QString title = m_desk->titleText();
-    bool ok = false;
-    title = QInputDialog::getText(ui->centralWidget, tr("Title"), tr("Insert the title"), QLineEdit::Normal, title, &ok);
-    if (ok)
-        m_desk->setTitleText(title);
 }
 
 void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>688</width>
-    <height>416</height>
+    <width>546</width>
+    <height>369</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,16 +83,6 @@
         </property>
         <property name="autoRaise">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="setTitle">
-        <property name="text">
-         <string>set title</string>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonIconOnly</enum>
         </property>
        </widget>
       </item>

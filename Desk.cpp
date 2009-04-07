@@ -24,6 +24,8 @@
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 #include <QImageReader>
+#include <QInputDialog>
+#include <QMenu>
 #include <QMimeData>
 #include <QUrl>
 #include <QList>
@@ -36,6 +38,8 @@ Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
     , m_helpItem(0)
     , m_backPicture(0)
+    , m_topBarEnabled(true)
+    , m_bottomBarEnabled(false)
 {
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
@@ -43,6 +47,7 @@ Desk::Desk(QObject * parent)
     m_titleColorPicker->setAnimated(true);
     m_titleColorPicker->setAnchor(ColorPickerItem::AnchorTop);
     m_titleColorPicker->setZValue(10000);
+    m_titleColorPicker->setVisible(false);
     connect(m_titleColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotTitleColorChanged()));
     addItem(m_titleColorPicker);
 
@@ -137,7 +142,9 @@ void Desk::restore(QDataStream & data)
     m_grad1ColorPicker->setColor(color);
     data >> color;
     m_grad2ColorPicker->setColor(color);
-    data >> m_titleText;
+    QString titleText;
+    data >> titleText;
+    setTitleText(titleText);
 
     // FIXME: restore background
 
@@ -295,6 +302,39 @@ void Desk::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
     }
 }
 
+void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
+{
+    // context menu on empty area
+    if (items(event->scenePos()).isEmpty()) {
+        QMenu popup;
+        popup.setSeparatorsCollapsible(false);
+        //popup.addSeparator()->setText( ... );
+
+        QAction * aSetTitle = new QAction(tr("Set title..."), &popup);
+        connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotSetTitle()));
+        popup.addAction(aSetTitle);
+
+        QAction * aClearTitle = new QAction(tr("Clear title"), &popup);
+        connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotClearTitle()));
+        popup.addAction(aClearTitle);
+
+        QAction * aTop = new QAction(tr("Top bar"), &popup);
+        aTop->setCheckable(true);
+        aTop->setChecked(m_topBarEnabled);
+        connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotSetTopBarEnabled(bool)));
+        popup.addAction(aTop);
+
+        QAction * aBottom = new QAction(tr("Bottom bar"), &popup);
+        aBottom->setCheckable(true);
+        aBottom->setChecked(m_bottomBarEnabled);
+        connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotSetBottomBarEnabled(bool)));
+        popup.addAction(aBottom);
+
+        popup.exec(event->screenPos());
+    }
+}
+
+
 /// Scene Background & Foreground
 void Desk::drawBackground(QPainter * painter, const QRectF & rect)
 {
@@ -323,18 +363,18 @@ void Desk::drawBackground(QPainter * painter, const QRectF & rect)
 void Desk::drawForeground(QPainter * painter, const QRectF & /*rect*/)
 {
     // draw header/footer
-    QColor hColor = m_foreColorPicker->color();
-    hColor.setAlpha(128);
-    painter->fillRect(0, 0, m_size.width(), 50, hColor);
-    painter->fillRect(0, m_size.height() - 50, m_size.width(), 50, hColor);
+    if (m_topBarEnabled || m_bottomBarEnabled) {
+        QColor hColor = m_foreColorPicker->color();
+        hColor.setAlpha(128);
+        if (m_topBarEnabled)
+            painter->fillRect(0, 0, m_size.width(), 50, hColor);
+        if (m_bottomBarEnabled)
+            painter->fillRect(0, m_size.height() - 50, m_size.width(), 50, hColor);
+    }
 
     // draw text
     painter->setFont(QFont("Courier 10 Pitch", 28));
     QLinearGradient lg(0,15,0,35);
-/*  lg.setColorAt(0.0, Qt::white);
-    lg.setColorAt(0.49, Qt::white);
-    lg.setColorAt(0.51, m_titleColorPicker->color());
-    lg.setColorAt(1.0, Qt::white); */
     QColor titleColor = m_titleColorPicker->color();
     lg.setColorAt(0.0, titleColor);
     lg.setColorAt(0.49, titleColor.lighter(150));
@@ -382,6 +422,7 @@ QString Desk::titleText() const
 void Desk::setTitleText(const QString & text)
 {
     m_titleText = text;
+    m_titleColorPicker->setVisible(!text.isEmpty());
     update(0, 0, m_size.width(), 50);
 }
 
@@ -557,6 +598,37 @@ void Desk::slotApplyEffectToAll(int effectClass)
 {
     foreach (PictureContent * picture, m_pictures)
         picture->setEffect(effectClass);
+}
+
+void Desk::slotSetTopBarEnabled(bool enabled)
+{
+    if (enabled == m_topBarEnabled)
+        return;
+    m_topBarEnabled = enabled;
+    m_foreColorPicker->setVisible(m_topBarEnabled || m_bottomBarEnabled);
+    update();
+}
+
+void Desk::slotSetBottomBarEnabled(bool enabled)
+{
+    if (enabled == m_bottomBarEnabled)
+        return;
+    m_bottomBarEnabled = enabled;
+    m_foreColorPicker->setVisible(m_topBarEnabled || m_bottomBarEnabled);
+    update();
+}
+
+void Desk::slotSetTitle()
+{
+    bool ok = false;
+    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_titleText, &ok);
+    if (ok)
+        setTitleText(title);
+}
+
+void Desk::slotClearTitle()
+{
+    setTitleText(QString());
 }
 
 void Desk::slotTitleColorChanged()

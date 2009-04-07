@@ -12,7 +12,8 @@ ChangeLog
 
 Unreleased version:
 
-* ...
+* Rich Text Component
+* Foreground properties [reqby Ilan d'Inca]
 * Save to all the supported image formats (Tanguy Arnaud)
 * Tooltips on buttons and usability fixes [reqby Ilan d'Inca]
 * Close button on Properties windows [reqby Ilan d'Inca]

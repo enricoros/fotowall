@@ -52,7 +52,8 @@ class Desk : public QGraphicsScene
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
         void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
         void dropEvent( QGraphicsSceneDragDropEvent * event );
-        void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * mouseEvent );
+        void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * event );
+        void contextMenuEvent( QGraphicsSceneContextMenuEvent * event );
         void drawBackground( QPainter * painter, const QRectF & rect );
         void drawForeground( QPainter * painter, const QRectF & rect );
 
@@ -68,6 +69,8 @@ class Desk : public QGraphicsScene
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;
         ColorPickerItem * m_grad2ColorPicker;
+        bool m_topBarEnabled;
+        bool m_bottomBarEnabled;
         QSize m_size;
         QRectF m_rect;
         QString m_titleText;
@@ -84,6 +87,10 @@ class Desk : public QGraphicsScene
         // Apply an effect to all images
         void slotApplyEffectToAll(int effectClass);
 
+        void slotSetTopBarEnabled(bool enabled);
+        void slotSetBottomBarEnabled(bool enabled);
+        void slotSetTitle();
+        void slotClearTitle();
         void slotTitleColorChanged();
         void slotForeColorChanged();
         void slotGradColorChanged();
