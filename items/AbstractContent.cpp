@@ -255,6 +255,8 @@ void AbstractContent::save(QDataStream & data) const
     data << hasText;
     if (hasText)
         data << frameText();
+    quint32 frameClass = m_frame ? m_frame->frameClass() : 0;
+    data << frameClass;
 }
 
 bool AbstractContent::restore(QDataStream & data)
@@ -282,6 +284,9 @@ bool AbstractContent::restore(QDataStream & data)
         data >> text;
         setFrameText(text);
     }
+    quint32 frameClass;
+    data >> frameClass;
+    setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
     update();
     return true;
 }
@@ -431,10 +436,10 @@ void AbstractContent::slotStackBack()
 
 void AbstractContent::slotSaveAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), QDir::current().path(), tr("Image (*.jpeg *.jpg *.png *.tif *.tiff)"));
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), QString(), tr("Image (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (fileName.isNull())
         return;
-    if (!fileName.contains("."))
+    if (QFileInfo(fileName).suffix().isEmpty())
         fileName += ".png";
 
     // find out the Transform chain to mirror a rotated item

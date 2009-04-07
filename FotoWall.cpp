@@ -219,7 +219,7 @@ class SizeDialog : public QDialog {
 void FotoWall::on_exportButton_clicked()
 {
     QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.4.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), QDir::current().path(), tr("Image (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), QString(), tr("Image (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (fileName.isNull())
         return;
     if (QFileInfo(fileName).suffix().isEmpty())
