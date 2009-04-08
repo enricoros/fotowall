@@ -30,11 +30,11 @@ class PictureContent : public AbstractContent
 
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
         void setEffect(int effectClass);
-        QPixmap renderPhoto(const QSize & size) const;
 
         // ::AbstractContent
         void save(QDataStream & data) const;
         bool restore(QDataStream & data);
+        QPixmap renderAsBackground(const QSize & size) const;
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
 

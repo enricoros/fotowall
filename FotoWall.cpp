@@ -127,12 +127,12 @@ void FotoWall::on_addPictures_clicked()
     // show the files dialog
     QStringList fileNames = QFileDialog::getOpenFileNames(ui->centralWidget, tr("Select one or more pictures to add"), QString(), tr("Images (%1)").arg(extensions));
     if (!fileNames.isEmpty())
-        m_desk->loadPictures(fileNames);
+        m_desk->addPictures(fileNames);
 }
 
 void FotoWall::on_addText_clicked()
 {
-    m_desk->addTextContent();
+    m_desk->addText();
 }
 
 void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)

@@ -51,8 +51,10 @@ class AbstractContent : public QObject, public QGraphicsItem
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;
 
+        // may be reimplemented by subclasses
         virtual void save(QDataStream & data) const;
         virtual bool restore(QDataStream & data);
+        virtual QPixmap renderAsBackground(const QSize & size) const;
 
         // ::QGraphicsItem
         QRectF boundingRect() const;

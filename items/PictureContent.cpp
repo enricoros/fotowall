@@ -105,18 +105,11 @@ void PictureContent::setEffect(int effectClass)
     GFX_CHANGED();
 }
 
-QPixmap PictureContent::renderPhoto(const QSize & size) const
-{
-    if (m_photo)
-        return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    return QPixmap();
-}
-
 void PictureContent::save(QDataStream & data) const
 {
     AbstractContent::save(data);
     data << m_fileName;
-    m_photo->save(data);    
+    m_photo->save(data);
 }
 
 bool PictureContent::restore(QDataStream & data)
@@ -127,6 +120,13 @@ bool PictureContent::restore(QDataStream & data)
     bool ok = loadPhoto(fileName);
     if(ok) m_photo->restore(data);
     return ok;
+}
+
+QPixmap PictureContent::renderAsBackground(const QSize & size) const
+{
+    if (m_photo)
+        return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    return AbstractContent::renderAsBackground(size);
 }
 
 int PictureContent::contentHeightForWidth(int width) const

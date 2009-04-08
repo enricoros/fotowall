@@ -37,7 +37,7 @@
 Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
     , m_helpItem(0)
-    , m_backPicture(0)
+    , m_backContent(0)
     , m_topBarEnabled(true)
     , m_bottomBarEnabled(false)
 {
@@ -84,12 +84,35 @@ Desk::~Desk()
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
     delete m_grad2ColorPicker;
-    qDeleteAll(m_pictures);
-    m_pictures.clear();
-    m_backPicture = 0;
+    qDeleteAll(m_content);
+    m_content.clear();
+    m_backContent = 0;
 }
 
+/// Add Content
+void Desk::addPictures(const QStringList & fileNames)
+{
+    QPoint pos = sceneRect().center().toPoint();
+    foreach (const QString & localFile, fileNames) {
+        if (!QFile::exists(localFile))
+            continue;
 
+        // create picture and load the file
+        PictureContent * p = createPicture(pos);
+        if (!p->loadPhoto(localFile, true, true)) {
+            m_content.removeAll(p);
+            delete p;
+        } else
+            pos += QPoint(30, 30);
+    }
+}
+
+void Desk::addText()
+{
+    createText(sceneRect().center().toPoint());
+}
+
+/// resize Desk
 void Desk::resize(const QSize & size)
 {
     // relayout contents
@@ -104,8 +127,8 @@ void Desk::resize(const QSize & size)
         highlight->reposition(m_rect);
 
     // ensure visibility
-    foreach (PictureContent * picture, m_pictures)
-        picture->ensureVisible(m_rect);
+    foreach (AbstractContent * content, m_content)
+        content->ensureVisible(m_rect);
     foreach (PicturePropertiesItem * properties, m_properties)
         properties->keepInBoundaries(m_rect.toRect());
 
@@ -113,81 +136,20 @@ void Desk::resize(const QSize & size)
     setSceneRect(m_rect);
 }
 
-void Desk::save(QDataStream & data) const
+/// Title
+QString Desk::titleText() const
 {
-    // save own data
-    data << m_titleColorPicker->color();
-    data << m_foreColorPicker->color();
-    data << m_grad1ColorPicker->color();
-    data << m_grad2ColorPicker->color();
-    data << m_titleText;
-
-    // save the photos
-    data << m_pictures.size();
-    foreach (PictureContent * foto, m_pictures)
-        foto->save(data);
-
-    // TODO: save background
+    return m_titleText;
 }
 
-void Desk::restore(QDataStream & data)
+void Desk::setTitleText(const QString & text)
 {
-    // restore own data
-    QColor color;
-    data >> color;
-    m_titleColorPicker->setColor(color);
-    data >> color;
-    m_foreColorPicker->setColor(color);
-    data >> color;
-    m_grad1ColorPicker->setColor(color);
-    data >> color;
-    m_grad2ColorPicker->setColor(color);
-    QString titleText;
-    data >> titleText;
-    setTitleText(titleText);
-
-    // FIXME: restore background
-
-    // restore the photos
-    qDeleteAll(m_pictures);
-    m_pictures.clear();
-    m_backPicture = 0;
-    int photos = 0;
-    data >> photos;
-    for (int i = 0; i < photos; i++) {
-        // create picture and restore data
-        PictureContent * p = createPicture(QPoint());
-        if (!p->restore(data)) {
-            m_pictures.removeAll(p);
-            delete p;
-        }
-    }
-
-    update();
+    m_titleText = text;
+    m_titleColorPicker->setVisible(!text.isEmpty());
+    update(0, 0, m_size.width(), 50);
 }
 
-void Desk::loadPictures(const QStringList & fileNames)
-{
-    QPoint pos = sceneRect().center().toPoint();
-    foreach (const QString & localFile, fileNames) {
-        if (!QFile::exists(localFile))
-            continue;
-
-        // create picture and load the file
-        PictureContent * p = createPicture(pos);
-        if (!p->loadPhoto(localFile, true, true)) {
-            m_pictures.removeAll(p);
-            delete p;
-        } else
-            pos += QPoint(30, 30);
-    }
-}
-
-void Desk::addTextContent()
-{
-    createText(sceneRect().center().toPoint());
-}
-
+/// Misc: save, restore, help...
 #define HIGHLIGHT(x, y) \
     { \
         HighlightItem * highlight = new HighlightItem(); \
@@ -218,10 +180,90 @@ void Desk::showHelp()
     HIGHLIGHT(1.0, 1.0);
 }
 
-/// Drag & Drop pictures
+void Desk::save(QDataStream & data) const
+{
+    // FIXME: move to a serious XML format ...
+
+    // save own data
+    data << m_titleColorPicker->color();
+    data << m_foreColorPicker->color();
+    data << m_grad1ColorPicker->color();
+    data << m_grad2ColorPicker->color();
+    data << m_titleText;
+
+    // TODO: save background
+
+    // save the contents
+    ///data << m_content.size();
+    foreach (AbstractContent * content, m_content) {
+        // write the content type
+        int type = 0;
+        if (content->inherits("PictureContent"))
+            type = 1;
+        else if (content->inherits("TextContent"))
+            type = 2;
+        else {
+            qWarning("Desk::save: error saving data");
+            continue;
+        }
+        data << type;
+
+        // write the content payload
+        content->save(data);
+    }
+}
+
+void Desk::restore(QDataStream & data)
+{
+    // FIXME: move to a serious XML format ...
+
+    // restore own data
+    QColor color;
+    data >> color;
+    m_titleColorPicker->setColor(color);
+    data >> color;
+    m_foreColorPicker->setColor(color);
+    data >> color;
+    m_grad1ColorPicker->setColor(color);
+    data >> color;
+    m_grad2ColorPicker->setColor(color);
+    QString titleText;
+    data >> titleText;
+    setTitleText(titleText);
+
+    // FIXME: restore background
+
+    // restore the content
+    qDeleteAll(m_content);
+    m_content.clear();
+    m_backContent = 0;
+    while (!data.atEnd()) {
+        int type;
+        data >> type;
+        AbstractContent * content = 0;
+        switch (type) {
+            case 1:
+                content = createPicture(QPoint());
+                break;
+            case 2:
+                content = createText(QPoint());
+                break;
+            default:
+                qWarning("Desk::restore: error loading data");
+                continue;
+        }
+        if (!content->restore(data)) {
+            m_content.removeAll(content);
+            delete content;
+        }
+    }
+    update();
+}
+
+/// Drag & Drop image files
 void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
-    // dispatch to children but accept it only for pictures
+    // dispatch to children but accept it only for image files
     QGraphicsScene::dragEnterEvent(event);
     event->ignore();
 
@@ -234,7 +276,7 @@ void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     foreach (const QByteArray & format, QImageReader::supportedImageFormats())
         extensions.append( "." + format );
 
-    // match each picture with urls
+    // match each image file with urls
     foreach (const QUrl & url, event->mimeData()->urls()) {
         QString localFile = url.toLocalFile();
         foreach (const QString & extension, extensions) {
@@ -275,10 +317,10 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         if (!QFile::exists(localFile))
             continue;
 
-        // create picture and load the file
+        // create PictureContent from file
         PictureContent * p = createPicture(pos);
         if (!p->loadPhoto(localFile, true, true)) {
-            m_pictures.removeAll(p);
+            m_content.removeAll(p);
             delete p;
         } else
             pos += QPoint(30, 30);
@@ -294,9 +336,9 @@ void Desk::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
         return;
 
     // unset the background picture, if present
-    if (m_backPicture) {
-        m_backPicture->show();
-        m_backPicture = 0;
+    if (m_backContent) {
+        m_backContent->show();
+        m_backContent = 0;
         m_backCache = QPixmap();
         update();
     }
@@ -338,16 +380,18 @@ void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 /// Scene Background & Foreground
 void Desk::drawBackground(QPainter * painter, const QRectF & rect)
 {
-    // draw picture if requested
-    if (m_backPicture) {
+    // draw content if set
+    if (m_backContent) {
         // regenerate cache if needed
         QSize sceneSize = sceneRect().size().toSize();
         if (m_backCache.isNull() || m_backCache.size() != sceneSize)
-            m_backCache = m_backPicture->renderPhoto(sceneSize);
+            m_backCache = m_backContent->renderAsBackground(sceneSize);
 
         // paint cached background
         QRect targetRect = rect.toRect();
+        painter->setCompositionMode(QPainter::CompositionMode_Source);
         painter->drawPixmap(targetRect, m_backCache, targetRect);
+        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
         return;
     }
 
@@ -388,14 +432,14 @@ PictureContent * Desk::createPicture(const QPoint & pos)
 {
     PictureContent * p = new PictureContent(this);
     connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
-    connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackPicture(int)));
-    connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+    connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
+    connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
+    connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
     //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     p->setPos(pos);
-    p->setZValue(m_pictures.isEmpty() ? 1 : (m_pictures.last()->zValue() + 1));
+    p->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
     p->show();
-    m_pictures.append(p);
+    m_content.append(p);
     return p;
 }
 
@@ -403,29 +447,16 @@ TextContent * Desk::createText(const QPoint & pos)
 {
     TextContent * t = new TextContent(this);
     connect(t, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(t, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundPicture()));
-    connect(t, SIGNAL(changeStack(int)), this, SLOT(slotStackPicture(int)));
-    connect(t, SIGNAL(deleteMe()), this, SLOT(slotDeletePicture()));
+    connect(t, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
+    connect(t, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
+    connect(t, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
     //t->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     t->setPos(pos);
+    t->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
     t->show();
-    //m_texts.append(t);
+    m_content.append(t);
     return t;
 }
-
-/// Title
-QString Desk::titleText() const
-{
-    return m_titleText;
-}
-
-void Desk::setTitleText(const QString & text)
-{
-    m_titleText = text;
-    m_titleColorPicker->setVisible(!text.isEmpty());
-    update(0, 0, m_size.width(), 50);
-}
-
 
 /// Slots
 void Desk::slotConfigureContent(const QPoint & scenePoint)
@@ -441,7 +472,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
         PicturePropertiesItem * pp = new PicturePropertiesItem(picture);
         connect(pp, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
         connect(pp, SIGNAL(applyAll(quint32,bool)), this, SLOT(slotApplyAll(quint32,bool)));
-        connect(pp, SIGNAL(applyEffectToAll(int)), this, SLOT(slotApplyEffectToAll(int)));
+        connect(pp, SIGNAL(applyEffectToAll(int)), this, SLOT(slotApplyEffectToPictures(int)));
         addItem(pp);
         pp->show();
         pp->setPos(scenePoint - QPoint(10, 10));
@@ -464,110 +495,107 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     }
 }
 
-void Desk::slotBackgroundPicture()
+void Desk::slotBackgroundContent()
 {
-    PictureContent * picture = dynamic_cast<PictureContent *>(sender());
-    if (!picture)
+    AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
+    if (!content)
         return;
 
     // re-show previous background
-    if (m_backPicture)
-        m_backPicture->show();
+    if (m_backContent)
+        m_backContent->show();
 
-    // hide current background picture
-    m_backPicture = picture;
-    m_backPicture->hide();
+    // hide content item
+    m_backContent = content;
+    m_backContent->hide();
     m_backCache = QPixmap();
     update();
 }
 
-/*static void dumpPictures(const QString & prefix, const QList<PictureContent *> pics)
+void Desk::slotStackContent(int op)
 {
-    int i = 0;
-    foreach (const PictureContent * p, pics)
-        qWarning() << prefix << i++ << p->zValue() << (quintptr)p;
-}*/
-
-void Desk::slotStackPicture(int op)
-{
-    PictureContent * picture = dynamic_cast<PictureContent *>(sender());
-    if (!picture || m_pictures.size() < 2)
+    AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
+    if (!content || m_content.size() < 2)
         return;
-    int size = m_pictures.size();
-    int index = m_pictures.indexOf(picture);
+    int size = m_content.size();
+    int index = m_content.indexOf(content);
 
     // find out insertion indexes over the stacked items
-    QList<QGraphicsItem *> stackedItems = items(picture->sceneBoundingRect(), Qt::IntersectsItemShape);
+    QList<QGraphicsItem *> stackedItems = items(content->sceneBoundingRect(), Qt::IntersectsItemShape);
     int prevIndex = 0;
     int nextIndex = size - 1;
     foreach (QGraphicsItem * item, stackedItems) {
         // operate only on different Content
-        PictureContent * p = dynamic_cast<PictureContent *>(item);
-        if (!p || p == picture)
+        AbstractContent * c = dynamic_cast<AbstractContent *>(item);
+        if (!c || c == content)
             continue;
 
         // refine previous/next indexes (close to 'index')
-        int pIdx = m_pictures.indexOf(p);
-        if (pIdx < nextIndex && pIdx > index)
-            nextIndex = pIdx;
-        else if (pIdx > prevIndex && pIdx < index)
-            prevIndex = pIdx;
+        int cIdx = m_content.indexOf(c);
+        if (cIdx < nextIndex && cIdx > index)
+            nextIndex = cIdx;
+        else if (cIdx > prevIndex && cIdx < index)
+            prevIndex = cIdx;
     }
 
     // move items
     switch (op) {
         case 1: // front
-            m_pictures.append(m_pictures.takeAt(index));
+            m_content.append(m_content.takeAt(index));
             break;
         case 2: // raise
             if (index >= size - 1)
                 return;
-            m_pictures.insert(nextIndex, m_pictures.takeAt(index));
+            m_content.insert(nextIndex, m_content.takeAt(index));
             break;
         case 3: // lower
             if (index <= 0)
                 return;
-            m_pictures.insert(prevIndex, m_pictures.takeAt(index));
+            m_content.insert(prevIndex, m_content.takeAt(index));
             break;
         case 4: // back
-            m_pictures.prepend(m_pictures.takeAt(index));
+            m_content.prepend(m_content.takeAt(index));
             break;
     }
 
     // reassign z-levels
     int z = 1;
-    foreach (PictureContent * picture, m_pictures)
-        picture->setZValue(z++);
+    foreach (AbstractContent * content, m_content)
+        content->setZValue(z++);
 }
 
-void Desk::slotDeletePicture()
+void Desk::slotDeleteContent()
 {
-    PictureContent * picture = dynamic_cast<PictureContent *>(sender());
-    if (!picture)
+    AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
+    if (!content)
         return;
 
-    // unset background if deleting its picture
-    if (m_backPicture == picture) {
-        m_backPicture = 0;
+    // unset background if deleting its content
+    if (m_backContent == content) {
+        m_backContent = 0;
         m_backCache = QPixmap();
         update();
     }
 
-    // remove property if deleting its picture
-    QList<PicturePropertiesItem *>::iterator ppIt = m_properties.begin();
-    while (ppIt != m_properties.end()) {
-        PicturePropertiesItem * pp = *ppIt;
-        if (pp->pictureContent() == picture) {
-            delete pp;
-            ppIt = m_properties.erase(ppIt);
-        } else
-            ++ppIt;
+    // handle Picture variant
+    PictureContent * picture = dynamic_cast<PictureContent *>(content);
+    if (picture) {
+        // remove property if deleting its picture
+        QList<PicturePropertiesItem *>::iterator ppIt = m_properties.begin();
+        while (ppIt != m_properties.end()) {
+            PicturePropertiesItem * pp = *ppIt;
+            if (pp->pictureContent() == picture) {
+                delete pp;
+                ppIt = m_properties.erase(ppIt);
+            } else
+                ++ppIt;
+        }
     }
 
-    // unlink picture from lists, myself(the Scene) and memory
-    m_pictures.removeAll(picture);
-    removeItem(picture);
-    picture->deleteLater();
+    // unlink content from lists, myself(the Scene) and memory
+    m_content.removeAll(content);
+    removeItem(content);
+    content->deleteLater();
 }
 
 void Desk::slotDeleteProperties()
@@ -576,7 +604,7 @@ void Desk::slotDeleteProperties()
     if (!properties)
         return;
 
-    // unlink picture from lists, myself(the Scene) and memory
+    // unlink picture properties from lists, myself(the Scene) and memory
     m_properties.removeAll(properties);
     removeItem(properties);
     properties->deleteLater();
@@ -584,20 +612,23 @@ void Desk::slotDeleteProperties()
 
 void Desk::slotApplyAll(quint32 frameClass, bool mirrored)
 {
-    foreach (PictureContent * picture, m_pictures) {
+    foreach (AbstractContent * content, m_content) {
         // change Frame
         Frame * frame = FrameFactory::createFrame(frameClass);
         if (frame)
-            picture->setFrame(frame);
+            content->setFrame(frame);
         // change Mirror status
-        picture->setMirrorEnabled(mirrored);
+        content->setMirrorEnabled(mirrored);
     }
 }
 
-void Desk::slotApplyEffectToAll(int effectClass)
+void Desk::slotApplyEffectToPictures(int effectClass)
 {
-    foreach (PictureContent * picture, m_pictures)
-        picture->setEffect(effectClass);
+    foreach (AbstractContent * content, m_content) {
+        PictureContent * picture = dynamic_cast<PictureContent *>(content);
+        if (picture)
+            picture->setEffect(effectClass);
+    }
 }
 
 void Desk::slotSetTopBarEnabled(bool enabled)

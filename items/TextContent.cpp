@@ -61,11 +61,44 @@ void TextContent::setHtml(const QString & htmlCode)
 void TextContent::save(QDataStream & data) const
 {
     AbstractContent::save(data);
+    data << toHtml();
 }
 
 bool TextContent::restore(QDataStream & data)
 {
-    return AbstractContent::restore(data);
+    bool ok = AbstractContent::restore(data);
+    QString htmlCode;
+    data >> htmlCode;
+    setHtml(htmlCode);
+    return ok;
+}
+
+QPixmap TextContent::renderAsBackground(const QSize & size) const
+{
+    // get the base empty pixmap
+    QPixmap pix = AbstractContent::renderAsBackground(size);
+    QSize textSize = boundingRect().size().toSize();
+    const float w = size.width(),
+                h = size.height(),
+                tw = textSize.width(),
+                th = textSize.height();
+    if (w < 2 || h < 2 || tw < 2 || th < 2)
+        return pix;
+
+    // draw text (centered, maximized keeping aspect ratio)
+    float scale = qMin(w / (tw + 16), h / (th + 16));
+    QPainter pixPainter(&pix);
+    pixPainter.translate((w - (int)((float)tw * scale)) / 2, (h - (int)((float)th * scale)) / 2);
+    pixPainter.scale(scale, scale);
+    m_text->drawContents(&pixPainter);
+    pixPainter.end();
+    return pix;
+}
+
+void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+{
+    emit backgroundMe();
+    QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
 void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
