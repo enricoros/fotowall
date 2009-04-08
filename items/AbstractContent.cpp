@@ -118,6 +118,8 @@ void AbstractContent::setFrame(Frame * frame)
 
 quint32 AbstractContent::frameClass() const
 {
+    if (!m_frame)
+        return Frame::NoFrame;
     return m_frame->frameClass();
 }
 
@@ -298,6 +300,11 @@ QPixmap AbstractContent::renderAsBackground(const QSize & size) const
     QPixmap pix(size);
     pix.fill(Qt::transparent);
     return pix;
+}
+
+AbstractProperties * AbstractContent::createProperties() const
+{
+    return 0;
 }
 
 QRectF AbstractContent::boundingRect() const

@@ -12,7 +12,8 @@ ChangeLog
 
 Unreleased version:
 
-* Rich Text Component
+* Rich Text Component (with properties)
+* Configuration framework (properties)
 * Foreground properties [reqby Ilan d'Inca]
 * Save to all the supported image formats (Tanguy Arnaud)
 * Tooltips on buttons and usability fixes [reqby Ilan d'Inca]

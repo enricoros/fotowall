@@ -33,6 +33,7 @@ class Frame {
     public:
         // class identification
         virtual quint32 frameClass() const = 0;
+        enum { NoFrame = 0 };
 
         // G: contents geometry
         virtual QSize sizeForContentsRatio(int width, qreal ratio) const;

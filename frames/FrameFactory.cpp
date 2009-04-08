@@ -23,7 +23,7 @@
 Q_GLOBAL_STATIC(FrameFactory, d)
 #define FRAME_DEF 0x0001
 #define FRAME_HEART 0x0002
-#define NO_FRAME 0x0003
+#define FRAME_NOFRAME 0x0003
 #define SVG_BASE_CLASS 0x1000
 #define FRAME_SVG_1 ":/plasma-frames/1.svg"
 #define FRAME_SVG_2 ":/plasma-frames/2.svg"
@@ -38,19 +38,20 @@ QList<quint32> FrameFactory::classes()
     QList<quint32> classes = d()->m_svgMap.keys();
     classes.prepend(FRAME_DEF);
     classes.append(FRAME_HEART);
-    classes.append(NO_FRAME);
+    classes.append(FRAME_NOFRAME);
     return classes;
 }
 
 Frame * FrameFactory::createFrame(quint32 frameClass)
 {
-    if (frameClass == FRAME_DEF)
+    if (frameClass == Frame::NoFrame)
+        return 0;
+    else if (frameClass == FRAME_DEF)
         return new StandardFrame();
     else if (frameClass == FRAME_HEART)
         return new HeartFrame();
-    else if ( frameClass == NO_FRAME  ) {
+    else if (frameClass == FRAME_NOFRAME)
         return new EmptyFrame();
-    }
     else if (d()->m_svgMap.contains(frameClass))
         return new PlasmaFrame(frameClass, d()->m_svgMap[ frameClass ]);
     else

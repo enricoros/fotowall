@@ -12,9 +12,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PicturePropertiesItem.h"
+#include "AbstractProperties.h"
+#include "AbstractContent.h"
 #include "RenderOpts.h"
-#include "ui_PicturePropertiesItem.h"
+#include "ui_AbstractProperties.h"
 #include "frames/FrameFactory.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QListWidgetItem>
@@ -126,7 +127,7 @@ void PixmapButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     // do click
     if (boundingRect().contains(event->pos())) {
         // HACK
-        PicturePropertiesItem * pp = dynamic_cast<PicturePropertiesItem *>(parentItem());
+        AbstractProperties * pp = dynamic_cast<AbstractProperties *>(parentItem());
         if (pp)
             pp->animateClose();
     }
@@ -134,10 +135,10 @@ void PixmapButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 //END PixmapButton
 
 
-PicturePropertiesItem::PicturePropertiesItem(PictureContent * pictureContent, QGraphicsItem * parent)
+AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem * parent)
     : QGraphicsProxyWidget(parent)
-    , m_ui(new Ui::PicturePropertiesItem())
-    , m_pictureContent(pictureContent)
+    , m_content(content)
+    , m_commonUi(new Ui::AbstractProperties())
     , m_closeButton(0)
     , m_frame(FrameFactory::defaultPanelFrame())
     , m_aniStep(0)
@@ -153,14 +154,14 @@ PicturePropertiesItem::PicturePropertiesItem(PictureContent * pictureContent, QG
 #else
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
 #endif
-    m_ui->setupUi(widget);
-    m_ui->buttonBox->clear();
+    m_commonUi->setupUi(widget);
+    m_commonUi->buttonBox->clear();
     QPushButton * applyButton = new QPushButton(style()->standardIcon(QStyle::SP_DialogApplyButton), tr("Apply to All"));
     applyButton->setProperty("applyall", true);
-    m_ui->buttonBox->addButton(applyButton, QDialogButtonBox::ApplyRole);
+    m_commonUi->buttonBox->addButton(applyButton, QDialogButtonBox::ApplyRole);
 #if 0
     QPushButton * closeButton = new QPushButton(style()->standardIcon(QStyle::SP_DialogCloseButton), tr("Close"));
-    m_ui->buttonBox->addButton(closeButton, QDialogButtonBox::RejectRole);
+    m_commonUi->buttonBox->addButton(closeButton, QDialogButtonBox::RejectRole);
 #endif
 
     // add frame items to the listview
@@ -171,30 +172,36 @@ PicturePropertiesItem::PicturePropertiesItem(PictureContent * pictureContent, QG
         delete frame;
 
         // add the item to the list (and attach it the class)
-        QListWidgetItem * item = new QListWidgetItem(icon, QString(), m_ui->listWidget);
-        item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+        QListWidgetItem * item = new QListWidgetItem(icon, QString(), m_commonUi->listWidget);
+        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         item->setData(Qt::UserRole, frameClass);
     }
 
-    // add effects items to the listview
-    loadEffectsList();
+    connect(m_commonUi->front, SIGNAL(clicked()), m_content, SLOT(slotStackFront()));
+    connect(m_commonUi->raise, SIGNAL(clicked()), m_content, SLOT(slotStackRaise()));
+    connect(m_commonUi->lower, SIGNAL(clicked()), m_content, SLOT(slotStackLower()));
+    connect(m_commonUi->back, SIGNAL(clicked()), m_content, SLOT(slotStackBack()));
+    connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(backgroundMe()));
+    connect(m_commonUi->save, SIGNAL(clicked()), m_content, SLOT(slotSaveAs()));
+    connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(deleteMe()), Qt::QueuedConnection);
+    connect(m_commonUi->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotFrameSelected(QListWidgetItem*)));
+    connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(slotToggleMirror(bool)));
+    connect(m_commonUi->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(slotClose(QAbstractButton*)));
 
-    connect(m_ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(slotClose(QAbstractButton*)));
-    connect(m_ui->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotFrameSelected(QListWidgetItem*)));
-    connect(m_ui->reflection, SIGNAL(toggled(bool)), this, SLOT(slotToggleMirror(bool)));
-    connect(m_ui->front, SIGNAL(clicked()), m_pictureContent, SLOT(slotStackFront()));
-    connect(m_ui->raise, SIGNAL(clicked()), m_pictureContent, SLOT(slotStackRaise()));
-    connect(m_ui->lower, SIGNAL(clicked()), m_pictureContent, SLOT(slotStackLower()));
-    connect(m_ui->back, SIGNAL(clicked()), m_pictureContent, SLOT(slotStackBack()));
-    connect(m_ui->background, SIGNAL(clicked()), m_pictureContent, SIGNAL(backgroundMe()));
-    connect(m_ui->invertButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipVertically()));
-    connect(m_ui->flipButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipHorizontally()));
-    connect(m_ui->save, SIGNAL(clicked()), m_pictureContent, SLOT(slotSaveAs()));
-    connect(m_ui->del, SIGNAL(clicked()), m_pictureContent, SIGNAL(deleteMe()), Qt::QueuedConnection);
-    connect(m_ui->effectsListWidget, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(slotEffectSelected(QListWidgetItem*)));
+    // select the frame
+    quint32 frameClass = m_content->frameClass();
+    if (frameClass != Frame::NoFrame) {
+        for (int i = 0; i < m_commonUi->listWidget->count(); ++i) {
+            QListWidgetItem * item = m_commonUi->listWidget->item(i);
+            if (item->data(Qt::UserRole).toUInt() == frameClass) {
+                item->setSelected(true);
+                break;
+            }
+        }
+    }
 
-    // load values
-    loadProperties();
+    // read other properties
+    m_commonUi->reflection->setChecked(m_content->mirrorEnabled());
 
     // ITEM setup
     setWidget(widget);
@@ -204,48 +211,18 @@ PicturePropertiesItem::PicturePropertiesItem(PictureContent * pictureContent, QG
     m_aniTimer.start(20, this);
 }
 
-PicturePropertiesItem::~PicturePropertiesItem()
+AbstractProperties::~AbstractProperties()
 {
     delete m_frame;
-    delete m_ui;
+    delete m_commonUi;
 }
 
-void PicturePropertiesItem::loadEffectsList()
+AbstractContent * AbstractProperties::content() const
 {
-    QListWidgetItem *item_invert = new QListWidgetItem(QIcon(":/data/effects-icons/invert-effect.png"), tr("Invert colors"), m_ui->effectsListWidget);
-    item_invert->setToolTip(tr("Invert the colors of the picture"));
-    item_invert->setData(Qt::UserRole, 0);
-    QListWidgetItem *item_nvg = new QListWidgetItem(QIcon(":/data/effects-icons/nvg-effect.png"), tr("NVG"), m_ui->effectsListWidget);
-    item_nvg->setToolTip(tr("Set the colors to levels of gray"));
-    item_nvg->setData(Qt::UserRole, 1);
-    QListWidgetItem *item_black = new QListWidgetItem(QIcon(":/data/effects-icons/black-and-white-effect.png"), tr("Black and White"), m_ui->effectsListWidget);
-    item_black->setData(Qt::UserRole, 2);
-    QListWidgetItem *no_effect = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("No effects"), m_ui->effectsListWidget);
-    no_effect->setData(Qt::UserRole, 3);
+    return m_content;
 }
 
-PictureContent * PicturePropertiesItem::pictureContent() const
-{
-    return m_pictureContent;
-}
-
-void PicturePropertiesItem::loadProperties()
-{
-    // select the frame
-    quint32 frameClass = m_pictureContent->frameClass();
-    for (int i = 0; i < m_ui->listWidget->count(); ++i) {
-        QListWidgetItem * item = m_ui->listWidget->item(i);
-        if (item->data(Qt::UserRole).toUInt() == frameClass) {
-            item->setSelected(true);
-            break;
-        }
-    }
-
-    // read other properties
-    m_ui->reflection->setChecked(m_pictureContent->mirrorEnabled());
-}
-
-void PicturePropertiesItem::keepInBoundaries(const QRect & rect)
+void AbstractProperties::keepInBoundaries(const QRect & rect)
 {
     QRect r = mapToScene(boundingRect()).boundingRect().toRect();
     r.setLeft(qBound(rect.left(), r.left(), rect.right() - r.width()));
@@ -253,19 +230,19 @@ void PicturePropertiesItem::keepInBoundaries(const QRect & rect)
     setPos(r.topLeft());
 }
 
-void PicturePropertiesItem::animateClose()
+void AbstractProperties::animateClose()
 {
     slotClose(0);
 }
 
-void PicturePropertiesItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void AbstractProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
         slotClose(0);
     QGraphicsProxyWidget::mousePressEvent(event);
 }
 
-void PicturePropertiesItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+void AbstractProperties::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     if (m_aniStep < 10)
         return;
@@ -285,7 +262,7 @@ void PicturePropertiesItem::paint(QPainter * painter, const QStyleOptionGraphics
     QGraphicsProxyWidget::paint(painter, option, widget);
 }
 
-void PicturePropertiesItem::resizeEvent(QGraphicsSceneResizeEvent * event)
+void AbstractProperties::resizeEvent(QGraphicsSceneResizeEvent * event)
 {
     // layout the close button
     QRect cRect = boundingRect().toRect();
@@ -296,10 +273,11 @@ void PicturePropertiesItem::resizeEvent(QGraphicsSceneResizeEvent * event)
     else
         m_closeButton->setPos(cRect.left(), cRect.top());
 
+    // unbreak resize
     QGraphicsProxyWidget::resizeEvent(event);
 }
 
-void PicturePropertiesItem::timerEvent(QTimerEvent * event)
+void AbstractProperties::timerEvent(QTimerEvent * event)
 {
     // only act on our events
     if (event->timerId() == m_aniTimer.timerId()) {
@@ -332,18 +310,19 @@ void PicturePropertiesItem::timerEvent(QTimerEvent * event)
     QObject::timerEvent(event);
 }
 
-void PicturePropertiesItem::slotEffectSelected(QListWidgetItem * item)
+void AbstractProperties::addTab(QWidget * widget, const QString & label, bool before, bool select)
 {
-    // get the effect class
-    if (!item)
-        return;
-    quint32 effectClass = item->data(Qt::UserRole).toUInt();
+    int idx = 0;
+    if (before)
+        idx = m_commonUi->tab->insertTab(0, widget, label);
+    else
+        idx = m_commonUi->tab->addTab(widget, label);
 
-    // apply the effect
-    m_pictureContent->setEffect(effectClass);
+    if (select)
+        m_commonUi->tab->setCurrentIndex(idx);
 }
 
-void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
+void AbstractProperties::slotFrameSelected(QListWidgetItem * item)
 {
     // get the frame class
     if (!item)
@@ -355,27 +334,29 @@ void PicturePropertiesItem::slotFrameSelected(QListWidgetItem * item)
     // create and set the frame
     Frame * frame = FrameFactory::createFrame(frameClass);
     if (frame)
-        m_pictureContent->setFrame(frame);
+        m_content->setFrame(frame);
 }
 
-void PicturePropertiesItem::slotToggleMirror(bool enabled)
+void AbstractProperties::slotToggleMirror(bool enabled)
 {
     RenderOpts::LastMirrorEnabled = enabled;
-    m_pictureContent->setMirrorEnabled(enabled);
+    m_content->setMirrorEnabled(enabled);
 }
 
-void PicturePropertiesItem::slotClose(QAbstractButton * button)
+void AbstractProperties::slotClose(QAbstractButton * button)
 {
     // apply to all if pressed
     if (button && button->property("applyall").toBool() == true) {
-        emit applyAll(m_pictureContent->frameClass(), m_pictureContent->mirrorEnabled());
+        emit applyAll(m_content->frameClass(), m_content->mirrorEnabled());
 
-        QList<QListWidgetItem *> selectedEffects = m_ui->effectsListWidget->selectedItems();
+/**** XXXXXXXXXX FIXME ###
+        QList<QListWidgetItem *> selectedEffects = m_commonUi->effectsListWidget->selectedItems();
         QList<QListWidgetItem *>::iterator it = selectedEffects.begin();
         for (; it != selectedEffects.end(); it++) {
             int effectClass = (*it)->data(Qt::UserRole).toUInt();
             emit applyEffectToAll(effectClass);
         }
+        */
     }
 
     // closure animation

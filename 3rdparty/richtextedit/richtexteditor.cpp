@@ -43,7 +43,7 @@
 #include <QIcon>
 QIcon createIconSet(const QString & iconName)
 {
-    return QIcon(iconName);
+    return QIcon(":/data/" + iconName);
 }
 
 
@@ -285,13 +285,13 @@ public slots:
     void updateActions();
 
 private slots:
-    void alignmentActionTriggered(QAction *action);
+    ///void alignmentActionTriggered(QAction *action);
     void sizeInputActivated(const QString &size);
     void colorChanged(const QColor &color);
     void setVAlignSuper(bool super);
     void setVAlignSub(bool sub);
-    void insertLink();
-    void insertImage();
+    ///void insertLink();
+    ///void insertImage();
 
 private:
     QAction *m_bold_action;
@@ -299,12 +299,12 @@ private:
     QAction *m_underline_action;
     QAction *m_valign_sup_action;
     QAction *m_valign_sub_action;
-    QAction *m_align_left_action;
-    QAction *m_align_center_action;
-    QAction *m_align_right_action;
-    QAction *m_align_justify_action;
-    QAction *m_link_action;
-    QAction *m_image_action;
+    ///QAction *m_align_left_action;
+    ///QAction *m_align_center_action;
+    ///QAction *m_align_right_action;
+    ///QAction *m_align_justify_action;
+    ///QAction *m_link_action;
+    ///QAction *m_image_action;
     ColorAction *m_color_action;
     QComboBox *m_font_size_input;
 
@@ -328,8 +328,8 @@ static QAction *createCheckableAction(const QIcon &icon, const QString &text,
 RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
                                              QWidget *parent) :
     QToolBar(parent),
-    m_link_action(new QAction(this)),
-    m_image_action(new QAction(this)),
+    ///m_link_action(new QAction(this)),
+    ///m_image_action(new QAction(this)),
     m_color_action(new ColorAction(this)),
     m_font_size_input(new QComboBox),
     m_editor(editor)
@@ -368,6 +368,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
 
     addSeparator();
 
+    /**
     // Left, center, right and justified alignment buttons
 
     QActionGroup *alignment_group = new QActionGroup(this);
@@ -395,6 +396,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
     addAction(m_align_justify_action);
 
     addSeparator();
+    */
 
     // Superscript and subscript buttons
 
@@ -413,7 +415,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
     addSeparator();
 
     // Insert hyperlink and image buttons
-
+/**
     m_link_action->setIcon(createIconSet(QLatin1String("textanchor.png")));
     m_link_action->setText(tr("Insert &Link"));
     connect(m_link_action, SIGNAL(triggered()), SLOT(insertLink()));
@@ -425,7 +427,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
     addAction(m_image_action);
 
     addSeparator();
-
+*/
     // Text color button
     connect(m_color_action, SIGNAL(colorChanged(QColor)),
             this, SLOT(colorChanged(QColor)));
@@ -436,7 +438,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
 
     updateActions();
 }
-
+/**
 void RichTextEditorToolBar::alignmentActionTriggered(QAction *action)
 {
     Qt::Alignment new_alignment;
@@ -453,7 +455,7 @@ void RichTextEditorToolBar::alignmentActionTriggered(QAction *action)
 
     m_editor->setAlignment(new_alignment);
 }
-
+*/
 void RichTextEditorToolBar::colorChanged(const QColor &color)
 {
     m_editor->setTextColor(color);
@@ -494,7 +496,7 @@ void RichTextEditorToolBar::setVAlignSub(bool sub)
 
     m_valign_sup_action->setChecked(false);
 }
-
+/**
 void RichTextEditorToolBar::insertLink()
 {
     notImplemented();
@@ -510,7 +512,7 @@ void RichTextEditorToolBar::insertImage()
     //if (!path.isEmpty())
     //    m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
 }
-
+*/
 void RichTextEditorToolBar::updateActions()
 {
     if (m_editor == 0) {
@@ -526,7 +528,7 @@ void RichTextEditorToolBar::updateActions()
         charFormat.verticalAlignment();
     const bool superScript = valign == QTextCharFormat::AlignSuperScript;
     const bool subScript = valign == QTextCharFormat::AlignSubScript;
-
+/**
     if (alignment & Qt::AlignLeft) {
         m_align_left_action->setChecked(true);
     } else if (alignment & Qt::AlignRight) {
@@ -536,7 +538,7 @@ void RichTextEditorToolBar::updateActions()
     } else {
         m_align_justify_action->setChecked(true);
     }
-
+*/
     m_bold_action->setChecked(font.bold());
     m_italic_action->setChecked(font.italic());
     m_underline_action->setChecked(font.underline());
@@ -649,17 +651,17 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     connect(m_tab_widget, SIGNAL(currentChanged(int)),
                           SLOT(tabIndexChanged(int)));
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal);
+    /**QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal);
     QPushButton *ok_button = buttonBox->button(QDialogButtonBox::Ok);
     ok_button->setText(tr("&OK"));
     ok_button->setDefault(true);
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("&Cancel"));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));*/
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_tab_widget);
-    layout->addWidget(buttonBox);
+    ///layout->addWidget(buttonBox);
 
     m_editor->setFocus();
 }

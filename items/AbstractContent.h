@@ -17,6 +17,7 @@
 
 #include <QGraphicsItem>
 #include <QObject>
+class AbstractProperties;
 class ButtonItem;
 class Frame;
 class MirrorItem;
@@ -30,7 +31,7 @@ class AbstractContent : public QObject, public QGraphicsItem
     Q_OBJECT
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noResize = false);
-        ~AbstractContent();
+        virtual ~AbstractContent();
 
         // frame (and frame text)
         void setFrame(Frame * frame);
@@ -55,6 +56,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         virtual void save(QDataStream & data) const;
         virtual bool restore(QDataStream & data);
         virtual QPixmap renderAsBackground(const QSize & size) const;
+        virtual AbstractProperties * createProperties() const;
 
         // ::QGraphicsItem
         QRectF boundingRect() const;

@@ -12,52 +12,49 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __PicturePropertiesItem_h__
-#define __PicturePropertiesItem_h__
+#ifndef __AbstractProperties_h__
+#define __AbstractProperties_h__
 
 #include <QGraphicsProxyWidget>
 #include <QBasicTimer>
-#include "PictureContent.h"
+class AbstractContent;
 class Frame;
 class PixmapButton;
 class QAbstractButton;
 class QListWidgetItem;
+namespace Ui { class AbstractProperties; }
 
-namespace Ui { class PicturePropertiesItem; }
 
-class PicturePropertiesItem : public QGraphicsProxyWidget {
+class AbstractProperties : public QGraphicsProxyWidget {
     Q_OBJECT
     public:
-        PicturePropertiesItem(PictureContent * pictureContent, QGraphicsItem * parent = 0);
-        ~PicturePropertiesItem();
+        AbstractProperties(AbstractContent * content, QGraphicsItem * parent = 0);
+        virtual ~AbstractProperties();
 
-        // the watched item
-        PictureContent * pictureContent() const;
+        // the current content
+        AbstractContent * content() const;
 
-        // load from/apply to the properties of the current valid item
-        void loadProperties();
-
-        // load the list of available effects
-        void loadEffectsList();
-
-        // misc
+        // manage property box
         void keepInBoundaries(const QRect & rect);
         void animateClose();
 
     Q_SIGNALS:
         void closed();
         void applyAll(quint32 frameClass, bool mirrored);
-        void applyEffectToAll(int effectClass);
 
     protected:
+        // used by subclasses
+        void addTab(QWidget * widget, const QString & label, bool before = false, bool select = false);
+
+        // ::QGraphicsProxyWidget
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
         void resizeEvent(QGraphicsSceneResizeEvent * event);
         void timerEvent(QTimerEvent *);
 
     private:
-        Ui::PicturePropertiesItem * m_ui;
-        PictureContent *            m_pictureContent;
+        AbstractContent *           m_content;
+        Ui::AbstractProperties *    m_commonUi;
         PixmapButton *              m_closeButton;
         Frame *                     m_frame;
         int                         m_aniStep;
@@ -65,7 +62,6 @@ class PicturePropertiesItem : public QGraphicsProxyWidget {
         QBasicTimer                 m_aniTimer;
 
     private Q_SLOTS:
-        void slotEffectSelected(QListWidgetItem * item);
         void slotFrameSelected(QListWidgetItem * item);
         void slotToggleMirror(bool enabled);
         void slotClose(QAbstractButton * button);

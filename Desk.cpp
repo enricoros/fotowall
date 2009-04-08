@@ -17,10 +17,10 @@
 #include "HelpItem.h"
 #include "HighlightItem.h"
 #include "PictureContent.h"
-#include "PicturePropertiesItem.h"
 #include "TextContent.h"
+#include "PictureProperties.h"
+#include "TextProperties.h"
 #include "frames/FrameFactory.h"
-#include "richtexteditor_p.h"
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 #include <QImageReader>
@@ -129,7 +129,7 @@ void Desk::resize(const QSize & size)
     // ensure visibility
     foreach (AbstractContent * content, m_content)
         content->ensureVisible(m_rect);
-    foreach (PicturePropertiesItem * properties, m_properties)
+    foreach (AbstractProperties * properties, m_properties)
         properties->keepInBoundaries(m_rect.toRect());
 
     // change my rect
@@ -461,37 +461,38 @@ TextContent * Desk::createText(const QPoint & pos)
 /// Slots
 void Desk::slotConfigureContent(const QPoint & scenePoint)
 {
-    PictureContent * picture = dynamic_cast<PictureContent *>(sender());
+    // get the content and ensure it has no
+    AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
+    foreach (AbstractProperties * properties, m_properties) {
+        if (properties->content() == content) {
+            properties->keepInBoundaries(sceneRect().toRect());
+            return;
+        }
+    }
+    AbstractProperties * p = 0;
+
+    // picture properties (dialog and connections)
+    PictureContent * picture = dynamic_cast<PictureContent *>(content);
     if (picture) {
-        // skip if an item is already present
-        foreach (PicturePropertiesItem * item, m_properties)
-            if (item->pictureContent() == picture)
-                return;
-
-        // create the properties item
-        PicturePropertiesItem * pp = new PicturePropertiesItem(picture);
-        connect(pp, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
-        connect(pp, SIGNAL(applyAll(quint32,bool)), this, SLOT(slotApplyAll(quint32,bool)));
-        connect(pp, SIGNAL(applyEffectToAll(int)), this, SLOT(slotApplyEffectToPictures(int)));
-        addItem(pp);
-        pp->show();
-        pp->setPos(scenePoint - QPoint(10, 10));
-        pp->keepInBoundaries(sceneRect().toRect());
-
-        // add to the internal list
-        m_properties.append(pp);
-        return;
+        p = new PictureProperties(picture);
+        connect(p, SIGNAL(applyEffectToAll(int)), this, SLOT(slotApplyEffectToPictures(int)));
     }
 
-    TextContent * text = dynamic_cast<TextContent *>(sender());
+    // text properties (dialog and connections)
+    TextContent * text = dynamic_cast<TextContent *>(content);
     if (text) {
-        RichTextEditorDialog * editor = new RichTextEditorDialog();
-        editor->move(QCursor::pos());
-        editor->setText(text->toHtml());
-        if (editor->exec() == QDialog::Accepted)
-            text->setHtml(editor->text(Qt::RichText));
-        delete editor;
-        return;
+        p = new TextProperties(text);
+    }
+
+    // common properties
+    if (p) {
+        m_properties.append(p);
+        addItem(p);
+        connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
+        connect(p, SIGNAL(applyAll(quint32,bool)), this, SLOT(slotApplyAll(quint32,bool)));
+        p->show();
+        p->setPos(scenePoint - QPoint(10, 10));
+        p->keepInBoundaries(sceneRect().toRect());
     }
 }
 
@@ -577,19 +578,15 @@ void Desk::slotDeleteContent()
         update();
     }
 
-    // handle Picture variant
-    PictureContent * picture = dynamic_cast<PictureContent *>(content);
-    if (picture) {
-        // remove property if deleting its picture
-        QList<PicturePropertiesItem *>::iterator ppIt = m_properties.begin();
-        while (ppIt != m_properties.end()) {
-            PicturePropertiesItem * pp = *ppIt;
-            if (pp->pictureContent() == picture) {
-                delete pp;
-                ppIt = m_properties.erase(ppIt);
-            } else
-                ++ppIt;
-        }
+    // remove property if deleting its content
+    QList<AbstractProperties *>::iterator pIt = m_properties.begin();
+    while (pIt != m_properties.end()) {
+        AbstractProperties * pp = *pIt;
+        if (pp->content() == content) {
+            delete pp;
+            pIt = m_properties.erase(pIt);
+        } else
+            ++pIt;
     }
 
     // unlink content from lists, myself(the Scene) and memory
@@ -600,7 +597,7 @@ void Desk::slotDeleteContent()
 
 void Desk::slotDeleteProperties()
 {
-    PicturePropertiesItem * properties = dynamic_cast<PicturePropertiesItem *>(sender());
+    AbstractProperties * properties = dynamic_cast<AbstractProperties *>(sender());
     if (!properties)
         return;
 
@@ -613,11 +610,7 @@ void Desk::slotDeleteProperties()
 void Desk::slotApplyAll(quint32 frameClass, bool mirrored)
 {
     foreach (AbstractContent * content, m_content) {
-        // change Frame
-        Frame * frame = FrameFactory::createFrame(frameClass);
-        if (frame)
-            content->setFrame(frame);
-        // change Mirror status
+        content->setFrame(FrameFactory::createFrame(frameClass));
         content->setMirrorEnabled(mirrored);
     }
 }

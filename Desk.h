@@ -24,8 +24,8 @@ class ColorPickerItem;
 class HelpItem;
 class HighlightItem;
 class AbstractContent;
+class AbstractProperties;
 class PictureContent;
-class PicturePropertiesItem;
 class TextContent;
 
 class Desk : public QGraphicsScene
@@ -64,7 +64,7 @@ class Desk : public QGraphicsScene
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
         QList<AbstractContent *> m_content;
-        QList<PicturePropertiesItem *> m_properties;
+        QList<AbstractProperties *> m_properties;
         QList<HighlightItem *> m_highlightItems;
         HelpItem * m_helpItem;
         AbstractContent * m_backContent;

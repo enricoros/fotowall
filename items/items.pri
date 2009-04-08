@@ -9,22 +9,27 @@ else {
     HEADERS += BrowserItem.h
     SOURCES += BrowserItem.cpp
 }
-HEADERS += ButtonItem.h \
+HEADERS += AbstractProperties.h \
+    ButtonItem.h \
     ColorPickerItem.h \
     PictureContent.h \
     MirrorItem.h \
-    PicturePropertiesItem.h \
+    PictureProperties.h \
     HighlightItem.h \
     HelpItem.h \
     AbstractContent.h \
-    TextContent.h
-SOURCES += ButtonItem.cpp \
+    TextContent.h \
+    TextProperties.h
+SOURCES += AbstractProperties.cpp \
+    ButtonItem.cpp \
     ColorPickerItem.cpp \
     PictureContent.cpp \
     MirrorItem.cpp \
-    PicturePropertiesItem.cpp \
+    PictureProperties.cpp \
     HighlightItem.cpp \
     HelpItem.cpp \
     AbstractContent.cpp \
-    TextContent.cpp
-FORMS += PicturePropertiesItem.ui
+    TextContent.cpp \
+    TextProperties.cpp
+FORMS += AbstractProperties.ui \
+    PictureProperties.ui
