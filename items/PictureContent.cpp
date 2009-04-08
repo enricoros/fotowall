@@ -116,6 +116,7 @@ void PictureContent::save(QDataStream & data) const
 {
     AbstractContent::save(data);
     data << m_fileName;
+    m_photo->save(data);    
 }
 
 bool PictureContent::restore(QDataStream & data)
@@ -124,6 +125,7 @@ bool PictureContent::restore(QDataStream & data)
     QString fileName;
     data >> fileName;
     bool ok = loadPhoto(fileName);
+    if(ok) m_photo->restore(data);
     return ok;
 }
 

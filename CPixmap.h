@@ -46,10 +46,17 @@ public:
    void setBlackAndWhite(bool state=false) { m_isBlackAndWhite = state; }
    void updateImage(QImage &newImage);
 
+   void save(QDataStream & data) const;
+   bool restore(QDataStream & data);
+
+   enum Effects { NVG, BlackAndWhite, InvertColors };
+
 private:
    QString m_filePath;
    bool m_isNVG;
    bool m_isBlackAndWhite;
+   // List of currently applied effects
+   QList<int> m_effects;
 };
 
 #endif /* ARNAUD_H_CPIXMAP */
