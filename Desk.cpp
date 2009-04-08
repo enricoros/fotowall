@@ -22,6 +22,8 @@
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
+#include <QAbstractTextDocumentLayout>
+#include <QTextDocument>
 #include <QImageReader>
 #include <QMimeData>
 #include <QUrl>
@@ -243,12 +245,12 @@ void Desk::loadDVDMode() {
     m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
 
     QGraphicsTextItem *textBack = addText(tr("Back"), QFont("", 18, -1, true));
-    // XXX : textWidth returns -1 instead of the text size, so text is not at the expected position
-    textBack->setPos(faceW/2 - textBack->textWidth(),height()/2);
+    textBack->setPos( (faceW - textBack->document()->documentLayout()->documentSize().width())/2,
+                    (height() - textBack->document()->documentLayout()->documentSize().height())/2 );
     m_markerItems.push_back(textBack);
     QGraphicsTextItem *textFront = addText(tr("Front"), QFont("", 18, -1, true));
-    // XXX : textWidth returns -1 instead of the text size, so text is not at the expected position
-    textFront->setPos((faceW+sideW) + faceW/2 - textFront->textWidth(), height()/2);
+    textFront->setPos( (faceW+sideW) + faceW/2 - textFront->document()->documentLayout()->documentSize().width()/2,
+                    (height() - textFront->document()->documentLayout()->documentSize().height())/2 );
     m_markerItems.push_back(textFront);
 }
 
