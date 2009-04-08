@@ -92,6 +92,9 @@ void PictureContent::setEffect(int effectClass)
             m_photo->toBlackAndWhite();
             break;
         case 3:
+            m_photo->glowEffect();
+            break;
+        case 4:
             m_photo->noEffects();
             break;
         default:

@@ -220,8 +220,10 @@ void PicturePropertiesItem::loadEffectsList()
     item_nvg->setData(Qt::UserRole, 1);
     QListWidgetItem *item_black = new QListWidgetItem(QIcon(":/data/effects-icons/black-and-white-effect.png"), tr("Black and White"), m_ui->effectsListWidget);
     item_black->setData(Qt::UserRole, 2);
+    QListWidgetItem *glow = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("Glow effect"), m_ui->effectsListWidget);
+    glow->setData(Qt::UserRole, 3);
     QListWidgetItem *no_effect = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("No effects"), m_ui->effectsListWidget);
-    no_effect->setData(Qt::UserRole, 3);
+    no_effect->setData(Qt::UserRole, 4);
 }
 
 PictureContent * PicturePropertiesItem::pictureContent() const
