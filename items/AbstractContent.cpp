@@ -293,6 +293,13 @@ bool AbstractContent::restore(QDataStream & data)
     return true;
 }
 
+QPixmap AbstractContent::renderAsBackground(const QSize & size) const
+{
+    QPixmap pix(size);
+    pix.fill(Qt::transparent);
+    return pix;
+}
+
 QRectF AbstractContent::boundingRect() const
 {
     return m_rect;

@@ -23,6 +23,7 @@
 class ColorPickerItem;
 class HelpItem;
 class HighlightItem;
+class AbstractContent;
 class PictureContent;
 class PicturePropertiesItem;
 class TextContent;
@@ -34,6 +35,10 @@ class Desk : public QGraphicsScene
         Desk(QObject * parent = 0);
         ~Desk();
 
+        // add content
+        void addPictures(const QStringList & fileNames);
+        void addText();
+
         // resize the scene to 0,0,size
         void resize(const QSize & size);
 
@@ -42,11 +47,9 @@ class Desk : public QGraphicsScene
         void setTitleText(const QString & text);
 
         // save, restore, load, help
+        void showHelp();
         void save(QDataStream & data) const;
         void restore(QDataStream & data);
-        void loadPictures(const QStringList & fileNames);
-        void addTextContent();
-        void showHelp();
 
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
@@ -60,11 +63,11 @@ class Desk : public QGraphicsScene
     private:
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
-        QList<PictureContent *> m_pictures;
+        QList<AbstractContent *> m_content;
         QList<PicturePropertiesItem *> m_properties;
         QList<HighlightItem *> m_highlightItems;
         HelpItem * m_helpItem;
-        PictureContent * m_backPicture;
+        AbstractContent * m_backContent;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;
@@ -78,14 +81,14 @@ class Desk : public QGraphicsScene
 
     private Q_SLOTS:
         void slotConfigureContent(const QPoint & scenePoint);
-        void slotBackgroundPicture();
-        void slotStackPicture(int);
-        void slotDeletePicture();
+        void slotBackgroundContent();
+        void slotStackContent(int);
+        void slotDeleteContent();
         void slotDeleteProperties();
         // Apply a frame to all images
         void slotApplyAll(quint32 frameClass, bool mirrored);
         // Apply an effect to all images
-        void slotApplyEffectToAll(int effectClass);
+        void slotApplyEffectToPictures(int effectClass);
 
         void slotSetTopBarEnabled(bool enabled);
         void slotSetBottomBarEnabled(bool enabled);

@@ -32,8 +32,10 @@ class TextContent : public AbstractContent
         // ::AbstractContent
         void save(QDataStream & data) const;
         bool restore(QDataStream & data);
+        QPixmap renderAsBackground(const QSize & size) const;
 
         // ::QGraphicsItem
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     protected:
