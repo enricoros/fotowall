@@ -23,7 +23,7 @@ TextProperties::TextProperties(TextContent * textContent, QGraphicsItem * parent
 {
     // Inject Editor setup
     m_editor = new RichTextEditorDialog();
-    m_editor->setMinimumSize(400, 200);
+    m_editor->setMinimumSize(450, 200);
     m_editor->setText(m_textContent->toHtml());
     addTab(m_editor, tr("Text"), false, true);
 }

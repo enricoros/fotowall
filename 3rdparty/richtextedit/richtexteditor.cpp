@@ -41,8 +41,13 @@
 
 #define notImplemented() {qWarning("%s:%d: %s NOT Implemented!", __FILE__, __LINE__, __FUNCTION__);}
 #include <QIcon>
-QIcon createIconSet(const QString & iconName)
+#include <QFileDialog>
+#include <QFontComboBox>
+QIcon createIconSet(QString iconName)
 {
+    // remap for better names in the data dir
+    if (iconName == "insertimage.png")
+        iconName = "textinsertimage.png";
     return QIcon(":/data/" + iconName);
 }
 
@@ -287,11 +292,15 @@ public slots:
 private slots:
     ///void alignmentActionTriggered(QAction *action);
     void sizeInputActivated(const QString &size);
+    void fontInputActivated(const QString &face);   // +fotowall
     void colorChanged(const QColor &color);
     void setVAlignSuper(bool super);
     void setVAlignSub(bool sub);
     ///void insertLink();
-    ///void insertImage();
+    void insertImage();
+
+protected: // +fotowall
+    void paintEvent(QPaintEvent * event);   // +fotowall
 
 private:
     QAction *m_bold_action;
@@ -304,9 +313,11 @@ private:
     ///QAction *m_align_right_action;
     ///QAction *m_align_justify_action;
     ///QAction *m_link_action;
-    ///QAction *m_image_action;
+    QAction *m_image_action;
     ColorAction *m_color_action;
     QComboBox *m_font_size_input;
+
+    QFontComboBox *m_font_face_input;   // +fotowall
 
     QPointer<RichTextEditor> m_editor;
 };
@@ -329,11 +340,19 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
                                              QWidget *parent) :
     QToolBar(parent),
     ///m_link_action(new QAction(this)),
-    ///m_image_action(new QAction(this)),
+    m_image_action(new QAction(this)),
     m_color_action(new ColorAction(this)),
     m_font_size_input(new QComboBox),
+    m_font_face_input(new QFontComboBox(this)), // +fotowall
     m_editor(editor)
 {
+    // Text color button
+    connect(m_color_action, SIGNAL(colorChanged(QColor)),
+            this, SLOT(colorChanged(QColor)));
+    addAction(m_color_action);
+
+    addSeparator();
+
     // Font size combo box
     m_font_size_input->setEditable(false);
     const QList<int> font_sizes = QFontDatabase::standardSizes();
@@ -343,6 +362,13 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
     connect(m_font_size_input, SIGNAL(activated(QString)),
             this, SLOT(sizeInputActivated(QString)));
     addWidget(m_font_size_input);
+
+    // Font face combo box  // +fotowall
+    m_font_face_input->setMaximumWidth(120);
+    m_font_face_input->setEditable(false);
+    connect(m_font_face_input, SIGNAL(activated(QString)),
+            this, SLOT(fontInputActivated(QString)));
+    addWidget(m_font_face_input);
 
     addSeparator();
 
@@ -420,18 +446,12 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
     m_link_action->setText(tr("Insert &Link"));
     connect(m_link_action, SIGNAL(triggered()), SLOT(insertLink()));
     addAction(m_link_action);
-
+*/
     m_image_action->setIcon(createIconSet(QLatin1String("insertimage.png")));
     m_image_action->setText(tr("Insert &Image"));
     connect(m_image_action, SIGNAL(triggered()), SLOT(insertImage()));
     addAction(m_image_action);
 
-    addSeparator();
-*/
-    // Text color button
-    connect(m_color_action, SIGNAL(colorChanged(QColor)),
-            this, SLOT(colorChanged(QColor)));
-    addAction(m_color_action);
 
     connect(editor, SIGNAL(textChanged()), this, SLOT(updateActions()));
     connect(editor, SIGNAL(stateChanged()), this, SLOT(updateActions()));
@@ -473,6 +493,12 @@ void RichTextEditorToolBar::sizeInputActivated(const QString &size)
     m_editor->setFocus();
 }
 
+void RichTextEditorToolBar::fontInputActivated(const QString &face) // +fotowall
+{
+    m_editor->setFontFamily(face);
+    m_editor->setFocus();
+}
+
 void RichTextEditorToolBar::setVAlignSuper(bool super)
 {
     const QTextCharFormat::VerticalAlignment align = super ?
@@ -504,15 +530,28 @@ void RichTextEditorToolBar::insertLink()
     //linkDialog.showDialog();
     //sm_editor->setFocus();
 }
-
+*/
 void RichTextEditorToolBar::insertImage()
 {
-    notImplemented();
-    //const QString path = IconSelector::choosePixmapResource(m_core, m_core->resourceModel(), QString(), this);
-    //if (!path.isEmpty())
-    //    m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
+    ///const QString path = IconSelector::choosePixmapResource(m_core, m_core->resourceModel(), QString(), this);
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), tr("Image (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    if (!path.isEmpty())
+        m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
 }
-*/
+
+void RichTextEditorToolBar::paintEvent(QPaintEvent * event) // +fotowall
+{
+    QPainter p(this);
+    QColor windowColor = palette().brush(QPalette::Window).color();
+    QLinearGradient lg(0, 0, 0, 1);
+    lg.setCoordinateMode(QGradient::ObjectBoundingMode);
+    lg.setColorAt(0.0, windowColor.light(150));
+    lg.setColorAt(1.0, windowColor.dark(110));
+    p.setCompositionMode(QPainter::CompositionMode_Source);
+    p.fillRect(rect(), lg);
+}
+
+
 void RichTextEditorToolBar::updateActions()
 {
     if (m_editor == 0) {
@@ -549,6 +588,11 @@ void RichTextEditorToolBar::updateActions()
     const int idx = m_font_size_input->findText(QString::number(size));
     if (idx != -1)
         m_font_size_input->setCurrentIndex(idx);
+
+    const QString face = font.family(); // +fotowall
+    const int fIdx = m_font_face_input->findText(face);
+    if (fIdx != -1)
+        m_font_face_input->setCurrentIndex(fIdx);
 
     m_color_action->setColor(m_editor->textColor());
 }
@@ -638,14 +682,18 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
 
     QWidget *rich_edit = new QWidget;
     QVBoxLayout *rich_edit_layout = new QVBoxLayout(rich_edit);
+    rich_edit_layout->setMargin(0);     // +fotowall
+    rich_edit_layout->setSpacing(0);    // +fotowall
     rich_edit_layout->addWidget(tool_bar);
     rich_edit_layout->addWidget(m_editor);
 
     QWidget *plain_edit = new QWidget;
     QVBoxLayout *plain_edit_layout = new QVBoxLayout(plain_edit);
+    plain_edit_layout->setMargin(0);    // +fotowall
     plain_edit_layout->addWidget(m_text_edit);
 
     m_tab_widget->setTabPosition(QTabWidget::South);
+    m_tab_widget->setDocumentMode(true); // +fotowall
     m_tab_widget->addTab(rich_edit, tr("Rich Text"));
     m_tab_widget->addTab(plain_edit, tr("Source"));
     connect(m_tab_widget, SIGNAL(currentChanged(int)),
@@ -660,6 +708,7 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));*/
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setMargin(0);   // +fotowall
     layout->addWidget(m_tab_widget);
     ///layout->addWidget(buttonBox);
 
