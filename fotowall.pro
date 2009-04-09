@@ -9,8 +9,7 @@ UI_DIR = .bin
 QT = core \
     gui \
     svg \
-    network \
-    opengl
+    network
 
 # Input
 HEADERS += CPixmap.h \

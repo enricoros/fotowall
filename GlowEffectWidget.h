@@ -23,7 +23,6 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include <QGLWidget>
 #include <QWidget>
 #include <QPaintEvent>
 #include <QPixmap>
