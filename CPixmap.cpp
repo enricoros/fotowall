@@ -20,6 +20,7 @@
  ******************************/
 
 #include "CPixmap.h"
+#include "GlowEffectDialog.h"
 #include <QImage>
 
 CPixmap::CPixmap() : m_isNVG(false), m_isBlackAndWhite(false) {
@@ -131,6 +132,12 @@ void CPixmap::toBlackAndWhite() {
     m_isBlackAndWhite = true;
     updateImage(dest);
 }
+
+void CPixmap::glowEffect() {
+    GlowEffectDialog effect(this);
+    effect.exec();
+}
+
 void CPixmap::noEffects() {
     //Reload the image to remove the effects
     if( !m_filePath.isEmpty() ) {

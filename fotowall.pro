@@ -9,18 +9,24 @@ UI_DIR = .bin
 QT = core \
     gui \
     svg \
-    network
+    network \
+    opengl
 
 # Input
 HEADERS += CPixmap.h \
+    GlowEffectWidget.h \
+    GlowEffectDialog.h \
     Desk.h \
     FotoWall.h \
     RenderOpts.h
 SOURCES += main.cpp \
     CPixmap.cpp \
+    GlowEffectWidget.cpp \
+    GlowEffectDialog.cpp \
     Desk.cpp \
     FotoWall.cpp
-FORMS += FotoWall.ui
+FORMS += FotoWall.ui \
+    GlowEffectDialog.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \
     translations/fotowall_en.ts \

@@ -35,6 +35,7 @@ public:
    void flipH();
    void flipV();
    void toBlackAndWhite();
+   void glowEffect();
    void noEffects();
    void luminosity(int value);
 
