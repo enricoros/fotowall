@@ -352,7 +352,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
             this, SLOT(colorChanged(QColor)));
     addAction(m_color_action);
 
-    addSeparator();
+    ///addSeparator();
 
     // Font size combo box
     m_font_size_input->setEditable(false);
@@ -371,7 +371,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
             this, SLOT(fontInputActivated(QString)));
     addWidget(m_font_face_input);
 
-    addSeparator();
+    ///addSeparator();
 
     // Bold, italic and underline buttons
 
@@ -393,7 +393,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
     m_underline_action->setShortcut(tr("CTRL+U"));
     addAction(m_underline_action);
 
-    addSeparator();
+    ///addSeparator();
 
     /**
     // Left, center, right and justified alignment buttons
@@ -439,7 +439,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
             this, SLOT(setVAlignSub(bool)), this);
     addAction(m_valign_sub_action);
 
-    addSeparator();
+    ///addSeparator();
 
     // Insert hyperlink and image buttons
 /**
@@ -694,7 +694,7 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     plain_edit_layout->addWidget(m_text_edit);
 
     m_tab_widget->setTabPosition(QTabWidget::South);
-#if QT_VERSION > 0x040500
+#if QT_VERSION >= 0x040500
     m_tab_widget->setDocumentMode(true); // +fotowall
 #endif
     m_tab_widget->addTab(rich_edit, tr("Rich Text"));

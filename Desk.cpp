@@ -529,10 +529,11 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     // get the content and ensure it has no
     AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
     foreach (AbstractProperties * properties, m_properties) {
-        if (properties->content() == content) {
-            properties->keepInBoundaries(sceneRect().toRect());
+        if (properties->content() == content)
             return;
-        }
+        // force only 1 property instance
+        properties->animateClose();
+        m_properties.removeAll(properties);
     }
     AbstractProperties * p = 0;
 

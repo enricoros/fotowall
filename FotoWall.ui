@@ -10,9 +10,6 @@
     <height>354</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>FotoWall 0.6</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
     <number>0</number>
@@ -163,7 +160,7 @@
        <widget class="QComboBox" name="projectType">
         <item>
          <property name="text">
-          <string>Fotowall</string>
+          <string>FotoWall</string>
          </property>
         </item>
         <item>

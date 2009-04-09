@@ -111,7 +111,7 @@ Fai doppio clic per allineare l&apos;oggetto.</translation>
         <translation>applica a tutti</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="290"/>
+        <location filename="../items/AbstractProperties.ui" line="299"/>
         <source>Show Reflection</source>
         <translation>Mostra il riflesso</translation>
     </message>
@@ -157,12 +157,12 @@ Fai doppio clic per allineare l&apos;oggetto.</translation>
         <translation>Fronte</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="713"/>
+        <location filename="../Desk.cpp" line="714"/>
         <source>Title</source>
         <translation>Titolo</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="713"/>
+        <location filename="../Desk.cpp" line="714"/>
         <source>Insert the title</source>
         <translation>Inserire il titolo</translation>
     </message>
@@ -170,109 +170,114 @@ Fai doppio clic per allineare l&apos;oggetto.</translation>
 <context>
     <name>FotoWall</name>
     <message>
-        <location filename="../FotoWall.cpp" line="292"/>
+        <location filename="../FotoWall.cpp" line="293"/>
         <source>Select one or more pictures to add</source>
         <translation>Scegliere una o più fotografie da aggiungere</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="292"/>
+        <location filename="../FotoWall.cpp" line="293"/>
         <source>Images (%1)</source>
         <translation>Immagini (%1)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="162"/>
+        <location filename="../FotoWall.cpp" line="163"/>
         <source>This function is being rewritten for version 0.6.
 In the meantime, while not the optimum, you can still get high quality results ;-)</source>
         <translation>Questa funzione verrà riscritta per la versione 0.6
 Nel frattempo, anche se non è il risultato migliore, si può ottenere ancora un risultato di alta qualità. ;-)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="164"/>
+        <location filename="../FotoWall.cpp" line="165"/>
         <source>Choose the Image file</source>
         <translation>Scegli un&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="164"/>
+        <location filename="../FotoWall.cpp" line="165"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="190"/>
+        <location filename="../FotoWall.cpp" line="191"/>
         <source>Rendering Error</source>
         <translation>Errore nel Rendering</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="190"/>
+        <location filename="../FotoWall.cpp" line="191"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
         <translation>Errore salvando il rendering sul file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="194"/>
+        <location filename="../FotoWall.cpp" line="195"/>
         <source>Done</source>
         <translation>Fatto</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="257"/>
+        <location filename="../FotoWall.cpp" line="258"/>
         <source>export...</source>
         <translation>esporta...</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="268"/>
-        <location filename="../FotoWall.cpp" line="278"/>
+        <location filename="../FotoWall.cpp" line="269"/>
+        <location filename="../FotoWall.cpp" line="279"/>
         <source>print...</source>
         <translation>stampa...</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="309"/>
+        <location filename="../FotoWall.cpp" line="310"/>
         <source>Opening the Web Tutorial</source>
         <translation>Apertura del Tutoria da web</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="309"/>
+        <location filename="../FotoWall.cpp" line="310"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 Do you want to open the web page?</source>
         <translation>Il tutorial di Peter Upfold è distribuito da Fosswire. 
 Vuoi aprire la pagina internet?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="316"/>
-        <location filename="../FotoWall.cpp" line="331"/>
+        <location filename="../FotoWall.cpp" line="317"/>
+        <location filename="../FotoWall.cpp" line="332"/>
         <source>Select Layout file</source>
         <translation>Scegli il file di Disposizione</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="322"/>
-        <location filename="../FotoWall.cpp" line="339"/>
+        <location filename="../FotoWall.cpp" line="323"/>
+        <location filename="../FotoWall.cpp" line="340"/>
         <source>File Error</source>
         <translation>Errore nel File</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="322"/>
+        <location filename="../FotoWall.cpp" line="323"/>
         <source>Error loading Layout from the file &apos;%1&apos;</source>
         <translation>Errore caricando la Disposizione dal file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="339"/>
+        <location filename="../FotoWall.cpp" line="340"/>
         <source>Error saving the Layout to the file &apos;%1&apos;</source>
         <translation>Errore salvando la Disposizione sul file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="162"/>
+        <location filename="../FotoWall.cpp" line="163"/>
         <source>Warning</source>
         <translation>Allerte</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="194"/>
+        <location filename="../FotoWall.cpp" line="195"/>
         <source>The target image is %1 bytes long</source>
         <translation>L&apos;iimagine di destinazione ha %1 byte</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="116"/>
+        <location filename="../FotoWall.ui" line="113"/>
         <source>add pictures</source>
         <translation>aggiungi immagini</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="213"/>
+        <location filename="../FotoWall.ui" line="163"/>
+        <source>FotoWall</source>
+        <translation>FotoWall</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="210"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -285,12 +290,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;tutorial&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="14"/>
-        <source>FotoWall 0.6</source>
-        <translation>FotoWall 0.6</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="26"/>
+        <location filename="../FotoWall.ui" line="23"/>
         <source>#topBar {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
 }</source>
@@ -299,27 +299,22 @@ p, li { white-space: pre-wrap; }
 }</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="139"/>
+        <location filename="../FotoWall.ui" line="136"/>
         <source>add text</source>
         <translation>aggiungi testo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="166"/>
-        <source>Fotowall</source>
-        <translation>Fotowall</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="171"/>
+        <location filename="../FotoWall.ui" line="168"/>
         <source>CD Cover</source>
         <translation>Copertina CD</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="176"/>
+        <location filename="../FotoWall.ui" line="173"/>
         <source>DVD Cover</source>
         <translation>Copertina DVD</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="199"/>
+        <location filename="../FotoWall.ui" line="196"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -332,17 +327,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;introduzione&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="264"/>
+        <location filename="../FotoWall.ui" line="261"/>
         <source>load</source>
         <translation>Carica</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="277"/>
+        <location filename="../FotoWall.ui" line="274"/>
         <source>save</source>
         <translation>Salva</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="289"/>
+        <location filename="../FotoWall.ui" line="286"/>
         <source>quit</source>
         <translation>Esci</translation>
     </message>
@@ -415,37 +410,37 @@ p, li { white-space: pre-wrap; }
         <translation>Immagine</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="32"/>
+        <location filename="../items/PictureProperties.cpp" line="34"/>
         <source>Invert colors</source>
         <translation>Negativo</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="33"/>
+        <location filename="../items/PictureProperties.cpp" line="35"/>
         <source>Invert the colors of the picture</source>
         <translation>Inverti i colori dell&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="35"/>
+        <location filename="../items/PictureProperties.cpp" line="37"/>
         <source>NVG</source>
         <translation>Visione Notturna</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="36"/>
+        <location filename="../items/PictureProperties.cpp" line="38"/>
         <source>Set the colors to levels of gray</source>
         <translation>Scala di grigi</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="38"/>
+        <location filename="../items/PictureProperties.cpp" line="40"/>
         <source>Black and White</source>
         <translation>Bianco e Nero</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="40"/>
+        <location filename="../items/PictureProperties.cpp" line="42"/>
         <source>Glow effect</source>
         <translation>Luminescenza</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="42"/>
+        <location filename="../items/PictureProperties.cpp" line="32"/>
         <source>No effects</source>
         <translation>Elimina Effetti</translation>
     </message>
@@ -478,12 +473,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="699"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="700"/>
         <source>Rich Text</source>
         <translation>Testo Ricco</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="700"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="701"/>
         <source>Source</source>
         <translation>Sorgente</translation>
     </message>
@@ -491,57 +486,57 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="379"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="380"/>
         <source>Bold</source>
         <translation>Grassetto</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="380"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="381"/>
         <source>CTRL+B</source>
         <translation>CTRL+G</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="385"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="386"/>
         <source>Italic</source>
         <translation>Italico</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="386"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="387"/>
         <source>CTRL+I</source>
         <translation>CTRL+I</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="391"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="392"/>
         <source>Underline</source>
         <translation>Sottolineato</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="392"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="393"/>
         <source>CTRL+U</source>
         <translation>CTRL+S</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="431"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="432"/>
         <source>Superscript</source>
         <translation>Apice</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="437"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="438"/>
         <source>Subscript</source>
         <translation>Pedice</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="451"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="452"/>
         <source>Insert &amp;Image</source>
         <translation>Inserisci &amp;Immagine</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="537"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="538"/>
         <source>Open File</source>
         <translation>Apri il File</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="537"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="538"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
@@ -549,17 +544,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SizeDialog</name>
     <message>
-        <location filename="../FotoWall.cpp" line="141"/>
+        <location filename="../FotoWall.cpp" line="142"/>
         <source>The aspect ratio must be kept</source>
         <translation>Le proporzioni devono essere sispettate</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="139"/>
+        <location filename="../FotoWall.cpp" line="140"/>
         <source>Select Resolution</source>
         <translation>Scegli la risoluzione</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="146"/>
+        <location filename="../FotoWall.cpp" line="147"/>
         <source>OK</source>
         <translation>Ok</translation>
     </message>

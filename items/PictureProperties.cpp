@@ -29,6 +29,8 @@ PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsI
     addTab(pictureTab, tr("Picture"));
 
     // add effects items to the listview
+    QListWidgetItem *no_effect = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("No effects"), m_pictureUi->effectsList);
+    no_effect->setData(Qt::UserRole, 4);
     QListWidgetItem *item_invert = new QListWidgetItem(QIcon(":/data/effects-icons/invert-effect.png"), tr("Invert colors"), m_pictureUi->effectsList);
     item_invert->setToolTip(tr("Invert the colors of the picture"));
     item_invert->setData(Qt::UserRole, 0);
@@ -37,10 +39,8 @@ PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsI
     item_nvg->setData(Qt::UserRole, 1);
     QListWidgetItem *item_black = new QListWidgetItem(QIcon(":/data/effects-icons/black-and-white-effect.png"), tr("Black and White"), m_pictureUi->effectsList);
     item_black->setData(Qt::UserRole, 2);
-    QListWidgetItem *glow = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("Glow effect"), m_pictureUi->effectsList);
+    QListWidgetItem *glow = new QListWidgetItem(QIcon(":/data/effects-icons/glow-effect.png"), tr("Glow effect"), m_pictureUi->effectsList);
     glow->setData(Qt::UserRole, 3);
-    QListWidgetItem *no_effect = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("No effects"), m_pictureUi->effectsList);
-    no_effect->setData(Qt::UserRole, 4);
 
     connect(m_pictureUi->invertButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipVertically()));
     connect(m_pictureUi->flipButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipHorizontally()));

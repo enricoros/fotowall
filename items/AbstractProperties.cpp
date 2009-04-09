@@ -198,7 +198,8 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
 
     // ITEM setup
     setWidget(widget);
-    setZValue(99999);
+    static qreal s_propZBase = 99999;
+    setZValue(s_propZBase++);
 
     // Transition setup
     m_aniTimer.start(30, this);

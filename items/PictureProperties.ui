@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>215</width>
+    <width>207</width>
     <height>207</height>
    </rect>
   </property>
@@ -135,6 +135,12 @@
      </item>
      <item row="1" column="1">
       <widget class="QListWidget" name="effectsList">
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::NoDragDrop</enum>
+       </property>
        <property name="iconSize">
         <size>
          <width>80</width>
@@ -144,8 +150,11 @@
        <property name="verticalScrollMode">
         <enum>QAbstractItemView::ScrollPerPixel</enum>
        </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
        <property name="viewMode">
-        <enum>QListView::IconMode</enum>
+        <enum>QListView::ListMode</enum>
        </property>
       </widget>
      </item>

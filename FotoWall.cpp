@@ -34,7 +34,7 @@
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
-#define TUTORIAL_STRING "Peter walks you through how to use Fotowall"
+#define TUTORIAL_STRING "Peter walks you through how to use Foto"
 
 class FWGraphicsView : public QGraphicsView {
     public:
@@ -76,7 +76,8 @@ FotoWall::FotoWall(QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->tutorialLabel->setVisible(false);
-    setWindowIcon( QIcon(":/data/fotowall.png") );
+    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
+    setWindowIcon(QIcon(":/data/fotowall.png"));
 
     // create our custom desk
     m_desk = new Desk(this);

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>408</width>
-    <height>298</height>
+    <height>303</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -264,8 +264,14 @@
            <property name="minimumSize">
             <size>
              <width>310</width>
-             <height>50</height>
+             <height>55</height>
             </size>
+           </property>
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="dragDropMode">
+            <enum>QAbstractItemView::NoDragDrop</enum>
            </property>
            <property name="selectionBehavior">
             <enum>QAbstractItemView::SelectRows</enum>
@@ -278,6 +284,9 @@
            </property>
            <property name="verticalScrollMode">
             <enum>QAbstractItemView::ScrollPerPixel</enum>
+           </property>
+           <property name="resizeMode">
+            <enum>QListView::Adjust</enum>
            </property>
            <property name="viewMode">
             <enum>QListView::IconMode</enum>

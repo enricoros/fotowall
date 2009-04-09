@@ -34,8 +34,8 @@ bool RenderOpts::HQRendering = false;
 int main( int argc, char ** args )
 {
     QApplication app(argc, args);
-    app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.4");
+    app.setApplicationName("FotoWall");
+    app.setApplicationVersion("0.5");
     app.setOrganizationName("Enrico Ros");
 
     QTranslator translator;

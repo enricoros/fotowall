@@ -10,14 +10,15 @@ Check out the [old home page](http://code.google.com/p/fotowall) too.
 ChangeLog
 ---------
 
-Unreleased version:
+Version 0.5:
 
-* Rich Text Component (with properties)
-* Configuration framework (properties)
-* Foreground properties [reqby Ilan d'Inca]
+* CD/DVD Cover composition and printing (Tanguy Arnaud)
+* Rich Text (with extended editing)
+* Glow effect (Tanguy Arnaud)
+* Properties configurable for all objects [reqby Ilan d'Inca]
 * Save to all the supported image formats (Tanguy Arnaud)
 * Tooltips on buttons and usability fixes [reqby Ilan d'Inca]
-* Close button on Properties windows [reqby Ilan d'Inca]
+* Properties close button [reqby Ilan d'Inca]
 * Improved stacking (fixes + relative to neighbourhoods) [reqby Ilan d'Inca]
 * Add the 'No effect' effect removal option (Tanguy Arnaud)
 * French Introduction translation (Tanguy Arnaud)
