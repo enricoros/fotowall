@@ -16,41 +16,20 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
 
-#ifndef ARNAUD_GLOWEFFECT_H
-#define ARNAUD_GLOWEFFECT_H
-
-#include <QGLWidget>
-#include <QPaintEvent>
-#include <QPixmap>
-#include <QImage>
-#include "CPixmap.h"
-#include <QDialog>
-#include <QSpinBox>
+#ifndef ARNAUD_GLOWEFFECTDIALOG_H
+#define ARNAUD_GLOWEFFECTDIALOG_H
+ 
 #include "ui_GlowEffectDialog.h"
 
-class GlowEffect : public QDialog
+class GlowEffectDialog : public QDialog
 {
     Q_OBJECT
-public:
-    GlowEffect(CPixmap *image, QWidget *parent=0);
-    QImage glow();
-    QSize sizeHint() const;
-protected:
-    void generateLens(const QRectF &bounds);
-
-public slots:
-    void slotRadiusValueChanged(int);
-    void slotPreview();
-    void slotRender();
-
-private:
-    int  m_radius;
-    CPixmap *m_image;
-    QSpinBox *m_radiusSpinBox;
-    Ui::GlowEffectDialog ui;
-
-    QImage m_blurred;
-    QPixmap m_tile;
+    public:
+        GlowEffectDialog(CPixmap *image);
+    public slots:
+        void slotOkButtonClicked();
+    private:
+        Ui::GlowEffectDialog ui;
 };
 
 #endif 

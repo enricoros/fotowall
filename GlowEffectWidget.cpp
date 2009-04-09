@@ -19,16 +19,14 @@
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
-** Integration into Fotowall made by TANGUY Arnaud <arn.tanguy@gmail.com>
 ****************************************************************************/
+#include "GlowEffectWidget.h"
 
-#include "GlowEffect.h"
 #include <QPainter>
 #include <QPainterPath>
-#include <QVBoxLayout>
-#include <QLabel>
+#include "CPixmap.h"
+
 #include <cmath>
-#include <QDebug>
 
 // Exponential blur, Jani Huhtanen, 2006
 //
@@ -387,17 +385,30 @@ void fastbluralpha(QImage &img, int radius)
     delete [] vmin;
     delete [] dv;
 }
-//REPLACE QIMAGE BY CPIXMAP !
 
-GlowEffect::GlowEffect(CPixmap *image, QWidget *parent)
-    : QDialog(parent),
-      m_radius(5), m_image(image)
+GlowEffectWidget::GlowEffectWidget(QWidget *parent)
+    : QWidget(parent), m_radius(5)
 {
-    ui.setupUi(this);
-    connect( ui.radiusSpinBox, SIGNAL(valueChanged(int)), this, SLOT(slotRadiusValueChanged(int)) );
-    connect( ui.previewButton, SIGNAL(clicked()), this, SLOT(slotPreview()) );
-    connect( ui.okButton, SIGNAL(clicked()), this, SLOT(slotRender()) );
-    connect( ui.cancelButton, SIGNAL(clicked()), this, SLOT(close()) );
+    m_mouseIn   = true;
+    m_mouseDown = false;
+    
+    m_tile = QPixmap(100, 100);
+    m_tile.fill(Qt::white);
+    QPainter pt(&m_tile);
+    QColor color(240, 240, 240);
+    pt.fillRect(0, 0, 50, 50, color);
+    pt.fillRect(50, 50, 50, 50, color);
+    pt.end();
+    generateLens(QRectF(0, 0, 80, 80));
+}
+
+void GlowEffectWidget::setImage(CPixmap *image) {
+    m_parentImage = image;
+    QPixmap pix;
+    pix = QPixmap::fromImage(image->toImage());
+    pix = pix.scaled(400, 400);
+    m_image = pix.toImage();
+    update();
 }
 
 template<class T>
@@ -408,24 +419,61 @@ inline const T& qClamp(const T &x, const T &low, const T &high)
     else               return x;
 }
 
-void GlowEffect::slotRadiusValueChanged(int value)
+void GlowEffectWidget::paintEvent(QPaintEvent *e)
 {
-    m_radius = value;
-}
-
-QImage GlowEffect::glow() {
-    QImage back(m_image->size(), QImage::Format_ARGB32_Premultiplied);
+    QImage back(size(), QImage::Format_ARGB32_Premultiplied);
     QPainter p(&back);
+    p.setClipRect(e->rect());
 
-    m_blurred = m_image->toImage();
+    p.drawTiledPixmap(rect(), m_tile);
+    
+    m_blurred = m_image;
 
     int x = (size().width()  - m_blurred.size().width())/2;
     int y = (size().height() - m_blurred.size().height())/2;
 
-    QRectF circle(0,0 ,
-            80, 80);
+    QRectF circle(m_pos.x()-40, m_pos.y()-40,
+                  80, 80);
 
     p.drawImage(qClamp(x, 0, x), 
+                qClamp(y, 0, y),
+                m_image);
+    
+    if (m_mouseDown) {
+        //fastbluralpha(m_blurred, m_radius);
+        //ExpBlur with 0.16 fp for alpha and
+        //8.7 fp for state parameters zR,zG,zB and zA
+        expblur<16,7>(m_blurred, m_radius);
+
+        p.save();
+        p.setCompositionMode(QPainter::CompositionMode_Plus);
+        p.drawImage(qClamp(x, 0, x), 
+                    qClamp(y, 0, y),
+                    m_blurred);
+        p.restore();
+    }
+    p.end();
+
+    QPainter painter(this);
+    painter.drawImage(0, 0, back);
+
+    drawRadius(&painter);
+    
+    painter.end();
+
+}
+
+QImage GlowEffectWidget::glow(QImage &image) 
+{
+    QImage back(image.size(), QImage::Format_ARGB32_Premultiplied);
+    QPainter p(&back);
+
+    m_blurred = image;
+
+    int x = (size().width() - m_blurred.size().width())/2;
+    int y = (size().height() - m_blurred.size().height())/2;
+
+    p.drawImage(qClamp(x, 0, x),
             qClamp(y, 0, y),
             m_blurred);
 
@@ -436,7 +484,7 @@ QImage GlowEffect::glow() {
 
     p.save();
     p.setCompositionMode(QPainter::CompositionMode_Plus);
-    p.drawImage(qClamp(x, 0, x), 
+    p.drawImage(qClamp(x, 0, x),
             qClamp(y, 0, y),
             m_blurred);
     p.restore();
@@ -445,20 +493,106 @@ QImage GlowEffect::glow() {
     return back;
 }
 
-void GlowEffect::slotPreview() {
-    QPixmap pix;
-    pix = QPixmap::fromImage(glow());
-    pix = pix.scaled(ui.previewLabel->size());
-    ui.previewLabel->setPixmap(pix);
+void GlowEffectWidget::render() 
+{
+    // Glow the parent CPixmap
+    QImage img = m_parentImage->toImage();
+    img = glow(img);
+    m_parentImage->updateImage(img);
 }
 
-void GlowEffect::slotRender() {
-    QImage img = glow();
-    m_image->updateImage(img);
-    close();
+void GlowEffectWidget::mousePressEvent(QMouseEvent *e)
+{
+    m_mouseDown = true;
+    if (e->button() == Qt::LeftButton) {
+        m_pos = e->pos();
+        m_mouseDown = true;
+    }
+    update();
 }
 
-QSize GlowEffect::sizeHint() const
+
+void GlowEffectWidget::mouseMoveEvent(QMouseEvent *e)
+{
+    m_pos = e->pos();
+    //m_radius = int(50 * (pos.y()/rect().width()));
+    update();
+}
+
+
+void GlowEffectWidget::mouseReleaseEvent(QMouseEvent *)
+{
+    m_mouseDown = false;
+    update();
+}
+QSize GlowEffectWidget::sizeHint() const
 {
     return QSize(485, 405);
+}
+
+void GlowEffectWidget::enterEvent(QEvent *)
+{
+    m_mouseIn = true;
+    update();
+}
+
+void GlowEffectWidget::leaveEvent(QEvent *)
+{
+    m_mouseIn = false;
+    update();
+}
+
+void GlowEffectWidget::generateLens(const QRectF &bounds)
+{
+    QPainter painter;
+    
+    m_lens = QImage(bounds.size().toSize(),
+                    QImage::Format_ARGB32_Premultiplied);
+    m_lens.fill(0);
+    painter.begin(&m_lens);
+    const qreal rad = 40;
+
+    QRadialGradient gr(rad, rad, rad, 3 * rad / 5, 3 * rad / 5);
+    gr.setColorAt(0.0, QColor(255, 255, 255, 191));
+    gr.setColorAt(0.2, QColor(255, 255, 127, 191));
+    gr.setColorAt(0.9, QColor(150, 150, 200, 63));
+    gr.setColorAt(0.95, QColor(0, 0, 0, 127));
+    gr.setColorAt(1, QColor(0, 0, 0, 0));
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setBrush(gr);
+    painter.setPen(Qt::NoPen);
+    painter.drawEllipse(bounds);
+}
+
+void GlowEffectWidget::wheelEvent(QWheelEvent *e)
+{
+    if (e->delta() > 0)
+        ++m_radius;
+    else
+        --m_radius;
+    m_radius = qClamp(m_radius, 0, 99);
+    update();
+}
+
+void GlowEffectWidget::drawRadius(QPainter *p)
+{
+    p->save();
+    p->setWindow(0, 0, 800, 600);
+    p->setRenderHint(QPainter::Antialiasing);
+    p->setPen(QPen(Qt::black));
+    p->setBrush(QBrush(QColor(193, 193, 193, 127)));
+    p->drawRoundRect(10, 540, 160, 50, 10, 20);
+
+    QFont font("ComicSans", 16);
+    font.setUnderline(true);
+    p->setFont(font);
+    p->drawText(20, 560, "Radius");
+
+    font.setUnderline(false);
+    font.setPointSize(14);
+    p->setFont(font);
+    p->drawText(30, 580,
+                QString("Radius is: %1").arg(m_radius));
+    
+    p->restore();
 }

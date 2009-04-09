@@ -14,13 +14,15 @@ QT = core \
 
 # Input
 HEADERS += CPixmap.h \
-    GlowEffect.h \
+    GlowEffectWidget.h \
+    GlowEffectDialog.h \
     Desk.h \
     FotoWall.h \
     RenderOpts.h
 SOURCES += main.cpp \
     CPixmap.cpp \
-    GlowEffect.cpp \
+    GlowEffectWidget.cpp \
+    GlowEffectDialog.cpp \
     Desk.cpp \
     FotoWall.cpp
 FORMS += FotoWall.ui \
