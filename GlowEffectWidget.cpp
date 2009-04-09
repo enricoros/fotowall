@@ -404,10 +404,7 @@ GlowEffectWidget::GlowEffectWidget(QWidget *parent)
 
 void GlowEffectWidget::setImage(CPixmap *image) {
     m_parentImage = image;
-    QPixmap pix;
-    pix = QPixmap::fromImage(image->toImage());
-    pix = pix.scaled(400, 400);
-    m_image = pix.toImage();
+    m_image = image->toImage().scaled(400,400, Qt::KeepAspectRatio);
     update();
 }
 
