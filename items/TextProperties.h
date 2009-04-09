@@ -30,6 +30,9 @@ class TextProperties : public AbstractProperties {
     private:
         TextContent * m_textContent;
         RichTextEditorDialog * m_editor;
+
+    private Q_SLOTS:
+        void slotClosing();
 };
 
 #endif

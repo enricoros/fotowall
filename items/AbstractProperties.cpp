@@ -228,6 +228,7 @@ void AbstractProperties::animateClose()
     // closure animation
     m_aniDirection = false;
     m_aniTimer.start(20, this);
+    emit closing();
 }
 
 void AbstractProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
@@ -305,16 +306,18 @@ void AbstractProperties::timerEvent(QTimerEvent * event)
     QObject::timerEvent(event);
 }
 
-void AbstractProperties::addTab(QWidget * widget, const QString & label, bool before, bool select)
+void AbstractProperties::addTab(QWidget * widget, const QString & label, bool front, bool select)
 {
-    int idx = 0;
-    if (before)
-        idx = m_commonUi->tab->insertTab(0, widget, label);
-    else
-        idx = m_commonUi->tab->addTab(widget, label);
+    // insert on front/back
+    int idx = m_commonUi->tab->insertTab(front ? 0 : m_commonUi->tab->count(), widget, label);
 
+    // select if requested
     if (select)
         m_commonUi->tab->setCurrentIndex(idx);
+
+    // adjust size after inserting the tab
+    if (m_commonUi->tab->parentWidget())
+        m_commonUi->tab->parentWidget()->adjustSize();
 }
 
 void AbstractProperties::on_applyLooks_clicked()

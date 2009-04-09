@@ -39,12 +39,13 @@ class AbstractProperties : public QGraphicsProxyWidget {
         void animateClose();
 
     Q_SIGNALS:
+        void closing();
         void closed();
         void applyLooks(quint32 frameClass, bool mirrored);
 
     protected:
         // used by subclasses
-        void addTab(QWidget * widget, const QString & label, bool before = false, bool select = false);
+        void addTab(QWidget * widget, const QString & label, bool front = false, bool select = false);
 
         // ::QGraphicsProxyWidget
         void mousePressEvent(QGraphicsSceneMouseEvent * event);

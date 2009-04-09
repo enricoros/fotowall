@@ -539,7 +539,7 @@ void RichTextEditorToolBar::insertImage()
         m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
 }
 
-void RichTextEditorToolBar::paintEvent(QPaintEvent * event) // +fotowall
+void RichTextEditorToolBar::paintEvent(QPaintEvent * /*event*/) // +fotowall
 {
     QPainter p(this);
     QColor windowColor = palette().brush(QPalette::Window).color();
@@ -712,6 +712,8 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     layout->addWidget(m_tab_widget);
     ///layout->addWidget(buttonBox);
 
+    m_editor->setFrameStyle(QFrame::NoFrame);   // +fotowall
+    m_text_edit->setFrameStyle(QFrame::NoFrame);   // +fotowall
     m_editor->setFocus();
 }
 
