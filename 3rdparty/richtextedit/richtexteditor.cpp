@@ -272,7 +272,7 @@ void ColorAction::setColor(const QColor &color)
 
 void ColorAction::chooseColor()
 {
-    if(m_color == QColor(0,0,0)) m_color = QColor(255,255,255);
+    if(m_color == QColor(0,0,0)) m_color = QColor(255,255,255); // +fotowall
     const QColor col = QColorDialog::getColor(m_color, 0);
     if (col.isValid() && col != m_color) {
         setColor(col);
@@ -535,7 +535,7 @@ void RichTextEditorToolBar::insertLink()
 void RichTextEditorToolBar::insertImage()
 {
     ///const QString path = IconSelector::choosePixmapResource(m_core, m_core->resourceModel(), QString(), this);
-    const QString path = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), tr("Image (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (!path.isEmpty())
         m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
 }
@@ -668,7 +668,7 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     m_tab_widget(new QTabWidget),
     m_state(Clean)
 {
-    setWindowTitle(tr("Edit text"));
+    //setWindowTitle(tr("Edit text"));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     m_text_edit->setAcceptRichText(false);

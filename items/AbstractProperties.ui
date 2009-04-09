@@ -6,12 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
+    <width>408</width>
     <height>298</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -58,7 +55,7 @@
          <item row="1" column="1">
           <widget class="QToolButton" name="front">
            <property name="text">
-            <string>Front</string>
+            <string>To Front</string>
            </property>
            <property name="icon">
             <iconset resource="../fotowall.qrc">
@@ -100,7 +97,7 @@
          <item row="1" column="4">
           <widget class="QToolButton" name="back">
            <property name="text">
-            <string>Back</string>
+            <string>To Back</string>
            </property>
            <property name="icon">
             <iconset resource="../fotowall.qrc">
@@ -160,7 +157,7 @@
          <item row="1" column="1">
           <widget class="QToolButton" name="background">
            <property name="text">
-            <string>Background</string>
+            <string>To Background</string>
            </property>
            <property name="icon">
             <iconset resource="../fotowall.qrc">
@@ -188,7 +185,7 @@
          <item row="1" column="3">
           <widget class="QToolButton" name="del">
            <property name="text">
-            <string>Delete</string>
+            <string>Remove</string>
            </property>
            <property name="icon">
             <iconset resource="../fotowall.qrc">

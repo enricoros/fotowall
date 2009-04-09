@@ -61,7 +61,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     }
 
     ButtonItem * bRotate = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
-    bRotate->setToolTip(tr("Hold down SHIFT to snap the rotation.\nDouble click to align the picture."));
+    bRotate->setToolTip(tr("Hold down SHIFT to snap the rotation.\nDouble click to align the object."));
     connect(bRotate, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&,Qt::KeyboardModifiers)));
     connect(bRotate, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
     m_controlItems << bRotate;
@@ -452,7 +452,7 @@ void AbstractContent::slotStackBack()
 
 void AbstractContent::slotSaveAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), QString(), tr("Image (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), QString(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (fileName.isNull())
         return;
     if (QFileInfo(fileName).suffix().isEmpty())
@@ -491,7 +491,7 @@ void AbstractContent::slotSaveAs()
 
     // save image and check errors
     if (!image.save(fileName) || !QFile::exists(fileName)) {
-        QMessageBox::warning(0, tr("Save Error"), tr("Error saving to the file %1").arg(fileName));
+        QMessageBox::warning(0, tr("File Error"), tr("Error saving the Object to '%1'").arg(fileName));
         return;
     }
 }

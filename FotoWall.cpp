@@ -161,7 +161,7 @@ void FotoWall::saveImage()
 {
     QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.6.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), QString(), tr("Image (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), QString(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (fileName.isNull())
         return;
     if (QFileInfo(fileName).suffix().isEmpty())
@@ -187,11 +187,11 @@ void FotoWall::saveImage()
 
     // save image
     if (!image.save(fileName) || !QFile::exists(fileName)) {
-        QMessageBox::warning(this, tr("Rendering Save Error"), tr("Error rendering to this file"));
+        QMessageBox::warning(this, tr("Rendering Error"), tr("Error rendering to the file '%1'").arg(fileName));
         return;
     }
     int size = QFile(fileName).size();
-    QMessageBox::information(this, tr("Image rendered"), tr("The target image is %1 bytes long").arg(size));
+    QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
 }
 
 void FotoWall::saveCD()
@@ -319,7 +319,7 @@ void FotoWall::on_loadButton_clicked()
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this, tr("Load Error"), tr("Error load layout from this file"));
+        QMessageBox::warning(this, tr("File Error"), tr("Error loading Layout from the file '%1'").arg(fileName));
         return;
     }
     QDataStream in(&file);
@@ -336,7 +336,7 @@ void FotoWall::on_saveButton_clicked()
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
-        QMessageBox::warning(this, tr("Save Error"), tr("Error saving layout to this file"));
+        QMessageBox::warning(this, tr("File Error"), tr("Error saving the Layout to the file '%1'").arg(fileName));
         return;
     }
     QDataStream out(&file);
