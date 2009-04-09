@@ -25,11 +25,18 @@ TextProperties::TextProperties(TextContent * textContent, QGraphicsItem * parent
     m_editor = new RichTextEditorDialog();
     m_editor->setMinimumSize(450, 200);
     m_editor->setText(m_textContent->toHtml());
+    m_editor->adjustSize();
     addTab(m_editor, tr("Text"), false, true);
+
+    // callback for closure
+    connect(this, SIGNAL(closing()), this, SLOT(slotClosing()));
 }
 
 TextProperties::~TextProperties()
 {
-    m_textContent->setHtml(m_editor->text(Qt::RichText));
 }
 
+void TextProperties::slotClosing()
+{
+    m_textContent->setHtml(m_editor->text(Qt::RichText));
+}

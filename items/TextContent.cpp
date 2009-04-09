@@ -40,6 +40,9 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     connect(layout, SIGNAL(documentSizeChanged(const QSizeF &)), this, SLOT(slotResize(const QSizeF &)));
 
     // template text
+    QFont font;
+    font.setPointSize(16);
+    m_text->setDefaultFont(font);
     m_text->setPlainText(tr("insert text here..."));
 }
 

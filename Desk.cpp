@@ -352,14 +352,6 @@ void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
         popup.setSeparatorsCollapsible(false);
         //popup.addSeparator()->setText( ... );
 
-        QAction * aSetTitle = new QAction(tr("Set title..."), &popup);
-        connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotSetTitle()));
-        popup.addAction(aSetTitle);
-
-        QAction * aClearTitle = new QAction(tr("Clear title"), &popup);
-        connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotClearTitle()));
-        popup.addAction(aClearTitle);
-
         QAction * aTop = new QAction(tr("Top bar"), &popup);
         aTop->setCheckable(true);
         aTop->setChecked(m_topBarEnabled);
@@ -371,6 +363,16 @@ void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
         aBottom->setChecked(m_bottomBarEnabled);
         connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotSetBottomBarEnabled(bool)));
         popup.addAction(aBottom);
+
+        popup.addSeparator();
+
+        QAction * aSetTitle = new QAction(tr("Set title..."), &popup);
+        connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotSetTitle()));
+        popup.addAction(aSetTitle);
+
+        QAction * aClearTitle = new QAction(tr("Clear title"), &popup);
+        connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotClearTitle()));
+        popup.addAction(aClearTitle);
 
         popup.exec(event->screenPos());
     }
