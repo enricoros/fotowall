@@ -693,7 +693,9 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     plain_edit_layout->addWidget(m_text_edit);
 
     m_tab_widget->setTabPosition(QTabWidget::South);
+#if QT_VERSION > 0x040500
     m_tab_widget->setDocumentMode(true); // +fotowall
+#endif
     m_tab_widget->addTab(rich_edit, tr("Rich Text"));
     m_tab_widget->addTab(plain_edit, tr("Source"));
     connect(m_tab_widget, SIGNAL(currentChanged(int)),
