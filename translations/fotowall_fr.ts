@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr">
+<!DOCTYPE TS><TS version="1.1" language="fr">
 <defaultcodec></defaultcodec>
 <context>
     <name>AbstractContent</name>
@@ -8,43 +7,44 @@
         <location filename="../items/AbstractContent.cpp" line="56"/>
         <source>Hold down SHIFT for ignoring aspect ratio.
 Double click to restore the aspect ratio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintenir SHIFT pour ne pas conserver les proportions.
+Double cliquez pour restorer les proportions.</translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="64"/>
         <source>Hold down SHIFT to snap the rotation.
 Double click to align the object.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintenir SHIFT pour tourner pas-à-pas.</translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="75"/>
         <source>Change properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier les propriétés...</translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="80"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="455"/>
         <source>Choose the Image file</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir l&apos;image</translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="455"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
-        <translation type="unfinished"></translation>
+        <translation>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="494"/>
         <source>File Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de fichier</translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="494"/>
         <source>Error saving the Object to &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur en sauvegardant l&apos;Objet dans &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -52,67 +52,67 @@ Double click to align the object.</source>
     <message>
         <location filename="../items/AbstractProperties.ui" line="21"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Général</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="35"/>
         <source>Stacking</source>
-        <translation type="unfinished"></translation>
+        <translation>Empilement</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="72"/>
         <source>Raise</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="86"/>
         <source>Lower</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="137"/>
         <source>Operations</source>
-        <translation type="unfinished"></translation>
+        <translation>Opérations</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="174"/>
         <source>Save</source>
-        <translation type="unfinished">Sauvegarder</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="188"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="58"/>
         <source>To Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Premier plan</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="100"/>
         <source>To Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrière plan</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="160"/>
         <source>To Background</source>
-        <translation type="unfinished"></translation>
+        <translation>En fond</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="227"/>
         <source>Looks</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparences</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="234"/>
         <source>apply to all</source>
-        <translation type="unfinished"></translation>
+        <translation>appliquer à tous</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui" line="290"/>
         <source>Show Reflection</source>
-        <translation type="unfinished">Afficher le reflet</translation>
+        <translation>Afficher le reflet</translation>
     </message>
 </context>
 <context>
@@ -120,7 +120,7 @@ Double click to align the object.</source>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="254"/>
         <source>Text Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur du texte</translation>
     </message>
 </context>
 <context>
@@ -128,42 +128,42 @@ Double click to align the object.</source>
     <message>
         <location filename="../Desk.cpp" line="390"/>
         <source>Top bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre du haut</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="396"/>
         <source>Bottom bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre du bas</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="404"/>
         <source>Set title...</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir le titre...</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="408"/>
         <source>Clear title</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le titre</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="509"/>
         <source>Back</source>
-        <translation type="unfinished">Arrière-plan</translation>
+        <translation>Arrière-plan</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="513"/>
         <source>Front</source>
-        <translation type="unfinished">Premier-plan</translation>
+        <translation>Premier-plan</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="713"/>
         <source>Title</source>
-        <translation type="unfinished">Titre</translation>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="713"/>
         <source>Insert the title</source>
-        <translation type="unfinished">Insérez le titre</translation>
+        <translation>Insérez le titre</translation>
     </message>
 </context>
 <context>
@@ -182,43 +182,43 @@ Double click to align the object.</source>
         <location filename="../FotoWall.cpp" line="162"/>
         <source>This function is being rewritten for version 0.6.
 In the meantime, while not the optimum, you can still get high quality results ;-)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette fonction est en ré-écriture pour la version 0.6.
+Pendant ce temps, même si elle n&apos;est pas optimale, vous pouvez toujours optenir des résultats de bonne qualité ;-)</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="164"/>
         <source>Choose the Image file</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez l&apos;image</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="164"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
-        <translation type="unfinished"></translation>
+        <translation>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="190"/>
         <source>Rendering Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de rendu</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="190"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du rendu dans le fichier  &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="194"/>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Effectué</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="257"/>
         <source>export...</source>
-        <translation type="unfinished"></translation>
+        <translation>exporter...</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="268"/>
         <location filename="../FotoWall.cpp" line="278"/>
         <source>print...</source>
-        <translation type="unfinished"></translation>
+        <translation>imprimer...</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="309"/>
@@ -233,26 +233,24 @@ Do you want to open the web page?</source>
 Voulez vous ouvrir la page Web ?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="316"/>
         <location filename="../FotoWall.cpp" line="331"/>
         <source>Select Layout file</source>
         <translation>Séléctionnez un projet</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="322"/>
         <location filename="../FotoWall.cpp" line="339"/>
         <source>File Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de fichier</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="322"/>
         <source>Error loading Layout from the file &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur en chargeant le projet depuis le fichier  &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="339"/>
         <source>Error saving the Layout to the file &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur en sauvegardant le projet dans le fichier &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="162"/>
@@ -281,34 +279,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../FotoWall.ui" line="14"/>
         <source>FotoWall 0.6</source>
-        <translation type="unfinished"></translation>
+        <translation>FotoWall 0.6</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="26"/>
         <source>#topBar {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
 }</source>
-        <translation type="unfinished"></translation>
+        <translation>#topBar {￼    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))￼}</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="139"/>
         <source>add text</source>
-        <translation type="unfinished"></translation>
+        <translation>ajouter du texte</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="166"/>
         <source>Fotowall</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotowall</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="171"/>
         <source>CD Cover</source>
-        <translation type="unfinished"></translation>
+        <translation>Couverture de CD</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="176"/>
         <source>DVD Cover</source>
-        <translation type="unfinished"></translation>
+        <translation>Couverture de DVD</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="199"/>
@@ -317,7 +315,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;introduction&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;￼&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;￼p, li { white-space: pre-wrap; }￼&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;￼&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;introduction&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="264"/>
@@ -340,7 +338,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../GlowEffectDialog.ui" line="13"/>
         <source>Glow effect</source>
-        <translation type="unfinished"></translation>
+        <translation>Effet lumineux</translation>
     </message>
     <message>
         <location filename="../GlowEffectDialog.ui" line="19"/>
@@ -350,17 +348,17 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Scroll &lt;/span&gt;wheel to change the radius. &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Click&lt;/span&gt; on the picture to get a preview.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;￼&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;￼p, li { white-space: pre-wrap; }￼&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;￼&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Faites  &lt;span style=&quot; font-weight:600;&quot;&gt;défiler la molette &lt;/span&gt;pour changer le rayon. &lt;/p&gt;￼&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cliquez&lt;/span&gt; sur l&apos;image pour avoir un aperçu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../GlowEffectDialog.ui" line="49"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Ok</translation>
     </message>
     <message>
         <location filename="../GlowEffectDialog.ui" line="56"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -368,26 +366,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="196"/>
         <source>Insert HTML entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérez des entités HTML</translation>
     </message>
 </context>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="34"/>
         <location filename="../items/PictureContent.cpp" line="74"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../items/PictureContent.cpp" line="38"/>
         <source>Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner horizontallement</translation>
     </message>
     <message>
         <location filename="../items/PictureContent.cpp" line="44"/>
         <source>Flip vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner verticallement</translation>
     </message>
 </context>
 <context>
@@ -395,69 +392,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/PictureProperties.cpp" line="29"/>
         <source>Picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Image</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.cpp" line="32"/>
         <source>Invert colors</source>
-        <translation type="unfinished">Inverser les couleurs
-</translation>
+        <translation>Inverser les couleurs</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.cpp" line="33"/>
         <source>Invert the colors of the picture</source>
-        <translation type="unfinished">Inverse les couleurs de l&apos;image
-</translation>
+        <translation>Inverse les couleurs de l&apos;image</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.cpp" line="35"/>
         <source>NVG</source>
-        <translation type="unfinished">NVG</translation>
+        <translation>Niveaux de gris</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.cpp" line="36"/>
         <source>Set the colors to levels of gray</source>
-        <translation type="unfinished">Convertir en niveau de gris</translation>
+        <translation>Convertir en niveau de gris</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.cpp" line="38"/>
         <source>Black and White</source>
-        <translation type="unfinished">Noir et blanc</translation>
+        <translation>Noir et blanc</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.cpp" line="40"/>
         <source>Glow effect</source>
-        <translation type="unfinished"></translation>
+        <translation>Effet lumineux</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.cpp" line="42"/>
         <source>No effects</source>
-        <translation type="unfinished">Aucun effet</translation>
+        <translation>Aucun effet</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.ui" line="25"/>
         <source>Transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformer</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.ui" line="48"/>
         <source>Invert</source>
-        <translation type="unfinished">Inverser</translation>
+        <translation>Inverser</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.ui" line="62"/>
         <source>Flip</source>
-        <translation type="unfinished">Retourner</translation>
+        <translation>Retourner</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.ui" line="101"/>
         <source>Effects</source>
-        <translation type="unfinished">Effets</translation>
+        <translation>Effets</translation>
     </message>
     <message>
         <location filename="../items/PictureProperties.ui" line="108"/>
         <source>apply to all</source>
-        <translation type="unfinished"></translation>
+        <translation>appliquer à tous</translation>
     </message>
 </context>
 <context>
@@ -465,12 +460,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="699"/>
         <source>Rich Text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Texte riche</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="700"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Source</translation>
     </message>
 </context>
 <context>
@@ -478,57 +473,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="379"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Gras</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="380"/>
         <source>CTRL+B</source>
-        <translation type="unfinished"></translation>
+        <translation>CTRL+B</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="385"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Italique</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="386"/>
         <source>CTRL+I</source>
-        <translation type="unfinished"></translation>
+        <translation>CTRL+I</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="391"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Souligné</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="392"/>
         <source>CTRL+U</source>
-        <translation type="unfinished"></translation>
+        <translation>CTRL+U</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="431"/>
         <source>Superscript</source>
-        <translation type="unfinished"></translation>
+        <translation>Exposant</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="437"/>
         <source>Subscript</source>
-        <translation type="unfinished"></translation>
+        <translation>Indice</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="451"/>
         <source>Insert &amp;Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une &amp;Image</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="537"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir un fichier</translation>
     </message>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="537"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
-        <translation type="unfinished"></translation>
+        <translation>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
 </context>
 <context>
@@ -554,7 +549,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/TextContent.cpp" line="46"/>
         <source>insert text here...</source>
-        <translation type="unfinished"></translation>
+        <translation>insérer du texte ici...</translation>
     </message>
 </context>
 <context>
@@ -562,7 +557,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/TextProperties.cpp" line="29"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte</translation>
     </message>
 </context>
 </TS>
