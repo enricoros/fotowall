@@ -155,14 +155,6 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
 #endif
     m_commonUi->setupUi(widget);
-    m_commonUi->buttonBox->clear();
-    QPushButton * applyButton = new QPushButton(style()->standardIcon(QStyle::SP_DialogApplyButton), tr("Apply to All"));
-    applyButton->setProperty("applyall", true);
-    m_commonUi->buttonBox->addButton(applyButton, QDialogButtonBox::ApplyRole);
-#if 0
-    QPushButton * closeButton = new QPushButton(style()->standardIcon(QStyle::SP_DialogCloseButton), tr("Close"));
-    m_commonUi->buttonBox->addButton(closeButton, QDialogButtonBox::RejectRole);
-#endif
 
     // add frame items to the listview
     foreach (quint32 frameClass, FrameFactory::classes()) {
@@ -176,17 +168,6 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         item->setData(Qt::UserRole, frameClass);
     }
-
-    connect(m_commonUi->front, SIGNAL(clicked()), m_content, SLOT(slotStackFront()));
-    connect(m_commonUi->raise, SIGNAL(clicked()), m_content, SLOT(slotStackRaise()));
-    connect(m_commonUi->lower, SIGNAL(clicked()), m_content, SLOT(slotStackLower()));
-    connect(m_commonUi->back, SIGNAL(clicked()), m_content, SLOT(slotStackBack()));
-    connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(backgroundMe()));
-    connect(m_commonUi->save, SIGNAL(clicked()), m_content, SLOT(slotSaveAs()));
-    connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(deleteMe()), Qt::QueuedConnection);
-    connect(m_commonUi->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotFrameSelected(QListWidgetItem*)));
-    connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(slotToggleMirror(bool)));
-    connect(m_commonUi->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(slotClose(QAbstractButton*)));
 
     // select the frame
     quint32 frameClass = m_content->frameClass();
@@ -203,12 +184,24 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
     // read other properties
     m_commonUi->reflection->setChecked(m_content->mirrorEnabled());
 
+    connect(m_commonUi->front, SIGNAL(clicked()), m_content, SLOT(slotStackFront()));
+    connect(m_commonUi->raise, SIGNAL(clicked()), m_content, SLOT(slotStackRaise()));
+    connect(m_commonUi->lower, SIGNAL(clicked()), m_content, SLOT(slotStackLower()));
+    connect(m_commonUi->back, SIGNAL(clicked()), m_content, SLOT(slotStackBack()));
+    connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(backgroundMe()));
+    connect(m_commonUi->save, SIGNAL(clicked()), m_content, SLOT(slotSaveAs()));
+    connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(deleteMe()), Qt::QueuedConnection);
+    // autoconnection doesn't work because we don't do ->setupUi(this), so here we connect manually
+    connect(m_commonUi->applyLooks, SIGNAL(clicked()), this, SLOT(on_applyLooks_clicked()));
+    connect(m_commonUi->listWidget, SIGNAL(itemSelectionChanged()), this, SLOT(on_listWidget_itemSelectionChanged()));
+    connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(on_reflection_toggled(bool)));
+
     // ITEM setup
     setWidget(widget);
     setZValue(99999);
 
     // Transition setup
-    m_aniTimer.start(20, this);
+    m_aniTimer.start(30, this);
 }
 
 AbstractProperties::~AbstractProperties()
@@ -232,13 +225,15 @@ void AbstractProperties::keepInBoundaries(const QRect & rect)
 
 void AbstractProperties::animateClose()
 {
-    slotClose(0);
+    // closure animation
+    m_aniDirection = false;
+    m_aniTimer.start(20, this);
 }
 
 void AbstractProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
-        slotClose(0);
+        animateClose();
     QGraphicsProxyWidget::mousePressEvent(event);
 }
 
@@ -322,11 +317,18 @@ void AbstractProperties::addTab(QWidget * widget, const QString & label, bool be
         m_commonUi->tab->setCurrentIndex(idx);
 }
 
-void AbstractProperties::slotFrameSelected(QListWidgetItem * item)
+void AbstractProperties::on_applyLooks_clicked()
 {
-    // get the frame class
-    if (!item)
+    emit applyLooks(m_content->frameClass(), m_content->mirrorEnabled());
+}
+
+void AbstractProperties::on_listWidget_itemSelectionChanged()
+{
+    // get the frameClass
+    QList<QListWidgetItem *> items = m_commonUi->listWidget->selectedItems();
+    if (items.isEmpty())
         return;
+    QListWidgetItem * item = items.first();
     quint32 frameClass = item->data(Qt::UserRole).toUInt();
     if (!frameClass)
         return;
@@ -337,29 +339,8 @@ void AbstractProperties::slotFrameSelected(QListWidgetItem * item)
         m_content->setFrame(frame);
 }
 
-void AbstractProperties::slotToggleMirror(bool enabled)
+void AbstractProperties::on_reflection_toggled(bool checked)
 {
-    RenderOpts::LastMirrorEnabled = enabled;
-    m_content->setMirrorEnabled(enabled);
-}
-
-void AbstractProperties::slotClose(QAbstractButton * button)
-{
-    // apply to all if pressed
-    if (button && button->property("applyall").toBool() == true) {
-        emit applyAll(m_content->frameClass(), m_content->mirrorEnabled());
-
-/**** XXXXXXXXXX FIXME ###
-        QList<QListWidgetItem *> selectedEffects = m_commonUi->effectsListWidget->selectedItems();
-        QList<QListWidgetItem *>::iterator it = selectedEffects.begin();
-        for (; it != selectedEffects.end(); it++) {
-            int effectClass = (*it)->data(Qt::UserRole).toUInt();
-            emit applyEffectToAll(effectClass);
-        }
-        */
-    }
-
-    // closure animation
-    m_aniDirection = false;
-    m_aniTimer.start(20, this);
+    RenderOpts::LastMirrorEnabled = checked;
+    m_content->setMirrorEnabled(checked);
 }

@@ -28,14 +28,15 @@ class PictureProperties : public AbstractProperties {
         ~PictureProperties();
 
     Q_SIGNALS:
-        void applyEffectToAll(int effectClass);
+        void applyEffects(int effectClass);
 
     private:
         Ui::PictureProperties * m_pictureUi;
         PictureContent *        m_pictureContent;
 
     private Q_SLOTS:
-        void slotEffectSelected(QListWidgetItem * item);
+        void on_applyEffects_clicked();
+        void on_effectsList_itemActivated(QListWidgetItem * item);
 };
 
 #endif

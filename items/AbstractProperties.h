@@ -40,7 +40,7 @@ class AbstractProperties : public QGraphicsProxyWidget {
 
     Q_SIGNALS:
         void closed();
-        void applyAll(quint32 frameClass, bool mirrored);
+        void applyLooks(quint32 frameClass, bool mirrored);
 
     protected:
         // used by subclasses
@@ -62,9 +62,9 @@ class AbstractProperties : public QGraphicsProxyWidget {
         QBasicTimer                 m_aniTimer;
 
     private Q_SLOTS:
-        void slotFrameSelected(QListWidgetItem * item);
-        void slotToggleMirror(bool enabled);
-        void slotClose(QAbstractButton * button);
+        void on_applyLooks_clicked();
+        void on_listWidget_itemSelectionChanged();
+        void on_reflection_toggled(bool checked);
 };
 
 #endif

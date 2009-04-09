@@ -29,20 +29,22 @@ PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsI
     addTab(pictureTab, tr("Picture"));
 
     // add effects items to the listview
-    QListWidgetItem *item_invert = new QListWidgetItem(QIcon(":/data/effects-icons/invert-effect.png"), tr("Invert colors"), m_pictureUi->effectsListWidget);
+    QListWidgetItem *item_invert = new QListWidgetItem(QIcon(":/data/effects-icons/invert-effect.png"), tr("Invert colors"), m_pictureUi->effectsList);
     item_invert->setToolTip(tr("Invert the colors of the picture"));
     item_invert->setData(Qt::UserRole, 0);
-    QListWidgetItem *item_nvg = new QListWidgetItem(QIcon(":/data/effects-icons/nvg-effect.png"), tr("NVG"), m_pictureUi->effectsListWidget);
+    QListWidgetItem *item_nvg = new QListWidgetItem(QIcon(":/data/effects-icons/nvg-effect.png"), tr("NVG"), m_pictureUi->effectsList);
     item_nvg->setToolTip(tr("Set the colors to levels of gray"));
     item_nvg->setData(Qt::UserRole, 1);
-    QListWidgetItem *item_black = new QListWidgetItem(QIcon(":/data/effects-icons/black-and-white-effect.png"), tr("Black and White"), m_pictureUi->effectsListWidget);
+    QListWidgetItem *item_black = new QListWidgetItem(QIcon(":/data/effects-icons/black-and-white-effect.png"), tr("Black and White"), m_pictureUi->effectsList);
     item_black->setData(Qt::UserRole, 2);
-    QListWidgetItem *no_effect = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("No effects"), m_pictureUi->effectsListWidget);
+    QListWidgetItem *no_effect = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("No effects"), m_pictureUi->effectsList);
     no_effect->setData(Qt::UserRole, 3);
 
     connect(m_pictureUi->invertButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipVertically()));
     connect(m_pictureUi->flipButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipHorizontally()));
-    connect(m_pictureUi->effectsListWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(slotEffectSelected(QListWidgetItem*)));
+    // autoconnection doesn't work because we don't do ->setupUi(this), so here we connect manually
+    connect(m_pictureUi->applyEffects, SIGNAL(clicked()), this, SLOT(on_applyEffects_clicked()));
+    connect(m_pictureUi->effectsList, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(on_effectsList_itemActivated(QListWidgetItem*)));
 }
 
 PictureProperties::~PictureProperties()
@@ -50,7 +52,17 @@ PictureProperties::~PictureProperties()
     delete m_pictureUi;
 }
 
-void PictureProperties::slotEffectSelected(QListWidgetItem * item)
+void PictureProperties::on_applyEffects_clicked()
+{
+    QList<QListWidgetItem *> selectedEffects = m_pictureUi->effectsList->selectedItems();
+    QList<QListWidgetItem *>::iterator it = selectedEffects.begin();
+    for (; it != selectedEffects.end(); it++) {
+        int effectClass = (*it)->data(Qt::UserRole).toUInt();
+        emit applyEffects(effectClass);
+    }
+}
+
+void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
 {
     // get the effect class
     if (!item)

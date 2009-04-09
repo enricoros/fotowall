@@ -85,10 +85,8 @@ class Desk : public QGraphicsScene
         void slotStackContent(int);
         void slotDeleteContent();
         void slotDeleteProperties();
-        // Apply a frame to all images
-        void slotApplyAll(quint32 frameClass, bool mirrored);
-        // Apply an effect to all images
-        void slotApplyEffectToPictures(int effectClass);
+        void slotApplyLooks(quint32 frameClass, bool mirrored);
+        void slotApplyEffects(int effectClass);
 
         void slotSetTopBarEnabled(bool enabled);
         void slotSetBottomBarEnabled(bool enabled);

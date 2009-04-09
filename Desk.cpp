@@ -475,7 +475,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     PictureContent * picture = dynamic_cast<PictureContent *>(content);
     if (picture) {
         p = new PictureProperties(picture);
-        connect(p, SIGNAL(applyEffectToAll(int)), this, SLOT(slotApplyEffectToPictures(int)));
+        connect(p, SIGNAL(applyEffects(int)), this, SLOT(slotApplyEffects(int)));
     }
 
     // text properties (dialog and connections)
@@ -489,7 +489,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
         m_properties.append(p);
         addItem(p);
         connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
-        connect(p, SIGNAL(applyAll(quint32,bool)), this, SLOT(slotApplyAll(quint32,bool)));
+        connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
         p->show();
         p->setPos(scenePoint - QPoint(10, 10));
         p->keepInBoundaries(sceneRect().toRect());
@@ -607,7 +607,7 @@ void Desk::slotDeleteProperties()
     properties->deleteLater();
 }
 
-void Desk::slotApplyAll(quint32 frameClass, bool mirrored)
+void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
 {
     foreach (AbstractContent * content, m_content) {
         content->setFrame(FrameFactory::createFrame(frameClass));
@@ -615,7 +615,7 @@ void Desk::slotApplyAll(quint32 frameClass, bool mirrored)
     }
 }
 
-void Desk::slotApplyEffectToPictures(int effectClass)
+void Desk::slotApplyEffects(int effectClass)
 {
     foreach (AbstractContent * content, m_content) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
