@@ -47,7 +47,6 @@ int main( int argc, char ** args )
     s.setValue("fotowall/firstTime", false);
 
     FotoWall fw;
-    fw.resize(700, 500);
     fw.showMaximized();
     if (firstTime)
         fw.showHelp();

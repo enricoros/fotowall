@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>567</width>
-    <height>344</height>
+    <width>592</width>
+    <height>354</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,10 +53,10 @@
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
+             <color alpha="32">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
              </color>
             </brush>
            </colorrole>
@@ -73,10 +73,10 @@
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
+             <color alpha="32">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
              </color>
             </brush>
            </colorrole>
@@ -84,19 +84,19 @@
           <disabled>
            <colorrole role="Base">
             <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
+             <color alpha="32">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
              </color>
             </brush>
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
+             <color alpha="32">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
              </color>
             </brush>
            </colorrole>
@@ -160,6 +160,25 @@
        </widget>
       </item>
       <item>
+       <widget class="QComboBox" name="projectType">
+        <item>
+         <property name="text">
+          <string>Fotowall</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>CD Cover</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DVD Cover</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
        <spacer name="spacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -220,7 +239,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QToolButton" name="exportButton">
         <property name="text">
-         <string>export</string>
+         <string/>
         </property>
         <property name="icon">
          <iconset resource="fotowall.qrc">

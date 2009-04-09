@@ -37,7 +37,7 @@ class Desk : public QGraphicsScene
 
         // add content
         void addPictures(const QStringList & fileNames);
-        void addText();
+        void addTextContent();
 
         // resize the scene to 0,0,size
         void resize(const QSize & size);
@@ -51,6 +51,14 @@ class Desk : public QGraphicsScene
         void save(QDataStream & data) const;
         void restore(QDataStream & data);
 
+        // get and set the project mode (CD cover, DVD,...).
+        enum Mode { ModeNormal = 1, ModeCD = 2, ModeDVD = 3 };
+        Mode projectMode() const;
+        void setProjectMode(Mode mode);
+
+        // render the Desk, but not the invisible items
+        void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
+
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
         void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
@@ -63,6 +71,8 @@ class Desk : public QGraphicsScene
     private:
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
+        void setDVDMarkers();
+        void clearMarkers();
         QList<AbstractContent *> m_content;
         QList<AbstractProperties *> m_properties;
         QList<HighlightItem *> m_highlightItems;
@@ -78,6 +88,9 @@ class Desk : public QGraphicsScene
         QRectF m_rect;
         QString m_titleText;
         QPixmap m_backCache;
+        Mode m_projectMode;
+        // Used by some modes to show information widgets, which won't be rendered
+        QList<QGraphicsItem *> m_markerItems;
 
     private Q_SLOTS:
         void slotConfigureContent(const QPoint & scenePoint);

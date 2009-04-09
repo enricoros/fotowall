@@ -21,8 +21,10 @@
 #include "PictureProperties.h"
 #include "TextProperties.h"
 #include "frames/FrameFactory.h"
-#include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
+#include <QGraphicsView>
+#include <QAbstractTextDocumentLayout>
+#include <QTextDocument>
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMenu>
@@ -40,6 +42,7 @@ Desk::Desk(QObject * parent)
     , m_backContent(0)
     , m_topBarEnabled(true)
     , m_bottomBarEnabled(false)
+    , m_projectMode(ModeNormal)
 {
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
@@ -107,7 +110,7 @@ void Desk::addPictures(const QStringList & fileNames)
     }
 }
 
-void Desk::addText()
+void Desk::addTextContent()
 {
     createText(sceneRect().center().toPoint());
 }
@@ -258,6 +261,38 @@ void Desk::restore(QDataStream & data)
         }
     }
     update();
+}
+
+/// Modes
+Desk::Mode Desk::projectMode() const
+{
+    return m_projectMode;
+}
+
+void Desk::setProjectMode(Mode mode)
+{
+    if (m_projectMode != mode) {
+        m_projectMode = mode;
+        switch (mode) {
+            case ModeDVD:
+                setDVDMarkers();
+                break;
+            default:
+                clearMarkers();
+                break;
+        }
+    }
+}
+
+void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode)
+{
+    foreach(QGraphicsItem *item, m_markerItems) {
+        item->hide();
+    }
+    QGraphicsScene::render( painter, target , source, aspectRatioMode );
+    foreach(QGraphicsItem *item, m_markerItems) {
+        item->show();
+    }
 }
 
 /// Drag & Drop image files
@@ -458,6 +493,34 @@ TextContent * Desk::createText(const QPoint & pos)
     t->show();
     m_content.append(t);
     return t;
+}
+
+/// Markers
+void Desk::setDVDMarkers()
+{
+    // Add informations items to show the back, front, and side position
+
+    QList<QGraphicsView *> view = views();
+    int faceW = 5.08 * view.at(0)->logicalDpiX();
+    int sideW = 0.67 * view.at(0)->logicalDpiY();
+    m_markerItems.push_back(addLine(faceW, 0, faceW, height()));
+    m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
+
+    QGraphicsTextItem *textBack = addText(tr("Back"), QFont("", 18, -1, true));
+    textBack->setPos( (faceW - textBack->document()->documentLayout()->documentSize().width())/2,
+                    (height() - textBack->document()->documentLayout()->documentSize().height())/2 );
+    m_markerItems.push_back(textBack);
+    QGraphicsTextItem *textFront = addText(tr("Front"), QFont("", 18, -1, true));
+    textFront->setPos( (faceW+sideW) + faceW/2 - textFront->document()->documentLayout()->documentSize().width()/2,
+                    (height() - textFront->document()->documentLayout()->documentSize().height())/2 );
+    m_markerItems.push_back(textFront);
+}
+
+void Desk::clearMarkers()
+{
+    // Remove the information items
+    qDeleteAll(m_markerItems);
+    m_markerItems.clear();
 }
 
 /// Slots

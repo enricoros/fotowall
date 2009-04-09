@@ -30,6 +30,9 @@ class FotoWall : public QWidget
 
         void showHelp();
         void checkForTutorial();
+        void saveImage();
+        void saveCD();
+        void saveDVD();
 
     private:
         Ui::FotoWall *  ui;
@@ -37,6 +40,7 @@ class FotoWall : public QWidget
         Desk *          m_desk;
 
     private Q_SLOTS:
+        void on_projectType_currentIndexChanged(int index);
         void on_addPictures_clicked();
         void on_addText_clicked();
         void on_helpLabel_linkActivated(const QString & link);
