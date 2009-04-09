@@ -272,6 +272,7 @@ void ColorAction::setColor(const QColor &color)
 
 void ColorAction::chooseColor()
 {
+    if(m_color == QColor(0,0,0)) m_color = QColor(255,255,255);
     const QColor col = QColorDialog::getColor(m_color, 0);
     if (col.isValid() && col != m_color) {
         setColor(col);
