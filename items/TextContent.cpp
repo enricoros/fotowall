@@ -33,6 +33,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
 {
     setFrame(0);
     setFrameTextEnabled(false);
+    setToolTip(tr("Right click to change the text"));
 
     // create a text document
     m_text = new QTextDocument(this);
@@ -41,6 +42,9 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
 
     // template text
     QFont font;
+#ifdef Q_OS_WIN32
+    font.setFamily("Arial");
+#endif
     font.setPointSize(16);
     m_text->setDefaultFont(font);
     m_text->setPlainText(tr("insert text here..."));

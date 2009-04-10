@@ -27,6 +27,7 @@ TextProperties::TextProperties(TextContent * textContent, QGraphicsItem * parent
     m_editor->setText(m_textContent->toHtml());
     m_editor->adjustSize();
     addTab(m_editor, tr("Text"), false, true);
+    m_editor->setFocus();
 
     // callback for closure
     connect(this, SIGNAL(closing()), this, SLOT(slotClosing()));

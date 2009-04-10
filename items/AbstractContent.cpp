@@ -503,7 +503,7 @@ void AbstractContent::layoutChildren()
         const int margin = 4;
         const int spacing = 4;
         int right = m_rect.right() - margin;
-        int bottom = m_rect.bottom() - margin;
+        int bottom = m_rect.bottom() + margin; // if no frame, offset the buttons a little on bottom
         foreach (ButtonItem * button, m_controlItems) {
             button->setPos(right - button->width() / 2, bottom - button->height() / 2);
             right -= button->width() + spacing;

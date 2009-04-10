@@ -96,6 +96,12 @@ public:
 
     QToolBar *createToolBar(QWidget *parent = 0);
 
+Q_SIGNALS:
+    void wheelScrolled(int steps); // +fotowall
+
+private:
+    void wheelEvent(QWheelEvent * e); // +fotowall
+
 public slots:
     void setFontBold(bool b);
     void setFontPointSize(double);
@@ -299,6 +305,7 @@ private slots:
     void setVAlignSub(bool sub);
     ///void insertLink();
     void insertImage();
+    void slotWheelScrolled(int steps);    // +fotowall
 
 protected: // +fotowall
     void paintEvent(QPaintEvent * event);   // +fotowall
@@ -356,7 +363,15 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
 
     // Font size combo box
     m_font_size_input->setEditable(false);
-    const QList<int> font_sizes = QFontDatabase::standardSizes();
+
+    QList<int> font_sizes = QFontDatabase::standardSizes(); // +fotowall
+    qreal lastSize = font_sizes.last();
+    qreal magFactor = 1.1892;
+    while (font_sizes.last() < 400) {   // +fotowall
+        font_sizes.append((int)(lastSize * magFactor));
+        magFactor *= 1.1892;
+    }
+
     foreach (int font_size, font_sizes)
         m_font_size_input->addItem(QString::number(font_size));
 
@@ -454,6 +469,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
     addAction(m_image_action);
 
 
+    connect(editor, SIGNAL(wheelScrolled(int)), this, SLOT(slotWheelScrolled(int)));    // +fotowall
     connect(editor, SIGNAL(textChanged()), this, SLOT(updateActions()));
     connect(editor, SIGNAL(stateChanged()), this, SLOT(updateActions()));
 
@@ -540,6 +556,23 @@ void RichTextEditorToolBar::insertImage()
         m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
 }
 
+void RichTextEditorToolBar::slotWheelScrolled(int steps)    // +fotowall
+{
+    // find out the new font index
+    const int idx = m_font_size_input->currentIndex();
+    if (idx == -1)
+        return;
+    int newIdx = idx + steps;
+    if (newIdx < 0)
+        newIdx = 0;
+    else if (newIdx > m_font_size_input->count())
+        newIdx = m_font_size_input->count();
+
+    // change index
+    m_font_size_input->setCurrentIndex(newIdx);
+    sizeInputActivated(m_font_size_input->currentText());
+}
+
 void RichTextEditorToolBar::paintEvent(QPaintEvent * /*event*/) // +fotowall
 {
     QPainter p(this);
@@ -551,7 +584,6 @@ void RichTextEditorToolBar::paintEvent(QPaintEvent * /*event*/) // +fotowall
     p.setCompositionMode(QPainter::CompositionMode_Source);
     p.fillRect(rect(), lg);
 }
-
 
 void RichTextEditorToolBar::updateActions()
 {
@@ -610,6 +642,11 @@ RichTextEditor::RichTextEditor(QWidget *parent)
 QToolBar *RichTextEditor::createToolBar(QWidget *parent)
 {
     return new RichTextEditorToolBar(this, parent);
+}
+
+void RichTextEditor::wheelEvent(QWheelEvent * e)    // +fotowall
+{
+    emit wheelScrolled(-e->delta() / 120);
 }
 
 void RichTextEditor::setFontBold(bool b)
@@ -743,6 +780,11 @@ void RichTextEditorDialog::setText(const QString &text)
     m_editor->setText(text);
     m_text_edit->setPlainText(text);
     m_state = Clean;
+
+    // move the cursor to refresh attributes
+    QTextCursor cursor = m_editor->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    m_editor->setTextCursor(cursor);
 }
 
 QString RichTextEditorDialog::text(Qt::TextFormat format) const
