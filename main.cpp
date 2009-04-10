@@ -30,6 +30,7 @@ Q_IMPORT_PLUGIN(qtiff)
 // init RenderOpts defaults
 bool RenderOpts::LastMirrorEnabled = true;
 bool RenderOpts::HQRendering = false;
+bool RenderOpts::FirstRun = false;
 
 int main( int argc, char ** args )
 {
@@ -43,12 +44,12 @@ int main( int argc, char ** args )
     app.installTranslator(&translator);
 
     QSettings s;
-    bool firstTime = s.value("fotowall/firstTime", true).toBool();
+    RenderOpts::FirstRun = s.value("fotowall/firstTime", true).toBool();
     s.setValue("fotowall/firstTime", false);
 
     FotoWall fw;
     fw.showMaximized();
-    if (firstTime)
+    if (RenderOpts::FirstRun)
         fw.showHelp();
 
     return app.exec();

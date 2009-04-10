@@ -23,6 +23,9 @@ class RenderOpts
 
         // global options
         static bool HQRendering;
+
+        // other options
+        static bool FirstRun;
 };
 
 #endif

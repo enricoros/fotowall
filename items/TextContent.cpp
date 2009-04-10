@@ -33,7 +33,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
 {
     setFrame(0);
     setFrameTextEnabled(false);
-    setToolTip(tr("Right click to change the text"));
+    setToolTip(tr("Right click to Edit the text"));
 
     // create a text document
     m_text = new QTextDocument(this);

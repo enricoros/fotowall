@@ -119,7 +119,7 @@ Double click to align the object.</source>
 <context>
     <name>ColorAction</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="254"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="260"/>
         <source>Text Color</source>
         <translation>Couleur du texte</translation>
     </message>
@@ -363,7 +363,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HtmlTextEdit</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="196"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="202"/>
         <source>Insert HTML entity</source>
         <translation>Insérez des entités HTML</translation>
     </message>
@@ -458,12 +458,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="700"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="737"/>
         <source>Rich Text</source>
         <translation type="unfinished">Texte riche</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="701"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="738"/>
         <source>Source</source>
         <translation>Source</translation>
     </message>
@@ -471,57 +471,57 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="380"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="395"/>
         <source>Bold</source>
         <translation>Gras</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="381"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="396"/>
         <source>CTRL+B</source>
         <translation>CTRL+B</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="386"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="401"/>
         <source>Italic</source>
         <translation>Italique</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="387"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="402"/>
         <source>CTRL+I</source>
         <translation>CTRL+I</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="392"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="407"/>
         <source>Underline</source>
         <translation>Souligné</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="393"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="408"/>
         <source>CTRL+U</source>
         <translation>CTRL+U</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="432"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="447"/>
         <source>Superscript</source>
         <translation>Exposant</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="438"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="453"/>
         <source>Subscript</source>
         <translation>Indice</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="452"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="467"/>
         <source>Insert &amp;Image</source>
         <translation>Insérer une &amp;Image</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="538"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="554"/>
         <source>Open File</source>
         <translation>Ouvrir un fichier</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="538"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="554"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
@@ -547,7 +547,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../items/TextContent.cpp" line="46"/>
+        <location filename="../items/TextContent.cpp" line="36"/>
+        <source>Right click to Edit the text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/TextContent.cpp" line="50"/>
         <source>insert text here...</source>
         <translation>insérer du texte ici...</translation>
     </message>

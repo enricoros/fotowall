@@ -13,10 +13,10 @@
  ***************************************************************************/
 
 #include "HelpItem.h"
-#if defined(SKIP_QTWEBKIT)
-#include <QGraphicsTextItem>
-#else
+#if defined(USE_QTWEBKIT)
 #include "BrowserItem.h"
+#else
+#include <QGraphicsTextItem>
 #endif
 #include <QFile>
 #include <QLocale>
@@ -41,9 +41,16 @@ HelpItem::HelpItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
 {
-#if defined(SKIP_QTWEBKIT)
+#if defined(USE_QTWEBKIT)
+    // show fancy help in internal browser
+#error WebKit was completely disabled, to only have 1 version of the HTML to translate...
+    //BrowserItem * bi = new BrowserItem(this);
+    //bi->setGeometry(m_frame->contentsRect(boundingRect().toRect()));
+    //bi->browse("qrc" + translatedIntro("html")); // qrc:/data/introduction-LANG.html
+    //bi->setReadOnly(true);
+#else
     // get html text
-    QFile htmlFile(translatedIntro("richtext"));
+    QFile htmlFile(translatedIntro("html"));
     htmlFile.open(QIODevice::ReadOnly);
 
     // create an item to display it
@@ -51,12 +58,6 @@ HelpItem::HelpItem(QGraphicsItem * parent)
     ti->setPos(m_frame->contentsRect(boundingRect().toRect()).topLeft());
     ti->setHtml(htmlFile.readAll());
     ti->setTextInteractionFlags(Qt::NoTextInteraction);
-#else
-    // show fancy help in internal browser
-    BrowserItem * bi = new BrowserItem(this);
-    bi->setGeometry(m_frame->contentsRect(boundingRect().toRect()));
-    bi->browse("qrc" + translatedIntro("html")); // qrc:/data/introduction-LANG.html
-    bi->setReadOnly(true);
 #endif
 }
 
