@@ -29,12 +29,12 @@ static QString translatedIntro(const QString & extension)
 {
     // return the translated file name...
     QString langCode = QLocale::system().name().split('_').first();
-    QString fileName = QString(":/data/introduction-%1.%2").arg(langCode, extension);
+    QString fileName = QString(":/translations/introduction-%1.%2").arg(langCode, extension);
     if (QFile::exists(fileName))
         return fileName;
 
     // ...or fall back to english
-    return QString(":/data/introduction-en.%1").arg(extension);
+    return QString(":/translations/introduction-en.%1").arg(extension);
 }
 
 HelpItem::HelpItem(QGraphicsItem * parent)
@@ -46,7 +46,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
 #error WebKit was completely disabled, to only have 1 version of the HTML to translate...
     //BrowserItem * bi = new BrowserItem(this);
     //bi->setGeometry(m_frame->contentsRect(boundingRect().toRect()));
-    //bi->browse("qrc" + translatedIntro("html")); // qrc:/data/introduction-LANG.html
+    //bi->browse("qrc" + translatedIntro("html")); // qrc:/translations/introduction-LANG.html
     //bi->setReadOnly(true);
 #else
     // get html text

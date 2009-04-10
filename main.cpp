@@ -34,6 +34,11 @@ bool RenderOpts::FirstRun = false;
 
 int main( int argc, char ** args )
 {
+    // use the Raster GraphicsSystem as default on 4.5+
+#if QT_VERSION >= 0x040500
+    QApplication::setGraphicsSystem("raster");
+#endif
+
     QApplication app(argc, args);
     app.setApplicationName("FotoWall");
     app.setApplicationVersion("0.5");
