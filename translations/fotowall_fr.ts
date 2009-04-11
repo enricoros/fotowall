@@ -247,12 +247,12 @@ Voulez vous ouvrir la page Web ?</translation>
         <translation>Erreur en sauvegardant le projet dans le fichier &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="420"/>
+        <location filename="../FotoWall.cpp" line="425"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="420"/>
+        <location filename="../FotoWall.cpp" line="425"/>
         <source>Insert the title</source>
         <translation>Insérez le titre</translation>
     </message>
@@ -272,12 +272,12 @@ Voulez vous ouvrir la page Web ?</translation>
         <translation>Ajouter des images</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="165"/>
+        <location filename="../FotoWall.ui" line="163"/>
         <source>FotoWall</source>
         <translation>FotoWall</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="227"/>
+        <location filename="../FotoWall.ui" line="291"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -286,34 +286,27 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;￼&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;￼p, li { white-space: pre-wrap; }￼&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;￼&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;tutorial&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="23"/>
-        <source>#topBar {
-    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
-}</source>
-        <translation>#topBar {￼    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.461 rgba(232, 232, 232, 255), stop:0.463 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))￼}</translation>
-    </message>
-    <message>
         <location filename="../FotoWall.ui" line="136"/>
         <source>add text</source>
         <translation>ajouter du texte</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="170"/>
+        <location filename="../FotoWall.ui" line="168"/>
         <source>CD Cover</source>
         <translation>Couverture de CD</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="175"/>
+        <location filename="../FotoWall.ui" line="173"/>
         <source>DVD Cover</source>
         <translation>Couverture de DVD</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="183"/>
+        <location filename="../FotoWall.ui" line="221"/>
         <source>Decorations</source>
         <translation>Décorations</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="213"/>
+        <location filename="../FotoWall.ui" line="194"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -322,17 +315,17 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;￼&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;￼p, li { white-space: pre-wrap; }￼&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;￼&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;introduction&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="278"/>
+        <location filename="../FotoWall.ui" line="254"/>
         <source>load</source>
         <translation>Ouvrir</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="291"/>
+        <location filename="../FotoWall.ui" line="267"/>
         <source>save</source>
         <translation>Sauvegarder le projet</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="303"/>
+        <location filename="../FotoWall.ui" line="277"/>
         <source>quit</source>
         <translation>Quitter</translation>
     </message>

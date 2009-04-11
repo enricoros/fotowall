@@ -45,7 +45,7 @@ Desk::Desk(QObject * parent)
 {
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
-    m_titleColorPicker->setColor(Qt::gray);
+    m_titleColorPicker->setColor(Qt::red);
     m_titleColorPicker->setAnimated(true);
     m_titleColorPicker->setAnchor(ColorPickerItem::AnchorTop);
     m_titleColorPicker->setZValue(10000);

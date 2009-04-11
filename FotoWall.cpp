@@ -289,7 +289,11 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
             //Normal project
             m_view->setMinimumSize(m_view->minimumSizeHint());
             m_view->setMaximumSize(QSize(16777215, 16777215));
-            showMaximized();
+            static bool skipFirstTimeHack = true;
+            if (skipFirstTimeHack)
+                skipFirstTimeHack = false;
+            else
+                showMaximized();
             ui->exportButton->setText(tr("export..."));
             m_desk->setProjectMode(Desk::ModeNormal);
             break;
@@ -416,6 +420,11 @@ void FotoWall::slotDecoBottomBar(bool checked)
 
 void FotoWall::slotDecoSetTitle()
 {
+    // set a dummy title, if none
+    if (m_desk->titleText().isEmpty())
+        m_desk->setTitleText("...");
+
+    // change title dialog
     bool ok = false;
     QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_desk->titleText(), &ok);
     if (ok)

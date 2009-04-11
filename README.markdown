@@ -16,8 +16,8 @@ Version 0.5:
 * Rich Text (with extended editing)
 * Glow effect (Tanguy Arnaud)
 * Properties configurable for all objects [reqby Ilan d'Inca]
+* Usability fixes [reqby Ilan d'Inca]
 * Save to all the supported image formats (Tanguy Arnaud)
-* Tooltips on buttons and usability fixes [reqby Ilan d'Inca]
 * Properties close button [reqby Ilan d'Inca]
 * Improved stacking (fixes + relative to neighbourhoods) [reqby Ilan d'Inca]
 * Add the 'No effect' effect removal option (Tanguy Arnaud)
