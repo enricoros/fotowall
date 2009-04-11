@@ -31,6 +31,8 @@ public:
    CPixmap(const QPixmap &pixmap);
 
    void toNVG();
+   // Old photo style
+   void toSepia();
    void invertColors(); 
    void flipH();
    void flipV();
@@ -50,7 +52,7 @@ public:
    void save(QDataStream & data) const;
    bool restore(QDataStream & data);
 
-   enum Effects { NVG, BlackAndWhite, InvertColors };
+   enum Effects { NVG, BlackAndWhite, InvertColors, Sepia };
 
 private:
    QString m_filePath;

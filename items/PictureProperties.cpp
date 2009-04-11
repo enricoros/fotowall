@@ -41,6 +41,8 @@ PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsI
     item_black->setData(Qt::UserRole, 2);
     QListWidgetItem *glow = new QListWidgetItem(QIcon(":/data/effects-icons/glow-effect.png"), tr("Glow effect"), m_pictureUi->effectsList);
     glow->setData(Qt::UserRole, 3);
+    QListWidgetItem *sepia = new QListWidgetItem(QIcon(":/data/effects-icons/sepia-effect.png"), tr("Sepia"), m_pictureUi->effectsList);
+    sepia->setData(Qt::UserRole, 5);
 
     connect(m_pictureUi->invertButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipVertically()));
     connect(m_pictureUi->flipButton, SIGNAL(clicked()), m_pictureContent, SLOT(slotFlipHorizontally()));

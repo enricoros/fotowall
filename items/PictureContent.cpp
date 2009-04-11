@@ -97,6 +97,9 @@ void PictureContent::setEffect(int effectClass)
         case 4:
             m_photo->noEffects();
             break;
+        case 5:
+            m_photo->toSepia();
+            break;
         default:
             qWarning("PictureContent::setEffect: effect %d is not implemented", effectClass);
             return;

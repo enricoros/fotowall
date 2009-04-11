@@ -50,6 +50,8 @@ bool CPixmap::restore(QDataStream & data)
             toBlackAndWhite();
         else if (effect == InvertColors)
             invertColors();
+        else if(effect == Sepia)
+            toSepia();
     }
     return true;
 }
@@ -73,15 +75,34 @@ void CPixmap::toNVG() {
     updateImage(dest);
 }
 
-    void CPixmap::invertColors() {
-        if(m_effects.contains(InvertColors))
-            m_effects.removeOne(InvertColors);
-        else
-            m_effects.push_back(InvertColors);
-        QImage img = this->toImage();
-        img.invertPixels();
-        updateImage(img);
+void CPixmap::toSepia() {
+    m_effects.push_back(Sepia);
+    QImage img = this->toImage();
+    QImage dest(img.size(), img.format());
+    QColor pixel;
+    for(int x=0; x<img.width();x++) {
+        for (int y=0; y<img.height(); y++) {
+            pixel = img.pixel(x, y);
+            unsigned int average = (pixel.green()+ pixel.red() + pixel.blue()) / 3;
+            int red = average*1.176, green = average*0.837, blue = average*0.558;
+            pixel.setRed((red <= 255) ? red : 255 );
+            pixel.setGreen((green <= 255) ? green : 255 );
+            pixel.setBlue((blue <= 255) ? blue : 255 );
+            dest.setPixel(x,y,pixel.rgb());
+        }
     }
+    updateImage(dest);
+}
+
+void CPixmap::invertColors() {
+    if(m_effects.contains(InvertColors))
+        m_effects.removeOne(InvertColors);
+    else
+        m_effects.push_back(InvertColors);
+    QImage img = this->toImage();
+    img.invertPixels();
+    updateImage(img);
+}
 
 void CPixmap::flipH() {
     QImage img = this->toImage();
