@@ -283,15 +283,15 @@ QMenu * FotoWall::createDecorationMenu()
 
 void FotoWall::on_projectType_currentIndexChanged(int index)
 {
+    static bool skipFirstMaximizeHack = true;
     int w, h;
     switch (index) {
         case 0:
             //Normal project
             m_view->setMinimumSize(m_view->minimumSizeHint());
             m_view->setMaximumSize(QSize(16777215, 16777215));
-            static bool skipFirstTimeHack = true;
-            if (skipFirstTimeHack)
-                skipFirstTimeHack = false;
+            if (skipFirstMaximizeHack)
+                skipFirstMaximizeHack = false;
             else
                 showMaximized();
             ui->exportButton->setText(tr("export..."));
