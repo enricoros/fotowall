@@ -55,7 +55,7 @@ int main( int argc, char ** args )
     FotoWall fw;
     fw.showMaximized();
     if (RenderOpts::FirstRun)
-        fw.showHelp();
+        fw.showIntroduction();
 
     return app.exec();
 }

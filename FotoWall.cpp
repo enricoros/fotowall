@@ -15,6 +15,7 @@
 #include "FotoWall.h"
 #include "Desk.h"
 #include "RenderOpts.h"
+#include <QAction>
 #include <QApplication>
 #include <QDir>
 #include <QDesktopWidget>
@@ -23,14 +24,16 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QImageReader>
+#include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QPushButton>
-#include <QVBoxLayout>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -62,7 +65,6 @@ class FWGraphicsView : public QGraphicsView {
         Desk * m_desk;
 };
 
-
 FotoWall::FotoWall(QWidget * parent)
     : QWidget(parent)
     , ui(new Ui::FotoWall())
@@ -82,6 +84,9 @@ FotoWall::FotoWall(QWidget * parent)
     // create our custom desk
     m_desk = new Desk(this);
 
+    // set the decoration menu
+    ui->decoButton->setMenu(createDecorationMenu());
+
     // add the graphicsview
     m_view = new FWGraphicsView(m_desk, ui->centralWidget);
     QVBoxLayout * lay = new QVBoxLayout(ui->centralWidget);
@@ -89,6 +94,7 @@ FotoWall::FotoWall(QWidget * parent)
     lay->setSpacing(0);
     lay->setMargin(0);
     lay->addWidget(m_view);
+    m_view->setFocus();
 
     // set the startup project mode
     on_projectType_currentIndexChanged(0);
@@ -113,9 +119,9 @@ FotoWall::~FotoWall()
     delete ui;
 }
 
-void FotoWall::showHelp()
+void FotoWall::showIntroduction()
 {
-    m_desk->showHelp();
+    m_desk->showIntroduction();
 }
 
 void FotoWall::checkForTutorial()
@@ -246,6 +252,35 @@ void FotoWall::saveDVD()
     paint.drawImage(image.rect(), image);
 }
 
+QMenu * FotoWall::createDecorationMenu()
+{
+    QMenu * menu = new QMenu();
+
+    QAction * aTop = new QAction(tr("Top bar"), this);
+    aTop->setCheckable(true);
+    aTop->setChecked(m_desk->topBarEnabled());
+    connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
+    menu->addAction(aTop);
+
+    QAction * aBottom = new QAction(tr("Bottom bar"), this);
+    aBottom->setCheckable(true);
+    aBottom->setChecked(m_desk->bottomBarEnabled());
+    connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
+    menu->addAction(aBottom);
+
+    menu->addSeparator();
+
+    QAction * aSetTitle = new QAction(tr("Set title..."), this);
+    connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
+    menu->addAction(aSetTitle);
+
+    QAction * aClearTitle = new QAction(tr("Clear title"), this);
+    connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotDecoClearTitle()));
+    menu->addAction(aClearTitle);
+
+    return menu;
+}
+
 void FotoWall::on_projectType_currentIndexChanged(int index)
 {
     int w, h;
@@ -302,7 +337,7 @@ void FotoWall::on_addText_clicked()
 
 void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)
 {
-    m_desk->showHelp();
+    m_desk->showIntroduction();
 }
 
 void FotoWall::on_tutorialLabel_linkActivated(const QString & /*link*/)
@@ -367,6 +402,29 @@ void FotoWall::on_exportButton_clicked()
 void FotoWall::on_quitButton_clicked()
 {
     QCoreApplication::quit();
+}
+
+void FotoWall::slotDecoTopBar(bool checked)
+{
+    m_desk->setTopBarEnabled(checked);
+}
+
+void FotoWall::slotDecoBottomBar(bool checked)
+{
+    m_desk->setBottomBarEnabled(checked);
+}
+
+void FotoWall::slotDecoSetTitle()
+{
+    bool ok = false;
+    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_desk->titleText(), &ok);
+    if (ok)
+        m_desk->setTitleText(title);
+}
+
+void FotoWall::slotDecoClearTitle()
+{
+    m_desk->setTitleText(QString());
 }
 
 void FotoWall::slotCheckTutorial(QNetworkReply * reply)

@@ -125,141 +125,141 @@ Double click to align the object.</source>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="390"/>
-        <source>Top bar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Desk.cpp" line="396"/>
-        <source>Bottom bar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Desk.cpp" line="404"/>
-        <source>Set title...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Desk.cpp" line="408"/>
-        <source>Clear title</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Desk.cpp" line="509"/>
+        <location filename="../Desk.cpp" line="547"/>
         <source>Back</source>
         <translation type="unfinished">Voltar</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="513"/>
+        <location filename="../Desk.cpp" line="551"/>
         <source>Front</source>
         <translation type="unfinished">Frente</translation>
-    </message>
-    <message>
-        <location filename="../Desk.cpp" line="714"/>
-        <source>Title</source>
-        <translation type="unfinished">Título</translation>
-    </message>
-    <message>
-        <location filename="../Desk.cpp" line="714"/>
-        <source>Insert the title</source>
-        <translation type="unfinished">Insira o título</translation>
     </message>
 </context>
 <context>
     <name>FotoWall</name>
     <message>
-        <location filename="../FotoWall.cpp" line="293"/>
+        <location filename="../FotoWall.cpp" line="328"/>
         <source>Select one or more pictures to add</source>
         <translation>Selecione uma ou mais figuras para adicionar</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="293"/>
+        <location filename="../FotoWall.cpp" line="328"/>
         <source>Images (%1)</source>
         <translation>(%1) imagens</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="163"/>
+        <location filename="../FotoWall.cpp" line="169"/>
         <source>This function is being rewritten for version 0.6.
 In the meantime, while not the optimum, you can still get high quality results ;-)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="165"/>
+        <location filename="../FotoWall.cpp" line="171"/>
         <source>Choose the Image file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="165"/>
+        <location filename="../FotoWall.cpp" line="171"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="191"/>
+        <location filename="../FotoWall.cpp" line="197"/>
         <source>Rendering Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="191"/>
+        <location filename="../FotoWall.cpp" line="197"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="195"/>
+        <location filename="../FotoWall.cpp" line="201"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="258"/>
+        <location filename="../FotoWall.cpp" line="259"/>
+        <source>Top bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="265"/>
+        <source>Bottom bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="273"/>
+        <source>Set title...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="277"/>
+        <source>Clear title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="293"/>
         <source>export...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="269"/>
-        <location filename="../FotoWall.cpp" line="279"/>
+        <location filename="../FotoWall.cpp" line="304"/>
+        <location filename="../FotoWall.cpp" line="314"/>
         <source>print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="310"/>
+        <location filename="../FotoWall.cpp" line="345"/>
         <source>Opening the Web Tutorial</source>
         <translation>Abrindo o Tutorial Web</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="310"/>
+        <location filename="../FotoWall.cpp" line="345"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 Do you want to open the web page?</source>
         <translation>O Tutorial está disponível no Fosswire por Peter Upfold.
 Você deseja abrir a página web?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="317"/>
-        <location filename="../FotoWall.cpp" line="332"/>
+        <location filename="../FotoWall.cpp" line="352"/>
+        <location filename="../FotoWall.cpp" line="367"/>
         <source>Select Layout file</source>
         <translation>Selecione um arquivo de Layout</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="323"/>
-        <location filename="../FotoWall.cpp" line="340"/>
+        <location filename="../FotoWall.cpp" line="358"/>
+        <location filename="../FotoWall.cpp" line="375"/>
         <source>File Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="323"/>
+        <location filename="../FotoWall.cpp" line="358"/>
         <source>Error loading Layout from the file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="340"/>
+        <location filename="../FotoWall.cpp" line="375"/>
         <source>Error saving the Layout to the file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="163"/>
+        <location filename="../FotoWall.cpp" line="420"/>
+        <source>Title</source>
+        <translation type="unfinished">Título</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="420"/>
+        <source>Insert the title</source>
+        <translation type="unfinished">Insira o título</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="169"/>
         <source>Warning</source>
         <translation>Aviso</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="195"/>
+        <location filename="../FotoWall.cpp" line="201"/>
         <source>The target image is %1 bytes long</source>
         <translation>A imagem alvo está %1 bytes maior</translation>
     </message>
@@ -269,12 +269,12 @@ Você deseja abrir a página web?</translation>
         <translation>Adicionar figuras</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="163"/>
+        <location filename="../FotoWall.ui" line="165"/>
         <source>FotoWall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="210"/>
+        <location filename="../FotoWall.ui" line="227"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -299,17 +299,22 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="168"/>
+        <location filename="../FotoWall.ui" line="170"/>
         <source>CD Cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="173"/>
+        <location filename="../FotoWall.ui" line="175"/>
         <source>DVD Cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="196"/>
+        <location filename="../FotoWall.ui" line="183"/>
+        <source>Decorations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="213"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -318,17 +323,17 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="261"/>
+        <location filename="../FotoWall.ui" line="278"/>
         <source>load</source>
         <translation>Carregar</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="274"/>
+        <location filename="../FotoWall.ui" line="291"/>
         <source>save</source>
         <translation>Salvar</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="286"/>
+        <location filename="../FotoWall.ui" line="303"/>
         <source>quit</source>
         <translation>Sair</translation>
     </message>
@@ -530,17 +535,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SizeDialog</name>
     <message>
-        <location filename="../FotoWall.cpp" line="142"/>
+        <location filename="../FotoWall.cpp" line="148"/>
         <source>The aspect ratio must be kept</source>
         <translation>A proporção deve ser mantida</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="140"/>
+        <location filename="../FotoWall.cpp" line="146"/>
         <source>Select Resolution</source>
         <translation>Selecionar resolução</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="147"/>
+        <location filename="../FotoWall.cpp" line="153"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>

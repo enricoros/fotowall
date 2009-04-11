@@ -42,12 +42,16 @@ class Desk : public QGraphicsScene
         // resize the scene to 0,0,size
         void resize(const QSize & size);
 
-        // set the title text
-        QString titleText() const;
+        // decorations
         void setTitleText(const QString & text);
+        QString titleText() const;
+        void setTopBarEnabled(bool enabled);
+        bool topBarEnabled() const;
+        void setBottomBarEnabled(bool enabled);
+        bool bottomBarEnabled() const;
 
         // save, restore, load, help
-        void showHelp();
+        void showIntroduction();
         void save(QDataStream & data) const;
         void restore(QDataStream & data);
 
@@ -101,10 +105,6 @@ class Desk : public QGraphicsScene
         void slotApplyLooks(quint32 frameClass, bool mirrored);
         void slotApplyEffects(int effectClass);
 
-        void slotSetTopBarEnabled(bool enabled);
-        void slotSetBottomBarEnabled(bool enabled);
-        void slotSetTitle();
-        void slotClearTitle();
         void slotTitleColorChanged();
         void slotForeColorChanged();
         void slotGradColorChanged();

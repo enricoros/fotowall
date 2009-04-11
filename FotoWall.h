@@ -28,13 +28,14 @@ class FotoWall : public QWidget
         FotoWall(QWidget * parent = 0);
         ~FotoWall();
 
-        void showHelp();
+        void showIntroduction();
         void checkForTutorial();
         void saveImage();
         void saveCD();
         void saveDVD();
 
     private:
+        QMenu * createDecorationMenu();
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
         Desk *          m_desk;
@@ -49,6 +50,12 @@ class FotoWall : public QWidget
         void on_saveButton_clicked();
         void on_exportButton_clicked();
         void on_quitButton_clicked();
+
+        void slotDecoTopBar(bool checked);
+        void slotDecoBottomBar(bool checked);
+        void slotDecoSetTitle();
+        void slotDecoClearTitle();
+
         void slotCheckTutorial(QNetworkReply * reply);
 };
 
