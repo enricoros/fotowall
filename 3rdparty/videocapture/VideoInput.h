@@ -1,7 +1,8 @@
 /*
-    videoinput.h  -  Video Input Class
+    VideoInput.h  -  Video Input Class
 
     Copyright (c) 2005-2006 by Cláudio da Silveira Pinheiro   <taupter@gmail.com>
+    Copyright (c) 2009 - Enrico Ros - FotoWall inclusion <enrico.ros@gmail.com>
 
     *************************************************************************
     *                                                                       *
@@ -13,31 +14,31 @@
     *************************************************************************
 */
 
-#define ENABLE_AV
+#ifndef __VideoInput_h__
+#define __VideoInput_h__
 
-#ifndef VIDEOINPUT_H
-#define VIDEOINPUT_H
+#include <QString>
 
-#ifdef __linux__
+#ifdef Q_OS_LINUX
 #include <asm/types.h>
 #undef __STRICT_ANSI__
-#endif // __linux__
+#endif
+
 #ifndef __u64 //required by videodev.h
-#define __u64 unsigned long long
-#endif // __u64*/
+#define __u64 quint64
+#endif
 
-#include <qstring.h>
-
-namespace Phonon {
 namespace VideoCapture {
 
 /**
-@author Kopete Developers
+    @brief Describe/Control the parameters of a single video stream
+    @author Kopete Developers - modified by Enrico Ros for FotoWall inclusion
 */
 class VideoInput{
 public:
 	VideoInput();
 	~VideoInput();
+
 	QString name;
 	int  hastuner;
 	__u64 m_standards;
@@ -58,7 +59,7 @@ public:
 	bool getImageAsMirror();
 	bool setImageAsMirror(bool imageasmirror);
 
-protected:
+private:
 // this block must be changed to use a vector of controls instead of fixed ones
 	float m_brightness;
 	float m_contrast;
@@ -69,12 +70,8 @@ protected:
 	bool m_autobrightnesscontrast;
 	bool m_autocolorcorrection;
 	bool m_imageasmirror;
-
-
 };
 
 }
-}
-
 
 #endif

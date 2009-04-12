@@ -2,16 +2,19 @@ VPATH += $$PWD
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-HEADERS += bayer.h \
-    sonix_compress.h \
-    videodevice.h \
-    #videodevicemodelpool.h \
-    #videodevicepool.h \
-    videoinput.h
+unix {
+    DEFINES += HAS_VIDEOCAPTURE
 
-SOURCES += bayer.cpp \
-    sonix_compress.cpp \
-    videodevice.cpp \
-    #videodevicemodelpool.cpp \
-    #videodevicepool.cpp \
-    videoinput.cpp
+    HEADERS += bayer.h \
+        sonix_compress.h \
+        VideoDevice_linux.h \
+        VideoInput.h
+
+    SOURCES += bayer.cpp \
+        sonix_compress.cpp \
+        VideoDevice_linux.cpp \
+        VideoInput.cpp
+} else: {
+    message("VideoCapture is not yet available on other platforms");
+    DEFINES -= HAS_VIDEOCAPTURE
+}

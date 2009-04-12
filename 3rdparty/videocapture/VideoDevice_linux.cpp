@@ -1,5 +1,5 @@
 /*
-    videodevice.cpp  -  Video Device Low-level Support
+    VideoDevice.cpp  -  Video Device Low-level Support
 
     Copyright (c) 2005-2006 by Cláudio da Silveira Pinheiro   <taupter@gmail.com>
 
@@ -13,23 +13,19 @@
     *************************************************************************
 */
 
-#define ENABLE_AV
-
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
-
 #include <QDebug>
 
-#include "videoinput.h"
-#include "videodevice.h"
+#include "VideoInput.h"
+#include "VideoDevice_linux.h"
 
 #include "bayer.h"
 #include "sonix_compress.h"
 
 #define CLEAR(x) memset (&(x), 0, sizeof (x))
 
-namespace Phonon {
 namespace VideoCapture {
 
 VideoDevice::VideoDevice()
@@ -230,7 +226,7 @@ int VideoDevice::checkDevice()
 		m_videostream=false;
 
 		m_driver=VIDEODEV_DRIVER_NONE;
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 
 		CLEAR(V4L2_capabilities);
@@ -485,7 +481,7 @@ int VideoDevice::initDevice()
 	m_io_method = IO_METHOD_NONE;
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			if(V4L2_capabilities.capabilities & V4L2_CAP_READWRITE)
@@ -531,7 +527,7 @@ int VideoDevice::initDevice()
 	}
 
 // Select video input, video standard and tune here.
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 	cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	if (-1 == xioctl (VIDIOC_CROPCAP, &cropcap))
@@ -650,7 +646,7 @@ qDebug() << "setSize(" << newwidth << ", " << newheight << ") called.";
 // Change resolution for the video device
 		switch(m_driver)
 		{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 			case VIDEODEV_DRIVER_V4L2:
 //				CLEAR (fmt);
@@ -750,7 +746,7 @@ pixel_format VideoDevice::setPixelFormat(pixel_format newformat)
 // Change the pixel format for the video device
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 //			CLEAR (fmt);
@@ -839,7 +835,7 @@ int VideoDevice::selectInput(int newinput)
 	{
 		switch (m_driver)
 		{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 			case VIDEODEV_DRIVER_V4L2:
 				if (-1 == ioctl (descriptor, VIDIOC_S_INPUT, &newinput))
@@ -907,7 +903,7 @@ int VideoDevice::startCapturing()
 			case IO_METHOD_READ: // Nothing to do
 				break;
 			case IO_METHOD_MMAP:
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 				{
 					unsigned int loop;
@@ -929,7 +925,7 @@ int VideoDevice::startCapturing()
 #endif
 				break;
 			case IO_METHOD_USERPTR:
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 				{
 					unsigned int loop;
@@ -967,7 +963,7 @@ int VideoDevice::getFrame()
     /// @todo implement me
 	ssize_t bytesread;
 
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 	struct v4l2_buffer v4l2buffer;
 #endif
@@ -1001,7 +997,7 @@ int VideoDevice::getFrame()
 				}
 				break;
 			case IO_METHOD_MMAP:
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 				CLEAR (v4l2buffer);
 				v4l2buffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -1032,7 +1028,7 @@ memcpy(&m_currentbuffer.data[0], m_rawbuffers[v4l2buffer.index].start, m_current
 #endif
 				break;
 			case IO_METHOD_USERPTR:
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 				{
 					unsigned int i;
@@ -1464,7 +1460,7 @@ float VideoDevice::setBrightness(float brightness)
 
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			{
@@ -1534,7 +1530,7 @@ float VideoDevice::setContrast(float contrast)
 
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			{
@@ -1604,7 +1600,7 @@ float VideoDevice::setSaturation(float saturation)
 
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			{
@@ -1674,7 +1670,7 @@ float VideoDevice::setWhiteness(float whiteness)
 
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			{
@@ -1744,7 +1740,7 @@ float VideoDevice::setHue(float hue)
 
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			{
@@ -1865,7 +1861,7 @@ pixel_format VideoDevice::pixelFormatForPalette( int palette )
 {
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			switch(palette)
@@ -1945,7 +1941,7 @@ int VideoDevice::pixelFormatCode(pixel_format pixelformat)
 {
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			switch(pixelformat)
@@ -2151,7 +2147,7 @@ QString VideoDevice::pixelFormatName(int pixelformat)
 	returnvalue = "None";
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			switch(pixelformat)
@@ -2231,7 +2227,7 @@ int VideoDevice::detectPixelFormats()
 			int err = 0;
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			fmtdesc.index = 0;
@@ -2308,7 +2304,7 @@ __u64 VideoDevice::signalStandardCode(signal_standard standard)
 {
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			switch(standard)
@@ -2492,7 +2488,7 @@ QString VideoDevice::signalStandardName(int standard)
 	returnvalue = "None";
 	switch(m_driver)
 	{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 		case VIDEODEV_DRIVER_V4L2:
 			switch(standard)
@@ -2578,7 +2574,7 @@ int VideoDevice::detectSignalStandards()
 	{
 	switch(m_driver)
 		{
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 			case VIDEODEV_DRIVER_V4L2:
 
@@ -2843,5 +2839,4 @@ QString VideoDevice::udi() const
     return m_udi;
 }
 
-}
 }

@@ -1,7 +1,8 @@
 /*
-    videoinput.cpp  -  Video Input Class
+    VideoInput.cpp  -  Video Input Class
 
     Copyright (c) 2005-2008 by Cláudio da Silveira Pinheiro   <taupter@gmail.com>
+    Copyright (c) 2009 - Enrico Ros - FotoWall inclusion <enrico.ros@gmail.com>
 
     *************************************************************************
     *                                                                       *
@@ -13,15 +14,22 @@
     *************************************************************************
 */
 
-#include "videoinput.h"
-#include <QDebug>
+#include "VideoInput.h"
 
-namespace Phonon {
+// uncomment following to enable debugging
+#define VIDEOINPUT_DEBUG
+
+#ifdef VIDEOINPUT_DEBUG
+#define HERE qWarning("%s:%d: %s", __FILE__, __LINE__, __FUNCTION__)
+#else
+#define HERE
+#endif
+
 namespace VideoCapture {
 
 VideoInput::VideoInput()
 {
-	qDebug() << "Executing Video Input's constructor!!!";
+	HERE;
 	m_brightness = 0.5;
 	m_contrast = 0.5;
 	m_saturation = 0.5;
@@ -33,17 +41,18 @@ VideoInput::VideoInput()
 
 VideoInput::~VideoInput()
 {
+	HERE;
 }
 
 float VideoInput::getBrightness()
 {
-//	qDebug() << " called.";
+	//HERE;
 	return m_brightness;
 }
 
 float VideoInput::setBrightness(float brightness)
 {
-//	qDebug() << " called.";
+	//HERE;
 	if ( brightness > 1 )
 		brightness = 1;
 	else
@@ -55,13 +64,13 @@ float VideoInput::setBrightness(float brightness)
 
 float VideoInput::getContrast()
 {
-//	qDebug() << " called.";
+	//HERE;
 	return m_contrast;
 }
 
 float VideoInput::setContrast(float contrast)
 {
-//	qDebug() << " called.";
+	//HERE;
 	if ( contrast > 1 )
 		contrast = 1;
 	else
@@ -73,13 +82,13 @@ float VideoInput::setContrast(float contrast)
 
 float VideoInput::getSaturation()
 {
-//	qDebug() << " called.";
+	//HERE;
 	return m_saturation;
 }
 
 float VideoInput::setSaturation(float saturation)
 {
-//	qDebug() << " called.";
+	//HERE;
 	if ( saturation > 1 )
 		saturation = 1;
 	else
@@ -91,13 +100,13 @@ float VideoInput::setSaturation(float saturation)
 
 float VideoInput::getWhiteness()
 {
-//	qDebug() << " called.";
+	//HERE;
 	return m_whiteness;
 }
 
 float VideoInput::setWhiteness(float whiteness)
 {
-//	qDebug() << " called.";
+	//HERE;
 	if ( whiteness > 1 )
 		whiteness = 1;
 	else
@@ -109,13 +118,13 @@ float VideoInput::setWhiteness(float whiteness)
 
 float VideoInput::getHue()
 {
-//	qDebug() << " called.";
+	//HERE;
 	return m_hue;
 }
 
 float VideoInput::setHue(float hue)
 {
-//	qDebug() << " called.";
+	//HERE;
 	if ( hue > 1 )
 		hue = 1;
 	else
@@ -128,42 +137,41 @@ float VideoInput::setHue(float hue)
 
 bool VideoInput::getAutoBrightnessContrast()
 {
-//	qDebug() << " called.";
+	//HERE;
 	return m_autobrightnesscontrast;
 }
 
 bool VideoInput::setAutoBrightnessContrast(bool brightnesscontrast)
 {
-//	qDebug() << " called.";
+	//HERE;
 	m_autobrightnesscontrast = brightnesscontrast;
 	return getAutoBrightnessContrast();
 }
 
 bool VideoInput::getAutoColorCorrection()
 {
-//	qDebug() << " called.";
+	//HERE;
 	return m_autocolorcorrection;
 }
 
 bool VideoInput::setAutoColorCorrection(bool colorcorrection)
 {
-//	qDebug() << " called.";
+	//HERE;
 	m_autocolorcorrection = colorcorrection;
 	return getAutoColorCorrection();
 }
 
 bool VideoInput::getImageAsMirror()
 {
-//	qDebug() << " called.";
+	//HERE;
 	return m_imageasmirror;
 }
 
 bool VideoInput::setImageAsMirror(bool imageasmirror)
 {
-//	qDebug() << " called.";
+	//HERE;
 	m_imageasmirror = imageasmirror;
 	return getImageAsMirror();
 }
 
-}
 }
