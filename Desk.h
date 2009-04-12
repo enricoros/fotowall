@@ -60,6 +60,10 @@ class Desk : public QGraphicsScene
         Mode projectMode() const;
         void setProjectMode(Mode mode);
 
+        // update the Mirror Items, if any
+        void setContentIndexedPixmap(int index, const QPixmap & pixmap);
+        QPixmap contentIndexedPixmap() const;
+
         // render the Desk, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 

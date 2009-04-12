@@ -15,12 +15,14 @@
 #ifndef __FotoWall_h__
 #define __FotoWall_h__
 
-#include <QWidget>
+#include <QTimer>
 #include <QGraphicsView>
-#include <videodevice.h>
-#include "ui_FotoWall.h"
+#include <QWidget>
 class Desk;
+class QMenu;
 class QNetworkReply;
+namespace Ui { class FotoWall; }
+namespace VideoCapture { class VideoDevice; }
 
 class FotoWall : public QWidget
 {
@@ -38,10 +40,16 @@ class FotoWall : public QWidget
 
     private:
         QMenu * createDecorationMenu();
+        void disposeMirrorStuff();
+
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
         Desk *          m_desk;
-        Phonon::VideoCapture::VideoDevice * m_videoDevice;
+
+#if defined(HAS_VIDEOCAPTURE)
+        QTimer * m_captureTimer;
+        QList<VideoCapture::VideoDevice *> m_captureDevices;
+#endif
 
     private Q_SLOTS:
         void on_projectType_currentIndexChanged(int index);
@@ -60,6 +68,11 @@ class FotoWall : public QWidget
         void slotDecoClearTitle();
 
         void slotCheckTutorial(QNetworkReply * reply);
+
+#if defined(HAS_VIDEOCAPTURE)
+        void on_addMirror_clicked();
+        void slotCaptureVideoFrames();
+#endif
 };
 
 #endif

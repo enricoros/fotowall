@@ -316,6 +316,26 @@ void Desk::setProjectMode(Mode mode)
     }
 }
 
+#include <QLabel>
+static QLabel * l = 0;
+void Desk::setContentIndexedPixmap(int index, const QPixmap & pixmap)
+{
+    if (!l) {
+        l = new QLabel(0);
+        l->setFixedSize(pixmap.size());
+        l->show();
+    }
+    static int idx = 1;
+    qWarning("%d %d", pixmap.width(), pixmap.height());
+    l->setPixmap(pixmap);
+    //pixmap.save(QString("Test%1-%2.png").arg(index).arg(idx++));
+}
+
+QPixmap Desk::contentIndexedPixmap() const
+{
+    return QPixmap();
+}
+
 void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode)
 {
     foreach(QGraphicsItem *item, m_markerItems) {

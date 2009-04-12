@@ -153,6 +153,29 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QToolButton" name="addMirror">
+           <property name="text">
+            <string>add text</string>
+           </property>
+           <property name="icon">
+            <iconset resource="fotowall.qrc">
+             <normaloff>:/data/add-mirror.png</normaloff>:/data/add-mirror.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>64</width>
+             <height>64</height>
+            </size>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonIconOnly</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>

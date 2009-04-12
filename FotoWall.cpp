@@ -15,6 +15,7 @@
 #include "FotoWall.h"
 #include "Desk.h"
 #include "RenderOpts.h"
+#include "ui_FotoWall.h"
 #include <QAction>
 #include <QApplication>
 #include <QDir>
@@ -65,34 +66,15 @@ class FWGraphicsView : public QGraphicsView {
         Desk * m_desk;
 };
 
-#include <QDebug>
 FotoWall::FotoWall(QWidget * parent)
     : QWidget(parent)
     , ui(new Ui::FotoWall())
     , m_view(0)
     , m_desk(0)
-    , m_videoDevice(new Phonon::VideoCapture::VideoDevice())
+#if defined(HAS_VIDEOCAPTURE)
+    , m_captureTimer(0)
+#endif
 {
-    m_videoDevice->setUdi("FAKE-cam-1");
-    m_videoDevice->setFileName("/dev/video0");
-    qDebug() << "Found device " << m_videoDevice->full_filename;
-    m_videoDevice->open();
-    if (m_videoDevice->isOpen())
-    {
-        qDebug() << "File " << m_videoDevice->full_filename << " was opened successfuly";
-        //m_videoDevice->close();
-        //m_videoDevice.m_modelindex=m_modelvector.addModel (m_videoDevice.m_model); // Adds device to the device list and sets model number
-        //m_videodevice.push_back(m_videoDevice);
-    } else
-        qDebug() << "Wr000000000ng";
-    qWarning("GOO00000000NE");
-    m_videoDevice->startCapturing();
-
-    for (int i = 0; i < 1000; i++) {
-
-        m_videoDevice->getFrame();
-    }
-
     // initial 'normal' size
     QRect geom = QApplication::desktop()->availableGeometry();
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
@@ -100,6 +82,9 @@ FotoWall::FotoWall(QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->tutorialLabel->setVisible(false);
+#if !defined(HAS_VIDEOCAPTURE)
+    disposeMirrorStuff();
+#endif
     setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     setWindowIcon(QIcon(":/data/fotowall.png"));
 
@@ -136,6 +121,7 @@ FotoWall::~FotoWall()
     }
 
     // delete everything
+    disposeMirrorStuff();
     delete m_view;
     delete m_desk;
     delete ui;
@@ -301,6 +287,21 @@ QMenu * FotoWall::createDecorationMenu()
     menu->addAction(aClearTitle);
 
     return menu;
+}
+
+void FotoWall::disposeMirrorStuff()
+{
+    // disable the GUI item
+    delete ui->addMirror;
+    ui->addMirror = 0;
+
+    // drop Capture stuff
+#if defined(HAS_VIDEOCAPTURE)
+    delete m_captureTimer;
+    m_captureTimer = 0;
+    qDeleteAll(m_captureDevices);
+    m_captureDevices.clear();
+#endif
 }
 
 void FotoWall::on_projectType_currentIndexChanged(int index)
@@ -471,3 +472,63 @@ void FotoWall::slotCheckTutorial(QNetworkReply * reply)
     bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
     ui->tutorialLabel->setVisible(tutorialValid);
 }
+
+#if defined(HAS_VIDEOCAPTURE)
+#include "VideoDevice_linux.h"
+#include <QTimer>
+
+void FotoWall::on_addMirror_clicked()
+{
+    if (!m_captureDevices.isEmpty())
+        return;
+
+    // create the capture device
+    VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice();
+    capture->setUdi("1");
+    capture->setFileName("/dev/video0"); //HARDCODED
+    capture->open();
+
+    // on error disable the mirror stuff
+    if (!capture->isOpen() || capture->inputs() < 1) {
+        delete capture;
+        disposeMirrorStuff();
+        return;
+    }
+    m_captureDevices.append(capture);
+
+    // configure and start streaming from the capture device
+//    capture->selectInput(0);
+    capture->setInputParameters();
+    capture->setSize(320, 240);
+    capture->startCapturing();
+
+    // start the timer if needed
+    if (!m_captureTimer) {
+        m_captureTimer = new QTimer(this);
+        connect(m_captureTimer, SIGNAL(timeout()), this, SLOT(slotCaptureVideoFrames()));
+        m_captureTimer->start(50);
+    }
+}
+
+void FotoWall::slotCaptureVideoFrames()
+{
+    foreach (VideoCapture::VideoDevice * capture, m_captureDevices) {
+
+        // get frame (and check correctness)
+        if (capture->getFrame() != EXIT_SUCCESS) {
+            m_captureTimer->deleteLater();
+            m_captureTimer = 0;
+            disposeMirrorStuff();
+            return;
+        }
+
+        // get the qimage from the frame
+        QImage frame(capture->width(), capture->height(), QImage::Format_RGB32);
+        capture->getImage(&frame);
+
+        // set the pixmap
+        m_desk->setContentIndexedPixmap(0, QPixmap::fromImage(frame));
+    }
+}
+
+#endif
