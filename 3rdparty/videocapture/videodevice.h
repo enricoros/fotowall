@@ -57,8 +57,8 @@
 #include <qstring.h>
 #include <qfile.h>
 #include <qimage.h>
-#include <q3valuevector.h>
-#include <kcombobox.h>
+///#include <q3valuevector.h>
+///#include <kcombobox.h>
 
 #include "videoinput.h"
 
@@ -300,7 +300,7 @@ public:
 #endif
 	struct video_capability V4L_capabilities;
 	struct video_buffer V4L_videobuffer;
-#endif	
+#endif
 	QVector<Phonon::VideoCapture::VideoInput> m_input;
 //	QFile file;
 protected:

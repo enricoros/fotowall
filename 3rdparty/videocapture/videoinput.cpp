@@ -14,13 +14,14 @@
 */
 
 #include "videoinput.h"
+#include <QDebug>
 
 namespace Phonon {
 namespace VideoCapture {
 
 VideoInput::VideoInput()
 {
-	kDebug() << "Executing Video Input's constructor!!!";
+	qDebug() << "Executing Video Input's constructor!!!";
 	m_brightness = 0.5;
 	m_contrast = 0.5;
 	m_saturation = 0.5;
@@ -36,13 +37,13 @@ VideoInput::~VideoInput()
 
 float VideoInput::getBrightness()
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	return m_brightness;
 }
 
 float VideoInput::setBrightness(float brightness)
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	if ( brightness > 1 )
 		brightness = 1;
 	else
@@ -54,13 +55,13 @@ float VideoInput::setBrightness(float brightness)
 
 float VideoInput::getContrast()
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	return m_contrast;
 }
 
 float VideoInput::setContrast(float contrast)
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	if ( contrast > 1 )
 		contrast = 1;
 	else
@@ -72,13 +73,13 @@ float VideoInput::setContrast(float contrast)
 
 float VideoInput::getSaturation()
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	return m_saturation;
 }
 
 float VideoInput::setSaturation(float saturation)
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	if ( saturation > 1 )
 		saturation = 1;
 	else
@@ -90,13 +91,13 @@ float VideoInput::setSaturation(float saturation)
 
 float VideoInput::getWhiteness()
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	return m_whiteness;
 }
 
 float VideoInput::setWhiteness(float whiteness)
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	if ( whiteness > 1 )
 		whiteness = 1;
 	else
@@ -108,13 +109,13 @@ float VideoInput::setWhiteness(float whiteness)
 
 float VideoInput::getHue()
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	return m_hue;
 }
 
 float VideoInput::setHue(float hue)
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	if ( hue > 1 )
 		hue = 1;
 	else
@@ -127,39 +128,39 @@ float VideoInput::setHue(float hue)
 
 bool VideoInput::getAutoBrightnessContrast()
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	return m_autobrightnesscontrast;
 }
 
 bool VideoInput::setAutoBrightnessContrast(bool brightnesscontrast)
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	m_autobrightnesscontrast = brightnesscontrast;
 	return getAutoBrightnessContrast();
 }
 
 bool VideoInput::getAutoColorCorrection()
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	return m_autocolorcorrection;
 }
 
 bool VideoInput::setAutoColorCorrection(bool colorcorrection)
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	m_autocolorcorrection = colorcorrection;
 	return getAutoColorCorrection();
 }
 
 bool VideoInput::getImageAsMirror()
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	return m_imageasmirror;
 }
 
 bool VideoInput::setImageAsMirror(bool imageasmirror)
 {
-//	kDebug() << " called.";
+//	qDebug() << " called.";
 	m_imageasmirror = imageasmirror;
 	return getImageAsMirror();
 }

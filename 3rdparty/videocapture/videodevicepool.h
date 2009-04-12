@@ -17,19 +17,13 @@
 #define VIDEODEVICEPOOL_H
 
 #include <iostream>
-
-
 #include "videoinput.h"
-#include "videodevicemodelpool.h"
-#include <qstring.h>
-#include <qimage.h>
-#include <q3valuevector.h>
-#include <qmutex.h>
-#include <kcombobox.h>
 #include "videodevice.h"
-#include <kconfig.h>
-#include <kglobal.h>
-#include <solid/device.h>
+#include "videodevicemodelpool.h"
+#include <QString>
+#include <QImage>
+#include <QMutex>
+#include <QComboBox>
 
 namespace Phonon {
 namespace VideoCapture {
@@ -43,7 +37,7 @@ This class allows kopete to check for the existence, open, configure, test, set 
 typedef QVector<Phonon::VideoCapture::VideoDevice> VideoDeviceVector;
 
 
-class  KDE_EXPORT VideoDevicePool : public QObject
+class VideoDevicePool : public QObject
 {
 Q_OBJECT
 public:
@@ -67,15 +61,15 @@ public:
 	int selectInput(int newinput);
 	int setInputParameters();
 	int scanDevices();
-	void registerDevice( Solid::Device & dev );
+	///void registerDevice( Solid::Device & dev );
 	bool hasDevices();
 	size_t size();
 	~VideoDevicePool();
 	VideoDeviceVector m_videodevice; // Vector to be filled with found devices
 	VideoDeviceModelPool m_modelvector;  // Vector to be filled with unique device models
-	int fillDeviceKComboBox(KComboBox *combobox);
-	int fillInputKComboBox(KComboBox *combobox);
-	int fillStandardKComboBox(KComboBox *combobox);
+	int fillDeviceQComboBox(QComboBox *combobox);
+	int fillInputQComboBox(QComboBox *combobox);
+	int fillStandardQComboBox(QComboBox *combobox);
 	int currentDevice();
 	int currentInput();
 	unsigned int inputs();

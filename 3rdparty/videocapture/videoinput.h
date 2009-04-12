@@ -27,7 +27,6 @@
 #endif // __u64*/
 
 #include <qstring.h>
-#include <kdebug.h>
 
 namespace Phonon {
 namespace VideoCapture {

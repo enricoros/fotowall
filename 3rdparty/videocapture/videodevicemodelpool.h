@@ -18,7 +18,6 @@
 
 #include <qstring.h>
 #include <qvector.h>
-#include <kdebug.h>
 
 namespace Phonon {
 namespace VideoCapture {
