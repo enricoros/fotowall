@@ -33,6 +33,7 @@ class FotoWall : public QWidget
         void saveImage();
         void saveCD();
         void saveDVD();
+        void load(QString &fileName);
 
     private:
         QMenu * createDecorationMenu();

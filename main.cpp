@@ -54,6 +54,10 @@ int main( int argc, char ** args )
 
     FotoWall fw;
     fw.showMaximized();
+    if(argc >0) {
+        QString filePath = args[1];
+        fw.load(filePath);
+    }
     if (RenderOpts::FirstRun)
         fw.showIntroduction();
 

@@ -354,6 +354,10 @@ void FotoWall::on_tutorialLabel_linkActivated(const QString & /*link*/)
 void FotoWall::on_loadButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select Layout file"), QString(), "Layouts (*.lay)");
+    load(fileName);
+}
+void FotoWall::load(QString &fileName)
+{
     if (fileName.isNull())
         return;
 
