@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include <QGraphicsView>
+#include <videodevice.h>
 #include "ui_FotoWall.h"
 class Desk;
 class QNetworkReply;
@@ -40,6 +41,7 @@ class FotoWall : public QWidget
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
         Desk *          m_desk;
+        Phonon::VideoCapture::VideoDevice * m_videoDevice;
 
     private Q_SLOTS:
         void on_projectType_currentIndexChanged(int index);

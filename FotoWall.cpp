@@ -65,12 +65,34 @@ class FWGraphicsView : public QGraphicsView {
         Desk * m_desk;
 };
 
+#include <QDebug>
 FotoWall::FotoWall(QWidget * parent)
     : QWidget(parent)
     , ui(new Ui::FotoWall())
     , m_view(0)
     , m_desk(0)
+    , m_videoDevice(new Phonon::VideoCapture::VideoDevice())
 {
+    m_videoDevice->setUdi("FAKE-cam-1");
+    m_videoDevice->setFileName("/dev/video0");
+    qDebug() << "Found device " << m_videoDevice->full_filename;
+    m_videoDevice->open();
+    if (m_videoDevice->isOpen())
+    {
+        qDebug() << "File " << m_videoDevice->full_filename << " was opened successfuly";
+        //m_videoDevice->close();
+        //m_videoDevice.m_modelindex=m_modelvector.addModel (m_videoDevice.m_model); // Adds device to the device list and sets model number
+        //m_videodevice.push_back(m_videoDevice);
+    } else
+        qDebug() << "Wr000000000ng";
+    qWarning("GOO00000000NE");
+    m_videoDevice->startCapturing();
+
+    for (int i = 0; i < 1000; i++) {
+
+        m_videoDevice->getFrame();
+    }
+
     // initial 'normal' size
     QRect geom = QApplication::desktop()->availableGeometry();
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);

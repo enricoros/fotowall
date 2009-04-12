@@ -18,6 +18,7 @@
 #ifndef VIDEODEVICELISTITEM_H
 #define VIDEODEVICELISTITEM_H
 
+#ifdef Q_OS_LINUX
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
@@ -26,8 +27,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+#endif
 
-#if defined(__linux__) && defined(ENABLE_AV)
+#if defined(Q_OS_LINUX) && defined(ENABLE_AV)
 
 #include <asm/types.h>
 #undef __STRICT_ANSI__
@@ -54,13 +56,10 @@
 
 #endif // __linux__
 
-#include <qstring.h>
-#include <qfile.h>
-#include <qimage.h>
-///#include <q3valuevector.h>
-///#include <kcombobox.h>
-
 #include "videoinput.h"
+#include <QString>
+#include <QFile>
+#include <QImage>
 
 namespace Phonon {
 namespace VideoCapture {
