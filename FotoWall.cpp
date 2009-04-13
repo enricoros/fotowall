@@ -189,7 +189,7 @@ void FotoWall::saveImage()
     image.fill(0);
     QPainter imagePainter(&image);
     imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_desk->render(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+    m_desk->renderVisible(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
     imagePainter.end();
 
     // save image
@@ -213,7 +213,7 @@ void FotoWall::saveCD()
     QPainter paintimg(&image);
     paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     // Render on the image
-    m_desk->render(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+    m_desk->renderVisible(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
     paintimg.end();
 
     // And then print
@@ -236,7 +236,7 @@ void FotoWall::saveDVD()
     QPainter paintimg(&image);
     paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     // Render on the image
-    m_desk->render(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+    m_desk->renderVisible(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
     paintimg.end();
 
     QMatrix matrix;
