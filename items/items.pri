@@ -12,6 +12,7 @@ HEADERS += AbstractProperties.h \
     ButtonItem.h \
     ColorPickerItem.h \
     PictureContent.h \
+    PixmapContent.h \
     MirrorItem.h \
     PictureProperties.h \
     HighlightItem.h \
@@ -23,6 +24,7 @@ SOURCES += AbstractProperties.cpp \
     ButtonItem.cpp \
     ColorPickerItem.cpp \
     PictureContent.cpp \
+    PixmapContent.cpp \
     MirrorItem.cpp \
     PictureProperties.cpp \
     HighlightItem.cpp \

@@ -17,6 +17,7 @@
 #include "HelpItem.h"
 #include "HighlightItem.h"
 #include "PictureContent.h"
+#include "PixmapContent.h"
 #include "TextContent.h"
 #include "PictureProperties.h"
 #include "TextProperties.h"
@@ -113,6 +114,12 @@ void Desk::addTextContent()
 {
     createText(sceneRect().center().toPoint());
 }
+
+void Desk::addPixmapContent()
+{
+    createPixmap(sceneRect().center().toPoint());
+}
+
 
 /// resize Desk
 void Desk::resize(const QSize & size)
@@ -316,18 +323,18 @@ void Desk::setProjectMode(Mode mode)
     }
 }
 
-#include <QLabel>
-static QLabel * l = 0;
 void Desk::setContentIndexedPixmap(int index, const QPixmap & pixmap)
 {
-    if (!l) {
-        l = new QLabel(0);
-        l->setFixedSize(pixmap.size());
-        l->show();
+    foreach (AbstractContent * c, m_content) {
+        PixmapContent * p = dynamic_cast<PixmapContent *>(c);
+        if (!p)
+            continue;
+        p->setPixmp(pixmap);
     }
-    static int idx = 1;
-    qWarning("%d %d", pixmap.width(), pixmap.height());
-    l->setPixmap(pixmap);
+
+    //static int idx = 1;
+    //qWarning("%d %d", pixmap.width(), pixmap.height());
+    //l->setPixmap(pixmap);
     //pixmap.save(QString("Test%1-%2.png").arg(index).arg(idx++));
 }
 
@@ -538,6 +545,22 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     return p;
 }
 
+PixmapContent * Desk::createPixmap(const QPoint & pos)
+{
+    PixmapContent * p = new PixmapContent(this);
+    p->setPixmp(QPixmap(":/data/fotowall.png"));
+    connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
+    connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
+    connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
+    connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
+    //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    p->setPos(pos);
+    p->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
+    p->show();
+    m_content.append(p);
+    return p;
+}
+
 TextContent * Desk::createText(const QPoint & pos)
 {
     TextContent * t = new TextContent(this);
@@ -600,6 +623,12 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     if (picture) {
         p = new PictureProperties(picture);
         connect(p, SIGNAL(applyEffects(int)), this, SLOT(slotApplyEffects(int)));
+    }
+
+    // pixmap properties (dialog and connections)
+    PixmapContent * pixmap = dynamic_cast<PixmapContent *>(content);
+    if (pixmap) {
+        p = new AbstractProperties(pixmap);
     }
 
     // text properties (dialog and connections)

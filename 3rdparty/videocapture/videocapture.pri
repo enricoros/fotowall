@@ -15,6 +15,6 @@ unix {
         VideoDevice_linux.cpp \
         VideoInput.cpp
 } else: {
-    message("VideoCapture is not yet available on other platforms");
+    message("VideoCapture is only available on Linux for now")
     DEFINES -= HAS_VIDEOCAPTURE
 }

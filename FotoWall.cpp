@@ -476,9 +476,11 @@ void FotoWall::slotCheckTutorial(QNetworkReply * reply)
 #if defined(HAS_VIDEOCAPTURE)
 #include "VideoDevice_linux.h"
 #include <QTimer>
-
 void FotoWall::on_addMirror_clicked()
 {
+    // create a new Pixmap Content
+    m_desk->addPixmapContent();
+
     if (!m_captureDevices.isEmpty())
         return;
 
@@ -499,7 +501,7 @@ void FotoWall::on_addMirror_clicked()
     // configure and start streaming from the capture device
 //    capture->selectInput(0);
     capture->setInputParameters();
-    capture->setSize(320, 240);
+    capture->setSize(capture->maxWidth(), capture->maxHeight());
     capture->startCapturing();
 
     // start the timer if needed
@@ -530,5 +532,4 @@ void FotoWall::slotCaptureVideoFrames()
         m_desk->setContentIndexedPixmap(0, QPixmap::fromImage(frame));
     }
 }
-
 #endif

@@ -26,6 +26,7 @@ class HighlightItem;
 class AbstractContent;
 class AbstractProperties;
 class PictureContent;
+class PixmapContent;
 class TextContent;
 
 class Desk : public QGraphicsScene
@@ -38,6 +39,7 @@ class Desk : public QGraphicsScene
         // add content
         void addPictures(const QStringList & fileNames);
         void addTextContent();
+        void addPixmapContent();
 
         // resize the scene to 0,0,size
         void resize(const QSize & size);
@@ -78,6 +80,7 @@ class Desk : public QGraphicsScene
 
     private:
         PictureContent * createPicture(const QPoint & pos);
+        PixmapContent * createPixmap(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
         void setDVDMarkers();
         void clearMarkers();

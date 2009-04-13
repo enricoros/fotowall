@@ -109,6 +109,9 @@
          </property>
          <item>
           <widget class="QToolButton" name="addPictures">
+           <property name="toolTip">
+            <string>add picture</string>
+           </property>
            <property name="text">
             <string>add pictures</string>
            </property>
@@ -132,6 +135,9 @@
          </item>
          <item>
           <widget class="QToolButton" name="addText">
+           <property name="toolTip">
+            <string>add text</string>
+           </property>
            <property name="text">
             <string>add text</string>
            </property>
@@ -155,8 +161,11 @@
          </item>
          <item>
           <widget class="QToolButton" name="addMirror">
+           <property name="toolTip">
+            <string>add mirror</string>
+           </property>
            <property name="text">
-            <string>add text</string>
+            <string>add mirror</string>
            </property>
            <property name="icon">
             <iconset resource="fotowall.qrc">
