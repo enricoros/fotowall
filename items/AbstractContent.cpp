@@ -80,6 +80,11 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     bDelete->setToolTip(tr("Remove"));
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
     m_controlItems << bDelete;
+ 
+    ButtonItem *bTransformX = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
+    bTransformX->setToolTip(tr("Drag top or bottom to move along the X axis (perspective). Hold SHIFT to rotate faster."));
+    connect(bTransformX, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotTransformX(const QPointF&,Qt::KeyboardModifiers)));
+    addButtonItem(bTransformX);
 
     // create default frame
     Frame * frame = FrameFactory::defaultPictureFrame();
@@ -606,3 +611,26 @@ void AbstractContent::slotTransformEnded()
     update();
     GFX_CHANGED();
 }
+
+void AbstractContent::slotTransformX(const QPointF& controlPoint,Qt::KeyboardModifiers modifiers)
+{
+    static int angle = 0;
+    ButtonItem * button = static_cast<ButtonItem *>(sender());
+    QPointF newPos = mapFromScene(controlPoint);
+    QPointF refPos = button->pos();
+    if (newPos == refPos)
+        return;
+
+    int march=0;
+    if(modifiers == Qt::NoModifier) march = 2;
+    else march = 4;
+
+    // set item rotation (set rotation relative to current)
+    if(newPos.y() > refPos.y()) angle += march;
+    else angle -= march;
+    // Prevents the user from rotating too much (if so, buttons become unavailable).
+    if (angle > 80) angle = 80;
+    if (angle < -80 ) angle = -80;
+    setTransform(QTransform().rotate(angle, Qt::XAxis)); 
+}
+

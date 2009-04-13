@@ -111,6 +111,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void slotScaleStarted();
         void slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotRotate(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
+        void slotTransformX(const QPointF&,Qt::KeyboardModifiers);
         void slotResetRatio();
         void slotResetRotation();
         void slotTransformEnded();
