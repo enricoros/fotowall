@@ -27,6 +27,7 @@
 #include <QTimer>
 #include <QUrl>
 #include <math.h>
+#include <QDebug>
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noResize)
     : QGraphicsItem(parent)
@@ -81,10 +82,10 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
     m_controlItems << bDelete;
  
-    ButtonItem *bTransformX = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
-    bTransformX->setToolTip(tr("Drag top or bottom to move along the X axis (perspective). Hold SHIFT to rotate faster."));
-    connect(bTransformX, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotTransformX(const QPointF&,Qt::KeyboardModifiers)));
-    addButtonItem(bTransformX);
+    ButtonItem *bTransformXY = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
+    bTransformXY->setToolTip(tr("Drag top or bottom to move along the X axis (perspective). Drag left or right to move along the Y axis. Hold SHIFT to rotate faster."));
+    connect(bTransformXY, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotTransformXY(const QPointF&,Qt::KeyboardModifiers)));
+    addButtonItem(bTransformXY);
 
     // create default frame
     Frame * frame = FrameFactory::defaultPictureFrame();
@@ -612,9 +613,10 @@ void AbstractContent::slotTransformEnded()
     GFX_CHANGED();
 }
 
-void AbstractContent::slotTransformX(const QPointF& controlPoint,Qt::KeyboardModifiers modifiers)
+void AbstractContent::slotTransformXY(const QPointF& controlPoint,Qt::KeyboardModifiers modifiers)
 {
-    static int angle = 0;
+    static int angleX = 0;
+    static int angleY = 0;
     ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPointF newPos = mapFromScene(controlPoint);
     QPointF refPos = button->pos();
@@ -625,12 +627,18 @@ void AbstractContent::slotTransformX(const QPointF& controlPoint,Qt::KeyboardMod
     if(modifiers == Qt::NoModifier) march = 2;
     else march = 4;
 
-    // set item rotation (set rotation relative to current)
-    if(newPos.y() > refPos.y()) angle += march;
-    else angle -= march;
+    //// Perspective : move along X axis
+    if(newPos.y() - refPos.y() > 70) angleX -= march;
+    else if(newPos.y() - refPos.y() < -70) angleX += march;
     // Prevents the user from rotating too much (if so, buttons become unavailable).
-    if (angle > 80) angle = 80;
-    if (angle < -80 ) angle = -80;
-    setTransform(QTransform().rotate(angle, Qt::XAxis)); 
+    if (angleX > 80) angleX = 80;
+    if (angleX < -80 ) angleX = -80;
+
+    /// Move along Y axis
+    if(newPos.x() - refPos.x() > 70) angleY -= march;
+    else if(newPos.x() - refPos.x() < -70) angleY += march;
+    if (angleY > 80) angleY = 80;
+    if (angleY < -80 ) angleY = -80;
+    setTransform(QTransform().rotate(angleX, Qt::XAxis).rotate(angleY, Qt::YAxis)); 
 }
 
