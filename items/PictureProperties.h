@@ -30,6 +30,9 @@ class PictureProperties : public AbstractProperties {
     Q_SIGNALS:
         void applyEffects(int effectClass);
 
+    protected:
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+
     private:
         Ui::PictureProperties * m_pictureUi;
         PictureContent *        m_pictureContent;

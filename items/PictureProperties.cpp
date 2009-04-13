@@ -17,6 +17,7 @@
 #include "ui_PictureProperties.h"
 #include <QListWidgetItem>
 #include <QSettings>
+#include <QGraphicsSceneMouseEvent>
 
 PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsItem * parent)
     : AbstractProperties(pictureContent, parent)
@@ -54,6 +55,12 @@ PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsI
 PictureProperties::~PictureProperties()
 {
     delete m_pictureUi;
+}
+
+void PictureProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+    if (event->button() == Qt::RightButton)
+       animateClose();
 }
 
 void PictureProperties::on_applyEffects_clicked()

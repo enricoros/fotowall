@@ -234,8 +234,6 @@ void AbstractProperties::animateClose()
 
 void AbstractProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    if (event->button() == Qt::RightButton)
-        animateClose();
     QGraphicsProxyWidget::mousePressEvent(event);
 }
 
