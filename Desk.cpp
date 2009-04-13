@@ -321,7 +321,14 @@ void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF
     foreach(QGraphicsItem *item, m_markerItems) {
         item->hide();
     }
+    foreach(AbstractProperties *prop, m_properties) {
+        //Hide the open properties windows
+        prop->hide();
+    }
     QGraphicsScene::render( painter, target , source, aspectRatioMode );
+    foreach(AbstractProperties *prop, m_properties) {
+        prop->show();
+    }
     foreach(QGraphicsItem *item, m_markerItems) {
         item->show();
     }
