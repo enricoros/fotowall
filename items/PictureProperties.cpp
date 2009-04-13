@@ -60,7 +60,8 @@ PictureProperties::~PictureProperties()
 void PictureProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
-       animateClose();
+        animateClose();
+    QGraphicsProxyWidget::mousePressEvent(event);
 }
 
 void PictureProperties::on_applyEffects_clicked()

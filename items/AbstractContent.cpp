@@ -83,7 +83,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     m_controlItems << bDelete;
  
     ButtonItem *bTransformXY = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
-    bTransformXY->setToolTip(tr("Drag top or bottom to move along the X axis (perspective). Drag left or right to move along the Y axis. Hold SHIFT to rotate faster."));
+    bTransformXY->setToolTip(tr("Drag top or bottom to move along the X axis (perspective).\nDrag left or right to move along the Y axis.\nHold SHIFT to rotate faster.\nUse CTRL to cancel the transformations"));
     connect(bTransformXY, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotTransformXY(const QPointF&,Qt::KeyboardModifiers)));
     addButtonItem(bTransformXY);
 
@@ -625,6 +625,10 @@ void AbstractContent::slotTransformXY(const QPointF& controlPoint,Qt::KeyboardMo
 
     int march=0;
     if(modifiers == Qt::NoModifier) march = 2;
+    else if( modifiers == Qt::ControlModifier ) {
+        angleX=0;
+        angleY=0;
+    }
     else march = 4;
 
     //// Perspective : move along X axis
