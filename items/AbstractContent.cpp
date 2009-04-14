@@ -337,12 +337,8 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     m_frame->paint(painter, frameRect, opaqueContent);
 
     if(m_isSelected) {
-        painter->save();
-        QBrush brush(Qt::blue, Qt::Dense4Pattern);
-        QPainterPath path = m_frame->frameShape(frameRect);
-        painter->setBrush(brush);
-        painter->drawPath(path);
-        painter->restore();
+        QPainterPathStroker path;
+        painter->drawPath(path.createStroke(m_frame->frameShape(frameRect)));
     }
 
     // use clip path for contents, if set
@@ -401,8 +397,7 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
     if (event->button() == Qt::RightButton)
         emit configureMe(event->scenePos().toPoint());
     else if(event->button() == Qt::LeftButton) {
-        m_isSelected = true;
-        update();
+        setSelected(true);
         if(event->modifiers() == Qt::ControlModifier) {
             emit addItemToSelection(this);
         } else {
