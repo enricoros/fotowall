@@ -80,7 +80,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bDelete->setToolTip(tr("Remove"));
-    connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteMe()));
+    connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteItem()));
     m_controlItems << bDelete;
  
     ButtonItem *bTransformXY = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
@@ -416,7 +416,7 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 void AbstractContent::keyPressEvent(QKeyEvent * event)
 {
     if (event->key() == Qt::Key_Delete)
-        emit deleteMe();
+        emit deleteItem();
     event->accept();
 }
 

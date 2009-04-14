@@ -69,7 +69,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void configureMe(const QPoint & scenePoint);
         void changeStack(int);
         void backgroundMe();
-        void deleteMe();
+        void deleteItem();
         void itemSelected(AbstractContent *);
         void addItemToSelection(AbstractContent *);
 

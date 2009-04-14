@@ -190,7 +190,7 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
     connect(m_commonUi->back, SIGNAL(clicked()), m_content, SLOT(slotStackBack()));
     connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(backgroundMe()));
     connect(m_commonUi->save, SIGNAL(clicked()), m_content, SLOT(slotSaveAs()));
-    connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(deleteMe()), Qt::QueuedConnection);
+    connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(deleteItem()), Qt::QueuedConnection);
     // autoconnection doesn't work because we don't do ->setupUi(this), so here we connect manually
     connect(m_commonUi->applyLooks, SIGNAL(clicked()), this, SLOT(on_applyLooks_clicked()));
     connect(m_commonUi->listWidget, SIGNAL(itemSelectionChanged()), this, SLOT(on_listWidget_itemSelectionChanged()));

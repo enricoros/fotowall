@@ -31,6 +31,7 @@
 #include <QUrl>
 #include <QList>
 #include <QFile>
+#include <QMessageBox>
 
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
@@ -517,7 +518,7 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
     connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
     connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
+    connect(p, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
     connect(p, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
     connect(p, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
     //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
@@ -534,7 +535,7 @@ TextContent * Desk::createText(const QPoint & pos)
     connect(t, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
     connect(t, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
     connect(t, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(t, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
+    connect(t, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
     connect(t, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
     connect(t, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
     //t->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
@@ -685,32 +686,39 @@ void Desk::slotStackContent(int op)
 
 void Desk::slotDeleteContent()
 {
-    AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
-    if (!content)
-        return;
-
-    // unset background if deleting its content
-    if (m_backContent == content) {
-        m_backContent = 0;
-        m_backCache = QPixmap();
-        update();
+    if(m_selectedContent.size() > 1) { 
+        int answer = QMessageBox::question(0, tr("Delete content"), tr("All selected items will be deleted, do you want to continue ?"), QMessageBox::Yes | QMessageBox::No);
+        if(answer == QMessageBox::No) return;
     }
 
-    // remove property if deleting its content
-    QList<AbstractProperties *>::iterator pIt = m_properties.begin();
-    while (pIt != m_properties.end()) {
-        AbstractProperties * pp = *pIt;
-        if (pp->content() == content) {
-            delete pp;
-            pIt = m_properties.erase(pIt);
-        } else
-            ++pIt;
-    }
+    foreach(AbstractContent *content, m_selectedContent) {
+        if (!content)
+            return;
 
-    // unlink content from lists, myself(the Scene) and memory
-    m_content.removeAll(content);
-    removeItem(content);
-    content->deleteLater();
+        // unset background if deleting its content
+        if (m_backContent == content) {
+            m_backContent = 0;
+            m_backCache = QPixmap();
+            update();
+        }
+
+        // remove property if deleting its content
+        QList<AbstractProperties *>::iterator pIt = m_properties.begin();
+        while (pIt != m_properties.end()) {
+            AbstractProperties * pp = *pIt;
+            if (pp->content() == content) {
+                delete pp;
+                pIt = m_properties.erase(pIt);
+            } else
+                ++pIt;
+        }
+
+        // unlink content from lists, myself(the Scene) and memory
+        m_content.removeAll(content);
+        removeItem(content);
+        content->deleteLater();
+    }
+    clearSelection();
 }
 
 void Desk::slotDeleteProperties()
