@@ -42,6 +42,7 @@ class AbstractProperties : public QGraphicsProxyWidget {
         void closing();
         void closed();
         void applyLooks(quint32 frameClass, bool mirrored);
+        void applyLookToSelection(quint32 frameClass, bool mirrored);
 
     protected:
         // used by subclasses

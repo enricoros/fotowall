@@ -106,6 +106,7 @@ class Desk : public QGraphicsScene
         void slotItemSelected(AbstractContent *);
         void slotAddItemToSelection(AbstractContent *);
         void slotApplyLooks(quint32 frameClass, bool mirrored);
+        void slotApplyLookToSelection(quint32 frameClass, bool mirrored);
         void slotApplyEffects(int effectClass);
         void slotApplyEffectToSelection(int effectClass);
 

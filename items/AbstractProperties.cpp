@@ -339,6 +339,7 @@ void AbstractProperties::on_listWidget_itemSelectionChanged()
     Frame * frame = FrameFactory::createFrame(frameClass);
     if (frame)
         m_content->setFrame(frame);
+    emit applyLookToSelection(m_content->frameClass(), m_content->mirrorEnabled());
 }
 
 void AbstractProperties::on_reflection_toggled(bool checked)

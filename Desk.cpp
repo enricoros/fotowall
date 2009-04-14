@@ -606,6 +606,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
         addItem(p);
         connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
         connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
+        connect(p, SIGNAL(applyLookToSelection(quint32,bool)), this, SLOT(slotApplyLookToSelection(quint32,bool)));
         p->show();
         p->setPos(scenePoint - QPoint(10, 10));
         p->keepInBoundaries(sceneRect().toRect());
@@ -736,6 +737,14 @@ void Desk::slotAddItemToSelection(AbstractContent *content)
 void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
 {
     foreach (AbstractContent * content, m_content) {
+        content->setFrame(FrameFactory::createFrame(frameClass));
+        content->setMirrorEnabled(mirrored);
+    }
+}
+
+void Desk::slotApplyLookToSelection(quint32 frameClass, bool mirrored)
+{
+    foreach (AbstractContent * content, m_selectedContent) {
         content->setFrame(FrameFactory::createFrame(frameClass));
         content->setMirrorEnabled(mirrored);
     }
