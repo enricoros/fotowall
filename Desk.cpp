@@ -325,6 +325,7 @@ void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF
         //Hide the open properties windows
         prop->hide();
     }
+    clearSelection();
     QGraphicsScene::render( painter, target , source, aspectRatioMode );
     foreach(AbstractProperties *prop, m_properties) {
         prop->show();
@@ -724,9 +725,19 @@ void Desk::slotDeleteProperties()
     properties->deleteLater();
 }
 
+void Desk::clearSelection()
+{
+    foreach (AbstractContent *content, m_selectedContent)
+    {
+        content->setSelected(false);
+    }
+    m_selectedContent.clear();
+    update();
+}
 void Desk::slotItemSelected(AbstractContent *content)
 {
-    m_selectedContent.clear();
+    clearSelection();
+    content->setSelected(true);
     m_selectedContent << content;
 }
 void Desk::slotAddItemToSelection(AbstractContent *content)

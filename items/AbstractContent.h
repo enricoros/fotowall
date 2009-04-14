@@ -46,6 +46,8 @@ class AbstractContent : public QObject, public QGraphicsItem
         void setMirrorEnabled(bool enabled);
         bool mirrorEnabled() const;
 
+        void setSelected(bool);
+
         // misc
         void resize(const QRectF & rect);
         void adjustSize();
@@ -105,6 +107,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         QList<ButtonItem *> m_controlItems;
         float               m_scaleRatio;
         bool                m_transforming;
+        bool                m_isSelected;
         QTimer *            m_transformRefreshTimer;
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;

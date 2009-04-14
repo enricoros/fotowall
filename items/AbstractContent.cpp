@@ -36,6 +36,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     , m_frameTextItem(0)
     , m_scaleRatio(1.0)
     , m_transforming(false)
+    , m_isSelected(false)
     , m_transformRefreshTimer(0)
     , m_gfxChangeTimer(0)
     , m_mirrorItem(0)
@@ -207,6 +208,13 @@ bool AbstractContent::mirrorEnabled() const
     return m_mirrorItem;
 }
 
+void AbstractContent::setSelected(bool state)
+{ 
+    m_isSelected = state;
+    m_mirrorItem->sourceUpdated();
+    update();
+}
+
 void AbstractContent::resize(const QRectF & rect)
 {
     if (!rect.isValid() || rect == m_rect)
@@ -328,6 +336,15 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     QRect frameRect = m_rect.toRect();
     m_frame->paint(painter, frameRect, opaqueContent);
 
+    if(m_isSelected) {
+        painter->save();
+        QBrush brush(Qt::blue, Qt::Dense4Pattern);
+        QPainterPath path = m_frame->frameShape(frameRect);
+        painter->setBrush(brush);
+        painter->drawPath(path);
+        painter->restore();
+    }
+
     // use clip path for contents, if set
     if (m_frame->clipContents())
         painter->setClipPath(m_frame->contentsClipPath(frameRect));
@@ -384,6 +401,8 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
     if (event->button() == Qt::RightButton)
         emit configureMe(event->scenePos().toPoint());
     else if(event->button() == Qt::LeftButton) {
+        m_isSelected = true;
+        update();
         if(event->modifiers() == Qt::ControlModifier) {
             emit addItemToSelection(this);
         } else {

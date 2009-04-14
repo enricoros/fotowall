@@ -77,6 +77,7 @@ class Desk : public QGraphicsScene
         TextContent * createText(const QPoint & pos);
         void setDVDMarkers();
         void clearMarkers();
+        void clearSelection();
         QList<AbstractContent *> m_content;
         QList<AbstractContent *> m_selectedContent;
         QList<AbstractProperties *> m_properties;
