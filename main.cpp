@@ -20,7 +20,7 @@
 #include "FotoWall.h"
 #include "RenderOpts.h"
 
-#ifdef Q_OS_WIN32
+#if !defined(QT_SHARED) && !defined(QT_DLL)
 Q_IMPORT_PLUGIN(qgif)
 Q_IMPORT_PLUGIN(qjpeg)
 Q_IMPORT_PLUGIN(qsvg)
