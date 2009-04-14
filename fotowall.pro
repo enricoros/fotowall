@@ -59,7 +59,7 @@ win32 {
 }
 
 # handling static image plugins
-contains(CONFIG, static): {
+contains(CONFIG, static) {
     QTPLUGIN += qgif \
         qjpeg \
         qsvg \
