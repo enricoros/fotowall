@@ -29,6 +29,7 @@ class PictureProperties : public AbstractProperties {
 
     Q_SIGNALS:
         void applyEffects(int effectClass);
+        void applyEffectToSelection(int effectClass);
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);

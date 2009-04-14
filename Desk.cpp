@@ -517,6 +517,8 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
     connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
     connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
+    connect(p, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
+    connect(p, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
     //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     p->setPos(pos);
     p->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
@@ -532,6 +534,8 @@ TextContent * Desk::createText(const QPoint & pos)
     connect(t, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
     connect(t, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
     connect(t, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
+    connect(t, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
+    connect(t, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
     //t->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     t->setPos(pos);
     t->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
@@ -587,6 +591,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     if (picture) {
         p = new PictureProperties(picture);
         connect(p, SIGNAL(applyEffects(int)), this, SLOT(slotApplyEffects(int)));
+        connect(p, SIGNAL(applyEffectToSelection(int)), this, SLOT(slotApplyEffectToSelection(int)));
     }
 
     // text properties (dialog and connections)
@@ -718,6 +723,16 @@ void Desk::slotDeleteProperties()
     properties->deleteLater();
 }
 
+void Desk::slotItemSelected(AbstractContent *content)
+{
+    m_selectedContent.clear();
+    m_selectedContent << content;
+}
+void Desk::slotAddItemToSelection(AbstractContent *content)
+{
+    m_selectedContent << content;
+}
+
 void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
 {
     foreach (AbstractContent * content, m_content) {
@@ -729,6 +744,15 @@ void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
 void Desk::slotApplyEffects(int effectClass)
 {
     foreach (AbstractContent * content, m_content) {
+        PictureContent * picture = dynamic_cast<PictureContent *>(content);
+        if (picture)
+            picture->setEffect(effectClass);
+    }
+}
+
+void Desk::slotApplyEffectToSelection(int effectClass)
+{
+    foreach (AbstractContent * content, m_selectedContent) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (picture)
             picture->setEffect(effectClass);

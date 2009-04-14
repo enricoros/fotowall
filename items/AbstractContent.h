@@ -68,6 +68,8 @@ class AbstractContent : public QObject, public QGraphicsItem
         void changeStack(int);
         void backgroundMe();
         void deleteMe();
+        void itemSelected(AbstractContent *);
+        void addItemToSelection(AbstractContent *);
 
     protected:
         // useful to sunclasses

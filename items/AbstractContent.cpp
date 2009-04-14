@@ -383,6 +383,14 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton)
         emit configureMe(event->scenePos().toPoint());
+    else if(event->button() == Qt::LeftButton) {
+        if(event->modifiers() == Qt::ControlModifier) {
+            emit addItemToSelection(this);
+        } else {
+            emit itemSelected(this);
+        }
+    }
+
     QGraphicsItem::mousePressEvent(event);
 }
 

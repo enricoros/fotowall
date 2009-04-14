@@ -78,6 +78,7 @@ class Desk : public QGraphicsScene
         void setDVDMarkers();
         void clearMarkers();
         QList<AbstractContent *> m_content;
+        QList<AbstractContent *> m_selectedContent;
         QList<AbstractProperties *> m_properties;
         QList<HighlightItem *> m_highlightItems;
         HelpItem * m_helpItem;
@@ -102,8 +103,11 @@ class Desk : public QGraphicsScene
         void slotStackContent(int);
         void slotDeleteContent();
         void slotDeleteProperties();
+        void slotItemSelected(AbstractContent *);
+        void slotAddItemToSelection(AbstractContent *);
         void slotApplyLooks(quint32 frameClass, bool mirrored);
         void slotApplyEffects(int effectClass);
+        void slotApplyEffectToSelection(int effectClass);
 
         void slotTitleColorChanged();
         void slotForeColorChanged();

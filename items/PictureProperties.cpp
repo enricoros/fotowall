@@ -82,5 +82,5 @@ void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
     quint32 effectClass = item->data(Qt::UserRole).toUInt();
 
     // apply the effect
-    m_pictureContent->setEffect(effectClass);
+    emit applyEffectToSelection(effectClass);
 }
