@@ -356,13 +356,7 @@ void FotoWall::load(QString &fileName)
     if (fileName.isNull())
         return;
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this, tr("File Error"), tr("Error loading Layout from the file '%1'").arg(fileName));
-        return;
-    }
-    QDataStream in(&file);
-    m_desk->restore(in);
+    m_desk->restore(fileName);
 }
 
 void FotoWall::on_saveButton_clicked()

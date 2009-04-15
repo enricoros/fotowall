@@ -24,18 +24,29 @@
 #include <QFile>
 #include <QTextStream>
 #include <QList>
+#include "PictureContent.h"
+#include "TextContent.h"
+
+class Desk;
+class AbstractContent;
+class PictureContent;
+class TextContent;
 
 class XmlRead
 {
     public:
-        XmlRead(const QString &);
+        XmlRead(const QString &, Desk *);
         ~XmlRead();
         void readProject();
-        QStringList readImage();
-        QString getProjectTitle() const;
-        int getProjectMode() const;
+        void readImages();
+        //void readText();
 
+    private:
+        void readAbstractContent(AbstractContent *, QDomElement &);
+        // Clear the desk, make ready for restoration
+        void prepareRestore();
     private :
+        Desk *m_desk;
         QDomDocument doc;
         QDomElement m_imagesElement;
         QDomElement m_projectElement;

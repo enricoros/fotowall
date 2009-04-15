@@ -32,6 +32,7 @@ class Desk : public QGraphicsScene
 {
     Q_OBJECT
     public:
+        friend class XmlRead;
         Desk(QObject * parent = 0);
         ~Desk();
 
@@ -53,7 +54,7 @@ class Desk : public QGraphicsScene
         // save, restore, load, help
         void showIntroduction();
         void save(const QString &) const;
-        void restore(QDataStream & data);
+        void restore(const QString &);
 
         // get and set the project mode (CD cover, DVD,...).
         enum Mode { ModeNormal = 1, ModeCD = 2, ModeDVD = 3 };

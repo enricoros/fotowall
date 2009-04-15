@@ -236,54 +236,13 @@ void Desk::save(const QString &path) const
             continue;
         }
     }
-
 }
 
-void Desk::restore(QDataStream & data)
+void Desk::restore(const QString &path)
 {
-    // FIXME: move to a serious XML format ...
-
-    // restore own data
-    QColor color;
-    data >> color;
-    m_titleColorPicker->setColor(color);
-    data >> color;
-    m_foreColorPicker->setColor(color);
-    data >> color;
-    m_grad1ColorPicker->setColor(color);
-    data >> color;
-    m_grad2ColorPicker->setColor(color);
-    QString titleText;
-    data >> titleText;
-    setTitleText(titleText);
-
-    // FIXME: restore background
-
-    // restore the content
-    qDeleteAll(m_content);
-    m_content.clear();
-    m_backContent = 0;
-    while (!data.atEnd()) {
-        int type;
-        data >> type;
-        AbstractContent * content = 0;
-        switch (type) {
-            case 1:
-                content = createPicture(QPoint());
-                break;
-            case 2:
-                content = createText(QPoint());
-                break;
-            default:
-                qWarning("Desk::restore: error loading data");
-                continue;
-        }
-        if (!content->restore(data)) {
-            m_content.removeAll(content);
-            delete content;
-        }
-    }
-    update();
+    XmlRead xmlRead(path, this);
+    xmlRead.readProject();
+    xmlRead.readImages();
 }
 
 /// Modes

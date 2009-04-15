@@ -61,11 +61,11 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     if (m_photo->isNull()) {
         delete m_photo;
         m_photo = 0;
-        m_fileName = QString();
+        m_filePath = QString();
         return false;
     }
     m_opaquePhoto = !m_photo->hasAlpha();
-    m_fileName = fileName;
+    m_filePath = fileName;
     if (keepRatio)
         adjustSize();
     if (setName) {
@@ -111,6 +111,10 @@ void PictureContent::setEffect(int effectClass)
     GFX_CHANGED();
 }
 
+QString PictureContent::getFilePath() const
+{
+    return m_filePath;
+}
 bool PictureContent::restore(QDataStream & data)
 {
     AbstractContent::restore(data);

@@ -23,6 +23,7 @@ class Frame;
 class MirrorItem;
 class QGraphicsTextItem;
 class QPointF;
+class XmlRead;
 
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
@@ -30,6 +31,7 @@ class AbstractContent : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
+        friend class XmlRead;
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noResize = false);
         virtual ~AbstractContent();
 
