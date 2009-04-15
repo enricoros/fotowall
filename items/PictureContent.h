@@ -34,7 +34,6 @@ class PictureContent : public AbstractContent
         QString getFilePath() const; 
 
         // ::AbstractContent
-        bool restore(QDataStream & data);
         QPixmap renderAsBackground(const QSize & size) const;
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;

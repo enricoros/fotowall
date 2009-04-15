@@ -115,15 +115,6 @@ QString PictureContent::getFilePath() const
 {
     return m_filePath;
 }
-bool PictureContent::restore(QDataStream & data)
-{
-    AbstractContent::restore(data);
-    QString fileName;
-    data >> fileName;
-    bool ok = loadPhoto(fileName);
-    if(ok) m_photo->restore(data);
-    return ok;
-}
 
 QPixmap PictureContent::renderAsBackground(const QSize & size) const
 {

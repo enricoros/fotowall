@@ -30,8 +30,6 @@ class TextContent : public AbstractContent
         void setHtml(const QString & htmlCode);
 
         // ::AbstractContent
-        void save(QDataStream & data) const;
-        bool restore(QDataStream & data);
         QPixmap renderAsBackground(const QSize & size) const;
 
         // ::QGraphicsItem

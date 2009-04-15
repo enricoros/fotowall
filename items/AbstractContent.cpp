@@ -262,53 +262,6 @@ bool AbstractContent::beingTransformed() const
     return m_transforming;
 }
 
-void AbstractContent::save(QDataStream & data) const
-{
-    data << m_rect;
-    data << pos();
-    data << transform();
-    data << zValue();
-    data << isVisible();
-    bool hasText = frameTextEnabled();
-    data << hasText;
-    if (hasText)
-        data << frameText();
-    quint32 frameClass = m_frame ? m_frame->frameClass() : 0;
-    data << frameClass;
-}
-
-bool AbstractContent::restore(QDataStream & data)
-{
-    prepareGeometryChange();
-    data >> m_rect;
-    layoutChildren();
-    QPointF p;
-    data >> p;
-    setPos(p);
-    QTransform t;
-    data >> t;
-    setTransform(t);
-    qreal zVal;
-    data >> zVal;
-    setZValue(zVal);
-    bool visible;
-    data >> visible;
-    setVisible(visible);
-    bool hasText;
-    data >> hasText;
-    setFrameTextEnabled(hasText);
-    if (hasText) {
-        QString text;
-        data >> text;
-        setFrameText(text);
-    }
-    quint32 frameClass;
-    data >> frameClass;
-    setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
-    update();
-    return true;
-}
-
 QPixmap AbstractContent::renderAsBackground(const QSize & size) const
 {
     QPixmap pix(size);

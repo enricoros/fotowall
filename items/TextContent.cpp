@@ -65,21 +65,6 @@ void TextContent::setHtml(const QString & htmlCode)
     m_text->setHtml(htmlCode);
 }
 
-void TextContent::save(QDataStream & data) const
-{
-    AbstractContent::save(data);
-    data << toHtml();
-}
-
-bool TextContent::restore(QDataStream & data)
-{
-    bool ok = AbstractContent::restore(data);
-    QString htmlCode;
-    data >> htmlCode;
-    setHtml(htmlCode);
-    return ok;
-}
-
 QPixmap TextContent::renderAsBackground(const QSize & size) const
 {
     // get the base empty pixmap
