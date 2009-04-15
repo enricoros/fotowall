@@ -83,6 +83,7 @@ FotoWall::FotoWall(QWidget * parent)
 
     // create our custom desk
     m_desk = new Desk(this);
+    connect(m_desk, SIGNAL(askChangeMode(int)), this, SLOT(on_projectType_currentIndexChanged(int)));
 
     // set the decoration menu
     ui->decoButton->setMenu(createDecorationMenu());

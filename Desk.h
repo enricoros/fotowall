@@ -117,6 +117,10 @@ class Desk : public QGraphicsScene
         void slotGradColorChanged();
 
         void slotCloseHelp();
+
+    Q_SIGNALS:
+        void askChangeMode(int);
+
 };
 
 #endif

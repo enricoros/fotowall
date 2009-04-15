@@ -19,6 +19,7 @@
 #ifndef __XmlRead__
 #define __XmlRead__
 
+#include <QObject>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
@@ -32,8 +33,9 @@ class AbstractContent;
 class PictureContent;
 class TextContent;
 
-class XmlRead
+class XmlRead : public QObject
 {
+    Q_OBJECT
     public:
         XmlRead(const QString &, Desk *);
         ~XmlRead();
@@ -56,6 +58,9 @@ class XmlRead
 
         QString m_projectTitle;
         int m_projectMode;
+
+    Q_SIGNALS:
+        void changeMode(int);
 
 };
 

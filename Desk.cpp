@@ -241,6 +241,8 @@ void Desk::save(const QString &path) const
 void Desk::restore(const QString &path)
 {
     XmlRead xmlRead(path, this);
+    // Mode changing is handled in Fotowall, so resend the signal
+    connect(&xmlRead, SIGNAL(changeMode(int)), this, SIGNAL(askChangeMode(int)));
     xmlRead.readProject();
     xmlRead.readImages();
     xmlRead.readText();

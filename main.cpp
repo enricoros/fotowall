@@ -55,10 +55,12 @@ int main( int argc, char ** args )
 
     FotoWall fw;
     fw.showMaximized();
-    if(argc >0) {
-        QString filePath = args[1];
-        fw.load(filePath);
-    }
+    // FIXME : Bug in load function (bad positions) when loading layouts that way
+    // It appears that the desk don't have the right size at this moment.
+    //if(argc >0) {
+    //    QString filePath = args[1];
+    //    fw.load(filePath);
+    //}
     if (RenderOpts::FirstRun)
         fw.showIntroduction();
 

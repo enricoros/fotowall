@@ -20,6 +20,7 @@
 #include <QString>
 #include <QDebug>
 #include <QStringList>
+#include <QGraphicsView>
 #include "Desk.h"
 #include "frames/FrameFactory.h"
 
@@ -67,9 +68,9 @@ void XmlRead::readProject()
 //    m_grad2ColorPicker->setColor(color);
 //    // FIXME: restore background
     if (!m_projectElement.isNull()) { 
-        qDebug() << m_projectElement.firstChildElement("title").text();
         m_desk->setTitleText(m_projectElement.firstChildElement("title").text());
-        m_desk->setProjectMode(static_cast<Desk::Mode>(m_projectElement.firstChildElement("mode").text().toInt()));
+        int mode = m_projectElement.firstChildElement("mode").text().toInt() - 1;
+        emit changeMode(mode); 
     }
 }
 
@@ -102,7 +103,7 @@ void XmlRead::readAbstractContent(AbstractContent *content, QDomElement &parentE
     y = domElement.firstChildElement("y").text().toInt();
     content->setPos(x, y);
     
-    /* Fixme : load transform. Before it was done like this :
+    /* FIXME : load transform. Before it was done like this :
         QTransform t;
         data >> t;
         setTransform(t);
@@ -147,7 +148,9 @@ void XmlRead::readImages()
 
         QStringList effects =  imageElement.firstChildElement("effects").text().split(" ");
         foreach(QString effect, effects) {
-            content->setEffect(effect.toInt());
+            qDebug() << "Effect : "<<effect;
+            if(!effect.isEmpty())
+                content->setEffect(effect.toInt());
         }
 
         //Read next node
