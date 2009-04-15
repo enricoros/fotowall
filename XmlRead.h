@@ -39,7 +39,7 @@ class XmlRead
         ~XmlRead();
         void readProject();
         void readImages();
-        //void readText();
+        void readText();
 
     private:
         void readAbstractContent(AbstractContent *, QDomElement &);
@@ -48,8 +48,9 @@ class XmlRead
     private :
         Desk *m_desk;
         QDomDocument doc;
-        QDomElement m_imagesElement;
         QDomElement m_projectElement;
+        QDomElement m_imagesElement;
+        QDomElement m_textsElement;
         QFile file;
         QTextStream out;
 

@@ -44,6 +44,7 @@ XmlRead::XmlRead(const QString &filePath, Desk *desk) : m_desk(desk)
     m_projectElement = root.firstChildElement("project"); // Get the project node
     // Get the parent images node (containing all the images)
     m_imagesElement = root.firstChildElement("images"); 
+    m_textsElement = root.firstChildElement("texts"); 
 
     prepareRestore();
 }
@@ -129,7 +130,7 @@ void XmlRead::readImages()
 {
     QDomNode node = m_imagesElement.firstChild();
     QDomElement imageElement; // An image element (just one image)
-    QString name, path, effects;
+    QString name, path;
     // Foreach image nodes
     while (!node.isNull()) {
         imageElement = node.toElement();
@@ -142,13 +143,38 @@ void XmlRead::readImages()
 
         name = imageElement.firstChildElement("name").text();
         path = imageElement.firstChildElement("path").text();
-        qDebug() << "path : " << path;
         content->loadPhoto(path);
 
-        effects =  imageElement.firstChildElement("effects").text();
+        QStringList effects =  imageElement.firstChildElement("effects").text().split(" ");
+        foreach(QString effect, effects) {
+            content->setEffect(effect.toInt());
+        }
 
         //Read next node
         node = node.nextSibling();
     }
 }
 
+void XmlRead::readText()
+{
+    QDomNode node = m_textsElement.firstChild();
+    QDomElement textElement; // An image element (just one image)
+    QString text;
+    // Foreach image nodes
+    while (!node.isNull()) {
+        textElement = node.toElement();
+
+        // Create image item (connect slots...).
+        TextContent *content = m_desk->createText(QPoint());
+
+        // Reload general properties (shared by all items)
+        readAbstractContent(content, textElement);
+
+        text = textElement.firstChildElement("html-text").text();
+        content->setHtml(text);
+
+        //Read next node
+        node = node.nextSibling();
+    }
+
+}

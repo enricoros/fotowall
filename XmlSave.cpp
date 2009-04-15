@@ -142,10 +142,12 @@ void XmlSave::saveAbstractContent(AbstractContent *content, QDomElement &parentE
     text = doc.createTextNode(valueStr);   
     domElement.appendChild(text);             
 
-    domElement= doc.createElement("frame-text");
-    parentElement.appendChild(domElement);
-    text = doc.createTextNode(content->frameText());   
-    domElement.appendChild(text);             
+    if(content->frameTextEnabled()) {
+        domElement= doc.createElement("frame-text");
+        parentElement.appendChild(domElement);
+        text = doc.createTextNode(content->frameText());   
+        domElement.appendChild(text);             
+    }
 
 
 /* FIXME : Save transformations !

@@ -243,6 +243,7 @@ void Desk::restore(const QString &path)
     XmlRead xmlRead(path, this);
     xmlRead.readProject();
     xmlRead.readImages();
+    xmlRead.readText();
 }
 
 /// Modes
