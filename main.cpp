@@ -32,6 +32,7 @@ bool RenderOpts::LastMirrorEnabled = true;
 bool RenderOpts::HQRendering = false;
 bool RenderOpts::FirstRun = false;
 
+
 int main( int argc, char ** args )
 {
     // use the Raster GraphicsSystem as default on 4.5+

@@ -111,13 +111,6 @@ void PictureContent::setEffect(int effectClass)
     GFX_CHANGED();
 }
 
-void PictureContent::save(QDataStream & data) const
-{
-    AbstractContent::save(data);
-    data << m_fileName;
-    m_photo->save(data);
-}
-
 bool PictureContent::restore(QDataStream & data)
 {
     AbstractContent::restore(data);
@@ -203,6 +196,11 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 //    if (m_opaquePhoto)
 //        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
+}
+
+CPixmap* PictureContent::getCPixmap() const
+{
+    return m_photo;
 }
 
 void PictureContent::slotFlipHorizontally()

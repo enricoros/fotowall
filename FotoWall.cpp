@@ -106,13 +106,8 @@ FotoWall::FotoWall(QWidget * parent)
 FotoWall::~FotoWall()
 {
     // dump current layout
-    QFile file("autosave.lay");
-    if (file.open(QIODevice::WriteOnly)) {
-        QDataStream out(&file);
-        m_desk->save(out);
-        file.close();
-    }
-
+    m_desk->save("autosave.lay");
+    
     // delete everything
     delete m_view;
     delete m_desk;
@@ -378,13 +373,7 @@ void FotoWall::on_saveButton_clicked()
     if (!fileName.endsWith(".lay", Qt::CaseInsensitive))
         fileName += ".lay";
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly)) {
-        QMessageBox::warning(this, tr("File Error"), tr("Error saving the Layout to the file '%1'").arg(fileName));
-        return;
-    }
-    QDataStream out(&file);
-    m_desk->save(out);
+    m_desk->save(fileName);
 }
 
 void FotoWall::on_exportButton_clicked()

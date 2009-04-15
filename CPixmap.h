@@ -53,6 +53,7 @@ public:
    bool restore(QDataStream & data);
 
    enum Effects { NVG, BlackAndWhite, InvertColors, Sepia };
+   QList<int> getEffects() const;
 
 private:
    QString m_filePath;

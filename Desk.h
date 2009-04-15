@@ -52,7 +52,7 @@ class Desk : public QGraphicsScene
 
         // save, restore, load, help
         void showIntroduction();
-        void save(QDataStream & data) const;
+        void save(const QString &) const;
         void restore(QDataStream & data);
 
         // get and set the project mode (CD cover, DVD,...).

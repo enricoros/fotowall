@@ -32,6 +32,8 @@
 #include <QList>
 #include <QFile>
 #include <QMessageBox>
+#include "XmlRead.h"
+#include "XmlSave.h"
 
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
@@ -216,37 +218,25 @@ void Desk::showIntroduction()
     }
 }
 
-void Desk::save(QDataStream & data) const
+void Desk::save(const QString &path) const
 {
-    // FIXME: move to a serious XML format ...
-
-    // save own data
-    data << m_titleColorPicker->color();
-    data << m_foreColorPicker->color();
-    data << m_grad1ColorPicker->color();
-    data << m_grad2ColorPicker->color();
-    data << m_titleText;
-
-    // TODO: save background
-
-    // save the contents
-    ///data << m_content.size();
+    XmlSave xmlSave(path);
+    xmlSave.saveProject(titleText(), projectMode());
     foreach (AbstractContent * content, m_content) {
-        // write the content type
-        int type = 0;
-        if (content->inherits("PictureContent"))
-            type = 1;
-        else if (content->inherits("TextContent"))
-            type = 2;
+        if (content->inherits("PictureContent")) {
+            PictureContent * picture = dynamic_cast<PictureContent *>(content);
+            xmlSave.saveImage(picture);
+        }
+        else if (content->inherits("TextContent")) {
+            TextContent * text = dynamic_cast<TextContent *>(content);
+            xmlSave.saveText(text);
+        }
         else {
             qWarning("Desk::save: error saving data");
             continue;
         }
-        data << type;
-
-        // write the content payload
-        content->save(data);
     }
+
 }
 
 void Desk::restore(QDataStream & data)
