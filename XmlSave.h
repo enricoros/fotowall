@@ -28,6 +28,7 @@
 class PictureContent;
 class TextContent;
 class AbstractContent;
+class Desk;
 
 class XmlSave : public QObject
 {
@@ -36,8 +37,9 @@ class XmlSave : public QObject
         XmlSave(const QString &);
         ~XmlSave();
         void saveProject(QString, int);
-        void saveImage(PictureContent *);
-        void saveText(TextContent *);
+        void saveImage(const PictureContent *);
+        void saveText(const TextContent *);
+        void saveDesk(const Desk *);
 
     private :
         QDomDocument doc;
@@ -45,10 +47,11 @@ class XmlSave : public QObject
         QDomElement m_imageElements;
         QDomElement m_textElements;
         QDomElement m_projectElement;
+        QDomElement m_deskElement;
         QFile file;
         QTextStream out;
 
-        void saveAbstractContent(AbstractContent *content, QDomElement &parentElement);
+        void saveAbstractContent(const AbstractContent *content, QDomElement &parentElement);
 };
 
 #endif 

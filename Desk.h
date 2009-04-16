@@ -33,6 +33,7 @@ class Desk : public QGraphicsScene
     Q_OBJECT
     public:
         friend class XmlRead;
+        friend class XmlSave;
         Desk(QObject * parent = 0);
         ~Desk();
 

@@ -40,6 +40,7 @@ class XmlRead : public QObject
         XmlRead(const QString &, Desk *);
         ~XmlRead();
         void readProject();
+        void readDesk();
         void readImages();
         void readText();
 
@@ -51,6 +52,7 @@ class XmlRead : public QObject
         Desk *m_desk;
         QDomDocument doc;
         QDomElement m_projectElement;
+        QDomElement m_deskElement;
         QDomElement m_imagesElement;
         QDomElement m_textsElement;
         QFile file;

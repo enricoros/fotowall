@@ -220,32 +220,48 @@ void Desk::showIntroduction()
 
 void Desk::save(const QString &path) const
 {
-    XmlSave xmlSave(path);
-    xmlSave.saveProject(titleText(), projectMode());
+    XmlSave *xmlSave = 0;
+    try {
+        xmlSave = new XmlSave(path);
+    } catch (...) {
+        //if saving failled
+        return;
+    }
+    xmlSave->saveProject(titleText(), projectMode());
+    xmlSave->saveDesk(this);
     foreach (AbstractContent * content, m_content) {
         if (content->inherits("PictureContent")) {
             PictureContent * picture = dynamic_cast<PictureContent *>(content);
-            xmlSave.saveImage(picture);
+            xmlSave->saveImage(picture);
         }
         else if (content->inherits("TextContent")) {
             TextContent * text = dynamic_cast<TextContent *>(content);
-            xmlSave.saveText(text);
+            xmlSave->saveText(text);
         }
         else {
             qWarning("Desk::save: error saving data");
             continue;
         }
     }
+    delete xmlSave;
 }
 
 void Desk::restore(const QString &path)
 {
-    XmlRead xmlRead(path, this);
+    XmlRead *xmlRead = 0;
+    try {
+        xmlRead = new XmlRead(path, this);
+    } catch (...) {
+        // If loading failled
+        return;
+    }
     // Mode changing is handled in Fotowall, so resend the signal
-    connect(&xmlRead, SIGNAL(changeMode(int)), this, SIGNAL(askChangeMode(int)));
-    xmlRead.readProject();
-    xmlRead.readImages();
-    xmlRead.readText();
+    connect(xmlRead, SIGNAL(changeMode(int)), this, SIGNAL(askChangeMode(int)));
+    xmlRead->readProject();
+    xmlRead->readDesk();
+    xmlRead->readImages();
+    xmlRead->readText();
+    delete xmlRead;
 }
 
 /// Modes

@@ -18,31 +18,37 @@
 
 #include "XmlRead.h"
 #include <QString>
-#include <QDebug>
 #include <QStringList>
 #include <QGraphicsView>
+#include <QMessageBox>
 #include "Desk.h"
 #include "frames/FrameFactory.h"
+#include "items/ColorPickerItem.h"
 
 
 XmlRead::XmlRead(const QString &filePath, Desk *desk) : m_desk(desk)
 {
+    // Load the file
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "Can't open the file " << filePath;
+        QMessageBox::critical(0, tr("Loading error"), tr("Unable to load the layout file %1").arg(filePath));
+        throw(0);
         return;
     }
 
+    // And create the XML document into memory (with nodes...)
     QString *error = new QString();
-    if (!doc.setContent(&file, false, error)) {        //établit le document XML à
-        qDebug() << "Can't set content : " << *error;
-        file.close();                   //partir des données du fichier (hiérarchie, etc)
+    if (!doc.setContent(&file, false, error)) {       
+        QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the layout file %1. The error was: %2").arg(filePath, *error));
+        file.close();  
+        throw(0);
         return;
     }
     file.close();
 
     QDomElement root = doc.documentElement(); // The root node 
     m_projectElement = root.firstChildElement("project"); // Get the project node
+    m_deskElement = root.firstChildElement("desk");
     // Get the parent images node (containing all the images)
     m_imagesElement = root.firstChildElement("images"); 
     m_textsElement = root.firstChildElement("texts"); 
@@ -56,22 +62,44 @@ XmlRead::~XmlRead()
 
 void XmlRead::readProject()
 {
-//    FIXME : Save and load these elements (in Desk ) !
-//    QColor color;
-//    data >> color;
-//    m_titleColorPicker->setColor(color);
-//    data >> color;
-//    m_foreColorPicker->setColor(color);
-//    data >> color;
-//    m_grad1ColorPicker->setColor(color);
-//    data >> color;
-//    m_grad2ColorPicker->setColor(color);
-//    // FIXME: restore background
     if (!m_projectElement.isNull()) { 
         m_desk->setTitleText(m_projectElement.firstChildElement("title").text());
         int mode = m_projectElement.firstChildElement("mode").text().toInt() - 1;
         emit changeMode(mode); 
     }
+}
+
+void XmlRead::readDesk()
+{
+    QDomElement domElement;
+    int r, g, b;
+    // Load image size saved in the rect node
+    domElement = m_deskElement.firstChildElement("background-color").firstChildElement("top");
+    r = domElement.firstChildElement("red").text().toInt();
+    g = domElement.firstChildElement("green").text().toInt();
+    b = domElement.firstChildElement("blue").text().toInt();
+    m_desk->m_grad1ColorPicker->setColor(QColor(r, g, b));
+
+    domElement = m_deskElement.firstChildElement("background-color").firstChildElement("bottom");
+    r = domElement.firstChildElement("red").text().toInt();
+    g = domElement.firstChildElement("green").text().toInt();
+    b = domElement.firstChildElement("blue").text().toInt();
+    m_desk->m_grad2ColorPicker->setColor(QColor(r, g, b));
+
+    domElement = m_deskElement.firstChildElement("title-color");
+    r = domElement.firstChildElement("red").text().toInt();
+    g = domElement.firstChildElement("green").text().toInt();
+    b = domElement.firstChildElement("blue").text().toInt();
+    m_desk->m_titleColorPicker->setColor(QColor(r, g, b));
+
+    domElement = m_deskElement.firstChildElement("foreground-color");
+    r = domElement.firstChildElement("red").text().toInt();
+    g = domElement.firstChildElement("green").text().toInt();
+    b = domElement.firstChildElement("blue").text().toInt();
+    m_desk->m_foreColorPicker->setColor(QColor(r, g, b));
+
+    // Show the colors 
+    m_desk->update();
 }
 
 void XmlRead::prepareRestore()
