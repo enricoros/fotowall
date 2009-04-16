@@ -15,6 +15,7 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
+#include <QLibraryInfo>
 #include <QSettings>
 #include <QtPlugin>
 #include "FotoWall.h"
@@ -46,8 +47,13 @@ int main( int argc, char ** args )
     app.setOrganizationName("Enrico Ros");
 
     QTranslator translator;
-    translator.load( QString( ":/translations/fotowall_%1" ).arg( QLocale::system().name() ) );
+    QString locale =  QLocale::system().name(); 
+    translator.load( QString( ":/translations/fotowall_%1" ).arg(locale) );
     app.installTranslator(&translator);
+
+    QTranslator QtTranslator;
+    QtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app.installTranslator(&QtTranslator);
 
     QSettings s;
     RenderOpts::FirstRun = s.value("fotowall/firstTime", true).toBool();
