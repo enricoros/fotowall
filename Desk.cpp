@@ -592,11 +592,11 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     // picture properties (dialog and connections)
     PictureContent * picture = dynamic_cast<PictureContent *>(content);
     if (picture) {
-        connect(picture, SIGNAL(flipHorizontally()), this, SLOT(slotFlipHorizontally()));
-        connect(picture, SIGNAL(flipVertically()), this, SLOT(slotFlipVertically()));
+        connect(picture, SIGNAL(flipHorizontally()), &m_selection, SLOT(slotFlipHorizontally()));
+        connect(picture, SIGNAL(flipVertically()), &m_selection, SLOT(slotFlipVertically()));
         p = new PictureProperties(picture);
         connect(p, SIGNAL(applyEffects(int)), this, SLOT(slotApplyEffects(int)));
-        connect(p, SIGNAL(applyEffectToSelection(int)), this, SLOT(slotApplyEffectToSelection(int)));
+        connect(p, SIGNAL(applyEffectToSelection(int)), &m_selection, SLOT(slotApplyEffectToSelection(int)));
     }
 
     // text properties (dialog and connections)
@@ -611,8 +611,8 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
         addItem(p);
         connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
         connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
-        connect(p, SIGNAL(applyLookToSelection(quint32,bool)), this, SLOT(slotApplyLookToSelection(quint32,bool)));
-        connect(p, SIGNAL(reflexionToogled(bool)), this, SLOT(slotReflexionToogled(bool)));
+        connect(p, SIGNAL(applyLookToSelection(quint32,bool)), &m_selection, SLOT(slotApplyLookToSelection(quint32,bool)));
+        connect(p, SIGNAL(reflexionToogled(bool)), &m_selection, SLOT(slotReflexionToogled(bool)));
         p->show();
         p->setPos(scenePoint - QPoint(10, 10));
         p->keepInBoundaries(sceneRect().toRect());
@@ -690,12 +690,13 @@ void Desk::slotStackContent(int op)
 
 void Desk::slotDeleteContent()
 {
-    if(m_selectedContent.size() > 1) { 
+    QList<AbstractContent *> selectedContent = m_selection.getSelectedContent();
+    if(selectedContent.size() > 1) { 
         int answer = QMessageBox::question(0, tr("Delete content"), tr("All selected items will be deleted, do you want to continue ?"), QMessageBox::Yes | QMessageBox::No);
         if(answer == QMessageBox::No) return;
     }
 
-    foreach(AbstractContent *content, m_selectedContent) {
+    foreach(AbstractContent *content, selectedContent) {
         if (!content)
             return;
 
@@ -722,7 +723,7 @@ void Desk::slotDeleteContent()
         removeItem(content);
         content->deleteLater();
     }
-    clearSelection();
+    m_selection.clearSelection();
 }
 
 void Desk::slotDeleteProperties()
@@ -737,27 +738,18 @@ void Desk::slotDeleteProperties()
     properties->deleteLater();
 }
 
-void Desk::clearSelection()
-{
-    foreach (AbstractContent *content, m_selectedContent)
-    {
-        content->setSelected(false);
-        m_selectedContent.removeOne(content);
-    }
-    update();
-}
 void Desk::slotItemSelected(AbstractContent *content)
 {
-    clearSelection();
-    m_selectedContent << content;
+    m_selection.clearSelection();
+    m_selection.select(content);
 }
 void Desk::slotAddItemToSelection(AbstractContent *content)
 {
-    m_selectedContent << content;
+    m_selection.select(content);
 }
 void Desk::slotUnselectItem(AbstractContent *content)
 {
-    m_selectedContent.removeOne(content);
+    m_selection.unselect(content);
 }
 
 void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
@@ -767,57 +759,12 @@ void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
         content->setMirrorEnabled(mirrored);
     }
 }
-
-void Desk::slotApplyLookToSelection(quint32 frameClass, bool mirrored)
-{
-    foreach (AbstractContent * content, m_selectedContent) {
-        content->setFrame(FrameFactory::createFrame(frameClass));
-        content->setMirrorEnabled(mirrored);
-    }
-}
-
 void Desk::slotApplyEffects(int effectClass)
 {
     foreach (AbstractContent * content, m_content) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (picture)
             picture->setEffect(effectClass);
-    }
-}
-
-void Desk::slotApplyEffectToSelection(int effectClass)
-{
-    foreach (AbstractContent * content, m_selectedContent) {
-        PictureContent * picture = dynamic_cast<PictureContent *>(content);
-        if (picture)
-            picture->setEffect(effectClass);
-    }
-}
-
-void Desk::slotReflexionToogled(bool state)
-{
-    foreach(AbstractContent *content, m_selectedContent) {
-        content->setMirrorEnabled(state);
-    }
-}
-void Desk::slotFlipHorizontally()
-{
-    foreach(AbstractContent *content, m_selectedContent) {
-        PictureContent *picture = 0;
-        picture = dynamic_cast<PictureContent *>(content);
-        if (picture) {
-            picture->flipH();
-        }
-    }
-}
-void Desk::slotFlipVertically()
-{
-    foreach(AbstractContent *content, m_selectedContent) {
-        PictureContent *picture = 0;
-        picture = dynamic_cast<PictureContent *>(content);
-        if (picture) {
-            picture->flipV();
-        }
     }
 }
 

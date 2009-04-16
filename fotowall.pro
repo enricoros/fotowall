@@ -17,13 +17,15 @@ HEADERS += CPixmap.h \
     GlowEffectDialog.h \
     Desk.h \
     FotoWall.h \
-    RenderOpts.h
+    RenderOpts.h \
+    Selection.h
 SOURCES += main.cpp \
     CPixmap.cpp \
     GlowEffectWidget.cpp \
     GlowEffectDialog.cpp \
     Desk.cpp \
-    FotoWall.cpp
+    FotoWall.cpp \
+    Selection.cpp
 FORMS += FotoWall.ui \
     GlowEffectDialog.ui
 RESOURCES += fotowall.qrc
