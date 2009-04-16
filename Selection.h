@@ -21,6 +21,7 @@
 
 #include <QList>
 #include <QObject>
+#include <QPointF>
 
 class AbstractContent;
 
@@ -46,6 +47,7 @@ class Selection : public QObject
         void slotReflexionToogled(bool);
         void slotFlipVertically();
         void slotFlipHorizontally();
+        void slotMove(QPointF);
 
 };
 

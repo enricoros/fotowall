@@ -76,6 +76,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void itemSelected(AbstractContent *);
         void addItemToSelection(AbstractContent *);
         void unselectItem(AbstractContent *);
+        void move(QPointF);
 
     protected:
         // useful to sunclasses
@@ -90,6 +91,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
         void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
+        void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void keyPressEvent(QKeyEvent * event);

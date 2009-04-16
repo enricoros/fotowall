@@ -27,7 +27,6 @@
 #include <QTimer>
 #include <QUrl>
 #include <math.h>
-#include <QDebug>
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noResize)
     : QGraphicsItem(parent)
@@ -346,6 +345,12 @@ void AbstractContent::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     event->accept();
+}
+
+void AbstractContent::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+        emit move(event->lastScenePos() - pos());
+        event->ignore();
 }
 
 void AbstractContent::dropEvent(QGraphicsSceneDragDropEvent * event)

@@ -492,6 +492,7 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     connect(p, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
     connect(p, SIGNAL(flipHorizontally()), &m_selection, SLOT(slotFlipHorizontally()));
     connect(p, SIGNAL(flipVertically()), &m_selection, SLOT(slotFlipVertically()));
+    connect(p, SIGNAL(move(QPointF)), &m_selection, SLOT(slotMove(QPointF)));
     //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     p->setPos(pos);
     p->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
@@ -509,6 +510,7 @@ TextContent * Desk::createText(const QPoint & pos)
     connect(t, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
     connect(t, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
     connect(t, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
+    connect(t, SIGNAL(move(QPointF)), &m_selection, SLOT(slotMove(QPointF)));
     //t->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     t->setPos(pos);
     t->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
