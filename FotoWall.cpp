@@ -83,6 +83,7 @@ FotoWall::FotoWall(QWidget * parent)
 
     // create our custom desk
     m_desk = new Desk(this);
+    connect(m_desk, SIGNAL(askChangeMode(int)), this, SLOT(on_projectType_currentIndexChanged(int)));
 
     // set the decoration menu
     ui->decoButton->setMenu(createDecorationMenu());
@@ -106,13 +107,8 @@ FotoWall::FotoWall(QWidget * parent)
 FotoWall::~FotoWall()
 {
     // dump current layout
-    QFile file("autosave.lay");
-    if (file.open(QIODevice::WriteOnly)) {
-        QDataStream out(&file);
-        m_desk->save(out);
-        file.close();
-    }
-
+    m_desk->save("autosave.lay");
+    
     // delete everything
     delete m_view;
     delete m_desk;
@@ -361,13 +357,7 @@ void FotoWall::load(QString &fileName)
     if (fileName.isNull())
         return;
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this, tr("File Error"), tr("Error loading Layout from the file '%1'").arg(fileName));
-        return;
-    }
-    QDataStream in(&file);
-    m_desk->restore(in);
+    m_desk->restore(fileName);
 }
 
 void FotoWall::on_saveButton_clicked()
@@ -378,13 +368,7 @@ void FotoWall::on_saveButton_clicked()
     if (!fileName.endsWith(".lay", Qt::CaseInsensitive))
         fileName += ".lay";
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly)) {
-        QMessageBox::warning(this, tr("File Error"), tr("Error saving the Layout to the file '%1'").arg(fileName));
-        return;
-    }
-    QDataStream out(&file);
-    m_desk->save(out);
+    m_desk->save(fileName);
 }
 
 void FotoWall::on_exportButton_clicked()

@@ -9,7 +9,8 @@ UI_DIR = .bin
 QT = core \
     gui \
     svg \
-    network
+    network \
+    xml
 
 # Input
 HEADERS += CPixmap.h \
@@ -18,14 +19,18 @@ HEADERS += CPixmap.h \
     Desk.h \
     FotoWall.h \
     RenderOpts.h \
-    Selection.h
+    Selection.h \
+    XmlSave.h \
+    XmlRead.h
 SOURCES += main.cpp \
     CPixmap.cpp \
     GlowEffectWidget.cpp \
     GlowEffectDialog.cpp \
     Desk.cpp \
     FotoWall.cpp \
-    Selection.cpp
+    Selection.cpp \
+    XmlSave.cpp \
+    XmlRead.cpp
 FORMS += FotoWall.ui \
     GlowEffectDialog.ui
 RESOURCES += fotowall.qrc

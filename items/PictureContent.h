@@ -31,9 +31,9 @@ class PictureContent : public AbstractContent
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
         void setEffect(int effectClass);
 
+        QString getFilePath() const; 
+
         // ::AbstractContent
-        void save(QDataStream & data) const;
-        bool restore(QDataStream & data);
         QPixmap renderAsBackground(const QSize & size) const;
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
@@ -46,8 +46,9 @@ class PictureContent : public AbstractContent
         void flipV();
         void flipH();
 
+        CPixmap* getCPixmap() const;
     private:
-        QString     m_fileName;
+        QString     m_filePath;
         CPixmap *   m_photo;
         QPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;

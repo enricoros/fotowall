@@ -200,3 +200,8 @@ void CPixmap::updateImage(QImage &newImage) {
     m_filePath = tmpFilePath;
     m_effects = effects;
 }
+
+QList<int> CPixmap::getEffects() const
+{
+    return m_effects;
+}

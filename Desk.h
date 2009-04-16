@@ -33,6 +33,8 @@ class Desk : public QGraphicsScene
 {
     Q_OBJECT
     public:
+        friend class XmlRead;
+        friend class XmlSave;
         Desk(QObject * parent = 0);
         ~Desk();
 
@@ -53,8 +55,8 @@ class Desk : public QGraphicsScene
 
         // save, restore, load, help
         void showIntroduction();
-        void save(QDataStream & data) const;
-        void restore(QDataStream & data);
+        void save(const QString &) const;
+        void restore(const QString &);
 
         // get and set the project mode (CD cover, DVD,...).
         enum Mode { ModeNormal = 1, ModeCD = 2, ModeDVD = 3 };
@@ -116,6 +118,10 @@ class Desk : public QGraphicsScene
         void slotGradColorChanged();
 
         void slotCloseHelp();
+
+    Q_SIGNALS:
+        void askChangeMode(int);
+
 };
 
 #endif

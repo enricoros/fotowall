@@ -32,6 +32,8 @@
 #include <QList>
 #include <QFile>
 #include <QMessageBox>
+#include "XmlRead.h"
+#include "XmlSave.h"
 
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
@@ -216,84 +218,50 @@ void Desk::showIntroduction()
     }
 }
 
-void Desk::save(QDataStream & data) const
+void Desk::save(const QString &path) const
 {
-    // FIXME: move to a serious XML format ...
-
-    // save own data
-    data << m_titleColorPicker->color();
-    data << m_foreColorPicker->color();
-    data << m_grad1ColorPicker->color();
-    data << m_grad2ColorPicker->color();
-    data << m_titleText;
-
-    // TODO: save background
-
-    // save the contents
-    ///data << m_content.size();
+    XmlSave *xmlSave = 0;
+    try {
+        xmlSave = new XmlSave(path);
+    } catch (...) {
+        //if saving failled
+        return;
+    }
+    xmlSave->saveProject(titleText(), projectMode());
+    xmlSave->saveDesk(this);
     foreach (AbstractContent * content, m_content) {
-        // write the content type
-        int type = 0;
-        if (content->inherits("PictureContent"))
-            type = 1;
-        else if (content->inherits("TextContent"))
-            type = 2;
+        if (content->inherits("PictureContent")) {
+            PictureContent * picture = dynamic_cast<PictureContent *>(content);
+            xmlSave->saveImage(picture);
+        }
+        else if (content->inherits("TextContent")) {
+            TextContent * text = dynamic_cast<TextContent *>(content);
+            xmlSave->saveText(text);
+        }
         else {
             qWarning("Desk::save: error saving data");
             continue;
         }
-        data << type;
-
-        // write the content payload
-        content->save(data);
     }
+    delete xmlSave;
 }
 
-void Desk::restore(QDataStream & data)
+void Desk::restore(const QString &path)
 {
-    // FIXME: move to a serious XML format ...
-
-    // restore own data
-    QColor color;
-    data >> color;
-    m_titleColorPicker->setColor(color);
-    data >> color;
-    m_foreColorPicker->setColor(color);
-    data >> color;
-    m_grad1ColorPicker->setColor(color);
-    data >> color;
-    m_grad2ColorPicker->setColor(color);
-    QString titleText;
-    data >> titleText;
-    setTitleText(titleText);
-
-    // FIXME: restore background
-
-    // restore the content
-    qDeleteAll(m_content);
-    m_content.clear();
-    m_backContent = 0;
-    while (!data.atEnd()) {
-        int type;
-        data >> type;
-        AbstractContent * content = 0;
-        switch (type) {
-            case 1:
-                content = createPicture(QPoint());
-                break;
-            case 2:
-                content = createText(QPoint());
-                break;
-            default:
-                qWarning("Desk::restore: error loading data");
-                continue;
-        }
-        if (!content->restore(data)) {
-            m_content.removeAll(content);
-            delete content;
-        }
+    XmlRead *xmlRead = 0;
+    try {
+        xmlRead = new XmlRead(path, this);
+    } catch (...) {
+        // If loading failled
+        return;
     }
-    update();
+    // Mode changing is handled in Fotowall, so resend the signal
+    connect(xmlRead, SIGNAL(changeMode(int)), this, SIGNAL(askChangeMode(int)));
+    xmlRead->readProject();
+    xmlRead->readDesk();
+    xmlRead->readImages();
+    xmlRead->readText();
+    delete xmlRead;
 }
 
 /// Modes

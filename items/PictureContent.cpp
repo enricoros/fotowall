@@ -61,11 +61,11 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     if (m_photo->isNull()) {
         delete m_photo;
         m_photo = 0;
-        m_fileName = QString();
+        m_filePath = QString();
         return false;
     }
     m_opaquePhoto = !m_photo->hasAlpha();
-    m_fileName = fileName;
+    m_filePath = fileName;
     if (keepRatio)
         adjustSize();
     if (setName) {
@@ -111,21 +111,9 @@ void PictureContent::setEffect(int effectClass)
     GFX_CHANGED();
 }
 
-void PictureContent::save(QDataStream & data) const
+QString PictureContent::getFilePath() const
 {
-    AbstractContent::save(data);
-    data << m_fileName;
-    m_photo->save(data);
-}
-
-bool PictureContent::restore(QDataStream & data)
-{
-    AbstractContent::restore(data);
-    QString fileName;
-    data >> fileName;
-    bool ok = loadPhoto(fileName);
-    if(ok) m_photo->restore(data);
-    return ok;
+    return m_filePath;
 }
 
 QPixmap PictureContent::renderAsBackground(const QSize & size) const
@@ -203,6 +191,11 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 //    if (m_opaquePhoto)
 //        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
+}
+
+CPixmap* PictureContent::getCPixmap() const
+{
+    return m_photo;
 }
 
 void PictureContent::flipH()

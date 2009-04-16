@@ -40,6 +40,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     , m_transformRefreshTimer(0)
     , m_gfxChangeTimer(0)
     , m_mirrorItem(0)
+    , m_xRotationAngle(0), m_yRotationAngle(0), m_zRotationAngle(0)
 {
     // the buffered graphics changes timer
     m_gfxChangeTimer = new QTimer(this);
@@ -216,6 +217,12 @@ void AbstractContent::setSelected(bool state)
     update();
 }
 
+void AbstractContent::setRotation(int x, int y, int z)
+{
+    m_xRotationAngle = x; m_yRotationAngle = y; m_zRotationAngle = z;
+    applyTransformations();
+}
+
 void AbstractContent::resize(const QRectF & rect)
 {
     if (!rect.isValid() || rect == m_rect)
@@ -261,53 +268,6 @@ void AbstractContent::ensureVisible(const QRectF & rect)
 bool AbstractContent::beingTransformed() const
 {
     return m_transforming;
-}
-
-void AbstractContent::save(QDataStream & data) const
-{
-    data << m_rect;
-    data << pos();
-    data << transform();
-    data << zValue();
-    data << isVisible();
-    bool hasText = frameTextEnabled();
-    data << hasText;
-    if (hasText)
-        data << frameText();
-    quint32 frameClass = m_frame ? m_frame->frameClass() : 0;
-    data << frameClass;
-}
-
-bool AbstractContent::restore(QDataStream & data)
-{
-    prepareGeometryChange();
-    data >> m_rect;
-    layoutChildren();
-    QPointF p;
-    data >> p;
-    setPos(p);
-    QTransform t;
-    data >> t;
-    setTransform(t);
-    qreal zVal;
-    data >> zVal;
-    setZValue(zVal);
-    bool visible;
-    data >> visible;
-    setVisible(visible);
-    bool hasText;
-    data >> hasText;
-    setFrameTextEnabled(hasText);
-    if (hasText) {
-        QString text;
-        data >> text;
-        setFrameText(text);
-    }
-    quint32 frameClass;
-    data >> frameClass;
-    setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
-    update();
-    return true;
 }
 
 QPixmap AbstractContent::renderAsBackground(const QSize & size) const
@@ -612,12 +572,12 @@ void AbstractContent::slotRotate(const QPointF & controlPoint, Qt::KeyboardModif
         return;
 
     // set item rotation (set rotation relative to current)
-    qreal refAngle = atan2(refPos.y(), refPos.x());
     qreal newAngle = atan2(newPos.y(), newPos.x());
-    rotate(57.29577951308232 * (newAngle - refAngle)); // 180 * a / M_PI
+    m_zRotationAngle += 57.29577951308232 * newAngle; // 180 * a / M_PI
 
     // snap to M_PI/4
     if (modifiers != Qt::NoModifier) {
+        // FIXME : correct this
         QTransform t = transform();
         QPointF ax = t.map(QPointF(1, 0));
         qreal rotAngle = atan2(ax.y(), ax.x());
@@ -625,6 +585,12 @@ void AbstractContent::slotRotate(const QPointF & controlPoint, Qt::KeyboardModif
         rotAngle = (qreal)fracts * 0.39270;
         setTransform(QTransform().rotateRadians(rotAngle));
     }
+    applyTransformations();
+}
+
+void AbstractContent::applyTransformations()
+{
+    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis)); 
 }
 
 void AbstractContent::slotResetRatio()
@@ -647,8 +613,6 @@ void AbstractContent::slotTransformEnded()
 
 void AbstractContent::slotTransformXY(const QPointF& controlPoint,Qt::KeyboardModifiers modifiers)
 {
-    static int angleX = 0;
-    static int angleY = 0;
     ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPointF newPos = mapFromScene(controlPoint);
     QPointF refPos = button->pos();
@@ -658,23 +622,24 @@ void AbstractContent::slotTransformXY(const QPointF& controlPoint,Qt::KeyboardMo
     int march=0;
     if(modifiers == Qt::NoModifier) march = 2;
     else if( modifiers == Qt::ControlModifier ) {
-        angleX=0;
-        angleY=0;
+        m_xRotationAngle=0;
+        m_yRotationAngle=0;
     }
     else march = 4;
 
     //// Perspective : move along X axis
-    if(newPos.y() - refPos.y() > 70) angleX -= march;
-    else if(newPos.y() - refPos.y() < -70) angleX += march;
+    if(newPos.y() - refPos.y() > 70) m_xRotationAngle -= march;
+    else if(newPos.y() - refPos.y() < -70) m_xRotationAngle += march;
     // Prevents the user from rotating too much (if so, buttons become unavailable).
-    if (angleX > 80) angleX = 80;
-    if (angleX < -80 ) angleX = -80;
+    if (m_xRotationAngle > 80) m_xRotationAngle = 80;
+    if (m_xRotationAngle < -80 ) m_xRotationAngle = -80;
 
     /// Move along Y axis
-    if(newPos.x() - refPos.x() > 70) angleY -= march;
-    else if(newPos.x() - refPos.x() < -70) angleY += march;
-    if (angleY > 80) angleY = 80;
-    if (angleY < -80 ) angleY = -80;
-    setTransform(QTransform().rotate(angleX, Qt::XAxis).rotate(angleY, Qt::YAxis)); 
+    if(newPos.x() - refPos.x() > 70) m_yRotationAngle -= march;
+    else if(newPos.x() - refPos.x() < -70) m_yRotationAngle += march;
+    if (m_yRotationAngle > 80) m_yRotationAngle = 80;
+    if (m_yRotationAngle < -80 ) m_yRotationAngle = -80;
+
+    applyTransformations();
 }
 

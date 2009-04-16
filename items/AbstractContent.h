@@ -23,6 +23,8 @@ class Frame;
 class MirrorItem;
 class QGraphicsTextItem;
 class QPointF;
+class XmlRead;
+class XmlSave;
 
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
@@ -30,6 +32,8 @@ class AbstractContent : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
+        friend class XmlRead;
+        friend class XmlSave;
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noResize = false);
         virtual ~AbstractContent();
 
@@ -48,15 +52,14 @@ class AbstractContent : public QObject, public QGraphicsItem
 
         void setSelected(bool);
 
+        void setRotation(int, int, int);
+
         // misc
         void resize(const QRectF & rect);
         void adjustSize();
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;
 
-        // may be reimplemented by subclasses
-        virtual void save(QDataStream & data) const;
-        virtual bool restore(QDataStream & data);
         virtual QPixmap renderAsBackground(const QSize & size) const;
         virtual AbstractProperties * createProperties() const;
 
@@ -102,6 +105,7 @@ class AbstractContent : public QObject, public QGraphicsItem
 
     private:
         void layoutChildren();
+        void applyTransformations();
         QRectF              m_rect;
         Frame *             m_frame;
         QGraphicsTextItem * m_frameTextItem;
@@ -112,6 +116,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         QTimer *            m_transformRefreshTimer;
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;
+        int m_xRotationAngle, m_yRotationAngle, m_zRotationAngle;
 
     private Q_SLOTS:
         void slotScaleStarted();
