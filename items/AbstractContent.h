@@ -72,6 +72,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void deleteItem();
         void itemSelected(AbstractContent *);
         void addItemToSelection(AbstractContent *);
+        void unselectItem(AbstractContent *);
 
     protected:
         // useful to sunclasses

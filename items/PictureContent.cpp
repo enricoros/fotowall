@@ -37,13 +37,13 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
     bFlipH->setToolTip(tr("Flip horizontally"));
     bFlipH->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
-    connect(bFlipH, SIGNAL(clicked()), this, SLOT(slotFlipHorizontally()));
+    connect(bFlipH, SIGNAL(clicked()), this, SIGNAL(flipHorizontally()));
     addButtonItem(bFlipH);
 
     ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-flip-vertical.png"), this);
     bFlipV->setToolTip(tr("Flip vertically"));
     bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
-    connect(bFlipV, SIGNAL(clicked()), this, SLOT(slotFlipVertically()));
+    connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
     addButtonItem(bFlipV);
 }
 
@@ -205,7 +205,7 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 #endif
 }
 
-void PictureContent::slotFlipHorizontally()
+void PictureContent::flipH()
 {
     // delete the Photo and and recreate an H-mirrored one
     CPixmap * oldPhoto = m_photo;
@@ -215,8 +215,7 @@ void PictureContent::slotFlipHorizontally()
     update();
     GFX_CHANGED();
 }
-
-void PictureContent::slotFlipVertically()
+void PictureContent::flipV()
 {
     // delete the Photo and and recreate a V-mirrored one
     CPixmap * oldPhoto = m_photo;
@@ -225,4 +224,6 @@ void PictureContent::slotFlipVertically()
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
+
 }
+

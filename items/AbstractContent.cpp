@@ -211,7 +211,8 @@ bool AbstractContent::mirrorEnabled() const
 void AbstractContent::setSelected(bool state)
 { 
     m_isSelected = state;
-    m_mirrorItem->sourceUpdated();
+    if(m_mirrorItem != 0)
+        m_mirrorItem->sourceUpdated();
     update();
 }
 
@@ -394,15 +395,24 @@ void AbstractContent::dropEvent(QGraphicsSceneDragDropEvent * event)
 
 void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    if (event->button() == Qt::RightButton)
-        emit configureMe(event->scenePos().toPoint());
-    else if(event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::RightButton) {
+        if(!m_isSelected) emit addItemToSelection(this);
         setSelected(true);
-        if(event->modifiers() == Qt::ControlModifier) {
-            emit addItemToSelection(this);
-        } else {
-            emit itemSelected(this);
+        emit configureMe(event->scenePos().toPoint());
+        return;
+    }
+    if(event->modifiers() == Qt::ControlModifier) {
+        if(m_isSelected) {
+            setSelected(false);
+            emit unselectItem(this);
         }
+        else {
+            setSelected(true);
+            emit addItemToSelection(this);
+        }
+    } else {
+        emit itemSelected(this);
+        setSelected(true);
     }
 
     QGraphicsItem::mousePressEvent(event);

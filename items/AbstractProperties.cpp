@@ -344,6 +344,7 @@ void AbstractProperties::on_listWidget_itemSelectionChanged()
 
 void AbstractProperties::on_reflection_toggled(bool checked)
 {
+    emit reflexionToogled(checked);
     RenderOpts::LastMirrorEnabled = checked;
     m_content->setMirrorEnabled(checked);
 }

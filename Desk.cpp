@@ -520,6 +520,7 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
     connect(p, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
     connect(p, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
+    connect(p, SIGNAL(unselectItem(AbstractContent *)), this, SLOT(slotUnselectItem(AbstractContent *)));
     connect(p, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
     //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     p->setPos(pos);
@@ -591,6 +592,8 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     // picture properties (dialog and connections)
     PictureContent * picture = dynamic_cast<PictureContent *>(content);
     if (picture) {
+        connect(picture, SIGNAL(flipHorizontally()), this, SLOT(slotFlipHorizontally()));
+        connect(picture, SIGNAL(flipVertically()), this, SLOT(slotFlipVertically()));
         p = new PictureProperties(picture);
         connect(p, SIGNAL(applyEffects(int)), this, SLOT(slotApplyEffects(int)));
         connect(p, SIGNAL(applyEffectToSelection(int)), this, SLOT(slotApplyEffectToSelection(int)));
@@ -609,6 +612,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
         connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
         connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
         connect(p, SIGNAL(applyLookToSelection(quint32,bool)), this, SLOT(slotApplyLookToSelection(quint32,bool)));
+        connect(p, SIGNAL(reflexionToogled(bool)), this, SLOT(slotReflexionToogled(bool)));
         p->show();
         p->setPos(scenePoint - QPoint(10, 10));
         p->keepInBoundaries(sceneRect().toRect());
@@ -738,19 +742,22 @@ void Desk::clearSelection()
     foreach (AbstractContent *content, m_selectedContent)
     {
         content->setSelected(false);
+        m_selectedContent.removeOne(content);
     }
-    m_selectedContent.clear();
     update();
 }
 void Desk::slotItemSelected(AbstractContent *content)
 {
     clearSelection();
-    content->setSelected(true);
     m_selectedContent << content;
 }
 void Desk::slotAddItemToSelection(AbstractContent *content)
 {
     m_selectedContent << content;
+}
+void Desk::slotUnselectItem(AbstractContent *content)
+{
+    m_selectedContent.removeOne(content);
 }
 
 void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
@@ -784,6 +791,33 @@ void Desk::slotApplyEffectToSelection(int effectClass)
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (picture)
             picture->setEffect(effectClass);
+    }
+}
+
+void Desk::slotReflexionToogled(bool state)
+{
+    foreach(AbstractContent *content, m_selectedContent) {
+        content->setMirrorEnabled(state);
+    }
+}
+void Desk::slotFlipHorizontally()
+{
+    foreach(AbstractContent *content, m_selectedContent) {
+        PictureContent *picture = 0;
+        picture = dynamic_cast<PictureContent *>(content);
+        if (picture) {
+            picture->flipH();
+        }
+    }
+}
+void Desk::slotFlipVertically()
+{
+    foreach(AbstractContent *content, m_selectedContent) {
+        PictureContent *picture = 0;
+        picture = dynamic_cast<PictureContent *>(content);
+        if (picture) {
+            picture->flipV();
+        }
     }
 }
 

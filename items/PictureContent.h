@@ -43,15 +43,18 @@ class PictureContent : public AbstractContent
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
+        void flipV();
+        void flipH();
+
     private:
         QString     m_fileName;
         CPixmap *   m_photo;
         QPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;
 
-    private Q_SLOTS:
-        void slotFlipHorizontally();
-        void slotFlipVertically();
+    Q_SIGNALS:
+        void flipHorizontally();
+        void flipVertically();
 };
 
 #endif
