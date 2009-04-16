@@ -150,9 +150,23 @@ void XmlSave::saveAbstractContent(AbstractContent *content, QDomElement &parentE
     }
 
 
-/* FIXME : Save transformations !
-    data << transform();
-    */
+    // Save transformations (ie: rotations)
+    domElement = doc.createElement("transformation");
+    QDomElement xRotationElement= doc.createElement("x-rotation");
+    QDomElement yRotationElement= doc.createElement("y-rotation");
+    QDomElement zRotationElement = doc.createElement("z-rotation");
+
+    QString z;
+    x.setNum(content->m_xRotationAngle); y.setNum(content->m_yRotationAngle);
+    z.setNum(content->m_zRotationAngle);
+    xRotationElement.appendChild(doc.createTextNode(x));
+    yRotationElement.appendChild(doc.createTextNode(y));
+    zRotationElement.appendChild(doc.createTextNode(z));
+
+    domElement.appendChild(xRotationElement);
+    domElement.appendChild(yRotationElement);
+    domElement.appendChild(zRotationElement);
+    parentElement.appendChild(domElement);
 }
 
 void XmlSave::saveImage(PictureContent *imageContent)

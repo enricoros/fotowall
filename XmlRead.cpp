@@ -125,6 +125,14 @@ void XmlRead::readAbstractContent(AbstractContent *content, QDomElement &parentE
     quint32 frameClass = parentElement.firstChildElement("frame-class").text().toInt();
     content->setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
     content->update();
+
+    // Restore transformations
+    domElement = parentElement.firstChildElement("transformation");
+    int z;
+    x = domElement.firstChildElement("x-rotation").text().toInt();
+    y = domElement.firstChildElement("y-rotation").text().toInt();
+    z = domElement.firstChildElement("z-rotation").text().toInt();
+    content->setRotation(x, y, z);
 }
 
 void XmlRead::readImages()
@@ -148,7 +156,6 @@ void XmlRead::readImages()
 
         QStringList effects =  imageElement.firstChildElement("effects").text().split(" ");
         foreach(QString effect, effects) {
-            qDebug() << "Effect : "<<effect;
             if(!effect.isEmpty())
                 content->setEffect(effect.toInt());
         }
