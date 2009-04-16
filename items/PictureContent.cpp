@@ -43,8 +43,8 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     ButtonItem * bFlipV = new ButtonItem(ButtonItem::FlipV, Qt::blue, QIcon(":/data/action-flip-vertical.png"), this);
     bFlipV->setToolTip(tr("Flip vertically"));
     bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
-    connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
     addButtonItem(bFlipV);
+    connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
 }
 
 PictureContent::~PictureContent()

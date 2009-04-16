@@ -84,3 +84,4 @@ void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
     // apply the effect
     emit applyEffectToSelection(effectClass);
 }
+

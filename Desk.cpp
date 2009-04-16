@@ -490,6 +490,8 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     connect(p, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
     connect(p, SIGNAL(unselectItem(AbstractContent *)), this, SLOT(slotUnselectItem(AbstractContent *)));
     connect(p, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
+    connect(p, SIGNAL(flipHorizontally()), &m_selection, SLOT(slotFlipHorizontally()));
+    connect(p, SIGNAL(flipVertically()), &m_selection, SLOT(slotFlipVertically()));
     //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     p->setPos(pos);
     p->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
@@ -560,8 +562,6 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     // picture properties (dialog and connections)
     PictureContent * picture = dynamic_cast<PictureContent *>(content);
     if (picture) {
-        connect(picture, SIGNAL(flipHorizontally()), &m_selection, SLOT(slotFlipHorizontally()));
-        connect(picture, SIGNAL(flipVertically()), &m_selection, SLOT(slotFlipVertically()));
         p = new PictureProperties(picture);
         connect(p, SIGNAL(applyEffects(int)), this, SLOT(slotApplyEffects(int)));
         connect(p, SIGNAL(applyEffectToSelection(int)), &m_selection, SLOT(slotApplyEffectToSelection(int)));

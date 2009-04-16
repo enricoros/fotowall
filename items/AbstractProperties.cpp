@@ -334,12 +334,7 @@ void AbstractProperties::on_listWidget_itemSelectionChanged()
     quint32 frameClass = item->data(Qt::UserRole).toUInt();
     if (!frameClass)
         return;
-
-    // create and set the frame
-    Frame * frame = FrameFactory::createFrame(frameClass);
-    if (frame)
-        m_content->setFrame(frame);
-    emit applyLookToSelection(m_content->frameClass(), m_content->mirrorEnabled());
+    emit applyLookToSelection(frameClass, m_content->mirrorEnabled());
 }
 
 void AbstractProperties::on_reflection_toggled(bool checked)
