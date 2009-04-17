@@ -35,6 +35,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include "ModeInfo.h"
+#include "ExactSizeDialog.h"
+#include <QDebug>
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -287,7 +289,7 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
             ui->projectType->setCurrentIndex(1);
             break;
 
-       case 2:
+        case 2:
             //DVD cover
             m_modeInfo.setRealSizeInches(10.83, 7.2);
             m_modeInfo.setLandscape(true);
@@ -297,6 +299,27 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
             m_desk->setProjectMode(Desk::ModeDVD);
             ui->projectType->setCurrentIndex(2);
             break;
+        case 3:
+            // Exact size mode
+            ExactSizeDialog sizeDialog;
+            if(sizeDialog.exec() != QDialog::Accepted) {
+                return;
+            } else {
+                float w = sizeDialog.ui.widthSpinBox->value();
+                float h = sizeDialog.ui.heightSpinBox->value();
+                int dpi = sizeDialog.ui.dpiSpinBox->value();
+                m_modeInfo.setPrintDpi(dpi);
+                if(sizeDialog.ui.unityComboBox->currentIndex() == 0) 
+                    m_modeInfo.setRealSizeCm(w, h);
+                else
+                    m_modeInfo.setRealSizeInches(w, h);
+            }
+            m_view->setFixedSize(m_modeInfo.deskPixelSize());
+            showNormal();
+            ui->exportButton->setText(tr("print..."));
+            m_desk->setProjectMode(Desk::ModeExactSize);
+            break;
+
     }
 }
 

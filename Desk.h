@@ -59,7 +59,7 @@ class Desk : public QGraphicsScene
         void restore(const QString &);
 
         // get and set the project mode (CD cover, DVD,...).
-        enum Mode { ModeNormal = 1, ModeCD = 2, ModeDVD = 3 };
+        enum Mode { ModeNormal = 1, ModeCD = 2, ModeDVD = 3, ModeExactSize = 4 };
         Mode projectMode() const;
         void setProjectMode(Mode mode);
 

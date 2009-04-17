@@ -173,6 +173,11 @@
           <string>DVD Cover</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Exact Size</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="0" column="2" rowspan="2">
