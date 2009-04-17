@@ -292,6 +292,7 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
                 showMaximized();
             ui->exportButton->setText(tr("export..."));
             m_desk->setProjectMode(Desk::ModeNormal);
+            ui->projectType->setCurrentIndex(0);
             break;
 
         case 1:
@@ -303,6 +304,7 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
             showNormal();
             ui->exportButton->setText(tr("print..."));
             m_desk->setProjectMode(Desk::ModeCD);
+            ui->projectType->setCurrentIndex(1);
             break;
 
        case 2:
@@ -313,6 +315,7 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
             showNormal();
             ui->exportButton->setText(tr("print..."));
             m_desk->setProjectMode(Desk::ModeDVD);
+            ui->projectType->setCurrentIndex(2);
             break;
     }
 }
