@@ -34,6 +34,7 @@
 #include <QPrintDialog>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include "ModeInfo.h"
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -99,6 +100,7 @@ FotoWall::FotoWall(QWidget * parent)
 
     // set the startup project mode
     on_projectType_currentIndexChanged(0);
+    m_modeInfo.setDeskDpi(m_view->logicalDpiX(), m_view->logicalDpiY());
 
     // enable the tutorial, if present
     checkForTutorial();
@@ -197,14 +199,14 @@ void FotoWall::saveImage()
     QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
 }
 
-void FotoWall::saveCD()
+void FotoWall::saveExactSize()
 {
     QPrinter printer;
     QPrintDialog printDialog(&printer);
     bool ok = printDialog.exec();
     if(!ok) return;
 
-    QImage image(1410, 1410, QImage::Format_ARGB32);
+    QImage image(m_modeInfo.printPixelSize(), QImage::Format_ARGB32);
     image.fill(0);
     QPainter paintimg(&image);
     paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
@@ -212,37 +214,16 @@ void FotoWall::saveCD()
     m_desk->renderVisible(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
     paintimg.end();
 
-    // And then print
-    // dpi resolution for exporting at the right size
-    printer.setResolution(300);
-    printer.setPaperSize(QPrinter::A4);
-    QPainter paint(&printer);
-    paint.drawImage(image.rect(), image);
-}
-
-void FotoWall::saveDVD()
-{
-    QPrinter printer;
-    QPrintDialog printDialog(&printer);
-    bool ok = printDialog.exec();
-    if(!ok) return;
-
-    QImage image(3289, 2160, QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter paintimg(&image);
-    paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    // Render on the image
-    m_desk->renderVisible(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    paintimg.end();
-
-    QMatrix matrix;
-    // Rotate the image (because a DVD cover needs to be print in landscape mode).
-    matrix.rotate(90);
-    image = image.transformed(matrix);
+    if(m_modeInfo.landscape()) {
+        // Print in landscape mode, so rotate
+        QMatrix matrix;
+        matrix.rotate(90);
+        image = image.transformed(matrix);
+    }
 
     // And then print
     // dpi resolution for exporting at the right size
-    printer.setResolution(300);
+    printer.setResolution(m_modeInfo.printDpi());
     printer.setPaperSize(QPrinter::A4);
     QPainter paint(&printer);
     paint.drawImage(image.rect(), image);
@@ -280,7 +261,6 @@ QMenu * FotoWall::createDecorationMenu()
 void FotoWall::on_projectType_currentIndexChanged(int index)
 {
     static bool skipFirstMaximizeHack = true;
-    int w, h;
     switch (index) {
         case 0:
             //Normal project
@@ -297,10 +277,10 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
 
         case 1:
             // CD cover
-            // A CD cover is a 4.75x4.715 inches square. To get the size in pixel, we must multiply by the dpi (dot per inch)
-            w = (int)(4.75 * (float)m_view->logicalDpiX());
-            h = (int)(4.75 * (float)m_view->logicalDpiY());
-            m_view->setFixedSize(w, h);
+            // A CD cover is a 4.75x4.715 inches square.
+            m_modeInfo.setRealSizeInches(4.75, 4.75);
+            m_modeInfo.setLandscape(false);
+            m_view->setFixedSize(m_modeInfo.deskPixelSize());
             showNormal();
             ui->exportButton->setText(tr("print..."));
             m_desk->setProjectMode(Desk::ModeCD);
@@ -309,9 +289,9 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
 
        case 2:
             //DVD cover
-            w = (int)(10.83 * (float)m_view->logicalDpiX());
-            h = (int)(7.2 * (float)m_view->logicalDpiY());
-            m_view->setFixedSize(w, h);
+            m_modeInfo.setRealSizeInches(10.83, 7.2);
+            m_modeInfo.setLandscape(true);
+            m_view->setFixedSize(m_modeInfo.deskPixelSize());
             showNormal();
             ui->exportButton->setText(tr("print..."));
             m_desk->setProjectMode(Desk::ModeDVD);
@@ -379,16 +359,12 @@ void FotoWall::on_exportButton_clicked()
     RenderOpts::HQRendering = true;
     // check to project type for saving
     switch (m_desk->projectMode()) {
-        default:
+        case Desk::ModeNormal:
             saveImage();
             break;
 
-        case Desk::ModeCD:
-            saveCD();
-            break;
-
-        case Desk::ModeDVD:
-            saveDVD();
+        default:
+            saveExactSize();
             break;
     }
     RenderOpts::HQRendering = false;

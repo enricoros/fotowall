@@ -18,6 +18,8 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include "ui_FotoWall.h"
+#include "ModeInfo.h"
+
 class Desk;
 class QNetworkReply;
 
@@ -31,8 +33,7 @@ class FotoWall : public QWidget
         void showIntroduction();
         void checkForTutorial();
         void saveImage();
-        void saveCD();
-        void saveDVD();
+        void saveExactSize();
         void load(QString &fileName);
 
     private:
@@ -40,6 +41,7 @@ class FotoWall : public QWidget
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
         Desk *          m_desk;
+        ModeInfo        m_modeInfo;
 
     private Q_SLOTS:
         void on_projectType_currentIndexChanged(int index);

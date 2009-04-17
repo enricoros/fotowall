@@ -21,7 +21,8 @@ HEADERS += CPixmap.h \
     RenderOpts.h \
     Selection.h \
     XmlSave.h \
-    XmlRead.h
+    XmlRead.h \
+    ModeInfo.h
 SOURCES += main.cpp \
     CPixmap.cpp \
     GlowEffectWidget.cpp \
@@ -30,7 +31,8 @@ SOURCES += main.cpp \
     FotoWall.cpp \
     Selection.cpp \
     XmlSave.cpp \
-    XmlRead.cpp
+    XmlRead.cpp \
+    ModeInfo.cpp
 FORMS += FotoWall.ui \
     GlowEffectDialog.ui
 RESOURCES += fotowall.qrc
