@@ -169,7 +169,7 @@
            </property>
            <property name="icon">
             <iconset resource="fotowall.qrc">
-             <normaloff>:/data/add-mirror.png</normaloff>:/data/add-mirror.png</iconset>
+             <normaloff>:/data/add-video.png</normaloff>:/data/add-video.png</iconset>
            </property>
            <property name="iconSize">
             <size>

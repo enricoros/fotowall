@@ -17,8 +17,8 @@
 #include "HelpItem.h"
 #include "HighlightItem.h"
 #include "PictureContent.h"
-#include "PixmapContent.h"
 #include "TextContent.h"
+#include "VideoContent.h"
 #include "PictureProperties.h"
 #include "TextProperties.h"
 #include "frames/FrameFactory.h"
@@ -115,9 +115,9 @@ void Desk::addTextContent()
     createText(sceneRect().center().toPoint());
 }
 
-void Desk::addPixmapContent()
+void Desk::addVideoContent(int input)
 {
-    createPixmap(sceneRect().center().toPoint());
+    createVideo(input, sceneRect().center().toPoint());
 }
 
 
@@ -323,26 +323,6 @@ void Desk::setProjectMode(Mode mode)
     }
 }
 
-void Desk::setContentIndexedPixmap(int index, const QPixmap & pixmap)
-{
-    foreach (AbstractContent * c, m_content) {
-        PixmapContent * p = dynamic_cast<PixmapContent *>(c);
-        if (!p)
-            continue;
-        p->setPixmp(pixmap);
-    }
-
-    //static int idx = 1;
-    //qWarning("%d %d", pixmap.width(), pixmap.height());
-    //l->setPixmap(pixmap);
-    //pixmap.save(QString("Test%1-%2.png").arg(index).arg(idx++));
-}
-
-QPixmap Desk::contentIndexedPixmap() const
-{
-    return QPixmap();
-}
-
 void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode)
 {
     foreach(QGraphicsItem *item, m_markerItems) {
@@ -530,50 +510,41 @@ void Desk::drawForeground(QPainter * painter, const QRectF & rect)
     }
 }
 
+void Desk::initContent(AbstractContent * content, const QPoint & pos)
+{
+    connect(content, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
+    connect(content, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
+    connect(content, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
+    connect(content, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
+
+    if (!pos.isNull())
+        content->setPos(pos);
+    content->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
+    //content->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    content->show();
+
+    m_content.append(content);
+}
+
 PictureContent * Desk::createPicture(const QPoint & pos)
 {
     PictureContent * p = new PictureContent(this);
-    connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
-    connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
-    //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    p->setPos(pos);
-    p->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
-    p->show();
-    m_content.append(p);
-    return p;
-}
-
-PixmapContent * Desk::createPixmap(const QPoint & pos)
-{
-    PixmapContent * p = new PixmapContent(this);
-    p->setPixmp(QPixmap(":/data/fotowall.png"));
-    connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
-    connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(p, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
-    //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    p->setPos(pos);
-    p->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
-    p->show();
-    m_content.append(p);
+    initContent(p, pos);
     return p;
 }
 
 TextContent * Desk::createText(const QPoint & pos)
 {
     TextContent * t = new TextContent(this);
-    connect(t, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(t, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
-    connect(t, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(t, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
-    //t->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    t->setPos(pos);
-    t->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
-    t->show();
-    m_content.append(t);
+    initContent(t, pos);
     return t;
+}
+
+VideoContent * Desk::createVideo(int input, const QPoint & pos)
+{
+    VideoContent * v = new VideoContent(input, this);
+    initContent(v, pos);
+    return v;
 }
 
 /// Markers
@@ -625,28 +596,24 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
         connect(p, SIGNAL(applyEffects(int)), this, SLOT(slotApplyEffects(int)));
     }
 
-    // pixmap properties (dialog and connections)
-    PixmapContent * pixmap = dynamic_cast<PixmapContent *>(content);
-    if (pixmap) {
-        p = new AbstractProperties(pixmap);
-    }
-
     // text properties (dialog and connections)
     TextContent * text = dynamic_cast<TextContent *>(content);
     if (text) {
         p = new TextProperties(text);
     }
 
+    // generic properties
+    if (!p)
+        p = new AbstractProperties(content);
+
     // common properties
-    if (p) {
-        m_properties.append(p);
-        addItem(p);
-        connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
-        connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
-        p->show();
-        p->setPos(scenePoint - QPoint(10, 10));
-        p->keepInBoundaries(sceneRect().toRect());
-    }
+    m_properties.append(p);
+    addItem(p);
+    connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
+    connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
+    p->show();
+    p->setPos(scenePoint - QPoint(10, 10));
+    p->keepInBoundaries(sceneRect().toRect());
 }
 
 void Desk::slotBackgroundContent()

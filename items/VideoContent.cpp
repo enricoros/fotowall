@@ -12,63 +12,71 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PixmapContent.h"
+#include "VideoContent.h"
+#include "VideoProvider.h"
 #include "ButtonItem.h"
-#include "CPixmap.h"
 #include "RenderOpts.h"
 #include "frames/Frame.h"
-#include <QGraphicsScene>
 #include <QPainter>
+#include <QTimer>
 
-PixmapContent::PixmapContent(QGraphicsScene * scene, QGraphicsItem * parent)
+VideoContent::VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
 {
     // enable frame text
     setFrameTextEnabled(true);
     setFrameText(tr("This is a mirror ;-)"));
+
+    // initial pixmap
+    setPixmap(QPixmap(":/data/add-video.png"));
+
+    // start the video flow
+    VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
 }
 
-PixmapContent::~PixmapContent()
+VideoContent::~VideoContent()
 {
+    // stop the video flow
+    VideoProvider::instance()->disconnectReceiver(this);
 }
 
-void PixmapContent::setPixmp(const QPixmap & pixmap, bool keepRatio)
+void VideoContent::setPixmap(const QPixmap & pixmap)
 {
     m_pixmap = pixmap;
     if (!beingTransformed())
         m_cachedPixmap = QPixmap();
-    if (keepRatio)
-        adjustSize();
+    //if (keepRatio)
+    //    adjustSize();
     update();
     GFX_CHANGED();
 }
 
-QPixmap PixmapContent::renderAsBackground(const QSize & size) const
+QPixmap VideoContent::renderAsBackground(const QSize & size) const
 {
     if (m_pixmap.isNull())
         return AbstractContent::renderAsBackground(size);
     return m_pixmap.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
-int PixmapContent::contentHeightForWidth(int width) const
+int VideoContent::contentHeightForWidth(int width) const
 {
     if (m_pixmap.width() < 1)
         return -1;
     return (m_pixmap.height() * width) / m_pixmap.width();
 }
 
-bool PixmapContent::contentOpaque() const
+bool VideoContent::contentOpaque() const
 {
     return true;
 }
 
-void PixmapContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void VideoContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     emit backgroundMe();
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-void PixmapContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+void VideoContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     // paint parent
     AbstractContent::paint(painter, option, widget);
@@ -79,9 +87,8 @@ void PixmapContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * o
 
     // blit if opaque picture
 #if QT_VERSION >= 0x040500
-    //disabled for 4.5 too, since it relies on raster.
-    //if (m_opaquePhoto)
-    //    painter->setCompositionMode(QPainter::CompositionMode_Source);
+    // disabled for 4.5 too, since it relies on raster.
+    //painter->setCompositionMode(QPainter::CompositionMode_Source);
 #endif
 
     // draw high-resolution photo when exporting png
@@ -104,7 +111,6 @@ void PixmapContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * o
     }
 
 #if QT_VERSION >= 0x040500
-//    if (m_opaquePhoto)
-//        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+//    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
 }

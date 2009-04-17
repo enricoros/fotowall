@@ -26,8 +26,8 @@ class HighlightItem;
 class AbstractContent;
 class AbstractProperties;
 class PictureContent;
-class PixmapContent;
 class TextContent;
+class VideoContent;
 
 class Desk : public QGraphicsScene
 {
@@ -39,7 +39,7 @@ class Desk : public QGraphicsScene
         // add content
         void addPictures(const QStringList & fileNames);
         void addTextContent();
-        void addPixmapContent();
+        void addVideoContent(int input);
 
         // resize the scene to 0,0,size
         void resize(const QSize & size);
@@ -62,10 +62,6 @@ class Desk : public QGraphicsScene
         Mode projectMode() const;
         void setProjectMode(Mode mode);
 
-        // update the Mirror Items, if any
-        void setContentIndexedPixmap(int index, const QPixmap & pixmap);
-        QPixmap contentIndexedPixmap() const;
-
         // render the Desk, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 
@@ -79,9 +75,10 @@ class Desk : public QGraphicsScene
         void drawForeground( QPainter * painter, const QRectF & rect );
 
     private:
+        void initContent(AbstractContent * content, const QPoint & pos);
         PictureContent * createPicture(const QPoint & pos);
-        PixmapContent * createPixmap(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
+        VideoContent * createVideo(int input, const QPoint & pos);
         void setDVDMarkers();
         void clearMarkers();
         QList<AbstractContent *> m_content;

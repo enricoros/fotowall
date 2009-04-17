@@ -12,23 +12,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __PixmapContent_h__
-#define __PixmapContent_h__
+#ifndef __VideoContent_h__
+#define __VideoContent_h__
 
 #include "AbstractContent.h"
-class CPixmap;
+#include <QPixmap>
 
 /**
-    \brief Transformable picture, with lots of gadgets
+    \brief Displays live video from a WebCam
 */
-class PixmapContent : public AbstractContent
+class VideoContent : public AbstractContent
 {
     Q_OBJECT
     public:
-        PixmapContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-        ~PixmapContent();
-
-        void setPixmp(const QPixmap & pixmap, bool keepRatio = false);
+        VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        ~VideoContent();
 
         // ::AbstractContent
         QPixmap renderAsBackground(const QSize & size) const;
@@ -38,6 +36,9 @@ class PixmapContent : public AbstractContent
         // ::QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+
+    public Q_SLOTS:
+        void setPixmap(const QPixmap & pixmap);
 
     private:
         QPixmap m_pixmap;
