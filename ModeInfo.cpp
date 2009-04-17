@@ -26,7 +26,7 @@ void ModeInfo::setDeskDpi(float dpiX, float dpiY)
 {
     m_deskDpi = QPointF(dpiX, dpiY);
 }
-QPointF ModeInfo::deskDpi()
+QPointF ModeInfo::deskDpi() const
 {
     return m_deskDpi;
 }
@@ -35,7 +35,7 @@ void ModeInfo::setPrintDpi(float dpi)
 {
     m_printDpi = dpi;
 }
-float ModeInfo::printDpi()
+float ModeInfo::printDpi() const
 {
     return m_printDpi;
 }
@@ -50,12 +50,16 @@ void ModeInfo::setRealSizeInches(float w, float h)
 {
     m_realSize = QSizeF(w, h);
 }
+QSizeF ModeInfo::realSize() const
+{
+    return m_realSize;
+}
 
-QSize ModeInfo::deskPixelSize()
+QSize ModeInfo::deskPixelSize() const
 {
     return QSize(m_realSize.width() * m_deskDpi.x(), m_realSize.height() * m_deskDpi.y());
 }
-QSize ModeInfo::printPixelSize()
+QSize ModeInfo::printPixelSize() const
 {
     return QSize(m_realSize.width() * m_printDpi, m_realSize.height() * m_printDpi);
 }

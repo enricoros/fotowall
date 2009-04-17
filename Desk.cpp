@@ -32,6 +32,7 @@
 #include <QList>
 #include <QFile>
 #include <QMessageBox>
+#include "FotoWall.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 
@@ -218,7 +219,7 @@ void Desk::showIntroduction()
     }
 }
 
-void Desk::save(const QString &path) const
+void Desk::save(const QString &path, FotoWall *fotowall) const
 {
     XmlSave *xmlSave = 0;
     try {
@@ -227,7 +228,8 @@ void Desk::save(const QString &path) const
         //if saving failled
         return;
     }
-    xmlSave->saveProject(titleText(), projectMode());
+    ModeInfo modeInfo = fotowall->getModeInfo(); 
+    xmlSave->saveProject(titleText(), projectMode(), modeInfo);
     xmlSave->saveDesk(this);
     foreach (AbstractContent * content, m_content) {
         if (content->inherits("PictureContent")) {
@@ -246,7 +248,7 @@ void Desk::save(const QString &path) const
     delete xmlSave;
 }
 
-void Desk::restore(const QString &path)
+void Desk::restore(const QString &path, FotoWall *fotowall)
 {
     XmlRead *xmlRead = 0;
     try {
@@ -255,9 +257,7 @@ void Desk::restore(const QString &path)
         // If loading failled
         return;
     }
-    // Mode changing is handled in Fotowall, so resend the signal
-    connect(xmlRead, SIGNAL(changeMode(int)), this, SIGNAL(askChangeMode(int)));
-    xmlRead->readProject();
+    xmlRead->readProject(fotowall);
     xmlRead->readDesk();
     xmlRead->readImages();
     xmlRead->readText();

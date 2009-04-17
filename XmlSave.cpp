@@ -65,7 +65,7 @@ XmlSave::~XmlSave()
    file.close();
 }
 
-void XmlSave::saveProject(QString title, int mode)
+void XmlSave::saveProject(QString title, int mode, const ModeInfo& modeInfo)
 {
     // Title element
     QDomElement titleElement = doc.createElement("title");
@@ -74,11 +74,29 @@ void XmlSave::saveProject(QString title, int mode)
     titleElement.appendChild(titleText);             
 
     // Mode element
-    QDomElement modeElement = doc.createElement("mode");
-    m_projectElement.appendChild(modeElement);
+    QDomElement modeElement = doc.createElement("mode"), modeId = doc.createElement("id");
+    modeElement.appendChild(modeId);
     QString modeStr; modeStr.setNum(mode);
     QDomText modeText = doc.createTextNode(modeStr);   
-    modeElement.appendChild(modeText);             
+    modeId.appendChild(modeText);             
+    QSizeF modeSize = modeInfo.realSize();
+    if(!modeSize.isEmpty()) { // If it is a mode that requires additionnal saving
+        QDomElement modeSizeElement = doc.createElement("size");
+        QDomElement wElement= doc.createElement("w");
+        modeSizeElement.appendChild(wElement);
+        QDomElement hElement= doc.createElement("h");
+        modeSizeElement.appendChild(hElement);
+        modeElement.appendChild(modeSizeElement);
+        QString w, h;
+        w.setNum(modeSize.width()); h.setNum(modeSize.height());
+        wElement.appendChild(doc.createTextNode(w));             
+        hElement.appendChild(doc.createTextNode(h));             
+        modeElement.appendChild(modeSizeElement);
+
+        QDomElement dpi = doc.createElement("dpi");
+        QString dpiStr; dpiStr.setNum(modeInfo.printDpi());
+    }
+    m_projectElement.appendChild(modeElement);
 }
 
 void XmlSave::saveDesk(const Desk *desk)

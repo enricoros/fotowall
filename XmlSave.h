@@ -24,6 +24,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QList>
+#include <QSize>
+#include "ModeInfo.h"
 
 class PictureContent;
 class TextContent;
@@ -36,7 +38,7 @@ class XmlSave : public QObject
     public:
         XmlSave(const QString &);
         ~XmlSave();
-        void saveProject(QString, int);
+        void saveProject(QString, int, const ModeInfo&);
         void saveImage(const PictureContent *);
         void saveText(const TextContent *);
         void saveDesk(const Desk *);

@@ -35,6 +35,9 @@ class FotoWall : public QWidget
         void saveImage();
         void saveExactSize();
         void load(QString &fileName);
+        ModeInfo getModeInfo(); // Needed for saving
+        void restoreMode(int);
+        void setModeInfo(ModeInfo);
 
     private:
         QMenu * createDecorationMenu();
@@ -42,6 +45,11 @@ class FotoWall : public QWidget
         QGraphicsView * m_view;
         Desk *          m_desk;
         ModeInfo        m_modeInfo;
+
+        void loadNormalProject();
+        void loadCDProject();
+        void loadDVDProject();
+        void loadExactSizeProject();
 
     private Q_SLOTS:
         void on_projectType_currentIndexChanged(int index);

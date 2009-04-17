@@ -31,16 +31,17 @@ class ModeInfo
         ModeInfo();
 
         void setDeskDpi(float, float);
-        QPointF deskDpi();
+        QPointF deskDpi() const;
         void setPrintDpi(float);
-        float printDpi();
+        float printDpi() const;
 
         void setRealSizeCm(float, float);
         void setRealSizeInches(float, float);
+        QSizeF realSize() const; //returns the real size in inches
 
         // Convert the real size into a pixel size according to the dpi
-        QSize deskPixelSize();
-        QSize printPixelSize();
+        QSize deskPixelSize() const;
+        QSize printPixelSize() const;
 
         void setLandscape(bool);
         bool landscape();

@@ -27,11 +27,13 @@
 #include <QList>
 #include "PictureContent.h"
 #include "TextContent.h"
+#include "ModeInfo.h"
 
 class Desk;
 class AbstractContent;
 class PictureContent;
 class TextContent;
+class FotoWall;
 
 class XmlRead : public QObject
 {
@@ -39,7 +41,7 @@ class XmlRead : public QObject
     public:
         XmlRead(const QString &, Desk *);
         ~XmlRead();
-        void readProject();
+        void readProject(FotoWall *);
         void readDesk();
         void readImages();
         void readText();
@@ -63,6 +65,7 @@ class XmlRead : public QObject
 
     Q_SIGNALS:
         void changeMode(int);
+        void setModeInfo(ModeInfo);
 
 };
 

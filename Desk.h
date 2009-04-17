@@ -28,6 +28,7 @@ class AbstractContent;
 class AbstractProperties;
 class PictureContent;
 class TextContent;
+class FotoWall;
 
 class Desk : public QGraphicsScene
 {
@@ -55,11 +56,11 @@ class Desk : public QGraphicsScene
 
         // save, restore, load, help
         void showIntroduction();
-        void save(const QString &) const;
-        void restore(const QString &);
+        void save(const QString &, FotoWall *) const;
+        void restore(const QString &, FotoWall *);
 
         // get and set the project mode (CD cover, DVD,...).
-        enum Mode { ModeNormal = 1, ModeCD = 2, ModeDVD = 3, ModeExactSize = 4 };
+        enum Mode { ModeNormal = 0, ModeCD = 1, ModeDVD = 2, ModeExactSize = 3 };
         Mode projectMode() const;
         void setProjectMode(Mode mode);
 
@@ -118,10 +119,6 @@ class Desk : public QGraphicsScene
         void slotGradColorChanged();
 
         void slotCloseHelp();
-
-    Q_SIGNALS:
-        void askChangeMode(int);
-
 };
 
 #endif

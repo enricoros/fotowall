@@ -24,6 +24,7 @@
 #include "Desk.h"
 #include "frames/FrameFactory.h"
 #include "items/ColorPickerItem.h"
+#include "FotoWall.h"
 
 
 XmlRead::XmlRead(const QString &filePath, Desk *desk) : m_desk(desk)
@@ -60,13 +61,25 @@ XmlRead::~XmlRead()
 {
 }
 
-void XmlRead::readProject()
+void XmlRead::readProject(FotoWall *fotowall)
 {
-    if (!m_projectElement.isNull()) { 
-        m_desk->setTitleText(m_projectElement.firstChildElement("title").text());
-        int mode = m_projectElement.firstChildElement("mode").text().toInt() - 1;
-        emit changeMode(mode); 
+    m_desk->setTitleText(m_projectElement.firstChildElement("title").text());
+
+    QDomElement modeElement = m_projectElement.firstChildElement("mode");
+    QDomElement sizeElement = modeElement.firstChildElement("size");
+    if (!sizeElement.isNull()) {
+        ModeInfo modeInfo;
+        float w = sizeElement.firstChildElement("w").text().toFloat();
+        float h = sizeElement.firstChildElement("h").text().toFloat();
+        modeInfo.setRealSizeInches(w, h);
+
+        int dpi = sizeElement.firstChildElement("dpi").text().toInt();
+        modeInfo.setPrintDpi(dpi);
+        fotowall->setModeInfo(modeInfo);
     }
+
+    int mode = modeElement.firstChildElement("id").text().toInt();
+    fotowall->restoreMode(mode); 
 }
 
 void XmlRead::readDesk()

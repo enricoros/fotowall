@@ -36,7 +36,6 @@
 #include <QVBoxLayout>
 #include "ModeInfo.h"
 #include "ExactSizeDialog.h"
-#include <QDebug>
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -86,7 +85,6 @@ FotoWall::FotoWall(QWidget * parent)
 
     // create our custom desk
     m_desk = new Desk(this);
-    connect(m_desk, SIGNAL(askChangeMode(int)), this, SLOT(on_projectType_currentIndexChanged(int)));
 
     // set the decoration menu
     ui->decoButton->setMenu(createDecorationMenu());
@@ -111,7 +109,7 @@ FotoWall::FotoWall(QWidget * parent)
 FotoWall::~FotoWall()
 {
     // dump current layout
-    m_desk->save("autosave.lay");
+    m_desk->save("autosave.lay", this);
     
     // delete everything
     delete m_view;
@@ -260,64 +258,85 @@ QMenu * FotoWall::createDecorationMenu()
     return menu;
 }
 
+void FotoWall::loadNormalProject()
+{
+    m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
+    static bool skipFirstMaximizeHack = true;
+    m_view->setMinimumSize(m_view->minimumSizeHint());
+    m_view->setMaximumSize(QSize(16777215, 16777215));
+    if (skipFirstMaximizeHack)
+        skipFirstMaximizeHack = false;
+    else
+        showMaximized();
+    ui->exportButton->setText(tr("export..."));
+    m_desk->setProjectMode(Desk::ModeNormal);
+    ui->projectType->setCurrentIndex(0);
+}
+void FotoWall::loadCDProject()
+{
+    m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
+    // A CD cover is a 4.75x4.715 inches square.
+    m_modeInfo.setRealSizeInches(4.75, 4.75);
+    m_modeInfo.setLandscape(false);
+    m_view->setFixedSize(m_modeInfo.deskPixelSize());
+    showNormal();
+    ui->exportButton->setText(tr("print..."));
+    m_desk->setProjectMode(Desk::ModeCD);
+    ui->projectType->setCurrentIndex(1);
+}
+void FotoWall::loadDVDProject()
+{
+    m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
+    m_modeInfo.setRealSizeInches(10.83, 7.2);
+    m_modeInfo.setLandscape(true);
+    m_view->setFixedSize(m_modeInfo.deskPixelSize());
+    showNormal();
+    ui->exportButton->setText(tr("print..."));
+    m_desk->setProjectMode(Desk::ModeDVD);
+    ui->projectType->setCurrentIndex(2);
+}
+void FotoWall::loadExactSizeProject()
+{
+    // Exact size mode
+    if(m_modeInfo.realSize().isEmpty()) {  
+        ExactSizeDialog sizeDialog;
+        if(sizeDialog.exec() != QDialog::Accepted) {
+            return;
+        } 
+        float w = sizeDialog.ui.widthSpinBox->value();
+        float h = sizeDialog.ui.heightSpinBox->value();
+        int dpi = sizeDialog.ui.dpiSpinBox->value();
+        m_modeInfo.setPrintDpi(dpi);
+        if(sizeDialog.ui.unityComboBox->currentIndex() == 0) 
+            m_modeInfo.setRealSizeCm(w, h);
+        else
+            m_modeInfo.setRealSizeInches(w, h);
+    }
+    m_view->setFixedSize(m_modeInfo.deskPixelSize());
+    showNormal();
+    ui->exportButton->setText(tr("print..."));
+    m_desk->setProjectMode(Desk::ModeExactSize);
+    ui->projectType->setCurrentIndex(3);
+}
 void FotoWall::on_projectType_currentIndexChanged(int index)
 {
-    static bool skipFirstMaximizeHack = true;
     switch (index) {
         case 0:
             //Normal project
-            m_view->setMinimumSize(m_view->minimumSizeHint());
-            m_view->setMaximumSize(QSize(16777215, 16777215));
-            if (skipFirstMaximizeHack)
-                skipFirstMaximizeHack = false;
-            else
-                showMaximized();
-            ui->exportButton->setText(tr("export..."));
-            m_desk->setProjectMode(Desk::ModeNormal);
-            ui->projectType->setCurrentIndex(0);
+            loadNormalProject();
             break;
 
         case 1:
             // CD cover
-            // A CD cover is a 4.75x4.715 inches square.
-            m_modeInfo.setRealSizeInches(4.75, 4.75);
-            m_modeInfo.setLandscape(false);
-            m_view->setFixedSize(m_modeInfo.deskPixelSize());
-            showNormal();
-            ui->exportButton->setText(tr("print..."));
-            m_desk->setProjectMode(Desk::ModeCD);
-            ui->projectType->setCurrentIndex(1);
+            loadCDProject();
             break;
 
         case 2:
             //DVD cover
-            m_modeInfo.setRealSizeInches(10.83, 7.2);
-            m_modeInfo.setLandscape(true);
-            m_view->setFixedSize(m_modeInfo.deskPixelSize());
-            showNormal();
-            ui->exportButton->setText(tr("print..."));
-            m_desk->setProjectMode(Desk::ModeDVD);
-            ui->projectType->setCurrentIndex(2);
+            loadDVDProject();
             break;
         case 3:
-            // Exact size mode
-            ExactSizeDialog sizeDialog;
-            if(sizeDialog.exec() != QDialog::Accepted) {
-                return;
-            } else {
-                float w = sizeDialog.ui.widthSpinBox->value();
-                float h = sizeDialog.ui.heightSpinBox->value();
-                int dpi = sizeDialog.ui.dpiSpinBox->value();
-                m_modeInfo.setPrintDpi(dpi);
-                if(sizeDialog.ui.unityComboBox->currentIndex() == 0) 
-                    m_modeInfo.setRealSizeCm(w, h);
-                else
-                    m_modeInfo.setRealSizeInches(w, h);
-            }
-            m_view->setFixedSize(m_modeInfo.deskPixelSize());
-            showNormal();
-            ui->exportButton->setText(tr("print..."));
-            m_desk->setProjectMode(Desk::ModeExactSize);
+            loadExactSizeProject();
             break;
 
     }
@@ -363,7 +382,21 @@ void FotoWall::load(QString &fileName)
     if (fileName.isNull())
         return;
 
-    m_desk->restore(fileName);
+    m_desk->restore(fileName, this);
+}
+
+ModeInfo FotoWall::getModeInfo()
+{
+    return m_modeInfo;
+}
+void FotoWall::setModeInfo(ModeInfo modeInfo)
+{
+    m_modeInfo = modeInfo;
+    m_modeInfo.setDeskDpi(m_view->logicalDpiX(), m_view->logicalDpiY());
+}
+void FotoWall::restoreMode(int mode)
+{
+    on_projectType_currentIndexChanged(mode);
 }
 
 void FotoWall::on_saveButton_clicked()
@@ -374,7 +407,7 @@ void FotoWall::on_saveButton_clicked()
     if (!fileName.endsWith(".lay", Qt::CaseInsensitive))
         fileName += ".lay";
 
-    m_desk->save(fileName);
+    m_desk->save(fileName, this);
 }
 
 void FotoWall::on_exportButton_clicked()
