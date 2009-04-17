@@ -349,8 +349,7 @@ void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 
 void AbstractContent::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-        emit move(event->lastScenePos() - pos());
-        event->ignore();
+        emit move(event->lastScenePos() - scenePos());
 }
 
 void AbstractContent::dropEvent(QGraphicsSceneDragDropEvent * event)

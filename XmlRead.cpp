@@ -131,12 +131,6 @@ void XmlRead::readAbstractContent(AbstractContent *content, QDomElement &parentE
     y = domElement.firstChildElement("y").text().toInt();
     content->setPos(x, y);
     
-    /* FIXME : load transform. Before it was done like this :
-        QTransform t;
-        data >> t;
-        setTransform(t);
-        */
-
     int zvalue = parentElement.firstChildElement("zvalue").text().toInt();
     content->setZValue(zvalue);
 
@@ -216,3 +210,4 @@ void XmlRead::readText()
     }
 
 }
+
