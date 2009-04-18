@@ -27,6 +27,7 @@ class AbstractContent;
 class AbstractProperties;
 class PictureContent;
 class TextContent;
+class VideoContent;
 
 class Desk : public QGraphicsScene
 {
@@ -38,6 +39,7 @@ class Desk : public QGraphicsScene
         // add content
         void addPictures(const QStringList & fileNames);
         void addTextContent();
+        void addVideoContent(int input);
 
         // resize the scene to 0,0,size
         void resize(const QSize & size);
@@ -73,8 +75,10 @@ class Desk : public QGraphicsScene
         void drawForeground( QPainter * painter, const QRectF & rect );
 
     private:
+        void initContent(AbstractContent * content, const QPoint & pos);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
+        VideoContent * createVideo(int input, const QPoint & pos);
         void setDVDMarkers();
         void clearMarkers();
         QList<AbstractContent *> m_content;

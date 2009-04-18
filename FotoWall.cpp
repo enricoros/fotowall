@@ -15,6 +15,8 @@
 #include "FotoWall.h"
 #include "Desk.h"
 #include "RenderOpts.h"
+#include "VideoProvider.h"
+#include "ui_FotoWall.h"
 #include <QAction>
 #include <QApplication>
 #include <QDir>
@@ -75,14 +77,16 @@ FotoWall::FotoWall(QWidget * parent)
     QRect geom = QApplication::desktop()->availableGeometry();
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
 
+    // create our custom desk
+    m_desk = new Desk(this);
+
     // init ui
     ui->setupUi(this);
     ui->tutorialLabel->setVisible(false);
+    ui->addMirror->setVisible(VideoProvider::instance()->inputCount() > 0);
+    connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVideoInputsChanged(int)));
     setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     setWindowIcon(QIcon(":/data/fotowall.png"));
-
-    // create our custom desk
-    m_desk = new Desk(this);
 
     // set the decoration menu
     ui->decoButton->setMenu(createDecorationMenu());
@@ -339,6 +343,11 @@ void FotoWall::on_addText_clicked()
     m_desk->addTextContent();
 }
 
+void FotoWall::on_addMirror_clicked()
+{
+    m_desk->addVideoContent(0);
+}
+
 void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)
 {
     m_desk->showIntroduction();
@@ -448,4 +457,10 @@ void FotoWall::slotCheckTutorial(QNetworkReply * reply)
     QString htmlCode = reply->readAll();
     bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
     ui->tutorialLabel->setVisible(tutorialValid);
+}
+
+void FotoWall::slotVideoInputsChanged(int count)
+{
+    // maybe blink or something?
+    ui->addMirror->setVisible(count > 0);
 }

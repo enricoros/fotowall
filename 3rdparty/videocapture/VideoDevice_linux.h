@@ -1,5 +1,5 @@
 /*
-    videodevice.cpp  -  Video Device Low-level Support
+    VideoDevice.cpp  -  Video Device Low-level Support
 
     Copyright (c) 2005-2008 by Cláudio da Silveira Pinheiro   <taupter@gmail.com>
 
@@ -13,11 +13,12 @@
     *************************************************************************
 */
 
-#define ENABLE_AV
+#ifndef __VideoDevice_h__
+#define __VideoDevice_h__
 
-#ifndef VIDEODEVICELISTITEM_H
-#define VIDEODEVICELISTITEM_H
+#include <QString>
 
+#ifdef Q_OS_LINUX
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
@@ -27,17 +28,14 @@
 #include <unistd.h>
 #include <signal.h>
 
-#if defined(__linux__) && defined(ENABLE_AV)
-
 #include <asm/types.h>
 #undef __STRICT_ANSI__
 #ifndef __u64 //required by videodev.h
-#define __u64 unsigned long long
+#define __u64 quint64
 #endif // __u64
 #ifndef __s64 //required by videodev.h
-#define __s64 signed long long
+#define __s64 qint64
 #endif // __s64
-
 
 #ifndef pgoff_t
 #define pgoff_t unsigned long
@@ -52,31 +50,28 @@
 #define VIDEO_MODE_NTSC_JP 6
 #define __STRICT_ANSI__
 
-#endif // __linux__
+#endif // Q_OS_LINUX
 
-#include <qstring.h>
-#include <qfile.h>
-#include <qimage.h>
-#include <q3valuevector.h>
-#include <kcombobox.h>
+#include "VideoInput.h"
+#include <QString>
+#include <QFile>
+#include <QImage>
 
-#include "videoinput.h"
-
-namespace Phonon {
 namespace VideoCapture {
 
 /**
-@author Kopete Developers
+    @brief One video grabbing device, can stream multiple inputs.
+    @author Kopete Developers - modified by Enrico Ros for FotoWall inclusion
+    @class VideoDevice
 */
+
 typedef enum
 {
 	VIDEODEV_DRIVER_NONE
-#if defined( __linux__) && defined(ENABLE_AV)
-        ,
-	VIDEODEV_DRIVER_V4L
+#if defined(Q_OS_LINUX)
+	, VIDEODEV_DRIVER_V4L
 #ifdef V4L2_CAP_VIDEO_CAPTURE
-        ,
-	VIDEODEV_DRIVER_V4L2
+	, VIDEODEV_DRIVER_V4L2
 #endif
 #endif
 } videodev_driver;
@@ -200,6 +195,7 @@ struct imagebuffer
 	pixel_format pixelformat;
 	QVector <uchar> data; // maybe it should be a rawbuffer instead of it? It could make us avoid a memory copy
 };
+
 struct rawbuffer // raw buffer
 {
 	uchar * start;
@@ -207,10 +203,11 @@ struct rawbuffer // raw buffer
 };
 
 
-class VideoDevice{
+class VideoDevice {
 public:
 	VideoDevice();
 	~VideoDevice();
+
 	int setFileName(QString filename);
 	int open();
 	bool isOpen();
@@ -285,7 +282,9 @@ public:
 	int descriptor;
 
 //protected:
-#if defined(__linux__) && defined(ENABLE_AV)
+#ifdef Q_OS_LINUX
+	struct video_capability V4L_capabilities;
+	struct video_buffer V4L_videobuffer;
 #ifdef V4L2_CAP_VIDEO_CAPTURE
 	struct v4l2_capability V4L2_capabilities;
 	struct v4l2_cropcap cropcap;
@@ -298,10 +297,8 @@ public:
 	void enumerateControls (void);
 	void enumerateMenu (void);
 #endif
-	struct video_capability V4L_capabilities;
-	struct video_buffer V4L_videobuffer;
-#endif	
-	QVector<Phonon::VideoCapture::VideoInput> m_input;
+#endif
+	QVector<VideoCapture::VideoInput> m_input;
 //	QFile file;
 protected:
 	int currentwidth, minwidth, maxwidth, currentheight, minheight, maxheight;
@@ -332,7 +329,6 @@ protected:
 	QString m_udi;
 };
 
-}
 }
 
 #endif

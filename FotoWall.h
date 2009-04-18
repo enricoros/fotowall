@@ -15,11 +15,12 @@
 #ifndef __FotoWall_h__
 #define __FotoWall_h__
 
-#include <QWidget>
 #include <QGraphicsView>
-#include "ui_FotoWall.h"
+#include <QWidget>
 class Desk;
+class QMenu;
 class QNetworkReply;
+namespace Ui { class FotoWall; }
 
 class FotoWall : public QWidget
 {
@@ -45,6 +46,7 @@ class FotoWall : public QWidget
         void on_projectType_currentIndexChanged(int index);
         void on_addPictures_clicked();
         void on_addText_clicked();
+        void on_addMirror_clicked();
         void on_helpLabel_linkActivated(const QString & link);
         void on_tutorialLabel_linkActivated(const QString & link);
         void on_loadButton_clicked();
@@ -58,6 +60,7 @@ class FotoWall : public QWidget
         void slotDecoClearTitle();
 
         void slotCheckTutorial(QNetworkReply * reply);
+        void slotVideoInputsChanged(int count);
 };
 
 #endif
