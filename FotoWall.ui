@@ -109,6 +109,9 @@
          </property>
          <item>
           <widget class="QToolButton" name="addPictures">
+           <property name="toolTip">
+            <string>add picture</string>
+           </property>
            <property name="text">
             <string>add pictures</string>
            </property>
@@ -132,12 +135,41 @@
          </item>
          <item>
           <widget class="QToolButton" name="addText">
+           <property name="toolTip">
+            <string>add text</string>
+           </property>
            <property name="text">
             <string>add text</string>
            </property>
            <property name="icon">
             <iconset resource="fotowall.qrc">
              <normaloff>:/data/add-text.png</normaloff>:/data/add-text.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>64</width>
+             <height>64</height>
+            </size>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonIconOnly</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="addMirror">
+           <property name="toolTip">
+            <string>add mirror</string>
+           </property>
+           <property name="text">
+            <string>add mirror</string>
+           </property>
+           <property name="icon">
+            <iconset resource="fotowall.qrc">
+             <normaloff>:/data/add-video.png</normaloff>:/data/add-video.png</iconset>
            </property>
            <property name="iconSize">
             <size>

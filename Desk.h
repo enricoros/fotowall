@@ -21,14 +21,15 @@
 #include <QPixmap>
 #include <QRect>
 #include "Selection.h"
-class ColorPickerItem;
-class HelpItem;
-class HighlightItem;
 class AbstractContent;
 class AbstractProperties;
+class ColorPickerItem;
+class FotoWall;
+class HelpItem;
+class HighlightItem;
 class PictureContent;
 class TextContent;
-class FotoWall;
+class VideoContent;
 
 class Desk : public QGraphicsScene
 {
@@ -42,6 +43,7 @@ class Desk : public QGraphicsScene
         // add content
         void addPictures(const QStringList & fileNames);
         void addTextContent();
+        void addVideoContent(int input);
 
         // resize the scene to 0,0,size
         void resize(const QSize & size);
@@ -77,8 +79,10 @@ class Desk : public QGraphicsScene
         void drawForeground( QPainter * painter, const QRectF & rect );
 
     private:
+        void initContent(AbstractContent * content, const QPoint & pos);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
+        VideoContent * createVideo(int input, const QPoint & pos);
         void setDVDMarkers();
         void clearMarkers();
         QList<AbstractContent *> m_content;
@@ -113,7 +117,7 @@ class Desk : public QGraphicsScene
         void slotItemSelected(AbstractContent *);
         void slotAddItemToSelection(AbstractContent *);
         void slotUnselectItem(AbstractContent *);
-        
+
         void slotTitleColorChanged();
         void slotForeColorChanged();
         void slotGradColorChanged();

@@ -18,6 +18,7 @@
 #include "HighlightItem.h"
 #include "PictureContent.h"
 #include "TextContent.h"
+#include "VideoContent.h"
 #include "PictureProperties.h"
 #include "TextProperties.h"
 #include "frames/FrameFactory.h"
@@ -117,6 +118,12 @@ void Desk::addTextContent()
 {
     createText(sceneRect().center().toPoint());
 }
+
+void Desk::addVideoContent(int input)
+{
+    createVideo(input, sceneRect().center().toPoint());
+}
+
 
 /// resize Desk
 void Desk::resize(const QSize & size)
@@ -480,43 +487,48 @@ void Desk::drawForeground(QPainter * painter, const QRectF & rect)
     }
 }
 
+void Desk::initContent(AbstractContent * content, const QPoint & pos)
+{
+    connect(content, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
+    connect(content, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
+    connect(content, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
+    connect(content, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
+
+    connect(content, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
+    connect(content, SIGNAL(unselectItem(AbstractContent *)), this, SLOT(slotUnselectItem(AbstractContent *)));
+    connect(content, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
+    connect(content, SIGNAL(move(QPointF)), &m_selection, SLOT(slotMove(QPointF)));
+
+    if (!pos.isNull())
+        content->setPos(pos);
+    content->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
+    //content->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    content->show();
+
+    m_content.append(content);
+}
+
 PictureContent * Desk::createPicture(const QPoint & pos)
 {
     PictureContent * p = new PictureContent(this);
-    connect(p, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(p, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
-    connect(p, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(p, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
-    connect(p, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
-    connect(p, SIGNAL(unselectItem(AbstractContent *)), this, SLOT(slotUnselectItem(AbstractContent *)));
-    connect(p, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
+    initContent(p, pos);
     connect(p, SIGNAL(flipHorizontally()), &m_selection, SLOT(slotFlipHorizontally()));
     connect(p, SIGNAL(flipVertically()), &m_selection, SLOT(slotFlipVertically()));
-    connect(p, SIGNAL(move(QPointF)), &m_selection, SLOT(slotMove(QPointF)));
-    //p->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    p->setPos(pos);
-    p->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
-    p->show();
-    m_content.append(p);
     return p;
 }
 
 TextContent * Desk::createText(const QPoint & pos)
 {
     TextContent * t = new TextContent(this);
-    connect(t, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(t, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
-    connect(t, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(t, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
-    connect(t, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
-    connect(t, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
-    connect(t, SIGNAL(move(QPointF)), &m_selection, SLOT(slotMove(QPointF)));
-    //t->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    t->setPos(pos);
-    t->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
-    t->show();
-    m_content.append(t);
+    initContent(t, pos);
     return t;
+}
+
+VideoContent * Desk::createVideo(int input, const QPoint & pos)
+{
+    VideoContent * v = new VideoContent(input, this);
+    initContent(v, pos);
+    return v;
 }
 
 /// Markers
@@ -575,18 +587,20 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
         p = new TextProperties(text);
     }
 
+    // generic properties
+    if (!p)
+        p = new AbstractProperties(content);
+
     // common properties
-    if (p) {
-        m_properties.append(p);
-        addItem(p);
-        connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
-        connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
-        connect(p, SIGNAL(applyLookToSelection(quint32,bool)), &m_selection, SLOT(slotApplyLookToSelection(quint32,bool)));
-        connect(p, SIGNAL(reflexionToogled(bool)), &m_selection, SLOT(slotReflexionToogled(bool)));
-        p->show();
-        p->setPos(scenePoint - QPoint(10, 10));
-        p->keepInBoundaries(sceneRect().toRect());
-    }
+    m_properties.append(p);
+    addItem(p);
+    connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
+    connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
+  connect(p, SIGNAL(applyLookToSelection(quint32,bool)), &m_selection, SLOT(slotApplyLookToSelection(quint32,bool)));
+  connect(p, SIGNAL(reflexionToogled(bool)), &m_selection, SLOT(slotReflexionToogled(bool)));
+    p->show();
+    p->setPos(scenePoint - QPoint(10, 10));
+    p->keepInBoundaries(sceneRect().toRect());
 }
 
 void Desk::slotBackgroundContent()

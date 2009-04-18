@@ -48,6 +48,7 @@ TRANSLATIONS += translations/fotowall_de.ts \
 include(items/items.pri)
 include(frames/frames.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
+include(3rdparty/videocapture/videocapture.pri)
 
 # installation on Linux
 unix {
