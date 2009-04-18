@@ -3,17 +3,17 @@
 * Date : 2008
 *
 * Copyright (C) 2008 TANGUY Arnaud
-* 
+*
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation; either version 2 of the License, or
 * (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * GNU General Public License for more details.
-* 
+*
 * You should have received a copy of the GNU General Public License along
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -44,7 +44,7 @@ bool CPixmap::restore(QDataStream & data)
     m_effects.clear();
     data >> m_effects;
     foreach (int effect, m_effects) {
-        if( effect == NVG) 
+        if( effect == NVG)
             toNVG();
         else if ( effect == BlackAndWhite)
             toBlackAndWhite();
@@ -54,6 +54,14 @@ bool CPixmap::restore(QDataStream & data)
             toSepia();
     }
     return true;
+}
+
+void CPixmap::clearEffects() {
+    //Reload the image to remove the effects
+    if( !m_filePath.isEmpty() ) {
+        load(m_filePath);
+        m_effects.clear();
+    }
 }
 
 void CPixmap::toNVG() {
@@ -154,16 +162,13 @@ void CPixmap::toBlackAndWhite() {
     updateImage(dest);
 }
 
-void CPixmap::glowEffect() {
-    GlowEffectDialog effect(this);
-    effect.exec();
-}
-
-void CPixmap::noEffects() {
-    //Reload the image to remove the effects
-    if( !m_filePath.isEmpty() ) {
-        load(m_filePath);
-        m_effects.clear();
+void CPixmap::glowEffect()
+{
+    GlowEffectDialog effect(this->toImage());
+    if (effect.exec() == QDialog::Accepted) {
+        int radius = effect.currentRadius();
+        QImage dest = effect.glow(this->toImage(), radius);
+        updateImage(dest);
     }
 }
 

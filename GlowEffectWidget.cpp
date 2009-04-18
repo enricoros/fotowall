@@ -24,7 +24,6 @@
 
 #include <QPainter>
 #include <QPainterPath>
-#include "CPixmap.h"
 
 #include <cmath>
 
@@ -48,7 +47,7 @@ static inline void blurcol( QImage & im, int col, int alpha);
 *  Blurs with two sided exponential impulse
 *  response.
 *
-*  aprec = precision of alpha parameter 
+*  aprec = precision of alpha parameter
 *  in fixed-point format 0.aprec
 *
 *  zprec = precision of state parameters
@@ -60,9 +59,9 @@ void expblur( QImage &img, int radius )
   if(radius<1)
     return;
 
-  /* Calculate the alpha such that 90% of 
+  /* Calculate the alpha such that 90% of
      the kernel is within the radius.
-     (Kernel extends to infinity) 
+     (Kernel extends to infinity)
   */
   int alpha = (int)((1<<aprec)*(1.0f-expf(-2.3f/(radius+1.f))));
 
@@ -118,7 +117,7 @@ static inline void blurrow( QImage & im, int line, int alpha)
   {
     blurinner<aprec,zprec>((unsigned char *)&ptr[index],zR,zG,zB,zA,alpha);
   }
- 
+
 
 }
 
@@ -204,13 +203,13 @@ void fastbluralpha(QImage &img, int radius)
             sir[1] = qGreen(p);
             sir[2] = qBlue(p);
             sir[3] = qAlpha(p);
-            
+
             rbs = r1-abs(i);
             rsum += sir[0]*rbs;
             gsum += sir[1]*rbs;
             bsum += sir[2]*rbs;
             asum += sir[3]*rbs;
-            
+
             if (i > 0){
                 rinsum += sir[0];
                 ginsum += sir[1];
@@ -283,12 +282,12 @@ void fastbluralpha(QImage &img, int radius)
         yw += w;
     }
     for (x=0; x < w; ++x){
-        rinsum = ginsum = binsum = ainsum 
-               = routsum = goutsum = boutsum = aoutsum 
+        rinsum = ginsum = binsum = ainsum
+               = routsum = goutsum = boutsum = aoutsum
                = rsum = gsum = bsum = asum = 0;
-        
+
         yp =- radius * w;
-        
+
         for(i=-radius; i <= radius; ++i) {
             yi=qMax(0,yp)+x;
 
@@ -391,7 +390,7 @@ GlowEffectWidget::GlowEffectWidget(QWidget *parent)
 {
     m_mouseIn   = true;
     m_mouseDown = false;
-    
+
     m_tile = QPixmap(100, 100);
     m_tile.fill(Qt::white);
     QPainter pt(&m_tile);
@@ -402,9 +401,10 @@ GlowEffectWidget::GlowEffectWidget(QWidget *parent)
     generateLens(QRectF(0, 0, 80, 80));
 }
 
-void GlowEffectWidget::setImage(CPixmap *image) {
-    m_parentImage = image;
-    m_image = image->toImage().scaled(400,400, Qt::KeepAspectRatio);
+void GlowEffectWidget::setPreviewImage(const QImage & preview)
+{
+    m_image = preview.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    setFixedSize(m_image.size());
     update();
 }
 
@@ -419,23 +419,25 @@ inline const T& qClamp(const T &x, const T &low, const T &high)
 void GlowEffectWidget::paintEvent(QPaintEvent *e)
 {
     QImage back(size(), QImage::Format_ARGB32_Premultiplied);
+    back.fill(0x00);
     QPainter p(&back);
     p.setClipRect(e->rect());
 
     p.drawTiledPixmap(rect(), m_tile);
-    
-    m_blurred = m_image;
 
-    int x = (size().width()  - m_blurred.size().width())/2;
-    int y = (size().height() - m_blurred.size().height())/2;
+    QImage m_blurred = m_image;
+
+    // FIXME: what's the half-difference supposed to do here?
+    int x = 0; //(size().width()  - m_blurred.size().width())/2;
+    int y = 0; //(size().height() - m_blurred.size().height())/2;
 
     QRectF circle(m_pos.x()-40, m_pos.y()-40,
                   80, 80);
 
-    p.drawImage(qClamp(x, 0, x), 
+    p.drawImage(qClamp(x, 0, x),
                 qClamp(y, 0, y),
                 m_image);
-    
+
     if (m_mouseDown) {
         //fastbluralpha(m_blurred, m_radius);
         //ExpBlur with 0.16 fp for alpha and
@@ -444,7 +446,7 @@ void GlowEffectWidget::paintEvent(QPaintEvent *e)
 
         p.save();
         p.setCompositionMode(QPainter::CompositionMode_Plus);
-        p.drawImage(qClamp(x, 0, x), 
+        p.drawImage(qClamp(x, 0, x),
                     qClamp(y, 0, y),
                     m_blurred);
         p.restore();
@@ -455,29 +457,31 @@ void GlowEffectWidget::paintEvent(QPaintEvent *e)
     painter.drawImage(0, 0, back);
 
     drawRadius(&painter);
-    
+
     painter.end();
 
 }
 
-QImage GlowEffectWidget::glow(QImage &image) 
+QImage GlowEffectWidget::glow(const QImage &image, int radius) const
 {
     QImage back(image.size(), QImage::Format_ARGB32_Premultiplied);
+    back.fill(0x00);
     QPainter p(&back);
 
-    m_blurred = image;
+    QImage m_blurred = image;
 
-    int x = (size().width() - m_blurred.size().width())/2;
-    int y = (size().height() - m_blurred.size().height())/2;
+    // FIXME: what's the half-difference supposed to do here?
+    int x = 0; //(size().width() - m_blurred.size().width())/2;
+    int y = 0; //(size().height() - m_blurred.size().height())/2;
 
     p.drawImage(qClamp(x, 0, x),
             qClamp(y, 0, y),
             m_blurred);
 
-    //fastbluralpha(m_blurred, m_radius);
+    //fastbluralpha(m_blurred, radius);
     //ExpBlur with 0.16 fp for alpha and
     //8.7 fp for state parameters zR,zG,zB and zA
-    expblur<16,7>(m_blurred, m_radius);
+    expblur<16,7>(m_blurred, radius);
 
     p.save();
     p.setCompositionMode(QPainter::CompositionMode_Plus);
@@ -488,14 +492,6 @@ QImage GlowEffectWidget::glow(QImage &image)
     p.end();
 
     return back;
-}
-
-void GlowEffectWidget::render() 
-{
-    // Glow the parent CPixmap
-    QImage img = m_parentImage->toImage();
-    img = glow(img);
-    m_parentImage->updateImage(img);
 }
 
 void GlowEffectWidget::mousePressEvent(QMouseEvent *e)
@@ -522,9 +518,15 @@ void GlowEffectWidget::mouseReleaseEvent(QMouseEvent *)
     m_mouseDown = false;
     update();
 }
-QSize GlowEffectWidget::sizeHint() const
+
+void GlowEffectWidget::setGlowRadius(int radius)
 {
-    return QSize(485, 405);
+    m_radius = qClamp(radius, 0, 99);
+}
+
+int GlowEffectWidget::glowRadius() const
+{
+    return m_radius;
 }
 
 void GlowEffectWidget::enterEvent(QEvent *)
@@ -542,7 +544,7 @@ void GlowEffectWidget::leaveEvent(QEvent *)
 void GlowEffectWidget::generateLens(const QRectF &bounds)
 {
     QPainter painter;
-    
+
     m_lens = QImage(bounds.size().toSize(),
                     QImage::Format_ARGB32_Premultiplied);
     m_lens.fill(0);
@@ -567,7 +569,7 @@ void GlowEffectWidget::wheelEvent(QWheelEvent *e)
         ++m_radius;
     else
         --m_radius;
-    m_radius = qClamp(m_radius, 0, 99);
+    setGlowRadius(m_radius);
     update();
 }
 
@@ -590,6 +592,6 @@ void GlowEffectWidget::drawRadius(QPainter *p)
     p->setFont(font);
     p->drawText(30, 580,
                 QString("Radius is: %1").arg(m_radius));
-    
+
     p->restore();
 }

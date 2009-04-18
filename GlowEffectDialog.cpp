@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
 * GNU General Public License for more details.                               *
 *                                                                            *
-* You should have received a copy of the GNU General Public License along    * 
+* You should have received a copy of the GNU General Public License along    *
 * with this program; if not, write to the Free Software Foundation, Inc.,    *
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
@@ -19,17 +19,20 @@
 #include "GlowEffectDialog.h"
 #include "CPixmap.h"
 
-GlowEffectDialog::GlowEffectDialog(CPixmap *image) 
+GlowEffectDialog::GlowEffectDialog(const QImage & previewImage)
 {
     ui.setupUi(this);
-    ui.glowEffectWidget->setImage(image);
-    connect(ui.okButton, SIGNAL(clicked()), this, SLOT(slotOkButtonClicked()));
-    connect(ui.cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+    ui.glowEffectWidget->setPreviewImage(previewImage);
+    connect(ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
-void GlowEffectDialog::slotOkButtonClicked() 
+int GlowEffectDialog::currentRadius() const
 {
-    ui.glowEffectWidget->render();
-    close();
+    return ui.glowEffectWidget->glowRadius();
 }
 
+QImage GlowEffectDialog::glow(const QImage &image, int radius) const
+{
+    return ui.glowEffectWidget->glow(image, radius);
+}

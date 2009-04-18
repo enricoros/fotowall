@@ -27,17 +27,16 @@
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QImage>
-class CPixmap;
 
 class GlowEffectWidget : public QWidget
 {
     Q_OBJECT
 public:
     GlowEffectWidget(QWidget *parent=0);
-    void setImage(CPixmap *image);
-    void render();
-    QImage glow(QImage &image);
-    QSize sizeHint() const;
+    void setPreviewImage(const QImage &preview);
+    QImage glow(const QImage &image, int radius) const;
+    void setGlowRadius(int radius);
+    int glowRadius() const;
 protected:
     void paintEvent(QPaintEvent *e);
 
@@ -53,18 +52,15 @@ protected:
 
     void generateLens(const QRectF &bounds);
 private:
-    CPixmap *m_parentImage;
     QImage m_image;
 
-    QImage m_blurred;
-
     int  m_radius;
-    
+
     QPixmap m_tile;
     bool m_mouseIn;
     bool m_mouseDown;
     QImage m_lens;
-    
+
     QPointF m_pos;
 };
 

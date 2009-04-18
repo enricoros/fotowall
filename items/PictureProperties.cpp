@@ -14,6 +14,7 @@
 
 #include "PictureProperties.h"
 #include "PictureContent.h"
+#include "CPixmap.h"
 #include "ui_PictureProperties.h"
 #include <QListWidgetItem>
 #include <QSettings>

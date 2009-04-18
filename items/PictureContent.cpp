@@ -95,7 +95,7 @@ void PictureContent::setEffect(int effectClass)
             m_photo->glowEffect();
             break;
         case 4:
-            m_photo->noEffects();
+            m_photo->clearEffects();
             break;
         case 5:
             m_photo->toSepia();

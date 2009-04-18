@@ -11,26 +11,29 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
 * GNU General Public License for more details.                               *
 *                                                                            *
-* You should have received a copy of the GNU General Public License along    * 
+* You should have received a copy of the GNU General Public License along    *
 * with this program; if not, write to the Free Software Foundation, Inc.,    *
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
 
 #ifndef ARNAUD_GLOWEFFECTDIALOG_H
 #define ARNAUD_GLOWEFFECTDIALOG_H
- 
+
+#include <QDialog>
 #include "ui_GlowEffectDialog.h"
+#include "GlowEffectWidget.h"
 
 class GlowEffectDialog : public QDialog
 {
-    Q_OBJECT
     public:
-        GlowEffectDialog(CPixmap *image);
-    public slots:
-        void slotOkButtonClicked();
+        GlowEffectDialog(const QImage & previewImage);
+
+        int currentRadius() const;
+        QImage glow(const QImage & image, int radius) const;
+
     private:
         Ui::GlowEffectDialog ui;
 };
 
-#endif 
+#endif
 
