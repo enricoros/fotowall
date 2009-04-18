@@ -100,31 +100,13 @@ void CPixmap::toInvertedColors() {
 
 void CPixmap::toHFlip() {
     m_effects.push_back(CEffect::FlipH);
-    QImage img = this->toImage();
-    QImage dest(img.size(), img.format());
-    QRgb pixel;
-    int width = img.width() -1;
-    for(int x=0; x<width;x++) {
-        for (int y=0; y<img.height(); y++) {
-            pixel = img.pixel(x,y);
-            dest.setPixel(width - x,y,pixel);
-        }
-    }
-    updateImage(dest);
+    QImage img = this->toImage().mirrored(true, false);
+    updateImage(img);
 }
 void CPixmap::toVFlip() {
     m_effects.push_back(CEffect::FlipV);
-    QImage img = this->toImage();
-    QImage dest(img.size(), img.format());
-    QRgb pixel;
-    int height = img.height() -1;
-    for(int x=0; x<img.width() ;x++) {
-        for (int y=0; y<height; y++) {
-            pixel = img.pixel(x,y);
-            dest.setPixel(x, height - y,pixel);
-        }
-    }
-    updateImage(dest);
+    QImage img = this->toImage().mirrored(false, true);
+    updateImage(img);
 }
 
 void CPixmap::toBlackAndWhite() {

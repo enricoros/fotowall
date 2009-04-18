@@ -16,6 +16,7 @@
 #define __PictureContent_h__
 
 #include "AbstractContent.h"
+class CEffect;
 class CPixmap;
 
 /**
@@ -29,9 +30,9 @@ class PictureContent : public AbstractContent
         ~PictureContent();
 
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
-        void setEffect(int effectClass);
+        void addEffect(const CEffect & effect);
 
-        QString getFilePath() const; 
+        QString getFilePath() const;
 
         // ::AbstractContent
         QPixmap renderAsBackground(const QSize & size) const;
@@ -43,10 +44,10 @@ class PictureContent : public AbstractContent
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
-        void flipV();
         void flipH();
+        void flipV();
 
-        CPixmap* getCPixmap() const;
+        CPixmap * getCPixmap() const;
     private:
         QString     m_filePath;
         CPixmap *   m_photo;

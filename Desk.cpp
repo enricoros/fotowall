@@ -492,7 +492,7 @@ void Desk::initContent(AbstractContent * content, const QPoint & pos)
     connect(content, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
     connect(content, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
     connect(content, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(content, SIGNAL(deleteMe()), this, SLOT(slotDeleteContent()));
+    connect(content, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
 
     connect(content, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
     connect(content, SIGNAL(unselectItem(AbstractContent *)), this, SLOT(slotUnselectItem(AbstractContent *)));
@@ -577,8 +577,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     PictureContent * picture = dynamic_cast<PictureContent *>(content);
     if (picture) {
         p = new PictureProperties(picture);
-        connect(p, SIGNAL(applyEffects(int)), this, SLOT(slotApplyEffects(int)));
-        connect(p, SIGNAL(applyEffectToSelection(int)), &m_selection, SLOT(slotApplyEffectToSelection(int)));
+        connect(p, SIGNAL(applyEffect(const CEffect &, bool)), this, SLOT(slotApplyEffect(const CEffect &, bool)));
     }
 
     // text properties (dialog and connections)
@@ -743,12 +742,17 @@ void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
         content->setMirrorEnabled(mirrored);
     }
 }
-void Desk::slotApplyEffects(int effectClass)
+
+void Desk::slotApplyEffect(const CEffect & effect, bool all)
 {
+    QList<AbstractContent *> selectedContent = m_selection.getSelectedContent();
     foreach (AbstractContent * content, m_content) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
-        if (picture)
-            picture->setEffect(effectClass);
+        if (!picture)
+            continue;
+
+        if (all || selectedContent.contains(content))
+            picture->addEffect(effect);
     }
 }
 

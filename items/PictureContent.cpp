@@ -78,34 +78,9 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     return true;
 }
 
-void PictureContent::setEffect(int effectClass)
+void PictureContent::addEffect(const CEffect & effect)
 {
-    // apply effect to pixmap
-    switch (effectClass) {
-        case 0:
-            m_photo->toInvertedColors();
-            break;
-        case 1:
-            m_photo->toNVG();
-            break;
-        case 2:
-            m_photo->toBlackAndWhite();
-            break;
-        case 3:
-            m_photo->toGlow(5, true);
-            break;
-        case 4:
-            m_photo->clearEffects();
-            break;
-        case 5:
-            m_photo->toSepia();
-            break;
-        default:
-            qWarning("PictureContent::setEffect: effect %d is not implemented", effectClass);
-            return;
-    }
-
-    // invalidate cache and repaint
+    m_photo->addEffect(effect);
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
@@ -193,30 +168,23 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 #endif
 }
 
-CPixmap* PictureContent::getCPixmap() const
+CPixmap * PictureContent::getCPixmap() const
 {
     return m_photo;
 }
 
 void PictureContent::flipH()
 {
-    // delete the Photo and and recreate an H-mirrored one
-    CPixmap * oldPhoto = m_photo;
-    m_photo = new CPixmap(CPixmap::fromImage(oldPhoto->toImage().mirrored(true, false)));
-    delete oldPhoto;
+    m_photo->toHFlip();
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
 }
+
 void PictureContent::flipV()
 {
-    // delete the Photo and and recreate a V-mirrored one
-    CPixmap * oldPhoto = m_photo;
-    m_photo = new CPixmap(CPixmap::fromImage(oldPhoto->toImage().mirrored(false, true)));
-    delete oldPhoto;
+    m_photo->toVFlip();
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
-
 }
-

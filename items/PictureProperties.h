@@ -29,8 +29,7 @@ class PictureProperties : public AbstractProperties {
         ~PictureProperties();
 
     Q_SIGNALS:
-        void applyEffectToAll(const CEffect & effect);
-        void applyEffectToSelection(const CEffect & effect);
+        void applyEffect(const CEffect & effect, bool allPictures);
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);

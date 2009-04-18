@@ -22,6 +22,7 @@
 #include <QGraphicsView>
 #include <QMessageBox>
 #include "Desk.h"
+#include "CPixmap.h"
 #include "frames/FrameFactory.h"
 #include "items/ColorPickerItem.h"
 #include "FotoWall.h"
@@ -192,11 +193,12 @@ void XmlRead::readImages()
         path = imageElement.firstChildElement("path").text();
         content->loadPhoto(path);
 
-        QStringList effects =  imageElement.firstChildElement("effects").text().split(" ");
-        foreach(QString effect, effects) {
-            qWarning("%s %d", __FILE__, __LINE__);
-            //if(!effect.isEmpty())
-            //    content->setEffect(effect.toInt());
+        QDomElement effectsE = imageElement.firstChildElement("effects");
+        for (QDomElement effectE = effectsE.firstChildElement("effect"); effectE.isElement(); effectE = effectE.nextSiblingElement("effect")) {
+            CEffect fx;
+            fx.effect = (CEffect::Effect)effectE.attribute("type").toInt();
+            fx.param = effectE.attribute("param").toDouble();
+            content->addEffect(fx);
         }
 
         //Read next node

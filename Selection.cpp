@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * GNU General Public License for more details.                               *
  *                                                                            *
- * You should have received a copy of the GNU General Public License along    * 
+ * You should have received a copy of the GNU General Public License along    *
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
  ******************************************************************************/
@@ -59,15 +59,6 @@ void Selection::slotApplyLookToSelection(quint32 frameClass, bool mirrored)
     }
 }
 
-void Selection::slotApplyEffectToSelection(int effectClass)
-{
-    foreach (AbstractContent * content, m_selectedContent) {
-        PictureContent * picture = dynamic_cast<PictureContent *>(content);
-        if (picture)
-            picture->setEffect(effectClass);
-    }
-}
-
 void Selection::slotReflexionToogled(bool state)
 {
     foreach(AbstractContent *content, m_selectedContent) {
@@ -95,7 +86,7 @@ void Selection::slotFlipVertically()
     }
 }
 
-void Selection::slotMove(QPointF movement) 
+void Selection::slotMove(QPointF movement)
 {
     foreach(AbstractContent *content, m_selectedContent) {
         content->moveBy(movement.x(), movement.y());

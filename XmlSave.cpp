@@ -276,11 +276,11 @@ void XmlSave::saveImage(const PictureContent *imageContent)
     imageParent.appendChild(domElement);
     QString effectStr;
     foreach (const CEffect & effect, imageContent->getCPixmap()->effects()) {
-        // Add each effect using a space as separator
-        effectStr += QString("%1,%2 ").arg(effect.effect).arg(effect.param);
+        QDomElement effectElement = doc.createElement("effect");
+        effectElement.setAttribute("type", effect.effect);
+        effectElement.setAttribute("param", effect.param);
+        domElement.appendChild(effectElement);
     }
-    text = doc.createTextNode(effectStr);
-    domElement.appendChild(text);
 }
 
 void XmlSave::saveText(const TextContent *textContent)

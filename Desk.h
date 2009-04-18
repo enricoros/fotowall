@@ -23,6 +23,7 @@
 #include "Selection.h"
 class AbstractContent;
 class AbstractProperties;
+class CEffect;
 class ColorPickerItem;
 class FotoWall;
 class HelpItem;
@@ -112,7 +113,7 @@ class Desk : public QGraphicsScene
         void slotDeleteContent();
         void slotDeleteProperties();
         void slotApplyLooks(quint32 frameClass, bool mirrored);
-        void slotApplyEffects(int effectClass);
+        void slotApplyEffect(const CEffect & effect, bool allPictures);
 
         void slotItemSelected(AbstractContent *);
         void slotAddItemToSelection(AbstractContent *);
