@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
 * GNU General Public License for more details.                               *
 *                                                                            *
-* You should have received a copy of the GNU General Public License along    * 
+* You should have received a copy of the GNU General Public License along    *
 * with this program; if not, write to the Free Software Foundation, Inc.,    *
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
@@ -60,7 +60,7 @@ XmlSave::~XmlSave()
    //Add at the begining : <?xml version="1.0" ?>
    QDomNode noeud = doc.createProcessingInstruction("xml","version=\"1.0\" ");
    doc.insertBefore(noeud,doc.firstChild());
-   //save in the file (4 spaces indent) 
+   //save in the file (4 spaces indent)
    doc.save(out,4);
    file.close();
 }
@@ -70,15 +70,15 @@ void XmlSave::saveProject(QString title, int mode, const ModeInfo& modeInfo)
     // Title element
     QDomElement titleElement = doc.createElement("title");
     m_projectElement.appendChild(titleElement);
-    QDomText titleText = doc.createTextNode(title);   
-    titleElement.appendChild(titleText);             
+    QDomText titleText = doc.createTextNode(title);
+    titleElement.appendChild(titleText);
 
     // Mode element
     QDomElement modeElement = doc.createElement("mode"), modeId = doc.createElement("id");
     modeElement.appendChild(modeId);
     QString modeStr; modeStr.setNum(mode);
-    QDomText modeText = doc.createTextNode(modeStr);   
-    modeId.appendChild(modeText);             
+    QDomText modeText = doc.createTextNode(modeStr);
+    modeId.appendChild(modeText);
     QSizeF modeSize = modeInfo.realSize();
     if(!modeSize.isEmpty()) { // If it is a mode that requires additionnal saving
         QDomElement modeSizeElement = doc.createElement("size");
@@ -89,8 +89,8 @@ void XmlSave::saveProject(QString title, int mode, const ModeInfo& modeInfo)
         modeElement.appendChild(modeSizeElement);
         QString w, h;
         w.setNum(modeSize.width()); h.setNum(modeSize.height());
-        wElement.appendChild(doc.createTextNode(w));             
-        hElement.appendChild(doc.createTextNode(h));             
+        wElement.appendChild(doc.createTextNode(w));
+        hElement.appendChild(doc.createTextNode(h));
         modeElement.appendChild(modeSizeElement);
 
         QDomElement dpi = doc.createElement("dpi");
@@ -102,19 +102,19 @@ void XmlSave::saveProject(QString title, int mode, const ModeInfo& modeInfo)
 void XmlSave::saveDesk(const Desk *desk)
 {
     // Save background colors
-    QColor color; 
+    QColor color;
     QString r, g, b;
-    QDomElement domElement, topColor, bottomColor, 
-                redElement = doc.createElement("red"), 
+    QDomElement domElement, topColor, bottomColor,
+                redElement = doc.createElement("red"),
                 greenElement = doc.createElement("green"),
-                blueElement = doc.createElement("blue"), 
-                redElement2 = doc.createElement("red"), 
+                blueElement = doc.createElement("blue"),
+                redElement2 = doc.createElement("red"),
                 greenElement2 = doc.createElement("green"),
                 blueElement2 = doc.createElement("blue"),
-                rElement = doc.createElement("red"), 
+                rElement = doc.createElement("red"),
                 gElement = doc.createElement("green"),
                 bElement = doc.createElement("blue"),
-                rElement2 = doc.createElement("red"), 
+                rElement2 = doc.createElement("red"),
                 gElement2 = doc.createElement("green"),
                 bElement2 = doc.createElement("blue");
     domElement = doc.createElement("background-color");
@@ -161,10 +161,10 @@ void XmlSave::saveDesk(const Desk *desk)
 void XmlSave::saveAbstractContent(const AbstractContent *content, QDomElement &parentElement)
 {
     // Save general item properties
-    
-    QDomElement domElement; 
+
+    QDomElement domElement;
     QDomText text;
-    QString valueStr; 
+    QString valueStr;
 
     // Save item position and size
     QDomElement rectParent = doc.createElement("rect");
@@ -181,10 +181,10 @@ void XmlSave::saveAbstractContent(const AbstractContent *content, QDomElement &p
     QString x, y, w, h;
     x.setNum(rect.x()); y.setNum(rect.y());
     w.setNum(rect.width()); h.setNum(rect.height());
-    xElement.appendChild(doc.createTextNode(x));             
-    yElement.appendChild(doc.createTextNode(y));             
-    wElement.appendChild(doc.createTextNode(w));             
-    hElement.appendChild(doc.createTextNode(h));             
+    xElement.appendChild(doc.createTextNode(x));
+    yElement.appendChild(doc.createTextNode(y));
+    wElement.appendChild(doc.createTextNode(w));
+    hElement.appendChild(doc.createTextNode(h));
     parentElement.appendChild(rectParent);
 
     // Save the position
@@ -192,9 +192,9 @@ void XmlSave::saveAbstractContent(const AbstractContent *content, QDomElement &p
     xElement = doc.createElement("x");
     yElement = doc.createElement("y");
     valueStr.setNum(content->pos().x());
-    xElement.appendChild(doc.createTextNode(valueStr));             
+    xElement.appendChild(doc.createTextNode(valueStr));
     valueStr.setNum(content->pos().y());
-    yElement.appendChild(doc.createTextNode(valueStr));             
+    yElement.appendChild(doc.createTextNode(valueStr));
     domElement.appendChild(xElement);
     domElement.appendChild(yElement);
     parentElement.appendChild(domElement);
@@ -203,34 +203,34 @@ void XmlSave::saveAbstractContent(const AbstractContent *content, QDomElement &p
     domElement= doc.createElement("zvalue");
     parentElement.appendChild(domElement);
     valueStr.setNum(content->zValue());
-    text = doc.createTextNode(valueStr);   
-    domElement.appendChild(text);             
+    text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
 
-    // Save the visible state 
+    // Save the visible state
     domElement= doc.createElement("visible");
     parentElement.appendChild(domElement);
     valueStr.setNum(content->isVisible());
-    text = doc.createTextNode(valueStr);   
-    domElement.appendChild(text);             
+    text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
 
     // Save the frame class
     valueStr.setNum(content->frameClass());
     domElement= doc.createElement("frame-class");
     parentElement.appendChild(domElement);
-    text = doc.createTextNode(valueStr);   
-    domElement.appendChild(text);             
+    text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
 
     domElement= doc.createElement("frame-text-enabled");
     parentElement.appendChild(domElement);
     valueStr.setNum(content->frameTextEnabled());
-    text = doc.createTextNode(valueStr);   
-    domElement.appendChild(text);             
+    text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
 
     if(content->frameTextEnabled()) {
         domElement= doc.createElement("frame-text");
         parentElement.appendChild(domElement);
-        text = doc.createTextNode(content->frameText());   
-        domElement.appendChild(text);             
+        text = doc.createTextNode(content->frameText());
+        domElement.appendChild(text);
     }
 
 
@@ -268,21 +268,19 @@ void XmlSave::saveImage(const PictureContent *imageContent)
     // Save image path
     domElement = doc.createElement("path");
     imageParent.appendChild(domElement);
-    text = doc.createTextNode(imageContent->getFilePath());   
-    domElement.appendChild(text);             
+    text = doc.createTextNode(imageContent->getFilePath());
+    domElement.appendChild(text);
 
     // Save the effects
     domElement = doc.createElement("effects");
     imageParent.appendChild(domElement);
     QString effectStr;
-    foreach (int effect, imageContent->getCPixmap()->getEffects()) {
+    foreach (const CEffect & effect, imageContent->getCPixmap()->effects()) {
         // Add each effect using a space as separator
-        QString numStr; numStr.setNum(effect);
-        effectStr.append(numStr);
-        effectStr.append(" ");
+        effectStr += QString("%1,%2 ").arg(effect.effect).arg(effect.param);
     }
-    text = doc.createTextNode(effectStr);   
-    domElement.appendChild(text);             
+    text = doc.createTextNode(effectStr);
+    domElement.appendChild(text);
 }
 
 void XmlSave::saveText(const TextContent *textContent)
@@ -299,7 +297,7 @@ void XmlSave::saveText(const TextContent *textContent)
     // Save item position and size
     domElement= doc.createElement("html-text");
     textParent.appendChild(domElement);
-    text = doc.createTextNode(textContent->toHtml());   
-    domElement.appendChild(text);             
+    text = doc.createTextNode(textContent->toHtml());
+    domElement.appendChild(text);
 }
 

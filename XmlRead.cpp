@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * GNU General Public License for more details.                               *
  *                                                                            *
- * You should have received a copy of the GNU General Public License along    * 
+ * You should have received a copy of the GNU General Public License along    *
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
  ******************************************************************************/
@@ -39,25 +39,25 @@ XmlRead::XmlRead(const QString &filePath, Desk *desk) : m_desk(desk)
 
     // And create the XML document into memory (with nodes...)
     QString *error = new QString();
-    if (!doc.setContent(&file, false, error)) {       
+    if (!doc.setContent(&file, false, error)) {
         QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the layout file %1. The error was: %2").arg(filePath, *error));
-        file.close();  
+        file.close();
         throw(0);
         return;
     }
     file.close();
 
-    QDomElement root = doc.documentElement(); // The root node 
+    QDomElement root = doc.documentElement(); // The root node
     m_projectElement = root.firstChildElement("project"); // Get the project node
     m_deskElement = root.firstChildElement("desk");
     // Get the parent images node (containing all the images)
-    m_imagesElement = root.firstChildElement("images"); 
-    m_textsElement = root.firstChildElement("texts"); 
+    m_imagesElement = root.firstChildElement("images");
+    m_textsElement = root.firstChildElement("texts");
 
     prepareRestore();
 }
 
-XmlRead::~XmlRead() 
+XmlRead::~XmlRead()
 {
 }
 
@@ -82,7 +82,7 @@ void XmlRead::readProject(FotoWall *fotowall)
     }
 
     int mode = modeElement.firstChildElement("id").text().toInt();
-    fotowall->restoreMode(mode); 
+    fotowall->restoreMode(mode);
 }
 
 void XmlRead::readDesk()
@@ -114,7 +114,7 @@ void XmlRead::readDesk()
     b = domElement.firstChildElement("blue").text().toInt();
     m_desk->m_foreColorPicker->setColor(QColor(r, g, b));
 
-    // Show the colors 
+    // Show the colors
     m_desk->update();
 }
 
@@ -146,14 +146,14 @@ void XmlRead::readAbstractContent(AbstractContent *content, QDomElement &parentE
     x = domElement.firstChildElement("x").text().toInt();
     y = domElement.firstChildElement("y").text().toInt();
     content->setPos(x, y);
-    
+
     int zvalue = parentElement.firstChildElement("zvalue").text().toInt();
     content->setZValue(zvalue);
 
-    bool visible = parentElement.firstChildElement("visible").text().toInt(); 
+    bool visible = parentElement.firstChildElement("visible").text().toInt();
     content->setVisible(visible);
 
-    bool hasText = parentElement.firstChildElement("frame-text-enabled").text().toInt(); 
+    bool hasText = parentElement.firstChildElement("frame-text-enabled").text().toInt();
     content->setFrameTextEnabled(hasText);
     if(hasText) {
         QString text = parentElement.firstChildElement("frame-text").text();
@@ -181,7 +181,7 @@ void XmlRead::readImages()
     // Foreach image nodes
     while (!node.isNull()) {
         imageElement = node.toElement();
-        
+
         // Create image item (connect slots...).
         PictureContent *content = m_desk->createPicture(QPoint());
 
@@ -194,8 +194,9 @@ void XmlRead::readImages()
 
         QStringList effects =  imageElement.firstChildElement("effects").text().split(" ");
         foreach(QString effect, effects) {
-            if(!effect.isEmpty())
-                content->setEffect(effect.toInt());
+            qWarning("%s %d", __FILE__, __LINE__);
+            //if(!effect.isEmpty())
+            //    content->setEffect(effect.toInt());
         }
 
         //Read next node

@@ -83,7 +83,7 @@ void PictureContent::setEffect(int effectClass)
     // apply effect to pixmap
     switch (effectClass) {
         case 0:
-            m_photo->invertColors();
+            m_photo->toInvertedColors();
             break;
         case 1:
             m_photo->toNVG();
@@ -92,7 +92,7 @@ void PictureContent::setEffect(int effectClass)
             m_photo->toBlackAndWhite();
             break;
         case 3:
-            m_photo->glowEffect();
+            m_photo->toGlow(5, true);
             break;
         case 4:
             m_photo->clearEffects();

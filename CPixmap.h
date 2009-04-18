@@ -24,49 +24,46 @@
 
 #include <QPixmap>
 
-/*struct CPixmapEffect {
-    enum Effect { ClearEffects = 0, InvertColors = 1, NVG = 1, BlackAndWhite = 2, Glow = 3, Sepia = 4 };
-    Effect effect;
+struct CEffect {
+    enum Effect {
+        ClearEffects = -1,  FlipH = 1,      FlipV = 2,
+        InvertColors = 3,   NVG = 4,        BlackAndWhite = 5,
+        Glow = 6,           Sepia = 7
+    } effect;
     qreal param;
-};*/
+
+    CEffect(Effect effect = ClearEffects, qreal param = 0.0) : effect(effect), param(param) {}
+};
 
 class CPixmap : public QPixmap {
 public:
    CPixmap();
    CPixmap(const QString &fileName);
-   CPixmap(const QPixmap &pixmap);
 
+   // effects
+   void addEffect(const CEffect & effect);
    void clearEffects();
+
+   // the ordered sequence of effects
+   QList<CEffect> effects() const;
+
+   // manual operations
    void toNVG();
-   // Old photo style
-   void toSepia();
-   void invertColors();
-   void flipH();
-   void flipV();
+   void toInvertedColors();
+   void toHFlip();
+   void toVFlip();
    void toBlackAndWhite();
-   void glowEffect();
-   void luminosity(int value);
-
-   //accessors
-   //bool isNVG() { return m_isNVG; }
-   //bool isBlackAndWhite() { return m_isBlackAndWhite; }
-
-   void setNVG(bool state=false) { m_isNVG = state; }
-   void setBlackAndWhite(bool state=false) { m_isBlackAndWhite = state; }
-   void updateImage(QImage &newImage);
-
-   void save(QDataStream & data) const;
-   bool restore(QDataStream & data);
-
-   enum Effects { InvertColors = 0, NVG = 1, BlackAndWhite = 2,  Sepia = 5 };
-   QList<int> getEffects() const;
+   void toGlow(int radius);
+   void toSepia();  // Old photo style
+   //void toLuminosity(int value);
 
 private:
-   QString m_filePath;
-   bool m_isNVG;
-   bool m_isBlackAndWhite;
-   // List of currently applied effects
-   QList<int> m_effects;
+    CPixmap(const QPixmap &pixmap);
+    void updateImage(QImage &newImage);
+
+    QString m_filePath;
+    // Ordered list of currently applied effects
+    QList<CEffect> m_effects;
 };
 
 #endif /* ARNAUD_H_CPIXMAP */

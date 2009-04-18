@@ -16,6 +16,7 @@
 #define __PictureProperties_h__
 
 #include "AbstractProperties.h"
+#include "CPixmap.h"
 class QListWidgetItem;
 class PictureContent;
 namespace Ui { class PictureProperties; }
@@ -28,8 +29,8 @@ class PictureProperties : public AbstractProperties {
         ~PictureProperties();
 
     Q_SIGNALS:
-        void applyEffects(int effectClass);
-        void applyEffectToSelection(int effectClass);
+        void applyEffectToAll(const CEffect & effect);
+        void applyEffectToSelection(const CEffect & effect);
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
@@ -37,6 +38,7 @@ class PictureProperties : public AbstractProperties {
     private:
         Ui::PictureProperties * m_pictureUi;
         PictureContent *        m_pictureContent;
+        CEffect                 m_selectedEffect;
 
     private Q_SLOTS:
         void on_applyEffects_clicked();

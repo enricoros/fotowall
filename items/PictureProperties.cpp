@@ -14,7 +14,7 @@
 
 #include "PictureProperties.h"
 #include "PictureContent.h"
-#include "CPixmap.h"
+#include "GlowEffectDialog.h"
 #include "ui_PictureProperties.h"
 #include <QListWidgetItem>
 #include <QSettings>
@@ -67,12 +67,8 @@ void PictureProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
 
 void PictureProperties::on_applyEffects_clicked()
 {
-    QList<QListWidgetItem *> selectedEffects = m_pictureUi->effectsList->selectedItems();
-    QList<QListWidgetItem *>::iterator it = selectedEffects.begin();
-    for (; it != selectedEffects.end(); it++) {
-        int effectClass = (*it)->data(Qt::UserRole).toUInt();
-        emit applyEffects(effectClass);
-    }
+    if (m_selectedEffect.effect != CEffect::ClearEffects)
+        emit applyEffectToAll(m_selectedEffect);
 }
 
 void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
@@ -80,9 +76,20 @@ void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
     // get the effect class
     if (!item)
         return;
-    quint32 effectClass = item->data(Qt::UserRole).toUInt();
+
+    // update the selected effect
+    CEffect effect = (Effect)item->data(Qt::UserRole).toUInt();
+    qreal param = 0.0;
+
+    // show glow editing dialog
+    if (effect == CEffect::Glow) {
+        GlowEffectDialog dialog(m_pictureContent->getCPixmap()->toImage());
+        if (dialog.exec() != QDialog::Accepted)
+            return;
+        param = (qreal)dialog.currentRadius();
+    }
 
     // apply the effect
-    emit applyEffectToSelection(effectClass);
+    m_selectedEffect = CEffect(effect, param);
+    emit applyEffectToSelection(m_selectedEffect);
 }
-

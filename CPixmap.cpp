@@ -20,40 +20,49 @@
  ******************************/
 
 #include "CPixmap.h"
-#include "GlowEffectDialog.h"
+#include "GlowEffectWidget.h"
 #include <QImage>
 
-CPixmap::CPixmap() : m_isNVG(false), m_isBlackAndWhite(false) {
+CPixmap::CPixmap() {
 }
 
-CPixmap::CPixmap(const QString &fileName) : QPixmap(fileName), m_filePath(fileName), m_isNVG(false), m_isBlackAndWhite(false)
-{
+CPixmap::CPixmap(const QString &fileName) : QPixmap(fileName), m_filePath(fileName) {
 }
 
 CPixmap::CPixmap(const QPixmap &pixmap): QPixmap(pixmap){
 }
 
-void CPixmap::save(QDataStream & data) const
-{
-    // Save current effects
-    data << m_effects;
-}
-bool CPixmap::restore(QDataStream & data)
-{
-    // Restore effects
-    m_effects.clear();
-    data >> m_effects;
-    foreach (int effect, m_effects) {
-        if( effect == NVG)
+void CPixmap::addEffect(const CEffect & effect) {
+    switch (effect.effect) {
+        case CEffect::ClearEffects:
+            clearEffects();
+            break;
+        case CEffect::FlipH:
+            toHFlip();
+            break;
+        case CEffect::FlipV:
+            toVFlip();
+            break;
+        case CEffect::InvertColors:
+            toInvertedColors();
+            break;
+        case CEffect::NVG:
             toNVG();
-        else if ( effect == BlackAndWhite)
+            break;
+        case CEffect::BlackAndWhite:
             toBlackAndWhite();
-        else if (effect == InvertColors)
-            invertColors();
-        else if(effect == Sepia)
+            break;
+        case CEffect::Glow:
+            toGlow((int)effect.param);
+            break;
+        case CEffect::Sepia:
             toSepia();
+            break;
     }
-    return true;
+}
+
+QList<CEffect> CPixmap::effects() const {
+    return m_effects;
 }
 
 void CPixmap::clearEffects() {
@@ -65,7 +74,7 @@ void CPixmap::clearEffects() {
 }
 
 void CPixmap::toNVG() {
-    m_effects.push_back(NVG);
+    m_effects.push_back(CEffect::NVG);
     QImage img = this->toImage();
     QImage dest(img.size(), img.format());
     QColor pixel;
@@ -79,40 +88,18 @@ void CPixmap::toNVG() {
             dest.setPixel(x,y,pixel.rgb());
         }
     }
-    m_isNVG = true;
     updateImage(dest);
 }
 
-void CPixmap::toSepia() {
-    m_effects.push_back(Sepia);
-    QImage img = this->toImage();
-    QImage dest(img.size(), img.format());
-    QColor pixel;
-    for(int x=0; x<img.width();x++) {
-        for (int y=0; y<img.height(); y++) {
-            pixel = img.pixel(x, y);
-            unsigned int average = (pixel.green()+ pixel.red() + pixel.blue()) / 3;
-            int red = average*1.176, green = average*0.837, blue = average*0.558;
-            pixel.setRed((red <= 255) ? red : 255 );
-            pixel.setGreen((green <= 255) ? green : 255 );
-            pixel.setBlue((blue <= 255) ? blue : 255 );
-            dest.setPixel(x,y,pixel.rgb());
-        }
-    }
-    updateImage(dest);
-}
-
-void CPixmap::invertColors() {
-    if(m_effects.contains(InvertColors))
-        m_effects.removeOne(InvertColors);
-    else
-        m_effects.push_back(InvertColors);
+void CPixmap::toInvertedColors() {
+    m_effects.push_back(CEffect::InvertColors);
     QImage img = this->toImage();
     img.invertPixels();
     updateImage(img);
 }
 
-void CPixmap::flipH() {
+void CPixmap::toHFlip() {
+    m_effects.push_back(CEffect::FlipH);
     QImage img = this->toImage();
     QImage dest(img.size(), img.format());
     QRgb pixel;
@@ -125,7 +112,8 @@ void CPixmap::flipH() {
     }
     updateImage(dest);
 }
-void CPixmap::flipV() {
+void CPixmap::toVFlip() {
+    m_effects.push_back(CEffect::FlipV);
     QImage img = this->toImage();
     QImage dest(img.size(), img.format());
     QRgb pixel;
@@ -140,7 +128,7 @@ void CPixmap::flipV() {
 }
 
 void CPixmap::toBlackAndWhite() {
-    m_effects.push_back(BlackAndWhite);
+    m_effects.push_back(CEffect::BlackAndWhite);
     QImage img = this->toImage();
     QImage dest(img.size(), img.format());
     QColor pixel;
@@ -158,21 +146,37 @@ void CPixmap::toBlackAndWhite() {
             dest.setPixel(x,y,pixel.rgb());
         }
     }
-    m_isBlackAndWhite = true;
     updateImage(dest);
 }
 
-void CPixmap::glowEffect()
-{
-    GlowEffectDialog effect(this->toImage());
-    if (effect.exec() == QDialog::Accepted) {
-        int radius = effect.currentRadius();
-        QImage dest = effect.glow(this->toImage(), radius);
-        updateImage(dest);
-    }
+void CPixmap::toGlow(int radius) {
+    m_effects.push_back(CEffect(CEffect::Glow, (qreal)radius));
+    GlowEffectWidget effect;
+    QImage dest = effect.glow(this->toImage(), radius);
+    updateImage(dest);
 }
 
-void CPixmap::luminosity(int value) {
+void CPixmap::toSepia() {
+    m_effects.push_back(CEffect::Sepia);
+    QImage img = this->toImage();
+    QImage dest(img.size(), img.format());
+    QColor pixel;
+    for(int x=0; x<img.width();x++) {
+        for (int y=0; y<img.height(); y++) {
+            pixel = img.pixel(x, y);
+            unsigned int average = (pixel.green()+ pixel.red() + pixel.blue()) / 3;
+            int red = average*1.176, green = average*0.837, blue = average*0.558;
+            pixel.setRed((red <= 255) ? red : 255 );
+            pixel.setGreen((green <= 255) ? green : 255 );
+            pixel.setBlue((blue <= 255) ? blue : 255 );
+            dest.setPixel(x,y,pixel.rgb());
+        }
+    }
+    updateImage(dest);
+}
+/*
+void CPixmap::toLuminosity(int value) {
+    m_effects.push_back(...);
     QImage img = this->toImage();
     QImage dest(img.size(), img.format());
     QColor pixel;
@@ -197,16 +201,11 @@ void CPixmap::luminosity(int value) {
     }
     updateImage(dest);
 }
-
+*/
 void CPixmap::updateImage(QImage &newImage) {
-    QString tmpFilePath = m_filePath;
-    QList<int> effects = m_effects;
+    QString copyFilePath = m_filePath;
+    QList<CEffect> copyEffects = m_effects;
     *this = fromImage(newImage);
-    m_filePath = tmpFilePath;
-    m_effects = effects;
-}
-
-QList<int> CPixmap::getEffects() const
-{
-    return m_effects;
+    m_filePath = copyFilePath;
+    m_effects = copyEffects;
 }

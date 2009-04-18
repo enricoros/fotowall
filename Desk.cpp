@@ -228,7 +228,7 @@ void Desk::save(const QString &path, FotoWall *fotowall) const
         //if saving failled
         return;
     }
-    ModeInfo modeInfo = fotowall->getModeInfo(); 
+    ModeInfo modeInfo = fotowall->getModeInfo();
     xmlSave->saveProject(titleText(), projectMode(), modeInfo);
     xmlSave->saveDesk(this);
     foreach (AbstractContent * content, m_content) {
@@ -254,7 +254,7 @@ void Desk::restore(const QString &path, FotoWall *fotowall)
     try {
         xmlRead = new XmlRead(path, this);
     } catch (...) {
-        // If loading failled
+        // If loading failed
         return;
     }
     xmlRead->readProject(fotowall);
@@ -661,7 +661,7 @@ void Desk::slotStackContent(int op)
 void Desk::slotDeleteContent()
 {
     QList<AbstractContent *> selectedContent = m_selection.getSelectedContent();
-    if(selectedContent.size() > 1) { 
+    if(selectedContent.size() > 1) {
         int answer = QMessageBox::question(0, tr("Delete content"), tr("All selected items will be deleted, do you want to continue ?"), QMessageBox::Yes | QMessageBox::No);
         if(answer == QMessageBox::No) return;
     }

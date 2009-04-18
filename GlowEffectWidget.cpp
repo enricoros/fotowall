@@ -425,11 +425,11 @@ void GlowEffectWidget::paintEvent(QPaintEvent *e)
 
     p.drawTiledPixmap(rect(), m_tile);
 
-    QImage m_blurred = m_image;
+    QImage blurred = m_image;
 
     // FIXME: what's the half-difference supposed to do here?
-    int x = 0; //(size().width()  - m_blurred.size().width())/2;
-    int y = 0; //(size().height() - m_blurred.size().height())/2;
+    int x = 0; //(size().width()  - blurred.size().width())/2;
+    int y = 0; //(size().height() - blurred.size().height())/2;
 
     QRectF circle(m_pos.x()-40, m_pos.y()-40,
                   80, 80);
@@ -439,16 +439,16 @@ void GlowEffectWidget::paintEvent(QPaintEvent *e)
                 m_image);
 
     if (m_mouseDown) {
-        //fastbluralpha(m_blurred, m_radius);
+        //fastbluralpha(blurred, m_radius);
         //ExpBlur with 0.16 fp for alpha and
         //8.7 fp for state parameters zR,zG,zB and zA
-        expblur<16,7>(m_blurred, m_radius);
+        expblur<16,7>(blurred, m_radius);
 
         p.save();
         p.setCompositionMode(QPainter::CompositionMode_Plus);
         p.drawImage(qClamp(x, 0, x),
                     qClamp(y, 0, y),
-                    m_blurred);
+                    blurred);
         p.restore();
     }
     p.end();
@@ -468,26 +468,26 @@ QImage GlowEffectWidget::glow(const QImage &image, int radius) const
     back.fill(0x00);
     QPainter p(&back);
 
-    QImage m_blurred = image;
+    QImage blurred = image;
 
     // FIXME: what's the half-difference supposed to do here?
-    int x = 0; //(size().width() - m_blurred.size().width())/2;
-    int y = 0; //(size().height() - m_blurred.size().height())/2;
+    int x = 0; //(size().width() - blurred.size().width())/2;
+    int y = 0; //(size().height() - blurred.size().height())/2;
 
     p.drawImage(qClamp(x, 0, x),
             qClamp(y, 0, y),
-            m_blurred);
+            blurred);
 
-    //fastbluralpha(m_blurred, radius);
+    //fastbluralpha(blurred, radius);
     //ExpBlur with 0.16 fp for alpha and
     //8.7 fp for state parameters zR,zG,zB and zA
-    expblur<16,7>(m_blurred, radius);
+    expblur<16,7>(blurred, radius);
 
     p.save();
     p.setCompositionMode(QPainter::CompositionMode_Plus);
     p.drawImage(qClamp(x, 0, x),
             qClamp(y, 0, y),
-            m_blurred);
+            blurred);
     p.restore();
     p.end();
 
