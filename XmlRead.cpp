@@ -65,15 +65,18 @@ void XmlRead::readProject(FotoWall *fotowall)
 {
     m_desk->setTitleText(m_projectElement.firstChildElement("title").text());
 
+    ModeInfo modeInfo;
     QDomElement modeElement = m_projectElement.firstChildElement("mode");
     QDomElement sizeElement = modeElement.firstChildElement("size");
     if (!sizeElement.isNull()) {
-        ModeInfo modeInfo;
         float w = sizeElement.firstChildElement("w").text().toFloat();
         float h = sizeElement.firstChildElement("h").text().toFloat();
         modeInfo.setRealSizeInches(w, h);
 
-        int dpi = sizeElement.firstChildElement("dpi").text().toInt();
+    }
+    QDomElement dpiElement = sizeElement.firstChildElement("dpi");
+    if(!dpiElement.isNull()) {
+        int dpi = dpiElement.text().toInt();
         modeInfo.setPrintDpi(dpi);
         fotowall->setModeInfo(modeInfo);
     }

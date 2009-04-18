@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>267</width>
-    <height>182</height>
+    <height>206</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>90</x>
-     <y>140</y>
+     <y>170</y>
      <width>171</width>
      <height>32</height>
     </rect>
@@ -81,7 +81,7 @@
     </property>
    </item>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -134,6 +134,19 @@
      </layout>
     </item>
    </layout>
+  </widget>
+  <widget class="QCheckBox" name="landscapeCheckBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>140</y>
+     <width>191</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Print in landscape mode</string>
+   </property>
   </widget>
  </widget>
  <resources/>

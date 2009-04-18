@@ -101,6 +101,7 @@ FotoWall::FotoWall(QWidget * parent)
     // set the startup project mode
     on_projectType_currentIndexChanged(0);
     m_modeInfo.setDeskDpi(m_view->logicalDpiX(), m_view->logicalDpiY());
+    m_modeInfo.setPrintDpi(300);
 
     // enable the tutorial, if present
     checkForTutorial();
@@ -274,7 +275,6 @@ void FotoWall::loadNormalProject()
 }
 void FotoWall::loadCDProject()
 {
-    m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
     // A CD cover is a 4.75x4.715 inches square.
     m_modeInfo.setRealSizeInches(4.75, 4.75);
     m_modeInfo.setLandscape(false);
@@ -286,7 +286,6 @@ void FotoWall::loadCDProject()
 }
 void FotoWall::loadDVDProject()
 {
-    m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
     m_modeInfo.setRealSizeInches(10.83, 7.2);
     m_modeInfo.setLandscape(true);
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
@@ -306,6 +305,8 @@ void FotoWall::loadExactSizeProject()
         float w = sizeDialog.ui.widthSpinBox->value();
         float h = sizeDialog.ui.heightSpinBox->value();
         int dpi = sizeDialog.ui.dpiSpinBox->value();
+        bool landscape = sizeDialog.ui.landscapeCheckBox->isChecked();
+        m_modeInfo.setLandscape(landscape);
         m_modeInfo.setPrintDpi(dpi);
         if(sizeDialog.ui.unityComboBox->currentIndex() == 0) 
             m_modeInfo.setRealSizeCm(w, h);
@@ -320,6 +321,8 @@ void FotoWall::loadExactSizeProject()
 }
 void FotoWall::on_projectType_currentIndexChanged(int index)
 {
+    m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (so if it is a mode that require
+                                        // asking size, it will be asked !
     switch (index) {
         case 0:
             //Normal project
