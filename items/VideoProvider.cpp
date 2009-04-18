@@ -84,7 +84,6 @@ void VideoProvider::connectInput(int iIdx, QObject * receiver, const char * meth
         m_snapTimer->start(50);
     }
 }
-#include "/usr/share/qtcreator/gdbmacros/gdbmacros.cpp"
 
 void VideoProvider::disconnectReceiver(QObject * receiver)
 {
