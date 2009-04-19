@@ -497,7 +497,7 @@ void Desk::initContent(AbstractContent * content, const QPoint & pos)
     connect(content, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
     connect(content, SIGNAL(unselectItem(AbstractContent *)), this, SLOT(slotUnselectItem(AbstractContent *)));
     connect(content, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
-    connect(content, SIGNAL(move(QPointF)), &m_selection, SLOT(slotMove(QPointF)));
+    connect(content, SIGNAL(move(const QPointF &)), &m_selection, SLOT(slotMove(const QPointF &)));
 
     if (!pos.isNull())
         content->setPos(pos);

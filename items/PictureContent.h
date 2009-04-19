@@ -32,9 +32,9 @@ class PictureContent : public AbstractContent
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
         void addEffect(const CEffect & effect);
 
-        QString getFilePath() const;
-
         // ::AbstractContent
+        bool fromXml(QDomElement & parentElement);
+        void toXml(QDomElement & parentElement) const;
         QPixmap renderAsBackground(const QSize & size) const;
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;

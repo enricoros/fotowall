@@ -86,9 +86,51 @@ void PictureContent::addEffect(const CEffect & effect)
     GFX_CHANGED();
 }
 
-QString PictureContent::getFilePath() const
+bool PictureContent::fromXml(QDomElement & pe)
 {
-    return m_filePath;
+    AbstractContent::fromXml(pe);
+
+    // load picture properties
+    QString name = pe.firstChildElement("name").text();
+    QString path = pe.firstChildElement("path").text();
+    bool ok = loadPhoto(path);
+    if (ok) {
+        QDomElement effectsE = pe.firstChildElement("effects");
+        for (QDomElement effectE = effectsE.firstChildElement("effect"); effectE.isElement(); effectE = effectE.nextSiblingElement("effect")) {
+            CEffect fx;
+            fx.effect = (CEffect::Effect)effectE.attribute("type").toInt();
+            fx.param = effectE.attribute("param").toDouble();
+            addEffect(fx);
+        }
+    }
+    return ok;
+}
+
+void PictureContent::toXml(QDomElement & pe) const
+{
+    AbstractContent::toXml(pe);
+
+    // save picture properties
+    QDomDocument doc = pe.ownerDocument();
+    QDomElement domElement;
+    QDomText text;
+
+    // Save image path
+    domElement = doc.createElement("path");
+    pe.appendChild(domElement);
+    text = doc.createTextNode(m_filePath);
+    domElement.appendChild(text);
+
+    // Save the effects
+    domElement = doc.createElement("effects");
+    pe.appendChild(domElement);
+    QString effectStr;
+    foreach (const CEffect & effect, m_photo->effects()) {
+        QDomElement effectElement = doc.createElement("effect");
+        effectElement.setAttribute("type", effect.effect);
+        effectElement.setAttribute("param", effect.param);
+        domElement.appendChild(effectElement);
+    }
 }
 
 QPixmap PictureContent::renderAsBackground(const QSize & size) const

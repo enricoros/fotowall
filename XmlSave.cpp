@@ -158,146 +158,17 @@ void XmlSave::saveDesk(const Desk *desk)
     m_deskElement.appendChild(foreColor);
 }
 
-void XmlSave::saveAbstractContent(const AbstractContent *content, QDomElement &parentElement)
-{
-    // Save general item properties
-
-    QDomElement domElement;
-    QDomText text;
-    QString valueStr;
-
-    // Save item position and size
-    QDomElement rectParent = doc.createElement("rect");
-    QDomElement xElement= doc.createElement("x");
-    rectParent.appendChild(xElement);
-    QDomElement yElement= doc.createElement("y");
-    rectParent.appendChild(yElement);
-    QDomElement wElement= doc.createElement("w");
-    rectParent.appendChild(wElement);
-    QDomElement hElement= doc.createElement("h");
-    rectParent.appendChild(hElement);
-
-    QRectF rect = content->boundingRect();
-    QString x, y, w, h;
-    x.setNum(rect.x()); y.setNum(rect.y());
-    w.setNum(rect.width()); h.setNum(rect.height());
-    xElement.appendChild(doc.createTextNode(x));
-    yElement.appendChild(doc.createTextNode(y));
-    wElement.appendChild(doc.createTextNode(w));
-    hElement.appendChild(doc.createTextNode(h));
-    parentElement.appendChild(rectParent);
-
-    // Save the position
-    domElement= doc.createElement("pos");
-    xElement = doc.createElement("x");
-    yElement = doc.createElement("y");
-    valueStr.setNum(content->pos().x());
-    xElement.appendChild(doc.createTextNode(valueStr));
-    valueStr.setNum(content->pos().y());
-    yElement.appendChild(doc.createTextNode(valueStr));
-    domElement.appendChild(xElement);
-    domElement.appendChild(yElement);
-    parentElement.appendChild(domElement);
-
-    // Save the stacking position
-    domElement= doc.createElement("zvalue");
-    parentElement.appendChild(domElement);
-    valueStr.setNum(content->zValue());
-    text = doc.createTextNode(valueStr);
-    domElement.appendChild(text);
-
-    // Save the visible state
-    domElement= doc.createElement("visible");
-    parentElement.appendChild(domElement);
-    valueStr.setNum(content->isVisible());
-    text = doc.createTextNode(valueStr);
-    domElement.appendChild(text);
-
-    // Save the frame class
-    valueStr.setNum(content->frameClass());
-    domElement= doc.createElement("frame-class");
-    parentElement.appendChild(domElement);
-    text = doc.createTextNode(valueStr);
-    domElement.appendChild(text);
-
-    domElement= doc.createElement("frame-text-enabled");
-    parentElement.appendChild(domElement);
-    valueStr.setNum(content->frameTextEnabled());
-    text = doc.createTextNode(valueStr);
-    domElement.appendChild(text);
-
-    if(content->frameTextEnabled()) {
-        domElement= doc.createElement("frame-text");
-        parentElement.appendChild(domElement);
-        text = doc.createTextNode(content->frameText());
-        domElement.appendChild(text);
-    }
-
-
-    // Save transformations (ie: rotations)
-    domElement = doc.createElement("transformation");
-    QDomElement xRotationElement= doc.createElement("x-rotation");
-    QDomElement yRotationElement= doc.createElement("y-rotation");
-    QDomElement zRotationElement = doc.createElement("z-rotation");
-
-    QString z;
-    x.setNum(content->m_xRotationAngle); y.setNum(content->m_yRotationAngle);
-    z.setNum(content->m_zRotationAngle);
-    xRotationElement.appendChild(doc.createTextNode(x));
-    yRotationElement.appendChild(doc.createTextNode(y));
-    zRotationElement.appendChild(doc.createTextNode(z));
-
-    domElement.appendChild(xRotationElement);
-    domElement.appendChild(yRotationElement);
-    domElement.appendChild(zRotationElement);
-    parentElement.appendChild(domElement);
-}
-
 void XmlSave::saveImage(const PictureContent *imageContent)
 {
-    // Create parent
     QDomElement imageParent = doc.createElement("image");
     m_imageElements.appendChild(imageParent);
-
-    saveAbstractContent(imageContent, imageParent);
-
-    QDomElement domElement;
-    QDomText text;
-
-
-    // Save image path
-    domElement = doc.createElement("path");
-    imageParent.appendChild(domElement);
-    text = doc.createTextNode(imageContent->getFilePath());
-    domElement.appendChild(text);
-
-    // Save the effects
-    domElement = doc.createElement("effects");
-    imageParent.appendChild(domElement);
-    QString effectStr;
-    foreach (const CEffect & effect, imageContent->getCPixmap()->effects()) {
-        QDomElement effectElement = doc.createElement("effect");
-        effectElement.setAttribute("type", effect.effect);
-        effectElement.setAttribute("param", effect.param);
-        domElement.appendChild(effectElement);
-    }
+    imageContent->toXml(imageParent);
 }
 
 void XmlSave::saveText(const TextContent *textContent)
 {
-    // Create parent
     QDomElement textParent = doc.createElement("text");
     m_textElements.appendChild(textParent);
-
-    saveAbstractContent(textContent, textParent);
-
-    QDomElement domElement;
-    QDomText text;
-
-    // Save item position and size
-    domElement= doc.createElement("html-text");
-    textParent.appendChild(domElement);
-    text = doc.createTextNode(textContent->toHtml());
-    domElement.appendChild(text);
+    textContent->toXml(textParent);
 }
 

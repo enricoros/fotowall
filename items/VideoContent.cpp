@@ -51,6 +51,22 @@ void VideoContent::setPixmap(const QPixmap & pixmap)
     GFX_CHANGED();
 }
 
+bool VideoContent::fromXml(QDomElement & pe)
+{
+    AbstractContent::fromXml(pe);
+
+    // load video properties
+    // ... nothing to do here...
+    return true;
+}
+
+void VideoContent::toXml(QDomElement & pe) const
+{
+    AbstractContent::toXml(pe);
+
+    // nothing to save here... (maybe the still pic?)
+}
+
 QPixmap VideoContent::renderAsBackground(const QSize & size) const
 {
     if (m_pixmap.isNull())

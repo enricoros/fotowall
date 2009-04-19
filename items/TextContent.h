@@ -30,6 +30,8 @@ class TextContent : public AbstractContent
         void setHtml(const QString & htmlCode);
 
         // ::AbstractContent
+        bool fromXml(QDomElement & parentElement);
+        void toXml(QDomElement & parentElement) const;
         QPixmap renderAsBackground(const QSize & size) const;
 
         // ::QGraphicsItem

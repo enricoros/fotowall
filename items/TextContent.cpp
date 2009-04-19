@@ -65,6 +65,32 @@ void TextContent::setHtml(const QString & htmlCode)
     m_text->setHtml(htmlCode);
 }
 
+bool TextContent::fromXml(QDomElement & pe)
+{
+    AbstractContent::fromXml(pe);
+
+    // load text properties
+    QString text = pe.firstChildElement("html-text").text();
+    setHtml(text);
+    return true;
+}
+
+void TextContent::toXml(QDomElement & pe) const
+{
+    AbstractContent::toXml(pe);
+
+    // save text properties
+    QDomDocument doc = pe.ownerDocument();
+    QDomElement domElement;
+    QDomText text;
+
+    // Save item position and size
+    domElement = doc.createElement("html-text");
+    pe.appendChild(domElement);
+    text = doc.createTextNode(m_text->toHtml());
+    domElement.appendChild(text);
+}
+
 QPixmap TextContent::renderAsBackground(const QSize & size) const
 {
     // get the base empty pixmap

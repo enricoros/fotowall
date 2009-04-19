@@ -17,14 +17,13 @@
 
 #include <QGraphicsItem>
 #include <QObject>
+#include <QDomElement>
 class AbstractProperties;
 class ButtonItem;
 class Frame;
 class MirrorItem;
 class QGraphicsTextItem;
 class QPointF;
-class XmlRead;
-class XmlSave;
 
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
@@ -32,8 +31,6 @@ class AbstractContent : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        friend class XmlRead;
-        friend class XmlSave;
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noResize = false);
         virtual ~AbstractContent();
 
@@ -60,6 +57,9 @@ class AbstractContent : public QObject, public QGraphicsItem
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;
 
+        // may be reimplemented by subclasses
+        virtual bool fromXml(QDomElement & parentElement);
+        virtual void toXml(QDomElement & parentElement) const;
         virtual QPixmap renderAsBackground(const QSize & size) const;
         virtual AbstractProperties * createProperties() const;
 
@@ -70,13 +70,14 @@ class AbstractContent : public QObject, public QGraphicsItem
     Q_SIGNALS:
         void gfxChange();
         void configureMe(const QPoint & scenePoint);
-        void changeStack(int);
+        void changeStack(int opcode);
         void backgroundMe();
+
         void deleteItem();
         void itemSelected(AbstractContent *);
         void addItemToSelection(AbstractContent *);
         void unselectItem(AbstractContent *);
-        void move(QPointF);
+        void move(const QPointF & movement);
 
     protected:
         // useful to sunclasses

@@ -44,7 +44,7 @@ class Selection : public QObject
     public Q_SLOTS:
         void slotFlipVertically();
         void slotFlipHorizontally();
-        void slotMove(QPointF);
+        void slotMove(const QPointF & movement);
 
 };
 

@@ -115,7 +115,7 @@ FotoWall::~FotoWall()
 {
     // dump current layout
     m_desk->save("autosave.lay", this);
-    
+
     // delete everything
     delete m_view;
     delete m_desk;
@@ -301,18 +301,18 @@ void FotoWall::loadDVDProject()
 void FotoWall::loadExactSizeProject()
 {
     // Exact size mode
-    if(m_modeInfo.realSize().isEmpty()) {  
+    if(m_modeInfo.realSize().isEmpty()) {
         ExactSizeDialog sizeDialog;
         if(sizeDialog.exec() != QDialog::Accepted) {
             return;
-        } 
+        }
         float w = sizeDialog.ui.widthSpinBox->value();
         float h = sizeDialog.ui.heightSpinBox->value();
         int dpi = sizeDialog.ui.dpiSpinBox->value();
         bool landscape = sizeDialog.ui.landscapeCheckBox->isChecked();
         m_modeInfo.setLandscape(landscape);
         m_modeInfo.setPrintDpi(dpi);
-        if(sizeDialog.ui.unityComboBox->currentIndex() == 0) 
+        if(sizeDialog.ui.unityComboBox->currentIndex() == 0)
             m_modeInfo.setRealSizeCm(w, h);
         else
             m_modeInfo.setRealSizeInches(w, h);
@@ -386,15 +386,14 @@ void FotoWall::on_tutorialLabel_linkActivated(const QString & /*link*/)
 
 void FotoWall::on_loadButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Select Layout file"), QString(), "Layouts (*.lay)");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select FotoWall file"), QString(), tr("FotoWall (*.lay)"));
     load(fileName);
 }
+
 void FotoWall::load(QString &fileName)
 {
-    if (fileName.isNull())
-        return;
-
-    m_desk->restore(fileName, this);
+    if (!fileName.isNull())
+        m_desk->restore(fileName, this);
 }
 
 ModeInfo FotoWall::getModeInfo()

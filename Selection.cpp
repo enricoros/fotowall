@@ -72,7 +72,7 @@ void Selection::slotFlipVertically()
     }
 }
 
-void Selection::slotMove(QPointF movement)
+void Selection::slotMove(const QPointF & movement)
 {
     foreach(AbstractContent *content, m_selectedContent) {
         content->moveBy(movement.x(), movement.y());

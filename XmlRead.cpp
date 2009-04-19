@@ -126,107 +126,29 @@ void XmlRead::prepareRestore()
     m_desk->m_backContent = 0;
 }
 
-void XmlRead::readAbstractContent(AbstractContent *content, QDomElement &parentElement)
-{
-    content->prepareGeometryChange();
-
-    QDomElement domElement;
-    // Load image size saved in the rect node
-    domElement = parentElement.firstChildElement("rect");
-    int x, y, w, h;
-    x = domElement.firstChildElement("x").text().toInt();
-    y = domElement.firstChildElement("y").text().toInt();
-    w = domElement.firstChildElement("w").text().toInt();
-    h = domElement.firstChildElement("h").text().toInt();
-    QRect rect(x, y, w, h);
-    content->m_rect = rect;
-    content->layoutChildren();
-
-    // Load position coordinates
-    domElement = parentElement.firstChildElement("pos");
-    x = domElement.firstChildElement("x").text().toInt();
-    y = domElement.firstChildElement("y").text().toInt();
-    content->setPos(x, y);
-
-    int zvalue = parentElement.firstChildElement("zvalue").text().toInt();
-    content->setZValue(zvalue);
-
-    bool visible = parentElement.firstChildElement("visible").text().toInt();
-    content->setVisible(visible);
-
-    bool hasText = parentElement.firstChildElement("frame-text-enabled").text().toInt();
-    content->setFrameTextEnabled(hasText);
-    if(hasText) {
-        QString text = parentElement.firstChildElement("frame-text").text();
-        content->setFrameText(text);
-    }
-
-    quint32 frameClass = parentElement.firstChildElement("frame-class").text().toInt();
-    content->setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
-    content->update();
-
-    // Restore transformations
-    domElement = parentElement.firstChildElement("transformation");
-    int z;
-    x = domElement.firstChildElement("x-rotation").text().toInt();
-    y = domElement.firstChildElement("y-rotation").text().toInt();
-    z = domElement.firstChildElement("z-rotation").text().toInt();
-    content->setRotation(x, y, z);
-}
-
 void XmlRead::readImages()
 {
-    QDomNode node = m_imagesElement.firstChild();
-    QDomElement imageElement; // An image element (just one image)
-    QString name, path;
-    // Foreach image nodes
-    while (!node.isNull()) {
-        imageElement = node.toElement();
+    // for each '<image>' in '<images>'
+    for (QDomElement imageElement = m_imagesElement.firstChildElement("image"); !imageElement.isNull(); imageElement = imageElement.nextSiblingElement("image")) {
 
-        // Create image item (connect slots...).
-        PictureContent *content = m_desk->createPicture(QPoint());
+        // Create image item (connect slots...)
+        PictureContent * content = m_desk->createPicture(QPoint());
 
-        // Reload general properties (shared by all items)
-        readAbstractContent(content, imageElement);
-
-        name = imageElement.firstChildElement("name").text();
-        path = imageElement.firstChildElement("path").text();
-        content->loadPhoto(path);
-
-        QDomElement effectsE = imageElement.firstChildElement("effects");
-        for (QDomElement effectE = effectsE.firstChildElement("effect"); effectE.isElement(); effectE = effectE.nextSiblingElement("effect")) {
-            CEffect fx;
-            fx.effect = (CEffect::Effect)effectE.attribute("type").toInt();
-            fx.param = effectE.attribute("param").toDouble();
-            content->addEffect(fx);
-        }
-
-        //Read next node
-        node = node.nextSibling();
+        // restore all properties
+        content->fromXml(imageElement);
     }
 }
 
 void XmlRead::readText()
 {
-    QDomNode node = m_textsElement.firstChild();
-    QDomElement textElement; // An image element (just one image)
-    QString text;
-    // Foreach image nodes
-    while (!node.isNull()) {
-        textElement = node.toElement();
+    // for each '<text>' in '<texts>'
+    for (QDomElement textE = m_imagesElement.firstChildElement("text"); !textE.isNull(); textE = textE.nextSiblingElement("text")) {
 
-        // Create image item (connect slots...).
-        TextContent *content = m_desk->createText(QPoint());
+        // Create image item (connect slots...)
+        TextContent * content = m_desk->createText(QPoint());
 
-        // Reload general properties (shared by all items)
-        readAbstractContent(content, textElement);
-
-        text = textElement.firstChildElement("html-text").text();
-        content->setHtml(text);
-
-        //Read next node
-        node = node.nextSibling();
+        // restore all properties
+        content->fromXml(textE);
     }
-
 }
 

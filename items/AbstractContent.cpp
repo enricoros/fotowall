@@ -82,7 +82,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     bDelete->setToolTip(tr("Remove"));
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteItem()));
     m_controlItems << bDelete;
- 
+
     ButtonItem *bTransformXY = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bTransformXY->setToolTip(tr("Drag top or bottom to move along the X axis (perspective).\nDrag left or right to move along the Y axis.\nHold SHIFT to rotate faster.\nUse CTRL to cancel the transformations"));
     connect(bTransformXY, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotTransformXY(const QPointF&,Qt::KeyboardModifiers)));
@@ -209,7 +209,7 @@ bool AbstractContent::mirrorEnabled() const
 }
 
 void AbstractContent::setSelected(bool state)
-{ 
+{
     m_isSelected = state;
     if(m_mirrorItem != 0)
         m_mirrorItem->sourceUpdated();
@@ -267,6 +267,149 @@ void AbstractContent::ensureVisible(const QRectF & rect)
 bool AbstractContent::beingTransformed() const
 {
     return m_transforming;
+}
+
+bool AbstractContent::fromXml(QDomElement & pe)
+{
+    // restore content properties
+    QDomElement domElement;
+
+    // Load image size saved in the rect node
+    domElement = pe.firstChildElement("rect");
+    int x, y, w, h;
+    x = domElement.firstChildElement("x").text().toInt();
+    y = domElement.firstChildElement("y").text().toInt();
+    w = domElement.firstChildElement("w").text().toInt();
+    h = domElement.firstChildElement("h").text().toInt();
+    resize(QRectF(x, y, w, h));
+
+    // Load position coordinates
+    domElement = pe.firstChildElement("pos");
+    x = domElement.firstChildElement("x").text().toInt();
+    y = domElement.firstChildElement("y").text().toInt();
+    setPos(x, y);
+
+    int zvalue = pe.firstChildElement("zvalue").text().toInt();
+    setZValue(zvalue);
+
+    bool visible = pe.firstChildElement("visible").text().toInt();
+    setVisible(visible);
+
+    bool hasText = pe.firstChildElement("frame-text-enabled").text().toInt();
+    setFrameTextEnabled(hasText);
+    if (hasText) {
+        QString text = pe.firstChildElement("frame-text").text();
+        setFrameText(text);
+    }
+
+    quint32 frameClass = pe.firstChildElement("frame-class").text().toInt();
+    setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
+
+    // Restore transformations
+    domElement = pe.firstChildElement("transformation");
+    int z;
+    x = domElement.firstChildElement("x-rotation").text().toInt();
+    y = domElement.firstChildElement("y-rotation").text().toInt();
+    z = domElement.firstChildElement("z-rotation").text().toInt();
+    setRotation(x, y, z);
+
+    return true;
+}
+
+void AbstractContent::toXml(QDomElement & pe) const
+{
+    // Save general item properties
+
+    QDomDocument doc = pe.ownerDocument();
+    QDomElement domElement;
+    QDomText text;
+    QString valueStr;
+
+    // Save item position and size
+    QDomElement rectParent = doc.createElement("rect");
+    QDomElement xElement = doc.createElement("x");
+    rectParent.appendChild(xElement);
+    QDomElement yElement = doc.createElement("y");
+    rectParent.appendChild(yElement);
+    QDomElement wElement = doc.createElement("w");
+    rectParent.appendChild(wElement);
+    QDomElement hElement = doc.createElement("h");
+    rectParent.appendChild(hElement);
+
+    QRectF rect = m_rect;
+    QString x, y, w, h;
+    x.setNum(rect.x()); y.setNum(rect.y());
+    w.setNum(rect.width()); h.setNum(rect.height());
+    xElement.appendChild(doc.createTextNode(x));
+    yElement.appendChild(doc.createTextNode(y));
+    wElement.appendChild(doc.createTextNode(w));
+    hElement.appendChild(doc.createTextNode(h));
+    pe.appendChild(rectParent);
+
+    // Save the position
+    domElement= doc.createElement("pos");
+    xElement = doc.createElement("x");
+    yElement = doc.createElement("y");
+    valueStr.setNum(pos().x());
+    xElement.appendChild(doc.createTextNode(valueStr));
+    valueStr.setNum(pos().y());
+    yElement.appendChild(doc.createTextNode(valueStr));
+    domElement.appendChild(xElement);
+    domElement.appendChild(yElement);
+    pe.appendChild(domElement);
+
+    // Save the stacking position
+    domElement= doc.createElement("zvalue");
+    pe.appendChild(domElement);
+    valueStr.setNum(zValue());
+    text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
+
+    // Save the visible state
+    domElement= doc.createElement("visible");
+    pe.appendChild(domElement);
+    valueStr.setNum(isVisible());
+    text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
+
+    // Save the frame class
+    valueStr.setNum(frameClass());
+    domElement= doc.createElement("frame-class");
+    pe.appendChild(domElement);
+    text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
+
+    domElement= doc.createElement("frame-text-enabled");
+    pe.appendChild(domElement);
+    valueStr.setNum(frameTextEnabled());
+    text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
+
+    if(frameTextEnabled()) {
+        domElement= doc.createElement("frame-text");
+        pe.appendChild(domElement);
+        text = doc.createTextNode(frameText());
+        domElement.appendChild(text);
+    }
+
+
+    // Save transformations (ie: rotations)
+    domElement = doc.createElement("transformation");
+    QDomElement xRotationElement= doc.createElement("x-rotation");
+    QDomElement yRotationElement= doc.createElement("y-rotation");
+    QDomElement zRotationElement = doc.createElement("z-rotation");
+
+    QString z;
+    x.setNum(m_xRotationAngle); y.setNum(m_yRotationAngle);
+    z.setNum(m_zRotationAngle);
+    xRotationElement.appendChild(doc.createTextNode(x));
+    yRotationElement.appendChild(doc.createTextNode(y));
+    zRotationElement.appendChild(doc.createTextNode(z));
+
+    domElement.appendChild(xRotationElement);
+    domElement.appendChild(yRotationElement);
+    domElement.appendChild(zRotationElement);
+    pe.appendChild(domElement);
 }
 
 QPixmap AbstractContent::renderAsBackground(const QSize & size) const
@@ -598,7 +741,7 @@ void AbstractContent::slotRotate(const QPointF & controlPoint, Qt::KeyboardModif
 
 void AbstractContent::applyTransformations()
 {
-    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis)); 
+    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
 }
 
 void AbstractContent::slotResetRatio()

@@ -232,11 +232,6 @@ void AbstractProperties::animateClose()
     emit closing();
 }
 
-void AbstractProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
-{
-    QGraphicsProxyWidget::mousePressEvent(event);
-}
-
 void AbstractProperties::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     if (m_aniStep < 10)
