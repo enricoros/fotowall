@@ -51,20 +51,6 @@ QList<AbstractContent *> Selection::getSelectedContent() const
 
 
 
-void Selection::slotApplyLookToSelection(quint32 frameClass, bool mirrored)
-{
-    foreach (AbstractContent * content, m_selectedContent) {
-        content->setFrame(FrameFactory::createFrame(frameClass));
-        content->setMirrorEnabled(mirrored);
-    }
-}
-
-void Selection::slotReflexionToogled(bool state)
-{
-    foreach(AbstractContent *content, m_selectedContent) {
-        content->setMirrorEnabled(state);
-    }
-}
 void Selection::slotFlipHorizontally()
 {
     foreach(AbstractContent *content, m_selectedContent) {

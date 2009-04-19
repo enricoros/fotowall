@@ -594,9 +594,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     m_properties.append(p);
     addItem(p);
     connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
-    connect(p, SIGNAL(applyLooks(quint32,bool)), this, SLOT(slotApplyLooks(quint32,bool)));
-  connect(p, SIGNAL(applyLookToSelection(quint32,bool)), &m_selection, SLOT(slotApplyLookToSelection(quint32,bool)));
-  connect(p, SIGNAL(reflexionToogled(bool)), &m_selection, SLOT(slotReflexionToogled(bool)));
+    connect(p, SIGNAL(applyLook(quint32,bool,bool)), this, SLOT(slotApplyLook(quint32,bool,bool)));
     p->show();
     p->setPos(scenePoint - QPoint(10, 10));
     p->keepInBoundaries(sceneRect().toRect());
@@ -735,10 +733,14 @@ void Desk::slotUnselectItem(AbstractContent *content)
     m_selection.unselect(content);
 }
 
-void Desk::slotApplyLooks(quint32 frameClass, bool mirrored)
+void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 {
+    QList<AbstractContent *> selectedContent = m_selection.getSelectedContent();
     foreach (AbstractContent * content, m_content) {
-        content->setFrame(FrameFactory::createFrame(frameClass));
+        if (!all && !selectedContent.contains(content))
+            continue;
+        if (content->frameClass() != frameClass)
+            content->setFrame(FrameFactory::createFrame(frameClass));
         content->setMirrorEnabled(mirrored);
     }
 }

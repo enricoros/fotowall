@@ -321,7 +321,7 @@ void AbstractProperties::addTab(QWidget * widget, const QString & label, bool fr
 
 void AbstractProperties::on_applyLooks_clicked()
 {
-    emit applyLooks(m_content->frameClass(), m_content->mirrorEnabled());
+    emit applyLook(m_content->frameClass(), m_content->mirrorEnabled(), true);
 }
 
 void AbstractProperties::on_listWidget_itemSelectionChanged()
@@ -334,12 +334,11 @@ void AbstractProperties::on_listWidget_itemSelectionChanged()
     quint32 frameClass = item->data(Qt::UserRole).toUInt();
     if (!frameClass)
         return;
-    emit applyLookToSelection(frameClass, m_content->mirrorEnabled());
+    emit applyLook(frameClass, m_content->mirrorEnabled(), false);
 }
 
 void AbstractProperties::on_reflection_toggled(bool checked)
 {
-    emit reflexionToogled(checked);
     RenderOpts::LastMirrorEnabled = checked;
-    m_content->setMirrorEnabled(checked);
+    emit applyLook(m_content->frameClass(), checked, false);
 }

@@ -33,7 +33,6 @@ bool RenderOpts::LastMirrorEnabled = true;
 bool RenderOpts::HQRendering = false;
 bool RenderOpts::FirstRun = false;
 
-
 int main( int argc, char ** args )
 {
     // use the Raster GraphicsSystem as default on 4.5+
@@ -43,17 +42,17 @@ int main( int argc, char ** args )
 
     QApplication app(argc, args);
     app.setApplicationName("FotoWall");
-    app.setApplicationVersion("0.5");
+    app.setApplicationVersion("0.6-preview");
     app.setOrganizationName("Enrico Ros");
 
+    // translate fotowall + default-qt messages
+    QString locale =  QLocale::system().name();
     QTranslator translator;
-    QString locale =  QLocale::system().name(); 
-    translator.load( QString( ":/translations/fotowall_%1" ).arg(locale) );
+    translator.load(QString( ":/translations/fotowall_%1" ).arg(locale));
     app.installTranslator(&translator);
-
-    QTranslator QtTranslator;
-    QtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app.installTranslator(&QtTranslator);
+    QTranslator qtTranslator;
+    qtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app.installTranslator(&qtTranslator);
 
     QSettings s;
     RenderOpts::FirstRun = s.value("fotowall/firstTime", true).toBool();

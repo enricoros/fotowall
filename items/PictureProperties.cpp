@@ -16,9 +16,9 @@
 #include "PictureContent.h"
 #include "GlowEffectDialog.h"
 #include "ui_PictureProperties.h"
+#include <QGraphicsSceneMouseEvent>
 #include <QListWidgetItem>
 #include <QSettings>
-#include <QGraphicsSceneMouseEvent>
 
 PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsItem * parent)
     : AbstractProperties(pictureContent, parent)

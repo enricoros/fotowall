@@ -42,8 +42,6 @@ class Selection : public QObject
         QList<AbstractContent *> m_selectedContent;
 
     public Q_SLOTS:
-        void slotApplyLookToSelection(quint32 frameClass, bool mirrored);
-        void slotReflexionToogled(bool);
         void slotFlipVertically();
         void slotFlipHorizontally();
         void slotMove(QPointF);
