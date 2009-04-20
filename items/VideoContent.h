@@ -31,7 +31,7 @@ class VideoContent : public AbstractContent
         // ::AbstractContent
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
-        QPixmap renderAsBackground(const QSize & size) const;
+        QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
 

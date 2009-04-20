@@ -151,4 +151,3 @@ void XmlRead::readText()
         content->fromXml(textE);
     }
 }
-

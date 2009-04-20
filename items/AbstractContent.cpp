@@ -305,14 +305,14 @@ bool AbstractContent::fromXml(QDomElement & pe)
     quint32 frameClass = pe.firstChildElement("frame-class").text().toInt();
     setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
 
-    // Restore transformations
-    domElement = pe.firstChildElement("transformation");
-    int z;
-    x = domElement.firstChildElement("x-rotation").text().toInt();
-    y = domElement.firstChildElement("y-rotation").text().toInt();
-    z = domElement.firstChildElement("z-rotation").text().toInt();
-    setRotation(x, y, z);
-
+    // restore transformation
+    QDomElement te = pe.firstChildElement("transformation");
+    if (!te.isNull()) {
+        QTransform t(te.attribute("m11").toDouble(), te.attribute("m12").toDouble(), te.attribute("m13").toDouble(),
+                     te.attribute("m21").toDouble(), te.attribute("m22").toDouble(), te.attribute("m23").toDouble(),
+                     te.attribute("m31").toDouble(), te.attribute("m32").toDouble(), te.attribute("m33").toDouble());
+        setTransform(t);
+    }
     return true;
 }
 
@@ -392,27 +392,24 @@ void AbstractContent::toXml(QDomElement & pe) const
         domElement.appendChild(text);
     }
 
-
-    // Save transformations (ie: rotations)
-    domElement = doc.createElement("transformation");
-    QDomElement xRotationElement= doc.createElement("x-rotation");
-    QDomElement yRotationElement= doc.createElement("y-rotation");
-    QDomElement zRotationElement = doc.createElement("z-rotation");
-
-    QString z;
-    x.setNum(m_xRotationAngle); y.setNum(m_yRotationAngle);
-    z.setNum(m_zRotationAngle);
-    xRotationElement.appendChild(doc.createTextNode(x));
-    yRotationElement.appendChild(doc.createTextNode(y));
-    zRotationElement.appendChild(doc.createTextNode(z));
-
-    domElement.appendChild(xRotationElement);
-    domElement.appendChild(yRotationElement);
-    domElement.appendChild(zRotationElement);
-    pe.appendChild(domElement);
+    // save transformation
+    const QTransform t = transform();
+    if (!t.isIdentity()) {
+        domElement = doc.createElement("transformation");
+        domElement.setAttribute("m11", t.m11());
+        domElement.setAttribute("m12", t.m12());
+        domElement.setAttribute("m13", t.m13());
+        domElement.setAttribute("m21", t.m21());
+        domElement.setAttribute("m22", t.m22());
+        domElement.setAttribute("m23", t.m23());
+        domElement.setAttribute("m31", t.m31());
+        domElement.setAttribute("m32", t.m32());
+        domElement.setAttribute("m33", t.m33());
+        pe.appendChild(domElement);
+    }
 }
 
-QPixmap AbstractContent::renderAsBackground(const QSize & size) const
+QPixmap AbstractContent::renderAsBackground(const QSize & size, bool keepAspect) const
 {
     QPixmap pix(size);
     pix.fill(Qt::transparent);
@@ -669,6 +666,11 @@ void AbstractContent::layoutChildren()
         m_frame->layoutText(m_frameTextItem, frameRect);
 }
 
+void AbstractContent::applyTransformations()
+{
+    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
+}
+
 void AbstractContent::slotScaleStarted()
 {
     if (m_rect.height() > 0)
@@ -723,12 +725,14 @@ void AbstractContent::slotRotate(const QPointF & controlPoint, Qt::KeyboardModif
         return;
 
     // set item rotation (set rotation relative to current)
+    //qreal refAngle = atan2(refPos.y(), refPos.x());
     qreal newAngle = atan2(newPos.y(), newPos.x());
     m_zRotationAngle += 57.29577951308232 * newAngle; // 180 * a / M_PI
+    //QTransform zTransform = QTransform().rotate(57.29577951308232 * (newAngle - refAngle), Qt::ZAxis); // 180 * a / M_PI
+    //setTransform(zTransform, true);
 
     // snap to M_PI/4
     if (modifiers != Qt::NoModifier) {
-        // FIXME : correct this
         QTransform t = transform();
         QPointF ax = t.map(QPointF(1, 0));
         qreal rotAngle = atan2(ax.y(), ax.x());
@@ -739,30 +743,7 @@ void AbstractContent::slotRotate(const QPointF & controlPoint, Qt::KeyboardModif
     applyTransformations();
 }
 
-void AbstractContent::applyTransformations()
-{
-    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
-}
-
-void AbstractContent::slotResetRatio()
-{
-    adjustSize();
-}
-
-void AbstractContent::slotResetRotation()
-{
-    QTransform ident;
-    setTransform(ident, false);
-}
-
-void AbstractContent::slotTransformEnded()
-{
-    m_transforming = false;
-    update();
-    GFX_CHANGED();
-}
-
-void AbstractContent::slotTransformXY(const QPointF& controlPoint,Qt::KeyboardModifiers modifiers)
+void AbstractContent::slotTransformXY(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
 {
     ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPointF newPos = mapFromScene(controlPoint);
@@ -794,3 +775,20 @@ void AbstractContent::slotTransformXY(const QPointF& controlPoint,Qt::KeyboardMo
     applyTransformations();
 }
 
+void AbstractContent::slotResetRatio()
+{
+    adjustSize();
+}
+
+void AbstractContent::slotResetRotation()
+{
+    QTransform ident;
+    setTransform(ident, false);
+}
+
+void AbstractContent::slotTransformEnded()
+{
+    m_transforming = false;
+    update();
+    GFX_CHANGED();
+}

@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 #include "Selection.h"
+#include "CPixmap.h"
 #include "items/PictureContent.h"
 #include "items/TextContent.h"
 #include "frames/FrameFactory.h"
@@ -56,9 +57,8 @@ void Selection::slotFlipHorizontally()
     foreach(AbstractContent *content, m_selectedContent) {
         PictureContent *picture = 0;
         picture = dynamic_cast<PictureContent *>(content);
-        if (picture) {
-            picture->flipH();
-        }
+        if (picture)
+            picture->addEffect(CEffect::FlipH);
     }
 }
 void Selection::slotFlipVertically()
@@ -66,9 +66,8 @@ void Selection::slotFlipVertically()
     foreach(AbstractContent *content, m_selectedContent) {
         PictureContent *picture = 0;
         picture = dynamic_cast<PictureContent *>(content);
-        if (picture) {
-            picture->flipV();
-        }
+        if (picture)
+            picture->addEffect(CEffect::FlipV);
     }
 }
 

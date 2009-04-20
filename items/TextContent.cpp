@@ -91,10 +91,10 @@ void TextContent::toXml(QDomElement & pe) const
     domElement.appendChild(text);
 }
 
-QPixmap TextContent::renderAsBackground(const QSize & size) const
+QPixmap TextContent::renderAsBackground(const QSize & size, bool keepAspect) const
 {
     // get the base empty pixmap
-    QPixmap pix = AbstractContent::renderAsBackground(size);
+    QPixmap pix = AbstractContent::renderAsBackground(size, keepAspect);
     QSize textSize = boundingRect().size().toSize();
     const float w = size.width(),
                 h = size.height(),

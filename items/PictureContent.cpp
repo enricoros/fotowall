@@ -133,11 +133,11 @@ void PictureContent::toXml(QDomElement & pe) const
     }
 }
 
-QPixmap PictureContent::renderAsBackground(const QSize & size) const
+QPixmap PictureContent::renderAsBackground(const QSize & size, bool keepAspect) const
 {
     if (m_photo)
-        return m_photo->scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    return AbstractContent::renderAsBackground(size);
+        return m_photo->scaled(size, keepAspect ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    return AbstractContent::renderAsBackground(size, keepAspect);
 }
 
 int PictureContent::contentHeightForWidth(int width) const
@@ -208,25 +208,4 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 //    if (m_opaquePhoto)
 //        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
-}
-
-CPixmap * PictureContent::getCPixmap() const
-{
-    return m_photo;
-}
-
-void PictureContent::flipH()
-{
-    m_photo->toHFlip();
-    m_cachedPhoto = QPixmap();
-    update();
-    GFX_CHANGED();
-}
-
-void PictureContent::flipV()
-{
-    m_photo->toVFlip();
-    m_cachedPhoto = QPixmap();
-    update();
-    GFX_CHANGED();
 }

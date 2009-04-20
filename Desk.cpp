@@ -412,7 +412,7 @@ void Desk::drawBackground(QPainter * painter, const QRectF & rect)
         // regenerate cache if needed
         QSize sceneSize = sceneRect().size().toSize();
         if (m_backCache.isNull() || m_backCache.size() != sceneSize)
-            m_backCache = m_backContent->renderAsBackground(sceneSize);
+            m_backCache = m_backContent->renderAsBackground(sceneSize, false);
 
         // paint cached background
         QRect targetRect = rect.toRect();

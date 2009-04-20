@@ -35,7 +35,7 @@ class PictureContent : public AbstractContent
         // ::AbstractContent
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
-        QPixmap renderAsBackground(const QSize & size) const;
+        QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
 
@@ -44,19 +44,15 @@ class PictureContent : public AbstractContent
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
-        void flipH();
-        void flipV();
+    Q_SIGNALS:
+        void flipHorizontally();
+        void flipVertically();
 
-        CPixmap * getCPixmap() const;
     private:
         QString     m_filePath;
         CPixmap *   m_photo;
         QPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;
-
-    Q_SIGNALS:
-        void flipHorizontally();
-        void flipVertically();
 };
 
 #endif

@@ -67,11 +67,11 @@ void VideoContent::toXml(QDomElement & pe) const
     // nothing to save here... (maybe the still pic?)
 }
 
-QPixmap VideoContent::renderAsBackground(const QSize & size) const
+QPixmap VideoContent::renderAsBackground(const QSize & size, bool keepAspect) const
 {
     if (m_pixmap.isNull())
-        return AbstractContent::renderAsBackground(size);
-    return m_pixmap.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        return AbstractContent::renderAsBackground(size, keepAspect);
+    return m_pixmap.scaled(size, keepAspect ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
 int VideoContent::contentHeightForWidth(int width) const

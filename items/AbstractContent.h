@@ -60,7 +60,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         // may be reimplemented by subclasses
         virtual bool fromXml(QDomElement & parentElement);
         virtual void toXml(QDomElement & parentElement) const;
-        virtual QPixmap renderAsBackground(const QSize & size) const;
+        virtual QPixmap renderAsBackground(const QSize & size, bool keepAspect = false) const;
         virtual AbstractProperties * createProperties() const;
 
         // ::QGraphicsItem
@@ -125,7 +125,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void slotScaleStarted();
         void slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotRotate(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
-        void slotTransformXY(const QPointF&,Qt::KeyboardModifiers);
+        void slotTransformXY(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
         void slotResetRatio();
         void slotResetRotation();
         void slotTransformEnded();

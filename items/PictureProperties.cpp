@@ -85,7 +85,8 @@ void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
 
     // show glow editing dialog
     if (effect == CEffect::Glow) {
-        GlowEffectDialog dialog(m_pictureContent->getCPixmap()->toImage());
+        QPixmap preview = m_pictureContent->renderAsBackground(QSize(300, 300), true);
+        GlowEffectDialog dialog(preview.toImage());
         if (dialog.exec() != QDialog::Accepted)
             return;
         param = (qreal)dialog.currentRadius();
