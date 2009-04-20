@@ -22,6 +22,7 @@
 
 VideoContent::VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
+    , m_still(false)
 {
     // enable frame text
     setFrameTextEnabled(true);
@@ -29,6 +30,13 @@ VideoContent::VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * pa
 
     // initial pixmap
     setPixmap(QPixmap(":/data/add-video.png"));
+
+    // add snapshot button
+    ButtonItem * bStill = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-snapshot.png"), this);
+    bStill->setToolTip(tr("Still picture"));
+    bStill->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+    connect(bStill, SIGNAL(clicked()), this, SLOT(slotToggleStill()));
+    addButtonItem(bStill);
 
     // start the video flow
     VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
@@ -42,6 +50,8 @@ VideoContent::~VideoContent()
 
 void VideoContent::setPixmap(const QPixmap & pixmap)
 {
+    if (m_still)
+        return;
     m_pixmap = pixmap;
     if (!beingTransformed())
         m_cachedPixmap = QPixmap();
@@ -129,4 +139,9 @@ void VideoContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * op
 #if QT_VERSION >= 0x040500
 //    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
+}
+
+void VideoContent::slotToggleStill()
+{
+    m_still = !m_still;
 }

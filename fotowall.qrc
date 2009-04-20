@@ -13,6 +13,7 @@
         <file>data/action-rotate.png</file>
         <file>data/action-save.png</file>
         <file>data/action-scale.png</file>
+        <file>data/action-snapshot.png</file>
         <file>data/add-image.png</file>
         <file>data/add-text.png</file>
         <file>data/add-video.png</file>

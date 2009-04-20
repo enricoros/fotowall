@@ -43,8 +43,12 @@ class VideoContent : public AbstractContent
         void setPixmap(const QPixmap & pixmap);
 
     private:
+        bool m_still;
         QPixmap m_pixmap;
         QPixmap m_cachedPixmap;
+
+    private Q_SLOTS:
+        void slotToggleStill();
 };
 
 #endif
