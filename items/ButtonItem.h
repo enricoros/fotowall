@@ -40,7 +40,7 @@ class ButtonItem : public QObject, public QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
     Q_SIGNALS:
-        void dragging(const QPointF & point, Qt::KeyboardModifiers modifiers);
+        void dragging(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);
         void pressed();
         void clicked();
         void doubleClicked();

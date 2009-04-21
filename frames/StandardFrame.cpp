@@ -45,7 +45,7 @@ void StandardFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & fra
     foreach (ButtonItem * button, buttons) {
         switch (button->buttonType()) {
             case ButtonItem::FlipH:
-                button->setPos(right - button->width() / 2, (top + bottom) / 2);
+                button->setPos(right - button->width() / 2, (top + bottom - button->height()) / 2);
                 break;
 
             case ButtonItem::FlipV:

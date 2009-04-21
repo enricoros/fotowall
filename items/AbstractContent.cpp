@@ -38,7 +38,9 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     , m_transformRefreshTimer(0)
     , m_gfxChangeTimer(0)
     , m_mirrorItem(0)
-    , m_xRotationAngle(0), m_yRotationAngle(0), m_zRotationAngle(0)
+    , m_xRotationAngle(0)
+    , m_yRotationAngle(0)
+    , m_zRotationAngle(0)
 {
     // the buffered graphics changes timer
     m_gfxChangeTimer = new QTimer(this);
@@ -68,10 +70,11 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
     m_controlItems << bConf;
 
-    ButtonItem *bTransformXY = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
-    bTransformXY->setToolTip(tr("Drag top or bottom to move along the X axis (perspective).\nDrag left or right to move along the Y axis.\nHold SHIFT to rotate faster.\nUse CTRL to cancel the transformations"));
-    connect(bTransformXY, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotPerspective(const QPointF&,Qt::KeyboardModifiers)));
-    addButtonItem(bTransformXY);
+    ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
+    bPersp->setToolTip(tr("Drag top or bottom to move along the X axis (perspective).\nDrag left or right to move along the Y axis.\nHold SHIFT to rotate faster.\nUse CTRL to cancel the transformations"));
+    connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotPerspective(const QPointF&,Qt::KeyboardModifiers)));
+    connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slot));
+    addButtonItem(bPersp);
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bDelete->setToolTip(tr("Remove"));
@@ -95,6 +98,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 
 AbstractContent::~AbstractContent()
 {
+    qDeleteAll(m_cornerItems);
     qDeleteAll(m_controlItems);
     delete m_mirrorItem;
     delete m_frameTextItem;
@@ -230,6 +234,27 @@ void AbstractContent::addButtonItem(ButtonItem * button)
     layoutChildren();
 }
 
+void AbstractContent::setRotation(double angle, Qt::Axis axis)
+{
+    switch (axis) {
+        case Qt::XAxis: if (m_xRotationAngle == angle) return; m_xRotationAngle = angle; break;
+        case Qt::YAxis: if (m_yRotationAngle == angle) return; m_yRotationAngle = angle; break;
+        case Qt::ZAxis: if (m_zRotationAngle == angle) return; m_zRotationAngle = angle; break;
+    }
+    applyRotations();
+}
+
+double AbstractContent::rotation(Qt::Axis axis) const
+{
+    switch (axis) {
+        case Qt::XAxis: return m_xRotationAngle;
+        case Qt::YAxis: return m_yRotationAngle;
+        case Qt::ZAxis: return m_zRotationAngle;
+    }
+    // suppress warnings, can't reach here
+    return 0.0;
+}
+
 void AbstractContent::setMirrorEnabled(bool enabled)
 {
     if (m_mirrorItem && !enabled) {
@@ -246,14 +271,6 @@ void AbstractContent::setMirrorEnabled(bool enabled)
 bool AbstractContent::mirrorEnabled() const
 {
     return m_mirrorItem;
-}
-
-void AbstractContent::setRotation(double pan, double tilt, double roll)
-{
-    m_xRotationAngle = tilt;
-    m_yRotationAngle = roll;
-    m_zRotationAngle = pan;
-    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
 }
 
 void AbstractContent::ensureVisible(const QRectF & rect)
@@ -311,10 +328,10 @@ bool AbstractContent::fromXml(QDomElement & pe)
     // restore transformation
     QDomElement te = pe.firstChildElement("transformation");
     if (!te.isNull()) {
-        QTransform t(te.attribute("m11").toDouble(), te.attribute("m12").toDouble(), te.attribute("m13").toDouble(),
-                     te.attribute("m21").toDouble(), te.attribute("m22").toDouble(), te.attribute("m23").toDouble(),
-                     te.attribute("m31").toDouble(), te.attribute("m32").toDouble(), te.attribute("m33").toDouble());
-        setTransform(t);
+        m_xRotationAngle = te.attribute("xRot").toDouble();
+        m_yRotationAngle = te.attribute("yRot").toDouble();
+        m_zRotationAngle = te.attribute("zRot").toDouble();
+        applyRotations();
     }
     return true;
 }
@@ -396,15 +413,9 @@ void AbstractContent::toXml(QDomElement & pe) const
     const QTransform t = transform();
     if (!t.isIdentity()) {
         domElement = doc.createElement("transformation");
-        domElement.setAttribute("m11", t.m11());
-        domElement.setAttribute("m12", t.m12());
-        domElement.setAttribute("m13", t.m13());
-        domElement.setAttribute("m21", t.m21());
-        domElement.setAttribute("m22", t.m22());
-        domElement.setAttribute("m23", t.m23());
-        domElement.setAttribute("m31", t.m31());
-        domElement.setAttribute("m32", t.m32());
-        domElement.setAttribute("m33", t.m33());
+        domElement.setAttribute("xRot", m_xRotationAngle);
+        domElement.setAttribute("yRot", m_yRotationAngle);
+        domElement.setAttribute("zRot", m_zRotationAngle);
         pe.appendChild(domElement);
     }
 }
@@ -640,36 +651,29 @@ void AbstractContent::layoutChildren()
         m_frame->layoutText(m_frameTextItem, m_frameRect.toRect());
 }
 
-void AbstractContent::slotPerspective(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
+void AbstractContent::applyRotations()
 {
-    ButtonItem * button = static_cast<ButtonItem *>(sender());
-    QPointF newPos = mapFromScene(controlPoint);
-    QPointF refPos = button->pos();
-    if (newPos == refPos)
-        return;
+    setTransform(QTransform().rotate(m_yRotationAngle, Qt::XAxis).rotate(m_xRotationAngle, Qt::YAxis).rotate(m_zRotationAngle));
+}
 
-    int march=0;
-    if(modifiers == Qt::NoModifier) march = 2;
-    else if( modifiers == Qt::ControlModifier ) {
-        m_xRotationAngle=0;
-        m_yRotationAngle=0;
-    }
-    else march = 4;
+void AbstractContent::slotPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers)
+{
+    if (modifiers & Qt::ControlModifier)
+        return slotClearPerspective();
 
-    //// Perspective : move along X axis
-    if(newPos.y() - refPos.y() > 70) m_xRotationAngle -= march;
-    else if(newPos.y() - refPos.y() < -70) m_xRotationAngle += march;
-    // Prevents the user from rotating too much (if so, buttons become unavailable).
-    if (m_xRotationAngle > 80) m_xRotationAngle = 80;
-    if (m_xRotationAngle < -80 ) m_xRotationAngle = -80;
+    double k = 0.1;
+    if (modifiers != Qt::NoModifier)
+        k = 0.5;
+    m_xRotationAngle = qBound(-60.0, -k * sceneRelPoint.x(), 60.0);
+    m_yRotationAngle = qBound(-60.0, -k * sceneRelPoint.y(), 60.0);
+    applyRotations();
+}
 
-    /// Move along Y axis
-    if(newPos.x() - refPos.x() > 70) m_yRotationAngle -= march;
-    else if(newPos.x() - refPos.x() < -70) m_yRotationAngle += march;
-    if (m_yRotationAngle > 80) m_yRotationAngle = 80;
-    if (m_yRotationAngle < -80 ) m_yRotationAngle = -80;
-
-    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
+void AbstractContent::slotClearPerspective()
+{
+    m_xRotationAngle = 0;
+    m_yRotationAngle = 0;
+    applyRotations();
 }
 
 void AbstractContent::slotDirtyEnded()

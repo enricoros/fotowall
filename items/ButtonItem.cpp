@@ -70,6 +70,7 @@ void ButtonItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
 void ButtonItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
+    //setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
     m_startPos = event->scenePos();
     update();
     emit pressed();
@@ -80,7 +81,7 @@ void ButtonItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
     if (m_startPos.isNull())
         return;
     event->accept();
-    emit dragging(event->scenePos(), event->modifiers());
+    emit dragging(event->scenePos() - m_startPos, event->modifiers());
 }
 
 void ButtonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
@@ -91,6 +92,7 @@ void ButtonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     update();
     if (dragging)
         emit clicked();
+    //setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
 }
 
 void ButtonItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)

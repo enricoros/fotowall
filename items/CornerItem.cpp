@@ -30,7 +30,6 @@ CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * par
     , m_operation(Off)
 {
     setAcceptsHoverEvents(true);
-    //setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
 }
 
 void CornerItem::relayout(const QRect & rect)
@@ -63,7 +62,7 @@ void CornerItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
     // do the right op
     switch (event->button()) {
         case Qt::LeftButton:    if (m_opMask & Scale) m_content->resetContentsRatio(); break;
-        case Qt::RightButton:   if (m_opMask & Rotate) m_content->setTransform(QTransform(), false); break;
+        case Qt::RightButton:   if (m_opMask & Rotate) m_content->setRotation(0.0, Qt::ZAxis); break;
         default:                break;
     }
 }
@@ -140,21 +139,17 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
         // set item rotation (set rotation relative to current)
         qreal refAngle = atan2(refPos.y(), refPos.x());
         qreal newAngle = atan2(v.y(), v.x());
-        //m_zRotationAngle += 57.29577951308232 * newAngle; // 180 * a / M_PI
-        //QTransform zTransform = QTransform().rotate(57.29577951308232 * (newAngle - refAngle), Qt::ZAxis); // 180 * a / M_PI
-        //setTransform(zTransform, true);
-        m_content->rotate(57.29577951308232 * (newAngle - refAngle));
+        double dZr = 57.29577951308232 * (newAngle - refAngle); // 180 * a / M_PI
+        double zr = m_content->rotation(Qt::ZAxis) + dZr;
 
         // snap to M_PI/4
         if (op & FixRotate) {
-            QTransform t = m_content->transform();
-            QPointF ax = t.map(QPointF(1, 0));
-            qreal rotAngle = atan2(ax.y(), ax.x());
-            int fracts = (int)((rotAngle - (0.19635/2)) / (0.39270/2));
-            rotAngle = (qreal)fracts * (0.39270/2);
-            m_content->setTransform(QTransform().rotateRadians(rotAngle));
+            int fracts = (int)((zr - (0.19635/2)) / (0.39270/2));
+            zr = (qreal)fracts * (0.39270/2);
         }
-        //m_content->setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
+
+        // apply rotation
+        m_content->setRotation(zr, Qt::ZAxis);
     }
 }
 

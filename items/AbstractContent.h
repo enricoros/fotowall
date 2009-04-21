@@ -50,11 +50,13 @@ class AbstractContent : public QObject, public QGraphicsItem
         QString frameText() const;
         void addButtonItem(ButtonItem * buttonItem);
 
+        // rotation
+        void setRotation(double angle, Qt::Axis axis);
+        double rotation(Qt::Axis axis) const;
+
         // mirror
         void setMirrorEnabled(bool enabled);
         bool mirrorEnabled() const;
-
-        void setRotation(double pan, double tilt, double roll);
 
         // misc
         void ensureVisible(const QRectF & viewportRect);
@@ -104,7 +106,7 @@ class AbstractContent : public QObject, public QGraphicsItem
     private:
         void createCorner(Qt::Corner corner, bool noRescale);
         void layoutChildren();
-        void applyTransformations();
+        void applyRotations();
         QRect               m_contentsRect;
         QRectF              m_frameRect;
         Frame *             m_frame;
@@ -115,10 +117,13 @@ class AbstractContent : public QObject, public QGraphicsItem
         QTimer *            m_transformRefreshTimer;
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;
-        double m_xRotationAngle, m_yRotationAngle, m_zRotationAngle;
+        double              m_xRotationAngle;
+        double              m_yRotationAngle;
+        double              m_zRotationAngle;
 
     private Q_SLOTS:
-        void slotPerspective(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
+        void slotPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);
+        void slotClearPerspective();
         void slotDirtyEnded();
 };
 
