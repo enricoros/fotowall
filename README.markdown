@@ -10,6 +10,19 @@ Check out the [old home page](http://code.google.com/p/fotowall) too.
 ChangeLog
 ---------
 
+Unreleased Version 0.6:
+
+* ...
+* Camera Content (on Linux, requires a WebCam)
+* XML file format, will ensure forward-compatibility, click-to-open
+* Multi-items selection (to move, delete, set properties, ...)
+* All-in-one Scale+Rotate button (different with LMB/RMB and Shift/Ctrl)
+* Perspective Transform
+* Fixed Size mode
+* Sepia Effect
+* Text Scale
+* BugFix: save/restore the whole effects stack for a picture
+
 Version 0.5:
 
 * CD/DVD Cover composition and printing (Tanguy Arnaud)
@@ -125,10 +138,8 @@ You must have the Microsoft Visual Studio 2008 Redistributable package (1.7MB) i
 Click [here](http://www.microsoft.com/downloads/details.aspx?familyid=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF) for downloading the file.
 
 
-News
-----
-
-**2009-03-11** The 0.3 release is really near.
+Old News
+--------
 
 **2009-03-02** FotoWall is now on GitHub. Development will continue here. Changes are coming soon!
 
