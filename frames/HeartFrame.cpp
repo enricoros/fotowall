@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "HeartFrame.h"
+#include "RenderOpts.h"
 #include <QLinearGradient>
 #include <QPainter>
 
@@ -43,16 +44,11 @@ quint32 HeartFrame::frameClass() const
     return 0x0002;
 }
 
-QSize HeartFrame::sizeForContentsRatio(int width, qreal ratio) const
+QRect HeartFrame::frameRect(const QRect & contentsRect) const
 {
-    return StandardFrame::sizeForContentsRatio(width, ratio);
-}
-
-QRect HeartFrame::contentsRect(const QRect & frameRect) const
-{
-    int fw = frameRect.width() / 10;
-    int fh = frameRect.height() / 10;
-    return frameRect.adjusted(fw, fh, -fw, -fh);
+    int xM = contentsRect.width() / 20;
+    int yM = contentsRect.height() / 20;
+    return contentsRect.adjusted(-xM, -yM, xM, yM);
 }
 
 bool HeartFrame::clipContents() const
@@ -60,9 +56,9 @@ bool HeartFrame::clipContents() const
     return true;
 }
 
-QPainterPath HeartFrame::contentsClipPath(const QRect & frameRect) const
+QPainterPath HeartFrame::contentsClipPath(const QRect & contentsRect) const
 {
-    return heartPath(contentsRect(frameRect));
+    return heartPath(contentsRect);
 }
 
 bool HeartFrame::isShaped() const
@@ -93,7 +89,7 @@ void HeartFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect*
     //textItem->setPos( frameRect.left() + d->padL, frameRect.center().y() - textItem->boundingRect().size().height() / 2 );
 }
 
-void HeartFrame::paint(QPainter * painter, const QRect & frameRect, bool /*opaqueContents*/)
+void HeartFrame::paint(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
 {
     QLinearGradient lg(0, frameRect.top(), frameRect.width() / 8, frameRect.height() / 2);
     lg.setColorAt(0.0, QColor(196,00,00));
@@ -101,7 +97,10 @@ void HeartFrame::paint(QPainter * painter, const QRect & frameRect, bool /*opaqu
     lg.setColorAt(1.0, QColor(128,00,00));
 
     QPainterPath path = heartPath(frameRect);
-    painter->setPen(QPen(QColor(64, 0, 0), 1.0));
+    if (selected)
+        painter->setPen(QPen(RenderOpts::hiColor, 2.0));
+    else
+        painter->setPen(QPen(QColor(64, 0, 0), 1.0));
     painter->setBrush(lg);
     painter->drawPath(path);
 }

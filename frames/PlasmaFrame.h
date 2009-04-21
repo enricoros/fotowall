@@ -29,10 +29,10 @@ class PlasmaFrame : public Frame
 
         // ::Frame
         quint32 frameClass() const;
-        QRect contentsRect(const QRect & frameRect) const;
+        QRect frameRect(const QRect & contentsRect) const;
         void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
         void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void paint(QPainter * painter, const QRect & frameRect, bool opaqueContents);
+        void paint(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
 
     private:
         PlasmaFramePrivate * d;

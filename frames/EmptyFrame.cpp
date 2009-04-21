@@ -13,22 +13,12 @@
  ***************************************************************************/
 
 #include "EmptyFrame.h"
+#include "RenderOpts.h"
 #include <QPainter>
 
 quint32 EmptyFrame::frameClass() const
 {
     return 0x0003;
-}
-
-QSize EmptyFrame::sizeForContentsRatio(int width, qreal ratio) const
-{
-    int hfw = (int)(((qreal)width) / ratio);
-    return QSize(width,  hfw);
-}
-
-QRect EmptyFrame::contentsRect(const QRect & frameRect) const
-{
-    return frameRect;
 }
 
 void EmptyFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const
@@ -62,8 +52,21 @@ void EmptyFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect*
     textItem->hide();
 }
 
-void EmptyFrame::paint(QPainter *painter, const QRect &rect , bool /*opaqueContents*/)
+void EmptyFrame::paint(QPainter *painter, const QRect &rect, bool selected, bool /*opaqueContents*/)
 {
-    // draw aligned antialiased rect (note the offset
-    painter->drawRect(QRectF(rect).adjusted(0.5, 0.5, -0.5, -0.5));
+    // draw aligned antialiased rect (note the offset, for aligning antialiased painting)
+    if (selected) {
+        painter->setPen(QPen(RenderOpts::hiColor, 2.0));
+        painter->drawRect(QRectF(rect).adjusted(0.5, 0.5, -0.5, -0.5));
+    }
+}
+
+QPixmap EmptyFrame::preview(int width, int height)
+{
+    QPixmap pixmap(width, height);
+    pixmap.fill(Qt::transparent);
+    QPainter pixPainter(&pixmap);
+    pixPainter.drawText(pixmap.rect(), Qt::AlignCenter, "X");
+    pixPainter.end();
+    return pixmap;
 }

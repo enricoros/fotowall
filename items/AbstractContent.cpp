@@ -14,6 +14,7 @@
 
 #include "AbstractContent.h"
 #include "ButtonItem.h"
+#include "CornerItem.h"
 #include "MirrorItem.h"
 #include "RenderOpts.h"
 #include "frames/FrameFactory.h"
@@ -30,12 +31,10 @@
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noResize)
     : QGraphicsItem(parent)
-    , m_rect(-100, -75, 200, 150)
+    , m_contentsRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)
-    , m_scaleRatio(1.0)
-    , m_transforming(false)
-    , m_isSelected(false)
+    , m_dirtyTransforming(false)
     , m_transformRefreshTimer(0)
     , m_gfxChangeTimer(0)
     , m_mirrorItem(0)
@@ -48,25 +47,18 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     connect(m_gfxChangeTimer, SIGNAL(timeout()), this, SIGNAL(gfxChange()));
 
     // customize item's behavior
-    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable);
+    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable);
+    setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
     setAcceptHoverEvents(true);
     setAcceptDrops(true);
 
-    // create child items
+    // create child controls
     if (!noResize) {
-        ButtonItem * bScale = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-scale.png"), this);
-        bScale->setToolTip(tr("Hold down SHIFT for ignoring aspect ratio.\nDouble click to restore the aspect ratio."));
-        connect(bScale, SIGNAL(pressed()), this, SLOT(slotScaleStarted()));
-        connect(bScale, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotScale(const QPointF&,Qt::KeyboardModifiers)));
-        connect(bScale, SIGNAL(doubleClicked()), this, SLOT(slotResetRatio()));
-        m_controlItems << bScale;
+        createCorner(Qt::TopLeftCorner);
+        createCorner(Qt::TopRightCorner);
+        createCorner(Qt::BottomLeftCorner);
+        createCorner(Qt::BottomRightCorner);
     }
-
-    ButtonItem * bRotate = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-rotate.png"), this);
-    bRotate->setToolTip(tr("Hold down SHIFT to snap the rotation.\nDouble click to align the object."));
-    connect(bRotate, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotRotate(const QPointF&,Qt::KeyboardModifiers)));
-    connect(bRotate, SIGNAL(doubleClicked()), this, SLOT(slotResetRotation()));
-    m_controlItems << bRotate;
 
     //ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
     //bFront->setToolTip(tr("Raise"));
@@ -78,15 +70,15 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
     m_controlItems << bConf;
 
+    ButtonItem *bTransformXY = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
+    bTransformXY->setToolTip(tr("Drag top or bottom to move along the X axis (perspective).\nDrag left or right to move along the Y axis.\nHold SHIFT to rotate faster.\nUse CTRL to cancel the transformations"));
+    connect(bTransformXY, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotPerspective(const QPointF&,Qt::KeyboardModifiers)));
+    addButtonItem(bTransformXY);
+
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bDelete->setToolTip(tr("Remove"));
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteItem()));
     m_controlItems << bDelete;
-
-    ButtonItem *bTransformXY = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
-    bTransformXY->setToolTip(tr("Drag top or bottom to move along the X axis (perspective).\nDrag left or right to move along the Y axis.\nHold SHIFT to rotate faster.\nUse CTRL to cancel the transformations"));
-    connect(bTransformXY, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotTransformXY(const QPointF&,Qt::KeyboardModifiers)));
-    addButtonItem(bTransformXY);
 
     // create default frame
     Frame * frame = FrameFactory::defaultPictureFrame();
@@ -111,13 +103,63 @@ AbstractContent::~AbstractContent()
     delete m_frame;
 }
 
+QRect AbstractContent::contentsRect() const
+{
+    return m_contentsRect;
+}
+
+void AbstractContent::resizeContents(const QRect & rect, bool keepRatio)
+{
+    if (!rect.isValid())
+        return;
+
+    prepareGeometryChange();
+
+    m_contentsRect = rect;
+    if (keepRatio) {
+        int hfw = contentHeightForWidth(rect.width());
+        if (hfw > 1) {
+            m_contentsRect.setTop(-hfw / 2);
+            m_contentsRect.setHeight(hfw);
+        }
+    }
+
+    if (m_frame)
+        m_frameRect = m_frame->frameRect(m_contentsRect);
+    else
+        m_frameRect = m_contentsRect;
+
+    layoutChildren();
+    update();
+    GFX_CHANGED();
+}
+
+void AbstractContent::resetContentsRatio()
+{
+    resizeContents(m_contentsRect, true);
+}
+
+void AbstractContent::delayedDirty(int ms)
+{
+    // tell rendering that we're changing stuff
+    m_dirtyTransforming = true;
+
+    // start refresh timer
+    if (!m_transformRefreshTimer) {
+        m_transformRefreshTimer = new QTimer(this);
+        connect(m_transformRefreshTimer, SIGNAL(timeout()), this, SLOT(slotDirtyEnded()));
+        m_transformRefreshTimer->setSingleShot(true);
+    }
+    m_transformRefreshTimer->start(ms);
+}
+
 void AbstractContent::setFrame(Frame * frame)
 {
     delete m_frame;
     m_frame = frame;
     if (m_frame)
         FrameFactory::setDefaultPictureClass(m_frame->frameClass());
-    adjustSize();
+    resizeContents(m_contentsRect);
     layoutChildren();
     update();
     GFX_CHANGED();
@@ -207,7 +249,7 @@ bool AbstractContent::mirrorEnabled() const
 {
     return m_mirrorItem;
 }
-
+/*
 void AbstractContent::setSelected(bool state)
 {
     m_isSelected = state;
@@ -215,42 +257,13 @@ void AbstractContent::setSelected(bool state)
         m_mirrorItem->sourceUpdated();
     update();
 }
-
-void AbstractContent::setRotation(int x, int y, int z)
+*/
+void AbstractContent::setRotation(double pan, double tilt, double roll)
 {
-    m_xRotationAngle = x; m_yRotationAngle = y; m_zRotationAngle = z;
-    applyTransformations();
-}
-
-void AbstractContent::resize(const QRectF & rect)
-{
-    if (!rect.isValid() || rect == m_rect)
-        return;
-    prepareGeometryChange();
-    m_rect = rect;
-    layoutChildren();
-    update();
-    GFX_CHANGED();
-}
-
-void AbstractContent::adjustSize()
-{
-    // get contents 'ratio'
-    int hfw = contentHeightForWidth(m_rect.width());
-    if (hfw < 1)
-        return;
-
-    // compute the new rect
-    QRectF newRect;
-    if (m_frame) {
-        double ratio = m_rect.width() / (double)hfw;
-        QSize s = m_frame->sizeForContentsRatio(m_rect.width(), ratio);
-        newRect = QRectF(-s.width() / 2, -s.height() / 2, s.width(), s.height());
-    } else
-        newRect = QRectF(m_rect.left(), -hfw / 2, m_rect.width(), hfw);
-
-    // apply the new size
-    resize(newRect);
+    m_xRotationAngle = tilt;
+    m_yRotationAngle = roll;
+    m_zRotationAngle = pan;
+    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
 }
 
 void AbstractContent::ensureVisible(const QRectF & rect)
@@ -266,7 +279,7 @@ void AbstractContent::ensureVisible(const QRectF & rect)
 
 bool AbstractContent::beingTransformed() const
 {
-    return m_transforming;
+    return m_dirtyTransforming;
 }
 
 bool AbstractContent::fromXml(QDomElement & pe)
@@ -274,14 +287,14 @@ bool AbstractContent::fromXml(QDomElement & pe)
     // restore content properties
     QDomElement domElement;
 
-    // Load image size saved in the rect node
+    // Load image size saved in the rect node (FIXME: move this later?)
     domElement = pe.firstChildElement("rect");
     int x, y, w, h;
     x = domElement.firstChildElement("x").text().toInt();
     y = domElement.firstChildElement("y").text().toInt();
     w = domElement.firstChildElement("w").text().toInt();
     h = domElement.firstChildElement("h").text().toInt();
-    resize(QRectF(x, y, w, h));
+    resizeContents(QRect(x, y, w, h));
 
     // Load position coordinates
     domElement = pe.firstChildElement("pos");
@@ -336,14 +349,11 @@ void AbstractContent::toXml(QDomElement & pe) const
     QDomElement hElement = doc.createElement("h");
     rectParent.appendChild(hElement);
 
-    QRectF rect = m_rect;
-    QString x, y, w, h;
-    x.setNum(rect.x()); y.setNum(rect.y());
-    w.setNum(rect.width()); h.setNum(rect.height());
-    xElement.appendChild(doc.createTextNode(x));
-    yElement.appendChild(doc.createTextNode(y));
-    wElement.appendChild(doc.createTextNode(w));
-    hElement.appendChild(doc.createTextNode(h));
+    QRectF rect = m_contentsRect;
+    xElement.appendChild(doc.createTextNode(QString::number(rect.left())));
+    yElement.appendChild(doc.createTextNode(QString::number(rect.top())));
+    wElement.appendChild(doc.createTextNode(QString::number(rect.width())));
+    hElement.appendChild(doc.createTextNode(QString::number(rect.height())));
     pe.appendChild(rectParent);
 
     // Save the position
@@ -411,7 +421,13 @@ void AbstractContent::toXml(QDomElement & pe) const
 
 QPixmap AbstractContent::renderAsBackground(const QSize & size, bool keepAspect) const
 {
-    QPixmap pix(size);
+    QSize realSize = size;
+    if (keepAspect) {
+        int hfw = contentHeightForWidth(size.width());
+        if (hfw > 1)
+            realSize.setHeight(hfw);
+    }
+    QPixmap pix(realSize);
     pix.fill(Qt::transparent);
     return pix;
 }
@@ -423,7 +439,7 @@ AbstractProperties * AbstractContent::createProperties() const
 
 QRectF AbstractContent::boundingRect() const
 {
-    return m_rect;
+    return m_frameRect;
 }
 
 void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
@@ -433,25 +449,13 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
 
     // draw the Frame
     bool opaqueContent = contentOpaque();
-    QRect frameRect = m_rect.toRect();
-    m_frame->paint(painter, frameRect, opaqueContent);
-
-    if(m_isSelected) {
-        QPainterPathStroker path;
-        painter->drawPath(path.createStroke(m_frame->frameShape(frameRect)));
-    }
+    bool drawSelection = RenderOpts::HQRendering ? false : isSelected();
+    QRect frameRect = m_frameRect.toRect();
+    m_frame->paint(painter, frameRect, drawSelection, opaqueContent);
 
     // use clip path for contents, if set
     if (m_frame->clipContents())
-        painter->setClipPath(m_frame->contentsClipPath(frameRect));
-}
-
-QRect AbstractContent::contentsRect() const
-{
-    if (!m_frame)
-        return m_rect.toRect();
-
-    return m_frame->contentsRect(m_rect.toRect());
+        painter->setClipPath(m_frame->contentsClipPath(m_contentsRect));
 }
 
 void AbstractContent::GFX_CHANGED() const
@@ -460,9 +464,9 @@ void AbstractContent::GFX_CHANGED() const
         m_gfxChangeTimer->start();
 }
 
-int AbstractContent::contentHeightForWidth(int /*width*/) const
+int AbstractContent::contentHeightForWidth(int width) const
 {
-    return -1;
+    return width;
 }
 
 bool AbstractContent::contentOpaque() const
@@ -472,12 +476,16 @@ bool AbstractContent::contentOpaque() const
 
 void AbstractContent::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
+    foreach (CornerItem * corner, m_cornerItems)
+        corner->show();
     foreach (ButtonItem * button, m_controlItems)
         button->show();
 }
 
 void AbstractContent::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
+    foreach (CornerItem * corner, m_cornerItems)
+        corner->hide();
     foreach (ButtonItem * button, m_controlItems)
         button->hide();
 }
@@ -487,21 +495,12 @@ void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
     event->accept();
 }
 
-void AbstractContent::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-{
-        if(!m_isSelected) {
-            emit addItemToSelection(this);
-            setSelected(true);
-        }
-        emit move(event->lastScenePos() - scenePos());
-}
-
 void AbstractContent::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     event->accept();
 }
 
-void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
+/*void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->button() == Qt::RightButton) {
         if(!m_isSelected) emit addItemToSelection(this);
@@ -526,11 +525,21 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
     QGraphicsItem::mousePressEvent(event);
 }
 
+void AbstractContent::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+    if(!m_isSelected) {
+        emit addItemToSelection(this);
+        setSelected(true);
+    }
+    emit move(event->lastScenePos() - scenePos());
+}
+*/
+
 void AbstractContent::keyPressEvent(QKeyEvent * event)
 {
+    event->accept();
     if (event->key() == Qt::Key_Delete)
         emit deleteItem();
-    event->accept();
 }
 
 QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant & value)
@@ -642,14 +651,25 @@ void AbstractContent::slotSaveAs()
     }
 }
 
+void AbstractContent::createCorner(Qt::Corner corner)
+{
+    CornerItem * c = new CornerItem(corner, this);
+    //c->setToolTip(tr("Hold down SHIFT for ignoring aspect ratio.\nDouble click to restore the aspect ratio."));
+    m_cornerItems << c;
+}
+
 void AbstractContent::layoutChildren()
 {
+    // layout corners
+    foreach (CornerItem * corner, m_cornerItems)
+        corner->relayout(m_contentsRect);
+
     // layout buttons even if no frame
     if (!m_frame) {
         const int margin = 4;
         const int spacing = 4;
-        int right = m_rect.right() - margin;
-        int bottom = m_rect.bottom() + margin; // if no frame, offset the buttons a little on bottom
+        int right = m_frameRect.right() - margin;
+        int bottom = m_frameRect.bottom() + margin; // if no frame, offset the buttons a little on bottom
         foreach (ButtonItem * button, m_controlItems) {
             button->setPos(right - button->width() / 2, bottom - button->height() / 2);
             right -= button->width() + spacing;
@@ -658,92 +678,14 @@ void AbstractContent::layoutChildren()
     }
 
     // layout all controls
-    QRect frameRect = m_rect.toRect();
-    m_frame->layoutButtons(m_controlItems, frameRect);
+    m_frame->layoutButtons(m_controlItems, m_frameRect.toRect());
 
     // layout text, if present
     if (m_frameTextItem)
-        m_frame->layoutText(m_frameTextItem, frameRect);
+        m_frame->layoutText(m_frameTextItem, m_frameRect.toRect());
 }
 
-void AbstractContent::applyTransformations()
-{
-    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
-}
-
-void AbstractContent::slotScaleStarted()
-{
-    if (m_rect.height() > 0)
-        m_scaleRatio = (float)m_rect.width() / (float)m_rect.height();
-}
-
-void AbstractContent::slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
-{
-    ButtonItem * button = static_cast<ButtonItem *>(sender());
-    QPoint newPos = mapFromScene(controlPoint).toPoint();
-    QPoint oldPos = button->pos().toPoint();
-    if (newPos == oldPos)
-        return;
-
-    // determine the new size
-    int newWidth = (m_rect.width() * newPos.x()) / oldPos.x();
-    int newHeight = (m_rect.height() * newPos.y()) / oldPos.y();
-    // preserve aspect ratio if no modifiers are pressed
-    if (modifiers == Qt::NoModifier) {
-        float ratio = (float)newWidth / (float)newHeight;
-        if (ratio > m_scaleRatio)
-            newHeight = newWidth / m_scaleRatio;
-        else
-            newWidth = newHeight * m_scaleRatio;
-    }
-    if (newWidth < 50)
-        newWidth = 50;
-    if (newHeight < 40)
-        newHeight = 40;
-    if (newWidth == (int)m_rect.width() && newHeight == (int)m_rect.height())
-        return;
-
-    // change geometry
-    m_transforming = true;
-    resize(QRectF(-newWidth / 2, -newHeight / 2, newWidth, newHeight));
-
-    // start refresh timer
-    if (!m_transformRefreshTimer) {
-        m_transformRefreshTimer = new QTimer(this);
-        connect(m_transformRefreshTimer, SIGNAL(timeout()), this, SLOT(slotTransformEnded()));
-        m_transformRefreshTimer->setSingleShot(true);
-    }
-    m_transformRefreshTimer->start(400);
-}
-
-void AbstractContent::slotRotate(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
-{
-    ButtonItem * button = static_cast<ButtonItem *>(sender());
-    QPointF newPos = mapFromScene(controlPoint);
-    QPointF refPos = button->pos();
-    if (newPos == refPos)
-        return;
-
-    // set item rotation (set rotation relative to current)
-    //qreal refAngle = atan2(refPos.y(), refPos.x());
-    qreal newAngle = atan2(newPos.y(), newPos.x());
-    m_zRotationAngle += 57.29577951308232 * newAngle; // 180 * a / M_PI
-    //QTransform zTransform = QTransform().rotate(57.29577951308232 * (newAngle - refAngle), Qt::ZAxis); // 180 * a / M_PI
-    //setTransform(zTransform, true);
-
-    // snap to M_PI/4
-    if (modifiers != Qt::NoModifier) {
-        QTransform t = transform();
-        QPointF ax = t.map(QPointF(1, 0));
-        qreal rotAngle = atan2(ax.y(), ax.x());
-        int fracts = (int)((rotAngle - 0.19635) / 0.39270);
-        rotAngle = (qreal)fracts * 0.39270;
-        setTransform(QTransform().rotateRadians(rotAngle));
-    }
-    applyTransformations();
-}
-
-void AbstractContent::slotTransformXY(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
+void AbstractContent::slotPerspective(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers)
 {
     ButtonItem * button = static_cast<ButtonItem *>(sender());
     QPointF newPos = mapFromScene(controlPoint);
@@ -772,23 +714,12 @@ void AbstractContent::slotTransformXY(const QPointF & controlPoint, Qt::Keyboard
     if (m_yRotationAngle > 80) m_yRotationAngle = 80;
     if (m_yRotationAngle < -80 ) m_yRotationAngle = -80;
 
-    applyTransformations();
+    setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));
 }
 
-void AbstractContent::slotResetRatio()
+void AbstractContent::slotDirtyEnded()
 {
-    adjustSize();
-}
-
-void AbstractContent::slotResetRotation()
-{
-    QTransform ident;
-    setTransform(ident, false);
-}
-
-void AbstractContent::slotTransformEnded()
-{
-    m_transforming = false;
+    m_dirtyTransforming = false;
     update();
     GFX_CHANGED();
 }

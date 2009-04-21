@@ -67,7 +67,7 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     m_opaquePhoto = !m_photo->hasAlpha();
     m_filePath = fileName;
     if (keepRatio)
-        adjustSize();
+        resetContentsRatio();
     if (setName) {
         QString string = QFileInfo(fileName).fileName().section('.', 0, 0);
         string = string.mid(0, 10);

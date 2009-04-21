@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "StandardFrame.h"
+#include "RenderOpts.h"
 #include <QLinearGradient>
 #include <QPainter>
 
@@ -28,15 +29,9 @@ quint32 StandardFrame::frameClass() const
     return 0x0001;
 }
 
-QSize StandardFrame::sizeForContentsRatio(int width, qreal ratio) const
+QRect StandardFrame::frameRect(const QRect & contentsRect) const
 {
-    int hfw = (int)(((qreal)width - FW_MARGIN - FW_MARGIN) / ratio);
-    return QSize(width, FW_MARGIN + hfw + FW_LABH + FW_MARGIN);
-}
-
-QRect StandardFrame::contentsRect(const QRect & frameRect) const
-{
-    return frameRect.adjusted(FW_MARGIN, FW_MARGIN, -FW_MARGIN, -FW_MARGIN - FW_LABH);
+    return contentsRect.adjusted(-FW_MARGIN, -FW_MARGIN, FW_MARGIN, FW_MARGIN + FW_LABH);
 }
 
 void StandardFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const
@@ -71,11 +66,11 @@ void StandardFrame::layoutText(QGraphicsItem * textItem, const QRect & frameRect
     textItem->setPos(frameRect.left() + FW_MARGIN, frameRect.bottom() - FW_MARGIN - FW_LABH + FW_MARGIN);
 }
 
-void StandardFrame::paint(QPainter * painter, const QRect & frameRect, bool /*opaqueContents*/)
+void StandardFrame::paint(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
 {
     //painter->fillRect(boundingRect(), QColor(0,0,0,64));
     QLinearGradient lg(0, frameRect.top(), 0, frameRect.height() / 2);
-    lg.setColorAt(0.0, QColor(128,128,128, 200));
+    lg.setColorAt(0.0, selected ? RenderOpts::hiColor : QColor(128,128,128, 200));
     lg.setColorAt(1.0, QColor(255,255,255, 200));
     painter->fillRect(frameRect, lg);
     //painter->fillRect(boundingRect().adjusted(5, 5, -5, -5), lg);

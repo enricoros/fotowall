@@ -23,15 +23,14 @@ class HeartFrame : public StandardFrame
     public:
         // ::Frame
         quint32 frameClass() const;
-        QSize sizeForContentsRatio(int width, qreal ratio) const;
-        QRect contentsRect(const QRect & frameRect) const;
+        QRect frameRect(const QRect & contentsRect) const;
         bool clipContents() const;
-        QPainterPath contentsClipPath(const QRect & frameRect) const;
+        QPainterPath contentsClipPath(const QRect & contentsRect) const;
         bool isShaped() const;
         QPainterPath frameShape(const QRect & frameRect) const;
         void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
         void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void paint(QPainter * painter, const QRect & frameRect, bool opaqueContents);
+        void paint(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
 };
 
 #endif

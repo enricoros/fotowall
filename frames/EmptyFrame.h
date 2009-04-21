@@ -23,12 +23,10 @@ class EmptyFrame : public Frame
     public:
         // ::Frame
         quint32 frameClass() const;
-        QSize sizeForContentsRatio(int width, qreal ratio) const;
-        QRect contentsRect(const QRect & frameRect) const;
         void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
         void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void paint(QPainter * painter, const QRect & frameRect, bool opaqueContents);
-
+        void paint(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
+        QPixmap preview(int width = 32, int height = 32);
 };
 
 #endif

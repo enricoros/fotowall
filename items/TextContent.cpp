@@ -159,5 +159,5 @@ void TextContent::slotResize(const QSizeF & size)
 {
     int w = size.width() + 4;
     int h = size.height() + 4;
-    resize(QRectF(-w / 2, -h / 2, w, h));
+    resizeContents(QRect(-w / 2, -h / 2, w, h));
 }

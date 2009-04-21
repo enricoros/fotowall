@@ -49,9 +49,6 @@ QList<AbstractContent *> Selection::getSelectedContent() const
     return m_selectedContent;
 }
 
-
-
-
 void Selection::slotFlipHorizontally()
 {
     foreach(AbstractContent *content, m_selectedContent) {
@@ -61,6 +58,7 @@ void Selection::slotFlipHorizontally()
             picture->addEffect(CEffect::FlipH);
     }
 }
+
 void Selection::slotFlipVertically()
 {
     foreach(AbstractContent *content, m_selectedContent) {

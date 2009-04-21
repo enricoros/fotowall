@@ -15,6 +15,8 @@
 #ifndef __RenderOpts_h__
 #define __RenderOpts_h__
 
+#include <QColor>
+
 class RenderOpts
 {
     public:
@@ -26,6 +28,9 @@ class RenderOpts
 
         // other options
         static bool FirstRun;
+
+        // global highlight color
+        static QColor hiColor;
 };
 
 #endif

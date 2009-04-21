@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "PlasmaFrame.h"
+#include "RenderOpts.h"
 #include <QLinearGradient>
 #include <QPainter>
 #include <QSvgRenderer>
@@ -113,9 +114,9 @@ quint32 PlasmaFrame::frameClass() const
     return d->frameClass;
 }
 
-QRect PlasmaFrame::contentsRect(const QRect & frameRect) const
+QRect PlasmaFrame::frameRect(const QRect & contentsRect) const
 {
-    return frameRect.adjusted(d->padL, d->padT, -d->padR, -d->padB);
+    return contentsRect.adjusted(-d->padL, -d->padT, d->padR, d->padB);
 }
 
 void PlasmaFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const
@@ -150,8 +151,9 @@ void PlasmaFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect
     //textItem->setPos( frameRect.left() + d->padL, frameRect.center().y() - textItem->boundingRect().size().height() / 2 );
 }
 
-void PlasmaFrame::paint(QPainter * painter, const QRect & frameRect, bool opaqueContents)
+void PlasmaFrame::paint(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents)
 {
-    //painter->fillRect(frameRect,Qt::red);
+    if (selected)
+        painter->fillRect(frameRect, RenderOpts::hiColor);
     d->draw(painter, frameRect, opaqueContents);
 }

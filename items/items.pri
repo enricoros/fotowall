@@ -20,7 +20,8 @@ HEADERS += AbstractContent.h \
     TextContent.h \
     TextProperties.h \
     VideoContent.h \
-    VideoProvider.h
+    VideoProvider.h \
+    CornerItem.h
 SOURCES += AbstractContent.cpp \
     AbstractProperties.cpp \
     ButtonItem.cpp \
@@ -33,6 +34,7 @@ SOURCES += AbstractContent.cpp \
     TextContent.cpp \
     TextProperties.cpp \
     VideoContent.cpp \
-    VideoProvider.cpp
+    VideoProvider.cpp \
+    CornerItem.cpp
 FORMS += AbstractProperties.ui \
     PictureProperties.ui

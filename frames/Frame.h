@@ -35,13 +35,12 @@ class Frame {
         virtual quint32 frameClass() const = 0;
         enum { NoFrame = 0 };
 
-        // G: contents geometry
-        virtual QSize sizeForContentsRatio(int width, qreal ratio) const;
-        virtual QRect contentsRect(const QRect & frameRect) const;
+        // G: frame geometry
+        virtual QRect frameRect(const QRect & contentsRect) const;
 
         // G: contents clipping
         virtual bool clipContents() const;
-        virtual QPainterPath contentsClipPath(const QRect & frameRect) const;
+        virtual QPainterPath contentsClipPath(const QRect & contentsRect) const;
 
         // G: frame shape
         virtual bool isShaped() const;
@@ -52,8 +51,8 @@ class Frame {
         virtual void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const = 0;
 
         // P: painting
-        virtual void paint(QPainter * painter, const QRect & geometry, bool opaqueContents) = 0;
-        QPixmap preview(int width = 32, int height = 32);
+        virtual void paint(QPainter * painter, const QRect & geometry, bool selected, bool opaqueContents) = 0;
+        virtual QPixmap preview(int width = 32, int height = 32);
 
         // unbreak stuff
         virtual ~Frame();

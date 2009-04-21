@@ -20,6 +20,7 @@
 #include <QDomElement>
 class AbstractProperties;
 class ButtonItem;
+class CornerItem;
 class Frame;
 class MirrorItem;
 class QGraphicsTextItem;
@@ -34,6 +35,12 @@ class AbstractContent : public QObject, public QGraphicsItem
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noResize = false);
         virtual ~AbstractContent();
 
+        // size
+        QRect contentsRect() const;
+        void resizeContents(const QRect & rect, bool keepRatio = false);
+        void resetContentsRatio();
+        void delayedDirty(int ms = 400);
+
         // frame (and frame text)
         void setFrame(Frame * frame);
         quint32 frameClass() const;
@@ -47,13 +54,11 @@ class AbstractContent : public QObject, public QGraphicsItem
         void setMirrorEnabled(bool enabled);
         bool mirrorEnabled() const;
 
-        void setSelected(bool);
+        //void setSelected(bool);
 
-        void setRotation(int, int, int);
+        void setRotation(double pan, double tilt, double roll);
 
         // misc
-        void resize(const QRectF & rect);
-        void adjustSize();
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;
 
@@ -80,8 +85,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void move(const QPointF & movement);
 
     protected:
-        // useful to sunclasses
-        QRect contentsRect() const;
+        // useful to subclasses
         void GFX_CHANGED() const;
 
         // may be reimplemented by subclasses
@@ -92,9 +96,9 @@ class AbstractContent : public QObject, public QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
         void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
-        void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        ///void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        ///void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void keyPressEvent(QKeyEvent * event);
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
@@ -107,28 +111,24 @@ class AbstractContent : public QObject, public QGraphicsItem
         void slotSaveAs();
 
     private:
+        void createCorner(Qt::Corner corner);
         void layoutChildren();
         void applyTransformations();
-        QRectF              m_rect;
+        QRect               m_contentsRect;
+        QRectF              m_frameRect;
         Frame *             m_frame;
         QGraphicsTextItem * m_frameTextItem;
         QList<ButtonItem *> m_controlItems;
-        float               m_scaleRatio;
-        bool                m_transforming;
-        bool                m_isSelected;
+        QList<CornerItem *> m_cornerItems;
+        bool                m_dirtyTransforming;
         QTimer *            m_transformRefreshTimer;
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;
-        int m_xRotationAngle, m_yRotationAngle, m_zRotationAngle;
+        double m_xRotationAngle, m_yRotationAngle, m_zRotationAngle;
 
     private Q_SLOTS:
-        void slotScaleStarted();
-        void slotScale(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
-        void slotRotate(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
-        void slotTransformXY(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
-        void slotResetRatio();
-        void slotResetRotation();
-        void slotTransformEnded();
+        void slotPerspective(const QPointF & controlPoint, Qt::KeyboardModifiers modifiers);
+        void slotDirtyEnded();
 };
 
 #endif

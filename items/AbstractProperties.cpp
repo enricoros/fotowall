@@ -241,7 +241,7 @@ void AbstractProperties::paint(QPainter * painter, const QStyleOptionGraphicsIte
 #if QT_VERSION < 0x040500
     painter->fillRect(option->rect, QColor(250, 250, 250, 190));
 #else
-    m_frame->paint(painter, boundingRect().toRect(), false);
+    m_frame->paint(painter, boundingRect().toRect(), false, false);
 #endif
 
     // unbreak parent
@@ -256,8 +256,10 @@ void AbstractProperties::resizeEvent(QGraphicsSceneResizeEvent * event)
 {
     // layout the close button
     QRect cRect = boundingRect().toRect();
-    if (m_frame)
-        cRect = m_frame->contentsRect(cRect);
+    //FIXME if (m_frame)
+    //  cRect = m_frame->contentsRect(cRect);
+    //else
+        cRect.adjust(12, 12, -12, -12);
     if (QApplication::isLeftToRight())
         m_closeButton->setPos(cRect.right() - m_closeButton->boundingRect().width(), cRect.top());
     else

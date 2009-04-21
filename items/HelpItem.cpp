@@ -55,7 +55,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
 
     // create an item to display it
     QGraphicsTextItem * ti = new QGraphicsTextItem(this);
-    ti->setPos(m_frame->contentsRect(boundingRect().toRect()).topLeft());
+    ti->setPos(10, 10/*FIXME m_frame->contentsRect(boundingRect().toRect()).topLeft()*/);
     ti->setHtml(htmlFile.readAll());
     ti->setTextInteractionFlags(Qt::NoTextInteraction);
 #endif
@@ -73,7 +73,7 @@ QRectF HelpItem::boundingRect() const
 
 void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    m_frame->paint(painter, boundingRect().toRect(), false);
+    m_frame->paint(painter, boundingRect().toRect(), false, false);
 }
 
 void HelpItem::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)

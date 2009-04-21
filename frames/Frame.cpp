@@ -15,14 +15,9 @@
 #include "Frame.h"
 #include <QRectF>
 
-QSize Frame::sizeForContentsRatio(int width, qreal ratio) const
+QRect Frame::frameRect(const QRect & contentsRect) const
 {
-    return QSize(width, (int)((qreal)width / ratio));
-}
-
-QRect Frame::contentsRect(const QRect & frameRect) const
-{
-    return frameRect;
+    return contentsRect;
 }
 
 bool Frame::clipContents() const
@@ -30,11 +25,9 @@ bool Frame::clipContents() const
     return false;
 }
 
-QPainterPath Frame::contentsClipPath(const QRect & frameRect) const
+QPainterPath Frame::contentsClipPath(const QRect & /*contentsRect*/) const
 {
-    QPainterPath path;
-    path.addRect(contentsRect(frameRect));
-    return path;
+    return QPainterPath();
 }
 
 bool Frame::isShaped() const
@@ -54,7 +47,7 @@ QPixmap Frame::preview(int width, int height)
     QPixmap pixmap(128, 128);
     pixmap.fill(Qt::transparent);
     QPainter pixPainter(&pixmap);
-    paint(&pixPainter, QRect(0, 0, 128, 128), false);
+    paint(&pixPainter, QRect(0, 0, 128, 128), false, false);
     pixPainter.end();
     return pixmap.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }

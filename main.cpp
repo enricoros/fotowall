@@ -32,6 +32,7 @@ Q_IMPORT_PLUGIN(qtiff)
 bool RenderOpts::LastMirrorEnabled = true;
 bool RenderOpts::HQRendering = false;
 bool RenderOpts::FirstRun = false;
+QColor RenderOpts::hiColor;
 
 int main( int argc, char ** args )
 {
@@ -56,6 +57,7 @@ int main( int argc, char ** args )
 
     QSettings s;
     RenderOpts::FirstRun = s.value("fotowall/firstTime", true).toBool();
+    RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
     s.setValue("fotowall/firstTime", false);
 
     FotoWall fw;

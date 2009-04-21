@@ -118,7 +118,7 @@ void VideoDevice::enumerateMenu (void)
 	memset (&querymenu, 0, sizeof (querymenu));
 	querymenu.id = queryctrl.id;
 
-	for (querymenu.index = queryctrl.minimum; querymenu.index <= queryctrl.maximum; querymenu.index++)
+	for (querymenu.index = queryctrl.minimum; (int)querymenu.index <= queryctrl.maximum; querymenu.index++)
 	{
 		if (0 == xioctl (VIDIOC_QUERYMENU, &querymenu))
 		{
@@ -765,7 +765,7 @@ pixel_format VideoDevice::setPixelFormat(pixel_format newformat)
 			}
 			else
 			{
-				if (fmt.fmt.pix.pixelformat == pixelFormatCode(newformat)) // Thih "if" (not what is contained within) is a fix for a bug in sn9c102 driver.
+				if ((int)fmt.fmt.pix.pixelformat == pixelFormatCode(newformat)) // Thih "if" (not what is contained within) is a fix for a bug in sn9c102 driver.
 				{
 					m_pixelformat = newformat;
 					ret = m_pixelformat;
@@ -1332,7 +1332,7 @@ int VideoDevice::getImage(QImage *qimage)
 		int Rrange=255, Grange=255, Brange=255 /**, Arange=255, globarange=255**/;
 
 // Finds minimum and maximum intensity for each color component
-		for(unsigned int loop=0;loop < qimage->numBytes();loop+=4)
+		for(int loop=0;loop < qimage->numBytes();loop+=4)
 		{
 			R+=bits[loop];
 			G+=bits[loop+1];
@@ -1371,7 +1371,7 @@ int VideoDevice::getImage(QImage *qimage)
 			" Rmin: " << Rmin << " Gmin: " << Gmin << " Bmin: " << Bmin << " Amin: " << Amin << " globalmin: " << globalmin <<
 			" Rmax: " << Rmax << " Gmax: " << Gmax << " Bmax: " << Bmax << " Amax: " << Amax << " globalmax: " << globalmax ;
 
-		for(unsigned int loop=0;loop < qimage->numBytes();loop+=4)
+		for(int loop=0;loop < qimage->numBytes();loop+=4)
 		{
 			bits[loop]   = (bits[loop]   - Rmin) * 255 / (Rrange);
 			bits[loop+1] = (bits[loop+1] - Gmin) * 255 / (Grange);
