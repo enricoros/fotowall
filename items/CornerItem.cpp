@@ -21,11 +21,12 @@
 #include <QStyleOptionGraphicsItem>
 #include <math.h>
 
-CornerItem::CornerItem(Qt::Corner corner, AbstractContent * parent)
+CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * parent)
     : QGraphicsItem(parent)
     , m_content(parent)
     , m_corner(corner)
-    , m_opMask(0xFFFF)
+    , m_swapLeftRight(rotateOnly)
+    , m_opMask(rotateOnly ? Rotate | FixRotate : AllowAll)
     , m_side(8)
     , m_operation(Off)
 {
@@ -56,14 +57,25 @@ QRectF CornerItem::boundingRect() const
     return QRectF(-m_side, -m_side, 2*m_side, 2*m_side);
 }
 
+static Qt::MouseButton handleButton(Qt::MouseButton button, bool swapLeftRight)
+{
+    if (swapLeftRight) {
+        if (button == Qt::LeftButton)
+            return Qt::RightButton;
+        else if (button == Qt::RightButton)
+            return Qt::LeftButton;
+    }
+    return button;
+}
+
 void CornerItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
 
     // do the right op
-    switch (event->button()) {
-        case Qt::LeftButton:    m_content->resetContentsRatio(); break;
-        case Qt::RightButton:   m_content->setTransform(QTransform(), false); break;
+    switch (handleButton(event->button(), m_swapLeftRight)) {
+        case Qt::LeftButton:    if (m_opMask & Scale) m_content->resetContentsRatio(); break;
+        case Qt::RightButton:   if (m_opMask & Rotate) m_content->setTransform(QTransform(), false); break;
         default:                break;
     }
 }
@@ -73,7 +85,7 @@ void CornerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
     event->accept();
 
     // do the right op
-    switch (event->button()) {
+    switch (handleButton(event->button(), m_swapLeftRight)) {
         case Qt::LeftButton:    m_operation = Scale | FixScale; break;
         case Qt::RightButton:   m_operation = Rotate | Scale | FixScale; break;
         case Qt::MidButton:     m_operation = Scale; break;
@@ -152,7 +164,6 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
             qreal rotAngle = atan2(ax.y(), ax.x());
             int fracts = (int)((rotAngle - (0.19635/2)) / (0.39270/2));
             rotAngle = (qreal)fracts * (0.39270/2);
-            qWarning() << rotAngle << fracts;
             m_content->setTransform(QTransform().rotateRadians(rotAngle));
         }
         //m_content->setTransform(QTransform().rotate(m_zRotationAngle, Qt::ZAxis).rotate(m_yRotationAngle, Qt::YAxis).rotate(m_xRotationAngle, Qt::XAxis));

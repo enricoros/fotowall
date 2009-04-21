@@ -32,7 +32,7 @@ class AbstractContent : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noResize = false);
+        AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
         virtual ~AbstractContent();
 
         // size
@@ -102,7 +102,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void slotSaveAs();
 
     private:
-        void createCorner(Qt::Corner corner);
+        void createCorner(Qt::Corner corner, bool noRescale);
         void layoutChildren();
         void applyTransformations();
         QRect               m_contentsRect;

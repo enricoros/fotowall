@@ -22,7 +22,7 @@ class AbstractContent;
 class CornerItem : public QGraphicsItem
 {
     public:
-        CornerItem(Qt::Corner corner, AbstractContent * parent);
+        CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * parent);
 
         void relayout(const QRect & rect);
 
@@ -36,14 +36,16 @@ class CornerItem : public QGraphicsItem
 
     private:
         enum Operation {
-            Off         = 0x00,
-            Rotate      = 0x01,
-            FixRotate   = 0x02,
-            Scale       = 0x10,
-            FixScale    = 0x20,
+            Off         = 0x0000,
+            Rotate      = 0x0001,
+            FixRotate   = 0x0002,
+            Scale       = 0x0010,
+            FixScale    = 0x0020,
+            AllowAll    = 0xFFFF,
         };
         AbstractContent * m_content;
         Qt::Corner m_corner;
+        bool m_swapLeftRight;
         int m_opMask;
         int m_side;
         int m_operation;

@@ -29,7 +29,7 @@
 #include <QUrl>
 #include <math.h>
 
-AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noResize)
+AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noRescale)
     : QGraphicsItem(parent)
     , m_contentsRect(-100, -75, 200, 150)
     , m_frame(0)
@@ -53,12 +53,10 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     setAcceptDrops(true);
 
     // create child controls
-    if (!noResize) {
-        createCorner(Qt::TopLeftCorner);
-        createCorner(Qt::TopRightCorner);
-        createCorner(Qt::BottomLeftCorner);
-        createCorner(Qt::BottomRightCorner);
-    }
+    createCorner(Qt::TopLeftCorner, noRescale);
+    createCorner(Qt::TopRightCorner, noRescale);
+    createCorner(Qt::BottomLeftCorner, noRescale);
+    createCorner(Qt::BottomRightCorner, noRescale);
 
     //ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
     //bFront->setToolTip(tr("Raise"));
@@ -610,11 +608,11 @@ void AbstractContent::slotSaveAs()
     }
 }
 
-void AbstractContent::createCorner(Qt::Corner corner)
+void AbstractContent::createCorner(Qt::Corner corner, bool noRescale)
 {
-    CornerItem * c = new CornerItem(corner, this);
+    CornerItem * c = new CornerItem(corner, noRescale, this);
     //c->setToolTip(tr("Hold down SHIFT for ignoring aspect ratio.\nDouble click to restore the aspect ratio."));
-    m_cornerItems << c;
+    m_cornerItems.append(c);
 }
 
 void AbstractContent::layoutChildren()
