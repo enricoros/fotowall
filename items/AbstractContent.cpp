@@ -623,13 +623,11 @@ void AbstractContent::layoutChildren()
 
     // layout buttons even if no frame
     if (!m_frame) {
-        const int margin = 4;
-        const int spacing = 4;
-        int right = m_frameRect.right() - margin;
-        int bottom = m_frameRect.bottom() + margin; // if no frame, offset the buttons a little on bottom
+        int right = m_frameRect.right() - 12;
+        int bottom = m_frameRect.bottom() + 2; // if no frame, offset the buttons a little on bottom
         foreach (ButtonItem * button, m_controlItems) {
             button->setPos(right - button->width() / 2, bottom - button->height() / 2);
-            right -= button->width() + spacing;
+            right -= button->width() + 4;
         }
         return;
     }

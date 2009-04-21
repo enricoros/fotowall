@@ -45,7 +45,6 @@ class CornerItem : public QGraphicsItem
         };
         AbstractContent * m_content;
         Qt::Corner m_corner;
-        bool m_swapLeftRight;
         int m_opMask;
         int m_side;
         int m_operation;

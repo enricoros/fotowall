@@ -62,9 +62,10 @@ class TextContent : public AbstractContent
 */
     private:
         QTextDocument * m_text;
+        QSizeF m_textSize;
 
     private Q_SLOTS:
-        void slotResize(const QSizeF & size);
+        void slotTextResized(const QSizeF & size);
 };
 
 #endif

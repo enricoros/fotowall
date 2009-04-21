@@ -28,7 +28,7 @@
 #include <QAbstractTextDocumentLayout>
 
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent, true)
+    : AbstractContent(scene, parent, false)
     , m_text(0)
 {
     setFrame(0);
@@ -38,7 +38,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     // create a text document
     m_text = new QTextDocument(this);
     QAbstractTextDocumentLayout * layout = m_text->documentLayout();
-    connect(layout, SIGNAL(documentSizeChanged(const QSizeF &)), this, SLOT(slotResize(const QSizeF &)));
+    connect(layout, SIGNAL(documentSizeChanged(const QSizeF &)), this, SLOT(slotTextResized(const QSizeF &)));
 
     // template text
     QFont font;
@@ -143,16 +143,34 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     QRect rect = contentsRect();
     painter->save();
     painter->translate(-rect.width() / 2, -rect.height() / 2);
+    if (m_textSize.width() > 0 && m_textSize.height() > 0) {
+        qreal xScale = (qreal)rect.width() / (qreal)m_textSize.width();
+        qreal yScale = (qreal)rect.height() / (qreal)m_textSize.height();
+        if (!qFuzzyCompare(xScale, 1.0) || !qFuzzyCompare(yScale, 1.0))
+            painter->scale(xScale, yScale);
+    }
     m_text->drawContents(painter);
+
     //if (layout)
     //    layout->setViewport(QRect());
 
     painter->restore();
 }
 
-void TextContent::slotResize(const QSizeF & size)
+void TextContent::slotTextResized(const QSizeF & size)
 {
-    int w = size.width() + 4;
-    int h = size.height() + 4;
+    double prevXScale = 1.0;
+    double prevYScale = 1.0;
+    if (m_textSize.width() > 0 && m_textSize.height() > 0) {
+        QSize cSize = contentsRect().size();
+        prevXScale = (qreal)cSize.width() / (qreal)m_textSize.width();
+        prevYScale = (qreal)cSize.height() / (qreal)m_textSize.height();
+    }
+
+    int w = size.width();
+    int h = size.height();
+    m_textSize = QSizeF(w, h);
+    w = (int)(prevXScale * (qreal)w);
+    h = (int)(prevYScale * (qreal)h);
     resizeContents(QRect(-w / 2, -h / 2, w, h));
 }

@@ -25,7 +25,6 @@ CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * par
     : QGraphicsItem(parent)
     , m_content(parent)
     , m_corner(corner)
-    , m_swapLeftRight(rotateOnly)
     , m_opMask(rotateOnly ? Rotate | FixRotate : AllowAll)
     , m_side(8)
     , m_operation(Off)
@@ -57,23 +56,12 @@ QRectF CornerItem::boundingRect() const
     return QRectF(-m_side, -m_side, 2*m_side, 2*m_side);
 }
 
-static Qt::MouseButton handleButton(Qt::MouseButton button, bool swapLeftRight)
-{
-    if (swapLeftRight) {
-        if (button == Qt::LeftButton)
-            return Qt::RightButton;
-        else if (button == Qt::RightButton)
-            return Qt::LeftButton;
-    }
-    return button;
-}
-
 void CornerItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
 
     // do the right op
-    switch (handleButton(event->button(), m_swapLeftRight)) {
+    switch (event->button()) {
         case Qt::LeftButton:    if (m_opMask & Scale) m_content->resetContentsRatio(); break;
         case Qt::RightButton:   if (m_opMask & Rotate) m_content->setTransform(QTransform(), false); break;
         default:                break;
@@ -85,7 +73,7 @@ void CornerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
     event->accept();
 
     // do the right op
-    switch (handleButton(event->button(), m_swapLeftRight)) {
+    switch (event->button()) {
         case Qt::LeftButton:    m_operation = Scale | FixScale; break;
         case Qt::RightButton:   m_operation = Rotate | Scale | FixScale; break;
         case Qt::MidButton:     m_operation = Scale; break;
@@ -134,8 +122,8 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
             const double r = m_startRatio;
             const double D = sqrt(v.x()*v.x() + v.y()*v.y());
             const double K = sqrt(1 + 1/(r * r));
-            int W = (int)((2*D)/(K));
-            int H = (int)((2*D)/(r*K));
+            int W = qMax((int)((2*D)/(K)), 50);
+            int H = qMax((int)((2*D)/(r*K)), 40);
             m_content->resizeContents(QRect(-W / 2, -H / 2, W, H));
         } else {
             int W = qMax(2 * v.x(), 50.0); //(m_contentsRect.width() * v.x()) / oldPos.x();
