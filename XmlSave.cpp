@@ -17,18 +17,20 @@
 ******************************************************************************/
 
 #include "XmlSave.h"
-#include <QFile>
-#include "PictureContent.h"
-#include "TextContent.h"
 #include "CPixmap.h"
 #include "Desk.h"
+#include "PictureContent.h"
+#include "TextContent.h"
 #include "items/ColorPickerItem.h"
+#include <QMessageBox>
+#include <QFile>
 
 XmlSave::XmlSave(const QString &filePath)
 {
     // Open layout file
     file.setFileName(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::warning(0, tr("File Error"), tr("Error saving to the FotoWall file '%1'").arg(filePath));
         throw 0;
         return;
     }

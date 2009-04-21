@@ -140,7 +140,7 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     //if (layout)
     //    layout->setViewport(boundingRect().toRect());
 
-    QRect rect = boundingRect().toRect();
+    QRect rect = contentsRect();
     painter->save();
     painter->translate(-rect.width() / 2, -rect.height() / 2);
     m_text->drawContents(painter);
@@ -148,11 +148,6 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     //    layout->setViewport(QRect());
 
     painter->restore();
-
-    if (option) {
-        //if (option->state & (QStyle::State_Selected | QStyle::State_HasFocus))
-        //    qt_graphicsItem_highlightSelected(this, painter, option);
-    }
 }
 
 void TextContent::slotResize(const QSizeF & size)

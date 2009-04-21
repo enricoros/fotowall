@@ -19,7 +19,6 @@ HEADERS += CPixmap.h \
     Desk.h \
     FotoWall.h \
     RenderOpts.h \
-    Selection.h \
     XmlSave.h \
     XmlRead.h \
     ModeInfo.h \
@@ -30,7 +29,6 @@ SOURCES += main.cpp \
     GlowEffectDialog.cpp \
     Desk.cpp \
     FotoWall.cpp \
-    Selection.cpp \
     XmlSave.cpp \
     XmlRead.cpp \
     ModeInfo.cpp \

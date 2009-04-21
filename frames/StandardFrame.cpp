@@ -70,8 +70,8 @@ void StandardFrame::paint(QPainter * painter, const QRect & frameRect, bool sele
 {
     //painter->fillRect(boundingRect(), QColor(0,0,0,64));
     QLinearGradient lg(0, frameRect.top(), 0, frameRect.height() / 2);
-    lg.setColorAt(0.0, selected ? RenderOpts::hiColor : QColor(128,128,128, 200));
-    lg.setColorAt(1.0, QColor(255,255,255, 200));
+    lg.setColorAt(0.0, selected ? RenderOpts::hiColor.darker() : QColor(128,128,128, 200));
+    lg.setColorAt(1.0, selected ? RenderOpts::hiColor.lighter() : QColor(255,255,255, 200));
     painter->fillRect(frameRect, lg);
     //painter->fillRect(boundingRect().adjusted(5, 5, -5, -5), lg);
 }

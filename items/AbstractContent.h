@@ -54,8 +54,6 @@ class AbstractContent : public QObject, public QGraphicsItem
         void setMirrorEnabled(bool enabled);
         bool mirrorEnabled() const;
 
-        //void setSelected(bool);
-
         void setRotation(double pan, double tilt, double roll);
 
         // misc
@@ -66,7 +64,6 @@ class AbstractContent : public QObject, public QGraphicsItem
         virtual bool fromXml(QDomElement & parentElement);
         virtual void toXml(QDomElement & parentElement) const;
         virtual QPixmap renderAsBackground(const QSize & size, bool keepAspect = false) const;
-        virtual AbstractProperties * createProperties() const;
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
@@ -77,12 +74,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void configureMe(const QPoint & scenePoint);
         void changeStack(int opcode);
         void backgroundMe();
-
         void deleteItem();
-        void itemSelected(AbstractContent *);
-        void addItemToSelection(AbstractContent *);
-        void unselectItem(AbstractContent *);
-        void move(const QPointF & movement);
 
     protected:
         // useful to subclasses
@@ -97,8 +89,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
-        ///void mousePressEvent(QGraphicsSceneMouseEvent * event);
-        ///void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void keyPressEvent(QKeyEvent * event);
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 

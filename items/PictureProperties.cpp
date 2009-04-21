@@ -59,17 +59,10 @@ PictureProperties::~PictureProperties()
     delete m_pictureUi;
 }
 
-void PictureProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
-{
-    if (event->button() == Qt::RightButton)
-        animateClose();
-    QGraphicsProxyWidget::mousePressEvent(event);
-}
-
 void PictureProperties::on_applyEffects_clicked()
 {
-    if (m_selectedEffect.effect != CEffect::ClearEffects)
-        emit applyEffect(m_selectedEffect, true);
+    if (m_currentEffect.effect != CEffect::ClearEffects)
+        emit applyEffect(m_currentEffect, true);
 }
 
 void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
@@ -78,7 +71,6 @@ void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
     if (!item)
         return;
 
-    // update the selected effect
     m_pictureUi->applyEffects->setEnabled(false);
     int effect = item->data(Qt::UserRole).toUInt();
     qreal param = 0.0;
@@ -93,7 +85,7 @@ void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
     }
 
     // apply the effect
-    m_selectedEffect = CEffect((CEffect::Effect)effect, param);
-    emit applyEffect(m_selectedEffect, false);
+    m_currentEffect = CEffect((CEffect::Effect)effect, param);
+    emit applyEffect(m_currentEffect, false);
     m_pictureUi->applyEffects->setEnabled(true);
 }

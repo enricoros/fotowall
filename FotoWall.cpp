@@ -114,7 +114,7 @@ FotoWall::FotoWall(QWidget * parent)
 FotoWall::~FotoWall()
 {
     // dump current layout
-    m_desk->save("autosave.lay", this);
+    m_desk->save(QDir::tempPath() + QDir::separator() + "autosave.fotowall", this);
 
     // delete everything
     delete m_view;
@@ -386,7 +386,7 @@ void FotoWall::on_tutorialLabel_linkActivated(const QString & /*link*/)
 
 void FotoWall::on_loadButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Select FotoWall file"), QString(), tr("FotoWall (*.lay)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select FotoWall file"), QString(), tr("FotoWall (*.fotowall)"));
     load(fileName);
 }
 
@@ -412,11 +412,11 @@ void FotoWall::restoreMode(int mode)
 
 void FotoWall::on_saveButton_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Select Layout file"), QString(), "Layouts (*.lay)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Select FotoWall file"), QString(), "FotoWall (*.fotowall)");
     if (fileName.isNull())
         return;
-    if (!fileName.endsWith(".lay", Qt::CaseInsensitive))
-        fileName += ".lay";
+    if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
+        fileName += ".fotowall";
 
     m_desk->save(fileName, this);
 }

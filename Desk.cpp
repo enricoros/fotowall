@@ -294,21 +294,16 @@ void Desk::setProjectMode(Mode mode)
 
 void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode)
 {
-    foreach(QGraphicsItem *item, m_markerItems) {
-        item->hide();
-    }
-    foreach(AbstractProperties *prop, m_properties) {
-        //Hide the open properties windows
-        prop->hide();
-    }
     clearSelection();
+    foreach(QGraphicsItem *item, m_markerItems)
+        item->hide();
+    foreach(AbstractProperties *prop, m_properties)
+        prop->hide();
     QGraphicsScene::render( painter, target , source, aspectRatioMode );
-    foreach(AbstractProperties *prop, m_properties) {
+    foreach(AbstractProperties *prop, m_properties)
         prop->show();
-    }
-    foreach(QGraphicsItem *item, m_markerItems) {
+    foreach(QGraphicsItem *item, m_markerItems)
         item->show();
-    }
 }
 
 /// Drag & Drop image files
@@ -494,11 +489,6 @@ void Desk::initContent(AbstractContent * content, const QPoint & pos)
     connect(content, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
     connect(content, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
 
-    connect(content, SIGNAL(itemSelected(AbstractContent *)), this, SLOT(slotItemSelected(AbstractContent *)));
-    connect(content, SIGNAL(unselectItem(AbstractContent *)), this, SLOT(slotUnselectItem(AbstractContent *)));
-    connect(content, SIGNAL(addItemToSelection(AbstractContent *)), this, SLOT(slotAddItemToSelection(AbstractContent *)));
-    connect(content, SIGNAL(move(const QPointF &)), &m_selection, SLOT(slotMove(const QPointF &)));
-
     if (!pos.isNull())
         content->setPos(pos);
     content->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
@@ -512,8 +502,8 @@ PictureContent * Desk::createPicture(const QPoint & pos)
 {
     PictureContent * p = new PictureContent(this);
     initContent(p, pos);
-    connect(p, SIGNAL(flipHorizontally()), &m_selection, SLOT(slotFlipHorizontally()));
-    connect(p, SIGNAL(flipVertically()), &m_selection, SLOT(slotFlipVertically()));
+    connect(p, SIGNAL(flipHorizontally()), this, SLOT(slotFlipHorizontally()));
+    connect(p, SIGNAL(flipVertically()), this, SLOT(slotFlipVertically()));
     return p;
 }
 
@@ -669,17 +659,24 @@ void Desk::slotStackContent(int op)
         content->setZValue(z++);
 }
 
+static QList<AbstractContent *> content(const QList<QGraphicsItem *> & items) {
+    QList<AbstractContent *> contentList;
+    foreach (QGraphicsItem * item, items) {
+        AbstractContent * c = dynamic_cast<AbstractContent *>(item);
+        if (c)
+            contentList.append(c);
+    }
+    return contentList;
+}
+
 void Desk::slotDeleteContent()
 {
-    QList<AbstractContent *> selectedContent = m_selection.getSelectedContent();
-    if(selectedContent.size() > 1) {
-        int answer = QMessageBox::question(0, tr("Delete content"), tr("All selected items will be deleted, do you want to continue ?"), QMessageBox::Yes | QMessageBox::No);
-        if(answer == QMessageBox::No) return;
-    }
-
-    foreach(AbstractContent *content, selectedContent) {
-        if (!content)
+    QList<AbstractContent *> selectedContent = content(selectedItems());
+    if (selectedContent.size() > 1)
+        if (QMessageBox::question(0, tr("Delete content"), tr("All the selected content will be deleted, do you want to continue ?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
             return;
+
+    foreach (AbstractContent * content, selectedContent) {
 
         // unset background if deleting its content
         if (m_backContent == content) {
@@ -693,8 +690,9 @@ void Desk::slotDeleteContent()
         while (pIt != m_properties.end()) {
             AbstractProperties * pp = *pIt;
             if (pp->content() == content) {
-                delete pp;
                 pIt = m_properties.erase(pIt);
+                removeItem(pp);
+                pp->deleteLater();
             } else
                 ++pIt;
         }
@@ -704,7 +702,6 @@ void Desk::slotDeleteContent()
         removeItem(content);
         content->deleteLater();
     }
-    m_selection.clearSelection();
 }
 
 void Desk::slotDeleteProperties()
@@ -719,35 +716,21 @@ void Desk::slotDeleteProperties()
     properties->deleteLater();
 }
 
-void Desk::slotItemSelected(AbstractContent *content)
-{
-    m_selection.clearSelection();
-    m_selection.select(content);
-}
-void Desk::slotAddItemToSelection(AbstractContent *content)
-{
-    m_selection.select(content);
-}
-void Desk::slotUnselectItem(AbstractContent *content)
-{
-    m_selection.unselect(content);
-}
-
 void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 {
-    QList<AbstractContent *> selectedContent = m_selection.getSelectedContent();
+    QList<AbstractContent *> selectedContent = content(selectedItems());
     foreach (AbstractContent * content, m_content) {
-        if (!all && !selectedContent.contains(content))
-            continue;
-        if (content->frameClass() != frameClass)
-            content->setFrame(FrameFactory::createFrame(frameClass));
-        content->setMirrorEnabled(mirrored);
+        if (all || selectedContent.contains(content)) {
+            if (content->frameClass() != frameClass)
+                content->setFrame(FrameFactory::createFrame(frameClass));
+            content->setMirrorEnabled(mirrored);
+        }
     }
 }
 
 void Desk::slotApplyEffect(const CEffect & effect, bool all)
 {
-    QList<AbstractContent *> selectedContent = m_selection.getSelectedContent();
+    QList<AbstractContent *> selectedContent = content(selectedItems());
     foreach (AbstractContent * content, m_content) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)

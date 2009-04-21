@@ -60,7 +60,7 @@ void CornerItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
 
-    // select the right op
+    // do the right op
     switch (event->button()) {
         case Qt::LeftButton:    m_content->resetContentsRatio(); break;
         case Qt::RightButton:   m_content->setTransform(QTransform(), false); break;
@@ -72,7 +72,7 @@ void CornerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
 
-    // select the right op
+    // do the right op
     switch (event->button()) {
         case Qt::LeftButton:    m_operation = Scale | FixScale; break;
         case Qt::RightButton:   m_operation = Rotate | Scale | FixScale; break;

@@ -20,7 +20,6 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRect>
-#include "Selection.h"
 class AbstractContent;
 class AbstractProperties;
 class CEffect;
@@ -87,7 +86,6 @@ class Desk : public QGraphicsScene
         void setDVDMarkers();
         void clearMarkers();
         QList<AbstractContent *> m_content;
-        Selection m_selection;
         QList<AbstractProperties *> m_properties;
         QList<HighlightItem *> m_highlightItems;
         HelpItem * m_helpItem;
@@ -114,10 +112,6 @@ class Desk : public QGraphicsScene
         void slotDeleteProperties();
         void slotApplyLook(quint32 frameClass, bool mirrored, bool allContent);
         void slotApplyEffect(const CEffect & effect, bool allPictures);
-
-        void slotItemSelected(AbstractContent *);
-        void slotAddItemToSelection(AbstractContent *);
-        void slotUnselectItem(AbstractContent *);
 
         void slotTitleColorChanged();
         void slotForeColorChanged();

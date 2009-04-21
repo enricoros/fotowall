@@ -249,15 +249,7 @@ bool AbstractContent::mirrorEnabled() const
 {
     return m_mirrorItem;
 }
-/*
-void AbstractContent::setSelected(bool state)
-{
-    m_isSelected = state;
-    if(m_mirrorItem != 0)
-        m_mirrorItem->sourceUpdated();
-    update();
-}
-*/
+
 void AbstractContent::setRotation(double pan, double tilt, double roll)
 {
     m_xRotationAngle = tilt;
@@ -432,11 +424,6 @@ QPixmap AbstractContent::renderAsBackground(const QSize & size, bool keepAspect)
     return pix;
 }
 
-AbstractProperties * AbstractContent::createProperties() const
-{
-    return 0;
-}
-
 QRectF AbstractContent::boundingRect() const
 {
     return m_frameRect;
@@ -500,40 +487,12 @@ void AbstractContent::dropEvent(QGraphicsSceneDragDropEvent * event)
     event->accept();
 }
 
-/*void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    if (event->button() == Qt::RightButton) {
-        if(!m_isSelected) emit addItemToSelection(this);
-        setSelected(true);
+    if (event->button() == Qt::RightButton)
         emit configureMe(event->scenePos().toPoint());
-        return;
-    }
-    if(event->modifiers() == Qt::ControlModifier) {
-        if(m_isSelected) {
-            setSelected(false);
-            emit unselectItem(this);
-        }
-        else {
-            setSelected(true);
-            emit addItemToSelection(this);
-        }
-    } else {
-        emit itemSelected(this);
-        setSelected(true);
-    }
-
     QGraphicsItem::mousePressEvent(event);
 }
-
-void AbstractContent::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-{
-    if(!m_isSelected) {
-        emit addItemToSelection(this);
-        setSelected(true);
-    }
-    emit move(event->lastScenePos() - scenePos());
-}
-*/
 
 void AbstractContent::keyPressEvent(QKeyEvent * event)
 {

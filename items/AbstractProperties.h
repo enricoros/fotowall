@@ -45,9 +45,10 @@ class AbstractProperties : public QGraphicsProxyWidget {
 
     protected:
         // used by subclasses
-        void addTab(QWidget * widget, const QString & label, bool front = false, bool select = false);
+        void addTab(QWidget * widget, const QString & label, bool front = false, bool setCurrent = false);
 
         // ::QGraphicsProxyWidget
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
         void resizeEvent(QGraphicsSceneResizeEvent * event);
         void timerEvent(QTimerEvent *);

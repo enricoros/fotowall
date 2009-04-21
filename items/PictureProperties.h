@@ -31,13 +31,10 @@ class PictureProperties : public AbstractProperties {
     Q_SIGNALS:
         void applyEffect(const CEffect & effect, bool allPictures);
 
-    protected:
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
-
     private:
         Ui::PictureProperties * m_pictureUi;
         PictureContent *        m_pictureContent;
-        CEffect                 m_selectedEffect;
+        CEffect                 m_currentEffect;
 
     private Q_SLOTS:
         void on_applyEffects_clicked();
