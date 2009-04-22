@@ -48,6 +48,9 @@ class Desk : public QGraphicsScene
         // resize the scene to 0,0,size
         void resize(const QSize & size);
 
+        // item interaction
+        void selectAllContent(bool selected = true);
+
         // decorations
         void setTitleText(const QString & text);
         QString titleText() const;

@@ -297,7 +297,7 @@ bool AbstractContent::fromXml(QDomElement & pe)
     // restore content properties
     QDomElement domElement;
 
-    // Load image size saved in the rect node (FIXME: move this later?)
+    // Load image size saved in the rect node
     domElement = pe.firstChildElement("rect");
     int x, y, w, h;
     x = domElement.firstChildElement("x").text().toInt();

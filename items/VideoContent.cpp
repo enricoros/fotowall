@@ -59,8 +59,6 @@ void VideoContent::setPixmap(const QPixmap & pixmap)
     if (m_still)
         return;
     m_pixmap = pixmap;
-    if (!beingTransformed())
-        m_cachedPixmap = QPixmap();
     //if (keepRatio)
     //    adjustSize();
     update();
@@ -125,22 +123,9 @@ void VideoContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * op
 
     // draw high-resolution photo when exporting png
     QRect targetRect = contentsRect();
-    // TODO: fix drawing
-//    if (RenderOpts::HQRendering) {
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-        painter->drawPixmap(targetRect, m_pixmap);
-        return;
-  //  }
-
-    // draw photo using caching and deferred rescales
-    if (beingTransformed()) {
-        if (!m_cachedPixmap.isNull())
-            painter->drawPixmap(targetRect, m_cachedPixmap);
-    } else {
-        if (m_cachedPixmap.isNull() || m_cachedPixmap.size() != targetRect.size())
-            m_cachedPixmap = m_pixmap.scaled(targetRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        painter->drawPixmap(targetRect.topLeft(), m_cachedPixmap);
-    }
+    bool smoothOn = RenderOpts::HQRendering ? true : !beingTransformed();
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, smoothOn);
+    painter->drawPixmap(targetRect, m_pixmap);
 
 #if QT_VERSION >= 0x040500
 //    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);

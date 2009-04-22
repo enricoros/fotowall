@@ -427,7 +427,7 @@ void GlowEffectWidget::paintEvent(QPaintEvent *e)
 
     QImage blurred = m_image;
 
-    // FIXME: what's the half-difference supposed to do here?
+    // NOTE: what's the half-difference supposed to do here?
     int x = 0; //(size().width()  - blurred.size().width())/2;
     int y = 0; //(size().height() - blurred.size().height())/2;
 
@@ -470,7 +470,7 @@ QImage GlowEffectWidget::glow(const QImage &image, int radius) const
 
     QImage blurred = image;
 
-    // FIXME: what's the half-difference supposed to do here?
+    // NOTE: what's the half-difference supposed to do here?
     int x = 0; //(size().width() - blurred.size().width())/2;
     int y = 0; //(size().height() - blurred.size().height())/2;
 

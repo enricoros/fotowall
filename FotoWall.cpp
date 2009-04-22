@@ -105,6 +105,9 @@ FotoWall::FotoWall(QWidget * parent)
     lay->addWidget(m_view);
     m_view->setFocus();
 
+    // create gui actions
+    createActions();
+
     // set the startup project mode
     on_projectType_currentIndexChanged(0);
     m_modeInfo.setDeskDpi(m_view->logicalDpiX(), m_view->logicalDpiY());
@@ -237,6 +240,15 @@ void FotoWall::saveExactSize()
     paint.drawImage(image.rect(), image);
 }
 
+void FotoWall::createActions()
+{
+    // select all
+    QAction * aSA = new QAction(tr("Select all"), this);
+    aSA->setShortcut(tr("CTRL+A"));
+    connect(aSA, SIGNAL(triggered()), this, SLOT(slotActionSelectAll()));
+    addAction(aSA);
+}
+
 QMenu * FotoWall::createDecorationMenu()
 {
     QMenu * menu = new QMenu();
@@ -256,6 +268,7 @@ QMenu * FotoWall::createDecorationMenu()
     menu->addSeparator();
 
     QAction * aSetTitle = new QAction(tr("Set title..."), this);
+    aSetTitle->setShortcut(tr("CTRL+T"));
     connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
     menu->addAction(aSetTitle);
 
@@ -471,6 +484,11 @@ void FotoWall::slotDecoSetTitle()
 void FotoWall::slotDecoClearTitle()
 {
     m_desk->setTitleText(QString());
+}
+
+void FotoWall::slotActionSelectAll()
+{
+    m_desk->selectAllContent();
 }
 
 void FotoWall::slotCheckTutorial(QNetworkReply * reply)

@@ -40,6 +40,7 @@ class FotoWall : public QWidget
         void setModeInfo(ModeInfo);
 
     private:
+        void createActions();
         QMenu * createDecorationMenu();
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
@@ -67,6 +68,8 @@ class FotoWall : public QWidget
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
         void slotDecoClearTitle();
+
+        void slotActionSelectAll();
 
         void slotCheckTutorial(QNetworkReply * reply);
         void slotVideoInputsChanged(int count);

@@ -149,6 +149,13 @@ void Desk::resize(const QSize & size)
     setSceneRect(m_rect);
 }
 
+/// Item Interaction
+void Desk::selectAllContent(bool selected)
+{
+    foreach (AbstractContent * content, m_content)
+        content->setSelected(selected);
+}
+
 /// Decorations
 void Desk::setTitleText(const QString & text)
 {
