@@ -22,6 +22,7 @@
 
 VideoContent::VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
+    , m_input(input)
     , m_still(false)
 {
     // enable frame text
@@ -31,10 +32,15 @@ VideoContent::VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * pa
     // initial pixmap
     setPixmap(QPixmap(":/data/add-video.png"));
 
+    // add swap button
+    ButtonItem * bSwap = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
+    bSwap->setToolTip(tr("Mirror Video"));
+    connect(bSwap, SIGNAL(clicked()), this, SLOT(slotToggleSwap()));
+    addButtonItem(bSwap);
+
     // add snapshot button
     ButtonItem * bStill = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-snapshot.png"), this);
     bStill->setToolTip(tr("Still picture"));
-    bStill->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     connect(bStill, SIGNAL(clicked()), this, SLOT(slotToggleStill()));
     addButtonItem(bStill);
 
@@ -144,4 +150,10 @@ void VideoContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * op
 void VideoContent::slotToggleStill()
 {
     m_still = !m_still;
+}
+
+void VideoContent::slotToggleSwap()
+{
+    bool swapState = !VideoProvider::instance()->swapped(m_input);
+    VideoProvider::instance()->setSwapped(m_input, swapState);
 }

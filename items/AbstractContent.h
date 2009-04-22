@@ -81,6 +81,7 @@ class AbstractContent : public QObject, public QGraphicsItem
     protected:
         // useful to subclasses
         void GFX_CHANGED() const;
+        void setControlsVisible(bool visible);
 
         // may be reimplemented by subclasses
         virtual int contentHeightForWidth(int width) const;
@@ -113,6 +114,7 @@ class AbstractContent : public QObject, public QGraphicsItem
         QGraphicsTextItem * m_frameTextItem;
         QList<ButtonItem *> m_controlItems;
         QList<CornerItem *> m_cornerItems;
+        bool                m_controlsVisible;
         bool                m_dirtyTransforming;
         QTimer *            m_transformRefreshTimer;
         QTimer *            m_gfxChangeTimer;

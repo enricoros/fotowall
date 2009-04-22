@@ -49,6 +49,7 @@ class AbstractProperties : public QGraphicsProxyWidget {
 
         // ::QGraphicsProxyWidget
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
         void resizeEvent(QGraphicsSceneResizeEvent * event);
         void timerEvent(QTimerEvent *);

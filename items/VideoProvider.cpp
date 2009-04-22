@@ -126,6 +126,19 @@ void VideoProvider::disconnectReceiver(QObject * receiver)
     }
 }
 
+void VideoProvider::setSwapped(int iIdx, bool swapped)
+{
+    if (iIdx >= 0 && iIdx < m_inputs.size())
+        m_inputs[iIdx]->swapped = swapped;
+}
+
+bool VideoProvider::swapped(int iIdx) const
+{
+    if (iIdx >= 0 && iIdx < m_inputs.size())
+        return m_inputs[iIdx]->swapped;
+    return false;
+}
+
 void VideoProvider::scanDevices()
 {
 #if defined(Q_OS_LINUX)
@@ -185,6 +198,10 @@ void VideoProvider::slotCaptureVideoFrames()
         QImage frameImage;
         input->device->getImage(&frameImage);
 
+        // apply mirror, if requested
+        if (input->swapped)
+            frameImage = frameImage.mirrored(true, false);
+
         // set the pixmap
         emit input->newPixmap(QPixmap::fromImage(frameImage));
 #else
@@ -195,6 +212,7 @@ void VideoProvider::slotCaptureVideoFrames()
 
 VideoInput::VideoInput()
     : active(false)
+    , swapped(false)
 {
 }
 

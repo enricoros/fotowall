@@ -34,6 +34,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     , m_contentsRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)
+    , m_controlsVisible(false)
     , m_dirtyTransforming(false)
     , m_transformRefreshTimer(0)
     , m_gfxChangeTimer(0)
@@ -63,12 +64,12 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     //ButtonItem * bFront = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-order-front.png"), this);
     //bFront->setToolTip(tr("Raise"));
     //connect(bFront, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
-    //m_controlItems << bFront;
+    //addButtonItem(bFront);
 
     ButtonItem * bConf = new ButtonItem(ButtonItem::Control, Qt::green, QIcon(":/data/action-configure.png"), this);
     bConf->setToolTip(tr("Change properties..."));
     connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
-    m_controlItems << bConf;
+    addButtonItem(bConf);
 
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag top or bottom to move along the X axis (perspective).\nDrag left or right to move along the Y axis.\nHold SHIFT to rotate faster.\nUse CTRL to cancel the transformations"));
@@ -79,14 +80,13 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bDelete->setToolTip(tr("Remove"));
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteItem()));
-    m_controlItems << bDelete;
+    addButtonItem(bDelete);
 
     // create default frame
     Frame * frame = FrameFactory::defaultPictureFrame();
     setFrame(frame);
 
     // hide and layoutChildren buttons
-    hoverLeaveEvent(0 /*HACK*/);
     layoutChildren();
 
     // add to the scene
@@ -199,6 +199,7 @@ void AbstractContent::setFrameTextEnabled(bool enabled)
         QFont f("Sans Serif");
         //f.setPointSizeF(7.5);
         m_frameTextItem->setFont(f);
+        m_frameTextItem->setZValue(1.0);
         layoutChildren();
     }
 
@@ -231,6 +232,8 @@ QString AbstractContent::frameText() const
 void AbstractContent::addButtonItem(ButtonItem * button)
 {
     m_controlItems.append(button);
+    button->setVisible(m_controlsVisible);
+    button->setZValue(3.0);
     layoutChildren();
 }
 
@@ -468,6 +471,15 @@ void AbstractContent::GFX_CHANGED() const
         m_gfxChangeTimer->start();
 }
 
+void AbstractContent::setControlsVisible(bool visible)
+{
+    m_controlsVisible = visible;
+    foreach (CornerItem * corner, m_cornerItems)
+        corner->setVisible(visible);
+    foreach (ButtonItem * button, m_controlItems)
+        button->setVisible(visible);
+}
+
 int AbstractContent::contentHeightForWidth(int width) const
 {
     return width;
@@ -480,18 +492,12 @@ bool AbstractContent::contentOpaque() const
 
 void AbstractContent::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
-    foreach (CornerItem * corner, m_cornerItems)
-        corner->show();
-    foreach (ButtonItem * button, m_controlItems)
-        button->show();
+    setControlsVisible(true);
 }
 
 void AbstractContent::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
-    foreach (CornerItem * corner, m_cornerItems)
-        corner->hide();
-    foreach (ButtonItem * button, m_controlItems)
-        button->hide();
+    setControlsVisible(false);
 }
 
 void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
@@ -630,7 +636,9 @@ void AbstractContent::slotSaveAs()
 void AbstractContent::createCorner(Qt::Corner corner, bool noRescale)
 {
     CornerItem * c = new CornerItem(corner, noRescale, this);
-    //c->setToolTip(tr("Hold down SHIFT for ignoring aspect ratio.\nDouble click to restore the aspect ratio."));
+    c->setVisible(m_controlsVisible);
+    c->setZValue(2.0);
+    c->setToolTip(tr("Drag with Left or Right mouse button.\n - Hold down SHIFT for free resize\n - Hold down CTRL to allow rotation\n - Hold down ALT to snap rotation\n - Double click (with LMB/RMB) to restore the aspect ratio/rotation"));
     m_cornerItems.append(c);
 }
 

@@ -39,12 +39,17 @@ class VideoProvider : public QObject
         void connectInput(int input, QObject * receiver, const char * method);
         void disconnectReceiver(QObject * receiver);
 
+        // enable swapping of an input
+        void setSwapped(int input, bool swapped);
+        bool swapped(int input) const;
+
     Q_SIGNALS:
         void inputCountChanged(int count);
 
     private:
         QTimer * m_snapTimer;
         QList<VideoInput *> m_inputs;
+        bool m_swapVideo;
 
     private Q_SLOTS:
         void scanDevices();
@@ -65,6 +70,7 @@ class VideoInput : public QObject
         ~VideoInput();
 
         bool active;
+        bool swapped;
         QList<QObject *> receivers;
 #if defined(HAS_VIDEOCAPTURE)
         VideoCapture::VideoDevice * device;
