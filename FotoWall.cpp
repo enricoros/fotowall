@@ -53,6 +53,7 @@ class FWGraphicsView : public QGraphicsView {
             setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             setInteractive(true);
             setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing /*| QPainter::SmoothPixmapTransform */);
+            // FIXME: enable the RubberBandDrag. I get rendering artifacts (Enrico)
             setDragMode(QGraphicsView::NoDrag);
             setAcceptDrops(true);
             setFrameStyle(QFrame::NoFrame);
@@ -61,8 +62,10 @@ class FWGraphicsView : public QGraphicsView {
         }
 
     protected:
-        void resizeEvent(QResizeEvent * /*event*/) {
+        void resizeEvent(QResizeEvent * event)
+        {
             m_desk->resize(contentsRect().size());
+            QGraphicsView::resizeEvent(event);
         }
 
     private:

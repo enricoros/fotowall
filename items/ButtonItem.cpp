@@ -15,6 +15,7 @@
 #include "ButtonItem.h"
 #include "RenderOpts.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
@@ -23,6 +24,7 @@ ButtonItem::ButtonItem(Type type, const QBrush & brush, const QIcon & icon, QGra
     , m_type(type)
     , m_icon(icon)
     , m_brush(brush)
+    , m_selectsParent(true)
 {
     setAcceptsHoverEvents(true);
     //if (type == Control)
@@ -70,7 +72,10 @@ void ButtonItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
 void ButtonItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
-    //setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+    if (m_selectsParent) {
+        scene()->clearSelection();
+        parentItem()->setSelected(true);
+    }
     m_startPos = event->scenePos();
     update();
     emit pressed();
@@ -92,7 +97,6 @@ void ButtonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     update();
     if (dragging)
         emit clicked();
-    //setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
 }
 
 void ButtonItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)

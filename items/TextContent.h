@@ -33,6 +33,7 @@ class TextContent : public AbstractContent
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;
+        int contentHeightForWidth(int width) const;
 
         // ::QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);

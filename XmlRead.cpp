@@ -142,9 +142,9 @@ void XmlRead::readImages()
 void XmlRead::readText()
 {
     // for each '<text>' in '<texts>'
-    for (QDomElement textE = m_imagesElement.firstChildElement("text"); !textE.isNull(); textE = textE.nextSiblingElement("text")) {
+    for (QDomElement textE = m_textsElement.firstChildElement("text"); !textE.isNull(); textE = textE.nextSiblingElement("text")) {
 
-        // Create image item (connect slots...)
+        // Create text item (connect slots...)
         TextContent * content = m_desk->createText(QPoint());
 
         // restore all properties

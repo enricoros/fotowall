@@ -100,13 +100,15 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
     if (event->modifiers() & Qt::ShiftModifier)
         op &= ~FixScale;
     if (event->modifiers() & Qt::ControlModifier)
-        op |= FixRotate;
+        //op |= FixRotate;
+        op |= Rotate;
     if (event->modifiers() & Qt::AltModifier)
-        op &= ~(Scale | FixScale);
+        //op &= ~(Scale | FixScale);
+        op |= FixRotate;
     op &= m_opMask;
     if ((op & (Rotate | Scale)) == (Rotate | Scale))
         op |= FixScale;
-    if (op == Off)
+    if ((op & (Rotate | Scale)) == Off)
         return;
 
     // vector relative to the centre
@@ -144,8 +146,8 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 
         // snap to M_PI/4
         if (op & FixRotate) {
-            int fracts = (int)((zr - (0.19635/2)) / (0.39270/2));
-            zr = (qreal)fracts * (0.39270/2);
+            int fracts = (int)((zr - 7.5) / 15.0);
+            zr = (qreal)fracts * 15.0;
         }
 
         // apply rotation

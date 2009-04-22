@@ -73,7 +73,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag top or bottom to move along the X axis (perspective).\nDrag left or right to move along the Y axis.\nHold SHIFT to rotate faster.\nUse CTRL to cancel the transformations"));
     connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotPerspective(const QPointF&,Qt::KeyboardModifiers)));
-    connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slot));
+    connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slotClearPerspective()));
     addButtonItem(bPersp);
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
@@ -440,18 +440,26 @@ QRectF AbstractContent::boundingRect() const
 
 void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    if (!m_frame)
-        return;
+    const bool opaqueContent = contentOpaque();
+    const bool drawSelection = RenderOpts::HQRendering ? false : isSelected();
+    const QRect frameRect = m_frameRect.toRect();
 
-    // draw the Frame
-    bool opaqueContent = contentOpaque();
-    bool drawSelection = RenderOpts::HQRendering ? false : isSelected();
-    QRect frameRect = m_frameRect.toRect();
-    m_frame->paint(painter, frameRect, drawSelection, opaqueContent);
+    if (!m_frame) {
+        // draw the selection only as done in EmptyFrame.cpp
+        if (drawSelection) {
+            painter->setRenderHint(QPainter::Antialiasing, true);
+            painter->setPen(QPen(RenderOpts::hiColor, 1.0));
+            // FIXME: this draws OUTSIDE (but inside the safe 2px area)
+            painter->drawRect(QRectF(frameRect).adjusted(-0.5, -0.5, +0.5, +0.5));
+        }
+    } else {
+        // draw the Frame
+        m_frame->paint(painter, frameRect, drawSelection, opaqueContent);
 
-    // use clip path for contents, if set
-    if (m_frame->clipContents())
-        painter->setClipPath(m_frame->contentsClipPath(m_contentsRect));
+        // use clip path for contents, if set
+        if (m_frame->clipContents())
+            painter->setClipPath(m_frame->contentsClipPath(m_contentsRect));
+    }
 }
 
 void AbstractContent::GFX_CHANGED() const
@@ -661,11 +669,11 @@ void AbstractContent::slotPerspective(const QPointF & sceneRelPoint, Qt::Keyboar
     if (modifiers & Qt::ControlModifier)
         return slotClearPerspective();
 
-    double k = 0.1;
+    double k = 0.2;
     if (modifiers != Qt::NoModifier)
         k = 0.5;
-    m_xRotationAngle = qBound(-60.0, -k * sceneRelPoint.x(), 60.0);
-    m_yRotationAngle = qBound(-60.0, -k * sceneRelPoint.y(), 60.0);
+    m_xRotationAngle = qBound(-70.0, -k * sceneRelPoint.x(), 70.0);
+    m_yRotationAngle = qBound(-70.0, -k * sceneRelPoint.y(), 70.0);
     applyRotations();
 }
 

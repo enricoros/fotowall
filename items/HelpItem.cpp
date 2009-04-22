@@ -55,7 +55,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
 
     // create an item to display it
     QGraphicsTextItem * ti = new QGraphicsTextItem(this);
-    ti->setPos(10, 10/*FIXME m_frame->contentsRect(boundingRect().toRect()).topLeft()*/);
+    ti->setPos(boundingRect().adjusted(12, 12, -12, -12).topLeft());
     ti->setHtml(htmlFile.readAll());
     ti->setTextInteractionFlags(Qt::NoTextInteraction);
 #endif

@@ -54,10 +54,12 @@ void EmptyFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect*
 
 void EmptyFrame::paint(QPainter *painter, const QRect &rect, bool selected, bool /*opaqueContents*/)
 {
-    // draw aligned antialiased rect (note the offset, for aligning antialiased painting)
+    // draw aligned antialiased rect like in AbstractContent.cpp with !frame
     if (selected) {
-        painter->setPen(QPen(RenderOpts::hiColor, 2.0));
-        painter->drawRect(QRectF(rect).adjusted(0.5, 0.5, -0.5, -0.5));
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->setPen(QPen(RenderOpts::hiColor, 1.0));
+        // FIXME: this draws OUTSIDE (but inside the safe 2px area)
+        painter->drawRect(QRectF(rect).adjusted(-0.5, -0.5, +0.5, +0.5));
     }
 }
 

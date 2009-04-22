@@ -44,7 +44,7 @@ Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
     , m_helpItem(0)
     , m_backContent(0)
-    , m_topBarEnabled(true)
+    , m_topBarEnabled(false)
     , m_bottomBarEnabled(false)
     , m_projectMode(ModeNormal)
 {

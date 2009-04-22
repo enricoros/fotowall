@@ -49,6 +49,7 @@ class ButtonItem : public QObject, public QGraphicsItem
         Type        m_type;
         QIcon       m_icon;
         QBrush      m_brush;
+        bool        m_selectsParent;
         QPointF     m_startPos;
 };
 

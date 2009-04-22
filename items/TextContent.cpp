@@ -67,11 +67,15 @@ void TextContent::setHtml(const QString & htmlCode)
 
 bool TextContent::fromXml(QDomElement & pe)
 {
-    AbstractContent::fromXml(pe);
-
-    // load text properties
+    // FIRST load text properties
+    // NOTE: order matters here, we don't want to override the size restored later
     QString text = pe.firstChildElement("html-text").text();
     setHtml(text);
+
+    AbstractContent::fromXml(pe);
+
+    // load other values
+    // ...
     return true;
 }
 
@@ -111,6 +115,14 @@ QPixmap TextContent::renderAsBackground(const QSize & size, bool keepAspect) con
     m_text->drawContents(&pixPainter);
     pixPainter.end();
     return pix;
+}
+
+int TextContent::contentHeightForWidth(int width) const
+{
+    // if no text size is available, use default
+    if (m_textSize.width() < 1 || m_textSize.height() < 1)
+        return AbstractContent::contentHeightForWidth(width);
+    return (m_textSize.height() * width) / m_textSize.width();
 }
 
 void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
