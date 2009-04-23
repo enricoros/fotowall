@@ -45,6 +45,7 @@ TRANSLATIONS += translations/fotowall_de.ts \
 # Components
 include(items/items.pri)
 include(frames/frames.pri)
+include(open-collab-services/open-collab-services.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 

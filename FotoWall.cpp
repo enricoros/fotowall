@@ -14,6 +14,7 @@
 
 #include "FotoWall.h"
 #include "Desk.h"
+#include "OcsConnector.h"
 #include "RenderOpts.h"
 #include "VideoProvider.h"
 #include "ui_FotoWall.h"
@@ -77,6 +78,7 @@ FotoWall::FotoWall(QWidget * parent)
     , ui(new Ui::FotoWall())
     , m_view(0)
     , m_desk(0)
+    , m_ocsConnector(0)
 {
     // initial 'normal' size
     QRect geom = QApplication::desktop()->availableGeometry();
@@ -115,6 +117,12 @@ FotoWall::FotoWall(QWidget * parent)
 
     // enable the tutorial, if present
     checkForTutorial();
+
+    // TEMP HACK FIXME
+    m_ocsConnector = new OcsConnector(this);
+    m_ocsConnector->setServiceUrl(QUrl("http://api.opendesktop.org"));
+    m_ocsConnector->setApiKey("API4969719359710210465243692945282815516785946916238413642488886219");
+    m_ocsConnector->kbList("71320");
 }
 
 FotoWall::~FotoWall()

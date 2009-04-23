@@ -19,6 +19,7 @@
 #include <QWidget>
 #include "ModeInfo.h"
 class Desk;
+class OcsConnector;
 class QMenu;
 class QNetworkReply;
 namespace Ui { class FotoWall; }
@@ -45,6 +46,7 @@ class FotoWall : public QWidget
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
         Desk *          m_desk;
+        OcsConnector *  m_ocsConnector;
         ModeInfo        m_modeInfo;
 
         void loadNormalProject();

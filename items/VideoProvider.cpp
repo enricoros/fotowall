@@ -31,7 +31,7 @@ VideoProvider::VideoProvider()
     , m_snapTimer(0)
 {
     // defer video initialization, to show gui...
-    QTimer::singleShot(50, this, SLOT(scanDevices()));
+    //QTimer::singleShot(50, this, SLOT(scanDevices()));
 }
 
 VideoProvider::~VideoProvider()
