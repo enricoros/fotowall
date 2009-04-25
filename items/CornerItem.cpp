@@ -35,7 +35,7 @@ CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * par
 void CornerItem::relayout(const QRect & rect)
 {
     // change side, if needed
-    int side = 1 + sqrt(qMin(rect.width(), rect.height()));
+    int side = 1 + (int)sqrt((float)qMin(rect.width(), rect.height()));
     if (side != m_side) {
         prepareGeometryChange();
         m_side = side;

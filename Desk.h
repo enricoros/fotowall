@@ -22,7 +22,7 @@
 #include <QRect>
 class AbstractContent;
 class AbstractProperties;
-class CEffect;
+struct CEffect;
 class ColorPickerItem;
 class FotoWall;
 class HelpItem;

@@ -306,7 +306,7 @@ void FotoWall::loadCDProject()
 }
 void FotoWall::loadDVDProject()
 {
-    m_modeInfo.setRealSizeInches(10.83, 7.2);
+    m_modeInfo.setRealSizeInches((float)10.83, (float)7.2);
     m_modeInfo.setLandscape(true);
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();

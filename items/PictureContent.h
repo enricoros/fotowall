@@ -16,7 +16,7 @@
 #define __PictureContent_h__
 
 #include "AbstractContent.h"
-class CEffect;
+struct CEffect;
 class CPixmap;
 
 /**

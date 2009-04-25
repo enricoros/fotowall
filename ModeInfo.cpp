@@ -43,7 +43,7 @@ float ModeInfo::printDpi() const
 void ModeInfo::setRealSizeCm(float w, float h)
 {
     // 1 inch = 2.54 cm
-    w /= 2.54; h /= 2.54;
+    w /= (float)2.54; h /= (float)2.54;
     m_realSize = QSizeF(w, h);
 }
 void ModeInfo::setRealSizeInches(float w, float h)
