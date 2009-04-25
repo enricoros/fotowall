@@ -42,6 +42,7 @@ class FotoWall : public QWidget
     private:
         void createActions();
         QMenu * createDecorationMenu();
+        QMenu * createHelpMenu();
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
         Desk *          m_desk;
@@ -57,8 +58,6 @@ class FotoWall : public QWidget
         void on_addPictures_clicked();
         void on_addText_clicked();
         void on_addMirror_clicked();
-        void on_helpLabel_linkActivated(const QString & link);
-        void on_tutorialLabel_linkActivated(const QString & link);
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_exportButton_clicked();
@@ -68,10 +67,14 @@ class FotoWall : public QWidget
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
         void slotDecoClearTitle();
+        void slotHelpIntroduction();
+        void slotHelpTutorial();
+        void slotHelpSupport();
 
         void slotActionSelectAll();
 
         void slotCheckTutorial(QNetworkReply * reply);
+        //void slotOcsKbItems(const KnowledgeItemV1List & items);
         void slotVideoInputsChanged(int count);
 };
 

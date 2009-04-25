@@ -87,14 +87,19 @@ FotoWall::FotoWall(QWidget * parent)
 
     // init ui
     ui->setupUi(this);
-    ui->tutorialLabel->setVisible(false);
-    ui->addMirror->setVisible(VideoProvider::instance()->inputCount() > 0);
-    connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVideoInputsChanged(int)));
-    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
-    setWindowIcon(QIcon(":/data/fotowall.png"));
 
     // set the decoration menu
     ui->decoButton->setMenu(createDecorationMenu());
+    ui->helpButton->setMenu(createHelpMenu());
+
+    ///ui->tutorialLabel->setVisible(false);
+
+    ui->addMirror->setVisible(VideoProvider::instance()->inputCount() > 0);
+    connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVideoInputsChanged(int)));
+
+    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
+    setWindowIcon(QIcon(":/data/fotowall.png"));
+
 
     // add the graphicsview
     m_view = new FWGraphicsView(m_desk, ui->centralWidget);
@@ -136,7 +141,7 @@ void FotoWall::showIntroduction()
 void FotoWall::checkForTutorial()
 {
     // hide the tutorial link
-    ui->tutorialLabel->setVisible(false);
+    ///ui->tutorialLabel->setVisible(false);
 
     // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
     QNetworkAccessManager * manager = new QNetworkAccessManager(this);
@@ -279,6 +284,26 @@ QMenu * FotoWall::createDecorationMenu()
     return menu;
 }
 
+QMenu * FotoWall::createHelpMenu()
+{
+    QMenu * menu = new QMenu();
+
+    // FIXME: make this public
+    QAction * aIntroduction = new QAction(tr("Introduction"), this);
+    connect(aIntroduction, SIGNAL(triggered()), this, SLOT(slotHelpIntroduction()));
+    menu->addAction(aIntroduction);
+
+    QAction * aTutorial = new QAction(tr("Tutorial"), this);
+    connect(aTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
+    menu->addAction(aTutorial);
+
+    QAction * aSupport = new QAction(tr("Support (%1)").arg(0) /*FIXME*/, this);
+    connect(aSupport, SIGNAL(triggered()), this, SLOT(slotHelpSupport()));
+    menu->addAction(aSupport);
+
+    return menu;
+}
+
 void FotoWall::loadNormalProject()
 {
     m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
@@ -388,18 +413,6 @@ void FotoWall::on_addMirror_clicked()
     m_desk->addVideoContent(0);
 }
 
-void FotoWall::on_helpLabel_linkActivated(const QString & /*link*/)
-{
-    m_desk->showIntroduction();
-}
-
-void FotoWall::on_tutorialLabel_linkActivated(const QString & /*link*/)
-{
-    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
-    if (answer == QMessageBox::Yes)
-        QDesktopServices::openUrl(TUTORIAL_URL);
-}
-
 void FotoWall::on_loadButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select FotoWall file"), QString(), tr("FotoWall (*.fotowall)"));
@@ -486,6 +499,22 @@ void FotoWall::slotDecoClearTitle()
     m_desk->setTitleText(QString());
 }
 
+void FotoWall::slotHelpIntroduction()
+{
+    m_desk->showIntroduction();
+}
+
+void FotoWall::slotHelpTutorial()
+{
+    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
+    if (answer == QMessageBox::Yes)
+        QDesktopServices::openUrl(TUTORIAL_URL);
+}
+
+void FotoWall::slotHelpSupport()
+{
+}
+
 void FotoWall::slotActionSelectAll()
 {
     m_desk->selectAllContent();
@@ -498,9 +527,18 @@ void FotoWall::slotCheckTutorial(QNetworkReply * reply)
 
     QString htmlCode = reply->readAll();
     bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
-    ui->tutorialLabel->setVisible(tutorialValid);
+    ///ui->tutorialLabel->setVisible(tutorialValid);
 }
-
+/*
+#include <QDebug>
+void FotoWall::slotOcsKbItems(const KnowledgeItemV1List & items)
+{
+    qWarning("FotoWall::slotOcsKbItems: got %d items", items.size());
+    foreach (KnowledgeItemV1 * item, items) {
+        qWarning() << item->name() << item->description() << item->answer();
+    }
+}
+*/
 void FotoWall::slotVideoInputsChanged(int count)
 {
     // maybe blink or something?
