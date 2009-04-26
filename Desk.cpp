@@ -165,6 +165,8 @@ void Desk::setBackGradientEnabled(bool enabled)
     m_backGradientEnabled = enabled;
     m_grad1ColorPicker->setVisible(enabled);
     m_grad2ColorPicker->setVisible(enabled);
+    if (enabled)
+        blinkBackGradients();
     update();
 }
 
@@ -214,7 +216,7 @@ QString Desk::titleText() const
 }
 
 /// Misc: save, restore, help...
-#define HIGHLIGHT(x, y) \
+#define HIGHLIGHT(x, y, del) \
     { \
         HighlightItem * highlight = new HighlightItem(); \
         m_highlightItems.append(highlight); \
@@ -222,6 +224,7 @@ QString Desk::titleText() const
         highlight->setZValue(10000); \
         highlight->setPosF(x, y); \
         highlight->show(); \
+        if (del) highlight->deleteAfterAnimation(); \
     }
 
 void Desk::showIntroduction()
@@ -231,7 +234,7 @@ void Desk::showIntroduction()
 
     // help item
     m_helpItem = new HelpItem();
-    connect(m_helpItem, SIGNAL(closeMe()), this, SLOT(slotCloseHelp()));
+    connect(m_helpItem, SIGNAL(closeMe()), this, SLOT(slotCloseIntroduction()));
     addItem(m_helpItem);
     m_helpItem->setZValue(10001);
     m_helpItem->setPos(sceneRect().center().toPoint());
@@ -239,13 +242,19 @@ void Desk::showIntroduction()
 
     // blink items
     if (m_topBarEnabled || m_bottomBarEnabled)
-        HIGHLIGHT(0.0, 0.0);
+        HIGHLIGHT(0.0, 0.0, false);
     if (!m_titleText.isEmpty())
-        HIGHLIGHT(0.5, 0.0);
-    if (true) {
-        HIGHLIGHT(1.0, 0.0);
-        HIGHLIGHT(1.0, 1.0);
+        HIGHLIGHT(0.5, 0.0, false);
+    if (m_backGradientEnabled) {
+        HIGHLIGHT(1.0, 0.0, false);
+        HIGHLIGHT(1.0, 1.0, false);
     }
+}
+
+void Desk::blinkBackGradients()
+{
+    HIGHLIGHT(1.0, 0.0, true);
+    HIGHLIGHT(1.0, 1.0, true);
 }
 
 void Desk::save(const QString &path, FotoWall *fotowall) const
@@ -781,7 +790,7 @@ void Desk::slotGradColorChanged()
     update();
 }
 
-void Desk::slotCloseHelp()
+void Desk::slotCloseIntroduction()
 {
     m_helpItem->deleteLater();
     m_helpItem = 0;

@@ -63,6 +63,7 @@ class Desk : public QGraphicsScene
 
         // save, restore, load, help
         void showIntroduction();
+        void blinkBackGradients();
         void save(const QString &, FotoWall *) const;
         void restore(const QString &, FotoWall *);
 
@@ -123,7 +124,7 @@ class Desk : public QGraphicsScene
         void slotForeColorChanged();
         void slotGradColorChanged();
 
-        void slotCloseHelp();
+        void slotCloseIntroduction();
 };
 
 #endif

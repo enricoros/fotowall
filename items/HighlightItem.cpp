@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "HighlightItem.h"
+#include "RenderOpts.h"
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QTimerEvent>
@@ -63,6 +64,8 @@ QRectF HighlightItem::boundingRect() const
 
 void HighlightItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
+    if (RenderOpts::HQRendering)
+        return;
     int alpha = qBound(0, (100 - (int)m_radius) * 3, 255);
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setPen(QPen(QColor(255, 255, 255, alpha), 3));

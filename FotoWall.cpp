@@ -50,6 +50,7 @@ class FWGraphicsView : public QGraphicsView {
             : QGraphicsView(desk, parent)
             , m_desk(desk)
         {
+            // customize widget
             setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             setInteractive(true);
@@ -58,6 +59,12 @@ class FWGraphicsView : public QGraphicsView {
             setDragMode(QGraphicsView::NoDrag);
             setAcceptDrops(true);
             setFrameStyle(QFrame::NoFrame);
+
+            // don't autofill the view with the Base brush
+            QPalette pal;
+            pal.setBrush(QPalette::Base, Qt::NoBrush);
+            setPalette(pal);
+
             // can't activate the cache mode by default, since it inhibits dynamical background picture changing
             //setCacheMode(CacheBackground);
         }
@@ -86,6 +93,10 @@ FotoWall::FotoWall(QWidget * parent)
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
     setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     setWindowIcon(QIcon(":/data/fotowall.png"));
+#if 0 //QT_VERSION >= 0x040500
+    // this produces cool results, but it's premature for something this heavy
+    setAttribute(Qt::WA_TranslucentBackground, true);
+#endif
 
     // create our custom desk
     m_desk = new Desk(this);
