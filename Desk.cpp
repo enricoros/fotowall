@@ -46,6 +46,7 @@ Desk::Desk(QObject * parent)
     , m_backContent(0)
     , m_topBarEnabled(false)
     , m_bottomBarEnabled(false)
+    , m_backGradientEnabled(true)
     , m_projectMode(ModeNormal)
 {
     // create colorpickers
@@ -157,16 +158,19 @@ void Desk::selectAllContent(bool selected)
 }
 
 /// Decorations
-void Desk::setTitleText(const QString & text)
+void Desk::setBackGradientEnabled(bool enabled)
 {
-    m_titleText = text;
-    m_titleColorPicker->setVisible(!text.isEmpty());
-    update(0, 0, m_size.width(), 50);
+    if (enabled == m_backGradientEnabled)
+        return;
+    m_backGradientEnabled = enabled;
+    m_grad1ColorPicker->setVisible(enabled);
+    m_grad2ColorPicker->setVisible(enabled);
+    update();
 }
 
-QString Desk::titleText() const
+bool Desk::backGradientEnabled() const
 {
-    return m_titleText;
+    return m_backGradientEnabled;
 }
 
 void Desk::setTopBarEnabled(bool enabled)
@@ -197,6 +201,17 @@ bool Desk::bottomBarEnabled() const
     return m_bottomBarEnabled;
 }
 
+void Desk::setTitleText(const QString & text)
+{
+    m_titleText = text;
+    m_titleColorPicker->setVisible(!text.isEmpty());
+    update(0, 0, m_size.width(), 50);
+}
+
+QString Desk::titleText() const
+{
+    return m_titleText;
+}
 
 /// Misc: save, restore, help...
 #define HIGHLIGHT(x, y) \
@@ -424,13 +439,15 @@ void Desk::drawBackground(QPainter * painter, const QRectF & rect)
         return;
     }
 
-    // draw background
-    QLinearGradient lg(m_rect.topLeft(), m_rect.bottomLeft());
-    lg.setColorAt(0.0, m_grad1ColorPicker->color());
-    lg.setColorAt(1.0, m_grad2ColorPicker->color());
-    painter->setCompositionMode(QPainter::CompositionMode_Source);
-    painter->fillRect(rect, lg);
-    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+    // draw background gradient, if enabled
+    if (m_backGradientEnabled) {
+        QLinearGradient lg(m_rect.topLeft(), m_rect.bottomLeft());
+        lg.setColorAt(0.0, m_grad1ColorPicker->color());
+        lg.setColorAt(1.0, m_grad2ColorPicker->color());
+        painter->setCompositionMode(QPainter::CompositionMode_Source);
+        painter->fillRect(rect, lg);
+        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+    }
 }
 
 static void drawVerticalShadow(QPainter * painter, int width, int height)

@@ -31,7 +31,6 @@ class FotoWall : public QWidget
         ~FotoWall();
 
         void showIntroduction();
-        void checkForTutorial();
         void saveImage();
         void saveExactSize();
         void load(QString &fileName);
@@ -40,18 +39,24 @@ class FotoWall : public QWidget
         void setModeInfo(ModeInfo);
 
     private:
-        void createActions();
+        QMenu * createArrangeMenu();
+        QMenu * createBackgroundMenu();
         QMenu * createDecorationMenu();
         QMenu * createHelpMenu();
-        Ui::FotoWall *  ui;
-        QGraphicsView * m_view;
-        Desk *          m_desk;
-        ModeInfo        m_modeInfo;
-
+        void createMiscActions();
+        void checkForTutorial();
+        void checkForSupport();
         void loadNormalProject();
         void loadCDProject();
         void loadDVDProject();
         void loadExactSizeProject();
+
+        Ui::FotoWall *  ui;
+        QGraphicsView * m_view;
+        Desk *          m_desk;
+        ModeInfo        m_modeInfo;
+        QAction *       m_aHelpTutorial;
+        QAction *       m_aHelpSupport;
 
     private Q_SLOTS:
         void on_projectType_currentIndexChanged(int index);
@@ -63,6 +68,9 @@ class FotoWall : public QWidget
         void on_exportButton_clicked();
         void on_quitButton_clicked();
 
+        void slotActionSelectAll();
+
+        void slotBackGradient(bool checked);
         void slotDecoTopBar(bool checked);
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
@@ -71,11 +79,9 @@ class FotoWall : public QWidget
         void slotHelpTutorial();
         void slotHelpSupport();
 
-        void slotActionSelectAll();
-
-        void slotCheckTutorial(QNetworkReply * reply);
-        //void slotOcsKbItems(const KnowledgeItemV1List & items);
-        void slotVideoInputsChanged(int count);
+        void slotVerifyTutorial(QNetworkReply * reply);
+        void slotVerifySupport(/*const KnowledgeItemV1List & items*/);
+        void slotVerifyVideoInputs(int count);
 };
 
 #endif

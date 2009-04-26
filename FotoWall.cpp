@@ -35,6 +35,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPushButton>
+#include <QTimer>
 #include <QVBoxLayout>
 #include "ModeInfo.h"
 #include "ExactSizeDialog.h"
@@ -77,29 +78,20 @@ FotoWall::FotoWall(QWidget * parent)
     , ui(new Ui::FotoWall())
     , m_view(0)
     , m_desk(0)
+    , m_aHelpTutorial(0)
+    , m_aHelpSupport(0)
 {
-    // initial 'normal' size
+    // setup widget
     QRect geom = QApplication::desktop()->availableGeometry();
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
+    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
+    setWindowIcon(QIcon(":/data/fotowall.png"));
 
     // create our custom desk
     m_desk = new Desk(this);
 
     // init ui
     ui->setupUi(this);
-
-    // set the decoration menu
-    ui->decoButton->setMenu(createDecorationMenu());
-    ui->helpButton->setMenu(createHelpMenu());
-
-    ///ui->tutorialLabel->setVisible(false);
-
-    ui->addMirror->setVisible(VideoProvider::instance()->inputCount() > 0);
-    connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVideoInputsChanged(int)));
-
-    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
-    setWindowIcon(QIcon(":/data/fotowall.png"));
-
 
     // add the graphicsview
     m_view = new FWGraphicsView(m_desk, ui->centralWidget);
@@ -110,16 +102,27 @@ FotoWall::FotoWall(QWidget * parent)
     lay->addWidget(m_view);
     m_view->setFocus();
 
-    // create gui actions
-    createActions();
+    // attach menus
+    ui->arrangeButton->setMenu(createArrangeMenu());
+    ui->backButton->setMenu(createBackgroundMenu());
+    ui->decoButton->setMenu(createDecorationMenu());
+    ui->howtoButton->setMenu(createHelpMenu());
+
+    // react to VideoProvider
+    ui->addMirror->setVisible(VideoProvider::instance()->inputCount() > 0);
+    connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
+
+    // create misc actions
+    createMiscActions();
 
     // set the startup project mode
     on_projectType_currentIndexChanged(0);
     m_modeInfo.setDeskDpi(m_view->logicalDpiX(), m_view->logicalDpiY());
     m_modeInfo.setPrintDpi(300);
 
-    // enable the tutorial, if present
+    // check stuff on the net
     checkForTutorial();
+    checkForSupport();
 }
 
 FotoWall::~FotoWall()
@@ -136,17 +139,6 @@ FotoWall::~FotoWall()
 void FotoWall::showIntroduction()
 {
     m_desk->showIntroduction();
-}
-
-void FotoWall::checkForTutorial()
-{
-    // hide the tutorial link
-    ///ui->tutorialLabel->setVisible(false);
-
-    // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
-    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(slotCheckTutorial(QNetworkReply*)));
-    manager->get(QNetworkRequest(TUTORIAL_URL));
 }
 
 //BEGIN SizeDialog
@@ -245,7 +237,7 @@ void FotoWall::saveExactSize()
     paint.drawImage(image.rect(), image);
 }
 
-void FotoWall::createActions()
+void FotoWall::createMiscActions()
 {
     // select all
     QAction * aSA = new QAction(tr("Select all"), this);
@@ -254,17 +246,66 @@ void FotoWall::createActions()
     addAction(aSA);
 }
 
+QMenu * FotoWall::createArrangeMenu()
+{
+    QMenu * menu = new QMenu();
+
+    QAction * aFF = new QAction(tr("Enable force field"), menu);
+    aFF->setCheckable(true);
+    aFF->setChecked(false);
+    //connect(aFF, SIGNAL(toggled(bool)), this, SLOT(slotForceField(bool)));
+    menu->addAction(aFF);
+
+    QAction * aNP = new QAction(tr("Auto-arrange new pictures"), menu);
+    aNP->setCheckable(true);
+    aNP->setChecked(false);
+    //connect(aNP, SIGNAL(toggled(bool)), this, SLOT(slotArrangeNew(bool)));
+    menu->addAction(aNP);
+
+    menu->addSeparator()->setText(tr("Rearrange"));
+
+    QAction * aAU = new QAction(tr("Uniform"), menu);
+    aAU->setEnabled(false);
+    //connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeUniform()));
+    menu->addAction(aAU);
+
+    QAction * aAS = new QAction(tr("Shaped"), menu);
+    aAS->setEnabled(false);
+    //connect(aAS, SIGNAL(triggered()), this, SLOT(slotArrangeShape()));
+    menu->addAction(aAS);
+
+    QAction * aAC = new QAction(tr("Collage"), menu);
+    aAC->setEnabled(false);
+    //connect(aAC, SIGNAL(triggered()), this, SLOT(slotArrangeCollage()));
+    menu->addAction(aAC);
+
+    return menu;
+}
+
+QMenu * FotoWall::createBackgroundMenu()
+{
+    QMenu * menu = new QMenu();
+
+    QAction * aGradient = new QAction("Gradient", menu);
+    aGradient->setCheckable(true);
+    aGradient->setChecked(m_desk->backGradientEnabled());
+    connect(aGradient, SIGNAL(toggled(bool)), this, SLOT(slotBackGradient(bool)));
+    menu->addAction(aGradient);
+
+    return menu;
+}
+
 QMenu * FotoWall::createDecorationMenu()
 {
     QMenu * menu = new QMenu();
 
-    QAction * aTop = new QAction(tr("Top bar"), this);
+    QAction * aTop = new QAction(tr("Top bar"), menu);
     aTop->setCheckable(true);
     aTop->setChecked(m_desk->topBarEnabled());
     connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
     menu->addAction(aTop);
 
-    QAction * aBottom = new QAction(tr("Bottom bar"), this);
+    QAction * aBottom = new QAction(tr("Bottom bar"), menu);
     aBottom->setCheckable(true);
     aBottom->setChecked(m_desk->bottomBarEnabled());
     connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
@@ -272,12 +313,12 @@ QMenu * FotoWall::createDecorationMenu()
 
     menu->addSeparator();
 
-    QAction * aSetTitle = new QAction(tr("Set title..."), this);
+    QAction * aSetTitle = new QAction(tr("Set title..."), menu);
     aSetTitle->setShortcut(tr("CTRL+T"));
     connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
     menu->addAction(aSetTitle);
 
-    QAction * aClearTitle = new QAction(tr("Clear title"), this);
+    QAction * aClearTitle = new QAction(tr("Clear title"), menu);
     connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotDecoClearTitle()));
     menu->addAction(aClearTitle);
 
@@ -288,20 +329,40 @@ QMenu * FotoWall::createHelpMenu()
 {
     QMenu * menu = new QMenu();
 
-    // FIXME: make this public
-    QAction * aIntroduction = new QAction(tr("Introduction"), this);
+    QAction * aIntroduction = new QAction(tr("Introduction"), menu);
     connect(aIntroduction, SIGNAL(triggered()), this, SLOT(slotHelpIntroduction()));
     menu->addAction(aIntroduction);
 
-    QAction * aTutorial = new QAction(tr("Tutorial"), this);
-    connect(aTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
-    menu->addAction(aTutorial);
+    m_aHelpTutorial = new QAction(tr("Tutorial"), menu);
+    connect(m_aHelpTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
+    menu->addAction(m_aHelpTutorial);
 
-    QAction * aSupport = new QAction(tr("Support (%1)").arg(0) /*FIXME*/, this);
-    connect(aSupport, SIGNAL(triggered()), this, SLOT(slotHelpSupport()));
-    menu->addAction(aSupport);
+    m_aHelpSupport = new QAction("", menu);
+    connect(m_aHelpSupport, SIGNAL(triggered()), this, SLOT(slotHelpSupport()));
+    menu->addAction(m_aHelpSupport);
 
     return menu;
+}
+
+void FotoWall::checkForTutorial()
+{
+    // hide the tutorial link
+    m_aHelpTutorial->setVisible(false);
+
+    // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
+    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(slotVerifyTutorial(QNetworkReply*)));
+    manager->get(QNetworkRequest(TUTORIAL_URL));
+}
+
+void FotoWall::checkForSupport()
+{
+    // hide the support link
+    m_aHelpSupport->setVisible(false);
+
+    // check the Open Collaboration Services knowledgebase for FotoWall
+    // TODO
+    QTimer::singleShot(2000, this, SLOT(slotVerifySupport()));
 }
 
 void FotoWall::loadNormalProject()
@@ -471,6 +532,16 @@ void FotoWall::on_quitButton_clicked()
     QCoreApplication::quit();
 }
 
+void FotoWall::slotActionSelectAll()
+{
+    m_desk->selectAllContent();
+}
+
+void FotoWall::slotBackGradient(bool checked)
+{
+    m_desk->setBackGradientEnabled(checked);
+}
+
 void FotoWall::slotDecoTopBar(bool checked)
 {
     m_desk->setTopBarEnabled(checked);
@@ -515,31 +586,30 @@ void FotoWall::slotHelpSupport()
 {
 }
 
-void FotoWall::slotActionSelectAll()
-{
-    m_desk->selectAllContent();
-}
-
-void FotoWall::slotCheckTutorial(QNetworkReply * reply)
+void FotoWall::slotVerifyTutorial(QNetworkReply * reply)
 {
     if (reply->error() != QNetworkReply::NoError)
         return;
 
     QString htmlCode = reply->readAll();
     bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
-    ///ui->tutorialLabel->setVisible(tutorialValid);
+    m_aHelpTutorial->setVisible(tutorialValid);
 }
-/*
-#include <QDebug>
-void FotoWall::slotOcsKbItems(const KnowledgeItemV1List & items)
+
+void FotoWall::slotVerifySupport(/*const KnowledgeItemV1List & items*/)
 {
+    int supportEntries = 0;
+    m_aHelpSupport->setVisible(supportEntries > 0);
+    m_aHelpSupport->setText(tr("Support (%1)").arg(supportEntries));
+/*
     qWarning("FotoWall::slotOcsKbItems: got %d items", items.size());
     foreach (KnowledgeItemV1 * item, items) {
         qWarning() << item->name() << item->description() << item->answer();
     }
-}
 */
-void FotoWall::slotVideoInputsChanged(int count)
+}
+
+void FotoWall::slotVerifyVideoInputs(int count)
 {
     // maybe blink or something?
     ui->addMirror->setVisible(count > 0);

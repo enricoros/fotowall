@@ -52,12 +52,14 @@ class Desk : public QGraphicsScene
         void selectAllContent(bool selected = true);
 
         // decorations
-        void setTitleText(const QString & text);
-        QString titleText() const;
+        void setBackGradientEnabled(bool enabled);
+        bool backGradientEnabled() const;
         void setTopBarEnabled(bool enabled);
         bool topBarEnabled() const;
         void setBottomBarEnabled(bool enabled);
         bool bottomBarEnabled() const;
+        void setTitleText(const QString & text);
+        QString titleText() const;
 
         // save, restore, load, help
         void showIntroduction();
@@ -99,6 +101,7 @@ class Desk : public QGraphicsScene
         ColorPickerItem * m_grad2ColorPicker;
         bool m_topBarEnabled;
         bool m_bottomBarEnabled;
+        bool m_backGradientEnabled;
         QSize m_size;
         QRectF m_rect;
         QString m_titleText;
