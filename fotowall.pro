@@ -22,7 +22,8 @@ HEADERS += CPixmap.h \
     XmlSave.h \
     XmlRead.h \
     ModeInfo.h \
-    ExactSizeDialog.h
+    ExactSizeDialog.h \
+    Export.h
 SOURCES += main.cpp \
     CPixmap.cpp \
     GlowEffectWidget.cpp \
@@ -32,10 +33,12 @@ SOURCES += main.cpp \
     XmlSave.cpp \
     XmlRead.cpp \
     ModeInfo.cpp \
-    ExactSizeDialog.cpp
+    ExactSizeDialog.cpp \
+    Export.cpp
 FORMS += FotoWall.ui \
     GlowEffectDialog.ui \
-    ExactSizeDialog.ui
+    ExactSizeDialog.ui \
+    ExportDialog.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \
     translations/fotowall_fr.ts \
