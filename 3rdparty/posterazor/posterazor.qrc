@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/Icons" >
+        <file>posterazor.png</file>
+    </qresource>
+    <qresource prefix="/OverlappingPositionImages" >
+        <file>overlappingbottomleft.png</file>
+        <file>overlappingbottomright.png</file>
+        <file>overlappingtopleft.png</file>
+        <file>overlappingtopright.png</file>
+    </qresource>
+    <qresource prefix="/PosterAlignmentImages" >
+        <file>alignmenttopleft.png</file>
+        <file>alignmenttophcenter.png</file>
+        <file>alignmenttopright.png</file>
+        <file>alignmentvcenterleft.png</file>
+        <file>alignmentcenter.png</file>
+        <file>alignmentvcenterright.png</file>
+        <file>alignmentbottomleft.png</file>
+        <file>alignmentbottomhcenter.png</file>
+        <file>alignmentbottomright.png</file>
+    </qresource>
+    <qresource prefix="/Translations" >
+        <file>de.qm</file>
+        <file>en.qm</file>
+        <file>es.qm</file>
+        <file>fi.qm</file>
+        <file>fr.qm</file>
+        <file>it.qm</file>
+        <file>nl.qm</file>
+        <file>pl.qm</file>
+        <file>pt_BR.qm</file>
+        <file>pt_PT.qm</file>
+        <file>zh_CN.qm</file>
+    </qresource>
+</RCC>
