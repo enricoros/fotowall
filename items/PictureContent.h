@@ -44,6 +44,9 @@ class PictureContent : public AbstractContent
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
+        void flipH();
+        void flipV();
+
     Q_SIGNALS:
         void flipHorizontally();
         void flipVertically();

@@ -511,9 +511,11 @@ void AbstractContent::dropEvent(QGraphicsSceneDragDropEvent * event)
 
 void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    if (event->button() == Qt::RightButton)
-        emit configureMe(event->scenePos().toPoint());
     QGraphicsItem::mousePressEvent(event);
+    if (event->button() == Qt::RightButton) {
+        emit configureMe(event->scenePos().toPoint());
+        setSelected(true);
+    }
 }
 
 void AbstractContent::keyPressEvent(QKeyEvent * event)

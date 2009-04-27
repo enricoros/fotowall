@@ -810,6 +810,27 @@ void Desk::slotApplyEffect(const CEffect & effect, bool all)
     }
 }
 
+void Desk::slotFlipHorizontally()
+{
+    QList<AbstractContent *> selectedContent = content(selectedItems());
+    foreach (AbstractContent * content, selectedContent) {
+        PictureContent * picture = dynamic_cast<PictureContent *>(content);
+        if (!picture)
+            continue;
+        picture->flipH();
+    }
+}
+void Desk::slotFlipVertically()
+{
+    QList<AbstractContent *> selectedContent = content(selectedItems());
+    foreach (AbstractContent * content, selectedContent) {
+        PictureContent * picture = dynamic_cast<PictureContent *>(content);
+        if (!picture)
+            continue;
+        picture->flipV();
+    }
+}
+
 void Desk::slotTitleColorChanged()
 {
     update(0, 0, m_size.width(), 50);
