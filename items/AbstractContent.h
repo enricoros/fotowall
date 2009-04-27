@@ -72,7 +72,6 @@ class AbstractContent : public QObject, public QGraphicsItem
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     Q_SIGNALS:
-        void gfxChange();
         void configureMe(const QPoint & scenePoint);
         void changeStack(int opcode);
         void backgroundMe();

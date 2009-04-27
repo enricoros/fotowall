@@ -47,7 +47,6 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     m_gfxChangeTimer = new QTimer(this);
     m_gfxChangeTimer->setInterval(0);
     m_gfxChangeTimer->setSingleShot(true);
-    connect(m_gfxChangeTimer, SIGNAL(timeout()), this, SIGNAL(gfxChange()));
 
     // customize item's behavior
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable);
@@ -266,7 +265,7 @@ void AbstractContent::setMirrorEnabled(bool enabled)
     }
     if (enabled && !m_mirrorItem) {
         m_mirrorItem = new MirrorItem(this);
-        connect(this, SIGNAL(gfxChange()), m_mirrorItem, SLOT(sourceUpdated()));
+        connect(m_gfxChangeTimer, SIGNAL(timeout()), m_mirrorItem, SLOT(sourceChanged()));
         connect(this, SIGNAL(destroyed()), m_mirrorItem, SLOT(deleteLater()));
     }
 }
@@ -467,7 +466,7 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
 
 void AbstractContent::GFX_CHANGED() const
 {
-    if (m_gfxChangeTimer)
+    if (m_gfxChangeTimer && m_mirrorItem)
         m_gfxChangeTimer->start();
 }
 
@@ -526,26 +525,7 @@ void AbstractContent::keyPressEvent(QKeyEvent * event)
 
 QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant & value)
 {
-    // notify about graphics changes
-    if (change == ItemTransformHasChanged ||
-        change == ItemPositionHasChanged ||
-        change == ItemVisibleHasChanged ||
-        change == ItemEnabledHasChanged ||
-        change == ItemSelectedHasChanged ||
-#if QT_VERSION >= 0x040500
-        change == ItemOpacityHasChanged ||
-#endif
-        change == ItemParentHasChanged ) {
-        GFX_CHANGED();
-    }
-
-    // set mirror z level when it changes
-    if (m_mirrorItem && change == ItemZValueHasChanged)
-        m_mirrorItem->setZValue(zValue());
-    if (m_mirrorItem && change == ItemVisibleHasChanged)
-        m_mirrorItem->setVisible(isVisible());
-
-    // keep the center inside the scene rect..
+    // keep the AbstractContent's center inside the scene rect..
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
         QRectF rect = scene()->sceneRect();
@@ -555,6 +535,36 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
             return newPos;
         }
     }
+
+    // changes that affect the mirror item
+    if (m_mirrorItem) {
+        switch (change) {
+            // notify about setPos
+            case ItemPositionHasChanged:
+                m_mirrorItem->sourceMoved();
+                break;
+
+            // notify about graphics changes
+            case ItemTransformHasChanged:
+            case ItemEnabledHasChanged:
+            case ItemSelectedHasChanged:
+            case ItemParentHasChanged:
+#if QT_VERSION >= 0x040500
+            case ItemOpacityHasChanged:
+#endif
+                GFX_CHANGED();
+                break;
+
+            case ItemZValueHasChanged:
+                m_mirrorItem->setZValue(zValue());
+                break;
+
+            case ItemVisibleHasChanged:
+                m_mirrorItem->setVisible(isVisible());
+                break;
+        }
+    }
+
     // ..or just apply the value
     return QGraphicsItem::itemChange(change, value);
 }

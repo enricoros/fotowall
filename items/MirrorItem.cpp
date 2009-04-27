@@ -23,10 +23,12 @@
 MirrorItem::MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent)
     : QGraphicsItem(parent)
     , m_source(sourceItem)
+    , m_dirty(false)
 {
     // read current values
-    sourceUpdated();
+    sourceChanged();
     setVisible(m_source->isVisible());
+    setZValue(m_source->zValue());
 
     // add to the scame scene
     Q_ASSERT(m_source->scene());
@@ -45,10 +47,13 @@ QRectF MirrorItem::boundingRect() const
 void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
     // generate Reflection pixmap, if needed
-    if (m_pixmap.isNull()) {
+    if (m_dirty || m_pixmap.isNull()) {
 
-        // start with a blank pixmap
-        m_pixmap = QPixmap(m_boundingRect.width(), m_boundingRect.height());
+        // change pixmap size to match the bounding rect
+        if (m_pixmap.size() != m_boundingRect.size().toSize())
+            m_pixmap = QPixmap(m_boundingRect.width(), m_boundingRect.height());
+
+        // clear pixmap
         m_pixmap.fill(Qt::transparent);
 
         // find out the Transform chain to mirror a rotated item
@@ -74,6 +79,9 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         alphaPainter.fillRect(alphaPixmap.rect(), alphaGradient);
         alphaPainter.end();
         m_pixmap.setAlphaChannel(alphaPixmap);
+
+        // reset dirty
+        m_dirty = false;
     }
 
     // draw the reflection pixmap
@@ -83,29 +91,37 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         painter->drawPixmap(option->rect, m_pixmap, option->rect);
 }
 
-void MirrorItem::sourceUpdated()
+void MirrorItem::sourceMoved()
 {
     // find out the item's polygon in scene coordinates
     QRectF itemRect = m_source->boundingRect();
     QPolygonF itemScenePolygon = m_source->mapToScene(itemRect);
+    QRect itemSceneRect = itemScenePolygon.boundingRect().toRect();
 
-    // resize and reposition as an axis-aligned rect on the bottom of the Picture
-    QRect sceneRect = itemScenePolygon.boundingRect().toRect();
-#if 1
-    setPos(sceneRect.bottomLeft());
-#else
-    setPos(sceneRect.bottomLeft() + QPoint(0, -5));
-#endif
-    prepareGeometryChange();
-    m_boundingRect = sceneRect.translated(-sceneRect.topLeft());
-    if (m_boundingRect.height() > MIRROR_HEIGHT)
-        m_boundingRect.setHeight(MIRROR_HEIGHT);
+    // reposition
+    setPos(itemSceneRect.bottomLeft());
+}
 
-    // ### updated directly from caller
-    //setVisible(m_source->isVisible());
-    //setZValue(m_source->zValue() - 0.1);
+void MirrorItem::sourceChanged()
+{
+    // find out the item's polygon in scene coordinates
+    QRectF itemRect = m_source->boundingRect();
+    QPolygonF itemScenePolygon = m_source->mapToScene(itemRect);
+    QRect itemSceneRect = itemScenePolygon.boundingRect().toRect();
+
+    // reposition
+    setPos(itemSceneRect.bottomLeft());
+
+    // find out the new bounding rect
+    QRectF newBr(0.0, 0.0, itemSceneRect.width(), qMin(itemSceneRect.height(), MIRROR_HEIGHT));
+
+    // if the bounding rect changed, resize
+    if (newBr != m_boundingRect) {
+        prepareGeometryChange();
+        m_boundingRect = newBr;
+    }
 
     // invalidate current rendering
-    m_pixmap = QPixmap();
+    m_dirty = true;
     update();
 }

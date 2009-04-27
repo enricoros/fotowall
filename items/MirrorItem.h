@@ -32,12 +32,14 @@ class MirrorItem : public QObject, public QGraphicsItem
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     public Q_SLOTS:
-        void sourceUpdated();
+        void sourceMoved();
+        void sourceChanged();
 
     private:
         QGraphicsItem * m_source;
         QRectF m_boundingRect;
         QPixmap m_pixmap;
+        bool m_dirty;
 };
 
 #endif
