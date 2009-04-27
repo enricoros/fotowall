@@ -201,13 +201,7 @@ void FotoWall::saveImage()
     int destH = sd->hSpin->value();
     delete sd;
 
-    // render on the image
-    QImage image(destW, destH, QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter imagePainter(&image);
-    imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_desk->renderVisible(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    imagePainter.end();
+    const QImage image = renderedImage(QSize(destW, destH));
 
     // save image
     if (!image.save(fileName) || !QFile::exists(fileName)) {
@@ -225,13 +219,7 @@ void FotoWall::saveExactSize()
     bool ok = printDialog.exec();
     if(!ok) return;
 
-    QImage image(m_modeInfo.printPixelSize(), QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter paintimg(&image);
-    paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    // Render on the image
-    m_desk->renderVisible(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    paintimg.end();
+    QImage image = renderedImage(m_modeInfo.printPixelSize());
 
     if(m_modeInfo.landscape()) {
         // Print in landscape mode, so rotate
@@ -334,6 +322,19 @@ QMenu * FotoWall::createDecorationMenu()
     menu->addAction(aClearTitle);
 
     return menu;
+}
+
+QImage FotoWall::renderedImage(const QSize &size)
+{
+    QImage result(size, QImage::Format_ARGB32);
+
+    result.fill(0);
+    QPainter painter(&result);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    m_desk->renderVisible(&painter, result.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+    painter.end();
+
+    return result;
 }
 
 QMenu * FotoWall::createHelpMenu()
