@@ -14,6 +14,7 @@
 
 #include "FotoWall.h"
 #include "Desk.h"
+#include "Export.h"
 #include "RenderOpts.h"
 #include "VideoProvider.h"
 #include "ui_FotoWall.h"
@@ -152,70 +153,10 @@ void FotoWall::showIntroduction()
     m_desk->showIntroduction();
 }
 
-//BEGIN SizeDialog
-#include <QDialog>
-#include <QSpinBox>
-class SizeDialog : public QDialog {
-    public:
-        SizeDialog(QWidget * parent = 0)
-            : QDialog(parent)
-        {
-            setWindowTitle(tr("Select Resolution"));
-
-            QLabel * label = new QLabel(tr("The aspect ratio must be kept"), this);
-            wSpin = new QSpinBox(this);
-            wSpin->setRange(100, 10000);
-            hSpin = new QSpinBox(this);
-            hSpin->setRange(100, 10000);
-            QPushButton * closeButton = new QPushButton(tr("OK"), this);
-            connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
-
-            QHBoxLayout * lay = new QHBoxLayout(this);
-            lay->addWidget(label);
-            lay->addWidget(wSpin);
-            lay->addWidget(hSpin);
-            lay->addWidget(closeButton);
-        }
-        QSpinBox * wSpin;
-        QSpinBox * hSpin;
-};
-//END SizeDialog
-
-void FotoWall::saveImage()
+void FotoWall::exportWizard()
 {
-    QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.6.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), QString(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
-    if (fileName.isNull())
-        return;
-    if (QFileInfo(fileName).suffix().isEmpty())
-        fileName += ".png";
-
-    // get the rendering size
-    SizeDialog * sd = new SizeDialog(this);
-    sd->wSpin->setValue(m_desk->width());
-    sd->hSpin->setValue(m_desk->height());
-    if (!sd->exec())
-        return;
-    int destW = sd->wSpin->value();
-    int destH = sd->hSpin->value();
-    delete sd;
-
-    // render on the image
-    QImage image(destW, destH, QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter imagePainter(&image);
-    imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_desk->renderVisible(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    imagePainter.end();
-
-    // save image
-    if (!image.save(fileName) || !QFile::exists(fileName)) {
-        QMessageBox::warning(this, tr("Rendering Error"), tr("Error rendering to the file '%1'").arg(fileName));
-        return;
-    }
-    int size = QFile(fileName).size();
-    QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
+    Export exp(m_desk);
+    exp.exec();
 }
 
 void FotoWall::saveExactSize()
@@ -528,7 +469,7 @@ void FotoWall::on_exportButton_clicked()
     // check to project type for saving
     switch (m_desk->projectMode()) {
         case Desk::ModeNormal:
-            saveImage();
+            exportWizard();
             break;
 
         default:
