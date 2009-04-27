@@ -37,8 +37,13 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <math.h>
 #include "ModeInfo.h"
 #include "ExactSizeDialog.h"
+#include "posterazorcore.h"
+#include "controller.h"
+#include "wizard.h"
+#include "imageloaderqt.h"
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -210,6 +215,38 @@ void FotoWall::saveImage()
     }
     int size = QFile(fileName).size();
     QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
+}
+
+void FotoWall::savePoster()
+{
+    static const quint32 posterPixels = 6 * 1000000; // Megapixels * 3 bytes!
+    // We will use up the whole posterPixels for the render, respecting the aspect ratio.
+    const qreal widthToHeightRatio = m_desk->width() / m_desk->height();
+    // Thanks to colleague Oswald for some of the math :)
+    const int posterPixelWidth = int(sqrt(widthToHeightRatio * posterPixels));
+    const int posterPixelHeight = posterPixels / posterPixelWidth;
+
+    static const QLatin1String settingsGroup("posterazor");
+    QSettings settings;
+    settings.beginGroup(settingsGroup);
+
+    // TODO: Eliminate Poster size in %
+    ImageLoaderQt loader;
+    loader.setQImage(renderedImage(QSize(posterPixelWidth, posterPixelHeight)));
+    PosteRazorCore posterazor(&loader);
+    posterazor.readSettings(&settings);
+    Wizard *wizard = new Wizard;
+    Controller controller(&posterazor, wizard);
+    controller.setImageLoadingAvailable(false);
+    controller.setPosterSizeModeAvailable(Types::PosterSizeModePercentual, false);
+    QDialog dialog(this, Qt::WindowMinMaxButtonsHint);
+    dialog.setModal(true);
+    dialog.setLayout(new QVBoxLayout);
+    dialog.layout()->addWidget(wizard);
+    dialog.resize(640, 480);
+    dialog.exec();
+    settings.sync();
+    posterazor.writeSettings(&settings);
 }
 
 void FotoWall::saveExactSize()

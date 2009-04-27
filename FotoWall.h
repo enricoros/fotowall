@@ -32,6 +32,7 @@ class FotoWall : public QWidget
 
         void showIntroduction();
         void saveImage();
+        void savePoster();
         void saveExactSize();
         void load(QString &fileName);
         ModeInfo getModeInfo(); // Needed for saving
