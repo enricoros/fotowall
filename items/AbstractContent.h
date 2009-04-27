@@ -18,6 +18,7 @@
 #include <QGraphicsItem>
 #include <QObject>
 #include <QDomElement>
+#include "enricomath.h"
 class AbstractProperties;
 class ButtonItem;
 class CornerItem;
@@ -126,6 +127,10 @@ class AbstractContent : public QObject, public QGraphicsItem
         void slotPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);
         void slotClearPerspective();
         void slotDirtyEnded();
+
+        // used by desk arrangement functions
+    public:
+        Vector2 vForce, vVel, vPos;
 };
 
 #endif

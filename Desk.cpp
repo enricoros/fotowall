@@ -31,6 +31,7 @@
 #include <QMimeData>
 #include <QUrl>
 #include <QList>
+#include <QTimer>
 #include <QFile>
 #include <QMessageBox>
 #include "FotoWall.h"
@@ -48,6 +49,7 @@ Desk::Desk(QObject * parent)
     , m_bottomBarEnabled(false)
     , m_backGradientEnabled(true)
     , m_projectMode(ModeNormal)
+    , m_forceFieldTimer(0)
 {
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
@@ -86,6 +88,7 @@ Desk::Desk(QObject * parent)
 
 Desk::~Desk()
 {
+    delete m_forceFieldTimer;
     qDeleteAll(m_highlightItems);
     delete m_helpItem;
     delete m_titleColorPicker;
@@ -98,9 +101,14 @@ Desk::~Desk()
 }
 
 /// Add Content
+static QPoint nearCenter(const QRectF & rect)
+{
+    return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
+}
+
 void Desk::addPictures(const QStringList & fileNames)
 {
-    QPoint pos = sceneRect().center().toPoint();
+    QPoint pos = nearCenter(sceneRect());
     foreach (const QString & localFile, fileNames) {
         if (!QFile::exists(localFile))
             continue;
@@ -117,12 +125,12 @@ void Desk::addPictures(const QStringList & fileNames)
 
 void Desk::addTextContent()
 {
-    createText(sceneRect().center().toPoint());
+    createText(nearCenter(sceneRect()));
 }
 
 void Desk::addVideoContent(int input)
 {
-    createVideo(input, sceneRect().center().toPoint());
+    createVideo(input, nearCenter(sceneRect()));
 }
 
 
@@ -155,6 +163,27 @@ void Desk::selectAllContent(bool selected)
 {
     foreach (AbstractContent * content, m_content)
         content->setSelected(selected);
+}
+
+/// Arrangement
+void Desk::setForceFieldEnabled(bool enabled)
+{
+    if (enabled && !m_forceFieldTimer) {
+        m_forceFieldTimer = new QTimer(this);
+        connect(m_forceFieldTimer, SIGNAL(timeout()), this, SLOT(slotApplyForce()));
+        m_forceFieldTimer->start(10);
+        m_forceFieldTime.start();
+    }
+
+    if (!enabled && m_forceFieldTimer) {
+        delete m_forceFieldTimer;
+        m_forceFieldTimer = 0;
+    }
+}
+
+bool Desk::forceFieldEnabled() const
+{
+    return m_forceFieldTimer;
 }
 
 /// Decorations
@@ -402,6 +431,13 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         } else
             pos += QPoint(30, 30);
     }
+}
+
+void Desk::keyPressEvent(QKeyEvent * keyEvent)
+{
+    QGraphicsScene::keyPressEvent(keyEvent);
+    if (!keyEvent->isAccepted() && keyEvent->key() == Qt::Key_Delete)
+        slotDeleteContent();
 }
 
 void Desk::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
@@ -797,4 +833,55 @@ void Desk::slotCloseIntroduction()
     foreach (HighlightItem * highlight, m_highlightItems)
         highlight->deleteAfterAnimation();
     m_highlightItems.clear();
+}
+
+void Desk::slotApplyForce()
+{
+    // initial consts
+    const QRectF sRect = sceneRect();
+    if (sRect.width() < 10 || sRect.height() < 10)
+        return;
+    const qreal W = sRect.width();
+    const qreal H = sRect.height();
+    const qreal dT = 4.0 * qBound((qreal)0.001, (qreal)m_forceFieldTime.restart() / 1000.0, (qreal)0.10);
+
+    // pass 0
+    QList<AbstractContent *>::iterator it1, it2, end = m_content.end();
+    for (it1 = m_content.begin(); it1 != end; ++it1) {
+        AbstractContent * t = *it1;
+        t->vPos = Vector2(t->pos().x(), t->pos().y());
+        double fx = W / (t->vPos.x() - sRect.left() + 10.0) + W / (t->vPos.x() - sRect.right() - 10.0);
+        double fy = H / (t->vPos.y() - sRect.top() + 10.0) + H / (t->vPos.y() - sRect.bottom() - 10.0);
+        t->vForce = Vector2(fx, fy);
+    }
+
+    // pass 1: item-vs-item force
+    for (it1 = m_content.begin(); it1 != end; ++it1) {
+        for (it2 = m_content.begin(); it2 != end; ++it2) {
+            AbstractContent * t = *it1;
+            AbstractContent * s = *it2;
+            Vector2 r = t->vPos - s->vPos;
+            double mod = r.module();
+            if (mod > 0.707) {
+                r *= s->boundingRect().width() / (mod * mod);
+                t->vForce += r;
+            }
+        }
+    }
+
+    // pass 2: apply force
+    for (it1 = m_content.begin(); it1 != end; ++it1) {
+        AbstractContent * t = *it1;
+        if (t->isSelected())
+            continue;
+
+        Vector2 vStart = t->vVel;
+
+        // add friction
+        t->vForce += -0.2 * t->vVel;
+
+        t->vVel += t->vForce * dT;
+        t->vPos += (vStart + t->vVel) * dT / 2.0;
+        t->setPos(t->vPos.x(), t->vPos.y());
+    }
 }

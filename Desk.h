@@ -20,6 +20,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRect>
+#include <QTime>
 class AbstractContent;
 class AbstractProperties;
 struct CEffect;
@@ -28,6 +29,7 @@ class FotoWall;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
+class QTimer;
 class TextContent;
 class VideoContent;
 
@@ -50,6 +52,10 @@ class Desk : public QGraphicsScene
 
         // item interaction
         void selectAllContent(bool selected = true);
+
+        // arrangement
+        void setForceFieldEnabled(bool enabled);
+        bool forceFieldEnabled() const;
 
         // decorations
         void setBackGradientEnabled(bool enabled);
@@ -79,6 +85,7 @@ class Desk : public QGraphicsScene
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
         void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
         void dropEvent( QGraphicsSceneDragDropEvent * event );
+        void keyPressEvent( QKeyEvent * keyEvent );
         void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * event );
         void contextMenuEvent( QGraphicsSceneContextMenuEvent * event );
         void drawBackground( QPainter * painter, const QRectF & rect );
@@ -108,8 +115,9 @@ class Desk : public QGraphicsScene
         QString m_titleText;
         QPixmap m_backCache;
         Mode m_projectMode;
-        // Used by some modes to show information widgets, which won't be rendered
-        QList<QGraphicsItem *> m_markerItems;
+        QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
+        QTimer * m_forceFieldTimer;
+        QTime m_forceFieldTime;
 
     private Q_SLOTS:
         void slotConfigureContent(const QPoint & scenePoint);
@@ -125,6 +133,7 @@ class Desk : public QGraphicsScene
         void slotGradColorChanged();
 
         void slotCloseIntroduction();
+        void slotApplyForce();
 };
 
 #endif

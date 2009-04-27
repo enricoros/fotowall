@@ -70,6 +70,7 @@ class FotoWall : public QWidget
 
         void slotActionSelectAll();
 
+        void slotArrangeForceField(bool enabled);
         void slotBackGradient(bool checked);
         void slotDecoTopBar(bool checked);
         void slotDecoBottomBar(bool checked);

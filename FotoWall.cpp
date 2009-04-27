@@ -261,11 +261,11 @@ QMenu * FotoWall::createArrangeMenu()
 {
     QMenu * menu = new QMenu();
 
-    QAction * aFF = new QAction(tr("Enable force field"), menu);
-    aFF->setCheckable(true);
-    aFF->setChecked(false);
-    //connect(aFF, SIGNAL(toggled(bool)), this, SLOT(slotForceField(bool)));
-    menu->addAction(aFF);
+    QAction * aForceField = new QAction(tr("Enable force field"), menu);
+    aForceField->setCheckable(true);
+    aForceField->setChecked(m_desk->forceFieldEnabled());
+    connect(aForceField, SIGNAL(toggled(bool)), this, SLOT(slotArrangeForceField(bool)));
+    menu->addAction(aForceField);
 
     QAction * aNP = new QAction(tr("Auto-arrange new pictures"), menu);
     aNP->setCheckable(true);
@@ -546,6 +546,11 @@ void FotoWall::on_quitButton_clicked()
 void FotoWall::slotActionSelectAll()
 {
     m_desk->selectAllContent();
+}
+
+void FotoWall::slotArrangeForceField(bool checked)
+{
+    m_desk->setForceFieldEnabled(checked);
 }
 
 void FotoWall::slotBackGradient(bool checked)

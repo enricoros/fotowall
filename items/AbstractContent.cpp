@@ -562,6 +562,9 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
             case ItemVisibleHasChanged:
                 m_mirrorItem->setVisible(isVisible());
                 break;
+
+            default:
+                break;
         }
     }
 

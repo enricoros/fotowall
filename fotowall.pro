@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = fotowall
 DEPENDPATH += .
-INCLUDEPATH += .
+INCLUDEPATH += . 3rdparty
 MOC_DIR = .bin
 OBJECTS_DIR = .bin
 RCC_DIR = .bin
