@@ -324,7 +324,7 @@ QMenu * FotoWall::createDecorationMenu()
     return menu;
 }
 
-QImage FotoWall::renderedImage(const QSize &size)
+QImage FotoWall::renderedImage(const QSize &size) const
 {
     QImage result(size, QImage::Format_ARGB32);
 

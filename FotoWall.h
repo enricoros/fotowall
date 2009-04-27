@@ -50,7 +50,7 @@ class FotoWall : public QWidget
         void loadCDProject();
         void loadDVDProject();
         void loadExactSizeProject();
-        QImage renderedImage(const QSize &size);
+        QImage renderedImage(const QSize &size) const;
 
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
