@@ -425,6 +425,7 @@ void FotoWall::loadNormalProject()
     else
         showMaximized();
     ui->exportButton->setText(tr("export..."));
+    ui->exportPosterButton->show();
     m_desk->setProjectMode(Desk::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
@@ -436,6 +437,7 @@ void FotoWall::loadCDProject()
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print..."));
+    ui->exportPosterButton->hide();
     m_desk->setProjectMode(Desk::ModeCD);
     ui->projectType->setCurrentIndex(1);
 }
@@ -446,6 +448,7 @@ void FotoWall::loadDVDProject()
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print..."));
+    ui->exportPosterButton->hide();
     m_desk->setProjectMode(Desk::ModeDVD);
     ui->projectType->setCurrentIndex(2);
 }
@@ -471,6 +474,7 @@ void FotoWall::loadExactSizeProject()
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print..."));
+    ui->exportPosterButton->show();
     m_desk->setProjectMode(Desk::ModeExactSize);
     ui->projectType->setCurrentIndex(3);
 }
@@ -573,6 +577,13 @@ void FotoWall::on_exportButton_clicked()
             saveExactSize();
             break;
     }
+    RenderOpts::HQRendering = false;
+}
+
+void FotoWall::on_exportPosterButton_clicked()
+{
+    RenderOpts::HQRendering = true; // Should this go into renderedImage()?
+    savePoster();
     RenderOpts::HQRendering = false;
 }
 
