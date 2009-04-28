@@ -169,22 +169,6 @@ void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-void PictureContent::flipH()
-{
-    m_photo->toHFlip();
-    m_cachedPhoto = QPixmap();
-    update();
-    GFX_CHANGED();
-}
-
-void PictureContent::flipV()
-{
-    m_photo->toVFlip();
-    m_cachedPhoto = QPixmap();
-    update();
-    GFX_CHANGED();
-}
-
 void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     // paint parent

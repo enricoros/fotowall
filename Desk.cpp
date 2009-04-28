@@ -817,9 +817,10 @@ void Desk::slotFlipHorizontally()
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
             continue;
-        picture->flipH();
+        picture->addEffect(CEffect::FlipH);
     }
 }
+
 void Desk::slotFlipVertically()
 {
     QList<AbstractContent *> selectedContent = content(selectedItems());
@@ -827,7 +828,7 @@ void Desk::slotFlipVertically()
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
             continue;
-        picture->flipV();
+        picture->addEffect(CEffect::FlipV);
     }
 }
 
