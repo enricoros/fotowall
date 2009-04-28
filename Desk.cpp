@@ -20,20 +20,22 @@
 #include "TextContent.h"
 #include "VideoContent.h"
 #include "PictureProperties.h"
+#include "RenderOpts.h"
 #include "TextProperties.h"
 #include "frames/FrameFactory.h"
-#include "RenderOpts.h"
+#include <QAbstractTextDocumentLayout>
+#include <QFile>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
-#include <QAbstractTextDocumentLayout>
-#include <QTextDocument>
 #include <QImageReader>
-#include <QMimeData>
-#include <QUrl>
 #include <QList>
-#include <QTimer>
-#include <QFile>
 #include <QMessageBox>
+#include <QMimeData>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QTextDocument>
+#include <QTimer>
+#include <QUrl>
 #include "FotoWall.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
@@ -359,11 +361,56 @@ void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF
         item->hide();
     foreach(AbstractProperties *prop, m_properties)
         prop->hide();
-    QGraphicsScene::render( painter, target , source, aspectRatioMode );
+
+    RenderOpts::HQRendering = true;
+    QGraphicsScene::render(painter, target, source, aspectRatioMode);
+    RenderOpts::HQRendering = false;
+
     foreach(AbstractProperties *prop, m_properties)
         prop->show();
     foreach(QGraphicsItem *item, m_markerItems)
         item->show();
+}
+
+QImage Desk::renderedImage(const QSize & size, Qt::AspectRatioMode aspectRatioMode)
+{
+    QImage result(size, QImage::Format_ARGB32);
+
+    result.fill(0);
+    QPainter painter(&result);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    renderVisible(&painter, result.rect(), sceneRect(), aspectRatioMode);
+    painter.end();
+
+    return result;
+}
+
+bool Desk::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape)
+{
+    // setup printer
+    QPrinter printer;
+    printer.setResolution(printerDpi);
+    printer.setPaperSize(QPrinter::A4);
+
+    // configure printer via the print dialog
+    QPrintDialog printDialog(&printer);
+    if (printDialog.exec() != QDialog::Accepted)
+        return false;
+
+    // TODO: use different ratio modes?
+    QImage image = renderedImage(pixelSize);
+    if (landscape) {
+        // Print in landscape mode, so rotate
+        QMatrix matrix;
+        matrix.rotate(90);
+        image = image.transformed(matrix);
+    }
+
+    // And then print
+    QPainter paint(&printer);
+    paint.drawImage(image.rect(), image);
+    paint.end();
+    return true;
 }
 
 /// Drag & Drop image files
@@ -817,9 +864,10 @@ void Desk::slotFlipHorizontally()
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
             continue;
-        picture->flipH();
+        picture->addEffect(CEffect::FlipH);
     }
 }
+
 void Desk::slotFlipVertically()
 {
     QList<AbstractContent *> selectedContent = content(selectedItems());
@@ -827,7 +875,7 @@ void Desk::slotFlipVertically()
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
             continue;
-        picture->flipV();
+        picture->addEffect(CEffect::FlipV);
     }
 }
 
