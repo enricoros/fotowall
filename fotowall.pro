@@ -52,6 +52,7 @@ include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 include(3rdparty/posterazor/posterazor.pri)
 !contains(CONFIG, build_pass) system(lrelease 3rdparty/posterazor/posterazor.pri)
+!contains(CONFIG, build_pass) system(lrelease fotowall.pro)
 
 # installation on Linux
 unix {
