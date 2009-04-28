@@ -4,6 +4,7 @@ INCLUDEPATH += \
 
 SOURCES += \
     controller.cpp \
+    mainwindow.cpp \
     wizard.cpp \
     paintcanvas.cpp \
     pdfwriter.cpp \
@@ -15,6 +16,7 @@ SOURCES += \
 HEADERS += \
     controller.h \
     imageloaderinterface.h \
+    mainwindow.h \
     wizard.h \
     paintcanvas.h \
     paintcanvasinterface.h \
