@@ -250,12 +250,12 @@ QString Desk::titleText() const
 #define HIGHLIGHT(x, y, del) \
     { \
         HighlightItem * highlight = new HighlightItem(); \
-        m_highlightItems.append(highlight); \
+        if (!del) m_highlightItems.append(highlight); \
+        else highlight->deleteAfterAnimation(); \
         addItem(highlight); \
         highlight->setZValue(10000); \
         highlight->setPosF(x, y); \
         highlight->show(); \
-        if (del) highlight->deleteAfterAnimation(); \
     }
 
 void Desk::showIntroduction()

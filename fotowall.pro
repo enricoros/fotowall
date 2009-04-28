@@ -82,9 +82,12 @@ macx {
 }
 
 # handling static image plugins
-contains(CONFIG, static) {
-    QTPLUGIN += qgif \
-        qjpeg \
-        qsvg \
-        qtiff
+win32|macx {
+    contains(CONFIG, static)|contains(CONFIG, qt_no_framework) {
+        DEFINES += STATIC_LINK
+        QTPLUGIN += qgif \
+            qjpeg \
+            qsvg \
+            qtiff
+    }
 }

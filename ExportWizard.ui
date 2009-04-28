@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>Export Wizard</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>

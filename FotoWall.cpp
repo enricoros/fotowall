@@ -112,7 +112,7 @@ FotoWall::FotoWall(QWidget * parent)
     m_view->setFocus();
 
     // attach menus
-    ui->arrangeButton->setMenu(createArrangeMenu());
+    ///ui->arrangeButton->setMenu(createArrangeMenu());
     ui->backButton->setMenu(createBackgroundMenu());
     ui->decoButton->setMenu(createDecorationMenu());
     ui->howtoButton->setMenu(createHelpMenu());
@@ -259,7 +259,7 @@ QMenu * FotoWall::createHelpMenu()
     connect(aIntroduction, SIGNAL(triggered()), this, SLOT(slotHelpIntroduction()));
     menu->addAction(aIntroduction);
 
-    m_aHelpTutorial = new QAction(tr("Tutorial"), menu);
+    m_aHelpTutorial = new QAction(tr("Tutorial Video"), menu);
     connect(m_aHelpTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
     menu->addAction(m_aHelpTutorial);
 
@@ -310,7 +310,7 @@ void FotoWall::setNormalProject()
         skipFirstMaximizeHack = false;
     else
         showMaximized();
-    ui->exportButton->setText(tr("export..."));
+    ui->exportButton->setText(tr("Export..."));
     m_desk->setProjectMode(Desk::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
@@ -322,7 +322,7 @@ void FotoWall::setCDProject()
     m_modeInfo.setLandscape(false);
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
-    ui->exportButton->setText(tr("print..."));
+    ui->exportButton->setText(tr("Print..."));
     m_desk->setProjectMode(Desk::ModeCD);
     ui->projectType->setCurrentIndex(1);
 }
@@ -333,7 +333,7 @@ void FotoWall::setDVDProject()
     m_modeInfo.setLandscape(true);
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
-    ui->exportButton->setText(tr("print..."));
+    ui->exportButton->setText(tr("Print..."));
     m_desk->setProjectMode(Desk::ModeDVD);
     ui->projectType->setCurrentIndex(2);
 }
@@ -359,7 +359,7 @@ void FotoWall::setExactSizeProject()
     }
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
-    ui->exportButton->setText(tr("print..."));
+    ui->exportButton->setText(tr("Print..."));
     m_desk->setProjectMode(Desk::ModeExactSize);
     ui->projectType->setCurrentIndex(3);
 }

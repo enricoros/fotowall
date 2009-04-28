@@ -10,18 +10,20 @@ Check out the [old home page](http://code.google.com/p/fotowall) too.
 ChangeLog
 ---------
 
-Unreleased Version 0.6:
+Unreleased:
 
-* ...
-* Camera Content (on Linux, requires a WebCam)
-* XML file format, will ensure forward-compatibility, click-to-open
+Version 0.6:
+
+* PosteRazor integration
+* Video Content (on Linux, requires a WebCam)
+* XML file format (will ensure forward-compatibility)
+* Export Wizard
 * Multi-items selection (to move, delete, set properties, ...)
 * All-in-one Scale+Rotate button (different with LMB/RMB and Shift/Ctrl)
 * Perspective Transform
 * Fixed Size mode
 * Sepia Effect
 * Text Scale
-* BugFix: save/restore the whole effects stack for a picture
 
 Version 0.5:
 
