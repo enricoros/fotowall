@@ -14,6 +14,7 @@
 
 #include "FotoWall.h"
 #include "Desk.h"
+#include "Export.h"
 #include "RenderOpts.h"
 #include "VideoProvider.h"
 #include "ui_FotoWall.h"
@@ -157,37 +158,9 @@ void FotoWall::showIntroduction()
     m_desk->showIntroduction();
 }
 
-//BEGIN SizeDialog
-#include <QDialog>
-#include <QSpinBox>
-class SizeDialog : public QDialog {
-    public:
-        SizeDialog(QWidget * parent = 0)
-            : QDialog(parent)
-        {
-            setWindowTitle(tr("Select Resolution"));
-
-            QLabel * label = new QLabel(tr("The aspect ratio must be kept"), this);
-            wSpin = new QSpinBox(this);
-            wSpin->setRange(100, 10000);
-            hSpin = new QSpinBox(this);
-            hSpin->setRange(100, 10000);
-            QPushButton * closeButton = new QPushButton(tr("OK"), this);
-            connect(closeButton, SIGNAL(clicked()), this, SLOT(accept()));
-
-            QHBoxLayout * lay = new QHBoxLayout(this);
-            lay->addWidget(label);
-            lay->addWidget(wSpin);
-            lay->addWidget(hSpin);
-            lay->addWidget(closeButton);
-        }
-        QSpinBox * wSpin;
-        QSpinBox * hSpin;
-};
-//END SizeDialog
-
-void FotoWall::saveImage()
+void FotoWall::exportWizard()
 {
+#if 0
     QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.6.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), QString(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
@@ -215,6 +188,10 @@ void FotoWall::saveImage()
     }
     int size = QFile(fileName).size();
     QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
+#else
+    Export exp(m_desk);
+    exp.exec();
+#endif
 }
 
 void FotoWall::savePoster()
@@ -566,7 +543,7 @@ void FotoWall::on_exportButton_clicked()
     // check to project type for saving
     switch (m_desk->projectMode()) {
         case Desk::ModeNormal:
-            saveImage();
+            exportWizard();
             break;
 
         default:
