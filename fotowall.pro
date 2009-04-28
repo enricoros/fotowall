@@ -72,7 +72,7 @@ win32 {
 }
 
 # handling static image plugins
-contains(CONFIG, static) {
+contains(CONFIG, static)|contains(CONFIG, qt_no_framework) {
     QTPLUGIN += qgif \
         qjpeg \
         qsvg \
