@@ -151,7 +151,11 @@ void ExportWizard::startPosterazor()
     Controller controller(&posterazor, wizard);
     controller.setImageLoadingAvailable(false);
     controller.setPosterSizeModeAvailable(Types::PosterSizeModePercentual, false);
+#if QT_VERSION >= 0x040500
     QDialog dialog(this, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+#else
+    QDialog dialog(this, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
+#endif
 	dialog.setWindowTitle(tr("Export poster"));
     dialog.setLayout(new QVBoxLayout);
     dialog.layout()->addWidget(wizard);
