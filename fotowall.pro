@@ -82,7 +82,7 @@ macx {
 }
 
 # handling static image plugins
-contains(CONFIG, static)|contains(CONFIG, qt_no_framework) {
+contains(CONFIG, static) {
     QTPLUGIN += qgif \
         qjpeg \
         qsvg \
