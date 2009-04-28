@@ -189,8 +189,7 @@ void FotoWall::exportWizard()
     int size = QFile(fileName).size();
     QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
 #else
-    Export exp(m_desk);
-    exp.exec();
+    Export exp(m_desk, this);
 #endif
 }
 

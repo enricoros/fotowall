@@ -18,16 +18,18 @@
 #include "ui_ExportDialog.h"
 
 class Desk;
+class FotoWall;
 
 class Export : public QDialog
 {
     Q_OBJECT
     public:
-        Export(Desk *desk);
+        Export(Desk *desk, FotoWall *fotowall);
 
     private:
         Ui::ExportDialog m_ui;
         Desk *m_desk;
+        FotoWall *m_fotowall;
         QSizeF m_printSize; // the print size in inches
         void setBackground();
 

@@ -39,6 +39,7 @@ class FotoWall : public QWidget
         void restoreMode(int);
         void setModeInfo(ModeInfo);
 
+        QImage renderedImage(const QSize &size) const;
     private:
         QMenu * createArrangeMenu();
         QMenu * createBackgroundMenu();
@@ -51,7 +52,6 @@ class FotoWall : public QWidget
         void loadCDProject();
         void loadDVDProject();
         void loadExactSizeProject();
-        QImage renderedImage(const QSize &size) const;
 
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;

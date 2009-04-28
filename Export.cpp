@@ -19,8 +19,14 @@
 #include <QPrintDialog>
 #include "Export.h"
 #include "Desk.h"
+#include "FotoWall.h"
+#include <math.h>
+#include "posterazorcore.h"
+#include "controller.h"
+#include "wizard.h"
+#include "imageloaderqt.h"
 
-Export::Export(Desk *desk) : m_desk(desk)
+Export::Export(Desk *desk, FotoWall *fotowall) : m_desk(desk), m_fotowall(fotowall)
 {
     m_ui.setupUi(this);
     // Set default sizes
@@ -31,6 +37,25 @@ Export::Export(Desk *desk) : m_desk(desk)
     m_printSize.setWidth(m_desk->width()/m_ui.printDpi->value());
     m_printSize.setHeight(m_desk->height()/m_ui.printDpi->value());
 
+
+    static const quint32 posterPixels = 6 * 1000000; // Megapixels * 3 bytes!
+    // We will use up the whole posterPixels for the render, respecting the aspect ratio.
+    const qreal widthToHeightRatio = m_desk->width() / m_desk->height();
+    // Thanks to colleague Oswald for some of the math :)
+    const int posterPixelWidth = int(sqrt(widthToHeightRatio * posterPixels));
+    const int posterPixelHeight = posterPixels / posterPixelWidth;
+    static const QLatin1String settingsGroup("posterazor");
+    QSettings settings;
+    settings.beginGroup(settingsGroup);
+    // TODO: Eliminate Poster size in %
+    ImageLoaderQt loader;
+    loader.setQImage(fotowall->renderedImage(QSize(posterPixelWidth, posterPixelHeight)));
+    PosteRazorCore posterazor(&loader);
+    posterazor.readSettings(&settings);
+    Controller controller(&posterazor, m_ui.m_posteRazorWizard);
+    controller.setImageLoadingAvailable(false);
+    controller.setPosterSizeModeAvailable(Types::PosterSizeModePercentual, false);
+
     connect(m_ui.saveButton, SIGNAL(clicked()), this, SLOT(slotSaveImage()));
     connect(m_ui.chooseFilePath, SIGNAL(clicked()), this, SLOT(slotChoosePath()));
 
@@ -40,6 +65,9 @@ Export::Export(Desk *desk) : m_desk(desk)
     connect(m_ui.printHeight, SIGNAL(valueChanged(double)), this, SLOT(slotPrintHeightChanged(double)));
 
     connect(m_ui.cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+    exec();
+    settings.sync();
+    posterazor.writeSettings(&settings);
 }
 
 void Export::slotSaveImage()
@@ -55,12 +83,7 @@ void Export::slotSaveImage()
         int destH = m_ui.saveHeight->value();
 
         // render on the image
-        QImage image(destW, destH, QImage::Format_ARGB32);
-        image.fill(0);
-        QPainter imagePainter(&image);
-        imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-        m_desk->renderVisible(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-        imagePainter.end();
+        QImage image = m_fotowall->renderedImage(QSize(destW, destH));
 
         if(m_ui.saveLandscape->isChecked()) {
             // Save in landscape mode, so rotate
@@ -110,16 +133,7 @@ void Export::slotPrint()
         m_printSize.setHeight(h);
     }
 
-
-    QImage image(m_desk->width(), m_desk->height(), QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter paintimg(&image);
-    paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    // Render on the image
-    m_desk->renderVisible(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    paintimg.end();
-    QSize scaleSize(m_printSize.width()*fdpi, m_printSize.height()*fdpi);
-    image = image.scaled(scaleSize);
+    QImage image = m_fotowall->renderedImage(QSize(m_printSize.width()*fdpi, m_printSize.height()*fdpi));
 
     printer.setResolution(dpi);
     printer.setPaperSize(QPrinter::A4);

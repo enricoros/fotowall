@@ -907,3 +907,4 @@ void Desk::slotApplyForce()
         t->setPos(t->vPos.x(), t->vPos.y());
     }
 }
+
