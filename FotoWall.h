@@ -30,16 +30,13 @@ class FotoWall : public QWidget
         FotoWall(QWidget * parent = 0);
         ~FotoWall();
 
-        void showIntroduction();
-        void savePoster();
-        void exportWizard();
-        void saveExactSize();
         void load(QString &fileName);
+        void setModeInfo(ModeInfo modeInfo);
         ModeInfo getModeInfo(); // Needed for saving
-        void restoreMode(int);
-        void setModeInfo(ModeInfo);
+        void restoreMode(int mode);
 
-        QImage renderedImage(const QSize &size) const;
+        void showIntroduction();
+
     private:
         QMenu * createArrangeMenu();
         QMenu * createBackgroundMenu();
@@ -48,10 +45,10 @@ class FotoWall : public QWidget
         void createMiscActions();
         void checkForTutorial();
         void checkForSupport();
-        void loadNormalProject();
-        void loadCDProject();
-        void loadDVDProject();
-        void loadExactSizeProject();
+        void setNormalProject();
+        void setCDProject();
+        void setDVDProject();
+        void setExactSizeProject();
 
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;

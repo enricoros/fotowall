@@ -14,8 +14,7 @@
 
 #include "FotoWall.h"
 #include "Desk.h"
-#include "Export.h"
-#include "RenderOpts.h"
+#include "ExportWizard.h"
 #include "VideoProvider.h"
 #include "ui_FotoWall.h"
 #include <QAction>
@@ -33,18 +32,11 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QPrinter>
-#include <QPrintDialog>
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
-#include <math.h>
 #include "ModeInfo.h"
 #include "ExactSizeDialog.h"
-#include "posterazorcore.h"
-#include "controller.h"
-#include "wizard.h"
-#include "imageloaderqt.h"
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -153,109 +145,31 @@ FotoWall::~FotoWall()
     delete ui;
 }
 
+void FotoWall::load(QString &fileName)
+{
+    if (!fileName.isNull())
+        m_desk->restore(fileName, this);
+}
+
+void FotoWall::setModeInfo(ModeInfo modeInfo)
+{
+    m_modeInfo = modeInfo;
+    m_modeInfo.setDeskDpi(m_view->logicalDpiX(), m_view->logicalDpiY());
+}
+
+ModeInfo FotoWall::getModeInfo()
+{
+    return m_modeInfo;
+}
+
+void FotoWall::restoreMode(int mode)
+{
+    on_projectType_currentIndexChanged(mode);
+}
+
 void FotoWall::showIntroduction()
 {
     m_desk->showIntroduction();
-}
-
-void FotoWall::exportWizard()
-{
-#if 0
-    QMessageBox::warning(0, tr("Warning"), tr("This function is being rewritten for version 0.6.\nIn the meantime, while not the optimum, you can still get high quality results ;-)"));
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), QString(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
-    if (fileName.isNull())
-        return;
-    if (QFileInfo(fileName).suffix().isEmpty())
-        fileName += ".png";
-
-    // get the rendering size
-    SizeDialog * sd = new SizeDialog(this);
-    sd->wSpin->setValue(m_desk->width());
-    sd->hSpin->setValue(m_desk->height());
-    if (!sd->exec())
-        return;
-    int destW = sd->wSpin->value();
-    int destH = sd->hSpin->value();
-    delete sd;
-
-    const QImage image = renderedImage(QSize(destW, destH));
-
-    // save image
-    if (!image.save(fileName) || !QFile::exists(fileName)) {
-        QMessageBox::warning(this, tr("Rendering Error"), tr("Error rendering to the file '%1'").arg(fileName));
-        return;
-    }
-    int size = QFile(fileName).size();
-    QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
-#else
-    Export exp(m_desk, this);
-#endif
-}
-
-void FotoWall::savePoster()
-{
-    static const quint32 posterPixels = 6 * 1000000; // Megapixels * 3 bytes!
-    // We will use up the whole posterPixels for the render, respecting the aspect ratio.
-    const qreal widthToHeightRatio = m_desk->width() / m_desk->height();
-    // Thanks to colleague Oswald for some of the math :)
-    const int posterPixelWidth = int(sqrt(widthToHeightRatio * posterPixels));
-    const int posterPixelHeight = posterPixels / posterPixelWidth;
-
-    static const QLatin1String settingsGroup("posterazor");
-    QSettings settings;
-    settings.beginGroup(settingsGroup);
-
-    // TODO: Eliminate Poster size in %
-    ImageLoaderQt loader;
-    loader.setQImage(renderedImage(QSize(posterPixelWidth, posterPixelHeight)));
-    PosteRazorCore posterazor(&loader);
-    posterazor.readSettings(&settings);
-    Wizard *wizard = new Wizard;
-    Controller controller(&posterazor, wizard);
-    controller.setImageLoadingAvailable(false);
-    controller.setPosterSizeModeAvailable(Types::PosterSizeModePercentual, false);
-    QDialog dialog(this, Qt::WindowMinMaxButtonsHint);
-    dialog.setModal(true);
-    dialog.setLayout(new QVBoxLayout);
-    dialog.layout()->addWidget(wizard);
-    dialog.resize(640, 480);
-    dialog.exec();
-    settings.sync();
-    posterazor.writeSettings(&settings);
-}
-
-void FotoWall::saveExactSize()
-{
-    QPrinter printer;
-    QPrintDialog printDialog(&printer);
-    bool ok = printDialog.exec();
-    if(!ok) return;
-
-    QImage image = renderedImage(m_modeInfo.printPixelSize());
-
-    if(m_modeInfo.landscape()) {
-        // Print in landscape mode, so rotate
-        QMatrix matrix;
-        matrix.rotate(90);
-        image = image.transformed(matrix);
-    }
-
-    // And then print
-    // dpi resolution for exporting at the right size
-    printer.setResolution(m_modeInfo.printDpi());
-    printer.setPaperSize(QPrinter::A4);
-    QPainter paint(&printer);
-    paint.drawImage(image.rect(), image);
-}
-
-void FotoWall::createMiscActions()
-{
-    // select all
-    QAction * aSA = new QAction(tr("Select all"), this);
-    aSA->setShortcut(tr("CTRL+A"));
-    connect(aSA, SIGNAL(triggered()), this, SLOT(slotActionSelectAll()));
-    addAction(aSA);
 }
 
 QMenu * FotoWall::createArrangeMenu()
@@ -337,19 +251,6 @@ QMenu * FotoWall::createDecorationMenu()
     return menu;
 }
 
-QImage FotoWall::renderedImage(const QSize &size) const
-{
-    QImage result(size, QImage::Format_ARGB32);
-
-    result.fill(0);
-    QPainter painter(&result);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_desk->renderVisible(&painter, result.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    painter.end();
-
-    return result;
-}
-
 QMenu * FotoWall::createHelpMenu()
 {
     QMenu * menu = new QMenu();
@@ -367,6 +268,15 @@ QMenu * FotoWall::createHelpMenu()
     menu->addAction(m_aHelpSupport);
 
     return menu;
+}
+
+void FotoWall::createMiscActions()
+{
+    // select all
+    QAction * aSA = new QAction(tr("Select all"), this);
+    aSA->setShortcut(tr("CTRL+A"));
+    connect(aSA, SIGNAL(triggered()), this, SLOT(slotActionSelectAll()));
+    addAction(aSA);
 }
 
 void FotoWall::checkForTutorial()
@@ -390,7 +300,7 @@ void FotoWall::checkForSupport()
     QTimer::singleShot(2000, this, SLOT(slotVerifySupport()));
 }
 
-void FotoWall::loadNormalProject()
+void FotoWall::setNormalProject()
 {
     m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
     static bool skipFirstMaximizeHack = true;
@@ -404,7 +314,8 @@ void FotoWall::loadNormalProject()
     m_desk->setProjectMode(Desk::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
-void FotoWall::loadCDProject()
+
+void FotoWall::setCDProject()
 {
     // A CD cover is a 4.75x4.715 inches square.
     m_modeInfo.setRealSizeInches(4.75, 4.75);
@@ -415,7 +326,8 @@ void FotoWall::loadCDProject()
     m_desk->setProjectMode(Desk::ModeCD);
     ui->projectType->setCurrentIndex(1);
 }
-void FotoWall::loadDVDProject()
+
+void FotoWall::setDVDProject()
 {
     m_modeInfo.setRealSizeInches((float)10.83, (float)7.2);
     m_modeInfo.setLandscape(true);
@@ -425,7 +337,8 @@ void FotoWall::loadDVDProject()
     m_desk->setProjectMode(Desk::ModeDVD);
     ui->projectType->setCurrentIndex(2);
 }
-void FotoWall::loadExactSizeProject()
+
+void FotoWall::setExactSizeProject()
 {
     // Exact size mode
     if(m_modeInfo.realSize().isEmpty()) {
@@ -450,29 +363,27 @@ void FotoWall::loadExactSizeProject()
     m_desk->setProjectMode(Desk::ModeExactSize);
     ui->projectType->setCurrentIndex(3);
 }
+
 void FotoWall::on_projectType_currentIndexChanged(int index)
 {
     m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (so if it is a mode that require
                                         // asking size, it will be asked !
     switch (index) {
-        case 0:
-            //Normal project
-            loadNormalProject();
+        case 0: //Normal project
+            setNormalProject();
             break;
 
-        case 1:
-            // CD cover
-            loadCDProject();
+        case 1: // CD cover
+            setCDProject();
             break;
 
-        case 2:
-            //DVD cover
-            loadDVDProject();
-            break;
-        case 3:
-            loadExactSizeProject();
+        case 2: //DVD cover
+            setDVDProject();
             break;
 
+        case 3: //Exact Size
+            setExactSizeProject();
+            break;
     }
 }
 
@@ -505,26 +416,6 @@ void FotoWall::on_loadButton_clicked()
     load(fileName);
 }
 
-void FotoWall::load(QString &fileName)
-{
-    if (!fileName.isNull())
-        m_desk->restore(fileName, this);
-}
-
-ModeInfo FotoWall::getModeInfo()
-{
-    return m_modeInfo;
-}
-void FotoWall::setModeInfo(ModeInfo modeInfo)
-{
-    m_modeInfo = modeInfo;
-    m_modeInfo.setDeskDpi(m_view->logicalDpiX(), m_view->logicalDpiY());
-}
-void FotoWall::restoreMode(int mode)
-{
-    on_projectType_currentIndexChanged(mode);
-}
-
 void FotoWall::on_saveButton_clicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Select FotoWall file"), QString(), "FotoWall (*.fotowall)");
@@ -538,18 +429,14 @@ void FotoWall::on_saveButton_clicked()
 
 void FotoWall::on_exportButton_clicked()
 {
-    RenderOpts::HQRendering = true;
-    // check to project type for saving
-    switch (m_desk->projectMode()) {
-        case Desk::ModeNormal:
-            exportWizard();
-            break;
-
-        default:
-            saveExactSize();
-            break;
+    // show the Export Wizard on normal mode
+    if (m_desk->projectMode() == Desk::ModeNormal) {
+        ExportWizard(m_desk).exec();
+        return;
     }
-    RenderOpts::HQRendering = false;
+
+    // print on other modes
+    m_desk->printAsImage(m_modeInfo.printDpi(), m_modeInfo.printPixelSize(), m_modeInfo.landscape());
 }
 
 void FotoWall::on_quitButton_clicked()
