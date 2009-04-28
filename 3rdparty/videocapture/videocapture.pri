@@ -2,7 +2,7 @@ VPATH += $$PWD
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-unix {
+unix:!macx {
     DEFINES += HAS_VIDEOCAPTURE
 
     HEADERS += bayer.h \

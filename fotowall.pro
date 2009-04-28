@@ -74,8 +74,15 @@ win32 {
     RC_FILE = fotowall.rc
 }
 
+macx {
+    ICON = fotowall.icns
+    CONFIG += x86 ppc
+    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.3
+}
+
 # handling static image plugins
-contains(CONFIG, static) {
+contains(CONFIG, static)|contains(CONFIG, qt_no_framework) {
     QTPLUGIN += qgif \
         qjpeg \
         qsvg \

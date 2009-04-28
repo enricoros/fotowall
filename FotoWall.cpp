@@ -216,8 +216,8 @@ void FotoWall::savePoster()
     Controller controller(&posterazor, wizard);
     controller.setImageLoadingAvailable(false);
     controller.setPosterSizeModeAvailable(Types::PosterSizeModePercentual, false);
-    QDialog dialog(this, Qt::WindowMinMaxButtonsHint);
-    dialog.setModal(true);
+    QDialog dialog(this, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+	dialog.setWindowTitle(tr("Export poster"));
     dialog.setLayout(new QVBoxLayout);
     dialog.layout()->addWidget(wizard);
     dialog.resize(640, 480);
