@@ -341,7 +341,7 @@ bool AbstractContent::fromXml(QDomElement & pe)
 void AbstractContent::toXml(QDomElement & pe) const
 {
     // Save general item properties
-
+    pe.setTagName("abstract");
     QDomDocument doc = pe.ownerDocument();
     QDomElement domElement;
     QDomText text;

@@ -25,7 +25,6 @@ class AbstractContent;
 class AbstractProperties;
 struct CEffect;
 class ColorPickerItem;
-class FotoWall;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
@@ -70,8 +69,6 @@ class Desk : public QGraphicsScene
         // save, restore, load, help
         void showIntroduction();
         void blinkBackGradients();
-        void save(const QString &, FotoWall *) const;
-        void restore(const QString &, FotoWall *);
 
         // get and set the project mode (CD cover, DVD,...).
         enum Mode { ModeNormal = 0, ModeCD = 1, ModeDVD = 2, ModeExactSize = 3 };

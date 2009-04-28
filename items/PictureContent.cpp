@@ -109,6 +109,7 @@ bool PictureContent::fromXml(QDomElement & pe)
 void PictureContent::toXml(QDomElement & pe) const
 {
     AbstractContent::toXml(pe);
+    pe.setTagName("picture");
 
     // save picture properties
     QDomDocument doc = pe.ownerDocument();

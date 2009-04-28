@@ -22,11 +22,7 @@
 #include <QObject>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QFile>
-#include <QTextStream>
 #include <QList>
-#include "PictureContent.h"
-#include "TextContent.h"
 #include "ModeInfo.h"
 
 class Desk;
@@ -39,33 +35,19 @@ class XmlRead : public QObject
 {
     Q_OBJECT
     public:
-        XmlRead(const QString &, Desk *);
-        ~XmlRead();
-        void readProject(FotoWall *);
-        void readDesk();
-        void readImages();
-        void readText();
+        XmlRead(const QString & filePath);
+        void readProject(FotoWall * fotoWall);
+        void readDesk(Desk * desk);
+        void readContent(Desk * desk);
 
-    private:
-        // Clear the desk, make ready for restoration
-        void prepareRestore();
     private :
-        Desk *m_desk;
-        QDomDocument doc;
         QDomElement m_projectElement;
         QDomElement m_deskElement;
-        QDomElement m_imagesElement;
-        QDomElement m_textsElement;
-        QFile file;
-        QTextStream out;
-
-        QString m_projectTitle;
-        int m_projectMode;
+        QDomElement m_contentElement;
 
     Q_SIGNALS:
         void changeMode(int);
         void setModeInfo(ModeInfo);
-
 };
 
 #endif

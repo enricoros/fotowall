@@ -66,7 +66,7 @@ int main( int argc, char ** args )
     fw.showMaximized();
     if(argc >0) {
         QString filePath = args[1];
-        fw.load(filePath);
+        fw.loadXml(filePath);
     }
     if (RenderOpts::FirstRun)
         fw.showIntroduction();

@@ -16,6 +16,8 @@
 #include "Desk.h"
 #include "ExportWizard.h"
 #include "VideoProvider.h"
+#include "XmlRead.h"
+#include "XmlSave.h"
 #include "ui_FotoWall.h"
 #include <QAction>
 #include <QApplication>
@@ -137,18 +139,12 @@ FotoWall::FotoWall(QWidget * parent)
 FotoWall::~FotoWall()
 {
     // dump current layout
-    m_desk->save(QDir::tempPath() + QDir::separator() + "autosave.fotowall", this);
+    saveXml(QDir::tempPath() + QDir::separator() + "autosave.fotowall");
 
     // delete everything
     delete m_view;
     delete m_desk;
     delete ui;
-}
-
-void FotoWall::load(QString &fileName)
-{
-    if (!fileName.isNull())
-        m_desk->restore(fileName, this);
 }
 
 void FotoWall::setModeInfo(ModeInfo modeInfo)
@@ -165,6 +161,38 @@ ModeInfo FotoWall::getModeInfo()
 void FotoWall::restoreMode(int mode)
 {
     on_projectType_currentIndexChanged(mode);
+}
+
+void FotoWall::loadXml(const QString & filePath)
+{
+    if (filePath.isNull())
+        return;
+    XmlRead *xmlRead = 0;
+    try {
+        xmlRead = new XmlRead(filePath);
+    } catch (...) {
+        // If loading failed
+        return;
+    }
+    xmlRead->readProject(this);
+    xmlRead->readDesk(m_desk);
+    xmlRead->readContent(m_desk);
+    delete xmlRead;
+}
+
+void FotoWall::saveXml(const QString & filePath) const
+{
+    XmlSave *xmlSave = 0;
+    try {
+        xmlSave = new XmlSave(filePath);
+    } catch (...) {
+        //if saving failled
+        return;
+    }
+    xmlSave->saveProject(m_desk->projectMode(), m_modeInfo);
+    xmlSave->saveDesk(m_desk);
+    xmlSave->saveContent(m_desk);
+    delete xmlSave;
 }
 
 void FotoWall::showIntroduction()
@@ -413,7 +441,7 @@ void FotoWall::on_addMirror_clicked()
 void FotoWall::on_loadButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select FotoWall file"), QString(), tr("FotoWall (*.fotowall)"));
-    load(fileName);
+    loadXml(fileName);
 }
 
 void FotoWall::on_saveButton_clicked()
@@ -423,8 +451,7 @@ void FotoWall::on_saveButton_clicked()
         return;
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
         fileName += ".fotowall";
-
-    m_desk->save(fileName, this);
+    saveXml(fileName);
 }
 
 void FotoWall::on_exportButton_clicked()

@@ -82,6 +82,7 @@ bool TextContent::fromXml(QDomElement & pe)
 void TextContent::toXml(QDomElement & pe) const
 {
     AbstractContent::toXml(pe);
+    pe.setTagName("text");
 
     // save text properties
     QDomDocument doc = pe.ownerDocument();

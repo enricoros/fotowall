@@ -30,10 +30,12 @@ class FotoWall : public QWidget
         FotoWall(QWidget * parent = 0);
         ~FotoWall();
 
-        void load(QString &fileName);
         void setModeInfo(ModeInfo modeInfo);
         ModeInfo getModeInfo(); // Needed for saving
         void restoreMode(int mode);
+
+        void loadXml(const QString & filePath);
+        void saveXml(const QString & filePath) const;
 
         void showIntroduction();
 

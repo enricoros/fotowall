@@ -36,9 +36,6 @@
 #include <QTextDocument>
 #include <QTimer>
 #include <QUrl>
-#include "FotoWall.h"
-#include "XmlRead.h"
-#include "XmlSave.h"
 
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
@@ -286,51 +283,6 @@ void Desk::blinkBackGradients()
 {
     HIGHLIGHT(1.0, 0.0, true);
     HIGHLIGHT(1.0, 1.0, true);
-}
-
-void Desk::save(const QString &path, FotoWall *fotowall) const
-{
-    XmlSave *xmlSave = 0;
-    try {
-        xmlSave = new XmlSave(path);
-    } catch (...) {
-        //if saving failled
-        return;
-    }
-    ModeInfo modeInfo = fotowall->getModeInfo();
-    xmlSave->saveProject(titleText(), projectMode(), modeInfo);
-    xmlSave->saveDesk(this);
-    foreach (AbstractContent * content, m_content) {
-        if (content->inherits("PictureContent")) {
-            PictureContent * picture = dynamic_cast<PictureContent *>(content);
-            xmlSave->saveImage(picture);
-        }
-        else if (content->inherits("TextContent")) {
-            TextContent * text = dynamic_cast<TextContent *>(content);
-            xmlSave->saveText(text);
-        }
-        else {
-            qWarning("Desk::save: error saving data");
-            continue;
-        }
-    }
-    delete xmlSave;
-}
-
-void Desk::restore(const QString &path, FotoWall *fotowall)
-{
-    XmlRead *xmlRead = 0;
-    try {
-        xmlRead = new XmlRead(path, this);
-    } catch (...) {
-        // If loading failed
-        return;
-    }
-    xmlRead->readProject(fotowall);
-    xmlRead->readDesk();
-    xmlRead->readImages();
-    xmlRead->readText();
-    delete xmlRead;
 }
 
 /// Modes

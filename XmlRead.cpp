@@ -17,31 +17,36 @@
  ******************************************************************************/
 
 #include "XmlRead.h"
-#include <QString>
-#include <QStringList>
-#include <QGraphicsView>
-#include <QMessageBox>
-#include "Desk.h"
 #include "CPixmap.h"
+#include "Desk.h"
+#include "FotoWall.h"
+#include "PictureContent.h"
+#include "TextContent.h"
+#include "VideoContent.h"
 #include "frames/FrameFactory.h"
 #include "items/ColorPickerItem.h"
-#include "FotoWall.h"
+#include <QFile>
+#include <QGraphicsView>
+#include <QMessageBox>
+#include <QString>
+#include <QStringList>
 
 
-XmlRead::XmlRead(const QString &filePath, Desk *desk) : m_desk(desk)
+XmlRead::XmlRead(const QString & filePath)
 {
     // Load the file
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::critical(0, tr("Loading error"), tr("Unable to load the layout file %1").arg(filePath));
+        QMessageBox::critical(0, tr("Loading error"), tr("Unable to load the FotoWall file %1").arg(filePath));
         throw(0);
         return;
     }
 
     // And create the XML document into memory (with nodes...)
     QString *error = new QString();
+    QDomDocument doc;
     if (!doc.setContent(&file, false, error)) {
-        QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the layout file %1. The error was: %2").arg(filePath, *error));
+        QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the FotoWall file %1. The error was: %2").arg(filePath, *error));
         file.close();
         throw(0);
         return;
@@ -51,21 +56,11 @@ XmlRead::XmlRead(const QString &filePath, Desk *desk) : m_desk(desk)
     QDomElement root = doc.documentElement(); // The root node
     m_projectElement = root.firstChildElement("project"); // Get the project node
     m_deskElement = root.firstChildElement("desk");
-    // Get the parent images node (containing all the images)
-    m_imagesElement = root.firstChildElement("images");
-    m_textsElement = root.firstChildElement("texts");
-
-    prepareRestore();
-}
-
-XmlRead::~XmlRead()
-{
+    m_contentElement = root.firstChildElement("content");
 }
 
 void XmlRead::readProject(FotoWall *fotowall)
 {
-    m_desk->setTitleText(m_projectElement.firstChildElement("title").text());
-
     ModeInfo modeInfo;
     QDomElement modeElement = m_projectElement.firstChildElement("mode");
     QDomElement sizeElement = modeElement.firstChildElement("size");
@@ -86,8 +81,10 @@ void XmlRead::readProject(FotoWall *fotowall)
     fotowall->restoreMode(mode);
 }
 
-void XmlRead::readDesk()
+void XmlRead::readDesk(Desk * desk)
 {
+    desk->setTitleText(m_deskElement.firstChildElement("title").text());
+
     QDomElement domElement;
     int r, g, b;
     // Load image size saved in the rect node
@@ -95,59 +92,57 @@ void XmlRead::readDesk()
     r = domElement.firstChildElement("red").text().toInt();
     g = domElement.firstChildElement("green").text().toInt();
     b = domElement.firstChildElement("blue").text().toInt();
-    m_desk->m_grad1ColorPicker->setColor(QColor(r, g, b));
+    desk->m_grad1ColorPicker->setColor(QColor(r, g, b));
 
     domElement = m_deskElement.firstChildElement("background-color").firstChildElement("bottom");
     r = domElement.firstChildElement("red").text().toInt();
     g = domElement.firstChildElement("green").text().toInt();
     b = domElement.firstChildElement("blue").text().toInt();
-    m_desk->m_grad2ColorPicker->setColor(QColor(r, g, b));
+    desk->m_grad2ColorPicker->setColor(QColor(r, g, b));
 
     domElement = m_deskElement.firstChildElement("title-color");
     r = domElement.firstChildElement("red").text().toInt();
     g = domElement.firstChildElement("green").text().toInt();
     b = domElement.firstChildElement("blue").text().toInt();
-    m_desk->m_titleColorPicker->setColor(QColor(r, g, b));
+    desk->m_titleColorPicker->setColor(QColor(r, g, b));
 
     domElement = m_deskElement.firstChildElement("foreground-color");
     r = domElement.firstChildElement("red").text().toInt();
     g = domElement.firstChildElement("green").text().toInt();
     b = domElement.firstChildElement("blue").text().toInt();
-    m_desk->m_foreColorPicker->setColor(QColor(r, g, b));
+    desk->m_foreColorPicker->setColor(QColor(r, g, b));
 
     // Show the colors
-    m_desk->update();
+    desk->update();
 }
 
-void XmlRead::prepareRestore()
+void XmlRead::readContent(Desk * desk)
 {
-    qDeleteAll(m_desk->m_content);
-    m_desk->m_content.clear();
-    m_desk->m_backContent = 0;
-}
+    // clear Desk
+    qDeleteAll(desk->m_content);
+    desk->m_content.clear();
+    desk->m_backContent = 0;
 
-void XmlRead::readImages()
-{
-    // for each '<image>' in '<images>'
-    for (QDomElement imageElement = m_imagesElement.firstChildElement("image"); !imageElement.isNull(); imageElement = imageElement.nextSiblingElement("image")) {
+    // for each child of 'content'
+    for (QDomElement element = m_contentElement.firstChildElement(); !element.isNull(); element = element.nextSiblingElement()) {
 
-        // Create image item (connect slots...)
-        PictureContent * content = m_desk->createPicture(QPoint());
+        // create the right kind of content
+        AbstractContent * content = 0;
+        if (element.tagName() == "picture")
+            content = desk->createPicture(QPoint());
+        else if (element.tagName() == "text")
+            content = desk->createText(QPoint());
+        else if (element.tagName() == "video")
+            content = desk->createVideo(element.attribute("input").toInt(), QPoint());
+        if (!content) {
+            qWarning("XmlRead::readContent: unknown content type '%s'", qPrintable(element.tagName()));
+            continue;
+        }
 
-        // restore all properties
-        content->fromXml(imageElement);
-    }
-}
-
-void XmlRead::readText()
-{
-    // for each '<text>' in '<texts>'
-    for (QDomElement textE = m_textsElement.firstChildElement("text"); !textE.isNull(); textE = textE.nextSiblingElement("text")) {
-
-        // Create text item (connect slots...)
-        TextContent * content = m_desk->createText(QPoint());
-
-        // restore all properties
-        content->fromXml(textE);
+        // restore the item, and delete it if something goes wrong
+        if (!content->fromXml(element)) {
+            desk->m_content.removeAll(content);
+            delete content;
+        }
     }
 }
