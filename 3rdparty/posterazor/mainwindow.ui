@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>527</width>
+    <height>539</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="Wizard" name="m_wizard" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="m_menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>527</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="m_menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="m_actionLoadInputImage"/>
+    <addaction name="m_actionSavePoster"/>
+    <addaction name="separator"/>
+    <addaction name="m_actionExit"/>
+   </widget>
+   <widget class="QMenu" name="m_menuAbout">
+    <property name="title">
+     <string>&amp;?</string>
+    </property>
+    <addaction name="m_actionPosteRazorManual"/>
+    <addaction name="m_actionPosteRazorWebSite"/>
+    <addaction name="separator"/>
+    <addaction name="m_actionAboutPosteRazor"/>
+    <addaction name="m_actionAboutQt"/>
+   </widget>
+   <widget class="QMenu" name="m_menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+   </widget>
+   <addaction name="m_menuFile"/>
+   <addaction name="m_menuSettings"/>
+   <addaction name="m_menuAbout"/>
+  </widget>
+  <action name="m_actionAboutQt">
+   <property name="text">
+    <string>&amp;About Qt</string>
+   </property>
+  </action>
+  <action name="m_actionAboutPosteRazor">
+   <property name="text">
+    <string>About PosteRazor</string>
+   </property>
+  </action>
+  <action name="m_actionPosteRazorManual">
+   <property name="text">
+    <string>PosteRazor manual</string>
+   </property>
+  </action>
+  <action name="m_actionPosteRazorWebSite">
+   <property name="text">
+    <string>PosteRazor web site</string>
+   </property>
+  </action>
+  <action name="m_actionLoadInputImage">
+   <property name="text">
+    <string>Load input image</string>
+   </property>
+  </action>
+  <action name="m_actionSavePoster">
+   <property name="text">
+    <string>Save poster</string>
+   </property>
+  </action>
+  <action name="m_actionExit">
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Wizard</class>
+   <extends>QWidget</extends>
+   <header>wizard.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

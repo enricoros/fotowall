@@ -1,0 +1,1 @@
+for %%i in (*.ts) do lupdate.exe -no-obsolete controller.cpp wizardcontroller.cpp mainwindow.cpp -ts %%i

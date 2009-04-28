@@ -37,8 +37,13 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <math.h>
 #include "ModeInfo.h"
 #include "ExactSizeDialog.h"
+#include "posterazorcore.h"
+#include "controller.h"
+#include "wizard.h"
+#include "imageloaderqt.h"
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -201,13 +206,7 @@ void FotoWall::saveImage()
     int destH = sd->hSpin->value();
     delete sd;
 
-    // render on the image
-    QImage image(destW, destH, QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter imagePainter(&image);
-    imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_desk->renderVisible(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    imagePainter.end();
+    const QImage image = renderedImage(QSize(destW, destH));
 
     // save image
     if (!image.save(fileName) || !QFile::exists(fileName)) {
@@ -218,6 +217,38 @@ void FotoWall::saveImage()
     QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
 }
 
+void FotoWall::savePoster()
+{
+    static const quint32 posterPixels = 6 * 1000000; // Megapixels * 3 bytes!
+    // We will use up the whole posterPixels for the render, respecting the aspect ratio.
+    const qreal widthToHeightRatio = m_desk->width() / m_desk->height();
+    // Thanks to colleague Oswald for some of the math :)
+    const int posterPixelWidth = int(sqrt(widthToHeightRatio * posterPixels));
+    const int posterPixelHeight = posterPixels / posterPixelWidth;
+
+    static const QLatin1String settingsGroup("posterazor");
+    QSettings settings;
+    settings.beginGroup(settingsGroup);
+
+    // TODO: Eliminate Poster size in %
+    ImageLoaderQt loader;
+    loader.setQImage(renderedImage(QSize(posterPixelWidth, posterPixelHeight)));
+    PosteRazorCore posterazor(&loader);
+    posterazor.readSettings(&settings);
+    Wizard *wizard = new Wizard;
+    Controller controller(&posterazor, wizard);
+    controller.setImageLoadingAvailable(false);
+    controller.setPosterSizeModeAvailable(Types::PosterSizeModePercentual, false);
+    QDialog dialog(this, Qt::WindowMinMaxButtonsHint);
+    dialog.setModal(true);
+    dialog.setLayout(new QVBoxLayout);
+    dialog.layout()->addWidget(wizard);
+    dialog.resize(640, 480);
+    dialog.exec();
+    settings.sync();
+    posterazor.writeSettings(&settings);
+}
+
 void FotoWall::saveExactSize()
 {
     QPrinter printer;
@@ -225,13 +256,7 @@ void FotoWall::saveExactSize()
     bool ok = printDialog.exec();
     if(!ok) return;
 
-    QImage image(m_modeInfo.printPixelSize(), QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter paintimg(&image);
-    paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    // Render on the image
-    m_desk->renderVisible(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    paintimg.end();
+    QImage image = renderedImage(m_modeInfo.printPixelSize());
 
     if(m_modeInfo.landscape()) {
         // Print in landscape mode, so rotate
@@ -336,6 +361,19 @@ QMenu * FotoWall::createDecorationMenu()
     return menu;
 }
 
+QImage FotoWall::renderedImage(const QSize &size) const
+{
+    QImage result(size, QImage::Format_ARGB32);
+
+    result.fill(0);
+    QPainter painter(&result);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    m_desk->renderVisible(&painter, result.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
+    painter.end();
+
+    return result;
+}
+
 QMenu * FotoWall::createHelpMenu()
 {
     QMenu * menu = new QMenu();
@@ -387,6 +425,7 @@ void FotoWall::loadNormalProject()
     else
         showMaximized();
     ui->exportButton->setText(tr("export..."));
+    ui->exportPosterButton->show();
     m_desk->setProjectMode(Desk::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
@@ -398,6 +437,7 @@ void FotoWall::loadCDProject()
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print..."));
+    ui->exportPosterButton->hide();
     m_desk->setProjectMode(Desk::ModeCD);
     ui->projectType->setCurrentIndex(1);
 }
@@ -408,6 +448,7 @@ void FotoWall::loadDVDProject()
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print..."));
+    ui->exportPosterButton->hide();
     m_desk->setProjectMode(Desk::ModeDVD);
     ui->projectType->setCurrentIndex(2);
 }
@@ -433,6 +474,7 @@ void FotoWall::loadExactSizeProject()
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print..."));
+    ui->exportPosterButton->show();
     m_desk->setProjectMode(Desk::ModeExactSize);
     ui->projectType->setCurrentIndex(3);
 }
@@ -535,6 +577,13 @@ void FotoWall::on_exportButton_clicked()
             saveExactSize();
             break;
     }
+    RenderOpts::HQRendering = false;
+}
+
+void FotoWall::on_exportPosterButton_clicked()
+{
+    RenderOpts::HQRendering = true; // Should this go into renderedImage()?
+    savePoster();
     RenderOpts::HQRendering = false;
 }
 

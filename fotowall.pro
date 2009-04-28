@@ -47,6 +47,8 @@ include(items/items.pri)
 include(frames/frames.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
+include(3rdparty/posterazor/posterazor.pri)
+!contains(CONFIG, build_pass) system(lrelease 3rdparty/posterazor/posterazor.pri)
 
 # installation on Linux
 unix {

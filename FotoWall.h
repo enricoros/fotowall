@@ -32,6 +32,7 @@ class FotoWall : public QWidget
 
         void showIntroduction();
         void saveImage();
+        void savePoster();
         void saveExactSize();
         void load(QString &fileName);
         ModeInfo getModeInfo(); // Needed for saving
@@ -50,6 +51,7 @@ class FotoWall : public QWidget
         void loadCDProject();
         void loadDVDProject();
         void loadExactSizeProject();
+        QImage renderedImage(const QSize &size) const;
 
         Ui::FotoWall *  ui;
         QGraphicsView * m_view;
@@ -66,6 +68,7 @@ class FotoWall : public QWidget
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_exportButton_clicked();
+        void on_exportPosterButton_clicked();
         void on_quitButton_clicked();
 
         void slotActionSelectAll();
