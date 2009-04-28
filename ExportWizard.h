@@ -12,34 +12,49 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __Export__
-#define __Export__
+#ifndef __ExportWizard_h__
+#define __ExportWizard_h__
 
-#include "ui_ExportDialog.h"
-
+#include <QtGui/QWizard>
 class Desk;
+namespace Ui { class ExportWizard; }
 
-class Export : public QDialog
-{
+class ExportWizard : public QWizard {
     Q_OBJECT
     public:
-        Export(Desk *desk);
+        ExportWizard(Desk * desk);
+        ~ExportWizard();
+
+        // the main functions
+        void setWallpaper();
+        void saveImage();
+        void startPosterazor();
+        void print();
+
+        // manually sets a page
+        void setPage(int pageId);
+
+        // ::QWizard
+        int nextId() const;
 
     private:
-        Ui::ExportDialog m_ui;
-        Desk *m_desk;
+        enum PageCode { PageMode = 0, PageWallpaper = 1, PageImage = 2, PagePosteRazor = 3, PagePrint = 4 };
+        Ui::ExportWizard * m_ui;
+        Desk * m_desk;
+        int m_nextId;
         QSizeF m_printSize; // the print size in inches
-        void setBackground();
 
-    public Q_SLOTS:
-        void slotSaveImage();
+    private slots:
+        // contents related
         void slotChoosePath();
-
-        void slotPrint();
         void slotPrintUnityChanged(int);
         void slotPrintWidthChanged(double);
         void slotPrintHeightChanged(double);
-};
 
+        // wizard related
+        void slotFinished(int);
+        void slotModeButtonClicked();
+        void slotOpenLink(const QString & address);
+};
 
 #endif

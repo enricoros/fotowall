@@ -14,31 +14,31 @@ QT = core \
 
 # Input
 HEADERS += CPixmap.h \
-    GlowEffectWidget.h \
-    GlowEffectDialog.h \
     Desk.h \
+    ExactSizeDialog.h \
+    ExportWizard.h \
+    GlowEffectDialog.h \
+    GlowEffectWidget.h \
     FotoWall.h \
+    ModeInfo.h \
     RenderOpts.h \
     XmlSave.h \
-    XmlRead.h \
-    ModeInfo.h \
-    ExactSizeDialog.h \
-    Export.h
+    XmlRead.h
 SOURCES += main.cpp \
     CPixmap.cpp \
-    GlowEffectWidget.cpp \
-    GlowEffectDialog.cpp \
     Desk.cpp \
-    FotoWall.cpp \
-    XmlSave.cpp \
-    XmlRead.cpp \
-    ModeInfo.cpp \
     ExactSizeDialog.cpp \
-    Export.cpp
-FORMS += FotoWall.ui \
-    GlowEffectDialog.ui \
-    ExactSizeDialog.ui \
-    ExportDialog.ui
+    ExportWizard.cpp \
+    FotoWall.cpp \
+    GlowEffectDialog.cpp \
+    GlowEffectWidget.cpp \
+    ModeInfo.cpp \
+    XmlSave.cpp \
+    XmlRead.cpp
+FORMS += ExactSizeDialog.ui \
+    ExportWizard.ui \
+    FotoWall.ui \
+    GlowEffectDialog.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \
     translations/fotowall_fr.ts \

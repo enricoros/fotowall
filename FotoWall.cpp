@@ -14,7 +14,7 @@
 
 #include "FotoWall.h"
 #include "Desk.h"
-#include "Export.h"
+#include "ExportWizard.h"
 #include "RenderOpts.h"
 #include "VideoProvider.h"
 #include "ui_FotoWall.h"
@@ -189,7 +189,7 @@ void FotoWall::exportWizard()
     int size = QFile(fileName).size();
     QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
 #else
-    Export exp(m_desk);
+    ExportWizard exp(m_desk);
     exp.exec();
 #endif
 }
