@@ -294,8 +294,8 @@ class Matrix3
 #include <math.h>
 #include <stdio.h>
 
-#ifdef Q_OS_WIN32
-//sincos is not defined in win32
+#if defined(Q_OS_WIN32) || defined(Q_OS_MAC)
+//sincos is not defined in win32 and MAC
 static inline void sincos(double th, double *s, double *c)
 {
     *s = sin(th);
