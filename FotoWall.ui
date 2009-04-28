@@ -370,20 +370,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
-       <widget class="QToolButton" name="exportPosterButton">
-        <property name="text">
-         <string>export poster...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="fotowall.qrc">
-          <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
