@@ -95,7 +95,7 @@ void ExportWizard::setWallpaper()
 
 void ExportWizard::saveImage()
 {
-    if(m_ui->filePath->text().isEmpty()) {
+    if (m_ui->filePath->text().isEmpty()) {
         QMessageBox::warning(this, tr("No file selected !"), tr("You need to choose a file path for saving."));
         return;
     }
@@ -106,14 +106,10 @@ void ExportWizard::saveImage()
     int destH = m_ui->saveHeight->value();
 
     // render on the image
-    QImage image(destW, destH, QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter imagePainter(&image);
-    imagePainter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_desk->renderVisible(&imagePainter, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    imagePainter.end();
+    QImage image = m_desk->renderedImage(QSize(destW, destH));
 
-    if(m_ui->saveLandscape->isChecked()) {
+    // rotate image if requested
+    if (m_ui->saveLandscape->isChecked()) {
         // Save in landscape mode, so rotate
         QMatrix matrix;
         matrix.rotate(90);
@@ -121,30 +117,55 @@ void ExportWizard::saveImage()
     }
 
     // save image
-    if (!image.save(fileName) || !QFile::exists(fileName)) {
+    if (image.save(fileName) && QFile::exists(fileName)) {
+        int size = QFileInfo(fileName).size();
+        QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
+    } else
         QMessageBox::warning(this, tr("Rendering Error"), tr("Error rendering to the file '%1'").arg(fileName));
-        return;
-    }
-    int size = QFile(fileName).size();
-    QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
 }
 
+#include <math.h>
+#include "posterazorcore.h"
+#include "controller.h"
+#include "wizard.h"
+#include "imageloaderqt.h"
 void ExportWizard::startPosterazor()
 {
-    qWarning("3");
+    static const quint32 posterPixels = 6 * 1000000; // Megapixels * 3 bytes!
+    // We will use up the whole posterPixels for the render, respecting the aspect ratio.
+    const qreal widthToHeightRatio = m_desk->width() / m_desk->height();
+    // Thanks to colleague Oswald for some of the math :)
+    const int posterPixelWidth = int(sqrt(widthToHeightRatio * posterPixels));
+    const int posterPixelHeight = posterPixels / posterPixelWidth;
+
+    static const QLatin1String settingsGroup("posterazor");
+    QSettings settings;
+    settings.beginGroup(settingsGroup);
+
+    // TODO: Eliminate Poster size in %
+    ImageLoaderQt loader;
+    loader.setQImage(m_desk->renderedImage(QSize(posterPixelWidth, posterPixelHeight)));
+    PosteRazorCore posterazor(&loader);
+    posterazor.readSettings(&settings);
+    Wizard *wizard = new Wizard;
+    Controller controller(&posterazor, wizard);
+    controller.setImageLoadingAvailable(false);
+    controller.setPosterSizeModeAvailable(Types::PosterSizeModePercentual, false);
+    QDialog dialog(this, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+	dialog.setWindowTitle(tr("Export poster"));
+    dialog.setLayout(new QVBoxLayout);
+    dialog.layout()->addWidget(wizard);
+    dialog.resize(640, 480);
+    dialog.exec();
+    settings.sync();
+    posterazor.writeSettings(&settings);
 }
 
 void ExportWizard::print()
 {
-    QPrinter printer;
-    QPrintDialog printDialog(&printer);
-    bool ok = printDialog.exec();
-    if(!ok) return;
-
-    float w = m_ui->printWidth->value(), h=m_ui->printHeight->value();
     int dpi = m_ui->printDpi->value();
-    float fdpi = (float)dpi;
-    if(m_ui->printUnity->currentIndex() == 0) { // If pixels
+    float w = m_ui->printWidth->value(), h=m_ui->printHeight->value();
+    if (m_ui->printUnity->currentIndex() == 0) { // If pixels
         m_printSize.setWidth(w/dpi);
         m_printSize.setHeight(h/dpi);
     } else if (m_ui->printUnity->currentIndex() == 1) { // If cm
@@ -155,29 +176,9 @@ void ExportWizard::print()
         m_printSize.setHeight(h);
     }
 
-
-    QImage image(m_desk->width(), m_desk->height(), QImage::Format_ARGB32);
-    image.fill(0);
-    QPainter paintimg(&image);
-    paintimg.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    // Render on the image
-    m_desk->renderVisible(&paintimg, image.rect(), m_desk->sceneRect(), Qt::KeepAspectRatio);
-    paintimg.end();
-    QSize scaleSize(m_printSize.width()*fdpi, m_printSize.height()*fdpi);
-    image = image.scaled(scaleSize);
-
-    printer.setResolution(dpi);
-    printer.setPaperSize(QPrinter::A4);
-
-    if(m_ui->printLandscape->isChecked()) {
-        // Print in landscape mode, so rotate
-        QMatrix matrix;
-        matrix.rotate(90);
-        image = image.transformed(matrix);
-    }
-
-    QPainter paint(&printer);
-    paint.drawImage(image.rect(), image);
+    int width = (int)(m_printSize.width() * (float)dpi);
+    int height = (int)(m_printSize.height() * (float)dpi);
+    m_desk->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked());
 }
 
 void ExportWizard::setPage(int pageId)
