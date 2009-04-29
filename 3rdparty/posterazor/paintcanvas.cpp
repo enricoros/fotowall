@@ -72,6 +72,7 @@ void PaintCanvas::setState(const QString &state)
 
 void PaintCanvas::drawOverlayText(const QPointF &position, int flags, int size, const QString &text)
 {
+    Q_UNUSED(flags)
     if (size < 8)
         return;
     QFont font;
