@@ -10,7 +10,10 @@ Check out the [old home page](http://code.google.com/p/fotowall) too.
 ChangeLog
 ---------
 
-Version 0.6:
+Unreleased Version:
+* ...
+
+Version 0.6 (2009-04-29):
 
 * PosteRazor Integration
 * Live Video (Linux only, requires a WebCam)
@@ -23,7 +26,7 @@ Version 0.6:
 * Sepia Effect
 * Scale Text like Images
 
-Version 0.5:
+Version 0.5 (2009-04-11):
 
 * CD/DVD Cover composition and printing (Tanguy Arnaud)
 * Rich Text (with extended editing)
@@ -38,7 +41,7 @@ Version 0.5:
 * Translation of the Introduction text (Tanguy Arnaud)
 * Fall back to QTextDocument where QtWebkit is not available
 
-Version 0.4:
+Version 0.4 (2009-03-29):
 
 * Windows executable on [github](http://github.com/enricoros/fotowall/downloads)
 * Image Effects (by Tanguy Arnaud)
@@ -46,13 +49,10 @@ Version 0.4:
 * German translation [Martin]
 * Apply properties to All
 
-Version 0.3.1:
+Version 0.3.1 (2009-03-13):
 
 * builds with Qt 4.4
 * Brazilian translation [Marcio Moraes]
-
-Version 0.3:
-
 * Configuration Panel: right click on an image and edit properties
 * More Frame types (default, heart, Plasma backgrounds) [David Eccher]
 * More Image Formats (bmp, tiff, gif, ...) [Superstoned]
