@@ -25,9 +25,10 @@
 #include <QProcess>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QSettings>
 #include <QUrl>
 
-#if defined(Q_OS_WINDOWS)
+#if defined(Q_OS_WIN)
 #include <windows.h>    // for background changing stuff
 #endif
 
@@ -51,7 +52,7 @@ ExportWizard::ExportWizard(Desk * desk)
     m_ui->prTutorialLabel->setText("<html><body><a href='" POSTERAZOR_TUTORIAL_LINK "'>" + m_ui->prTutorialLabel->text() + "</a></body></html>" );
     connect(m_ui->prTutorialLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
 
-#if !defined(Q_OS_WINDOWS) && !defined(Q_OS_LINUX)
+#if !defined(Q_OS_WIN) && !defined(Q_OS_LINUX)
 #warning "Implement background change for this OS"
     m_ui->clWallpaper->hide();
 #endif
@@ -99,7 +100,7 @@ void ExportWizard::setWallpaper()
         return;
     }
 
-#if defined(Q_OS_WINDOWS)
+#if defined(Q_OS_WIN)
     //Set new background path
     QSettings appSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop", QSettings::NativeFormat);
     appSettings.setValue("Wallpaper", filePath);
