@@ -16,13 +16,20 @@
 #include "ui_ExportWizard.h"
 #include "Desk.h"
 #include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QDir>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QProcess>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QUrl>
+
+#if defined(Q_OS_WINDOWS)
+#include <windows.h>    // for background changing stuff
+#endif
 
 #define POSTERAZOR_WEBSITE_LINK "http://posterazor.sourceforge.net/"
 #define POSTERAZOR_TUTORIAL_LINK "http://www.youtube.com/watch?v=p7XsFZ4Leo8"
@@ -43,6 +50,11 @@ ExportWizard::ExportWizard(Desk * desk)
     connect(m_ui->prWebLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
     m_ui->prTutorialLabel->setText("<html><body><a href='" POSTERAZOR_TUTORIAL_LINK "'>" + m_ui->prTutorialLabel->text() + "</a></body></html>" );
     connect(m_ui->prTutorialLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
+
+#if !defined(Q_OS_WINDOWS) && !defined(Q_OS_LINUX)
+#warning "Implement background change for this OS"
+    m_ui->clWallpaper->hide();
+#endif
 
     // set default sizes
     m_ui->saveHeight->setValue(m_desk->height());
@@ -71,25 +83,44 @@ ExportWizard::~ExportWizard()
     delete m_ui;
 }
 
-#if defined(Q_OS_WINDOWS)
-#include <windows.h>
-#endif
 void ExportWizard::setWallpaper()
 {
-#if defined(Q_OS_WINDOWS)
-    // XXX : Try that stuff on windows
-    QSettings appSettings( "HKEY_CURRENT_USER\\Control Panel\\Desktop", QSettings::NativeFormat);
+    // find a new filePath
+    QString filePath;
+    int fileNumber = 0;
+    while (filePath.isEmpty() || QFile::exists(filePath))
+        filePath = QDir::homePath() + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".jpeg";
 
+    // create and image into the home dir
+    QRect deskGeometry = QApplication::desktop()->screenGeometry();
+    QImage image = m_desk->renderedImage(deskGeometry.size());
+    if (!image.save(filePath, "JPG", 95)) {
+        QMessageBox::warning(this, tr("Wallpaper Error"), tr("Can't save the image to disk."));
+        return;
+    }
+
+#if defined(Q_OS_WINDOWS)
     //Set new background path
-    QString filePath = m_ui->filePath->text();
+    QSettings appSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop", QSettings::NativeFormat);
     appSettings.setValue("Wallpaper", filePath);
     QByteArray ba = filePath.toLatin1();
-    //Notification to windows renew desktop
-    SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, (void*)ba.data(),	SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+
+    //Notification to windows refresh desktop
+    SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, (void*)ba.data(), SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
 #elif defined(Q_OS_LINUX)
-    // FIXME : how to set the background on linux?
+    // KDE4
+    if (QString(qgetenv("KDE_SESSION_VERSION")).startsWith("4"))
+        QMessageBox::warning(this, tr("Manual Wallpaper Change"), tr("KDE4 doesn't yet support changing wallpaper automatically.\nGo to the Desktop Settings and select the file:\n  %1").arg(filePath));
+
+    // KDE3
+    QString kde3cmd = "dcop kdesktop KBackgroundIface setWallpaper '" + filePath + "' 6";
+    QProcess::startDetached(kde3cmd);
+
+    // Gnome2
+    QString gnome2Cmd = "gconftool -t string -s /desktop/gnome/background/picture_filename '" + filePath + "'";
+    QProcess::startDetached(gnome2Cmd);
 #else
-    // handle other systems
+#warning "Implement background change for this OS"
 #endif
 }
 
