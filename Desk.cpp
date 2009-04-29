@@ -324,20 +324,27 @@ void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF
         item->show();
 }
 
-QImage Desk::renderedImage(const QSize & size, Qt::AspectRatioMode aspectRatioMode)
+QImage Desk::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode)
 {
-    QImage result(size, QImage::Format_ARGB32);
-
+    QImage result(iSize, QImage::Format_ARGB32);
     result.fill(0);
+
     QPainter painter(&result);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    renderVisible(&painter, result.rect(), sceneRect(), aspectRatioMode);
+
+    QSize targetSize = sceneRect().size().toSize();
+    targetSize.scale(iSize, aspectRatioMode);
+    int offsetX = (iSize.width() - targetSize.width()) / 2;
+    int offsetY = (iSize.height() - targetSize.height()) / 2;
+
+    QRect targetRect = QRect(offsetX, offsetY, targetSize.width(), targetSize.height());
+    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio);
     painter.end();
 
     return result;
 }
 
-bool Desk::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape)
+bool Desk::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode)
 {
     // setup printer
     QPrinter printer;
@@ -350,7 +357,7 @@ bool Desk::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape)
         return false;
 
     // TODO: use different ratio modes?
-    QImage image = renderedImage(pixelSize);
+    QImage image = renderedImage(pixelSize, aspectRatioMode);
     if (landscape) {
         // Print in landscape mode, so rotate
         QMatrix matrix;

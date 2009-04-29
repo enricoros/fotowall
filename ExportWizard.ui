@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>350</height>
+    <width>408</width>
+    <height>432</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -112,11 +112,11 @@
       <property name="title">
        <string>Scale Mode</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QRadioButton" name="wbFixedRatio">
+        <widget class="QRadioButton" name="wbZoom">
          <property name="text">
-          <string>Scaled and Cropped</string>
+          <string>Zoomed</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -124,16 +124,23 @@
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="wbScaled">
+        <widget class="QRadioButton" name="wbScaleKeep">
          <property name="text">
-          <string>Scaled (ignoring aspect ratio)</string>
+          <string>Scaled, keep proportions</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="wbScaleIgnore">
+         <property name="text">
+          <string>Scaled</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QRadioButton" name="wbOriginal">
          <property name="text">
-          <string>Current Size</string>
+          <string>Original Size</string>
          </property>
         </widget>
        </item>
@@ -152,33 +159,29 @@
    <attribute name="pageId">
     <string notr="true">2</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QGroupBox" name="groupBox_3">
       <property name="title">
        <string>File properties</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Save file path:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="filePath"/>
-         </item>
-         <item>
-          <widget class="QPushButton" name="chooseFilePath">
-           <property name="text">
-            <string>Choose...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Output file:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="filePath"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="chooseFilePath">
+         <property name="text">
+          <string>Choose...</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -192,7 +195,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_8">
          <property name="text">
-          <string>Width</string>
+          <string>Width:</string>
          </property>
         </widget>
        </item>
@@ -213,7 +216,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>Height</string>
+          <string>Height:</string>
          </property>
         </widget>
        </item>
@@ -228,6 +231,39 @@
         <widget class="QCheckBox" name="saveLandscape">
          <property name="text">
           <string>Landscape</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_6">
+      <property name="title">
+       <string>Scale Mode</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QRadioButton" name="ibZoom">
+         <property name="text">
+          <string>Zoomed</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="ibScaleKeep">
+         <property name="text">
+          <string>Scaled, keep proportions</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="ibScaleIgnore">
+         <property name="text">
+          <string>Scaled</string>
          </property>
         </widget>
        </item>
@@ -320,18 +356,18 @@
     <item>
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
-       <string>Size</string>
+       <string>Size and Orientation</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QLabel" name="label_4">
+        <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Height:</string>
+          <string>Width:</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" rowspan="2">
-        <widget class="QDoubleSpinBox" name="printHeight">
+       <item row="0" column="1">
+        <widget class="QDoubleSpinBox" name="printWidth">
          <property name="maximum">
           <double>10000.000000000000000</double>
          </property>
@@ -340,7 +376,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2" rowspan="3">
+       <item row="0" column="2" rowspan="2">
         <widget class="QComboBox" name="printUnity">
          <item>
           <property name="text">
@@ -359,15 +395,15 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>Width:</string>
+          <string>Height:</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="printWidth">
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="printHeight">
          <property name="maximum">
           <double>10000.000000000000000</double>
          </property>
@@ -376,7 +412,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="2" column="0">
         <widget class="QLabel" name="label_6">
          <property name="toolTip">
           <string>Dot Per Inch</string>
@@ -386,7 +422,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="2" column="1">
         <widget class="QSpinBox" name="printDpi">
          <property name="maximum">
           <number>1000</number>
@@ -396,10 +432,17 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0" colspan="3">
+       <item row="3" column="0" colspan="3">
         <widget class="QCheckBox" name="printLandscape">
          <property name="text">
           <string>Print in landscape mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="3">
+        <widget class="QCheckBox" name="printKeepRatio">
+         <property name="text">
+          <string>Keep proportions</string>
          </property>
         </widget>
        </item>

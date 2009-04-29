@@ -95,16 +95,29 @@ void ExportWizard::setWallpaper()
     QString filePath;
     int fileNumber = 0;
     while (filePath.isEmpty() || QFile::exists(filePath))
-        filePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber);
-
-    // create and image into the home dir
-    QRect deskGeometry = QApplication::desktop()->screenGeometry();
-    QImage image = m_desk->renderedImage(deskGeometry.size());
 #if defined(Q_OS_WIN)
-    filePath += ".bmp";
+        filePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".bmp";
+#else
+        filePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".jpg";
+#endif
+
+    // render the image
+    QImage image;
+    QSize sceneSize(m_desk->width(), m_desk->height());
+    QSize desktopSize = QApplication::desktop()->screenGeometry().size();
+    if (m_ui->wbZoom->isChecked())
+        image = m_desk->renderedImage(desktopSize, Qt::KeepAspectRatioByExpanding);
+    else if (m_ui->wbScaleKeep->isChecked())
+        image = m_desk->renderedImage(desktopSize, Qt::KeepAspectRatio);
+    else if (m_ui->wbScaleIgnore->isChecked())
+        image = m_desk->renderedImage(desktopSize, Qt::IgnoreAspectRatio);
+    else
+        image = m_desk->renderedImage(sceneSize);
+
+    // save the right kind of image into the home dir
+#if defined(Q_OS_WIN)
     if (!image.save(filePath, "BMP")) {
 #else
-    filePath += ".jpg";
     if (!image.save(filePath, "JPG", 100)) {
 #endif
         QMessageBox::warning(this, tr("Wallpaper Error"), tr("Can't save the image to disk."));
@@ -145,11 +158,16 @@ void ExportWizard::saveImage()
     QString fileName = m_ui->filePath->text();
 
     // get the rendering size
-    int destW = m_ui->saveWidth->value();
-    int destH = m_ui->saveHeight->value();
+    QSize imageSize(m_ui->saveWidth->value(), m_ui->saveHeight->value());
 
-    // render on the image
-    QImage image = m_desk->renderedImage(QSize(destW, destH));
+    // render the image
+    QImage image;
+    if (m_ui->ibZoom->isChecked())
+        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatioByExpanding);
+    else if (m_ui->ibScaleKeep->isChecked())
+        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatio);
+    else
+        image = m_desk->renderedImage(imageSize, Qt::IgnoreAspectRatio);
 
     // rotate image if requested
     if (m_ui->saveLandscape->isChecked()) {
@@ -220,7 +238,8 @@ void ExportWizard::print()
 
     int width = (int)(m_printSize.width() * (float)dpi);
     int height = (int)(m_printSize.height() * (float)dpi);
-    m_desk->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked());
+    Qt::AspectRatioMode ratioMode = m_ui->printKeepRatio->isChecked() ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio;
+    m_desk->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked(), ratioMode);
 }
 
 void ExportWizard::setPage(int pageId)
