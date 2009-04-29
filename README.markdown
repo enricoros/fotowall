@@ -10,20 +10,18 @@ Check out the [old home page](http://code.google.com/p/fotowall) too.
 ChangeLog
 ---------
 
-Unreleased:
-
 Version 0.6:
 
-* PosteRazor integration
-* Video Content (on Linux, requires a WebCam)
-* XML file format (will ensure forward-compatibility)
-* Export Wizard
+* PosteRazor Integration
+* Live Video (Linux only, requires a WebCam)
+* Export Wizard (Wallpaper, Image, PosteRazor, Print)
+* XML file format (will ensure compatibility from now on)
 * Multi-items selection (to move, delete, set properties, ...)
 * All-in-one Scale+Rotate button (different with LMB/RMB and Shift/Ctrl)
 * Perspective Transform
 * Fixed Size mode
 * Sepia Effect
-* Text Scale
+* Scale Text like Images
 
 Version 0.5:
 
@@ -82,12 +80,19 @@ I hope to expand the program as soon as I can, since there is many room for impr
 
 ### Current Wishlist
 
-Newest:
-
 * display on-screen selection for pictures
 * perform rectangular image composition based on an input picture (color, pattern)
 * perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
 * add the "color changing stuff" to the picture themselves [Contrast, Superstoned]
+
+Enrico:
+
+* auto-placement [force field, shape, collage, etc..]
+* integrate kde-apps knowledgebase
+* flickr integration (already working..)
+* svg drawings [balloons, signs, etc..]
+* masked pic
+* both new and old resize&co
 
 
 Building
