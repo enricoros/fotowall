@@ -52,6 +52,7 @@ include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 include(3rdparty/posterazor/posterazor.pri)
 !contains(CONFIG, build_pass) system(lrelease 3rdparty/posterazor/posterazor.pri)
+!contains(CONFIG, build_pass) system(lrelease fotowall.pro)
 
 # installation on Linux
 unix {
@@ -82,9 +83,12 @@ macx {
 }
 
 # handling static image plugins
-contains(CONFIG, static) {
-    QTPLUGIN += qgif \
-        qjpeg \
-        qsvg \
-        qtiff
+win32|macx {
+    contains(CONFIG, static)|contains(CONFIG, qt_no_framework) {
+        DEFINES += STATIC_LINK
+        QTPLUGIN += qgif \
+            qjpeg \
+            qsvg \
+            qtiff
+    }
 }

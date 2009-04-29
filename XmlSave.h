@@ -38,16 +38,14 @@ class XmlSave : public QObject
     public:
         XmlSave(const QString &);
         ~XmlSave();
-        void saveProject(QString, int, const ModeInfo&);
-        void saveImage(const PictureContent *);
-        void saveText(const TextContent *);
+        void saveContent(const Desk *);
         void saveDesk(const Desk *);
+        void saveProject(int, const ModeInfo&);
 
     private :
         QDomDocument doc;
         QDomElement m_rootElement;
-        QDomElement m_imageElements;
-        QDomElement m_textElements;
+        QDomElement m_contentElements;
         QDomElement m_projectElement;
         QDomElement m_deskElement;
         QFile file;

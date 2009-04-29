@@ -21,7 +21,7 @@
 #include "FotoWall.h"
 #include "RenderOpts.h"
 
-#if !defined(QT_SHARED) && !defined(QT_DLL)
+#if defined(STATIC_LINK)
 Q_IMPORT_PLUGIN(qgif)
 Q_IMPORT_PLUGIN(qjpeg)
 Q_IMPORT_PLUGIN(qsvg)
@@ -45,7 +45,7 @@ int main( int argc, char ** args )
 
     QApplication app(argc, args);
     app.setApplicationName("FotoWall");
-    app.setApplicationVersion("0.6-preview");
+    app.setApplicationVersion("0.6");
     app.setOrganizationName("Enrico Ros");
 
     // translate fotowall + default-qt messages
@@ -66,7 +66,7 @@ int main( int argc, char ** args )
     fw.showMaximized();
     if(argc >0) {
         QString filePath = args[1];
-        fw.load(filePath);
+        fw.loadXml(filePath);
     }
     if (RenderOpts::FirstRun)
         fw.showIntroduction();

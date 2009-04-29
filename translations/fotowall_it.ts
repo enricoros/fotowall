@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="it">
+<!DOCTYPE TS>
+<TS version="2.0" language="it">
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="56"/>
         <source>Hold down SHIFT for ignoring aspect ratio.
 Double click to restore the aspect ratio.</source>
         <translation type="obsolete">Premi SHIFT durante il trascinamento per ridimensionare liberamente.
 Fai doppio clic per ripristinare la forma.</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="64"/>
         <source>Hold down SHIFT to snap the rotation.
 Double click to align the object.</source>
         <translation type="obsolete">Premi SHIFT durante il trascinamento per ruotare a passi.
@@ -20,6 +19,14 @@ Fai doppio clic per allineare l&apos;oggetto.</translation>
         <location filename="../items/AbstractContent.cpp" line="69"/>
         <source>Change properties...</source>
         <translation>Modifica le proprietà...</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractContent.cpp" line="74"/>
+        <source>Drag top or bottom to move along the X axis (perspective).
+Drag left or right to move along the Y axis.
+Hold SHIFT to rotate faster.
+Use CTRL to cancel the transformations</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="80"/>
@@ -45,14 +52,6 @@ Fai doppio clic per allineare l&apos;oggetto.</translation>
         <location filename="../items/AbstractContent.cpp" line="646"/>
         <source>Error saving the Object to &apos;%1&apos;</source>
         <translation>Non è stato possibile salvare l&apos;Oggetto in &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractContent.cpp" line="74"/>
-        <source>Drag top or bottom to move along the X axis (perspective).
-Drag left or right to move along the Y axis.
-Hold SHIFT to rotate faster.
-Use CTRL to cancel the transformations</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../items/AbstractContent.cpp" line="656"/>
@@ -143,22 +142,22 @@ Use CTRL to cancel the transformations</source>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="651"/>
+        <location filename="../Desk.cpp" line="603"/>
         <source>Back</source>
         <translation>Retro</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="655"/>
+        <location filename="../Desk.cpp" line="607"/>
         <source>Front</source>
         <translation>Fronte</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="792"/>
+        <location filename="../Desk.cpp" line="744"/>
         <source>Delete content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="792"/>
+        <location filename="../Desk.cpp" line="744"/>
         <source>All the selected content will be deleted, do you want to continue ?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -255,7 +254,7 @@ Use CTRL to cancel the transformations</source>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="14"/>
-        <source>Wizard</source>
+        <source>Export Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -269,11 +268,13 @@ Use CTRL to cancel the transformations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ExportWizard.ui" line="42"/>
         <location filename="../ExportWizard.ui" line="101"/>
         <source>Wallpaper</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ExportWizard.ui" line="58"/>
         <location filename="../ExportWizard.ui" line="147"/>
         <source>Image</source>
         <translation type="unfinished"></translation>
@@ -447,126 +448,195 @@ Use CTRL to cancel the transformations</source>
 <context>
     <name>FotoWall</name>
     <message>
-        <location filename="../FotoWall.cpp" line="398"/>
+        <location filename="../FotoWall.cpp" line="426"/>
         <source>Select one or more pictures to add</source>
         <translation>Scegliere una o più fotografie da aggiungere</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="398"/>
+        <location filename="../FotoWall.cpp" line="426"/>
         <source>Images (%1)</source>
         <translation>Immagini (%1)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="169"/>
         <source>This function is being rewritten for version 0.6.
 In the meantime, while not the optimum, you can still get high quality results ;-)</source>
         <translation type="obsolete">Questa funzione verrà riscritta per la versione 0.6
 Nel frattempo, anche se non è il risultato migliore, si può ottenere ancora un risultato di alta qualità. ;-)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="171"/>
         <source>Choose the Image file</source>
         <translation type="obsolete">Scegli un&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="171"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation type="obsolete">Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="197"/>
         <source>Rendering Error</source>
         <translation type="obsolete">Errore nel Rendering</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="197"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
         <translation type="obsolete">Errore salvando il rendering sul file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="201"/>
         <source>Done</source>
         <translation type="obsolete">Fatto</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="228"/>
+        <location filename="../FotoWall.cpp" line="207"/>
+        <source>Enable force field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="213"/>
+        <source>Auto-arrange new pictures</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="219"/>
+        <source>Rearrange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="221"/>
+        <source>Uniform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="226"/>
+        <source>Shaped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="231"/>
+        <source>Collage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="256"/>
         <source>Top bar</source>
         <translation>Barra Sopra</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="234"/>
+        <location filename="../FotoWall.cpp" line="262"/>
         <source>Bottom bar</source>
         <translation>Barra Sotto</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="242"/>
+        <location filename="../FotoWall.cpp" line="270"/>
         <source>Set title...</source>
         <translation>Imposta il Titolo...</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="247"/>
+        <location filename="../FotoWall.cpp" line="271"/>
+        <source>CTRL+T</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="275"/>
         <source>Clear title</source>
         <translation>Cancella il Titolo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="313"/>
+        <location filename="../FotoWall.cpp" line="286"/>
+        <source>Introduction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="290"/>
+        <source>Tutorial Video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="304"/>
+        <source>Select all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="305"/>
+        <source>CTRL+A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="341"/>
+        <source>Export...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="353"/>
+        <location filename="../FotoWall.cpp" line="364"/>
+        <location filename="../FotoWall.cpp" line="390"/>
+        <source>Print...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="443"/>
+        <location filename="../FotoWall.cpp" line="449"/>
+        <source>Select FotoWall file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="443"/>
+        <source>FotoWall (*.fotowall)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="547"/>
+        <source>Support (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>export...</source>
-        <translation>esporta...</translation>
+        <translation type="obsolete">esporta...</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="362"/>
         <source>print...</source>
-        <translation>stampa...</translation>
+        <translation type="obsolete">stampa...</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="497"/>
+        <location filename="../FotoWall.cpp" line="524"/>
         <source>Opening the Web Tutorial</source>
         <translation>Apertura del Tutoria da web</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="497"/>
+        <location filename="../FotoWall.cpp" line="524"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 Do you want to open the web page?</source>
         <translation>Il tutorial di Peter Upfold è distribuito da Fosswire. 
 Vuoi aprire la pagina internet?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="367"/>
         <source>Select Layout file</source>
         <translation type="obsolete">Scegli il file di Disposizione</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="375"/>
         <source>File Error</source>
         <translation type="obsolete">Errore nel File</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="358"/>
         <source>Error loading Layout from the file &apos;%1&apos;</source>
         <translation type="obsolete">Errore caricando la Disposizione dal file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="375"/>
         <source>Error saving the Layout to the file &apos;%1&apos;</source>
         <translation type="obsolete">Errore salvando la Disposizione sul file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="480"/>
+        <location filename="../FotoWall.cpp" line="507"/>
         <source>Title</source>
         <translation>Titolo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="480"/>
+        <location filename="../FotoWall.cpp" line="507"/>
         <source>Insert the title</source>
         <translation>Inserire il titolo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="169"/>
         <source>Warning</source>
         <translation type="obsolete">Allerte</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="201"/>
         <source>The target image is %1 bytes long</source>
         <translation type="obsolete">L&apos;iimagine di destinazione ha %1 byte</translation>
     </message>
@@ -581,7 +651,6 @@ Vuoi aprire la pagina internet?</translation>
         <translation>FotoWall</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="291"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -594,9 +663,21 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;tutorial&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../FotoWall.ui" line="113"/>
+        <source>add picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="139"/>
         <location filename="../FotoWall.ui" line="142"/>
         <source>add text</source>
         <translation>aggiungi testo</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="165"/>
+        <location filename="../FotoWall.ui" line="168"/>
+        <source>add mirror</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="206"/>
@@ -609,12 +690,41 @@ p, li { white-space: pre-wrap; }
         <translation>Copertina DVD</translation>
     </message>
     <message>
+        <location filename="../FotoWall.ui" line="216"/>
+        <source>Exact Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="230"/>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="243"/>
+        <source>Save</source>
+        <translation type="unfinished">Salva</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="253"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="286"/>
+        <source>Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../FotoWall.ui" line="325"/>
         <source>Decorations</source>
         <translation>Decorazioni</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="194"/>
+        <location filename="../FotoWall.ui" line="344"/>
+        <source>Instructions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -627,119 +737,16 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;help&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;introduzione&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="230"/>
         <source>load</source>
-        <translation>Carica</translation>
+        <translation type="obsolete">Carica</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="243"/>
         <source>save</source>
-        <translation>Salva</translation>
+        <translation type="obsolete">Salva</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="253"/>
         <source>quit</source>
-        <translation>Esci</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="179"/>
-        <source>Enable force field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="185"/>
-        <source>Auto-arrange new pictures</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="191"/>
-        <source>Rearrange</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="193"/>
-        <source>Uniform</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="198"/>
-        <source>Shaped</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="203"/>
-        <source>Collage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="243"/>
-        <source>CTRL+T</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="258"/>
-        <source>Introduction</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="262"/>
-        <source>Tutorial</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="276"/>
-        <source>Select all</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="277"/>
-        <source>CTRL+A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="421"/>
-        <source>Select FotoWall file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="415"/>
-        <source>FotoWall (*.fotowall)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="520"/>
-        <source>Support (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="113"/>
-        <source>add picture</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="168"/>
-        <source>add mirror</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="216"/>
-        <source>Exact Size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="293"/>
-        <source>How to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="344"/>
-        <source>Arrange</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="363"/>
-        <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Esci</translation>
     </message>
 </context>
 <context>
@@ -765,12 +772,10 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fai Clic&lt;/span&gt; sull&apos;immagine per avere un&apos;anteprima.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../GlowEffectDialog.ui" line="49"/>
         <source>Ok</source>
         <translation type="obsolete">Ok</translation>
     </message>
     <message>
-        <location filename="../GlowEffectDialog.ui" line="56"/>
         <source>Cancel</source>
         <translation type="obsolete">Annulla</translation>
     </message>
@@ -778,22 +783,26 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Help</name>
     <message>
+        <location filename="../3rdparty/posterazor/controller.cpp" line="538"/>
         <location filename="../3rdparty/posterazor/mainwindow.cpp" line="404"/>
         <source>http://posterazor.sourceforge.net/</source>
         <comment>Only translate, if the website has this language.</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="184"/>
+        <location filename="../3rdparty/posterazor/mainwindow.cpp" line="81"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="183"/>
         <source>Load an input image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/mainwindow.cpp" line="82"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="187"/>
         <source>Save the Poster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/mainwindow.cpp" line="83"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="105"/>
         <source>&amp;Manual</source>
         <translation type="unfinished"></translation>
@@ -804,6 +813,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/mainwindow.cpp" line="85"/>
         <location filename="../3rdparty/posterazor/mainwindow.cpp" line="402"/>
         <source>&amp;About PosteRazor</source>
         <translation type="unfinished"></translation>
@@ -814,14 +824,14 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/mainwindow.cpp" line="412"/>
+        <location filename="../3rdparty/posterazor/mainwindow.cpp" line="408"/>
         <source>The PosteRazor cuts a raster image into pieces which can be printed on a printer and be put together to a poster.
 As an input image, raster files of various image file formats are supported. Instead of directly printing the poster, the PosteRazor produces a multi page PDF file which contains the poster tiles.
 It is an open source program which depends on other open source projects. The PosteRazor is hosted on %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="112"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="107"/>
         <source>PosteRazor has its user interface organized in a &apos;Wizard&apos; fashion. All settings for the poster creation can be done in %1 steps.
 The &lt;b&gt;%2&lt;/b&gt; and &lt;b&gt;%3&lt;/b&gt; buttons navigate through these steps. The &lt;b&gt;?&lt;/b&gt; button opens a help window with an explanation of the current step.
 All entries and choices are remembered until the next usage of the PosteRazor.</source>
@@ -829,34 +839,34 @@ All entries and choices are remembered until the next usage of the PosteRazor.</
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="175"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="174"/>
         <source>Step %1 of %2:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="185"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="184"/>
         <source>Printer paper format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="186"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="185"/>
         <source>Image tile overlapping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="187"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="186"/>
         <source>Final poster size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="200"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="196"/>
         <source>Load an image by clicking the button with the open icon and selecting an image file, or by drag &amp; dropping an image file on the PosteRazor. The drag &amp; drop also works during the other steps.
 After loading the image, the most important informations are listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
         <comment>Wizard step 1. Place holders: %1 = &apos;Image informations&apos; (will be automatically inserted)</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="209"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="203"/>
         <source>Define the paper sheet size that you use in your printer.
 A standard paper sheet size can be selected from the &lt;b&gt;%1&lt;/b&gt; chooser, along with the desired paper sheet orientation.
 Alternatively, a custom paper sheet size can be defined in the &lt;b&gt;%2&lt;/b&gt; tab.
@@ -865,45 +875,45 @@ Paper borders are defined in the &lt;b&gt;%3&lt;/b&gt; fields. Even if your prin
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="218"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="214"/>
         <source>Image tile overlapping is needed to have some tolerance for cutting off the unneeded borders from one side. Additionally, like the borders from the previous step, it gives more area for gluing together the final poster tiles.
 The &lt;b&gt;%1&lt;/b&gt; defines the borders that are intended to be overlapped by the neighbor tiles. The borders on the opposite sides are intended to be cut (except on the outermost tiles).</source>
         <comment>Wizard step 3. Place holders: %1 = &apos;Overlapping position&apos; (will be automatically inserted)</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="225"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="223"/>
         <source>Define the final poster size, in one of the following three modes which can be selected by the corresponding radio buttons:</source>
         <comment>Wizard step 4. Start of the description.</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="231"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="229"/>
         <source>You want to have a specific size of your poster.</source>
         <comment>Wizard step 4. Description for &apos;absolute size&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="236"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="234"/>
         <source>You want to use whole paper sheets and specify how many of them of them you want to use.</source>
         <comment>Wizard step 4. Description for &apos;size in pages&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="241"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="239"/>
         <source>Your input image has a certain size which is defined by the number of pixels and dpi (dots per Inch) and your want to enlarge the image by a certain factor.</source>
         <comment>Wizard step 4. Description for &apos;size in percent&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="247"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="243"/>
         <source>The aspect ratio of width and height is always 1:1 and is automatically recalculated. In the preview area, you can see the overlapping areas which are surrounded by light red rectangles.
 &lt;b&gt;%1&lt;/b&gt; sets the alignment of the image on the total paper area of the poster. This is useful if you want to keep the unused paper.</source>
         <comment>Wizard step 4. End of the description. Place holders: %1 = &apos;Image alignment&apos; (will be automatically inserted)</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="255"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="251"/>
         <source>Save the poster by clicking the save button and specifying a destination file name.
 Check or uncheck the &lt;b&gt;%1&lt;/b&gt;, if the standard PDF handling application that is set in your operating system should be automatically started after the PDF file is saved.</source>
         <comment>Wizard step 5. Place holders: %1 = &apos;Open PDF after saving&apos; (will be automatically inserted)</comment>
@@ -931,11 +941,12 @@ Check or uncheck the &lt;b&gt;%1&lt;/b&gt;, if the standard PDF handling applica
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/controller.cpp" line="446"/>
+        <location filename="../3rdparty/posterazor/controller.cpp" line="445"/>
         <source>The image &apos;%1&apos; could not be loaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/controller.cpp" line="485"/>
         <location filename="../3rdparty/posterazor/wizard.cpp" line="133"/>
         <source>Save the poster</source>
         <translation type="unfinished"></translation>
@@ -972,6 +983,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="90"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="200"/>
         <source>Image Informations</source>
         <translation type="unfinished"></translation>
@@ -997,16 +1009,21 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="95"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="255"/>
         <source>Open PDF after saving</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="96"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="114"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="97"/>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="109"/>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="120"/>
         <location filename="../3rdparty/posterazor/wizard.cpp" line="124"/>
         <source>Height:</source>
         <translation type="unfinished"></translation>
@@ -1022,6 +1039,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="100"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="218"/>
         <source>Overlapping position</source>
         <translation type="unfinished"></translation>
@@ -1042,6 +1060,9 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="104"/>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="110"/>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="121"/>
         <location filename="../3rdparty/posterazor/wizard.cpp" line="126"/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
@@ -1067,11 +1088,13 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="111"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="209"/>
         <source>Format:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="113"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="210"/>
         <source>Custom</source>
         <translation type="unfinished"></translation>
@@ -1102,11 +1125,13 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="122"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="247"/>
         <source>Image alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="123"/>
         <location filename="../3rdparty/posterazor/wizard.cpp" line="125"/>
         <source>pages</source>
         <translation type="unfinished"></translation>
@@ -1117,6 +1142,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="128"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="228"/>
         <source>Absolute size:</source>
         <translation type="unfinished"></translation>
@@ -1127,16 +1153,19 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="130"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="233"/>
         <source>Size in pages:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="131"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="238"/>
         <source>Size in percent:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="132"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="113"/>
         <source>Back</source>
         <translation type="unfinished">Retro</translation>
@@ -1147,6 +1176,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="141"/>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="211"/>
         <source>Borders</source>
         <translation type="unfinished"></translation>
@@ -1177,7 +1207,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizard.cpp" line="301"/>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="300"/>
         <source>CMYK</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1243,6 +1273,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>PictureContent</name>
     <message>
+        <location filename="../items/PictureContent.cpp" line="34"/>
         <location filename="../items/PictureContent.cpp" line="74"/>
         <source>...</source>
         <translation>...</translation>
@@ -1296,6 +1327,11 @@ Do you want to overwrite it?</source>
         <translation>Luminescenza</translation>
     </message>
     <message>
+        <location filename="../items/PictureProperties.cpp" line="47"/>
+        <source>Sepia</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../items/PictureProperties.cpp" line="35"/>
         <source>No effects</source>
         <translation>Elimina Effetti</translation>
@@ -1324,11 +1360,6 @@ Do you want to overwrite it?</source>
         <location filename="../items/PictureProperties.ui" line="108"/>
         <source>apply to all</source>
         <translation>applica a tutti</translation>
-    </message>
-    <message>
-        <location filename="../items/PictureProperties.cpp" line="47"/>
-        <source>Sepia</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1405,17 +1436,14 @@ Do you want to overwrite it?</source>
 <context>
     <name>SizeDialog</name>
     <message>
-        <location filename="../FotoWall.cpp" line="148"/>
         <source>The aspect ratio must be kept</source>
         <translation type="obsolete">Le proporzioni devono essere sispettate</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="146"/>
         <source>Select Resolution</source>
         <translation type="obsolete">Scegli la risoluzione</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="153"/>
         <source>OK</source>
         <translation type="obsolete">Ok</translation>
     </message>
@@ -1477,6 +1505,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="254"/>
         <location filename="../3rdparty/posterazor/wizard.ui" line="1079"/>
         <source>Size:</source>
         <translation type="unfinished"></translation>
@@ -1527,16 +1556,27 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="498"/>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="515"/>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="725"/>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="742"/>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="997"/>
         <location filename="../3rdparty/posterazor/wizard.ui" line="1035"/>
         <source>cm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="505"/>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="732"/>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="1049"/>
         <location filename="../3rdparty/posterazor/wizard.ui" line="1059"/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="522"/>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="749"/>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="1011"/>
         <location filename="../3rdparty/posterazor/wizard.ui" line="1069"/>
         <source>Height:</source>
         <translation type="unfinished"></translation>
@@ -1602,6 +1642,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../3rdparty/posterazor/wizard.ui" line="990"/>
         <location filename="../3rdparty/posterazor/wizard.ui" line="1004"/>
         <source>pages</source>
         <translation type="unfinished"></translation>
@@ -1670,23 +1711,23 @@ Do you want to overwrite it?</source>
 <context>
     <name>XmlRead</name>
     <message>
-        <location filename="../XmlRead.cpp" line="36"/>
+        <location filename="../XmlRead.cpp" line="40"/>
         <source>Loading error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="36"/>
-        <source>Unable to load the layout file %1</source>
+        <location filename="../XmlRead.cpp" line="40"/>
+        <source>Unable to load the FotoWall file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="44"/>
+        <location filename="../XmlRead.cpp" line="49"/>
         <source>Parsing error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="44"/>
-        <source>Unable to parse the layout file %1. The error was: %2</source>
+        <location filename="../XmlRead.cpp" line="49"/>
+        <source>Unable to parse the FotoWall file %1. The error was: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

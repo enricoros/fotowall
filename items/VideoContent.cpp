@@ -77,6 +77,8 @@ bool VideoContent::fromXml(QDomElement & pe)
 void VideoContent::toXml(QDomElement & pe) const
 {
     AbstractContent::toXml(pe);
+    pe.setTagName("video");
+    pe.setAttribute("input", m_input);
 
     // nothing to save here... (maybe the still pic?)
 }

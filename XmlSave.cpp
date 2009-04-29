@@ -27,7 +27,7 @@
 
 XmlSave::XmlSave(const QString &filePath)
 {
-    // Open layout file
+    // Open fotowall file
     file.setFileName(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
         QMessageBox::warning(0, tr("File Error"), tr("Error saving to the FotoWall file '%1'").arg(filePath));
@@ -40,18 +40,15 @@ XmlSave::XmlSave(const QString &filePath)
     m_rootElement = doc.createElement("fotowall");
     // This is general informations about the project (title...)
     m_projectElement = doc.createElement("project");
-    // All the images will be saved in this element
-    m_imageElements = doc.createElement("images");
-    // All the texts here
-    m_textElements = doc.createElement("texts");
+    // All the contents will be saved in this element
+    m_contentElements = doc.createElement("content");
     // Desk informations (background, colors...)
     m_deskElement = doc.createElement("desk");
 
     // Add elements to the root node (fotowall).
     m_rootElement.appendChild(m_projectElement);
     m_rootElement.appendChild(m_deskElement);
-    m_rootElement.appendChild(m_imageElements);
-    m_rootElement.appendChild(m_textElements);
+    m_rootElement.appendChild(m_contentElements);
 
     // Add the root (and all the sub-nodes) to the document
     doc.appendChild(m_rootElement);
@@ -63,46 +60,27 @@ XmlSave::~XmlSave()
    QDomNode noeud = doc.createProcessingInstruction("xml","version=\"1.0\" ");
    doc.insertBefore(noeud,doc.firstChild());
    //save in the file (4 spaces indent)
-   doc.save(out,4);
+   doc.save(out, 4);
    file.close();
 }
 
-void XmlSave::saveProject(QString title, int mode, const ModeInfo& modeInfo)
+void XmlSave::saveContent(const Desk * desk)
 {
-    // Title element
-    QDomElement titleElement = doc.createElement("title");
-    m_projectElement.appendChild(titleElement);
-    QDomText titleText = doc.createTextNode(title);
-    titleElement.appendChild(titleText);
-
-    // Mode element
-    QDomElement modeElement = doc.createElement("mode"), modeId = doc.createElement("id");
-    modeElement.appendChild(modeId);
-    QString modeStr; modeStr.setNum(mode);
-    QDomText modeText = doc.createTextNode(modeStr);
-    modeId.appendChild(modeText);
-    QSizeF modeSize = modeInfo.realSize();
-    if(!modeSize.isEmpty()) { // If it is a mode that requires additionnal saving
-        QDomElement modeSizeElement = doc.createElement("size");
-        QDomElement wElement= doc.createElement("w");
-        modeSizeElement.appendChild(wElement);
-        QDomElement hElement= doc.createElement("h");
-        modeSizeElement.appendChild(hElement);
-        modeElement.appendChild(modeSizeElement);
-        QString w, h;
-        w.setNum(modeSize.width()); h.setNum(modeSize.height());
-        wElement.appendChild(doc.createTextNode(w));
-        hElement.appendChild(doc.createTextNode(h));
-        modeElement.appendChild(modeSizeElement);
-
-        QDomElement dpi = doc.createElement("dpi");
-        QString dpiStr; dpiStr.setNum(modeInfo.printDpi());
+    foreach (AbstractContent * content, desk->m_content) {
+        QDomElement element = doc.createElement("renamed-element");
+        m_contentElements.appendChild(element);
+        content->toXml(element);
     }
-    m_projectElement.appendChild(modeElement);
 }
 
 void XmlSave::saveDesk(const Desk *desk)
 {
+    // Save Title
+    QDomElement titleElement = doc.createElement("title");
+    m_deskElement.appendChild(titleElement);
+    QDomText titleText = doc.createTextNode(desk->titleText());
+    titleElement.appendChild(titleText);
+
     // Save background colors
     QColor color;
     QString r, g, b;
@@ -160,17 +138,30 @@ void XmlSave::saveDesk(const Desk *desk)
     m_deskElement.appendChild(foreColor);
 }
 
-void XmlSave::saveImage(const PictureContent *imageContent)
+void XmlSave::saveProject(int mode, const ModeInfo& modeInfo)
 {
-    QDomElement imageParent = doc.createElement("image");
-    m_imageElements.appendChild(imageParent);
-    imageContent->toXml(imageParent);
-}
+    // Mode element
+    QDomElement modeElement = doc.createElement("mode"), modeId = doc.createElement("id");
+    modeElement.appendChild(modeId);
+    QString modeStr; modeStr.setNum(mode);
+    QDomText modeText = doc.createTextNode(modeStr);
+    modeId.appendChild(modeText);
+    QSizeF modeSize = modeInfo.realSize();
+    if(!modeSize.isEmpty()) { // If it is a mode that requires additionnal saving
+        QDomElement modeSizeElement = doc.createElement("size");
+        QDomElement wElement= doc.createElement("w");
+        modeSizeElement.appendChild(wElement);
+        QDomElement hElement= doc.createElement("h");
+        modeSizeElement.appendChild(hElement);
+        modeElement.appendChild(modeSizeElement);
+        QString w, h;
+        w.setNum(modeSize.width()); h.setNum(modeSize.height());
+        wElement.appendChild(doc.createTextNode(w));
+        hElement.appendChild(doc.createTextNode(h));
+        modeElement.appendChild(modeSizeElement);
 
-void XmlSave::saveText(const TextContent *textContent)
-{
-    QDomElement textParent = doc.createElement("text");
-    m_textElements.appendChild(textParent);
-    textContent->toXml(textParent);
+        QDomElement dpi = doc.createElement("dpi");
+        QString dpiStr; dpiStr.setNum(modeInfo.printDpi());
+    }
+    m_projectElement.appendChild(modeElement);
 }
-
