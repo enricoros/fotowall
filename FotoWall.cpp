@@ -338,7 +338,7 @@ void FotoWall::setNormalProject()
         skipFirstMaximizeHack = false;
     else
         showMaximized();
-    ui->exportButton->setText(tr("Export..."));
+    ui->exportButton->setText(tr("export"));
     m_desk->setProjectMode(Desk::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
@@ -350,7 +350,7 @@ void FotoWall::setCDProject()
     m_modeInfo.setLandscape(false);
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
-    ui->exportButton->setText(tr("Print..."));
+    ui->exportButton->setText(tr("print"));
     m_desk->setProjectMode(Desk::ModeCD);
     ui->projectType->setCurrentIndex(1);
 }
@@ -361,7 +361,7 @@ void FotoWall::setDVDProject()
     m_modeInfo.setLandscape(true);
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
-    ui->exportButton->setText(tr("Print..."));
+    ui->exportButton->setText(tr("print"));
     m_desk->setProjectMode(Desk::ModeDVD);
     ui->projectType->setCurrentIndex(2);
 }
@@ -371,15 +371,20 @@ void FotoWall::setExactSizeProject()
     // Exact size mode
     if(m_modeInfo.realSize().isEmpty()) {
         ExactSizeDialog sizeDialog;
+        QPointF screenDpi = m_modeInfo.deskDpi();
+        if (screenDpi.x() == screenDpi.y())
+            sizeDialog.ui.screenDpi->setValue(screenDpi.x());
+        else
+            sizeDialog.ui.screenDpi->setSpecialValueText(QString("%1, %2").arg(screenDpi.x()).arg(screenDpi.y()));
         if(sizeDialog.exec() != QDialog::Accepted) {
             return;
         }
         float w = sizeDialog.ui.widthSpinBox->value();
         float h = sizeDialog.ui.heightSpinBox->value();
-        int dpi = sizeDialog.ui.dpiSpinBox->value();
+        int printDpi = sizeDialog.ui.printDpi->value();
         bool landscape = sizeDialog.ui.landscapeCheckBox->isChecked();
         m_modeInfo.setLandscape(landscape);
-        m_modeInfo.setPrintDpi(dpi);
+        m_modeInfo.setPrintDpi(printDpi);
         if(sizeDialog.ui.unityComboBox->currentIndex() == 0)
             m_modeInfo.setRealSizeCm(w, h);
         else
@@ -387,7 +392,7 @@ void FotoWall::setExactSizeProject()
     }
     m_view->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
-    ui->exportButton->setText(tr("Print..."));
+    ui->exportButton->setText(tr("print"));
     m_desk->setProjectMode(Desk::ModeExactSize);
     ui->projectType->setCurrentIndex(3);
 }

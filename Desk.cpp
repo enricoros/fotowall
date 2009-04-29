@@ -65,6 +65,7 @@ Desk::Desk(QObject * parent)
     m_foreColorPicker->setAnimated(true);
     m_foreColorPicker->setAnchor(ColorPickerItem::AnchorTopLeft);
     m_foreColorPicker->setZValue(10000);
+    m_foreColorPicker->setVisible(false);
     connect(m_foreColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotForeColorChanged()));
     addItem(m_foreColorPicker);
 

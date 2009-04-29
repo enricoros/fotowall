@@ -129,22 +129,22 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="610"/>
+        <location filename="../Desk.cpp" line="611"/>
         <source>Back</source>
         <translation>Arrière-plan</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="614"/>
+        <location filename="../Desk.cpp" line="615"/>
         <source>Front</source>
         <translation>Premier-plan</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="751"/>
+        <location filename="../Desk.cpp" line="752"/>
         <source>Delete content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="751"/>
+        <location filename="../Desk.cpp" line="752"/>
         <source>All the selected content will be deleted, do you want to continue ?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -157,37 +157,48 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="20"/>
-        <source>Height:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ExactSizeDialog.ui" line="38"/>
-        <source>cm</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ExactSizeDialog.ui" line="43"/>
-        <source>inches</source>
+        <location filename="../ExactSizeDialog.ui" line="29"/>
+        <source>&lt;b&gt;Exact Size&lt;/b&gt; mode&lt;br&gt;The content has &lt;i&gt;the same size&lt;/i&gt; on screen and on printer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ExactSizeDialog.ui" line="51"/>
+        <source>Height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ExactSizeDialog.ui" line="69"/>
+        <source>cm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ExactSizeDialog.ui" line="74"/>
+        <source>inches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ExactSizeDialog.ui" line="82"/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="68"/>
+        <location filename="../ExactSizeDialog.ui" line="99"/>
+        <location filename="../ExactSizeDialog.ui" line="128"/>
         <source>Dot Per Inch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="71"/>
-        <source>Dpi:</source>
+        <location filename="../ExactSizeDialog.ui" line="131"/>
+        <source>Printer Dpi:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="88"/>
+        <location filename="../ExactSizeDialog.ui" line="102"/>
+        <source>Screen Dpi:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ExactSizeDialog.ui" line="148"/>
         <source>Print in landscape mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -459,12 +470,12 @@ Go to the Desktop Settings and select the file:
 <context>
     <name>FotoWall</name>
     <message>
-        <location filename="../FotoWall.cpp" line="426"/>
+        <location filename="../FotoWall.cpp" line="431"/>
         <source>Select one or more pictures to add</source>
         <translation>Sélectionnez une ou plusieur photos à ajouter</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="426"/>
+        <location filename="../FotoWall.cpp" line="431"/>
         <source>Images (%1)</source>
         <translation>Images (%1)</translation>
     </message>
@@ -549,52 +560,52 @@ Go to the Desktop Settings and select the file:
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../FotoWall.cpp" line="448"/>
+        <location filename="../FotoWall.cpp" line="454"/>
+        <source>Select FotoWall file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="448"/>
+        <source>FotoWall (*.fotowall)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="552"/>
+        <source>Support (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="529"/>
+        <source>Opening the Web Tutorial</source>
+        <translation>Ouverture du tutoriel Internet</translation>
+    </message>
+    <message>
         <location filename="../FotoWall.cpp" line="341"/>
-        <source>Export...</source>
+        <source>export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="353"/>
         <location filename="../FotoWall.cpp" line="364"/>
-        <location filename="../FotoWall.cpp" line="390"/>
-        <source>Print...</source>
+        <location filename="../FotoWall.cpp" line="395"/>
+        <source>print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="443"/>
-        <location filename="../FotoWall.cpp" line="449"/>
-        <source>Select FotoWall file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="443"/>
-        <source>FotoWall (*.fotowall)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="547"/>
-        <source>Support (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="524"/>
-        <source>Opening the Web Tutorial</source>
-        <translation>Ouverture du tutoriel Internet</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="524"/>
+        <location filename="../FotoWall.cpp" line="529"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 Do you want to open the web page?</source>
         <translation>Le tutoriel est fourni sur Fosswire par Peter Upfold.
 Voulez vous ouvrir la page Web ?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="507"/>
+        <location filename="../FotoWall.cpp" line="512"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="507"/>
+        <location filename="../FotoWall.cpp" line="512"/>
         <source>Insert the title</source>
         <translation>Insérez le titre</translation>
     </message>
@@ -642,33 +653,33 @@ Voulez vous ouvrir la page Web ?</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="230"/>
-        <source>Load</source>
+        <source>load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="243"/>
-        <source>Save</source>
-        <translation type="unfinished">Sauvegarder</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="253"/>
-        <source>Quit</source>
+        <source>save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="286"/>
+        <location filename="../FotoWall.ui" line="253"/>
+        <source>quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="346"/>
+        <source>How to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui" line="327"/>
         <source>Background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="325"/>
+        <location filename="../FotoWall.ui" line="308"/>
         <source>Decorations</source>
         <translation>Décorations</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui" line="344"/>
-        <source>Instructions</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
