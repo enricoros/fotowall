@@ -240,7 +240,7 @@ QMenu * FotoWall::createBackgroundMenu()
 {
     QMenu * menu = new QMenu();
 
-    QAction * aGradient = new QAction("Gradient", menu);
+    QAction * aGradient = new QAction(tr("Gradient"), menu);
     aGradient->setCheckable(true);
     aGradient->setChecked(m_desk->backGradientEnabled());
     connect(aGradient, SIGNAL(toggled(bool)), this, SLOT(slotBackGradient(bool)));

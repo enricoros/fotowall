@@ -27,6 +27,11 @@
 #include <QPrintDialog>
 #include <QSettings>
 #include <QUrl>
+#include <math.h>
+#include "controller.h"
+#include "imageloaderqt.h"
+#include "posterazorcore.h"
+#include "wizard.h"
 
 #if defined(Q_OS_WIN)
 #include <windows.h>    // for background changing stuff
@@ -90,24 +95,30 @@ void ExportWizard::setWallpaper()
     QString filePath;
     int fileNumber = 0;
     while (filePath.isEmpty() || QFile::exists(filePath))
-        filePath = QDir::homePath() + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".jpeg";
+        filePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber);
 
     // create and image into the home dir
     QRect deskGeometry = QApplication::desktop()->screenGeometry();
     QImage image = m_desk->renderedImage(deskGeometry.size());
-    if (!image.save(filePath, "JPG", 95)) {
+#if defined(Q_OS_WIN)
+    filePath += ".bmp";
+    if (!image.save(filePath, "BMP")) {
+#else
+    filePath += ".jpg";
+    if (!image.save(filePath, "JPG", 100)) {
+#endif
         QMessageBox::warning(this, tr("Wallpaper Error"), tr("Can't save the image to disk."));
         return;
     }
 
 #if defined(Q_OS_WIN)
     //Set new background path
-    QSettings appSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop", QSettings::NativeFormat);
-    appSettings.setValue("Wallpaper", filePath);
-    QByteArray ba = filePath.toLatin1();
+    {QSettings appSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop", QSettings::NativeFormat);
+    appSettings.setValue("ConvertedWallpaper", filePath);
+    appSettings.setValue("Wallpaper", filePath);}
 
     //Notification to windows refresh desktop
-    SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, (void*)ba.data(), SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+    SystemParametersInfoA(SPI_SETDESKWALLPAPER, true, (void*)qPrintable(filePath), SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
 #elif defined(Q_OS_LINUX)
     // KDE4
     if (QString(qgetenv("KDE_SESSION_VERSION")).startsWith("4"))
@@ -156,11 +167,6 @@ void ExportWizard::saveImage()
         QMessageBox::warning(this, tr("Rendering Error"), tr("Error rendering to the file '%1'").arg(fileName));
 }
 
-#include <math.h>
-#include "posterazorcore.h"
-#include "controller.h"
-#include "wizard.h"
-#include "imageloaderqt.h"
 void ExportWizard::startPosterazor()
 {
     static const quint32 posterPixels = 6 * 1000000; // Megapixels * 3 bytes!

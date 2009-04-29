@@ -201,22 +201,22 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="94"/>
+        <location filename="../ExportWizard.cpp" line="110"/>
         <source>Wallpaper Error</source>
         <translation>Errore nello Sfondo</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="94"/>
+        <location filename="../ExportWizard.cpp" line="110"/>
         <source>Can&apos;t save the image to disk.</source>
         <translation>Non riesco a salvare l&apos;immagine sul disco.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="109"/>
+        <location filename="../ExportWizard.cpp" line="125"/>
         <source>Manual Wallpaper Change</source>
         <translation>Cambiamento Manuale</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="109"/>
+        <location filename="../ExportWizard.cpp" line="125"/>
         <source>KDE4 doesn&apos;t yet support changing wallpaper automatically.
 Go to the Desktop Settings and select the file:
   %1</source>
@@ -225,47 +225,47 @@ Apri le Impostazioni del Desktop e seleziona il file:
   %1</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="126"/>
+        <location filename="../ExportWizard.cpp" line="142"/>
         <source>No file selected !</source>
         <translation>Nessun file selezionato !</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="126"/>
+        <location filename="../ExportWizard.cpp" line="142"/>
         <source>You need to choose a file path for saving.</source>
         <translation>Devi scegliere il nome del file su cui salvare.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="149"/>
+        <location filename="../ExportWizard.cpp" line="165"/>
         <source>Done</source>
         <translation>Fatto</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="149"/>
+        <location filename="../ExportWizard.cpp" line="165"/>
         <source>The target image is %1 bytes long</source>
         <translation>L&apos;immagine di destinazione ha %1 byte</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="151"/>
+        <location filename="../ExportWizard.cpp" line="167"/>
         <source>Rendering Error</source>
         <translation>Errore nel Rendering</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="151"/>
+        <location filename="../ExportWizard.cpp" line="167"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
         <translation>Errore salvando il rendering sul file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="186"/>
+        <location filename="../ExportWizard.cpp" line="197"/>
         <source>Export poster</source>
         <translation>Stampa Poster</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="253"/>
+        <location filename="../ExportWizard.cpp" line="264"/>
         <source>Choose the Image file</source>
         <translation>Scegli un&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="253"/>
+        <location filename="../ExportWizard.cpp" line="264"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
@@ -503,6 +503,11 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <location filename="../FotoWall.cpp" line="231"/>
         <source>Collage</source>
         <translation>Collage</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="243"/>
+        <source>Gradient</source>
+        <translation>Gradiente</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="256"/>

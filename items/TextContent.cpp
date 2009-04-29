@@ -42,7 +42,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
 
     // template text
     QFont font;
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
     font.setFamily("Arial");
 #endif
     font.setPointSize(16);

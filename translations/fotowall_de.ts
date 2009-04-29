@@ -195,69 +195,69 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="94"/>
+        <location filename="../ExportWizard.cpp" line="110"/>
         <source>Wallpaper Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="94"/>
+        <location filename="../ExportWizard.cpp" line="110"/>
         <source>Can&apos;t save the image to disk.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="109"/>
+        <location filename="../ExportWizard.cpp" line="125"/>
         <source>Manual Wallpaper Change</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="109"/>
+        <location filename="../ExportWizard.cpp" line="125"/>
         <source>KDE4 doesn&apos;t yet support changing wallpaper automatically.
 Go to the Desktop Settings and select the file:
   %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="126"/>
+        <location filename="../ExportWizard.cpp" line="142"/>
         <source>No file selected !</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="126"/>
+        <location filename="../ExportWizard.cpp" line="142"/>
         <source>You need to choose a file path for saving.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="149"/>
+        <location filename="../ExportWizard.cpp" line="165"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="149"/>
+        <location filename="../ExportWizard.cpp" line="165"/>
         <source>The target image is %1 bytes long</source>
         <translation type="unfinished">Das berechnete Bild isr %1 Byte(s) lang</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="151"/>
+        <location filename="../ExportWizard.cpp" line="167"/>
         <source>Rendering Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="151"/>
+        <location filename="../ExportWizard.cpp" line="167"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="186"/>
+        <location filename="../ExportWizard.cpp" line="197"/>
         <source>Export poster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="253"/>
+        <location filename="../ExportWizard.cpp" line="264"/>
         <source>Choose the Image file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="253"/>
+        <location filename="../ExportWizard.cpp" line="264"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -494,6 +494,11 @@ Go to the Desktop Settings and select the file:
     <message>
         <location filename="../FotoWall.cpp" line="231"/>
         <source>Collage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="243"/>
+        <source>Gradient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
