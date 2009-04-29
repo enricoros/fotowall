@@ -129,22 +129,22 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="603"/>
+        <location filename="../Desk.cpp" line="610"/>
         <source>Back</source>
         <translation type="unfinished">Back</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="607"/>
+        <location filename="../Desk.cpp" line="614"/>
         <source>Front</source>
         <translation type="unfinished">Vordergrund</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="744"/>
+        <location filename="../Desk.cpp" line="751"/>
         <source>Delete content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="744"/>
+        <location filename="../Desk.cpp" line="751"/>
         <source>All the selected content will be deleted, do you want to continue ?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -195,69 +195,69 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="110"/>
+        <location filename="../ExportWizard.cpp" line="123"/>
         <source>Wallpaper Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="110"/>
+        <location filename="../ExportWizard.cpp" line="123"/>
         <source>Can&apos;t save the image to disk.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="125"/>
+        <location filename="../ExportWizard.cpp" line="138"/>
         <source>Manual Wallpaper Change</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="125"/>
+        <location filename="../ExportWizard.cpp" line="138"/>
         <source>KDE4 doesn&apos;t yet support changing wallpaper automatically.
 Go to the Desktop Settings and select the file:
   %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="142"/>
+        <location filename="../ExportWizard.cpp" line="155"/>
         <source>No file selected !</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="142"/>
+        <location filename="../ExportWizard.cpp" line="155"/>
         <source>You need to choose a file path for saving.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="165"/>
+        <location filename="../ExportWizard.cpp" line="183"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="165"/>
+        <location filename="../ExportWizard.cpp" line="183"/>
         <source>The target image is %1 bytes long</source>
         <translation type="unfinished">Das berechnete Bild isr %1 Byte(s) lang</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="167"/>
+        <location filename="../ExportWizard.cpp" line="185"/>
         <source>Rendering Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="167"/>
+        <location filename="../ExportWizard.cpp" line="185"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="197"/>
+        <location filename="../ExportWizard.cpp" line="215"/>
         <source>Export poster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="264"/>
+        <location filename="../ExportWizard.cpp" line="283"/>
         <source>Choose the Image file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="264"/>
+        <location filename="../ExportWizard.cpp" line="283"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -284,7 +284,7 @@ Go to the Desktop Settings and select the file:
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="58"/>
-        <location filename="../ExportWizard.ui" line="147"/>
+        <location filename="../ExportWizard.ui" line="154"/>
         <source>Image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -305,152 +305,154 @@ Go to the Desktop Settings and select the file:
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="113"/>
+        <location filename="../ExportWizard.ui" line="243"/>
         <source>Scale Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="119"/>
-        <source>Scaled and Cropped</source>
+        <location filename="../ExportWizard.ui" line="249"/>
+        <source>Zoomed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="129"/>
-        <source>Scaled (ignoring aspect ratio)</source>
+        <location filename="../ExportWizard.ui" line="259"/>
+        <source>Scaled, keep proportions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="136"/>
-        <source>Current Size</source>
+        <location filename="../ExportWizard.ui" line="266"/>
+        <source>Scaled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="150"/>
+        <location filename="../ExportWizard.ui" line="143"/>
+        <source>Original Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.ui" line="157"/>
         <source>Your work will be saved to a picture. Please fill the following options and click Finish.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="159"/>
+        <location filename="../ExportWizard.ui" line="166"/>
         <source>File properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="167"/>
-        <source>Save file path:</source>
+        <location filename="../ExportWizard.ui" line="172"/>
+        <source>Output file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="177"/>
+        <location filename="../ExportWizard.ui" line="182"/>
         <source>Choose...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="189"/>
+        <location filename="../ExportWizard.ui" line="192"/>
+        <location filename="../ExportWizard.ui" line="359"/>
         <source>Size and Orientation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="195"/>
-        <source>Width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ExportWizard.ui" line="209"/>
+        <location filename="../ExportWizard.ui" line="212"/>
         <source>Pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="216"/>
-        <source>Height</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ExportWizard.ui" line="230"/>
+        <location filename="../ExportWizard.ui" line="233"/>
         <source>Landscape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="241"/>
+        <location filename="../ExportWizard.ui" line="277"/>
         <source>PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="244"/>
+        <location filename="../ExportWizard.ui" line="280"/>
         <source>Print Posters at home.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="253"/>
+        <location filename="../ExportWizard.ui" line="289"/>
         <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="287"/>
+        <location filename="../ExportWizard.ui" line="323"/>
         <source>PosteRazor home (external website)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="294"/>
+        <location filename="../ExportWizard.ui" line="330"/>
         <source>Click Finish to start PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="301"/>
+        <location filename="../ExportWizard.ui" line="337"/>
         <source>How to use PosteRazor (external tutorial video)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="311"/>
+        <location filename="../ExportWizard.ui" line="347"/>
         <source>Print Picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="314"/>
+        <location filename="../ExportWizard.ui" line="350"/>
         <source>Select the paper options and click Finish to print.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="323"/>
-        <source>Size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ExportWizard.ui" line="329"/>
+        <location filename="../ExportWizard.ui" line="219"/>
+        <location filename="../ExportWizard.ui" line="401"/>
         <source>Height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="347"/>
+        <location filename="../ExportWizard.ui" line="383"/>
         <source>pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="352"/>
+        <location filename="../ExportWizard.ui" line="388"/>
         <source>cm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="357"/>
+        <location filename="../ExportWizard.ui" line="393"/>
         <source>inches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ExportWizard.ui" line="198"/>
         <location filename="../ExportWizard.ui" line="365"/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="382"/>
+        <location filename="../ExportWizard.ui" line="418"/>
         <source>Dot Per Inch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="385"/>
+        <location filename="../ExportWizard.ui" line="421"/>
         <source>Dpi:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="402"/>
+        <location filename="../ExportWizard.ui" line="438"/>
         <source>Print in landscape mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.ui" line="445"/>
+        <source>Keep proportions</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
