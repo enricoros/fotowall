@@ -696,10 +696,13 @@ void PosteRazorCore::paintPosterOnCanvasOverlapped(PaintCanvasInterface *paintCa
 
 void PosteRazorCore::paintPosterOnCanvasDivided(PaintCanvasInterface *paintCanvas) const
 {
+    Q_UNUSED(paintCanvas)
 }
 
 void PosteRazorCore::paintPosterOnCanvasPageWise(PaintCanvasInterface *paintCanvas, int page) const
 {
+    Q_UNUSED(paintCanvas)
+    Q_UNUSED(page)
 }
 
 void PosteRazorCore::paintPosterPageOnCanvas(PaintCanvasInterface *paintCanvas, int page) const

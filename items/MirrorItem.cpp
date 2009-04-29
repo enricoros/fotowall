@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "MirrorItem.h"
+#include "RenderOpts.h"
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -46,8 +47,10 @@ QRectF MirrorItem::boundingRect() const
 
 void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
+    // TODO: real HQ rendering, skipping the pixmap (better result)!
+
     // generate Reflection pixmap, if needed
-    if (m_dirty || m_pixmap.isNull()) {
+    if (m_dirty || m_pixmap.isNull() || RenderOpts::HQRendering) {
 
         // change pixmap size to match the bounding rect
         if (m_pixmap.size() != m_boundingRect.size().toSize())

@@ -16,13 +16,26 @@
 #include "ui_ExportWizard.h"
 #include "Desk.h"
 #include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QDir>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QProcess>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QSettings>
 #include <QUrl>
+#include <math.h>
+#include "controller.h"
+#include "imageloaderqt.h"
+#include "posterazorcore.h"
+#include "wizard.h"
+
+#if defined(Q_OS_WIN)
+#include <windows.h>    // for background changing stuff
+#endif
 
 #define POSTERAZOR_WEBSITE_LINK "http://posterazor.sourceforge.net/"
 #define POSTERAZOR_TUTORIAL_LINK "http://www.youtube.com/watch?v=p7XsFZ4Leo8"
@@ -43,6 +56,11 @@ ExportWizard::ExportWizard(Desk * desk)
     connect(m_ui->prWebLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
     m_ui->prTutorialLabel->setText("<html><body><a href='" POSTERAZOR_TUTORIAL_LINK "'>" + m_ui->prTutorialLabel->text() + "</a></body></html>" );
     connect(m_ui->prTutorialLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
+
+#if !defined(Q_OS_WIN) && !defined(Q_OS_LINUX)
+#warning "Implement background change for this OS"
+    m_ui->clWallpaper->hide();
+#endif
 
     // set default sizes
     m_ui->saveHeight->setValue(m_desk->height());
@@ -71,25 +89,63 @@ ExportWizard::~ExportWizard()
     delete m_ui;
 }
 
-#if defined(Q_OS_WINDOWS)
-#include <windows.h>
-#endif
 void ExportWizard::setWallpaper()
 {
-#if defined(Q_OS_WINDOWS)
-    // XXX : Try that stuff on windows
-    QSettings appSettings( "HKEY_CURRENT_USER\\Control Panel\\Desktop", QSettings::NativeFormat);
-
-    //Set new background path
-    QString filePath = m_ui->filePath->text();
-    appSettings.setValue("Wallpaper", filePath);
-    QByteArray ba = filePath.toLatin1();
-    //Notification to windows renew desktop
-    SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, (void*)ba.data(),	SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
-#elif defined(Q_OS_LINUX)
-    // FIXME : how to set the background on linux?
+    // find a new filePath
+    QString filePath;
+    int fileNumber = 0;
+    while (filePath.isEmpty() || QFile::exists(filePath))
+#if defined(Q_OS_WIN)
+        filePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".bmp";
 #else
-    // handle other systems
+        filePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".jpg";
+#endif
+
+    // render the image
+    QImage image;
+    QSize sceneSize(m_desk->width(), m_desk->height());
+    QSize desktopSize = QApplication::desktop()->screenGeometry().size();
+    if (m_ui->wbZoom->isChecked())
+        image = m_desk->renderedImage(desktopSize, Qt::KeepAspectRatioByExpanding);
+    else if (m_ui->wbScaleKeep->isChecked())
+        image = m_desk->renderedImage(desktopSize, Qt::KeepAspectRatio);
+    else if (m_ui->wbScaleIgnore->isChecked())
+        image = m_desk->renderedImage(desktopSize, Qt::IgnoreAspectRatio);
+    else
+        image = m_desk->renderedImage(sceneSize);
+
+    // save the right kind of image into the home dir
+#if defined(Q_OS_WIN)
+    if (!image.save(filePath, "BMP")) {
+#else
+    if (!image.save(filePath, "JPG", 100)) {
+#endif
+        QMessageBox::warning(this, tr("Wallpaper Error"), tr("Can't save the image to disk."));
+        return;
+    }
+
+#if defined(Q_OS_WIN)
+    //Set new background path
+    {QSettings appSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop", QSettings::NativeFormat);
+    appSettings.setValue("ConvertedWallpaper", filePath);
+    appSettings.setValue("Wallpaper", filePath);}
+
+    //Notification to windows refresh desktop
+    SystemParametersInfoA(SPI_SETDESKWALLPAPER, true, (void*)qPrintable(filePath), SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+#elif defined(Q_OS_LINUX)
+    // KDE4
+    if (QString(qgetenv("KDE_SESSION_VERSION")).startsWith("4"))
+        QMessageBox::warning(this, tr("Manual Wallpaper Change"), tr("KDE4 doesn't yet support changing wallpaper automatically.\nGo to the Desktop Settings and select the file:\n  %1").arg(filePath));
+
+    // KDE3
+    QString kde3cmd = "dcop kdesktop KBackgroundIface setWallpaper '" + filePath + "' 6";
+    QProcess::startDetached(kde3cmd);
+
+    // Gnome2
+    QString gnome2Cmd = "gconftool -t string -s /desktop/gnome/background/picture_filename '" + filePath + "'";
+    QProcess::startDetached(gnome2Cmd);
+#else
+#warning "Implement background change for this OS"
 #endif
 }
 
@@ -102,11 +158,16 @@ void ExportWizard::saveImage()
     QString fileName = m_ui->filePath->text();
 
     // get the rendering size
-    int destW = m_ui->saveWidth->value();
-    int destH = m_ui->saveHeight->value();
+    QSize imageSize(m_ui->saveWidth->value(), m_ui->saveHeight->value());
 
-    // render on the image
-    QImage image = m_desk->renderedImage(QSize(destW, destH));
+    // render the image
+    QImage image;
+    if (m_ui->ibZoom->isChecked())
+        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatioByExpanding);
+    else if (m_ui->ibScaleKeep->isChecked())
+        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatio);
+    else
+        image = m_desk->renderedImage(imageSize, Qt::IgnoreAspectRatio);
 
     // rotate image if requested
     if (m_ui->saveLandscape->isChecked()) {
@@ -124,11 +185,6 @@ void ExportWizard::saveImage()
         QMessageBox::warning(this, tr("Rendering Error"), tr("Error rendering to the file '%1'").arg(fileName));
 }
 
-#include <math.h>
-#include "posterazorcore.h"
-#include "controller.h"
-#include "wizard.h"
-#include "imageloaderqt.h"
 void ExportWizard::startPosterazor()
 {
     static const quint32 posterPixels = 6 * 1000000; // Megapixels * 3 bytes!
@@ -182,7 +238,8 @@ void ExportWizard::print()
 
     int width = (int)(m_printSize.width() * (float)dpi);
     int height = (int)(m_printSize.height() * (float)dpi);
-    m_desk->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked());
+    Qt::AspectRatioMode ratioMode = m_ui->printKeepRatio->isChecked() ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio;
+    m_desk->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked(), ratioMode);
 }
 
 void ExportWizard::setPage(int pageId)

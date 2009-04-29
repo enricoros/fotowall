@@ -32,6 +32,10 @@
 // uncomment the following to perform checks on operations (slow, safer)
 #define VECTOR_CHECK_MATH
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238462643 
+#endif // !M_PI
+
 class Vector2;
 class Control2;
 class Vector3;

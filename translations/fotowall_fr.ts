@@ -25,7 +25,7 @@ Double click to align the object.</source>
 Drag left or right to move along the Y axis.
 Hold SHIFT to rotate faster.
 Use CTRL to cancel the transformations</source>
-        <translation>Glisser vers le haut ou le bas pour bouger le long de l&apos;axe X (perspective).
+        <translation type="obsolete">Glisser vers le haut ou le bas pour bouger le long de l&apos;axe X (perspective).
 Glisser à gauche ou droite pour bouger le long de l&apos;axe Y.
 Maintenir SHIFT pour trourner plus vite.
 Utiliser CTRL pour annuler les transformations</translation>
@@ -67,6 +67,15 @@ Utiliser CTRL pour annuler les transformations</translation>
 - Maintenir CTRL pour autoriser la rotation
 - Maintenir ALT pour accélérer la rotation
 - Double cliquez pour restorer les proportions/rotation</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractContent.cpp" line="74"/>
+        <source>Drag around to change the perspective.
+Hold SHIFT to move faster.
+Use CTRL to cancel the transformations.</source>
+        <translation>Cliquer-glisser pour changer la perspective.
+Maintenir SHIFT pour tourner plus vite.
+Utiliser CTRL pour annuler les transformations.</translation>
     </message>
 </context>
 <context>
@@ -148,22 +157,22 @@ Utiliser CTRL pour annuler les transformations</translation>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="603"/>
+        <location filename="../Desk.cpp" line="610"/>
         <source>Back</source>
         <translation>Arrière-plan</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="607"/>
+        <location filename="../Desk.cpp" line="614"/>
         <source>Front</source>
         <translation>Premier-plan</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="744"/>
+        <location filename="../Desk.cpp" line="751"/>
         <source>Delete content</source>
         <translation>Supprimer l&apos;élément</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="744"/>
+        <location filename="../Desk.cpp" line="751"/>
         <source>All the selected content will be deleted, do you want to continue ?</source>
         <translation>Tous les éléments sélectionnés seront supprimés, voulez-vous continuer ?</translation>
     </message>
@@ -214,47 +223,47 @@ Utiliser CTRL pour annuler les transformations</translation>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="99"/>
+        <location filename="../ExportWizard.cpp" line="155"/>
         <source>No file selected !</source>
         <translation>Pas de fichier sélectionné !</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="99"/>
+        <location filename="../ExportWizard.cpp" line="155"/>
         <source>You need to choose a file path for saving.</source>
         <translation>Vous devez choisir un emplacement de sauvegarde.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="122"/>
+        <location filename="../ExportWizard.cpp" line="183"/>
         <source>Done</source>
         <translation>Effectué</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="122"/>
+        <location filename="../ExportWizard.cpp" line="183"/>
         <source>The target image is %1 bytes long</source>
         <translation>L&apos;image de destination fait  %1 bytes</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="124"/>
+        <location filename="../ExportWizard.cpp" line="185"/>
         <source>Rendering Error</source>
         <translation>Erreur de rendu</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="124"/>
+        <location filename="../ExportWizard.cpp" line="185"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
         <translation>Erreur lors du rendu dans le fichier  &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="159"/>
+        <location filename="../ExportWizard.cpp" line="215"/>
         <source>Export poster</source>
         <translation>Eporter en poster</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="226"/>
+        <location filename="../ExportWizard.cpp" line="283"/>
         <source>Choose the Image file</source>
         <translation>Choisissez l&apos;image</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="226"/>
+        <location filename="../ExportWizard.cpp" line="283"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
@@ -279,7 +288,7 @@ Utiliser CTRL pour annuler les transformations</translation>
         <translation>Fond d&apos;écran</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="147"/>
+        <location filename="../ExportWizard.ui" line="154"/>
         <source>Image</source>
         <translation>Image</translation>
     </message>
@@ -299,132 +308,132 @@ Utiliser CTRL pour annuler les transformations</translation>
         <translation>Cliquez sur le bouton Terminer pour changer votre fond d&apos;écran.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="113"/>
+        <location filename="../ExportWizard.ui" line="243"/>
         <source>Scale Mode</source>
         <translation>Mode de redimensionnement</translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="119"/>
         <source>Scaled and Cropped</source>
-        <translation>Redimensionné et tronqué</translation>
+        <translation type="obsolete">Redimensionné et tronqué</translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="129"/>
         <source>Scaled (ignoring aspect ratio)</source>
-        <translation>Redimensionné (ignorer les proportions)</translation>
+        <translation type="obsolete">Redimensionné (ignorer les proportions)</translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="136"/>
         <source>Current Size</source>
-        <translation>Taille actuelle</translation>
+        <translation type="obsolete">Taille actuelle</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="150"/>
+        <location filename="../ExportWizard.ui" line="157"/>
         <source>Your work will be saved to a picture. Please fill the following options and click Finish.</source>
         <translation>Votre travail sera sauvegardé dans une image. Merci de remplir les options suivantes, puis cliquez sur Terminer.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="159"/>
+        <location filename="../ExportWizard.ui" line="166"/>
         <source>File properties</source>
         <translation>Propriétés du fichier</translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="167"/>
         <source>Save file path:</source>
-        <translation>Chemin de sauvegarde :</translation>
+        <translation type="obsolete">Chemin de sauvegarde :</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="177"/>
+        <location filename="../ExportWizard.ui" line="182"/>
         <source>Choose...</source>
         <translation>Choisir...</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="189"/>
+        <location filename="../ExportWizard.ui" line="359"/>
         <source>Size and Orientation</source>
         <translation>Taille et orientation</translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="195"/>
         <source>Width</source>
-        <translation>Largeur</translation>
+        <translation type="obsolete">Largeur</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="209"/>
+        <location filename="../ExportWizard.ui" line="212"/>
         <source>Pixels</source>
         <translation>Pixels</translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="216"/>
         <source>Height</source>
-        <translation>Hauteur</translation>
+        <translation type="obsolete">Hauteur</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="230"/>
+        <location filename="../ExportWizard.ui" line="233"/>
         <source>Landscape</source>
         <translation>Paysage</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="241"/>
+        <location filename="../ExportWizard.ui" line="277"/>
         <source>PosteRazor</source>
         <translation>PosteRazor</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="244"/>
+        <location filename="../ExportWizard.ui" line="280"/>
         <source>Print Posters at home.</source>
         <translation>Imprimer des posters à la maison.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="253"/>
+        <location filename="../ExportWizard.ui" line="289"/>
         <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
         <translation>PostRazor sépare un image en plusieurs morceaux, qui pourront ensuite être imprimés et assemblés sous forme de poster.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="287"/>
+        <location filename="../ExportWizard.ui" line="323"/>
         <source>PosteRazor home (external website)</source>
         <translation>Accueil PosteRazor (site externe)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="294"/>
+        <location filename="../ExportWizard.ui" line="330"/>
         <source>Click Finish to start PosteRazor</source>
         <translation>Cliquez sur Terminer pour démarrer PosteRazor</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="301"/>
+        <location filename="../ExportWizard.ui" line="337"/>
         <source>How to use PosteRazor (external tutorial video)</source>
         <translation>Comment utiliser PosteRazor (tutoriel vidéo externe)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="311"/>
+        <location filename="../ExportWizard.ui" line="347"/>
         <source>Print Picture</source>
         <translation>Imprimer une image</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="314"/>
+        <location filename="../ExportWizard.ui" line="350"/>
         <source>Select the paper options and click Finish to print.</source>
         <translation>Sélectionnez les options du papier, puis cliquez sur Terminer pour imprimer.</translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui" line="323"/>
         <source>Size</source>
-        <translation>Taille</translation>
+        <translation type="obsolete">Taille</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="329"/>
+        <location filename="../ExportWizard.ui" line="401"/>
         <source>Height:</source>
         <translation>Hauteur:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="347"/>
+        <location filename="../ExportWizard.ui" line="383"/>
         <source>pixels</source>
         <translation>pixels</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="352"/>
+        <location filename="../ExportWizard.ui" line="388"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="357"/>
+        <location filename="../ExportWizard.ui" line="393"/>
         <source>inches</source>
         <translation>pouces (inches)</translation>
     </message>
@@ -434,19 +443,72 @@ Utiliser CTRL pour annuler les transformations</translation>
         <translation>Largeur:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="382"/>
+        <location filename="../ExportWizard.ui" line="418"/>
         <source>Dot Per Inch</source>
         <translation>Points par pouce (DPI)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="385"/>
+        <location filename="../ExportWizard.ui" line="421"/>
         <source>Dpi:</source>
         <translation>Dpi:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="402"/>
+        <location filename="../ExportWizard.ui" line="438"/>
         <source>Print in landscape mode</source>
         <translation>Imprimer en mode paysage</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.cpp" line="123"/>
+        <source>Wallpaper Error</source>
+        <translation>Erreur de fond d&apos;écran</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.cpp" line="123"/>
+        <source>Can&apos;t save the image to disk.</source>
+        <translation>Impossible de sauvegarder l&apos;image sur le disque</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.cpp" line="138"/>
+        <source>Manual Wallpaper Change</source>
+        <translation>Changement manuel de fond d&apos;écran</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.cpp" line="138"/>
+        <source>KDE4 doesn&apos;t yet support changing wallpaper automatically.
+Go to the Desktop Settings and select the file:
+  %1</source>
+        <translation>KDE4 ne supporte actuellement pas le changement automatique de fond d&apos;écran.
+Allez dans les Préférences du bureau et selectionnez le fichier : %1</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.ui" line="249"/>
+        <source>Zoomed</source>
+        <translation>Zoomé</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.ui" line="259"/>
+        <source>Scaled, keep proportions</source>
+        <translation>Redimensionné, conserver les proportions</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.ui" line="266"/>
+        <source>Scaled</source>
+        <translation>Redimensionné</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.ui" line="143"/>
+        <source>Original Size</source>
+        <translation>Taille originale</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.ui" line="172"/>
+        <source>Output file:</source>
+        <translation>Emplacement de sauvegarde :</translation>
+    </message>
+    <message>
+        <location filename="../ExportWizard.ui" line="445"/>
+        <source>Keep proportions</source>
+        <translation>Conserver les proportions</translation>
     </message>
 </context>
 <context>
@@ -739,6 +801,11 @@ p, li { white-space: pre-wrap; }
         <source>quit</source>
         <translation type="obsolete">Quitter</translation>
     </message>
+    <message>
+        <location filename="../FotoWall.cpp" line="243"/>
+        <source>Gradient</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GlowEffectDialog</name>
@@ -772,27 +839,27 @@ p, li { white-space: pre-wrap; }
         <location filename="../3rdparty/posterazor/mainwindow.cpp" line="404"/>
         <source>http://posterazor.sourceforge.net/</source>
         <comment>Only translate, if the website has this language.</comment>
-        <translation>http://posterazor.sourceforge.net/</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="183"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="184"/>
         <source>Load an input image</source>
-        <translation>Charger une image</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="187"/>
         <source>Save the Poster</source>
-        <translation>Sauvegarder le poster</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="105"/>
         <source>&amp;Manual</source>
-        <translation>&amp;Manual</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/mainwindow.cpp" line="84"/>
         <source>PosteRazor &amp;website</source>
-        <translation>PosteRazor &amp;website</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/mainwindow.cpp" line="402"/>
@@ -805,53 +872,49 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/mainwindow.cpp" line="408"/>
+        <location filename="../3rdparty/posterazor/mainwindow.cpp" line="412"/>
         <source>The PosteRazor cuts a raster image into pieces which can be printed on a printer and be put together to a poster.
 As an input image, raster files of various image file formats are supported. Instead of directly printing the poster, the PosteRazor produces a multi page PDF file which contains the poster tiles.
 It is an open source program which depends on other open source projects. The PosteRazor is hosted on %1.</source>
-        <translation>PosteRazor sépare une image en plusieurs morceaux, qui pourront être imprimé et assemblé en un poster.
-Comme image d&apos;entrée, beaucoup de formats d&apos;image sont supportés. Au lieu d&apos;imprimer directement le poster, PosteRazor produit un document PDF de plusieurs pages qui contient les parties du poster.
-C&apos;est un logiciel libre qui dépend d&apos;autres logiciels libres. PosteRazor est hébergé sur %1.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="107"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="112"/>
         <source>PosteRazor has its user interface organized in a &apos;Wizard&apos; fashion. All settings for the poster creation can be done in %1 steps.
 The &lt;b&gt;%2&lt;/b&gt; and &lt;b&gt;%3&lt;/b&gt; buttons navigate through these steps. The &lt;b&gt;?&lt;/b&gt; button opens a help window with an explanation of the current step.
 All entries and choices are remembered until the next usage of the PosteRazor.</source>
         <comment>Manual preface. Place holders: %1 = Number of wizard steps, %2 = &apos;Back&apos;, %3 = &apos;Next&apos; (will be automatically inserted)</comment>
-        <translation>L&apos;interface de PosteRazor est organisée comme un &quot;Assistant&quot;. Toutes les configurations pour la création du poster peuvent être faites en %1 étapes.
-Les boutons  &lt;b&gt;%2&lt;/b&gt; et &lt;b&gt;%3&lt;/b&gt; naviguent à travers ces étapes. Le bouton &lt;b&gt;?&lt;/b&gt; ouvre une fenêtre d&apos;aide, avec une explication sur l&apos;étape courante.
-Toutes les entrées et choix sont retenus jusqu&apos;au prochain usage de PosteRazor.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="174"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="175"/>
         <source>Step %1 of %2:</source>
-        <translation>Etape %1 sur %2:</translation>
-    </message>
-    <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="184"/>
-        <source>Printer paper format</source>
-        <translation>Format d&apos;impression</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="185"/>
-        <source>Image tile overlapping</source>
+        <source>Printer paper format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="186"/>
+        <source>Image tile overlapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="187"/>
         <source>Final poster size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="196"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="200"/>
         <source>Load an image by clicking the button with the open icon and selecting an image file, or by drag &amp; dropping an image file on the PosteRazor. The drag &amp; drop also works during the other steps.
 After loading the image, the most important informations are listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
         <comment>Wizard step 1. Place holders: %1 = &apos;Image informations&apos; (will be automatically inserted)</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="203"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="209"/>
         <source>Define the paper sheet size that you use in your printer.
 A standard paper sheet size can be selected from the &lt;b&gt;%1&lt;/b&gt; chooser, along with the desired paper sheet orientation.
 Alternatively, a custom paper sheet size can be defined in the &lt;b&gt;%2&lt;/b&gt; tab.
@@ -860,45 +923,45 @@ Paper borders are defined in the &lt;b&gt;%3&lt;/b&gt; fields. Even if your prin
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="214"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="218"/>
         <source>Image tile overlapping is needed to have some tolerance for cutting off the unneeded borders from one side. Additionally, like the borders from the previous step, it gives more area for gluing together the final poster tiles.
 The &lt;b&gt;%1&lt;/b&gt; defines the borders that are intended to be overlapped by the neighbor tiles. The borders on the opposite sides are intended to be cut (except on the outermost tiles).</source>
         <comment>Wizard step 3. Place holders: %1 = &apos;Overlapping position&apos; (will be automatically inserted)</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="223"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="225"/>
         <source>Define the final poster size, in one of the following three modes which can be selected by the corresponding radio buttons:</source>
         <comment>Wizard step 4. Start of the description.</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="229"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="231"/>
         <source>You want to have a specific size of your poster.</source>
         <comment>Wizard step 4. Description for &apos;absolute size&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="234"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="236"/>
         <source>You want to use whole paper sheets and specify how many of them of them you want to use.</source>
         <comment>Wizard step 4. Description for &apos;size in pages&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="239"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="241"/>
         <source>Your input image has a certain size which is defined by the number of pixels and dpi (dots per Inch) and your want to enlarge the image by a certain factor.</source>
         <comment>Wizard step 4. Description for &apos;size in percent&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="243"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="247"/>
         <source>The aspect ratio of width and height is always 1:1 and is automatically recalculated. In the preview area, you can see the overlapping areas which are surrounded by light red rectangles.
 &lt;b&gt;%1&lt;/b&gt; sets the alignment of the image on the total paper area of the poster. This is useful if you want to keep the unused paper.</source>
         <comment>Wizard step 4. End of the description. Place holders: %1 = &apos;Image alignment&apos; (will be automatically inserted)</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="251"/>
+        <location filename="../3rdparty/posterazor/wizardcontroller.cpp" line="255"/>
         <source>Save the poster by clicking the save button and specifying a destination file name.
 Check or uncheck the &lt;b&gt;%1&lt;/b&gt;, if the standard PDF handling application that is set in your operating system should be automatically started after the PDF file is saved.</source>
         <comment>Wizard step 5. Place holders: %1 = &apos;Open PDF after saving&apos; (will be automatically inserted)</comment>
@@ -923,10 +986,10 @@ Check or uncheck the &lt;b&gt;%1&lt;/b&gt;, if the standard PDF handling applica
     <message>
         <location filename="../3rdparty/posterazor/controller.cpp" line="421"/>
         <source>Load an input image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Charger une image</translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/controller.cpp" line="445"/>
+        <location filename="../3rdparty/posterazor/controller.cpp" line="446"/>
         <source>The image &apos;%1&apos; could not be loaded.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1084,7 +1147,7 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../3rdparty/posterazor/wizard.cpp" line="117"/>
         <source>Landscape</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Paysage</translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/wizard.cpp" line="118"/>
@@ -1172,7 +1235,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/posterazor/wizard.cpp" line="300"/>
+        <location filename="../3rdparty/posterazor/wizard.cpp" line="301"/>
         <source>CMYK</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1511,7 +1574,7 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../3rdparty/posterazor/wizard.ui" line="462"/>
         <source>Landscape</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Paysage</translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/wizard.ui" line="486"/>
@@ -1521,7 +1584,7 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../3rdparty/posterazor/wizard.ui" line="1035"/>
         <source>cm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">cm</translation>
     </message>
     <message>
         <location filename="../3rdparty/posterazor/wizard.ui" line="1059"/>
