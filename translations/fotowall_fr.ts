@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr">
+<!DOCTYPE TS><TS version="1.1" language="fr">
+<defaultcodec></defaultcodec>
 <context>
     <name>AbstractContent</name>
     <message>
@@ -165,7 +165,7 @@ Utiliser CTRL pour annuler les transformations.</translation>
     <message>
         <location filename="../ExactSizeDialog.ui" line="29"/>
         <source>&lt;b&gt;Exact Size&lt;/b&gt; mode&lt;br&gt;The content has &lt;i&gt;the same size&lt;/i&gt; on screen and on printer.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Mode Taille Exacte&lt;/b&gt;&lt;br&gt;Le contenu a la même taille sur l&apos;écran qu&apos;à l&apos;impression.</translation>
     </message>
     <message>
         <location filename="../ExactSizeDialog.ui" line="51"/>
@@ -188,7 +188,6 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>Largeur :</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="99"/>
         <location filename="../ExactSizeDialog.ui" line="128"/>
         <source>Dot Per Inch</source>
         <translation>Points par pouce (DPI)</translation>
@@ -196,12 +195,12 @@ Utiliser CTRL pour annuler les transformations.</translation>
     <message>
         <location filename="../ExactSizeDialog.ui" line="102"/>
         <source>Screen Dpi:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dpi écran :</translation>
     </message>
     <message>
         <location filename="../ExactSizeDialog.ui" line="131"/>
         <source>Printer Dpi:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dpi imprimante :</translation>
     </message>
     <message>
         <location filename="../ExactSizeDialog.ui" line="148"/>
@@ -272,13 +271,11 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>Sélectionnez la destination.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="42"/>
         <location filename="../ExportWizard.ui" line="101"/>
         <source>Wallpaper</source>
         <translation>Fond d&apos;écran</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="58"/>
         <location filename="../ExportWizard.ui" line="154"/>
         <source>Image</source>
         <translation>Image</translation>
@@ -299,7 +296,6 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>Cliquez sur le bouton Terminer pour changer votre fond d&apos;écran.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="113"/>
         <location filename="../ExportWizard.ui" line="243"/>
         <source>Scale Mode</source>
         <translation>Mode de redimensionnement</translation>
@@ -320,7 +316,6 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>Choisir...</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="192"/>
         <location filename="../ExportWizard.ui" line="359"/>
         <source>Size and Orientation</source>
         <translation>Taille et orientation</translation>
@@ -376,7 +371,6 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>Sélectionnez les options du papier, puis cliquez sur Terminer pour imprimer.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="219"/>
         <location filename="../ExportWizard.ui" line="401"/>
         <source>Height:</source>
         <translation>Hauteur:</translation>
@@ -397,7 +391,6 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>pouces (inches)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="198"/>
         <location filename="../ExportWizard.ui" line="365"/>
         <source>Width:</source>
         <translation>Largeur:</translation>
@@ -441,19 +434,16 @@ Go to the Desktop Settings and select the file:
 Allez dans les Préférences du bureau et selectionnez le fichier : %1</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="119"/>
         <location filename="../ExportWizard.ui" line="249"/>
         <source>Zoomed</source>
         <translation>Zoomé</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="129"/>
         <location filename="../ExportWizard.ui" line="259"/>
         <source>Scaled, keep proportions</source>
         <translation>Redimensionné, conserver les proportions</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="136"/>
         <location filename="../ExportWizard.ui" line="266"/>
         <source>Scaled</source>
         <translation>Redimensionné</translation>
@@ -567,14 +557,11 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
         <translation>exporter</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="353"/>
-        <location filename="../FotoWall.cpp" line="364"/>
         <location filename="../FotoWall.cpp" line="395"/>
         <source>print</source>
         <translation>imprimer</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="448"/>
         <location filename="../FotoWall.cpp" line="454"/>
         <source>Select FotoWall file</source>
         <translation>Sélectionnez un fichier FotoWall</translation>
@@ -587,7 +574,7 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
     <message>
         <location filename="../FotoWall.cpp" line="552"/>
         <source>Support (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporte (%1)</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="529"/>
@@ -627,13 +614,11 @@ Voulez vous ouvrir la page Web ?</translation>
         <translation>ajouter une image</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="139"/>
         <location filename="../FotoWall.ui" line="142"/>
         <source>add text</source>
         <translation>ajouter du texte</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="165"/>
         <location filename="../FotoWall.ui" line="168"/>
         <source>add mirror</source>
         <translation>ajouter un miroir</translation>
@@ -656,7 +641,7 @@ Voulez vous ouvrir la page Web ?</translation>
     <message>
         <location filename="../FotoWall.ui" line="346"/>
         <source>How to</source>
-        <translation type="unfinished"></translation>
+        <translation>Aide</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="327"/>
@@ -671,22 +656,22 @@ Voulez vous ouvrir la page Web ?</translation>
     <message>
         <location filename="../FotoWall.ui" line="230"/>
         <source>load</source>
-        <translation type="unfinished">Ouvrir</translation>
+        <translation>Ouvrir</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="243"/>
         <source>save</source>
-        <translation type="unfinished">Sauvegarder le projet</translation>
+        <translation>Sauvegarder le projet</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui" line="253"/>
         <source>quit</source>
-        <translation type="unfinished">Quitter</translation>
+        <translation>Quitter</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="243"/>
         <source>Gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Dégradé</translation>
     </message>
 </context>
 <context>
@@ -718,7 +703,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="34"/>
         <location filename="../items/PictureContent.cpp" line="74"/>
         <source>...</source>
         <translation>...</translation>
