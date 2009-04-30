@@ -114,13 +114,13 @@ FotoWall::FotoWall(QWidget * parent)
     m_view->setFocus();
 
     // attach menus
-    ///ui->arrangeButton->setMenu(createArrangeMenu());
+    ui->arrangeButton->setMenu(createArrangeMenu());
     ui->backButton->setMenu(createBackgroundMenu());
     ui->decoButton->setMenu(createDecorationMenu());
     ui->howtoButton->setMenu(createHelpMenu());
 
     // react to VideoProvider
-    ui->addMirror->setVisible(VideoProvider::instance()->inputCount() > 0);
+    ui->aAddVideo->setVisible(VideoProvider::instance()->inputCount() > 0);
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // create misc actions
@@ -420,7 +420,12 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
     }
 }
 
-void FotoWall::on_addPictures_clicked()
+void FotoWall::on_aAddFlickr_triggered()
+{
+    // Implementing... ;-) -Enrico
+}
+
+void FotoWall::on_aAddPicture_triggered()
 {
     // build the extensions list
     QString extensions;
@@ -433,12 +438,12 @@ void FotoWall::on_addPictures_clicked()
         m_desk->addPictures(fileNames);
 }
 
-void FotoWall::on_addText_clicked()
+void FotoWall::on_aAddText_triggered()
 {
     m_desk->addTextContent();
 }
 
-void FotoWall::on_addMirror_clicked()
+void FotoWall::on_aAddVideo_triggered()
 {
     m_desk->addVideoContent(0);
 }
@@ -561,5 +566,5 @@ void FotoWall::slotVerifySupport(/*const KnowledgeItemV1List & items*/)
 void FotoWall::slotVerifyVideoInputs(int count)
 {
     // maybe blink or something?
-    ui->addMirror->setVisible(count > 0);
+    ui->aAddVideo->setVisible(count > 0);
 }

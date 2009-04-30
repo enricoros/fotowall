@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
+    <width>690</width>
     <height>400</height>
    </rect>
   </property>
@@ -34,160 +34,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="0" column="0" rowspan="2">
-       <widget class="QWidget" name="objContainer" native="true">
-        <property name="palette">
-         <palette>
-          <active>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="32">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </active>
-          <inactive>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="32">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </inactive>
-          <disabled>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="32">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="32">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </disabled>
-         </palette>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="margin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QToolButton" name="addPictures">
-           <property name="toolTip">
-            <string>add picture</string>
-           </property>
-           <property name="text">
-            <string>add pictures</string>
-           </property>
-           <property name="icon">
-            <iconset resource="fotowall.qrc">
-             <normaloff>:/data/add-image.png</normaloff>:/data/add-image.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>64</width>
-             <height>64</height>
-            </size>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonIconOnly</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="addText">
-           <property name="toolTip">
-            <string>add text</string>
-           </property>
-           <property name="text">
-            <string>add text</string>
-           </property>
-           <property name="icon">
-            <iconset resource="fotowall.qrc">
-             <normaloff>:/data/add-text.png</normaloff>:/data/add-text.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>64</width>
-             <height>64</height>
-            </size>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonIconOnly</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="addMirror">
-           <property name="toolTip">
-            <string>add mirror</string>
-           </property>
-           <property name="text">
-            <string>add mirror</string>
-           </property>
-           <property name="icon">
-            <iconset resource="fotowall.qrc">
-             <normaloff>:/data/add-video.png</normaloff>:/data/add-video.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>64</width>
-             <height>64</height>
-            </size>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonIconOnly</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="projectType">
         <property name="sizePolicy">
@@ -270,7 +116,7 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="4" rowspan="2">
+      <item row="0" column="5">
        <widget class="QToolButton" name="exportButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -285,19 +131,13 @@
          <iconset resource="fotowall.qrc">
           <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
         </property>
-        <property name="iconSize">
-         <size>
-          <width>32</width>
-          <height>32</height>
-         </size>
-        </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QToolButton" name="decoButton">
+      <item row="1" column="5">
+       <widget class="QToolButton" name="howtoButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -305,7 +145,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Decorations</string>
+         <string>How to</string>
         </property>
         <property name="popupMode">
          <enum>QToolButton::InstantPopup</enum>
@@ -335,7 +175,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QToolButton" name="howtoButton">
+       <widget class="QToolButton" name="decoButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -343,7 +183,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>How to</string>
+         <string>Decorations</string>
         </property>
         <property name="popupMode">
          <enum>QToolButton::InstantPopup</enum>
@@ -351,6 +191,115 @@
         <property name="autoRaise">
          <bool>true</bool>
         </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QToolButton" name="arrangeButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Arrange</string>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" rowspan="2">
+       <widget class="QToolBar" name="contentToolbar">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="palette">
+         <palette>
+          <active>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Window">
+            <brush brushstyle="SolidPattern">
+             <color alpha="32">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </active>
+          <inactive>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Window">
+            <brush brushstyle="SolidPattern">
+             <color alpha="32">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </inactive>
+          <disabled>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="32">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Window">
+            <brush brushstyle="SolidPattern">
+             <color alpha="32">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </disabled>
+         </palette>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>48</width>
+          <height>48</height>
+         </size>
+        </property>
+        <property name="floatable">
+         <bool>false</bool>
+        </property>
+        <addaction name="aAddPicture"/>
+        <addaction name="aAddText"/>
+        <addaction name="aAddVideo"/>
+        <addaction name="aAddFlickr"/>
        </widget>
       </item>
      </layout>
@@ -367,6 +316,54 @@
     </widget>
    </item>
   </layout>
+  <action name="aAddPicture">
+   <property name="icon">
+    <iconset resource="fotowall.qrc">
+     <normaloff>:/data/insert-image.png</normaloff>:/data/insert-image.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Picture</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
+   </property>
+  </action>
+  <action name="aAddText">
+   <property name="icon">
+    <iconset resource="fotowall.qrc">
+     <normaloff>:/data/insert-text.png</normaloff>:/data/insert-text.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Text</string>
+   </property>
+   <property name="shortcut">
+    <string>T</string>
+   </property>
+  </action>
+  <action name="aAddVideo">
+   <property name="icon">
+    <iconset resource="fotowall.qrc">
+     <normaloff>:/data/insert-video.png</normaloff>:/data/insert-video.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Video</string>
+   </property>
+   <property name="shortcut">
+    <string>V</string>
+   </property>
+  </action>
+  <action name="aAddFlickr">
+   <property name="icon">
+    <iconset resource="fotowall.qrc">
+     <normaloff>:/data/insert-weblink.png</normaloff>:/data/insert-weblink.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Flickr</string>
+   </property>
+   <property name="shortcut">
+    <string>F</string>
+   </property>
+  </action>
   <zorder>centralWidget</zorder>
   <zorder>topBar</zorder>
  </widget>

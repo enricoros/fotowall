@@ -30,7 +30,7 @@ VideoContent::VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * pa
     setFrameText(tr("This is a mirror ;-)"));
 
     // initial pixmap
-    setPixmap(QPixmap(":/data/add-video.png"));
+    setPixmap(QPixmap(":/data/insert-video.png"));
 
     // add swap button
     ButtonItem * bSwap = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
