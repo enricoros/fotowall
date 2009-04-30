@@ -95,7 +95,7 @@ win32|macx {
 # Translations (make ts; make qm)
 LUPDATE = lupdate -silent -no-obsolete -no-ui-lines
 LRELEASE = lrelease -silent -compress -removeidentical
-ts.commands = ($$LUPDATE -pro translations.txt && cd 3rdparty/posterazor && $$LUPDATE posterazor.pri)
-qm.commands = ($$LRELEASE translations/*.ts && cd 3rdparty/posterazor && $$LRELEASE *.ts)
+ts.commands = ($$LUPDATE -pro translations.txt && $$LUPDATE 3rdparty/posterazor/posterazor.pri)
+qm.commands = ($$LRELEASE translations/*.ts && $$LRELEASE 3rdparty/posterazor/*.ts)
 QMAKE_EXTRA_TARGETS += ts qm
 !exists(translations/fotowall_it.qm): {message("Compiling translations. To update strings type 'make ts', to recompile 'make qm'") system($$qm.commands)}

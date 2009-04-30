@@ -53,67 +53,67 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>AbstractProperties</name>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="21"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="35"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Stacking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="72"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Raise</source>
         <translation type="unfinished">Aumentar</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="86"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Lower</source>
         <translation type="unfinished">Diminuir</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="137"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Operations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="174"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Save</source>
         <translation type="unfinished">Salvar</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="188"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="58"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>To Front</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="100"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>To Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="160"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>To Background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="227"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Looks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="234"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>apply to all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="299"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Show Reflection</source>
         <translation type="unfinished">Exibir reflexão</translation>
     </message>
@@ -152,53 +152,52 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>ExactSizeDialog</name>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="14"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Choose size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="29"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>&lt;b&gt;Exact Size&lt;/b&gt; mode&lt;br&gt;The content has &lt;i&gt;the same size&lt;/i&gt; on screen and on printer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="51"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="69"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>cm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="74"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>inches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="82"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="99"/>
-        <location filename="../ExactSizeDialog.ui" line="128"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Dot Per Inch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="131"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Printer Dpi:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="102"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Screen Dpi:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="148"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Print in landscape mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -273,196 +272,187 @@ Go to the Desktop Settings and select the file:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="14"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Export Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="24"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="27"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Select the target.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="42"/>
-        <location filename="../ExportWizard.ui" line="101"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Wallpaper</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="58"/>
-        <location filename="../ExportWizard.ui" line="154"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="74"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Poster with PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="90"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="104"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Click the Finish button to change your wallpaper.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="113"/>
-        <location filename="../ExportWizard.ui" line="243"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Scale Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="119"/>
-        <location filename="../ExportWizard.ui" line="249"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Zoomed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="129"/>
-        <location filename="../ExportWizard.ui" line="259"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Scaled, keep proportions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="136"/>
-        <location filename="../ExportWizard.ui" line="266"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Scaled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="143"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Original Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="157"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Your work will be saved to a picture. Please fill the following options and click Finish.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="166"/>
+        <location filename="../ExportWizard.ui"/>
         <source>File properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="172"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Output file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="182"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Choose...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="192"/>
-        <location filename="../ExportWizard.ui" line="359"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Size and Orientation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="212"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="233"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Landscape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="277"/>
+        <location filename="../ExportWizard.ui"/>
         <source>PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="280"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Print Posters at home.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="289"/>
+        <location filename="../ExportWizard.ui"/>
         <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="323"/>
+        <location filename="../ExportWizard.ui"/>
         <source>PosteRazor home (external website)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="330"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Click Finish to start PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="337"/>
+        <location filename="../ExportWizard.ui"/>
         <source>How to use PosteRazor (external tutorial video)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="347"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Print Picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="350"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Select the paper options and click Finish to print.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="219"/>
-        <location filename="../ExportWizard.ui" line="401"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="383"/>
+        <location filename="../ExportWizard.ui"/>
         <source>pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="388"/>
+        <location filename="../ExportWizard.ui"/>
         <source>cm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="393"/>
+        <location filename="../ExportWizard.ui"/>
         <source>inches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="198"/>
-        <location filename="../ExportWizard.ui" line="365"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="418"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Dot Per Inch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="421"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Dpi:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="438"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Print in landscape mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="445"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Keep proportions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -610,74 +600,72 @@ Você deseja abrir a página web?</translation>
         <translation type="unfinished">Insira o título</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="116"/>
+        <location filename="../FotoWall.ui"/>
         <source>add pictures</source>
         <translation>Adicionar figuras</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="201"/>
+        <location filename="../FotoWall.ui"/>
         <source>FotoWall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="113"/>
+        <location filename="../FotoWall.ui"/>
         <source>add picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="139"/>
-        <location filename="../FotoWall.ui" line="142"/>
+        <location filename="../FotoWall.ui"/>
         <source>add text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="165"/>
-        <location filename="../FotoWall.ui" line="168"/>
+        <location filename="../FotoWall.ui"/>
         <source>add mirror</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="206"/>
+        <location filename="../FotoWall.ui"/>
         <source>CD Cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="211"/>
+        <location filename="../FotoWall.ui"/>
         <source>DVD Cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="216"/>
+        <location filename="../FotoWall.ui"/>
         <source>Exact Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="230"/>
+        <location filename="../FotoWall.ui"/>
         <source>load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="243"/>
+        <location filename="../FotoWall.ui"/>
         <source>save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="253"/>
+        <location filename="../FotoWall.ui"/>
         <source>quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="346"/>
+        <location filename="../FotoWall.ui"/>
         <source>How to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="327"/>
+        <location filename="../FotoWall.ui"/>
         <source>Background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="308"/>
+        <location filename="../FotoWall.ui"/>
         <source>Decorations</source>
         <translation type="unfinished"></translation>
     </message>
@@ -685,12 +673,12 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>GlowEffectDialog</name>
     <message>
-        <location filename="../GlowEffectDialog.ui" line="14"/>
+        <location filename="../GlowEffectDialog.ui"/>
         <source>Glow effect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GlowEffectDialog.ui" line="20"/>
+        <location filename="../GlowEffectDialog.ui"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -775,27 +763,27 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="25"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>Transform</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="48"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>Invert</source>
         <translation type="unfinished">Inverter</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="62"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>Flip</source>
         <translation type="unfinished">Folhear</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="101"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>Effects</source>
         <translation type="unfinished">Efeitos</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="108"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>apply to all</source>
         <translation type="unfinished"></translation>
     </message>
@@ -874,12 +862,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../items/TextContent.cpp" line="36"/>
+        <location filename="../items/TextContent.cpp" line="35"/>
         <source>Right click to Edit the text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/TextContent.cpp" line="50"/>
+        <location filename="../items/TextContent.cpp" line="49"/>
         <source>insert text here...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -913,22 +901,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>XmlRead</name>
     <message>
-        <location filename="../XmlRead.cpp" line="40"/>
+        <location filename="../XmlRead.cpp" line="41"/>
         <source>Loading error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="40"/>
+        <location filename="../XmlRead.cpp" line="41"/>
         <source>Unable to load the FotoWall file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="49"/>
+        <location filename="../XmlRead.cpp" line="50"/>
         <source>Parsing error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="49"/>
+        <location filename="../XmlRead.cpp" line="50"/>
         <source>Unable to parse the FotoWall file %1. The error was: %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -936,12 +924,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>XmlSave</name>
     <message>
-        <location filename="../XmlSave.cpp" line="33"/>
+        <location filename="../XmlSave.cpp" line="32"/>
         <source>File Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlSave.cpp" line="33"/>
+        <location filename="../XmlSave.cpp" line="32"/>
         <source>Error saving to the FotoWall file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>

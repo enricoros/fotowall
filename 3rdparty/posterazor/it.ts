@@ -440,57 +440,57 @@ Vuoi sovrascriverlo?</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow.ui" line="14"/>
+        <location filename="mainwindow.ui"/>
         <source>MainWindow</source>
         <translation>Finestra Principale</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="34"/>
+        <location filename="mainwindow.ui"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="43"/>
+        <location filename="mainwindow.ui"/>
         <source>&amp;?</source>
         <translation>&amp;?</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="53"/>
+        <location filename="mainwindow.ui"/>
         <source>Settings</source>
         <translation>Impostazioni</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="62"/>
+        <location filename="mainwindow.ui"/>
         <source>&amp;About Qt</source>
         <translation>Informazioni su &amp;Qt</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="67"/>
+        <location filename="mainwindow.ui"/>
         <source>About PosteRazor</source>
         <translation>Informazioni su PosteRazor</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="72"/>
+        <location filename="mainwindow.ui"/>
         <source>PosteRazor manual</source>
         <translation>Manuale di PosteRazor</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="77"/>
+        <location filename="mainwindow.ui"/>
         <source>PosteRazor web site</source>
         <translation>Sito web di PosteRazor</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="82"/>
+        <location filename="mainwindow.ui"/>
         <source>Load input image</source>
         <translation>Carica un&apos;immagine</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="87"/>
+        <location filename="mainwindow.ui"/>
         <source>Save poster</source>
         <translation>Salva il poster</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="92"/>
+        <location filename="mainwindow.ui"/>
         <source>E&amp;xit</source>
         <translation>&amp;Esci</translation>
     </message>
@@ -498,220 +498,207 @@ Vuoi sovrascriverlo?</translation>
 <context>
     <name>Wizard</name>
     <message>
-        <location filename="wizard.ui" line="134"/>
+        <location filename="wizard.ui"/>
         <source>Input Image</source>
         <translation>Immagine</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="218"/>
+        <location filename="wizard.ui"/>
         <source>Image Informations</source>
         <translation>Informazioni immagine</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="237"/>
+        <location filename="wizard.ui"/>
         <source>Size (in pixels):</source>
         <translation>Dimensione (in pixels):</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="254"/>
-        <location filename="wizard.ui" line="1079"/>
+        <location filename="wizard.ui"/>
         <source>Size:</source>
         <translation>Dimensione:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="264"/>
+        <location filename="wizard.ui"/>
         <source>Resolution:</source>
         <translation>Risoluzione:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="281"/>
+        <location filename="wizard.ui"/>
         <source>Color type:</source>
         <translation>Tipo di colore:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="327"/>
+        <location filename="wizard.ui"/>
         <source>Paper size</source>
         <translation>Formato carta</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="386"/>
+        <location filename="wizard.ui"/>
         <source>Standard</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="398"/>
+        <location filename="wizard.ui"/>
         <source>Format:</source>
         <translation>Formato:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="424"/>
+        <location filename="wizard.ui"/>
         <source>Orientation:</source>
         <translation>Orientamento:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="455"/>
+        <location filename="wizard.ui"/>
         <source>Portrait</source>
         <translation>Portrait</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="462"/>
+        <location filename="wizard.ui"/>
         <source>Landscape</source>
         <translation>Landscape</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="486"/>
+        <location filename="wizard.ui"/>
         <source>Custom</source>
         <translation>Personalizzato</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="498"/>
-        <location filename="wizard.ui" line="515"/>
-        <location filename="wizard.ui" line="725"/>
-        <location filename="wizard.ui" line="742"/>
-        <location filename="wizard.ui" line="997"/>
-        <location filename="wizard.ui" line="1035"/>
+        <location filename="wizard.ui"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="505"/>
-        <location filename="wizard.ui" line="732"/>
-        <location filename="wizard.ui" line="1049"/>
-        <location filename="wizard.ui" line="1059"/>
+        <location filename="wizard.ui"/>
         <source>Width:</source>
         <translation>Larghezza:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="522"/>
-        <location filename="wizard.ui" line="749"/>
-        <location filename="wizard.ui" line="1011"/>
-        <location filename="wizard.ui" line="1069"/>
+        <location filename="wizard.ui"/>
         <source>Height:</source>
         <translation>Altezza:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="571"/>
+        <location filename="wizard.ui"/>
         <source>Borders (%1)</source>
         <translation>Bordi (%1)</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="583"/>
+        <location filename="wizard.ui"/>
         <source>Top</source>
         <translation>Superiore</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="593"/>
+        <location filename="wizard.ui"/>
         <source>Left</source>
         <translation>Sinistra</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="603"/>
+        <location filename="wizard.ui"/>
         <source>Right</source>
         <translation>Destra</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="613"/>
+        <location filename="wizard.ui"/>
         <source>Bottom</source>
         <translation>Inferiore</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="713"/>
+        <location filename="wizard.ui"/>
         <source>Overlapping size</source>
         <translation>Dimensione della sovrapposizione</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="800"/>
+        <location filename="wizard.ui"/>
         <source>Overlapping position</source>
         <translation>Posizione della sovrapposizione</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="818"/>
+        <location filename="wizard.ui"/>
         <source>Top right</source>
         <translation>Superiore destro</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="853"/>
+        <location filename="wizard.ui"/>
         <source>Top left</source>
         <translation>Superiore sinistro</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="888"/>
+        <location filename="wizard.ui"/>
         <source>Bottom left</source>
         <translation>Inferiore sinistro</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="923"/>
+        <location filename="wizard.ui"/>
         <source>Bottom right</source>
         <translation>Inferiore destro</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="978"/>
+        <location filename="wizard.ui"/>
         <source>Poster size</source>
         <translation>Dimensione del Poster</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="990"/>
-        <location filename="wizard.ui" line="1004"/>
+        <location filename="wizard.ui"/>
         <source>pages</source>
         <translation>pagine</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1021"/>
+        <location filename="wizard.ui"/>
         <source>Image size in percent</source>
         <translation>Dimensione immagine in percentuale</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1028"/>
+        <location filename="wizard.ui"/>
         <source>Absolute image size</source>
         <translation>Dimensione immagine assoluta</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1042"/>
+        <location filename="wizard.ui"/>
         <source>Size in pages</source>
         <translation>Dimensione in pagine</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1089"/>
+        <location filename="wizard.ui"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1194"/>
+        <location filename="wizard.ui"/>
         <source>Image alignment</source>
         <translation>Allineamento immagine</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1465"/>
+        <location filename="wizard.ui"/>
         <source>Save the poster</source>
         <translation>Salva il poster</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1490"/>
+        <location filename="wizard.ui"/>
         <source>Open PDF after saving</source>
         <translation>Apri il PDF dopo averlo salvato</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1529"/>
+        <location filename="wizard.ui"/>
         <source>?</source>
         <translation>?</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1582"/>
+        <location filename="wizard.ui"/>
         <source>Step description</source>
         <translation>Descrizione del passaggio</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1589"/>
+        <location filename="wizard.ui"/>
         <source>Step x of y</source>
         <translation>Passo x di y</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1618"/>
+        <location filename="wizard.ui"/>
         <source>Back</source>
         <translation>Indietro</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1625"/>
+        <location filename="wizard.ui"/>
         <source>Next</source>
         <translation>Successivo</translation>
     </message>

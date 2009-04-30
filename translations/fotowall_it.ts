@@ -59,67 +59,67 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>AbstractProperties</name>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="21"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="35"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Stacking</source>
         <translation>Ordine</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="72"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Raise</source>
         <translation>Solleva</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="86"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Lower</source>
         <translation>Affonda</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="137"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Operations</source>
         <translation>Operazioni</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="174"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="188"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Remove</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="58"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>To Front</source>
         <translation>In Cima</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="100"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>To Back</source>
         <translation>In Fondo</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="160"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>To Background</source>
         <translation>Come Sfondo</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="227"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Looks</source>
         <translation>Aspetto</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="234"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>apply to all</source>
         <translation>applica a tutti</translation>
     </message>
     <message>
-        <location filename="../items/AbstractProperties.ui" line="299"/>
+        <location filename="../items/AbstractProperties.ui"/>
         <source>Show Reflection</source>
         <translation>Mostra il riflesso</translation>
     </message>
@@ -158,53 +158,52 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>ExactSizeDialog</name>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="14"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Choose size</source>
         <translation>Dimensione</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="29"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>&lt;b&gt;Exact Size&lt;/b&gt; mode&lt;br&gt;The content has &lt;i&gt;the same size&lt;/i&gt; on screen and on printer.</source>
         <translation>Modo &lt;b&gt;Dimensione Esatta&lt;/b&gt;&lt;br&gt;L&apos;area di lavoro ha &lt;i&gt;la stessa dimensione&lt;/i&gt; sullo schermo e sulla stampa.</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="51"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Height:</source>
         <translation>Altezza:</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="69"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="74"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>inches</source>
         <translation>pollici</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="82"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Width:</source>
         <translation>Larghezza:</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="99"/>
-        <location filename="../ExactSizeDialog.ui" line="128"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Dot Per Inch</source>
         <translation>Punti per Pollice</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="131"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Printer Dpi:</source>
         <translation>Dpi Stampante:</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="102"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Screen Dpi:</source>
         <translation>Dpi schermo:</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui" line="148"/>
+        <location filename="../ExactSizeDialog.ui"/>
         <source>Print in landscape mode</source>
         <translation>Stampa in orizzontale</translation>
     </message>
@@ -281,196 +280,187 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="14"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Export Wizard</source>
         <translation>Procedura Guidata di Esportazione</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="24"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Export</source>
         <translation>Esporta</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="27"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Select the target.</source>
         <translation>Scegli la destinazione.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="42"/>
-        <location filename="../ExportWizard.ui" line="101"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Wallpaper</source>
         <translation>Sfondo del Computer</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="58"/>
-        <location filename="../ExportWizard.ui" line="154"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Image</source>
         <translation>Immagine</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="74"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Poster with PosteRazor</source>
         <translation>Poster con PosteRazor</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="90"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Print</source>
         <translation>Stampa</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="104"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Click the Finish button to change your wallpaper.</source>
         <translation>Premi il bottone Fine per cambiare il tuo sfondo.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="113"/>
-        <location filename="../ExportWizard.ui" line="243"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Scale Mode</source>
         <translation>Scalatura</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="119"/>
-        <location filename="../ExportWizard.ui" line="249"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Zoomed</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="129"/>
-        <location filename="../ExportWizard.ui" line="259"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Scaled, keep proportions</source>
         <translation>Adatta, mantieni le proporzioni</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="136"/>
-        <location filename="../ExportWizard.ui" line="266"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Scaled</source>
         <translation>Adatta</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="143"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Original Size</source>
         <translation>Dimensione Attuale</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="157"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Your work will be saved to a picture. Please fill the following options and click Finish.</source>
         <translation>Il tuo lavoro sarà salvato su un&apos;immagine. Riempi le caselle seguenti e fai clic su Fine.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="166"/>
+        <location filename="../ExportWizard.ui"/>
         <source>File properties</source>
         <translation>Proprietà del File</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="172"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Output file:</source>
         <translation>File di destinazione:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="182"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Choose...</source>
         <translation>Scegli...</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="192"/>
-        <location filename="../ExportWizard.ui" line="359"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Size and Orientation</source>
         <translation>Dimensione ed Orientazione</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="212"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Pixels</source>
         <translation>Pixel</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="233"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Landscape</source>
         <translation>Orizzontale</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="277"/>
+        <location filename="../ExportWizard.ui"/>
         <source>PosteRazor</source>
         <translation>PosteRazor</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="280"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Print Posters at home.</source>
         <translation>Stampa Poster a casa tua.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="289"/>
+        <location filename="../ExportWizard.ui"/>
         <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
         <translation>Il PosteRazor ritaglia un&apos;immagine in pezzi che poi possono essere stampati ed incollati per create un poster.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="323"/>
+        <location filename="../ExportWizard.ui"/>
         <source>PosteRazor home (external website)</source>
         <translation>Homepage di PosteRazor (sito web esterno)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="330"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Click Finish to start PosteRazor</source>
         <translation>Clicca Fine per lanciare PosteRazor</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="337"/>
+        <location filename="../ExportWizard.ui"/>
         <source>How to use PosteRazor (external tutorial video)</source>
         <translation>Come usare PosteRazor (istruzione video esterna)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="347"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Print Picture</source>
         <translation>Stampa Immagine</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="350"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Select the paper options and click Finish to print.</source>
         <translation>Scegli le impostazioni della carta e fai clic su Fine per stampare.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="219"/>
-        <location filename="../ExportWizard.ui" line="401"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Height:</source>
         <translation>Altezza:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="383"/>
+        <location filename="../ExportWizard.ui"/>
         <source>pixels</source>
         <translation>pixel</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="388"/>
+        <location filename="../ExportWizard.ui"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="393"/>
+        <location filename="../ExportWizard.ui"/>
         <source>inches</source>
         <translation>pollici</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="198"/>
-        <location filename="../ExportWizard.ui" line="365"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Width:</source>
         <translation>Larghezza:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="418"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Dot Per Inch</source>
         <translation>Punti per Pollice</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="421"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Dpi:</source>
         <translation>Dpi:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="438"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Print in landscape mode</source>
         <translation>Stampa in orizzontale</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui" line="445"/>
+        <location filename="../ExportWizard.ui"/>
         <source>Keep proportions</source>
         <translation>Mantieni le proporzioni</translation>
     </message>
@@ -618,74 +608,72 @@ Vuoi aprire la pagina internet?</translation>
         <translation>Inserire il titolo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="116"/>
+        <location filename="../FotoWall.ui"/>
         <source>add pictures</source>
         <translation>aggiungi immagini</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="201"/>
+        <location filename="../FotoWall.ui"/>
         <source>FotoWall</source>
         <translation>FotoWall</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="113"/>
+        <location filename="../FotoWall.ui"/>
         <source>add picture</source>
         <translation>aggiungi immagine</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="139"/>
-        <location filename="../FotoWall.ui" line="142"/>
+        <location filename="../FotoWall.ui"/>
         <source>add text</source>
         <translation>aggiungi testo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="165"/>
-        <location filename="../FotoWall.ui" line="168"/>
+        <location filename="../FotoWall.ui"/>
         <source>add mirror</source>
         <translation>aggiungi specchio</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="206"/>
+        <location filename="../FotoWall.ui"/>
         <source>CD Cover</source>
         <translation>Copertina CD</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="211"/>
+        <location filename="../FotoWall.ui"/>
         <source>DVD Cover</source>
         <translation>Copertina DVD</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="216"/>
+        <location filename="../FotoWall.ui"/>
         <source>Exact Size</source>
         <translation>Dimensione Esatta</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="230"/>
+        <location filename="../FotoWall.ui"/>
         <source>load</source>
         <translation>apri</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="243"/>
+        <location filename="../FotoWall.ui"/>
         <source>save</source>
         <translation>salva</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="253"/>
+        <location filename="../FotoWall.ui"/>
         <source>quit</source>
         <translation>esci</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="346"/>
+        <location filename="../FotoWall.ui"/>
         <source>How to</source>
         <translation>Istruzioni</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="327"/>
+        <location filename="../FotoWall.ui"/>
         <source>Background</source>
         <translation>Sfondo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.ui" line="308"/>
+        <location filename="../FotoWall.ui"/>
         <source>Decorations</source>
         <translation>Decorazioni</translation>
     </message>
@@ -693,12 +681,12 @@ Vuoi aprire la pagina internet?</translation>
 <context>
     <name>GlowEffectDialog</name>
     <message>
-        <location filename="../GlowEffectDialog.ui" line="14"/>
+        <location filename="../GlowEffectDialog.ui"/>
         <source>Glow effect</source>
         <translation>Effetto luminescenza</translation>
     </message>
     <message>
-        <location filename="../GlowEffectDialog.ui" line="20"/>
+        <location filename="../GlowEffectDialog.ui"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -788,27 +776,27 @@ p, li { white-space: pre-wrap; }
         <translation>Elimina Effetti</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="25"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>Transform</source>
         <translation>Trasforma</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="48"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>Invert</source>
         <translation>Inverti</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="62"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>Flip</source>
         <translation>Speculare</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="101"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>Effects</source>
         <translation>Effetti</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui" line="108"/>
+        <location filename="../items/PictureProperties.ui"/>
         <source>apply to all</source>
         <translation>applica a tutti</translation>
     </message>
@@ -887,12 +875,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../items/TextContent.cpp" line="36"/>
+        <location filename="../items/TextContent.cpp" line="35"/>
         <source>Right click to Edit the text</source>
         <translation>Premi il tasto destro per cambiare il testo</translation>
     </message>
     <message>
-        <location filename="../items/TextContent.cpp" line="50"/>
+        <location filename="../items/TextContent.cpp" line="49"/>
         <source>insert text here...</source>
         <translation>inserisci il testo qui...</translation>
     </message>
@@ -926,22 +914,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>XmlRead</name>
     <message>
-        <location filename="../XmlRead.cpp" line="40"/>
+        <location filename="../XmlRead.cpp" line="41"/>
         <source>Loading error</source>
         <translation>Errore di Caricamento</translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="40"/>
+        <location filename="../XmlRead.cpp" line="41"/>
         <source>Unable to load the FotoWall file %1</source>
         <translation>Impossibile caricare il file FotoWall %1</translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="49"/>
+        <location filename="../XmlRead.cpp" line="50"/>
         <source>Parsing error</source>
         <translation>Errore di lettura</translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="49"/>
+        <location filename="../XmlRead.cpp" line="50"/>
         <source>Unable to parse the FotoWall file %1. The error was: %2</source>
         <translation>Impossibile leggere il file FotoWall %1. L&apos;errore è: %2</translation>
     </message>
@@ -949,12 +937,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>XmlSave</name>
     <message>
-        <location filename="../XmlSave.cpp" line="33"/>
+        <location filename="../XmlSave.cpp" line="32"/>
         <source>File Error</source>
         <translation>Errore nel File</translation>
     </message>
     <message>
-        <location filename="../XmlSave.cpp" line="33"/>
+        <location filename="../XmlSave.cpp" line="32"/>
         <source>Error saving to the FotoWall file &apos;%1&apos;</source>
         <translation>Errore salvando il file FotoWall &apos;%1&apos;</translation>
     </message>

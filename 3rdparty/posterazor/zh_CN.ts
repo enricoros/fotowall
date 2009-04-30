@@ -429,57 +429,57 @@ Do you want to overwrite it?</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow.ui" line="14"/>
+        <location filename="mainwindow.ui"/>
         <source>MainWindow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="34"/>
+        <location filename="mainwindow.ui"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;文件</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="43"/>
+        <location filename="mainwindow.ui"/>
         <source>&amp;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="53"/>
+        <location filename="mainwindow.ui"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="62"/>
+        <location filename="mainwindow.ui"/>
         <source>&amp;About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="67"/>
+        <location filename="mainwindow.ui"/>
         <source>About PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="72"/>
+        <location filename="mainwindow.ui"/>
         <source>PosteRazor manual</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="77"/>
+        <location filename="mainwindow.ui"/>
         <source>PosteRazor web site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="82"/>
+        <location filename="mainwindow.ui"/>
         <source>Load input image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="87"/>
+        <location filename="mainwindow.ui"/>
         <source>Save poster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="92"/>
+        <location filename="mainwindow.ui"/>
         <source>E&amp;xit</source>
         <translation type="unfinished">退出 (&amp;x)</translation>
     </message>
@@ -487,220 +487,207 @@ Do you want to overwrite it?</source>
 <context>
     <name>Wizard</name>
     <message>
-        <location filename="wizard.ui" line="134"/>
+        <location filename="wizard.ui"/>
         <source>Input Image</source>
         <translation type="unfinished">输入图片</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="218"/>
+        <location filename="wizard.ui"/>
         <source>Image Informations</source>
         <translation type="unfinished">绝对大小</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="237"/>
+        <location filename="wizard.ui"/>
         <source>Size (in pixels):</source>
         <translation type="unfinished">尺寸 (像素):</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="254"/>
-        <location filename="wizard.ui" line="1079"/>
+        <location filename="wizard.ui"/>
         <source>Size:</source>
         <translation type="unfinished">尺寸:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="264"/>
+        <location filename="wizard.ui"/>
         <source>Resolution:</source>
         <translation type="unfinished">分辨率:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="281"/>
+        <location filename="wizard.ui"/>
         <source>Color type:</source>
         <translation type="unfinished">颜色类型:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="327"/>
+        <location filename="wizard.ui"/>
         <source>Paper size</source>
         <translation type="unfinished">页面格式</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="386"/>
+        <location filename="wizard.ui"/>
         <source>Standard</source>
         <translation type="unfinished">标准</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="398"/>
+        <location filename="wizard.ui"/>
         <source>Format:</source>
         <translation type="unfinished">格式:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="424"/>
+        <location filename="wizard.ui"/>
         <source>Orientation:</source>
         <translation type="unfinished">方向:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="455"/>
+        <location filename="wizard.ui"/>
         <source>Portrait</source>
         <translation type="unfinished">垂直</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="462"/>
+        <location filename="wizard.ui"/>
         <source>Landscape</source>
         <translation type="unfinished">水平</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="486"/>
+        <location filename="wizard.ui"/>
         <source>Custom</source>
         <translation type="unfinished">定制</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="498"/>
-        <location filename="wizard.ui" line="515"/>
-        <location filename="wizard.ui" line="725"/>
-        <location filename="wizard.ui" line="742"/>
-        <location filename="wizard.ui" line="997"/>
-        <location filename="wizard.ui" line="1035"/>
+        <location filename="wizard.ui"/>
         <source>cm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="505"/>
-        <location filename="wizard.ui" line="732"/>
-        <location filename="wizard.ui" line="1049"/>
-        <location filename="wizard.ui" line="1059"/>
+        <location filename="wizard.ui"/>
         <source>Width:</source>
         <translation type="unfinished">宽度:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="522"/>
-        <location filename="wizard.ui" line="749"/>
-        <location filename="wizard.ui" line="1011"/>
-        <location filename="wizard.ui" line="1069"/>
+        <location filename="wizard.ui"/>
         <source>Height:</source>
         <translation type="unfinished">高度:</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="571"/>
+        <location filename="wizard.ui"/>
         <source>Borders (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="583"/>
+        <location filename="wizard.ui"/>
         <source>Top</source>
         <translation type="unfinished">顶部</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="593"/>
+        <location filename="wizard.ui"/>
         <source>Left</source>
         <translation type="unfinished">左</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="603"/>
+        <location filename="wizard.ui"/>
         <source>Right</source>
         <translation type="unfinished">右</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="613"/>
+        <location filename="wizard.ui"/>
         <source>Bottom</source>
         <translation type="unfinished">底部</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="713"/>
+        <location filename="wizard.ui"/>
         <source>Overlapping size</source>
         <translation type="unfinished">调整大小</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="800"/>
+        <location filename="wizard.ui"/>
         <source>Overlapping position</source>
         <translation type="unfinished">位置调整</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="818"/>
+        <location filename="wizard.ui"/>
         <source>Top right</source>
         <translation type="unfinished">右上</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="853"/>
+        <location filename="wizard.ui"/>
         <source>Top left</source>
         <translation type="unfinished">左上</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="888"/>
+        <location filename="wizard.ui"/>
         <source>Bottom left</source>
         <translation type="unfinished">左下</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="923"/>
+        <location filename="wizard.ui"/>
         <source>Bottom right</source>
         <translation type="unfinished">右下</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="978"/>
+        <location filename="wizard.ui"/>
         <source>Poster size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="990"/>
-        <location filename="wizard.ui" line="1004"/>
+        <location filename="wizard.ui"/>
         <source>pages</source>
         <translation type="unfinished">页面</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1021"/>
+        <location filename="wizard.ui"/>
         <source>Image size in percent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1028"/>
+        <location filename="wizard.ui"/>
         <source>Absolute image size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1042"/>
+        <location filename="wizard.ui"/>
         <source>Size in pages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1089"/>
+        <location filename="wizard.ui"/>
         <source>%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1194"/>
+        <location filename="wizard.ui"/>
         <source>Image alignment</source>
         <translation type="unfinished">图片调整</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1465"/>
+        <location filename="wizard.ui"/>
         <source>Save the poster</source>
         <translation type="unfinished">另存为</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1490"/>
+        <location filename="wizard.ui"/>
         <source>Open PDF after saving</source>
         <translation type="unfinished">保存后用默认的PDF程序打开</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1529"/>
+        <location filename="wizard.ui"/>
         <source>?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1582"/>
+        <location filename="wizard.ui"/>
         <source>Step description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1589"/>
+        <location filename="wizard.ui"/>
         <source>Step x of y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1618"/>
+        <location filename="wizard.ui"/>
         <source>Back</source>
         <translation type="unfinished">边界</translation>
     </message>
     <message>
-        <location filename="wizard.ui" line="1625"/>
+        <location filename="wizard.ui"/>
         <source>Next</source>
         <translation type="unfinished">前进</translation>
     </message>
