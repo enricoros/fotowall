@@ -17,11 +17,10 @@
 ******************************************************************************/
 
 #include "XmlSave.h"
+#include "items/AbstractContent.h"
+#include "items/ColorPickerItem.h"
 #include "CPixmap.h"
 #include "Desk.h"
-#include "PictureContent.h"
-#include "TextContent.h"
-#include "items/ColorPickerItem.h"
 #include <QMessageBox>
 #include <QFile>
 

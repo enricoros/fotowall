@@ -21,7 +21,7 @@
 #include <QPainter>
 #include <QRect>
 #include <QSize>
-#include "ButtonItem.h"
+#include "items/ButtonItem.h"
 class QPainter;
 
 /**

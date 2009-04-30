@@ -1,5 +1,4 @@
 VPATH += $$PWD
-INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 # disabling the webkit component on windows, since I can't static link to it

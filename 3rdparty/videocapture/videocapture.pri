@@ -1,5 +1,4 @@
 VPATH += $$PWD
-INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 unix:!macx {

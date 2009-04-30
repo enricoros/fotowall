@@ -1,25 +1,25 @@
+# Project Options
 TEMPLATE = app
 TARGET = fotowall
 DEPENDPATH += .
-INCLUDEPATH += . 3rdparty
-MOC_DIR = .bin
-OBJECTS_DIR = .bin
-RCC_DIR = .bin
-UI_DIR = .bin
+MOC_DIR = .build
+OBJECTS_DIR = .build
+RCC_DIR = .build
+UI_DIR = .build
 QT = core \
     gui \
     svg \
     network \
     xml
 
-# Input
+# FotoWall input files
 HEADERS += CPixmap.h \
     Desk.h \
     ExactSizeDialog.h \
     ExportWizard.h \
+    FotoWall.h \
     GlowEffectDialog.h \
     GlowEffectWidget.h \
-    FotoWall.h \
     ModeInfo.h \
     RenderOpts.h \
     XmlSave.h \
@@ -45,15 +45,14 @@ TRANSLATIONS += translations/fotowall_de.ts \
     translations/fotowall_it.ts \
     translations/fotowall_pt_BR.ts
 
-# Components
+# Sub-Components
 include(items/items.pri)
 include(frames/frames.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 include(3rdparty/posterazor/posterazor.pri)
-!contains(CONFIG, build_pass) system(lrelease fotowall.pro)
 
-# installation on Linux
+# deployment on Linux
 unix {
     target.path = /usr/bin
     icon.files = fotowall.png
@@ -74,6 +73,7 @@ win32 {
     RC_FILE = fotowall.rc
 }
 
+# deployment on Mac
 macx {
     ICON = fotowall.icns
     CONFIG += x86 ppc
@@ -81,7 +81,7 @@ macx {
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.3
 }
 
-# handling static image plugins
+# static builds
 win32|macx {
     contains(CONFIG, static)|contains(CONFIG, qt_no_framework) {
         DEFINES += STATIC_LINK
@@ -91,3 +91,11 @@ win32|macx {
             qtiff
     }
 }
+
+# Translations (make ts; make qm)
+LUPDATE = lupdate -silent -no-obsolete -no-ui-lines
+LRELEASE = lrelease -silent -compress -removeidentical
+ts.commands = ($$LUPDATE -pro translations.txt && cd 3rdparty/posterazor && $$LUPDATE posterazor.pri)
+qm.commands = ($$LRELEASE translations/*.ts && cd 3rdparty/posterazor && $$LRELEASE *.ts)
+QMAKE_EXTRA_TARGETS += ts qm
+!exists(translations/fotowall_it.qm): {message("Compiling translations. To update strings type 'make ts', to recompile 'make qm'") system($$qm.commands)}

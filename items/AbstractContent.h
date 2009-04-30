@@ -18,7 +18,7 @@
 #include <QGraphicsItem>
 #include <QObject>
 #include <QDomElement>
-#include "enricomath.h"
+#include "3rdparty/enricomath.h"
 class AbstractProperties;
 class ButtonItem;
 class CornerItem;

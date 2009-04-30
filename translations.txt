@@ -1,0 +1,48 @@
+# THIS FILE IS NOT INCLUDED IN ANY .PRO CHAIN
+#
+# This file is used for running "lupdate" over it. It includes all the source
+# files and all the subprojects used in the 'fotowall.pro' file, minus the
+# 3rdparty/posterazor/posterazor.pri file. PosteRazor has its own translation
+# system (and translations are loaded at runtime too), so we avoid duplication
+# this way.
+#
+# See also the Translations chapter in 'fotowall.pro'.
+
+# FotoWall input files
+HEADERS += CPixmap.h \
+    Desk.h \
+    ExactSizeDialog.h \
+    ExportWizard.h \
+    FotoWall.h \
+    GlowEffectDialog.h \
+    GlowEffectWidget.h \
+    ModeInfo.h \
+    RenderOpts.h \
+    XmlSave.h \
+    XmlRead.h
+SOURCES += main.cpp \
+    CPixmap.cpp \
+    Desk.cpp \
+    ExactSizeDialog.cpp \
+    ExportWizard.cpp \
+    FotoWall.cpp \
+    GlowEffectDialog.cpp \
+    GlowEffectWidget.cpp \
+    ModeInfo.cpp \
+    XmlSave.cpp \
+    XmlRead.cpp
+FORMS += ExactSizeDialog.ui \
+    ExportWizard.ui \
+    FotoWall.ui \
+    GlowEffectDialog.ui
+RESOURCES += fotowall.qrc
+TRANSLATIONS += translations/fotowall_de.ts \
+    translations/fotowall_fr.ts \
+    translations/fotowall_it.ts \
+    translations/fotowall_pt_BR.ts
+
+# Sub-Components
+include(items/items.pri)
+include(frames/frames.pri)
+include(3rdparty/richtextedit/richtextedit.pri)
+include(3rdparty/videocapture/videocapture.pri)

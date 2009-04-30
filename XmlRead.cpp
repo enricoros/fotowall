@@ -17,14 +17,15 @@
  ******************************************************************************/
 
 #include "XmlRead.h"
+#include "frames/FrameFactory.h"
+#include "items/AbstractContent.h"
+#include "items/ColorPickerItem.h"
+#include "items/PictureContent.h"
+#include "items/TextContent.h"
+#include "items/VideoContent.h"
 #include "CPixmap.h"
 #include "Desk.h"
 #include "FotoWall.h"
-#include "PictureContent.h"
-#include "TextContent.h"
-#include "VideoContent.h"
-#include "frames/FrameFactory.h"
-#include "items/ColorPickerItem.h"
 #include <QFile>
 #include <QGraphicsView>
 #include <QMessageBox>

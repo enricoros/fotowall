@@ -13,11 +13,10 @@
  ***************************************************************************/
 
 #include "TextContent.h"
+#include "frames/Frame.h"
 #include "ButtonItem.h"
 #include "CPixmap.h"
 #include "RenderOpts.h"
-#include "frames/Frame.h"
-#include "richtexteditor_p.h"
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>

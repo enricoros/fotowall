@@ -13,16 +13,16 @@
  ***************************************************************************/
 
 #include "Desk.h"
-#include "ColorPickerItem.h"
-#include "HelpItem.h"
-#include "HighlightItem.h"
-#include "PictureContent.h"
-#include "TextContent.h"
-#include "VideoContent.h"
-#include "PictureProperties.h"
-#include "RenderOpts.h"
-#include "TextProperties.h"
 #include "frames/FrameFactory.h"
+#include "items/ColorPickerItem.h"
+#include "items/HelpItem.h"
+#include "items/HighlightItem.h"
+#include "items/PictureContent.h"
+#include "items/PictureProperties.h"
+#include "items/TextContent.h"
+#include "items/TextProperties.h"
+#include "items/VideoContent.h"
+#include "RenderOpts.h"
 #include <QAbstractTextDocumentLayout>
 #include <QFile>
 #include <QGraphicsSceneDragDropEvent>

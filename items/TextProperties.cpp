@@ -13,8 +13,8 @@
  ***************************************************************************/
 
 #include "TextProperties.h"
+#include "3rdparty/richtextedit/richtexteditor_p.h"
 #include "TextContent.h"
-#include "richtexteditor_p.h"
 #include <QSettings>
 
 TextProperties::TextProperties(TextContent * textContent, QGraphicsItem * parent)

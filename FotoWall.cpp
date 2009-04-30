@@ -13,12 +13,12 @@
  ***************************************************************************/
 
 #include "FotoWall.h"
+#include "items/VideoProvider.h"
+#include "ui_FotoWall.h"
 #include "Desk.h"
 #include "ExportWizard.h"
-#include "VideoProvider.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
-#include "ui_FotoWall.h"
 #include <QAction>
 #include <QApplication>
 #include <QDir>

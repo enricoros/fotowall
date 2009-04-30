@@ -16,7 +16,7 @@
 #include <QDirIterator>
 #include <QTimer>
 #if defined(HAS_VIDEOCAPTURE)
-#include "VideoDevice_linux.h"
+#include "3rdparty/videocapture/VideoDevice_linux.h"
 #endif
 
 // the global video provider instance

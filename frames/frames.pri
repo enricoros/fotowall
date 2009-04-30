@@ -1,6 +1,6 @@
 VPATH += $$PWD
-INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
+
 HEADERS += Frame.h \
     HeartFrame.h \
     PlasmaFrame.h \
