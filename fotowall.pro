@@ -13,7 +13,8 @@ QT = core \
     xml
 
 # FotoWall input files
-HEADERS += CPixmap.h \
+HEADERS += 3rdparty/gsuggest.h \
+    CPixmap.h \
     Desk.h \
     ExactSizeDialog.h \
     ExportWizard.h \
@@ -24,7 +25,8 @@ HEADERS += CPixmap.h \
     RenderOpts.h \
     XmlSave.h \
     XmlRead.h
-SOURCES += main.cpp \
+SOURCES += 3rdparty/gsuggest.cpp \
+    main.cpp \
     CPixmap.cpp \
     Desk.cpp \
     ExactSizeDialog.cpp \

@@ -128,7 +128,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="fotowall.qrc">
+         <iconset>
           <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
         </property>
         <property name="toolButtonStyle">
@@ -318,7 +318,7 @@
   </layout>
   <action name="aAddPicture">
    <property name="icon">
-    <iconset resource="fotowall.qrc">
+    <iconset>
      <normaloff>:/data/insert-image.png</normaloff>:/data/insert-image.png</iconset>
    </property>
    <property name="text">
@@ -330,7 +330,7 @@
   </action>
   <action name="aAddText">
    <property name="icon">
-    <iconset resource="fotowall.qrc">
+    <iconset>
      <normaloff>:/data/insert-text.png</normaloff>:/data/insert-text.png</iconset>
    </property>
    <property name="text">
@@ -342,7 +342,7 @@
   </action>
   <action name="aAddVideo">
    <property name="icon">
-    <iconset resource="fotowall.qrc">
+    <iconset>
      <normaloff>:/data/insert-video.png</normaloff>:/data/insert-video.png</iconset>
    </property>
    <property name="text">
@@ -353,8 +353,11 @@
    </property>
   </action>
   <action name="aAddFlickr">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset resource="fotowall.qrc">
+    <iconset>
      <normaloff>:/data/insert-weblink.png</normaloff>:/data/insert-weblink.png</iconset>
    </property>
    <property name="text">
@@ -367,8 +370,6 @@
   <zorder>centralWidget</zorder>
   <zorder>topBar</zorder>
  </widget>
- <resources>
-  <include location="fotowall.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

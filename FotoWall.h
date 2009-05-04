@@ -61,7 +61,7 @@ class FotoWall : public QWidget
 
     private Q_SLOTS:
         void on_projectType_currentIndexChanged(int index);
-        void on_aAddFlickr_triggered();
+        void on_aAddFlickr_toggled(bool on);
         void on_aAddPicture_triggered();
         void on_aAddText_triggered();
         void on_aAddVideo_triggered();

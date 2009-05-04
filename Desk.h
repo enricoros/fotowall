@@ -31,6 +31,7 @@ class PictureContent;
 class QTimer;
 class TextContent;
 class VideoContent;
+class WebContentSelectorItem;
 
 class Desk : public QGraphicsScene
 {
@@ -45,6 +46,10 @@ class Desk : public QGraphicsScene
         void addPictures(const QStringList & fileNames);
         void addTextContent();
         void addVideoContent(int input);
+
+        // selectors
+        void setWebContentSelectorVisible(bool visible);
+        bool webContentSelectorVisible() const;
 
         // resize the scene to 0,0,size
         void resize(const QSize & size);
@@ -115,6 +120,7 @@ class Desk : public QGraphicsScene
         QPixmap m_backCache;
         Mode m_projectMode;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
+        WebContentSelectorItem * m_webContentSelector;
         QTimer * m_forceFieldTimer;
         QTime m_forceFieldTime;
 

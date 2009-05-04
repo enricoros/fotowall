@@ -22,6 +22,7 @@
 #include "items/TextContent.h"
 #include "items/TextProperties.h"
 #include "items/VideoContent.h"
+#include "items/WebContentSelectorItem.h"
 #include "RenderOpts.h"
 #include <QAbstractTextDocumentLayout>
 #include <QFile>
@@ -48,6 +49,7 @@ Desk::Desk(QObject * parent)
     , m_bottomBarEnabled(false)
     , m_backGradientEnabled(true)
     , m_projectMode(ModeNormal)
+    , m_webContentSelector(0)
     , m_forceFieldTimer(0)
 {
     // create colorpickers
@@ -131,6 +133,27 @@ void Desk::addTextContent()
 void Desk::addVideoContent(int input)
 {
     createVideo(input, nearCenter(sceneRect()));
+}
+
+
+/// Selectors
+void Desk::setWebContentSelectorVisible(bool visible)
+{
+    if (!visible && m_webContentSelector) {
+        removeItem(m_webContentSelector);
+        m_webContentSelector->deleteLater();
+        m_webContentSelector = 0;
+    }
+    if (visible && !m_webContentSelector) {
+        m_webContentSelector = new WebContentSelectorItem();
+        m_webContentSelector->setPos(20, -8);
+        addItem(m_webContentSelector);
+    }
+}
+
+bool Desk::webContentSelectorVisible() const
+{
+    return m_webContentSelector;
 }
 
 

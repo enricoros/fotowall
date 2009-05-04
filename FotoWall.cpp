@@ -420,9 +420,9 @@ void FotoWall::on_projectType_currentIndexChanged(int index)
     }
 }
 
-void FotoWall::on_aAddFlickr_triggered()
+void FotoWall::on_aAddFlickr_toggled(bool on)
 {
-    // Implementing... ;-) -Enrico
+    m_desk->setWebContentSelectorVisible(on);
 }
 
 void FotoWall::on_aAddPicture_triggered()
@@ -568,3 +568,4 @@ void FotoWall::slotVerifyVideoInputs(int count)
     // maybe blink or something?
     ui->aAddVideo->setVisible(count > 0);
 }
+
