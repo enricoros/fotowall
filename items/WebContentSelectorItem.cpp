@@ -31,7 +31,11 @@ WebContentSelectorItem::WebContentSelectorItem(QGraphicsItem * parent)
 {
     // create & customize widget
     QWidget * widget = new QWidget();
+#if QT_VERSION >= 0x040500
     widget->setAttribute(Qt::WA_TranslucentBackground);
+#else
+    widget->setAttribute(Qt::WA_NoSystemBackground, true);
+#endif
     m_ui->setupUi(widget);
     QPalette pal;
     pal.setBrush(QPalette::Base, Qt::transparent);

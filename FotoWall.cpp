@@ -200,6 +200,11 @@ void FotoWall::showIntroduction()
     m_desk->showIntroduction();
 }
 
+void FotoWall::loadImages(QStringList &imagesPath)
+{
+    m_desk->addPictures(imagesPath);
+}
+
 QMenu * FotoWall::createArrangeMenu()
 {
     QMenu * menu = new QMenu();

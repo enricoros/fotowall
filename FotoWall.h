@@ -38,6 +38,7 @@ class FotoWall : public QWidget
         void saveXml(const QString & filePath) const;
 
         void showIntroduction();
+        void loadImages(QStringList &imagesPath);
 
     private:
         QMenu * createArrangeMenu();
