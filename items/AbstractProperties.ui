@@ -229,6 +229,16 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="newFrame">
+             <property name="text">
+              <string>new frame</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QToolButton" name="applyLooks">
              <property name="text">
               <string>apply to all</string>
@@ -271,7 +281,7 @@
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
            <property name="dragDropMode">
-            <enum>QAbstractItemView::NoDragDrop</enum>
+            <enum>QAbstractItemView::DragDrop</enum>
            </property>
            <property name="selectionBehavior">
             <enum>QAbstractItemView::SelectRows</enum>
