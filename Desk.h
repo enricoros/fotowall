@@ -21,6 +21,8 @@
 #include <QPixmap>
 #include <QRect>
 #include <QTime>
+#include <QDomElement>
+
 class AbstractContent;
 class AbstractProperties;
 struct CEffect;
@@ -79,6 +81,9 @@ class Desk : public QGraphicsScene
         enum Mode { ModeNormal = 0, ModeCD = 1, ModeDVD = 2, ModeExactSize = 3 };
         Mode projectMode() const;
         void setProjectMode(Mode mode);
+
+        void toXml(QDomElement &de) const;
+        void fromXml(QDomElement &de);
 
         // render the Desk, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);

@@ -74,67 +74,7 @@ void XmlSave::saveContent(const Desk * desk)
 
 void XmlSave::saveDesk(const Desk *desk)
 {
-    // Save Title
-    QDomElement titleElement = doc.createElement("title");
-    m_deskElement.appendChild(titleElement);
-    QDomText titleText = doc.createTextNode(desk->titleText());
-    titleElement.appendChild(titleText);
-
-    // Save background colors
-    QColor color;
-    QString r, g, b;
-    QDomElement domElement, topColor, bottomColor,
-                redElement = doc.createElement("red"),
-                greenElement = doc.createElement("green"),
-                blueElement = doc.createElement("blue"),
-                redElement2 = doc.createElement("red"),
-                greenElement2 = doc.createElement("green"),
-                blueElement2 = doc.createElement("blue"),
-                rElement = doc.createElement("red"),
-                gElement = doc.createElement("green"),
-                bElement = doc.createElement("blue"),
-                rElement2 = doc.createElement("red"),
-                gElement2 = doc.createElement("green"),
-                bElement2 = doc.createElement("blue");
-    domElement = doc.createElement("background-color");
-
-    topColor = doc.createElement("top");
-    color = desk->m_grad1ColorPicker->color();
-    r.setNum(color.red()); g.setNum(color.green()); b.setNum(color.blue());
-    redElement.appendChild(doc.createTextNode(r));
-    greenElement.appendChild(doc.createTextNode(g));
-    blueElement.appendChild(doc.createTextNode(b));
-    topColor.appendChild(redElement); topColor.appendChild(greenElement); topColor.appendChild(blueElement);
-    domElement.appendChild(topColor);
-
-    bottomColor = doc.createElement("bottom");
-    color = desk->m_grad2ColorPicker->color();
-    r.setNum(color.red()); g.setNum(color.green()); b.setNum(color.blue());
-    redElement2.appendChild(doc.createTextNode(r));
-    greenElement2.appendChild(doc.createTextNode(g));
-    blueElement2.appendChild(doc.createTextNode(b));
-    bottomColor.appendChild(redElement2); bottomColor.appendChild(greenElement2); bottomColor.appendChild(blueElement2);
-    domElement.appendChild(bottomColor);
-
-    m_deskElement.appendChild(domElement);
-
-    QDomElement titleColor = doc.createElement("title-color");
-    color = desk->m_titleColorPicker->color();
-    r.setNum(color.red()); g.setNum(color.green()); b.setNum(color.blue());
-    rElement.appendChild(doc.createTextNode(r));
-    gElement.appendChild(doc.createTextNode(g));
-    bElement.appendChild(doc.createTextNode(b));
-    titleColor.appendChild(rElement); titleColor.appendChild(gElement); titleColor.appendChild(bElement);
-    m_deskElement.appendChild(titleColor);
-
-    QDomElement foreColor = doc.createElement("foreground-color");
-    color = desk->m_foreColorPicker->color();
-    r.setNum(color.red()); g.setNum(color.green()); b.setNum(color.blue());
-    rElement2.appendChild(doc.createTextNode(r));
-    gElement2.appendChild(doc.createTextNode(g));
-    bElement2.appendChild(doc.createTextNode(b));
-    foreColor.appendChild(rElement2); foreColor.appendChild(gElement2); foreColor.appendChild(bElement2);
-    m_deskElement.appendChild(foreColor);
+    desk->toXml(m_deskElement);
 }
 
 void XmlSave::saveProject(int mode, const ModeInfo& modeInfo)

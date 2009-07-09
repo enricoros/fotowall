@@ -84,46 +84,15 @@ void XmlRead::readProject(FotoWall *fotowall)
 
 void XmlRead::readDesk(Desk * desk)
 {
-    desk->setTitleText(m_deskElement.firstChildElement("title").text());
+    // clear Desk
+    qDeleteAll(desk->m_content);
+    desk->m_content.clear();
 
-    QDomElement domElement;
-    int r, g, b;
-    // Load image size saved in the rect node
-    domElement = m_deskElement.firstChildElement("background-color").firstChildElement("top");
-    r = domElement.firstChildElement("red").text().toInt();
-    g = domElement.firstChildElement("green").text().toInt();
-    b = domElement.firstChildElement("blue").text().toInt();
-    desk->m_grad1ColorPicker->setColor(QColor(r, g, b));
-
-    domElement = m_deskElement.firstChildElement("background-color").firstChildElement("bottom");
-    r = domElement.firstChildElement("red").text().toInt();
-    g = domElement.firstChildElement("green").text().toInt();
-    b = domElement.firstChildElement("blue").text().toInt();
-    desk->m_grad2ColorPicker->setColor(QColor(r, g, b));
-
-    domElement = m_deskElement.firstChildElement("title-color");
-    r = domElement.firstChildElement("red").text().toInt();
-    g = domElement.firstChildElement("green").text().toInt();
-    b = domElement.firstChildElement("blue").text().toInt();
-    desk->m_titleColorPicker->setColor(QColor(r, g, b));
-
-    domElement = m_deskElement.firstChildElement("foreground-color");
-    r = domElement.firstChildElement("red").text().toInt();
-    g = domElement.firstChildElement("green").text().toInt();
-    b = domElement.firstChildElement("blue").text().toInt();
-    desk->m_foreColorPicker->setColor(QColor(r, g, b));
-
-    // Show the colors
-    desk->update();
+    desk->fromXml(m_deskElement);
 }
 
 void XmlRead::readContent(Desk * desk)
 {
-    // clear Desk
-    qDeleteAll(desk->m_content);
-    desk->m_content.clear();
-    desk->m_backContent = 0;
-
     // for each child of 'content'
     for (QDomElement element = m_contentElement.firstChildElement(); !element.isNull(); element = element.nextSiblingElement()) {
 
