@@ -123,6 +123,21 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <source>Show Reflection</source>
         <translation>Afficher le reflet</translation>
     </message>
+    <message>
+        <location filename="../items/AbstractProperties.cpp" line="338"/>
+        <source>Choose frame images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractProperties.cpp" line="338"/>
+        <source>Images (*.svg)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractProperties.ui"/>
+        <source>new frame</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ColorAction</name>
@@ -135,22 +150,22 @@ Utiliser CTRL pour annuler les transformations.</translation>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="611"/>
+        <location filename="../Desk.cpp" line="760"/>
         <source>Back</source>
-        <translation>Arrière-plan</translation>
+        <translation>Arrière</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="615"/>
+        <location filename="../Desk.cpp" line="764"/>
         <source>Front</source>
-        <translation>Premier-plan</translation>
+        <translation>Avant</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="752"/>
+        <location filename="../Desk.cpp" line="901"/>
         <source>Delete content</source>
         <translation>Supprimer l&apos;élément</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="752"/>
+        <location filename="../Desk.cpp" line="901"/>
         <source>All the selected content will be deleted, do you want to continue ?</source>
         <translation>Tous les éléments sélectionnés seront supprimés, voulez-vous continuer ?</translation>
     </message>
@@ -467,164 +482,144 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
 <context>
     <name>FotoWall</name>
     <message>
-        <location filename="../FotoWall.cpp" line="431"/>
+        <location filename="../FotoWall.cpp" line="442"/>
         <source>Select one or more pictures to add</source>
         <translation>Sélectionnez une ou plusieur photos à ajouter</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="431"/>
+        <location filename="../FotoWall.cpp" line="442"/>
         <source>Images (%1)</source>
         <translation>Images (%1)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="207"/>
+        <location filename="../FotoWall.cpp" line="212"/>
         <source>Enable force field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="213"/>
+        <location filename="../FotoWall.cpp" line="218"/>
         <source>Auto-arrange new pictures</source>
         <translation>Arranger automatiquement les nouvelles images</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="219"/>
+        <location filename="../FotoWall.cpp" line="224"/>
         <source>Rearrange</source>
         <translation>Ré-arranger</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="221"/>
+        <location filename="../FotoWall.cpp" line="226"/>
         <source>Uniform</source>
         <translation>Uniforme</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="226"/>
+        <location filename="../FotoWall.cpp" line="231"/>
         <source>Shaped</source>
         <translation>Profilé</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="231"/>
+        <location filename="../FotoWall.cpp" line="236"/>
         <source>Collage</source>
         <translation>Collage</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="256"/>
+        <location filename="../FotoWall.cpp" line="261"/>
         <source>Top bar</source>
         <translation>Barre du haut</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="262"/>
+        <location filename="../FotoWall.cpp" line="267"/>
         <source>Bottom bar</source>
         <translation>Barre du bas</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="270"/>
+        <location filename="../FotoWall.cpp" line="275"/>
         <source>Set title...</source>
         <translation>Définir le titre...</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="271"/>
+        <location filename="../FotoWall.cpp" line="276"/>
         <source>CTRL+T</source>
         <translation>CTRL+T</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="275"/>
+        <location filename="../FotoWall.cpp" line="280"/>
         <source>Clear title</source>
         <translation>Supprimer le titre</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="286"/>
+        <location filename="../FotoWall.cpp" line="291"/>
         <source>Introduction</source>
         <translation>Introduction</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="290"/>
+        <location filename="../FotoWall.cpp" line="295"/>
         <source>Tutorial Video</source>
         <translation>Tutoriel Vidéo</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="304"/>
+        <location filename="../FotoWall.cpp" line="309"/>
         <source>Select all</source>
         <translation>Sélectionner tout</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="305"/>
+        <location filename="../FotoWall.cpp" line="310"/>
         <source>CTRL+A</source>
         <translation>CTRL+A</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="341"/>
+        <location filename="../FotoWall.cpp" line="346"/>
         <source>export</source>
         <translation>exporter</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="353"/>
-        <location filename="../FotoWall.cpp" line="364"/>
-        <location filename="../FotoWall.cpp" line="395"/>
+        <location filename="../FotoWall.cpp" line="358"/>
+        <location filename="../FotoWall.cpp" line="369"/>
+        <location filename="../FotoWall.cpp" line="400"/>
         <source>print</source>
         <translation>imprimer</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="448"/>
-        <location filename="../FotoWall.cpp" line="454"/>
+        <location filename="../FotoWall.cpp" line="459"/>
+        <location filename="../FotoWall.cpp" line="465"/>
         <source>Select FotoWall file</source>
         <translation>Sélectionnez un fichier FotoWall</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="448"/>
+        <location filename="../FotoWall.cpp" line="459"/>
         <source>FotoWall (*.fotowall)</source>
         <translation>FotoWall (*.fotowall)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="552"/>
+        <location filename="../FotoWall.cpp" line="563"/>
         <source>Support (%1)</source>
         <translation>Supporte (%1)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="529"/>
+        <location filename="../FotoWall.cpp" line="540"/>
         <source>Opening the Web Tutorial</source>
         <translation>Ouverture du tutoriel Internet</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="529"/>
+        <location filename="../FotoWall.cpp" line="540"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 Do you want to open the web page?</source>
         <translation>Le tutoriel est fourni sur Fosswire par Peter Upfold.
 Voulez vous ouvrir la page Web ?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="512"/>
+        <location filename="../FotoWall.cpp" line="523"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="512"/>
+        <location filename="../FotoWall.cpp" line="523"/>
         <source>Insert the title</source>
         <translation>Insérez le titre</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
-        <source>add pictures</source>
-        <translation>Ajouter des images</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
         <source>FotoWall</source>
         <translation>FotoWall</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>add picture</source>
-        <translation>ajouter une image</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>add text</source>
-        <translation>ajouter du texte</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>add mirror</source>
-        <translation>ajouter un miroir</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
@@ -672,9 +667,54 @@ Voulez vous ouvrir la page Web ?</translation>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="243"/>
+        <location filename="../FotoWall.cpp" line="248"/>
         <source>Gradient</source>
         <translation>Dégradé</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Arrange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Add Picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Add Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>T</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Add Video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Add Flickr</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>F</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -903,6 +943,24 @@ p, li { white-space: pre-wrap; }
         <location filename="../items/VideoContent.cpp" line="43"/>
         <source>Still picture</source>
         <translation>Image imobile</translation>
+    </message>
+</context>
+<context>
+    <name>WebContentSelectorItem</name>
+    <message>
+        <location filename="../items/WebContentSelectorItem.ui"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/WebContentSelectorItem.ui"/>
+        <source>search...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/WebContentSelectorItem.ui"/>
+        <source>Subject:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
