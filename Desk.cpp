@@ -435,24 +435,25 @@ void Desk::fromXml(QDomElement & de)
     b = domElement.firstChildElement("blue").text().toInt();
     m_foreColorPicker->setColor(QColor(r, g, b));
 
-    AbstractContent *backContent = 0;
-    // Load the background picture, if it exists
-    domElement = de.firstChildElement("picture");
-    if(!domElement.isNull()) {
-        backContent = createPicture(QPoint());
-    } else { // load the text background, if it exists
-        domElement = de.firstChildElement("text");
-        if(!domElement.isNull()) {
-            backContent = createText(QPoint());
-        }
-    }
-    if (backContent->fromXml(domElement)) {
-        m_backContent = backContent;
-        m_backCache = QPixmap();
-    } else {
-        m_content.removeAll(backContent);
-        delete backContent;
-    }
+   AbstractContent *backContent = 0;
+   // Load the background picture, if it exists
+   domElement = de.firstChildElement("picture");
+   if(!domElement.isNull()) {
+       backContent = createPicture(QPoint());
+   } else { // load the text background, if it exists
+       domElement = de.firstChildElement("text");
+       if(!domElement.isNull()) {
+           backContent = createText(QPoint());
+       }
+   }
+   if (backContent != 0 && backContent->fromXml(domElement)) {
+       m_backContent = backContent;
+       m_backCache = QPixmap();
+   } else {
+       m_backContent = 0;
+       m_content.removeAll(backContent);
+       delete backContent;
+   }
     update();
 }
 
