@@ -22,7 +22,7 @@
 #define MIRROR_HEIGHT 100
 
 MirrorItem::MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent)
-    : QGraphicsItem(parent)
+    : AbstractDisposeable(parent)
     , m_source(sourceItem)
     , m_dirty(false)
 {
@@ -39,7 +39,12 @@ MirrorItem::MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent)
 MirrorItem::~MirrorItem()
 {
 }
-
+/*
+void MirrorItem::dispose()
+{
+    deleteLater();
+}
+*/
 QRectF MirrorItem::boundingRect() const
 {
     return m_boundingRect;

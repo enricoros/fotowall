@@ -8,6 +8,7 @@ DEPENDPATH += $$PWD
 # HEADERS += BrowserItem.h
 # SOURCES += BrowserItem.cpp
 HEADERS += AbstractContent.h \
+    AbstractDisposeable.h \
     AbstractProperties.h \
     ButtonItem.h \
     ColorPickerItem.h \
@@ -23,6 +24,7 @@ HEADERS += AbstractContent.h \
     CornerItem.h \
     WebContentSelectorItem.h
 SOURCES += AbstractContent.cpp \
+    AbstractDisposeable.cpp \
     AbstractProperties.cpp \
     ButtonItem.cpp \
     ColorPickerItem.cpp \

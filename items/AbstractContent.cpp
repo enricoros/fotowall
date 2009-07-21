@@ -30,7 +30,7 @@
 #include <math.h>
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noRescale)
-    : QGraphicsItem(parent)
+    : AbstractDisposeable(parent, true)
     , m_contentsRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)
@@ -102,6 +102,27 @@ AbstractContent::~AbstractContent()
     delete m_mirrorItem;
     delete m_frameTextItem;
     delete m_frame;
+}
+
+void AbstractContent::dispose()
+{
+    // stick this item
+    setFlags((GraphicsItemFlags)0x00);
+
+    // fade out mirror too
+    setMirrorEnabled(false);
+
+    // little rotate animation
+#if QT_VERSION >= 0x040600
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "zRotation");
+    ani->setEasingCurve(QEasingCurve::InQuad);
+    ani->setDuration(300);
+    ani->setEndValue(-30.0);
+    ani->start(QPropertyAnimation::DeleteWhenStopped);
+#endif
+
+    // standard disposition
+    AbstractDisposeable::dispose();
 }
 
 QRect AbstractContent::contentsRect() const
@@ -260,7 +281,7 @@ double AbstractContent::rotation(Qt::Axis axis) const
 void AbstractContent::setMirrorEnabled(bool enabled)
 {
     if (m_mirrorItem && !enabled) {
-        m_mirrorItem->deleteLater();
+        m_mirrorItem->dispose();
         m_mirrorItem = 0;
     }
     if (enabled && !m_mirrorItem) {

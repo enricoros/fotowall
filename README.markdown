@@ -83,11 +83,13 @@ I hope to expand the program as soon as I can, since there is many room for impr
 * restore the common behavior for rotating (left click)
 * add the undo support
 * link the download to blogs and fix links everywhere
-* check for updates
+* check for updates + add a link to the website
+* update the video tutorial
 * display on-screen selection for pictures
 * perform rectangular image composition based on an input picture (color, pattern)
 * perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
-* add the "color changing stuff" to the picture themselves [Contrast, Superstoned]
+* add the "color changing stuff" to the picture themselves [Contrast, Superstoned
+* BUG: when loading a .fotowall file from the command line some items are aligned to the left
 
 Enrico:
 

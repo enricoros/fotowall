@@ -12,37 +12,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MirrorItem_h__
-#define __MirrorItem_h__
-
 #include "AbstractDisposeable.h"
 
-/**
-    \brief Mirrors a transformed PictureContent
-*/
-class MirrorItem : public AbstractDisposeable
-{
-    Q_OBJECT
-    public:
-        MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent = 0);
-        ~MirrorItem();
-
-        // ::AbstractDisposeable
-        //void dispose();
-
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-
-    public Q_SLOTS:
-        void sourceMoved();
-        void sourceChanged();
-
-    private:
-        QGraphicsItem * m_source;
-        QRectF m_boundingRect;
-        QPixmap m_pixmap;
-        bool m_dirty;
-};
-
+AbstractDisposeable::AbstractDisposeable(QGraphicsItem * parent, bool fadeIn)
+#if QT_VERSION >= 0x040600
+    : QGraphicsObject(parent)
+#else
+    : QGraphicsItem(parent)
 #endif
+{
+    if (fadeIn) {
+#if QT_VERSION >= 0x040600
+        // fade in animation
+        QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
+        ani->setEasingCurve(QEasingCurve::OutCubic);
+        ani->setDuration(300);
+        ani->setStartValue(0.0);
+        ani->setEndValue(1.0);
+        ani->start(QPropertyAnimation::DeleteWhenStopped);
+#endif
+        show();
+    }
+}
+
+void AbstractDisposeable::dispose()
+{
+#if QT_VERSION >= 0x040600
+    // fade out animation
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
+    connect(ani, SIGNAL(finished()), this, SLOT(deleteLater()));
+    ani->setEasingCurve(QEasingCurve::OutCubic);
+    ani->setDuration(300);
+    ani->setEndValue(0.0);
+    ani->start(QPropertyAnimation::DeleteWhenStopped);
+#else
+    // delete this now
+    deleteLater();
+#endif
+}

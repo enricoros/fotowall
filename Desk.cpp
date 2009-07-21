@@ -914,19 +914,18 @@ void Desk::slotDeleteContent()
         // remove property if deleting its content
         QList<AbstractProperties *>::iterator pIt = m_properties.begin();
         while (pIt != m_properties.end()) {
-            AbstractProperties * pp = *pIt;
-            if (pp->content() == content) {
+            AbstractProperties * properties = *pIt;
+            if (properties->content() == content) {
                 pIt = m_properties.erase(pIt);
-                removeItem(pp);
-                pp->deleteLater();
+                removeItem(properties);
+                properties->deleteLater();
             } else
                 ++pIt;
         }
 
         // unlink content from lists, myself(the Scene) and memory
         m_content.removeAll(content);
-        removeItem(content);
-        content->deleteLater();
+        content->dispose();
     }
 }
 
@@ -938,7 +937,6 @@ void Desk::slotDeleteProperties()
 
     // unlink picture properties from lists, myself(the Scene) and memory
     m_properties.removeAll(properties);
-    removeItem(properties);
     properties->deleteLater();
 }
 

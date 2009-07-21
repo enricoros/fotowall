@@ -42,11 +42,7 @@ static QString translatedIntro(const QString & extension)
 }
 
 HelpItem::HelpItem(QGraphicsItem * parent)
-#if QT_VERSION >= 0x040600
-    : QGraphicsObject(parent)
-#else
-    : QGraphicsItem(parent)
-#endif
+    : AbstractDisposeable(parent, true)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
 {
 #if defined(USE_QTWEBKIT)
@@ -67,38 +63,11 @@ HelpItem::HelpItem(QGraphicsItem * parent)
     ti->setHtml(htmlFile.readAll());
     ti->setTextInteractionFlags(Qt::NoTextInteraction);
 #endif
-
-#if QT_VERSION >= 0x040600
-    // fade in animation
-    QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
-    ani->setEasingCurve(QEasingCurve::OutCubic);
-    ani->setDuration(1800);
-    ani->setStartValue(0.0);
-    ani->setEndValue(1.0);
-    ani->start(QPropertyAnimation::DeleteWhenStopped);
-#endif
-
-    show();
 }
 
 HelpItem::~HelpItem()
 {
     delete m_frame;
-}
-
-void HelpItem::dispose()
-{
-#if QT_VERSION >= 0x040600
-    // fade out animation
-    QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
-    ani->setEasingCurve(QEasingCurve::OutCubic);
-    ani->setDuration(1800);
-    ani->setEndValue(0.0);
-    ani->start(QPropertyAnimation::DeleteWhenStopped);
-    connect(ani, SIGNAL(finished()), this, SLOT(deleteLater()));
-#else
-    deleteLater();
-#endif
 }
 
 QRectF HelpItem::boundingRect() const

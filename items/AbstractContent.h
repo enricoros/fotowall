@@ -15,8 +15,7 @@
 #ifndef __AbstractContent_h__
 #define __AbstractContent_h__
 
-#include <QGraphicsItem>
-#include <QObject>
+#include "AbstractDisposeable.h"
 #include <QDomElement>
 #include "3rdparty/enricomath.h"
 class AbstractProperties;
@@ -29,12 +28,16 @@ class QPointF;
 
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
-class AbstractContent : public QObject, public QGraphicsItem
+class AbstractContent : public AbstractDisposeable
 {
     Q_OBJECT
+    Q_PROPERTY(qreal zRotation READ zRotation WRITE setZRotation)
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
         virtual ~AbstractContent();
+
+        // ::AbstractDisposeable
+        void dispose();
 
         // size
         QRect contentsRect() const;
