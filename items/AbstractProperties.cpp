@@ -18,6 +18,7 @@
 #include "ui_AbstractProperties.h"
 #include "frames/FrameFactory.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QFileDialog>
 #include <QListWidgetItem>
 #include <QPainter>
 #include <QPixmapCache>
@@ -156,18 +157,7 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
 #endif
     m_commonUi->setupUi(widget);
 
-    // add frame items to the listview
-    foreach (quint32 frameClass, FrameFactory::classes()) {
-        // make icon from frame preview
-        Frame * frame = FrameFactory::createFrame(frameClass);
-        QIcon icon(frame->preview(48, 48));
-        delete frame;
-
-        // add the item to the list (and attach it the class)
-        QListWidgetItem * item = new QListWidgetItem(icon, QString(), m_commonUi->listWidget);
-        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        item->setData(Qt::UserRole, frameClass);
-    }
+    populateFrameList();
 
     // select the frame
     quint32 frameClass = m_content->frameClass();
@@ -193,6 +183,7 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
     connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(deleteItem()), Qt::QueuedConnection);
     // autoconnection doesn't work because we don't do ->setupUi(this), so here we connect manually
     connect(m_commonUi->applyLooks, SIGNAL(clicked()), this, SLOT(on_applyLooks_clicked()));
+    connect(m_commonUi->newFrame, SIGNAL(clicked()), this, SLOT(on_newFrame_clicked()));
     connect(m_commonUi->listWidget, SIGNAL(itemSelectionChanged()), this, SLOT(on_listWidget_itemSelectionChanged()));
     connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(on_reflection_toggled(bool)));
 
@@ -216,6 +207,22 @@ AbstractContent * AbstractProperties::content() const
     return m_content;
 }
 
+void AbstractProperties::populateFrameList()
+{
+    m_commonUi->listWidget->clear();
+    // add frame items to the listview
+    foreach (quint32 frameClass, FrameFactory::classes()) {
+        // make icon from frame preview
+        Frame * frame = FrameFactory::createFrame(frameClass);
+        QIcon icon(frame->preview(48, 48));
+        delete frame;
+
+        // add the item to the list (and attach it the class)
+        QListWidgetItem * item = new QListWidgetItem(icon, QString(), m_commonUi->listWidget);
+        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        item->setData(Qt::UserRole, frameClass);
+    }
+}
 void AbstractProperties::keepInBoundaries(const QRect & rect)
 {
     QRect r = mapToScene(boundingRect()).boundingRect().toRect();
@@ -324,6 +331,16 @@ void AbstractProperties::addTab(QWidget * widget, const QString & label, bool fr
     // adjust size after inserting the tab
     if (m_commonUi->tab->parentWidget())
         m_commonUi->tab->parentWidget()->adjustSize();
+}
+
+void AbstractProperties::on_newFrame_clicked()
+{
+    QStringList framesPath = QFileDialog::getOpenFileNames(0, tr("Choose frame images"), QString(), tr("Images (*.svg)"));
+    if (!framesPath.isEmpty())
+    foreach (QString frame, framesPath) {
+        FrameFactory::addSvgFrame(frame);
+    }
+    populateFrameList();
 }
 
 void AbstractProperties::on_applyLooks_clicked()

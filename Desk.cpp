@@ -330,6 +330,133 @@ void Desk::setProjectMode(Mode mode)
     }
 }
 
+void Desk::toXml(QDomElement & de) const
+{
+    QDomDocument doc = de.ownerDocument();
+    // Save Title
+    QDomElement titleElement = doc.createElement("title");
+    de.appendChild(titleElement);
+    QDomText titleText = doc.createTextNode(m_titleText);
+    titleElement.appendChild(titleText);
+
+    // Save background colors
+    QColor color;
+    QString r, g, b;
+    QDomElement domElement, topColor, bottomColor,
+                redElement = doc.createElement("red"),
+                greenElement = doc.createElement("green"),
+                blueElement = doc.createElement("blue"),
+                redElement2 = doc.createElement("red"),
+                greenElement2 = doc.createElement("green"),
+                blueElement2 = doc.createElement("blue"),
+                rElement = doc.createElement("red"),
+                gElement = doc.createElement("green"),
+                bElement = doc.createElement("blue"),
+                rElement2 = doc.createElement("red"),
+                gElement2 = doc.createElement("green"),
+                bElement2 = doc.createElement("blue");
+    domElement = doc.createElement("background-color");
+
+    topColor = doc.createElement("top");
+    color = m_grad1ColorPicker->color();
+    r.setNum(color.red()); g.setNum(color.green()); b.setNum(color.blue());
+    redElement.appendChild(doc.createTextNode(r));
+    greenElement.appendChild(doc.createTextNode(g));
+    blueElement.appendChild(doc.createTextNode(b));
+    topColor.appendChild(redElement); topColor.appendChild(greenElement); topColor.appendChild(blueElement);
+    domElement.appendChild(topColor);
+
+    bottomColor = doc.createElement("bottom");
+    color = m_grad2ColorPicker->color();
+    r.setNum(color.red()); g.setNum(color.green()); b.setNum(color.blue());
+    redElement2.appendChild(doc.createTextNode(r));
+    greenElement2.appendChild(doc.createTextNode(g));
+    blueElement2.appendChild(doc.createTextNode(b));
+    bottomColor.appendChild(redElement2); bottomColor.appendChild(greenElement2); bottomColor.appendChild(blueElement2);
+    domElement.appendChild(bottomColor);
+
+    de.appendChild(domElement);
+
+    QDomElement titleColor = doc.createElement("title-color");
+    color = m_titleColorPicker->color();
+    r.setNum(color.red()); g.setNum(color.green()); b.setNum(color.blue());
+    rElement.appendChild(doc.createTextNode(r));
+    gElement.appendChild(doc.createTextNode(g));
+    bElement.appendChild(doc.createTextNode(b));
+    titleColor.appendChild(rElement); titleColor.appendChild(gElement); titleColor.appendChild(bElement);
+    de.appendChild(titleColor);
+
+    QDomElement foreColor = doc.createElement("foreground-color");
+    color = m_foreColorPicker->color();
+    r.setNum(color.red()); g.setNum(color.green()); b.setNum(color.blue());
+    rElement2.appendChild(doc.createTextNode(r));
+    gElement2.appendChild(doc.createTextNode(g));
+    bElement2.appendChild(doc.createTextNode(b));
+    foreColor.appendChild(rElement2); foreColor.appendChild(gElement2); foreColor.appendChild(bElement2);
+    de.appendChild(foreColor);
+
+    // Save the background image
+    if(m_backContent) {
+        QDomElement element = doc.createElement("background-content");
+        de.appendChild(element);
+        m_backContent->toXml(element);
+    }
+}
+
+
+void Desk::fromXml(QDomElement & de)
+{
+    setTitleText(de.firstChildElement("title").text());
+
+    QDomElement domElement;
+    int r, g, b;
+    // Load image size saved in the rect node
+    domElement = de.firstChildElement("background-color").firstChildElement("top");
+    r = domElement.firstChildElement("red").text().toInt();
+    g = domElement.firstChildElement("green").text().toInt();
+    b = domElement.firstChildElement("blue").text().toInt();
+    m_grad1ColorPicker->setColor(QColor(r, g, b));
+
+    domElement = de.firstChildElement("background-color").firstChildElement("bottom");
+    r = domElement.firstChildElement("red").text().toInt();
+    g = domElement.firstChildElement("green").text().toInt();
+    b = domElement.firstChildElement("blue").text().toInt();
+    m_grad2ColorPicker->setColor(QColor(r, g, b));
+
+    domElement = de.firstChildElement("title-color");
+    r = domElement.firstChildElement("red").text().toInt();
+    g = domElement.firstChildElement("green").text().toInt();
+    b = domElement.firstChildElement("blue").text().toInt();
+    m_titleColorPicker->setColor(QColor(r, g, b));
+
+    domElement = de.firstChildElement("foreground-color");
+    r = domElement.firstChildElement("red").text().toInt();
+    g = domElement.firstChildElement("green").text().toInt();
+    b = domElement.firstChildElement("blue").text().toInt();
+    m_foreColorPicker->setColor(QColor(r, g, b));
+
+   AbstractContent *backContent = 0;
+   // Load the background picture, if it exists
+   domElement = de.firstChildElement("picture");
+   if(!domElement.isNull()) {
+       backContent = createPicture(QPoint());
+   } else { // load the text background, if it exists
+       domElement = de.firstChildElement("text");
+       if(!domElement.isNull()) {
+           backContent = createText(QPoint());
+       }
+   }
+   if (backContent != 0 && backContent->fromXml(domElement)) {
+       m_backContent = backContent;
+       m_backCache = QPixmap();
+   } else {
+       m_backContent = 0;
+       m_content.removeAll(backContent);
+       delete backContent;
+   }
+    update();
+}
+
 void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode)
 {
     clearSelection();

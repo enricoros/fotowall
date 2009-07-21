@@ -200,6 +200,11 @@ void FotoWall::showIntroduction()
     m_desk->showIntroduction();
 }
 
+void FotoWall::loadImages(QStringList &imagesPath)
+{
+    m_desk->addPictures(imagesPath);
+}
+
 QMenu * FotoWall::createArrangeMenu()
 {
     QMenu * menu = new QMenu();
@@ -429,8 +434,9 @@ void FotoWall::on_aAddPicture_triggered()
 {
     // build the extensions list
     QString extensions;
-    foreach (const QByteArray & format, QImageReader::supportedImageFormats())
-        extensions += "*." + format + " ";
+    foreach (const QByteArray & format, QImageReader::supportedImageFormats()) {
+        extensions += "*." + format + " *." + format.toUpper() + " ";
+    }
 
     // show the files dialog
     QStringList fileNames = QFileDialog::getOpenFileNames(ui->centralWidget, tr("Select one or more pictures to add"), QString(), tr("Images (%1)").arg(extensions));

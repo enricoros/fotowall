@@ -64,10 +64,16 @@ int main( int argc, char ** args )
 
     FotoWall fw;
     fw.showMaximized();
-    if(argc >0) {
-        QString filePath = args[1];
-        fw.loadXml(filePath);
+    QStringList images;
+    for(int i=0; i<argc; i++) {
+        QString filePath = args[i];
+        if (filePath.endsWith(".fotowall", Qt::CaseInsensitive))
+            fw.loadXml(filePath);
+        else
+            images << filePath;
     }
+    fw.loadImages(images);
+
     if (RenderOpts::FirstRun)
         fw.showIntroduction();
 
