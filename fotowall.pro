@@ -1,6 +1,7 @@
 # Project Options
 TEMPLATE = app
 TARGET = fotowall
+INCLUDEPATH += .
 DEPENDPATH += .
 MOC_DIR = .build
 OBJECTS_DIR = .build

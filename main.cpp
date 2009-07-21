@@ -45,7 +45,7 @@ int main( int argc, char ** args )
 
     QApplication app(argc, args);
     app.setApplicationName("FotoWall");
-    app.setApplicationVersion("0.6");
+    app.setApplicationVersion("0.7.0");
     app.setOrganizationName("Enrico Ros");
 
     // translate fotowall + default-qt messages

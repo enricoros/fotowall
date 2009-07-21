@@ -1007,7 +1007,7 @@ void Desk::slotGradColorChanged()
 
 void Desk::slotCloseIntroduction()
 {
-    m_helpItem->deleteLater();
+    m_helpItem->dispose();
     m_helpItem = 0;
     foreach (HighlightItem * highlight, m_highlightItems)
         highlight->deleteAfterAnimation();

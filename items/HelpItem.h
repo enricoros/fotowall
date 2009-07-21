@@ -16,15 +16,25 @@
 #define __HelpItem_h__
 
 #include <QObject>
+#if QT_VERSION >= 0x040600
+#include <QGraphicsObject>
+#else
 #include <QGraphicsItem>
+#endif
 class Frame;
 
+#if QT_VERSION >= 0x040600
+class HelpItem : public QGraphicsObject
+#else
 class HelpItem : public QObject, public QGraphicsItem
+#endif
 {
     Q_OBJECT
     public:
         HelpItem(QGraphicsItem * parent = 0);
         ~HelpItem();
+
+        void dispose();
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
