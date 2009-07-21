@@ -80,6 +80,10 @@ I hope to expand the program as soon as I can, since there is many room for impr
 
 ### Current Wishlist
 
+* restore the common behavior for rotating (left click)
+* add the undo support
+* link the download to blogs and fix links everywhere
+* check for updates
 * display on-screen selection for pictures
 * perform rectangular image composition based on an input picture (color, pattern)
 * perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
