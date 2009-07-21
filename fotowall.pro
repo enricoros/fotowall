@@ -19,6 +19,7 @@ HEADERS += 3rdparty/gsuggest.h \
     Desk.h \
     ExactSizeDialog.h \
     ExportWizard.h \
+    FlickrInterface.h \
     FotoWall.h \
     GlowEffectDialog.h \
     GlowEffectWidget.h \
@@ -32,6 +33,7 @@ SOURCES += 3rdparty/gsuggest.cpp \
     Desk.cpp \
     ExactSizeDialog.cpp \
     ExportWizard.cpp \
+    FlickrInterface.cpp \
     FotoWall.cpp \
     GlowEffectDialog.cpp \
     GlowEffectWidget.cpp \

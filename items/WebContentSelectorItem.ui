@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>308</width>
-    <height>240</height>
+    <width>468</width>
+    <height>253</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
     <widget class="QListWidget" name="listWidget">
      <property name="minimumSize">
       <size>
-       <width>300</width>
+       <width>450</width>
        <height>200</height>
       </size>
      </property>
@@ -42,19 +42,22 @@
       <bool>true</bool>
      </property>
      <property name="dragDropMode">
-      <enum>QAbstractItemView::DragDrop</enum>
+      <enum>QAbstractItemView::NoDragDrop</enum>
      </property>
      <property name="iconSize">
       <size>
-       <width>48</width>
-       <height>48</height>
+       <width>100</width>
+       <height>75</height>
       </size>
      </property>
      <property name="verticalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
-     <property name="resizeMode">
-      <enum>QListView::Adjust</enum>
+     <property name="gridSize">
+      <size>
+       <width>105</width>
+       <height>80</height>
+      </size>
      </property>
      <property name="viewMode">
       <enum>QListView::IconMode</enum>

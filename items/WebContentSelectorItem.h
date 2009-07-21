@@ -16,8 +16,10 @@
 #define __WebContentSelectorItem_h__
 
 #include <QGraphicsWidget>
+class FlickrInterface;
 class Frame;
 class GSuggestCompletion;
+class QLabel;
 class Ui_WebContentSelectorItem;
 
 class WebContentSelectorItem : public QGraphicsWidget
@@ -32,11 +34,17 @@ class WebContentSelectorItem : public QGraphicsWidget
 
     private:
         Frame * m_frame;
+        FlickrInterface * m_flickr;
         GSuggestCompletion * m_completion;
         Ui_WebContentSelectorItem * m_ui;
+        QLabel * m_searchSymbol;
 
     private Q_SLOTS:
         void doSearch();
+        void slotSearchBegun();
+        void slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h);
+        void slotSearchThumbnail(int idx, const QPixmap & thumbnail);
+        void slotSearchEnded();
 };
 
 #endif
