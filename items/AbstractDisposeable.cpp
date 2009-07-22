@@ -38,7 +38,7 @@ AbstractDisposeable::AbstractDisposeable(QGraphicsItem * parent, bool fadeIn)
 void AbstractDisposeable::dispose()
 {
 #if QT_VERSION >= 0x040600
-    // fade out animation
+    // fade out animation, then delete
     QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
     connect(ani, SIGNAL(finished()), this, SLOT(deleteLater()));
     ani->setEasingCurve(QEasingCurve::OutCubic);

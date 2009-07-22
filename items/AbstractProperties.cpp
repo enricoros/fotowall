@@ -28,6 +28,10 @@
 #include <QWidget>
 #include <QSettings>
 
+#if QT_VERSION >= 0x040600
+#include <QPropertyAnimation>
+#endif
+
 //BEGIN PixmapButton
 class PixmapButton : public QGraphicsItem
 {
@@ -188,6 +192,17 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
     setWidget(widget);
     static qreal s_propZBase = 99999;
     setZValue(s_propZBase++);
+
+#if QT_VERSION >= 0x040600
+    // fade in animation
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
+    ani->setEasingCurve(QEasingCurve::OutCubic);
+    ani->setDuration(500);
+    ani->setStartValue(0.0);
+    ani->setEndValue(1.0);
+    ani->start(QPropertyAnimation::DeleteWhenStopped);
+#endif
+
 }
 
 AbstractProperties::~AbstractProperties()
@@ -200,7 +215,19 @@ void AbstractProperties::dispose()
 {
     // inform subclasses about the closure
     closing();
+
+#if QT_VERSION >= 0x040600
+    // fade out animation, then delete
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
+    connect(ani, SIGNAL(finished()), this, SLOT(deleteLater()));
+    ani->setEasingCurve(QEasingCurve::OutCubic);
+    ani->setDuration(300);
+    ani->setEndValue(0.0);
+    ani->start(QPropertyAnimation::DeleteWhenStopped);
+#else
+    // delete this now
     deleteLater();
+#endif
 }
 
 AbstractContent * AbstractProperties::content() const
