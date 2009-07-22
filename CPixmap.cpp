@@ -29,6 +29,9 @@ CPixmap::CPixmap() {
 CPixmap::CPixmap(const QString &fileName) : QPixmap(fileName), m_filePath(fileName) {
 }
 
+CPixmap::CPixmap(const QImage &image) : QPixmap(QPixmap::fromImage(image)), m_image(image) {
+}
+
 CPixmap::CPixmap(const QPixmap &pixmap): QPixmap(pixmap){
 }
 
@@ -65,12 +68,13 @@ QList<CEffect> CPixmap::effects() const {
     return m_effects;
 }
 
-void CPixmap::clearEffects() {
-    //Reload the image to remove the effects
-    if( !m_filePath.isEmpty() ) {
+void CPixmap::clearEffects()
+{
+    if (!m_image.isNull())
+        updateImage(m_image);
+    else if (!m_filePath.isEmpty())
         load(m_filePath);
-        m_effects.clear();
-    }
+    m_effects.clear();
 }
 
 void CPixmap::toNVG() {
@@ -184,10 +188,13 @@ void CPixmap::toLuminosity(int value) {
     updateImage(dest);
 }
 */
-void CPixmap::updateImage(QImage &newImage) {
+void CPixmap::updateImage(QImage &newImage)
+{
+    QImage copyImage = m_image;
     QString copyFilePath = m_filePath;
     QList<CEffect> copyEffects = m_effects;
     *this = fromImage(newImage);
+    m_image = copyImage;
     m_filePath = copyFilePath;
     m_effects = copyEffects;
 }

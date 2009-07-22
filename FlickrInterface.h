@@ -16,10 +16,11 @@
 #define __FlickrInterface_h__
 
 #include <QObject>
-#include <QPixmap>
-#include <QNetworkAccessManager>
+#include <QMap>
 #include <QList>
+#include <QNetworkAccessManager>
 #include <QPair>
+#include <QPixmap>
 #include <QUrl>
 namespace Internal {
     struct Photo;
@@ -34,6 +35,12 @@ class FlickrInterface : public QObject
 
         void searchPics(const QString & text);
         void dropSearch();
+
+        bool imageInfo(int idx, QString * title, int * width, int * height);
+
+        QNetworkReply * download(int idx);
+        void startPrefetch(int idx);
+        void stopPrefetch(int idx);
 
     Q_SIGNALS:
         void searchStarted();
@@ -58,6 +65,7 @@ class FlickrInterface : public QObject
         QNetworkAccessManager * m_nam;
         QNetworkReply * m_searchJob;
         QList<Internal::Photo *> m_searchResults;
+        QMap<int, QNetworkReply *> m_prefetches;
 };
 
 #endif

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>468</width>
-    <height>253</height>
+    <height>303</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,11 +22,11 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="4">
-    <widget class="QListWidget" name="listWidget">
+    <widget class="MyListWidget" name="listWidget">
      <property name="minimumSize">
       <size>
        <width>450</width>
-       <height>200</height>
+       <height>250</height>
       </size>
      </property>
      <property name="horizontalScrollBarPolicy">
@@ -42,7 +42,10 @@
       <bool>true</bool>
      </property>
      <property name="dragDropMode">
-      <enum>QAbstractItemView::NoDragDrop</enum>
+      <enum>QAbstractItemView::DragDrop</enum>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
      <property name="iconSize">
       <size>
@@ -79,6 +82,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyListWidget</class>
+   <extends>QListWidget</extends>
+   <header>QListWidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

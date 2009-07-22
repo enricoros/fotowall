@@ -19,7 +19,6 @@
 #include "RenderOpts.h"
 #include <QFileInfo>
 #include <QGraphicsScene>
-#include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
 #include <QPainter>
 #include <QUrl>

@@ -39,6 +39,7 @@ class CPixmap : public QPixmap {
 public:
    CPixmap();
    CPixmap(const QString &fileName);
+   CPixmap(const QImage &image);
 
    // effects
    void addEffect(const CEffect & effect);
@@ -61,6 +62,7 @@ private:
     CPixmap(const QPixmap &pixmap);
     void updateImage(QImage &newImage);
 
+    QImage m_image;
     QString m_filePath;
     // Ordered list of currently applied effects
     QList<CEffect> m_effects;

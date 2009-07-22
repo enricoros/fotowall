@@ -23,6 +23,7 @@
 #include "items/TextProperties.h"
 #include "items/VideoContent.h"
 #include "items/WebContentSelectorItem.h"
+#include "FlickrInterface.h"
 #include "RenderOpts.h"
 #include <QAbstractTextDocumentLayout>
 #include <QFile>
@@ -531,23 +532,33 @@ void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     event->ignore();
 
     // skip bad mimes
-    if (!event->mimeData() || !event->mimeData()->hasUrls())
+    if (!event->mimeData())
         return;
 
-    // get supported images extensions
-    QStringList extensions;
-    foreach (const QByteArray & format, QImageReader::supportedImageFormats())
-        extensions.append( "." + format );
+    // check files drop
+    if (event->mimeData()->hasUrls()) {
 
-    // match each image file with urls
-    foreach (const QUrl & url, event->mimeData()->urls()) {
-        QString localFile = url.toLocalFile();
-        foreach (const QString & extension, extensions) {
-            if (localFile.endsWith(extension, Qt::CaseInsensitive)) {
-                event->accept();
-                return;
+        // get supported images extensions
+        QStringList extensions;
+        foreach (const QByteArray & format, QImageReader::supportedImageFormats())
+            extensions.append( "." + format );
+
+        // match each image file with urls
+        foreach (const QUrl & url, event->mimeData()->urls()) {
+            QString localFile = url.toLocalFile();
+            foreach (const QString & extension, extensions) {
+                if (localFile.endsWith(extension, Qt::CaseInsensitive)) {
+                    event->accept();
+                    return;
+                }
             }
         }
+    }
+
+    // check content drop
+    if (event->mimeData()->hasFormat("webselector/idx")) {
+        event->accept();
+        return;
     }
 }
 
@@ -557,7 +568,7 @@ void Desk::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
     event->ignore();
     QGraphicsScene::dragMoveEvent(event);
 
-    // or accept event for the Desk
+    // or continue accepting event for the Desk
     if (!event->isAccepted()) {
         event->setDropAction(Qt::CopyAction);
         event->accept();
@@ -566,27 +577,67 @@ void Desk::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 
 void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
-    // dispatch to children
+    // handle by children
     event->ignore();
     QGraphicsScene::dropEvent(event);
     if (event->isAccepted())
         return;
 
-    // or handle as a Desk drop event
-    event->accept();
-    QPoint pos = event->scenePos().toPoint();
-    foreach (const QUrl & url, event->mimeData()->urls()) {
-        QString localFile = url.toLocalFile();
-        if (!QFile::exists(localFile))
-            continue;
+    // handle as a Desk file drop event
+    if (event->mimeData()->hasUrls()) {
+        event->accept();
+        QPoint pos = event->scenePos().toPoint();
+        foreach (const QUrl & url, event->mimeData()->urls()) {
+            QString localFile = url.toLocalFile();
+            if (!QFile::exists(localFile))
+                continue;
 
-        // create PictureContent from file
-        PictureContent * p = createPicture(pos);
-        if (!p->loadPhoto(localFile, true, true)) {
-            m_content.removeAll(p);
-            delete p;
-        } else
-            pos += QPoint(30, 30);
+            // create PictureContent from file
+            PictureContent * p = createPicture(pos);
+            if (!p->loadPhoto(localFile, true, true)) {
+                m_content.removeAll(p);
+                delete p;
+            } else
+                pos += QPoint(30, 30);
+        }
+        return;
+    }
+
+    // handle as a Desk content drop event
+    if (event->mimeData()->hasFormat("webselector/idx") && m_webContentSelector) {
+
+        // get the flickr interface
+        FlickrInterface * flickr = m_webContentSelector->flickrInterface();
+        if (!flickr)
+            return;
+
+        // download each picture
+        QPoint insertPos = event->scenePos().toPoint();
+        QStringList sIndexes = QString(event->mimeData()->data("webselector/idx")).split(",");
+        foreach (const QString & sIndex, sIndexes) {
+            int index = sIndex.toUInt();
+
+            // get picture description
+            QString title;
+            int width = 0;
+            int height = 0;
+            if (!flickr->imageInfo(index, &title, &width, &height))
+                continue;
+
+            // get the download
+            QNetworkReply * reply = flickr->download(index);
+            if (!reply)
+                continue;
+
+            // create PictureContent from network
+            PictureContent * p = createPicture(insertPos);
+            if (!p->loadFromNetwork(reply, title, width, height)) {
+                m_content.removeAll(p);
+                delete p;
+            } else
+                insertPos += QPoint(30, 30);
+        }
+        event->accept();
     }
 }
 

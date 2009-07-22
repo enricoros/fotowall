@@ -17,13 +17,68 @@
 #include "frames/FrameFactory.h"
 #include "frames/Frame.h"
 #include "3rdparty/gsuggest.h"
-#include "ui_WebContentSelectorItem.h"
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QGraphicsLinearLayout>
 #include <QLabel>
 #include <QListWidget>
 #include <QPainter>
+
+class MyListWidget : public QListWidget
+{
+    public:
+        MyListWidget(QWidget * parent)
+          : QListWidget(parent)
+          , m_flickr(0)
+        {
+        }
+
+        void setFlickrInterface(FlickrInterface * interface)
+        {
+            m_flickr = interface;
+        }
+
+        void startDrag(Qt::DropActions supportedDropActions)
+        {
+            QList<QListWidgetItem *> items = selectedItems();
+            int count = items.size();
+            if (count < 1 || !m_flickr)
+                return;
+
+            // make the drag pixmap and the indices data
+            QStringList indices;
+            QPixmap dragPixmap(50 + 10 * (count - 1), 50 + 10 * (count - 1));
+            dragPixmap.fill(Qt::transparent);
+            QPainter dragPainter(&dragPixmap);
+            int i = 0;
+            foreach (QListWidgetItem * item, items) {
+                int idx = row(item);
+                m_flickr->startPrefetch(idx);
+                dragPainter.drawPixmap(i * 10, i * 10, item->icon().pixmap(50, 50));
+                indices.append(QString::number(idx));
+                i++;
+            }
+            dragPainter.end();
+
+            // create and execute the drag operation
+            QDrag * drag = new QDrag(this);
+            drag->setPixmap(dragPixmap);
+            QMimeData * mimeData = new QMimeData();
+            mimeData->setData("webselector/idx",indices.join(",").toLatin1());
+            drag->setMimeData(mimeData);
+            Qt::DropAction action = drag->exec(supportedDropActions, Qt::CopyAction);
+
+            // abort prefetches if action was not accepted
+            if (action != Qt::CopyAction)
+                foreach (QListWidgetItem * item, items)
+                    m_flickr->stopPrefetch(row(item));
+        }
+
+    private:
+        FlickrInterface * m_flickr;
+};
+
+#include "ui_WebContentSelectorItem.h"
 
 WebContentSelectorItem::WebContentSelectorItem(QGraphicsItem * parent)
     : QGraphicsWidget(parent)
@@ -69,6 +124,11 @@ WebContentSelectorItem::~WebContentSelectorItem()
     delete m_ui;
 }
 
+FlickrInterface * WebContentSelectorItem::flickrInterface() const
+{
+    return m_flickr;
+}
+
 void WebContentSelectorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // draw frame
@@ -90,6 +150,7 @@ void WebContentSelectorItem::doSearch()
         connect(m_flickr, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
         connect(m_flickr, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
         connect(m_flickr, SIGNAL(searchEnded()), this, SLOT(slotSearchEnded()));
+        m_ui->listWidget->setFlickrInterface(m_flickr);
     }
     m_flickr->searchPics(searchName);
 }

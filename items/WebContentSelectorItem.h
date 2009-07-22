@@ -29,6 +29,9 @@ class WebContentSelectorItem : public QGraphicsWidget
         WebContentSelectorItem(QGraphicsItem * parent = 0);
         ~WebContentSelectorItem();
 
+        // used by Desk to download pictures
+        FlickrInterface * flickrInterface() const;
+
         // ::QGraphicsItem
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 

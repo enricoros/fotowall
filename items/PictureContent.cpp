@@ -21,6 +21,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
+#include <QNetworkReply>
 #include <QPainter>
 #include <QUrl>
 
@@ -28,6 +29,10 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
     , m_photo(0)
     , m_opaquePhoto(false)
+    , m_progress(0)
+    , m_netWidth(0)
+    , m_netHeight(0)
+    , m_netReply(0)
 {
     // enable frame text
     setFrameTextEnabled(true);
@@ -49,21 +54,28 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
 
 PictureContent::~PictureContent()
 {
+    dropNetworkConnection();
     delete m_photo;
 }
 
 bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
 {
+    dropNetworkConnection();
     delete m_photo;
     m_cachedPhoto = QPixmap();
     m_opaquePhoto = false;
+    m_photo = 0;
+    m_filePath = QString();
+    m_netWidth = 0;
+    m_netHeight = 0;
+
     m_photo = new CPixmap(fileName);
     if (m_photo->isNull()) {
         delete m_photo;
         m_photo = 0;
-        m_filePath = QString();
         return false;
     }
+
     m_opaquePhoto = !m_photo->hasAlpha();
     m_filePath = fileName;
     if (keepRatio)
@@ -78,8 +90,40 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     return true;
 }
 
+bool PictureContent::loadFromNetwork(QNetworkReply * reply, const QString & title, int width, int height)
+{
+    dropNetworkConnection();
+    delete m_photo;
+    m_cachedPhoto = QPixmap();
+    m_opaquePhoto = false;
+    m_photo = 0;
+    m_filePath = QString();
+    m_netWidth = width;
+    m_netHeight = height;
+    m_netReply = reply;
+
+    // set title
+    if (!title.isEmpty())
+        setFrameText(title.mid(0, 10) + tr("..."));
+
+    // Immediate Decode: just handle the reply if done
+    if (m_netReply->isFinished())
+        return slotLoadNetworkData();
+
+    // Deferred Decode: listen to the network job
+    connect(m_netReply, SIGNAL(finished()), this, SLOT(slotLoadNetworkData()));
+    connect(m_netReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(slotNetworkProgress(qint64,qint64)));
+
+    // reset size, if got the network one
+    if (m_netWidth > 0 && m_netHeight > 0)
+        resetContentsRatio();
+    return true;
+}
+
 void PictureContent::addEffect(const CEffect & effect)
 {
+    if (!m_photo)
+        return;
     m_photo->addEffect(effect);
     m_cachedPhoto = QPixmap();
     update();
@@ -126,11 +170,13 @@ void PictureContent::toXml(QDomElement & pe) const
     domElement = doc.createElement("effects");
     pe.appendChild(domElement);
     QString effectStr;
-    foreach (const CEffect & effect, m_photo->effects()) {
-        QDomElement effectElement = doc.createElement("effect");
-        effectElement.setAttribute("type", effect.effect);
-        effectElement.setAttribute("param", effect.param);
-        domElement.appendChild(effectElement);
+    if (m_photo) {
+        foreach (const CEffect & effect, m_photo->effects()) {
+            QDomElement effectElement = doc.createElement("effect");
+            effectElement.setAttribute("type", effect.effect);
+            effectElement.setAttribute("param", effect.param);
+            domElement.appendChild(effectElement);
+        }
     }
 }
 
@@ -143,6 +189,8 @@ QPixmap PictureContent::renderAsBackground(const QSize & size, bool keepAspect) 
 
 int PictureContent::contentHeightForWidth(int width) const
 {
+    if (m_netWidth > 0 && m_netHeight > 0)
+        return (m_netHeight * width) / m_netWidth;
     if (!m_photo || m_photo->width() < 1)
         return -1;
     return (m_photo->height() * width) / m_photo->width();
@@ -174,6 +222,13 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 {
     // paint parent
     AbstractContent::paint(painter, option, widget);
+
+    // draw progress
+    if (m_progress > 0.0 && m_progress < 1.0) {
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(Qt::blue);
+        painter->drawPie(QRect(-10, -10, 20, 20), 90 * 16, (int)(-5760.0 * m_progress));
+    }
 
     // skip if no photo
     if (!m_photo)
@@ -209,4 +264,45 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 //    if (m_opaquePhoto)
 //        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
+}
+
+void PictureContent::dropNetworkConnection()
+{
+    if (m_netReply) {
+        m_netReply->disconnect(0,0,0);
+        if (!m_netReply->isFinished())
+            m_netReply->abort();
+        m_netReply->deleteLater();
+        m_netReply = 0;
+    }
+    m_progress = 0.0;
+}
+
+bool PictureContent::slotLoadNetworkData()
+{
+    // get the data
+    QByteArray replyData = m_netReply->readAll();
+    dropNetworkConnection();
+
+    // make the QImage from data
+    QImage image = QImage::fromData(replyData);
+    if (image.isNull())
+        return false;
+
+    // update contents
+    m_netWidth = image.width();
+    m_netHeight = image.height();
+    resetContentsRatio();
+    m_progress = 1.0;
+    m_photo = new CPixmap(image);
+    m_opaquePhoto = !m_photo->hasAlpha();
+    update();
+    GFX_CHANGED();
+    return true;
+}
+
+void PictureContent::slotNetworkProgress(qint64 a, qint64 b)
+{
+    m_progress = b > 0 ? (double)a / (double)b : 0.0;
+    update();
 }

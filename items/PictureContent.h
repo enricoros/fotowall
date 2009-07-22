@@ -18,6 +18,7 @@
 #include "AbstractContent.h"
 struct CEffect;
 class CPixmap;
+class QNetworkReply;
 
 /**
     \brief Transformable picture, with lots of gadgets
@@ -30,6 +31,7 @@ class PictureContent : public AbstractContent
         ~PictureContent();
 
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
+        bool loadFromNetwork(QNetworkReply * reply, const QString & title = QString(), int width = -1, int height = -1);
         void addEffect(const CEffect & effect);
 
         // ::AbstractContent
@@ -49,10 +51,19 @@ class PictureContent : public AbstractContent
         void flipVertically();
 
     private:
+        void dropNetworkConnection();
         QString     m_filePath;
         CPixmap *   m_photo;
         QPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;
+        double      m_progress;
+        int         m_netWidth;
+        int         m_netHeight;
+        QNetworkReply * m_netReply;
+
+    private Q_SLOTS:
+        bool slotLoadNetworkData();
+        void slotNetworkProgress(qint64, qint64);
 };
 
 #endif

@@ -99,6 +99,53 @@ void FlickrInterface::dropSearch()
     }
     qDeleteAll(m_searchResults);
     m_searchResults.clear();
+    foreach (QNetworkReply * reply, m_prefetches) {
+        reply->disconnect(0, 0, 0);
+        reply->abort();
+        reply->deleteLater();
+    }
+    m_prefetches.clear();
+}
+
+bool FlickrInterface::imageInfo(int idx, QString * title, int * width, int * height)
+{
+    if (idx < 0 || idx >= m_searchResults.size())
+        return false;
+    Internal::Photo * photo = m_searchResults[idx];
+    *title = photo->description.title;
+    *width = photo->description.width_o;
+    *height = photo->description.height_o;
+    return true;
+}
+
+QNetworkReply * FlickrInterface::download(int idx)
+{
+    if (idx < 0 || idx >= m_searchResults.size())
+        return 0;
+
+    // return an existing prefetch, if any
+    if (m_prefetches.contains(idx))
+        return m_prefetches.take(idx);
+
+    // or start a new transfer
+    return sendRequestURL(m_searchResults[idx]->description.url_o);
+}
+
+void FlickrInterface::startPrefetch(int idx)
+{
+    if (idx < 0 || idx >= m_searchResults.size() || m_prefetches.contains(idx))
+        return;
+    m_prefetches[idx] = sendRequestURL(m_searchResults[idx]->description.url_o);
+}
+
+void FlickrInterface::stopPrefetch(int idx)
+{
+    if (!m_prefetches.contains(idx))
+        return;
+    QNetworkReply * reply = m_prefetches.take(idx);
+    reply->disconnect(0, 0, 0);
+    reply->abort();
+    reply->deleteLater();
 }
 
 void FlickrInterface::slotSearchJobFinished()
@@ -107,7 +154,7 @@ void FlickrInterface::slotSearchJobFinished()
     m_searchJob->disconnect(0, 0, 0);
     m_searchJob->deleteLater();
     m_searchJob = 0;
-qWarning() << replyContent;
+
     // read response
     int idx = 0;
     QXmlStreamReader sr(replyContent);
@@ -134,13 +181,15 @@ qWarning() << replyContent;
             pd.height_o = attribs.value("height_o").toString().toUInt();
             pd.width_o = attribs.value("width_o").toString().toUInt();
 
+            // if no original, use standard url (info on http://www.flickr.com/services/api/misc.urls.html)
+            if (pd.url_o.isEmpty())
+                pd.url_o = QString("http://farm%1.static.flickr.com/%2/%3_%4.jpg").arg(pd.farm).arg(pd.server).arg(pd.id).arg(pd.secret);
+
             // create a new Photo
             Internal::Photo * photo = new Internal::Photo();
             photo->idx = idx++;
             photo->description = pd;
             m_searchResults.append(photo);
-
-qWarning() << pd.width_t << pd.height_t;
 
             // notify about the new item
             emit searchResult(idx, pd.title, pd.width_t, pd.height_t);
