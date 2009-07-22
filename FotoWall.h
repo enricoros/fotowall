@@ -19,6 +19,7 @@
 #include <QWidget>
 #include "ModeInfo.h"
 class Desk;
+class QActionGroup;
 class QMenu;
 class QNetworkReply;
 namespace Ui { class FotoWall; }
@@ -59,6 +60,7 @@ class FotoWall : public QWidget
         ModeInfo        m_modeInfo;
         QAction *       m_aHelpTutorial;
         QAction *       m_aHelpSupport;
+        QActionGroup *  m_gBackActions;
 
     private Q_SLOTS:
         void on_projectType_currentIndexChanged(int index);
@@ -74,7 +76,6 @@ class FotoWall : public QWidget
         void slotActionSelectAll();
 
         void slotArrangeForceField(bool enabled);
-        void slotBackGradient(bool checked);
         void slotDecoTopBar(bool checked);
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
@@ -82,6 +83,9 @@ class FotoWall : public QWidget
         void slotHelpIntroduction();
         void slotHelpTutorial();
         void slotHelpSupport();
+        void slotSetBackMode(QAction* action);
+
+        void slotBackModeChanged();
 
         void slotVerifyTutorial(QNetworkReply * reply);
         void slotVerifySupport(/*const KnowledgeItemV1List & items*/);

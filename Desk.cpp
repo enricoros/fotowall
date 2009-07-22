@@ -216,21 +216,32 @@ bool Desk::forceFieldEnabled() const
 }
 
 /// Decorations
-void Desk::setBackGradientEnabled(bool enabled)
+void Desk::setBackMode(int mode)
 {
-    if (enabled == m_backGradientEnabled)
-        return;
-    m_backGradientEnabled = enabled;
-    m_grad1ColorPicker->setVisible(enabled);
-    m_grad2ColorPicker->setVisible(enabled);
-    if (enabled)
+    // 1: background gradient / 2: transparent
+    bool enableGradient = mode == 1;
+    m_backGradientEnabled = enableGradient;
+    m_grad1ColorPicker->setVisible(enableGradient);
+    m_grad2ColorPicker->setVisible(enableGradient);
+    if (enableGradient)
         blinkBackGradients();
     update();
+
+    // 3: restore picture
+    if (mode != 3 && m_backContent) {
+        m_backContent->show();
+        m_backContent = 0;
+        m_backCache = QPixmap();
+        update();
+    }
+
+    // notify the change
+    emit backModeChanged();
 }
 
-bool Desk::backGradientEnabled() const
+int Desk::backMode() const
 {
-    return m_backGradientEnabled;
+    return m_backContent ? 3 : m_backGradientEnabled ? 1 : 2;
 }
 
 void Desk::setTopBarEnabled(bool enabled)
@@ -662,12 +673,7 @@ void Desk::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
         return;
 
     // unset the background picture, if present
-    if (m_backContent) {
-        m_backContent->show();
-        m_backContent = 0;
-        m_backCache = QPixmap();
-        update();
-    }
+    setBackMode(m_backGradientEnabled ? 1 : 2);
 }
 
 void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
@@ -887,6 +893,9 @@ void Desk::slotBackgroundContent()
     m_backContent->hide();
     m_backCache = QPixmap();
     update();
+
+    // update GUI
+    emit backModeChanged();
 }
 
 void Desk::slotStackContent(int op)

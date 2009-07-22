@@ -87,6 +87,7 @@ FotoWall::FotoWall(QWidget * parent)
     , m_desk(0)
     , m_aHelpTutorial(0)
     , m_aHelpSupport(0)
+    , m_gBackActions(0)
 {
     // setup widget
     QRect geom = QApplication::desktop()->availableGeometry();
@@ -100,6 +101,7 @@ FotoWall::FotoWall(QWidget * parent)
 
     // create our custom desk
     m_desk = new Desk(this);
+    connect(m_desk, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
 
     // init ui
     ui->setupUi(this);
@@ -245,12 +247,32 @@ QMenu * FotoWall::createBackgroundMenu()
 {
     QMenu * menu = new QMenu();
 
+    m_gBackActions = new QActionGroup(menu);
+    connect(m_gBackActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackMode(QAction*)));
+
     QAction * aGradient = new QAction(tr("Gradient"), menu);
+    aGradient->setProperty("id", 1);
     aGradient->setCheckable(true);
-    aGradient->setChecked(m_desk->backGradientEnabled());
-    connect(aGradient, SIGNAL(toggled(bool)), this, SLOT(slotBackGradient(bool)));
+    aGradient->setActionGroup(m_gBackActions);
     menu->addAction(aGradient);
 
+    QAction * aTransparent = new QAction(tr("Transparent"), menu);
+    aTransparent->setToolTip(tr("Transparency can be saved to PNG images only."));
+    aTransparent->setProperty("id", 2);
+    aTransparent->setCheckable(true);
+    aTransparent->setActionGroup(m_gBackActions);
+    menu->addAction(aTransparent);
+
+    QAction * aContent = new QAction(tr("Content"), menu);
+    aContent->setToolTip(tr("Double click on any content to put it on background."));
+    aContent->setEnabled(false);
+    aContent->setProperty("id", 3);
+    aContent->setCheckable(true);
+    aContent->setActionGroup(m_gBackActions);
+    menu->addAction(aContent);
+
+    // initially check the action
+    slotBackModeChanged();
     return menu;
 }
 
@@ -497,11 +519,6 @@ void FotoWall::slotArrangeForceField(bool checked)
     m_desk->setForceFieldEnabled(checked);
 }
 
-void FotoWall::slotBackGradient(bool checked)
-{
-    m_desk->setBackGradientEnabled(checked);
-}
-
 void FotoWall::slotDecoTopBar(bool checked)
 {
     m_desk->setTopBarEnabled(checked);
@@ -544,6 +561,19 @@ void FotoWall::slotHelpTutorial()
 
 void FotoWall::slotHelpSupport()
 {
+}
+
+void FotoWall::slotSetBackMode(QAction* action)
+{
+    int choice = action->property("id").toUInt();
+    m_desk->setBackMode(choice);
+}
+
+void FotoWall::slotBackModeChanged()
+{
+    int mode = m_desk->backMode();
+    m_gBackActions->actions()[mode - 1]->setChecked(true);
+    m_gBackActions->actions()[2]->setEnabled(mode == 3);
 }
 
 void FotoWall::slotVerifyTutorial(QNetworkReply * reply)

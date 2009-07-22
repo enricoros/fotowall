@@ -65,8 +65,8 @@ class Desk : public QGraphicsScene
         bool forceFieldEnabled() const;
 
         // decorations
-        void setBackGradientEnabled(bool enabled);
-        bool backGradientEnabled() const;
+        void setBackMode(int mode);
+        int backMode() const;
         void setTopBarEnabled(bool enabled);
         bool topBarEnabled() const;
         void setBottomBarEnabled(bool enabled);
@@ -90,6 +90,9 @@ class Desk : public QGraphicsScene
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
         QImage renderedImage(const QSize & size, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
+
+    Q_SIGNALS:
+        void backModeChanged();
 
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
