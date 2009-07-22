@@ -22,17 +22,17 @@ class TextContent;
 
 
 class TextProperties : public AbstractProperties {
-    Q_OBJECT
     public:
         TextProperties(TextContent * textContent, QGraphicsItem * parent = 0);
         ~TextProperties();
 
+    protected:
+        // ::AbstractProperties
+        void closing();
+
     private:
         TextContent * m_textContent;
         RichTextEditorDialog * m_editor;
-
-    private Q_SLOTS:
-        void slotClosing();
 };
 
 #endif

@@ -31,21 +31,21 @@ class AbstractProperties : public QGraphicsProxyWidget {
         AbstractProperties(AbstractContent * content, QGraphicsItem * parent = 0);
         virtual ~AbstractProperties();
 
-        // the current content
+        void dispose();
+
+        // the related content
         AbstractContent * content() const;
 
         // manage property box
         void keepInBoundaries(const QRect & rect);
-        void animateClose();
 
     Q_SIGNALS:
-        void closing();
-        void closed();
         void applyLook(quint32 frameClass, bool mirrored, bool allContents);
         void createNewFrame(QStringList);
 
     protected:
         // used by subclasses
+        virtual void closing() {};
         void addTab(QWidget * widget, const QString & label, bool front = false, bool setCurrent = false);
 
         // ::QGraphicsProxyWidget
@@ -53,16 +53,12 @@ class AbstractProperties : public QGraphicsProxyWidget {
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
         void resizeEvent(QGraphicsSceneResizeEvent * event);
-        void timerEvent(QTimerEvent *);
 
     private:
         AbstractContent *           m_content;
         Ui::AbstractProperties *    m_commonUi;
         PixmapButton *              m_closeButton;
         Frame *                     m_frame;
-        int                         m_aniStep;
-        bool                        m_aniDirection;
-        QBasicTimer                 m_aniTimer;
 
         void populateFrameList();
 

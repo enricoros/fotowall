@@ -14,6 +14,7 @@
 
 #include "AbstractProperties.h"
 #include "AbstractContent.h"
+#include "Desk.h"
 #include "RenderOpts.h"
 #include "ui_AbstractProperties.h"
 #include "frames/FrameFactory.h"
@@ -125,12 +126,10 @@ void PixmapButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     m_pressed = false;
     update();
 
-    // do click
+    // HACK: close property window
     if (boundingRect().contains(event->pos())) {
-        // HACK
-        AbstractProperties * pp = dynamic_cast<AbstractProperties *>(parentItem());
-        if (pp)
-            pp->animateClose();
+        Desk * desk = static_cast<Desk *>(scene());
+        desk->slotDeleteProperties(static_cast<AbstractProperties *>(parentItem()));
     }
 }
 //END PixmapButton
@@ -142,8 +141,6 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
     , m_commonUi(new Ui::AbstractProperties())
     , m_closeButton(0)
     , m_frame(FrameFactory::defaultPanelFrame())
-    , m_aniStep(0)
-    , m_aniDirection(true)
 {
     // close button
     m_closeButton = new PixmapButton(this, ":/data/button-close.png", ":/data/button-close-hovered.png", ":/data/button-close-pressed.png");
@@ -191,15 +188,19 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
     setWidget(widget);
     static qreal s_propZBase = 99999;
     setZValue(s_propZBase++);
-
-    // Transition setup
-    m_aniTimer.start(30, this);
 }
 
 AbstractProperties::~AbstractProperties()
 {
     delete m_frame;
     delete m_commonUi;
+}
+
+void AbstractProperties::dispose()
+{
+    // inform subclasses about the closure
+    closing();
+    deleteLater();
 }
 
 AbstractContent * AbstractProperties::content() const
@@ -231,19 +232,11 @@ void AbstractProperties::keepInBoundaries(const QRect & rect)
     setPos(r.topLeft());
 }
 
-void AbstractProperties::animateClose()
-{
-    // closure animation
-    m_aniDirection = false;
-    m_aniTimer.start(20, this);
-    emit closing();
-}
-
 void AbstractProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     QGraphicsProxyWidget::mousePressEvent(event);
     if (!event->isAccepted() && event->button() == Qt::RightButton)
-        animateClose();
+        dispose();
     event->accept();
 }
 
@@ -255,9 +248,6 @@ void AbstractProperties::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 
 void AbstractProperties::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
-    if (m_aniStep < 10)
-        return;
-
     // draw custom background
 #if QT_VERSION < 0x040500
     painter->fillRect(option->rect, QColor(250, 250, 250, 190));
@@ -266,10 +256,6 @@ void AbstractProperties::paint(QPainter * painter, const QStyleOptionGraphicsIte
 #endif
 
     // unbreak parent
-#if 0
-    if (m_aniStep >= 10 && m_aniStep <= 90)
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-#endif
     QGraphicsProxyWidget::paint(painter, option, widget);
 }
 
@@ -284,39 +270,6 @@ void AbstractProperties::resizeEvent(QGraphicsSceneResizeEvent * event)
 
     // unbreak resize
     QGraphicsProxyWidget::resizeEvent(event);
-}
-
-void AbstractProperties::timerEvent(QTimerEvent * event)
-{
-    // only act on our events
-    if (event->timerId() == m_aniTimer.timerId()) {
-        if (m_aniDirection) {
-            m_aniStep += 10;
-            // end of FadeIn
-            if (m_aniStep >= 100) {
-                m_aniStep = 100;
-                resetTransform();
-                m_aniTimer.stop();
-                return;
-            }
-            qreal xCenter = boundingRect().center().x();
-            setTransform(QTransform().translate(xCenter, 0).rotate((90*(100-m_aniStep)*(100-m_aniStep)) / 10000, Qt::XAxis).translate(-xCenter, 0));
-        } else {
-            m_aniStep -= 10;
-            // end of FadeOut
-            if (m_aniStep <= 0) {
-                m_aniStep = 0;
-                resetTransform();
-                m_aniTimer.stop();
-                emit closed();
-                return;
-            }
-            qreal xCenter = boundingRect().center().x();
-            qreal yCenter = boundingRect().center().y();
-            setTransform(QTransform().translate(xCenter, yCenter).rotate(-90 + (90*m_aniStep*m_aniStep) / 10000, Qt::XAxis).translate(-xCenter, -yCenter));
-        }
-    }
-    QObject::timerEvent(event);
 }
 
 void AbstractProperties::addTab(QWidget * widget, const QString & label, bool front, bool setCurrent)

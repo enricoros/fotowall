@@ -135,11 +135,12 @@ class Desk : public QGraphicsScene
         QTime m_forceFieldTime;
 
     private Q_SLOTS:
+        friend class PixmapButton; // HACK here, only to call 1 method
         void slotConfigureContent(const QPoint & scenePoint);
         void slotBackgroundContent();
         void slotStackContent(int);
         void slotDeleteContent();
-        void slotDeleteProperties();
+        void slotDeleteProperties(AbstractProperties * properties);
         void slotApplyLook(quint32 frameClass, bool mirrored, bool allContent);
         void slotApplyEffect(const CEffect & effect, bool allPictures);
         void slotFlipHorizontally();

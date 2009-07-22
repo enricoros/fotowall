@@ -840,38 +840,34 @@ void Desk::clearMarkers()
 /// Slots
 void Desk::slotConfigureContent(const QPoint & scenePoint)
 {
-    // get the content and ensure it has no
+    // get the content and ensure it hasn't already a property window
     AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
     foreach (AbstractProperties * properties, m_properties) {
         if (properties->content() == content)
             return;
         // force only 1 property instance
-        properties->animateClose();
+        properties->dispose();
         m_properties.removeAll(properties);
     }
     AbstractProperties * p = 0;
 
     // picture properties (dialog and connections)
-    PictureContent * picture = dynamic_cast<PictureContent *>(content);
-    if (picture) {
+    if (PictureContent * picture = dynamic_cast<PictureContent *>(content)) {
         p = new PictureProperties(picture);
         connect(p, SIGNAL(applyEffect(const CEffect &, bool)), this, SLOT(slotApplyEffect(const CEffect &, bool)));
     }
 
     // text properties (dialog and connections)
-    TextContent * text = dynamic_cast<TextContent *>(content);
-    if (text) {
+    if (TextContent * text = dynamic_cast<TextContent *>(content))
         p = new TextProperties(text);
-    }
 
     // generic properties
     if (!p)
         p = new AbstractProperties(content);
 
-    // common properties
+    // common links
     m_properties.append(p);
     addItem(p);
-    connect(p, SIGNAL(closed()), this, SLOT(slotDeleteProperties()));
     connect(p, SIGNAL(applyLook(quint32,bool,bool)), this, SLOT(slotApplyLook(quint32,bool,bool)));
     p->show();
     p->setPos(scenePoint - QPoint(10, 10));
@@ -974,18 +970,15 @@ void Desk::slotDeleteContent()
             m_backContent = 0;
             m_backCache = QPixmap();
             update();
+            emit backModeChanged();
         }
 
-        // remove property if deleting its content
-        QList<AbstractProperties *>::iterator pIt = m_properties.begin();
-        while (pIt != m_properties.end()) {
-            AbstractProperties * properties = *pIt;
+        // remove related property if deleting its content
+        foreach (AbstractProperties * properties, m_properties) {
             if (properties->content() == content) {
-                pIt = m_properties.erase(pIt);
-                removeItem(properties);
-                properties->deleteLater();
-            } else
-                ++pIt;
+                slotDeleteProperties(properties);
+                break;
+            }
         }
 
         // unlink content from lists, myself(the Scene) and memory
@@ -994,15 +987,10 @@ void Desk::slotDeleteContent()
     }
 }
 
-void Desk::slotDeleteProperties()
+void Desk::slotDeleteProperties(AbstractProperties * properties)
 {
-    AbstractProperties * properties = dynamic_cast<AbstractProperties *>(sender());
-    if (!properties)
-        return;
-
-    // unlink picture properties from lists, myself(the Scene) and memory
     m_properties.removeAll(properties);
-    properties->deleteLater();
+    properties->dispose();
 }
 
 void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
