@@ -133,9 +133,14 @@ QNetworkReply * FlickrInterface::download(int idx)
 
 void FlickrInterface::startPrefetch(int idx)
 {
+#if QT_VERSION >= 0x040600
     if (idx < 0 || idx >= m_searchResults.size() || m_prefetches.contains(idx))
         return;
     m_prefetches[idx] = sendRequestURL(m_searchResults[idx]->description.url_o);
+#else
+    // no precaching with <= 4.5 since QNetworkReply::isFinished doesn't exist
+    Q_UNUSED(idx);
+#endif
 }
 
 void FlickrInterface::stopPrefetch(int idx)

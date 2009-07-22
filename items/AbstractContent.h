@@ -31,7 +31,9 @@ class QPointF;
 class AbstractContent : public AbstractDisposeable
 {
     Q_OBJECT
+#if QT_VERSION >= 0x040600
     Q_PROPERTY(qreal zRotation READ zRotation WRITE setZRotation)
+#endif
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
         virtual ~AbstractContent();

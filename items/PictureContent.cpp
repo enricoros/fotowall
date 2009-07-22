@@ -106,9 +106,13 @@ bool PictureContent::loadFromNetwork(QNetworkReply * reply, const QString & titl
     if (!title.isEmpty())
         setFrameText(title.mid(0, 10) + tr("..."));
 
+#if QT_VERSION >= 0x040600
     // Immediate Decode: just handle the reply if done
     if (m_netReply->isFinished())
         return slotLoadNetworkData();
+#else
+    // No Precaching ensures signals to be emitted later
+#endif
 
     // Deferred Decode: listen to the network job
     m_progress = 0.01;
@@ -271,7 +275,9 @@ void PictureContent::dropNetworkConnection()
 {
     if (m_netReply) {
         m_netReply->disconnect(0,0,0);
+#if QT_VERSION >= 0x040600
         if (!m_netReply->isFinished())
+#endif
             m_netReply->abort();
         m_netReply->deleteLater();
         m_netReply = 0;

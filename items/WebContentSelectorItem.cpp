@@ -110,7 +110,7 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * deskAcces
     proxy->setWidget(widget);
     QGraphicsLinearLayout * vLay = new QGraphicsLinearLayout(Qt::Vertical, this);
     vLay->addItem(proxy);
-    setFlags(ItemIsSelectable | ItemIsFocusable | ItemAcceptsInputMethod);
+    setFlags(ItemIsSelectable | ItemIsFocusable);
     m_ui->lineEdit->setFocus();
 
     // apply google completion to widget
