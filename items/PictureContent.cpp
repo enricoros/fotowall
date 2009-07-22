@@ -107,8 +107,10 @@ bool PictureContent::loadFromNetwork(QNetworkReply * reply, const QString & titl
         setFrameText(title.mid(0, 10) + tr("..."));
 
     // Immediate Decode: just handle the reply if done
+#if QT_VERSION >= 0x040600
     if (m_netReply->isFinished())
         return slotLoadNetworkData();
+#endif
 
     // Deferred Decode: listen to the network job
     m_progress = 0.01;
@@ -271,8 +273,10 @@ void PictureContent::dropNetworkConnection()
 {
     if (m_netReply) {
         m_netReply->disconnect(0,0,0);
+#if QT_VERSION >= 0x040600
         if (!m_netReply->isFinished())
             m_netReply->abort();
+#endif
         m_netReply->deleteLater();
         m_netReply = 0;
     }
@@ -296,6 +300,11 @@ bool PictureContent::slotLoadNetworkData()
     resetContentsRatio();
     m_progress = 1.0;
     m_photo = new CPixmap(image);
+    if (m_photo->isNull()) {
+        delete m_photo;
+        m_photo = 0;
+        return false;
+    }
     m_opaquePhoto = !m_photo->hasAlpha();
     update();
     GFX_CHANGED();
