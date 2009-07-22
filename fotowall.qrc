@@ -47,5 +47,6 @@
         <file alias="1.svg" >data/frame-plasma-1.svg</file>
         <file alias="2.svg" >data/frame-plasma-2.svg</file>
         <file alias="3.svg" >data/frame-plasma-3.svg</file>
+        <file alias="4.svg" >data/frame-plasma-4.svg</file>
     </qresource>
 </RCC>

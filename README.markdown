@@ -11,7 +11,10 @@ ChangeLog
 ---------
 
 Unreleased Version:
-* ...
+* Flickr content download (with google suggestion completion)
+* Prettified properties dialogs
+* Load additional frames (taken from plasma themes) + 1 new frame
+* German translation (by Martin Zimmermann)
 
 Version 0.6 (2009-04-29):
 

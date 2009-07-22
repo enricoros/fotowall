@@ -50,6 +50,10 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 
     // customize item's behavior
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable);
+#if QT_VERSION >= 0x040600
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+#endif
+    // TODO: check this
     setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
     setAcceptHoverEvents(true);
     setAcceptDrops(true);
@@ -77,6 +81,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     addButtonItem(bPersp);
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
+    bDelete->setSelectesParent(false);
     bDelete->setToolTip(tr("Remove"));
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteItem()));
     addButtonItem(bDelete);

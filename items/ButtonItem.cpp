@@ -46,6 +46,11 @@ int ButtonItem::height() const
     return 16;
 }
 
+void ButtonItem::setSelectesParent(bool selects)
+{
+    m_selectsParent = selects;
+}
+
 QRectF ButtonItem::boundingRect() const
 {
     return QRectF(-8, -8, 16, 16);

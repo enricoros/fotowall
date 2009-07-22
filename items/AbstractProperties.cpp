@@ -202,7 +202,6 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
     ani->setEndValue(1.0);
     ani->start(QPropertyAnimation::DeleteWhenStopped);
 #endif
-
 }
 
 AbstractProperties::~AbstractProperties()
@@ -262,8 +261,10 @@ void AbstractProperties::keepInBoundaries(const QRect & rect)
 void AbstractProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     QGraphicsProxyWidget::mousePressEvent(event);
-    if (!event->isAccepted() && event->button() == Qt::RightButton)
-        dispose();
+    if (!event->isAccepted() && event->button() == Qt::RightButton) {
+        Desk * desk = static_cast<Desk *>(scene());
+        desk->slotDeleteProperties(this);
+    }
     event->accept();
 }
 

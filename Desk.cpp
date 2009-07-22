@@ -959,6 +959,12 @@ static QList<AbstractContent *> content(const QList<QGraphicsItem *> & items) {
 void Desk::slotDeleteContent()
 {
     QList<AbstractContent *> selectedContent = content(selectedItems());
+    // add the caller if no selected items
+    if (selectedContent.isEmpty()) {
+        AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
+        if (content)
+            selectedContent.append(content);
+    }
     if (selectedContent.size() > 1)
         if (QMessageBox::question(0, tr("Delete content"), tr("All the selected content will be deleted, do you want to continue ?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
             return;
