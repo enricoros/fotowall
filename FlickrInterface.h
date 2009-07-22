@@ -30,7 +30,7 @@ class FlickrInterface : public QObject
 {
     Q_OBJECT
     public:
-        FlickrInterface(QObject * parent = 0);
+        FlickrInterface(QNetworkAccessManager * manager, QObject * parent = 0);
         ~FlickrInterface();
 
         void searchPics(const QString & text);

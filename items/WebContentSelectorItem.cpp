@@ -80,8 +80,9 @@ class MyListWidget : public QListWidget
 
 #include "ui_WebContentSelectorItem.h"
 
-WebContentSelectorItem::WebContentSelectorItem(QGraphicsItem * parent)
+WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * deskAccessManager, QGraphicsItem * parent)
     : QGraphicsWidget(parent)
+    , m_deskAccessManager(deskAccessManager)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
     , m_flickr(0)
     , m_completion(0)
@@ -118,6 +119,7 @@ WebContentSelectorItem::WebContentSelectorItem(QGraphicsItem * parent)
 
 WebContentSelectorItem::~WebContentSelectorItem()
 {
+    m_deskAccessManager = 0; // owned by Desk
     delete m_completion;
     delete m_flickr;
     delete m_frame;
@@ -145,7 +147,7 @@ void WebContentSelectorItem::doSearch()
 
     // start a flickr search
     if (!m_flickr) {
-        m_flickr = new FlickrInterface(this);
+        m_flickr = new FlickrInterface(m_deskAccessManager, this);
         connect(m_flickr, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
         connect(m_flickr, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
         connect(m_flickr, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
@@ -178,6 +180,8 @@ void WebContentSelectorItem::slotSearchResult(int idx, const QString & title, in
 #if 0
     item->setTextAlignment(Qt::AlignCenter);
     item->setText(title);
+#else
+    Q_UNUSED(title);
 #endif
 
     // add it the ListWidget

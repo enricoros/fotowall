@@ -57,10 +57,10 @@ namespace Internal {
     };
 }
 
-FlickrInterface::FlickrInterface(QObject * parent)
+FlickrInterface::FlickrInterface(QNetworkAccessManager * manager, QObject * parent)
   : QObject(parent)
   , m_apiKey("292287089cdba89fdbd9994830cc4327")
-  , m_nam(new QNetworkAccessManager(this))
+  , m_nam(manager)
   , m_searchJob(0)
 {
 }
@@ -68,7 +68,7 @@ FlickrInterface::FlickrInterface(QObject * parent)
 FlickrInterface::~FlickrInterface()
 {
     dropSearch();
-    delete m_nam;
+    m_nam = 0;  // owned by Desk
 }
 
 void FlickrInterface::searchPics(const QString & text)

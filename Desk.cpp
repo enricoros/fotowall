@@ -33,6 +33,7 @@
 #include <QList>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QNetworkAccessManager>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QTextDocument>
@@ -44,6 +45,7 @@
 
 Desk::Desk(QObject * parent)
     : QGraphicsScene(parent)
+    , m_networkAccessManager(0)
     , m_helpItem(0)
     , m_backContent(0)
     , m_topBarEnabled(false)
@@ -101,6 +103,7 @@ Desk::~Desk()
     qDeleteAll(m_content);
     m_content.clear();
     m_backContent = 0;
+    delete m_networkAccessManager;
 }
 
 /// Add Content
@@ -146,7 +149,9 @@ void Desk::setWebContentSelectorVisible(bool visible)
         m_webContentSelector = 0;
     }
     if (visible && !m_webContentSelector) {
-        m_webContentSelector = new WebContentSelectorItem();
+        if (!m_networkAccessManager)
+            m_networkAccessManager = new QNetworkAccessManager(this);
+        m_webContentSelector = new WebContentSelectorItem(m_networkAccessManager);
         m_webContentSelector->setPos(20, -8);
         addItem(m_webContentSelector);
     }

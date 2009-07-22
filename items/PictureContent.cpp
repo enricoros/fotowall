@@ -111,6 +111,7 @@ bool PictureContent::loadFromNetwork(QNetworkReply * reply, const QString & titl
         return slotLoadNetworkData();
 
     // Deferred Decode: listen to the network job
+    m_progress = 0.01;
     connect(m_netReply, SIGNAL(finished()), this, SLOT(slotLoadNetworkData()));
     connect(m_netReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(slotNetworkProgress(qint64,qint64)));
 

@@ -30,6 +30,7 @@ class ColorPickerItem;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
+class QNetworkAccessManager;
 class QTimer;
 class TextContent;
 class VideoContent;
@@ -107,6 +108,7 @@ class Desk : public QGraphicsScene
         VideoContent * createVideo(int input, const QPoint & pos);
         void setDVDMarkers();
         void clearMarkers();
+        QNetworkAccessManager * m_networkAccessManager;
         QList<AbstractContent *> m_content;
         QList<AbstractProperties *> m_properties;
         QList<HighlightItem *> m_highlightItems;
