@@ -68,7 +68,9 @@ public:
     RichTextEditorDialog(QWidget *parent = 0);
     ~RichTextEditorDialog();
 
-    int showDialog();
+    void focusEditor();
+
+    //int showDialog();
     void setDefaultFont(const QFont &font);
     void setText(const QString &text);
     QString text(Qt::TextFormat format = Qt::AutoText) const;

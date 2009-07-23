@@ -15,7 +15,6 @@
 #include "TextProperties.h"
 #include "3rdparty/richtextedit/richtexteditor_p.h"
 #include "TextContent.h"
-#include <QSettings>
 
 TextProperties::TextProperties(TextContent * textContent, QGraphicsItem * parent)
     : AbstractProperties(textContent, parent)
@@ -27,7 +26,7 @@ TextProperties::TextProperties(TextContent * textContent, QGraphicsItem * parent
     m_editor->setText(m_textContent->toHtml());
     m_editor->adjustSize();
     addTab(m_editor, tr("Text"), false, true);
-    m_editor->setFocus();
+    m_editor->focusEditor();
 }
 
 TextProperties::~TextProperties()

@@ -145,7 +145,7 @@ FotoWall::FotoWall(QWidget * parent)
     ui->view->setFocus();
 
     // attach menus
-    ui->arrangeButton->setMenu(createArrangeMenu());
+    //ui->arrangeButton->setMenu(createArrangeMenu());
     ui->backButton->setMenu(createBackgroundMenu());
     ui->decoButton->setMenu(createDecorationMenu());
     ui->howtoButton->setMenu(createHelpMenu());

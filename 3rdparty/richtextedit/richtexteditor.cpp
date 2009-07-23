@@ -754,6 +754,7 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
 
     m_editor->setFrameStyle(QFrame::NoFrame);   // +fotowall
     m_text_edit->setFrameStyle(QFrame::NoFrame);   // +fotowall
+    m_editor->setFocusPolicy(Qt::StrongFocus);
     m_editor->setFocus();
 }
 
@@ -761,14 +762,20 @@ RichTextEditorDialog::~RichTextEditorDialog()
 {
 }
 
-int RichTextEditorDialog::showDialog()
+void RichTextEditorDialog::focusEditor()
+{
+    m_editor->selectAll();
+    m_editor->setFocus();
+}
+
+/*int RichTextEditorDialog::showDialog()
 {
     m_tab_widget->setCurrentIndex(0);
     m_editor->selectAll();
     m_editor->setFocus();
 
     return exec();
-}
+}*/
 
 void RichTextEditorDialog::setDefaultFont(const QFont &font)
 {

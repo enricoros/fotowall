@@ -10,8 +10,13 @@ Check out the [old home page](http://code.google.com/p/fotowall) too.
 ChangeLog
 ---------
 
+Disabled:
+* Auto-placement (nearly done)
+* Google-suggest completion (ok, misplaced)
+
 Unreleased Version:
-* Flickr content download (with google suggestion completion)
+* Rubberband selection of items
+* Flickr content download
 * Prettified properties dialogs
 * Load additional frames (taken from plasma themes) + 1 new frame (by Arnaud Tanguy)
 * Transparent background (only saved to PNG files)
