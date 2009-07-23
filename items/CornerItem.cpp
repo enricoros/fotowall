@@ -177,8 +177,8 @@ void CornerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         if (m_operation != Off)
             color.setAlpha(250);
         else
-            color.setAlpha(128);
+            color.setAlpha(196);
     } else
-        color.setAlpha(64);
+        color.setAlpha(128);
     painter->fillRect(boundingRect(), color);
 }

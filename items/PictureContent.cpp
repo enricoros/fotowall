@@ -51,11 +51,11 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     addButtonItem(bFlipV);
     connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
 
-    ButtonItem * bCrop = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-scale.png"), this);
+    /*ButtonItem * bCrop = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-scale.png"), this);
     bCrop->setToolTip(tr(""));
     bCrop->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     addButtonItem(bCrop);
-    ///connect(bCrop, SIGNAL(clicked()), this, SIGNAL(toggleCropMode()));
+    connect(bCrop, SIGNAL(clicked()), this, SIGNAL(toggleCropMode()));*/
 }
 
 PictureContent::~PictureContent()
