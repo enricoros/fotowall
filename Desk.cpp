@@ -697,9 +697,11 @@ void Desk::drawBackground(QPainter * painter, const QRectF & rect)
 
         // paint cached background
         QRect targetRect = rect.toRect();
-        painter->setCompositionMode(QPainter::CompositionMode_Source);
+        if (m_backContent->contentOpaque())
+            painter->setCompositionMode(QPainter::CompositionMode_Source);
         painter->drawPixmap(targetRect, m_backCache, targetRect);
-        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+        if (m_backContent->contentOpaque())
+            painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
         return;
     }
 

@@ -168,6 +168,9 @@ WebContentSelectorItem::~WebContentSelectorItem()
     delete m_completion;
 #endif
     delete m_searchSymbol;
+    m_searchSymbol = 0;
+    if (m_flickr)
+        m_flickr->disconnect(0, 0, 0);
     delete m_flickr;
     delete m_frame;
     delete m_ui;

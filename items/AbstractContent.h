@@ -77,6 +77,10 @@ class AbstractContent : public AbstractDisposeable
         QRectF boundingRect() const;
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
+        // may be reimplemented by subclasses
+        virtual int contentHeightForWidth(int width) const;
+        virtual bool contentOpaque() const;
+
     Q_SIGNALS:
         void configureMe(const QPoint & scenePoint);
         void changeStack(int opcode);
@@ -87,10 +91,6 @@ class AbstractContent : public AbstractDisposeable
         // useful to subclasses
         void GFX_CHANGED() const;
         void setControlsVisible(bool visible);
-
-        // may be reimplemented by subclasses
-        virtual int contentHeightForWidth(int width) const;
-        virtual bool contentOpaque() const;
 
         // ::QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
