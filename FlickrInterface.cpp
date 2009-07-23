@@ -105,6 +105,7 @@ void FlickrInterface::dropSearch()
         reply->deleteLater();
     }
     m_prefetches.clear();
+    emit searchEnded();
 }
 
 bool FlickrInterface::imageInfo(int idx, QString * title, int * width, int * height)

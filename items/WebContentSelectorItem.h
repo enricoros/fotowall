@@ -21,7 +21,10 @@ class Frame;
 class GSuggestCompletion;
 class QLabel;
 class QNetworkAccessManager;
+class SearchSymbol;
 class Ui_WebContentSelectorItem;
+
+//#define ENABLE_GCOMPLETION
 
 class WebContentSelectorItem : public QGraphicsWidget
 {
@@ -40,12 +43,14 @@ class WebContentSelectorItem : public QGraphicsWidget
         QNetworkAccessManager * m_deskAccessManager;
         Frame * m_frame;
         FlickrInterface * m_flickr;
+#ifdef ENABLE_GCOMPLETION
         GSuggestCompletion * m_completion;
+#endif
         Ui_WebContentSelectorItem * m_ui;
-        QLabel * m_searchSymbol;
+        SearchSymbol * m_searchSymbol;
 
     private Q_SLOTS:
-        void doSearch();
+        void slotSearchClicked();
         void slotSearchBegun();
         void slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h);
         void slotSearchThumbnail(int idx, const QPixmap & thumbnail);

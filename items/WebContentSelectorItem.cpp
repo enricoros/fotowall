@@ -17,12 +17,52 @@
 #include "frames/FrameFactory.h"
 #include "frames/Frame.h"
 #include "3rdparty/gsuggest.h"
+#include <QBasicTimer>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QGraphicsLinearLayout>
 #include <QLabel>
 #include <QListWidget>
 #include <QPainter>
+#include <QTime>
+
+
+class SearchSymbol : public QWidget
+{
+    public:
+        SearchSymbol(QWidget * parent)
+          : QWidget(parent)
+        {
+            setFixedSize(25, 25);
+            m_timer.start(50, this);
+            m_time.start();
+        }
+
+    protected:
+        void timerEvent(QTimerEvent * event)
+        {
+            if (event->timerId() != m_timer.timerId())
+                return QWidget::timerEvent(event);
+            update();
+        }
+
+        void paintEvent(QPaintEvent * /*event*/)
+        {
+            QPainter p(this);
+            int elapsed = m_time.elapsed();
+            if (elapsed < 1000)
+                p.setOpacity((qreal)elapsed / 1000.0);
+            int idx = 2 * elapsed - 90*16;
+            p.setPen(Qt::NoPen);
+            p.setBrush(Qt::blue);
+            p.drawPie(rect(), -idx, 50 * 16);
+            p.drawPie(rect(), -idx + 180 * 16, 50 * 16);
+        }
+
+    private:
+        QBasicTimer m_timer;
+        QTime m_time;
+};
 
 class MyListWidget : public QListWidget
 {
@@ -85,7 +125,9 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * deskAcces
     , m_deskAccessManager(deskAccessManager)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
     , m_flickr(0)
+#ifdef ENABLE_GCOMPLETION
     , m_completion(0)
+#endif
     , m_ui(new Ui_WebContentSelectorItem())
     , m_searchSymbol(0)
 {
@@ -100,10 +142,7 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * deskAcces
     QPalette pal;
     pal.setBrush(QPalette::Base, Qt::transparent);
     m_ui->listWidget->setPalette(pal);
-    m_searchSymbol = new QLabel(tr("Loading..."), m_ui->listWidget->viewport());
-    m_searchSymbol->move(2, 2);
-    m_searchSymbol->hide();;
-    connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(doSearch()));
+    connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
 
     // embed and layout widget
     QGraphicsProxyWidget * proxy = new QGraphicsProxyWidget(this);
@@ -113,14 +152,22 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * deskAcces
     setFlags(ItemIsSelectable | ItemIsFocusable);
     m_ui->lineEdit->setFocus();
 
+    // init texts
+    slotSearchEnded();
+
+#ifdef ENABLE_GCOMPLETION
     // apply google completion to widget
     m_completion = new GSuggestCompletion(m_ui->lineEdit);
+#endif
 }
 
 WebContentSelectorItem::~WebContentSelectorItem()
 {
     m_deskAccessManager = 0; // owned by Desk
+#ifdef ENABLE_GCOMPLETION
     delete m_completion;
+#endif
+    delete m_searchSymbol;
     delete m_flickr;
     delete m_frame;
     delete m_ui;
@@ -137,30 +184,46 @@ void WebContentSelectorItem::paint(QPainter * painter, const QStyleOptionGraphic
     m_frame->paint(painter, boundingRect().toRect(), false, false);
 }
 
-void WebContentSelectorItem::doSearch()
+void WebContentSelectorItem::slotSearchClicked()
 {
-    // get the current search term
-    m_completion->preventSuggest();
-    QString searchName = m_ui->lineEdit->text();
-    if (searchName.isEmpty())
-        return;
+    // search...
+    if (!m_searchSymbol) {
+        // get the current search term
+#ifdef ENABLE_GCOMPLETION
+        m_completion->preventSuggest();
+#endif
+        QString searchName = m_ui->lineEdit->text();
+        if (searchName.isEmpty())
+            return;
 
-    // start a flickr search
-    if (!m_flickr) {
-        m_flickr = new FlickrInterface(m_deskAccessManager, this);
-        connect(m_flickr, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
-        connect(m_flickr, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
-        connect(m_flickr, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
-        connect(m_flickr, SIGNAL(searchEnded()), this, SLOT(slotSearchEnded()));
-        m_ui->listWidget->setFlickrInterface(m_flickr);
+        // start a flickr search
+        if (!m_flickr) {
+            m_flickr = new FlickrInterface(m_deskAccessManager, this);
+            connect(m_flickr, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
+            connect(m_flickr, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
+            connect(m_flickr, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
+            connect(m_flickr, SIGNAL(searchEnded()), this, SLOT(slotSearchEnded()));
+            m_ui->listWidget->setFlickrInterface(m_flickr);
+        }
+        m_flickr->searchPics(searchName);
     }
-    m_flickr->searchPics(searchName);
+
+    // or cancel...
+    else if (m_flickr) {
+        m_flickr->dropSearch();
+        m_ui->listWidget->clear();
+    }
 }
 
 void WebContentSelectorItem::slotSearchBegun()
 {
     m_ui->listWidget->clear();
-    m_searchSymbol->show();
+    if (!m_searchSymbol) {
+        m_searchSymbol = new SearchSymbol(m_ui->listWidget->viewport());
+        m_searchSymbol->move(2, 2);
+        m_searchSymbol->show();
+    }
+    m_ui->searchButton->setText(tr("cancel"));
 }
 
 void WebContentSelectorItem::slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h)
@@ -197,5 +260,9 @@ void WebContentSelectorItem::slotSearchThumbnail(int idx, const QPixmap & thumbn
 
 void WebContentSelectorItem::slotSearchEnded()
 {
-    m_searchSymbol->hide();
+    if (m_searchSymbol) {
+        delete m_searchSymbol;
+        m_searchSymbol = 0;
+    }
+    m_ui->searchButton->setText(tr("search"));
 }
