@@ -42,6 +42,7 @@
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
 #define TUTORIAL_STRING "Peter walks you through how to use Foto"
+#define ENRICOBLOG_URL QUrl("http://enricoros.wordpress.com/tag/fotowall/")
 
 #include <QCommonStyle>
 class RubberBandStyle : public QCommonStyle {
@@ -337,14 +338,31 @@ QMenu * FotoWall::createDecorationMenu()
 QMenu * FotoWall::createHelpMenu()
 {
     QMenu * menu = new QMenu();
+    menu->setSeparatorsCollapsible(false);
+
+    QAction * aSep = new QAction(tr("About"), menu);
+    aSep->setSeparator(true);
+    menu->addAction(aSep);
 
     QAction * aIntroduction = new QAction(tr("Introduction"), menu);
     connect(aIntroduction, SIGNAL(triggered()), this, SLOT(slotHelpIntroduction()));
     menu->addAction(aIntroduction);
 
-    m_aHelpTutorial = new QAction(tr("Tutorial Video"), menu);
+    QAction * aSep2 = new QAction(tr("Internet Resources"), menu);
+    aSep2->setSeparator(true);
+    menu->addAction(aSep2);
+
+    m_aHelpTutorial = new QAction(tr("Tutorial Video (0.2)"), menu);
     connect(m_aHelpTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
     menu->addAction(m_aHelpTutorial);
+
+    QAction * aCheckUpdates = new QAction(tr("Check for updates"), menu);
+    connect(aCheckUpdates, SIGNAL(triggered()), this, SLOT(slotHelpUpdates()));
+    menu->addAction(aCheckUpdates);
+
+    QAction * aFotowallBlog = new QAction(tr("Fotowall Blog"), menu);
+    connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpBlog()));
+    menu->addAction(aFotowallBlog);
 
     m_aHelpSupport = new QAction("", menu);
     connect(m_aHelpSupport, SIGNAL(triggered()), this, SLOT(slotHelpSupport()));
@@ -575,20 +593,32 @@ void FotoWall::slotDecoClearTitle()
     m_desk->setTitleText(QString());
 }
 
+void FotoWall::slotHelpBlog()
+{
+    int answer = QMessageBox::question(this, tr("Opening FotoWall's author Blog"), tr("This is the blog of the main author of FotoWall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
+    if (answer == QMessageBox::Yes)
+        QDesktopServices::openUrl(ENRICOBLOG_URL);
+}
+
 void FotoWall::slotHelpIntroduction()
 {
     m_desk->showIntroduction();
 }
 
+void FotoWall::slotHelpSupport()
+{
+}
+
 void FotoWall::slotHelpTutorial()
 {
-    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
+    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about FotoWall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
     if (answer == QMessageBox::Yes)
         QDesktopServices::openUrl(TUTORIAL_URL);
 }
 
-void FotoWall::slotHelpSupport()
+void FotoWall::slotHelpUpdates()
 {
+
 }
 
 void FotoWall::slotSetBackMode(QAction* action)

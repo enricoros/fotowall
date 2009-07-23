@@ -80,9 +80,11 @@ class FotoWall : public QWidget
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
         void slotDecoClearTitle();
+        void slotHelpBlog();
         void slotHelpIntroduction();
-        void slotHelpTutorial();
         void slotHelpSupport();
+        void slotHelpTutorial();
+        void slotHelpUpdates();
         void slotSetBackMode(QAction* action);
 
         void slotBackModeChanged();
