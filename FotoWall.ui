@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>690</width>
+    <width>670</width>
     <height>400</height>
    </rect>
   </property>
@@ -139,44 +139,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="5">
-       <widget class="QToolButton" name="howtoButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>How to</string>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::InstantPopup</enum>
-        </property>
-        <property name="autoRaise">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QToolButton" name="backButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Background</string>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::InstantPopup</enum>
-        </property>
-        <property name="autoRaise">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="2">
        <widget class="QToolButton" name="decoButton">
         <property name="sizePolicy">
@@ -196,39 +158,8 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QToolButton" name="arrangeButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Arrange</string>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::InstantPopup</enum>
-        </property>
-        <property name="autoRaise">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0" rowspan="2">
        <widget class="QToolBar" name="contentToolbar">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Ignored">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>60</height>
-         </size>
-        </property>
         <property name="palette">
          <palette>
           <active>
@@ -298,7 +229,7 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>48</width>
+          <width>54</width>
           <height>48</height>
          </size>
         </property>
@@ -311,16 +242,70 @@
         <addaction name="aAddFlickr"/>
        </widget>
       </item>
+      <item row="1" column="5">
+       <widget class="QToolButton" name="howtoButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>How to</string>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QToolButton" name="backButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Background</string>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QToolButton" name="arrangeButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Arrange</string>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="centralWidget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="FWGraphicsView" name="view">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
     </widget>
    </item>
@@ -376,9 +361,14 @@
     <string>F</string>
    </property>
   </action>
-  <zorder>centralWidget</zorder>
-  <zorder>topBar</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FWGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>FotoWall.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="fotowall.qrc"/>
  </resources>

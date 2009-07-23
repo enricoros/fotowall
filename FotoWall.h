@@ -18,6 +18,7 @@
 #include <QWidget>
 #include "ModeInfo.h"
 class Desk;
+class FWGraphicsView;
 class QActionGroup;
 class QGraphicsView;
 class QMenu;
@@ -55,7 +56,6 @@ class FotoWall : public QWidget
         void setExactSizeProject();
 
         Ui::FotoWall *  ui;
-        QGraphicsView * m_view;
         Desk *          m_desk;
         ModeInfo        m_modeInfo;
         QAction *       m_aHelpTutorial;
