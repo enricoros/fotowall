@@ -2,27 +2,27 @@ FotoWall
 ========
 
 FotoWall is a creative tool that allows you to layout your photos or pictures in a personal way. You can add pictures, then resize, move, change colors, text, shadows, etc..
-Check out the [old home page](http://code.google.com/p/fotowall) too.
+Check out the [home page](http://code.google.com/p/fotowall) and the [blog](https://enricoros.wordpress.com/tag/fotowall) too.
 
 *Focus is on simplicity, express your creativity! ;-)*
-
 
 ChangeLog
 ---------
 
-Disabled:
+Unreleased Version:
 
 * Auto-placement (nearly done)
 * Google-suggest completion (ok, misplaced)
 
-Unreleased Version:
+Version 0.7 (2009-07-23):
 
-* Rubberband selection of items
 * Flickr content download
+* Qt 4.6 GFX cuteness
+* Rubberband selection of items
 * Prettified properties dialogs
-* Load additional frames (taken from plasma themes) + 1 new frame (by Arnaud Tanguy)
-* Transparent background (only saved to PNG files)
+* Load additional frames + 1 new frame (by Arnaud Tanguy)
 * German translation (by Martin Zimmermann)
+* Check for updates
 
 Version 0.6 (2009-04-29):
 
