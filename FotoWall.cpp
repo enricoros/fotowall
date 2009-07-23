@@ -15,7 +15,10 @@
 #include "FotoWall.h"
 #include "items/VideoProvider.h"
 #include "Desk.h"
+#include "ExactSizeDialog.h"
 #include "ExportWizard.h"
+#include "ModeInfo.h"
+#include "VersionCheckDialog.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include <QAction>
@@ -36,8 +39,6 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
-#include "ModeInfo.h"
-#include "ExactSizeDialog.h"
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -356,11 +357,11 @@ QMenu * FotoWall::createHelpMenu()
     connect(m_aHelpTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
     menu->addAction(m_aHelpTutorial);
 
-    QAction * aCheckUpdates = new QAction(tr("Check for updates"), menu);
+    QAction * aCheckUpdates = new QAction(tr("Check for Updates"), menu);
     connect(aCheckUpdates, SIGNAL(triggered()), this, SLOT(slotHelpUpdates()));
     menu->addAction(aCheckUpdates);
 
-    QAction * aFotowallBlog = new QAction(tr("Fotowall Blog"), menu);
+    QAction * aFotowallBlog = new QAction(tr("Fotowall's Blog"), menu);
     connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpBlog()));
     menu->addAction(aFotowallBlog);
 
@@ -616,9 +617,11 @@ void FotoWall::slotHelpTutorial()
         QDesktopServices::openUrl(TUTORIAL_URL);
 }
 
+
 void FotoWall::slotHelpUpdates()
 {
-
+    VersionCheckDialog vcd;
+    vcd.exec();
 }
 
 void FotoWall::slotSetBackMode(QAction* action)

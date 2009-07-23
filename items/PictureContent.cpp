@@ -55,7 +55,7 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     bCrop->setToolTip(tr(""));
     bCrop->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     addButtonItem(bCrop);
-    connect(bCrop, SIGNAL(clicked()), this, SIGNAL(toggleCropMode()));
+    ///connect(bCrop, SIGNAL(clicked()), this, SIGNAL(toggleCropMode()));
 }
 
 PictureContent::~PictureContent()

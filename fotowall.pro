@@ -25,6 +25,7 @@ HEADERS += 3rdparty/gsuggest.h \
     GlowEffectWidget.h \
     ModeInfo.h \
     RenderOpts.h \
+    VersionCheckDialog.h \
     XmlSave.h \
     XmlRead.h
 SOURCES += 3rdparty/gsuggest.cpp \
@@ -38,12 +39,14 @@ SOURCES += 3rdparty/gsuggest.cpp \
     GlowEffectDialog.cpp \
     GlowEffectWidget.cpp \
     ModeInfo.cpp \
+    VersionCheckDialog.cpp \
     XmlSave.cpp \
     XmlRead.cpp
 FORMS += ExactSizeDialog.ui \
     ExportWizard.ui \
     FotoWall.ui \
-    GlowEffectDialog.ui
+    GlowEffectDialog.ui \
+    VersionCheckDialog.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \
     translations/fotowall_fr.ts \

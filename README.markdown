@@ -11,10 +11,12 @@ ChangeLog
 ---------
 
 Disabled:
+
 * Auto-placement (nearly done)
 * Google-suggest completion (ok, misplaced)
 
 Unreleased Version:
+
 * Rubberband selection of items
 * Flickr content download
 * Prettified properties dialogs
