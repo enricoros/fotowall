@@ -17,6 +17,7 @@
 #include "ui_FotoWall.h"
 #include "Desk.h"
 #include "ExportWizard.h"
+#include "RenderOpts.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include <QAction>
@@ -27,6 +28,7 @@
 #include <QDragEnterEvent>
 #include <QFileDialog>
 #include <QFile>
+#include <QGraphicsView>
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMenu>
@@ -55,8 +57,8 @@ class FWGraphicsView : public QGraphicsView {
             setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             setInteractive(true);
             setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing /*| QPainter::SmoothPixmapTransform */);
-            // FIXME: enable the RubberBandDrag. I get rendering artifacts (Enrico)
-            setDragMode(QGraphicsView::NoDrag);
+            if (!RenderOpts::OxygenStyleQuirks)
+                setDragMode(QGraphicsView::RubberBandDrag);
             setAcceptDrops(true);
             setFrameStyle(QFrame::NoFrame);
 

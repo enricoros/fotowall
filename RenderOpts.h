@@ -28,6 +28,7 @@ class RenderOpts
 
         // other options
         static bool FirstRun;
+        static bool OxygenStyleQuirks;
 
         // global highlight color
         static QColor hiColor;

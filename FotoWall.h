@@ -15,11 +15,11 @@
 #ifndef __FotoWall_h__
 #define __FotoWall_h__
 
-#include <QGraphicsView>
 #include <QWidget>
 #include "ModeInfo.h"
 class Desk;
 class QActionGroup;
+class QGraphicsView;
 class QMenu;
 class QNetworkReply;
 namespace Ui { class FotoWall; }

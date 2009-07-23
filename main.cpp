@@ -17,6 +17,7 @@
 #include <QLocale>
 #include <QLibraryInfo>
 #include <QSettings>
+#include <QStyle>
 #include <QtPlugin>
 #include "FotoWall.h"
 #include "RenderOpts.h"
@@ -32,7 +33,37 @@ Q_IMPORT_PLUGIN(qtiff)
 bool RenderOpts::LastMirrorEnabled = true;
 bool RenderOpts::HQRendering = false;
 bool RenderOpts::FirstRun = false;
+bool RenderOpts::OxygenStyleQuirks = false;
 QColor RenderOpts::hiColor;
+
+// proxy style, to change little stuff
+#if QT_VERSION >= 0x040600
+#include <QPainter>
+#include <QProxyStyle>
+#include <QStyleOption>
+class FotowallStyle : public QProxyStyle {
+public:
+    void drawControl(ControlElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0) const
+    {
+        if (element == CE_RubberBand) {
+            painter->save();
+            QColor color = RenderOpts::hiColor;
+            painter->setPen(color);
+            color.setAlpha(80); painter->setBrush(color);
+            painter->drawRect(option->rect.adjusted(0,0,-1,-1));
+            painter->restore();
+            return;
+        }
+        return QCommonStyle::drawControl(element, option, painter, widget);
+    }
+    int styleHint(StyleHint hint, const QStyleOption * option, const QWidget * widget, QStyleHintReturn * returnData) const
+    {
+        if (hint == SH_RubberBand_Mask)
+            return false;
+        return QCommonStyle::styleHint(hint, option, widget, returnData);
+    }
+};
+#endif
 
 int main( int argc, char ** args )
 {
@@ -47,6 +78,11 @@ int main( int argc, char ** args )
     app.setApplicationName("FotoWall");
     app.setApplicationVersion("0.7.0");
     app.setOrganizationName("Enrico Ros");
+#if QT_VERSION >= 0x040600
+    app.setStyle(new FotowallStyle);
+#else
+    RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
+#endif
 
     // translate fotowall + default-qt messages
     QString locale =  QLocale::system().name();

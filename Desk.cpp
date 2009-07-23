@@ -814,9 +814,9 @@ void Desk::setDVDMarkers()
 {
     // Add informations items to show the back, front, and side position
 
-    QList<QGraphicsView *> view = views();
-    int faceW = 5.08 * view.at(0)->logicalDpiX();
-    int sideW = 0.67 * view.at(0)->logicalDpiY();
+    QGraphicsView * view = views().first();
+    int faceW = 5.08 * view->logicalDpiX();
+    int sideW = 0.67 * view->logicalDpiY();
     m_markerItems.push_back(addLine(faceW, 0, faceW, height()));
     m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
 
@@ -872,6 +872,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     p->show();
     p->setPos(scenePoint - QPoint(10, 10));
     p->keepInBoundaries(sceneRect().toRect());
+    p->setFocus();
 }
 
 void Desk::slotBackgroundContent()

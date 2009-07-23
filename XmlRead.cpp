@@ -27,7 +27,6 @@
 #include "Desk.h"
 #include "FotoWall.h"
 #include <QFile>
-#include <QGraphicsView>
 #include <QMessageBox>
 #include <QString>
 #include <QStringList>
