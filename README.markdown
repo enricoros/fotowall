@@ -13,7 +13,8 @@ ChangeLog
 Unreleased Version:
 * Flickr content download (with google suggestion completion)
 * Prettified properties dialogs
-* Load additional frames (taken from plasma themes) + 1 new frame
+* Load additional frames (taken from plasma themes) + 1 new frame (by Arnaud Tanguy)
+* Transparent background (only saved to PNG files)
 * German translation (by Martin Zimmermann)
 
 Version 0.6 (2009-04-29):
@@ -31,24 +32,24 @@ Version 0.6 (2009-04-29):
 
 Version 0.5 (2009-04-11):
 
-* CD/DVD Cover composition and printing (Tanguy Arnaud)
+* CD/DVD Cover composition and printing (by Arnaud Tanguy)
 * Rich Text (with extended editing)
-* Glow effect (Tanguy Arnaud)
+* Glow effect (by Arnaud Tanguy)
 * Properties configurable for all objects [reqby Ilan d'Inca]
 * Usability fixes [reqby Ilan d'Inca]
-* Save to all the supported image formats (Tanguy Arnaud)
+* Save to all the supported image formats (by Arnaud Tanguy)
 * Properties close button [reqby Ilan d'Inca]
 * Improved stacking (fixes + relative to neighbourhoods) [reqby Ilan d'Inca]
-* Add the 'No effect' effect removal option (Tanguy Arnaud)
-* French Introduction translation (Tanguy Arnaud)
-* Translation of the Introduction text (Tanguy Arnaud)
+* Add the 'No effect' effect removal option (by Arnaud Tanguy)
+* French Introduction translation (by Arnaud Tanguy)
+* Translation of the Introduction text (by Arnaud Tanguy)
 * Fall back to QTextDocument where QtWebkit is not available
 
 Version 0.4 (2009-03-29):
 
 * Windows executable on [github](http://github.com/enricoros/fotowall/downloads)
-* Image Effects (by Tanguy Arnaud)
-* French Translation (by Tanguy Arnaud)
+* Image Effects (by Arnaud Tanguy)
+* French Translation (by Arnaud Tanguy)
 * German translation [Martin]
 * Apply properties to All
 
@@ -83,6 +84,11 @@ I hope to expand the program as soon as I can, since there is many room for impr
 
 ### Current Wishlist
 
+* link to web resources
+ - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
+* webcam on windows
+* multiple webcams
+* transparent background of the window
 * restore the common behavior for rotating (left click)
 * add the undo support
 * link the download to blogs and fix links everywhere
@@ -93,12 +99,18 @@ I hope to expand the program as soon as I can, since there is many room for impr
 * perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
 * add the "color changing stuff" to the picture themselves [Contrast, Superstoned
 * BUG: when loading a .fotowall file from the command line some items are aligned to the left
+* relicences
+ - 3rdparty/enricomath.h: Could you re-release it with GPL v2+ like the rest of your source?
+ - 3rdparty/richtextedit/richtexteditor*: redo 'cause non free
+ - ./GlowEffectWidget.cpp: GPLv2 with all rights reserved, a no-go
+ - videocapture is partially BSD and LGPLv2+ - not mentioned + no complete copy of lgplv2 available (add the file into that folder)
+ - posterazor GPLv3+ need license file
+ - remove qm?
 
 Enrico:
 
 * auto-placement [force field, shape, collage, etc..]
 * integrate kde-apps knowledgebase
-* flickr integration (already working..)
 * svg drawings [balloons, signs, etc..]
 * masked pic
 * both new and old resize&co
