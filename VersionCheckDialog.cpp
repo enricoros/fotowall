@@ -89,10 +89,12 @@ void VersionCheckDialog::slotGotReply()
 
 void VersionCheckDialog::slotTimeOut()
 {
-    m_nam->deleteLater();
-    m_nam = 0;
-    ui->progressBar->hide();
-    ui->nextVersion->setText(tr("network timeout"));
+    if (ui->progressBar->isVisible()) {
+        m_nam->deleteLater();
+        m_nam = 0;
+        ui->progressBar->hide();
+        ui->nextVersion->setText(tr("network timeout"));
+    }
 }
 
 void VersionCheckDialog::slotDownload()
