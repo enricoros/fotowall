@@ -15,10 +15,10 @@
         <file>data/action-save.png</file>
         <file>data/action-scale.png</file>
         <file>data/action-snapshot.png</file>
+        <file>data/insert-camera.png</file>
+        <file>data/insert-download.png</file>
         <file>data/insert-image.png</file>
         <file>data/insert-text.png</file>
-        <file>data/insert-video.png</file>
-        <file>data/insert-weblink.png</file>
         <file>data/button-close-hovered.png</file>
         <file>data/button-close-pressed.png</file>
         <file>data/button-close.png</file>

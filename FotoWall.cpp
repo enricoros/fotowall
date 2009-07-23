@@ -17,7 +17,6 @@
 #include "ui_FotoWall.h"
 #include "Desk.h"
 #include "ExportWizard.h"
-#include "RenderOpts.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include <QAction>
@@ -28,7 +27,6 @@
 #include <QDragEnterEvent>
 #include <QFileDialog>
 #include <QFile>
-#include <QGraphicsView>
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMenu>
@@ -46,6 +44,31 @@
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
 #define TUTORIAL_STRING "Peter walks you through how to use Foto"
 
+#include <QCommonStyle>
+class RubberBandStyle : public QCommonStyle {
+    public:
+        void drawControl(ControlElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0) const
+        {
+            if (element == CE_RubberBand) {
+                painter->save();
+                QColor color = option->palette.color(QPalette::Highlight);
+                painter->setPen(color);
+                color.setAlpha(80); painter->setBrush(color);
+                painter->drawRect(option->rect.adjusted(0,0,-1,-1));
+                painter->restore();
+                return;
+            }
+            return QCommonStyle::drawControl(element, option, painter, widget);
+        }
+        int styleHint(StyleHint hint, const QStyleOption * option, const QWidget * widget, QStyleHintReturn * returnData) const
+        {
+            if (hint == SH_RubberBand_Mask)
+                return false;
+            return QCommonStyle::styleHint(hint, option, widget, returnData);
+        }
+};
+
+#include <QGraphicsView>
 class FWGraphicsView : public QGraphicsView {
     public:
         FWGraphicsView(Desk * desk, QWidget * parent)
@@ -57,8 +80,7 @@ class FWGraphicsView : public QGraphicsView {
             setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             setInteractive(true);
             setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing /*| QPainter::SmoothPixmapTransform */);
-            if (!RenderOpts::OxygenStyleQuirks)
-                setDragMode(QGraphicsView::RubberBandDrag);
+            setDragMode(QGraphicsView::RubberBandDrag);
             setAcceptDrops(true);
             setFrameStyle(QFrame::NoFrame);
 
@@ -66,6 +88,9 @@ class FWGraphicsView : public QGraphicsView {
             QPalette pal;
             pal.setBrush(QPalette::Base, Qt::NoBrush);
             setPalette(pal);
+
+            // use own style for drawing the RubberBand (opened on the viewport)
+            viewport()->setStyle(new RubberBandStyle);
 
             // can't activate the cache mode by default, since it inhibits dynamical background picture changing
             //setCacheMode(CacheBackground);

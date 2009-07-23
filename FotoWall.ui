@@ -223,6 +223,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>60</height>
+         </size>
+        </property>
         <property name="palette">
          <palette>
           <active>
@@ -346,7 +352,7 @@
   <action name="aAddVideo">
    <property name="icon">
     <iconset resource="fotowall.qrc">
-     <normaloff>:/data/insert-video.png</normaloff>:/data/insert-video.png</iconset>
+     <normaloff>:/data/insert-camera.png</normaloff>:/data/insert-camera.png</iconset>
    </property>
    <property name="text">
     <string>Add Video</string>
@@ -361,7 +367,7 @@
    </property>
    <property name="icon">
     <iconset resource="fotowall.qrc">
-     <normaloff>:/data/insert-weblink.png</normaloff>:/data/insert-weblink.png</iconset>
+     <normaloff>:/data/insert-download.png</normaloff>:/data/insert-download.png</iconset>
    </property>
    <property name="text">
     <string>Add Flickr</string>
