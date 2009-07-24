@@ -945,7 +945,7 @@ void Desk::slotDeleteContent()
 {
     QList<AbstractContent *> selectedContent = content(selectedItems());
     AbstractContent * senderContent = dynamic_cast<AbstractContent *>(sender());
-    if (!selectedContent.contains(senderContent)) {
+    if (senderContent && !selectedContent.contains(senderContent)) {
         selectedContent.clear();
         selectedContent.append(senderContent);
     }
