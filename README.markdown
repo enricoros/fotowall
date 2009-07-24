@@ -14,15 +14,17 @@ Unreleased Version:
 * Auto-placement (nearly done)
 * Google-suggest completion (ok, misplaced)
 
-Version 0.7 (2009-07-23):
+Version 0.7.1 (2009-07-23):
 
 * Flickr content download
-* Qt 4.6 GFX cuteness
+* Qt 4.6 GFX cuteness and network speed (4.6 highly recommended)
 * Rubberband selection of items
 * Prettified properties dialogs
+* Better load/save (even of network objects)
 * Load additional frames + 1 new frame (by Arnaud Tanguy)
 * German translation (by Martin Zimmermann)
 * Check for updates
+* Fixed many bugs
 
 Version 0.6 (2009-04-29):
 
