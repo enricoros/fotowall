@@ -126,17 +126,17 @@ Utiliser CTRL pour annuler les transformations.</translation>
     <message>
         <location filename="../items/AbstractProperties.cpp" line="319"/>
         <source>Choose frame images</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez l&apos;image</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.cpp" line="319"/>
         <source>Images (*.svg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Images (*.svg)</translation>
     </message>
     <message>
         <location filename="../items/AbstractProperties.ui"/>
         <source>new frame</source>
-        <translation type="unfinished"></translation>
+        <translation>nouveau  cadre</translation>
     </message>
 </context>
 <context>
@@ -167,7 +167,7 @@ Utiliser CTRL pour annuler les transformations.</translation>
     <message>
         <location filename="../Desk.cpp" line="953"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Les %1 éléments sélectionnés seront supprimés, voulez-vous continuer ?</translation>
     </message>
 </context>
 <context>
@@ -494,7 +494,8 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
     <message>
         <location filename="../FotoWall.cpp" line="244"/>
         <source>Enable force field</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Pas trop sur de la traduction.</translatorcomment>
+        <translation type="unfinished">Autoriser l&apos;arrangement forcé</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="250"/>
@@ -524,22 +525,22 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
     <message>
         <location filename="../FotoWall.cpp" line="289"/>
         <source>Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparent</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="290"/>
         <source>Transparency can be saved to PNG images only.</source>
-        <translation type="unfinished"></translation>
+        <translation>La transparence ne peut être sauvegardée que pour des images PNG.</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="296"/>
         <source>Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Contenu</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="297"/>
         <source>Double click on any content to put it on background.</source>
-        <translation type="unfinished"></translation>
+        <translation>Double cliquez sur n&apos;importe quel contenu pour le mettre en arrière plan.</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="313"/>
@@ -569,7 +570,7 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
     <message>
         <location filename="../FotoWall.cpp" line="344"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="348"/>
@@ -579,22 +580,22 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
     <message>
         <location filename="../FotoWall.cpp" line="352"/>
         <source>Internet Resources</source>
-        <translation type="unfinished"></translation>
+        <translation>Ressources Internet</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="356"/>
         <source>Tutorial Video (0.2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutoriel Vidéo (0.2)</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="360"/>
         <source>Check for Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifiez les mises à jour.</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="364"/>
         <source>Fotowall&apos;s Blog</source>
-        <translation type="unfinished"></translation>
+        <translation>Blog de FotoWall</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="378"/>
@@ -632,21 +633,25 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
     <message>
         <location filename="../FotoWall.cpp" line="599"/>
         <source>Opening FotoWall&apos;s author Blog</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouverture du blog de l&apos;auteur de FotoWall</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="599"/>
         <source>This is the blog of the main author of FotoWall.
 You can find some news while we set up a proper website ;-)
 Do you want to open the web page?</source>
-        <translation type="unfinished"></translation>
+        <translation>C&apos;est le blog de l&apos;auteur principal de Fotowall.
+Vous pouvez y trouver quelques nouvelles pendant que nous mettons en place un site convenable ;-)
+Voulez-vous ouvrir la page Web ?</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="615"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 It&apos;s about FotoWall 0.2 a rather old version.
 Do you want to open the web page?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce tutoriel est fourni sur Fosswire par Peter Upfold.
+Il s&apos;agit de la version 0.2 de FotoWall, une version plutôt ancienne.
+Voules-vous ouvrir la page Web ?</translation>
     </message>
     <message>
         <location filename="../FotoWall.cpp" line="654"/>
@@ -721,47 +726,47 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>Add Picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une Image</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>Add Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter du texte</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>Add Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter Vidéo</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>Add Flickr</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter Flickr</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Aide</translation>
     </message>
 </context>
 <context>
@@ -997,17 +1002,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../items/WebContentSelectorItem.cpp" line="229"/>
         <source>cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../items/WebContentSelectorItem.cpp" line="270"/>
         <source>search</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher</translation>
     </message>
     <message>
         <location filename="../items/WebContentSelectorItem.ui"/>
         <source>Flickr Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Recherche Flickr</translation>
     </message>
 </context>
 <context>
