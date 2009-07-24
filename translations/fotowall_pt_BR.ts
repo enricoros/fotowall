@@ -144,23 +144,23 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="823"/>
+        <location filename="../Desk.cpp" line="822"/>
         <source>Back</source>
         <translation type="unfinished">Voltar</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="827"/>
+        <location filename="../Desk.cpp" line="826"/>
         <source>Front</source>
         <translation type="unfinished">Frente</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="970"/>
+        <location filename="../Desk.cpp" line="953"/>
         <source>Delete content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="970"/>
-        <source>All the selected content will be deleted, do you want to continue ?</source>
+        <location filename="../Desk.cpp" line="953"/>
+        <source>All the %1 selected content will be deleted, do you want to continue ?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -786,19 +786,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="39"/>
-        <location filename="../items/PictureContent.cpp" line="92"/>
-        <location filename="../items/PictureContent.cpp" line="113"/>
+        <location filename="../items/PictureContent.cpp" line="40"/>
+        <location filename="../items/PictureContent.cpp" line="93"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../items/PictureContent.cpp" line="43"/>
+        <location filename="../items/PictureContent.cpp" line="44"/>
         <source>Flip horizontally</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureContent.cpp" line="49"/>
+        <location filename="../items/PictureContent.cpp" line="50"/>
         <source>Flip vertically</source>
         <translation type="unfinished"></translation>
     </message>
@@ -989,12 +988,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>WebContentSelectorItem</name>
     <message>
-        <location filename="../items/WebContentSelectorItem.cpp" line="226"/>
+        <location filename="../items/WebContentSelectorItem.cpp" line="229"/>
         <source>cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/WebContentSelectorItem.cpp" line="267"/>
+        <location filename="../items/WebContentSelectorItem.cpp" line="270"/>
         <source>search</source>
         <translation type="unfinished"></translation>
     </message>
