@@ -23,17 +23,7 @@
 #define ARNAUD_H_CPIXMAP
 
 #include <QPixmap>
-
-struct CEffect {
-    enum Effect {
-        ClearEffects = -1,  FlipH = 1,      FlipV = 2,
-        InvertColors = 3,   NVG = 4,        BlackAndWhite = 5,
-        Glow = 6,           Sepia = 7
-    } effect;
-    qreal param;
-
-    CEffect(Effect effect = ClearEffects, qreal param = 0.0) : effect(effect), param(param) {}
-};
+#include "PictureEffect.h"
 
 class CPixmap : public QPixmap {
 public:
@@ -42,11 +32,11 @@ public:
    CPixmap(const QImage &image);
 
    // effects
-   void addEffect(const CEffect & effect);
+   void addEffect(const PictureEffect & effect);
    void clearEffects();
 
    // the ordered sequence of effects
-   QList<CEffect> effects() const;
+   QList<PictureEffect> effects() const;
 
    // manual operations
    void toNVG();
@@ -65,7 +55,7 @@ private:
     QImage m_image;
     QString m_filePath;
     // Ordered list of currently applied effects
-    QList<CEffect> m_effects;
+    QList<PictureEffect> m_effects;
 };
 
 #endif /* ARNAUD_H_CPIXMAP */

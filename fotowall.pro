@@ -24,6 +24,7 @@ HEADERS += 3rdparty/gsuggest.h \
     GlowEffectDialog.h \
     GlowEffectWidget.h \
     ModeInfo.h \
+    PictureEffect.h \
     RenderOpts.h \
     VersionCheckDialog.h \
     XmlSave.h \

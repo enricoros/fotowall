@@ -634,10 +634,11 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
             int index = sIndex.toUInt();
 
             // get picture description
+            QString url;
             QString title;
             int width = 0;
             int height = 0;
-            if (!flickr->imageInfo(index, &title, &width, &height))
+            if (!flickr->imageInfo(index, &url, &title, &width, &height))
                 continue;
 
             // get the download
@@ -647,7 +648,7 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
 
             // create PictureContent from network
             PictureContent * p = createPicture(insertPos);
-            if (!p->loadFromNetwork(reply, title, width, height)) {
+            if (!p->loadFromNetwork(url, reply, title, width, height)) {
                 m_content.removeAll(p);
                 delete p;
             } else
@@ -856,7 +857,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     // picture properties (dialog and connections)
     if (PictureContent * picture = dynamic_cast<PictureContent *>(content)) {
         p = new PictureProperties(picture);
-        connect(p, SIGNAL(applyEffect(const CEffect &, bool)), this, SLOT(slotApplyEffect(const CEffect &, bool)));
+        connect(p, SIGNAL(applyEffect(const PictureEffect &, bool)), this, SLOT(slotApplyEffect(const PictureEffect &, bool)));
     }
 
     // text properties (dialog and connections)
@@ -1014,7 +1015,7 @@ void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
     }
 }
 
-void Desk::slotApplyEffect(const CEffect & effect, bool all)
+void Desk::slotApplyEffect(const PictureEffect & effect, bool all)
 {
     QList<AbstractContent *> selectedContent = content(selectedItems());
     foreach (AbstractContent * content, m_content) {
@@ -1034,7 +1035,7 @@ void Desk::slotFlipHorizontally()
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
             continue;
-        picture->addEffect(CEffect::FlipH);
+        picture->addEffect(PictureEffect::FlipH);
     }
 }
 
@@ -1045,7 +1046,7 @@ void Desk::slotFlipVertically()
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
             continue;
-        picture->addEffect(CEffect::FlipV);
+        picture->addEffect(PictureEffect::FlipV);
     }
 }
 

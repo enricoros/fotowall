@@ -36,7 +36,7 @@ class FlickrInterface : public QObject
         void searchPics(const QString & text);
         void dropSearch();
 
-        bool imageInfo(int idx, QString * title, int * width, int * height);
+        bool imageInfo(int idx, QString * url, QString * title, int * width, int * height);
 
         QNetworkReply * download(int idx);
         void startPrefetch(int idx);

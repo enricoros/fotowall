@@ -22,6 +22,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPainter>
 #include <QUrl>
 
@@ -71,7 +72,7 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     m_cachedPhoto = QPixmap();
     m_opaquePhoto = false;
     m_photo = 0;
-    m_filePath = QString();
+    m_fileUrl = QString();
     m_netWidth = 0;
     m_netHeight = 0;
 
@@ -83,7 +84,7 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     }
 
     m_opaquePhoto = !m_photo->hasAlpha();
-    m_filePath = fileName;
+    m_fileUrl = fileName;
     if (keepRatio)
         resetContentsRatio();
     if (setName) {
@@ -91,26 +92,35 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
         string = string.mid(0, 10);
         setFrameText(string + tr("..."));
     }
-    update();
-    GFX_CHANGED();
+    applyPostLoadEffects();
     return true;
 }
 
-bool PictureContent::loadFromNetwork(QNetworkReply * reply, const QString & title, int width, int height)
+bool PictureContent::loadFromNetwork(const QString & url, QNetworkReply * reply, const QString & title, int width, int height)
 {
     dropNetworkConnection();
     delete m_photo;
     m_cachedPhoto = QPixmap();
     m_opaquePhoto = false;
     m_photo = 0;
-    m_filePath = QString();
+    m_fileUrl = url;
     m_netWidth = width;
     m_netHeight = height;
-    m_netReply = reply;
 
-    // set title
-    if (!title.isEmpty())
-        setFrameText(title.mid(0, 10) + tr("..."));
+    // start a download if not passed as a paramenter
+    if (!reply) {
+        // the QNAM will be auto-deleted on closure
+        QNetworkAccessManager * nam = new QNetworkAccessManager(this);
+        QNetworkRequest request(url);
+        m_netReply = nam->get(request);
+    } else
+        m_netReply = reply;
+
+    // set title    
+    if (!title.isEmpty()) {
+        setFrameTextEnabled(true);
+        setFrameText(title);
+    }
 
 #if QT_VERSION >= 0x040600
     // Immediate Decode: just handle the reply if done
@@ -131,7 +141,7 @@ bool PictureContent::loadFromNetwork(QNetworkReply * reply, const QString & titl
     return true;
 }
 
-void PictureContent::addEffect(const CEffect & effect)
+void PictureContent::addEffect(const PictureEffect & effect)
 {
     if (!m_photo)
         return;
@@ -146,19 +156,24 @@ bool PictureContent::fromXml(QDomElement & pe)
     AbstractContent::fromXml(pe);
 
     // load picture properties
-    QString name = pe.firstChildElement("name").text();
     QString path = pe.firstChildElement("path").text();
-    bool ok = loadPhoto(path);
-    if (ok) {
-        QDomElement effectsE = pe.firstChildElement("effects");
-        for (QDomElement effectE = effectsE.firstChildElement("effect"); effectE.isElement(); effectE = effectE.nextSiblingElement("effect")) {
-            CEffect fx;
-            fx.effect = (CEffect::Effect)effectE.attribute("type").toInt();
-            fx.param = effectE.attribute("param").toDouble();
-            addEffect(fx);
-        }
+
+    // build the afterload effects list
+    m_afterLoadEffects.clear();
+    QDomElement effectsE = pe.firstChildElement("effects");
+    for (QDomElement effectE = effectsE.firstChildElement("effect"); effectE.isElement(); effectE = effectE.nextSiblingElement("effect")) {
+        PictureEffect fx;
+        fx.effect = (PictureEffect::Effect)effectE.attribute("type").toInt();
+        fx.param = effectE.attribute("param").toDouble();
+        m_afterLoadEffects.append(fx);
     }
-    return ok;
+
+    // load Network image
+    if (path.startsWith("http", Qt::CaseInsensitive) || path.startsWith("ftp", Qt::CaseInsensitive))
+        return loadFromNetwork(path, 0);
+
+    // load Local image
+    return loadPhoto(path);
 }
 
 void PictureContent::toXml(QDomElement & pe) const
@@ -171,18 +186,18 @@ void PictureContent::toXml(QDomElement & pe) const
     QDomElement domElement;
     QDomText text;
 
-    // Save image path
+    // save image url (wether is a local path or remote url)
     domElement = doc.createElement("path");
     pe.appendChild(domElement);
-    text = doc.createTextNode(m_filePath);
+    text = doc.createTextNode(m_fileUrl);
     domElement.appendChild(text);
 
-    // Save the effects
+    // save the effects
     domElement = doc.createElement("effects");
     pe.appendChild(domElement);
     QString effectStr;
     if (m_photo) {
-        foreach (const CEffect & effect, m_photo->effects()) {
+        foreach (const PictureEffect & effect, m_photo->effects()) {
             QDomElement effectElement = doc.createElement("effect");
             effectElement.setAttribute("type", effect.effect);
             effectElement.setAttribute("param", effect.param);
@@ -291,6 +306,15 @@ void PictureContent::dropNetworkConnection()
     m_progress = 0.0;
 }
 
+void PictureContent::applyPostLoadEffects()
+{
+    foreach (const PictureEffect & effect, m_afterLoadEffects)
+        m_photo->addEffect(effect);
+    m_afterLoadEffects.clear();
+    update();
+    GFX_CHANGED();
+}
+
 bool PictureContent::slotLoadNetworkData()
 {
     // get the data
@@ -309,8 +333,7 @@ bool PictureContent::slotLoadNetworkData()
     m_progress = 1.0;
     m_photo = new CPixmap(image);
     m_opaquePhoto = !m_photo->hasAlpha();
-    update();
-    GFX_CHANGED();
+    applyPostLoadEffects();
     return true;
 }
 

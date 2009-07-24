@@ -16,7 +16,7 @@
 #define __PictureContent_h__
 
 #include "AbstractContent.h"
-struct CEffect;
+#include "PictureEffect.h"
 class CPixmap;
 class QNetworkReply;
 
@@ -31,8 +31,8 @@ class PictureContent : public AbstractContent
         ~PictureContent();
 
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
-        bool loadFromNetwork(QNetworkReply * reply, const QString & title = QString(), int width = -1, int height = -1);
-        void addEffect(const CEffect & effect);
+        bool loadFromNetwork(const QString & url, QNetworkReply * reply = 0, const QString & title = QString(), int width = -1, int height = -1);
+        void addEffect(const PictureEffect & effect);
 
         // ::AbstractContent
         bool fromXml(QDomElement & parentElement);
@@ -52,7 +52,8 @@ class PictureContent : public AbstractContent
 
     private:
         void dropNetworkConnection();
-        QString     m_filePath;
+        void applyPostLoadEffects();
+        QString     m_fileUrl;
         CPixmap *   m_photo;
         QPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;
@@ -60,6 +61,7 @@ class PictureContent : public AbstractContent
         int         m_netWidth;
         int         m_netHeight;
         QNetworkReply * m_netReply;
+        QList<PictureEffect> m_afterLoadEffects;
 
     private Q_SLOTS:
         bool slotLoadNetworkData();

@@ -108,11 +108,12 @@ void FlickrInterface::dropSearch()
     emit searchEnded();
 }
 
-bool FlickrInterface::imageInfo(int idx, QString * title, int * width, int * height)
+bool FlickrInterface::imageInfo(int idx, QString * url, QString * title, int * width, int * height)
 {
     if (idx < 0 || idx >= m_searchResults.size())
         return false;
     Internal::Photo * photo = m_searchResults[idx];
+    *url = photo->description.url_o.toString();
     *title = photo->description.title;
     *width = photo->description.width_o;
     *height = photo->description.height_o;

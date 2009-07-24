@@ -25,7 +25,7 @@
 
 class AbstractContent;
 class AbstractProperties;
-struct CEffect;
+struct PictureEffect;
 class ColorPickerItem;
 class HelpItem;
 class HighlightItem;
@@ -143,7 +143,7 @@ class Desk : public QGraphicsScene
         void slotDeleteContent();
         void slotDeleteProperties(AbstractProperties * properties);
         void slotApplyLook(quint32 frameClass, bool mirrored, bool allContent);
-        void slotApplyEffect(const CEffect & effect, bool allPictures);
+        void slotApplyEffect(const PictureEffect & effect, bool allPictures);
         void slotFlipHorizontally();
         void slotFlipVertically();
 

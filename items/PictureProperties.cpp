@@ -33,19 +33,19 @@ PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsI
 
     // add effects items to the listview
     QListWidgetItem *no_effect = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("No effects"), m_pictureUi->effectsList);
-    no_effect->setData(Qt::UserRole, CEffect::ClearEffects);
+    no_effect->setData(Qt::UserRole, PictureEffect::ClearEffects);
     QListWidgetItem *item_invert = new QListWidgetItem(QIcon(":/data/effects-icons/invert-effect.png"), tr("Invert colors"), m_pictureUi->effectsList);
     item_invert->setToolTip(tr("Invert the colors of the picture"));
-    item_invert->setData(Qt::UserRole, CEffect::InvertColors);
+    item_invert->setData(Qt::UserRole, PictureEffect::InvertColors);
     QListWidgetItem *item_nvg = new QListWidgetItem(QIcon(":/data/effects-icons/nvg-effect.png"), tr("NVG"), m_pictureUi->effectsList);
     item_nvg->setToolTip(tr("Set the colors to levels of gray"));
-    item_nvg->setData(Qt::UserRole, CEffect::NVG);
+    item_nvg->setData(Qt::UserRole, PictureEffect::NVG);
     QListWidgetItem *item_black = new QListWidgetItem(QIcon(":/data/effects-icons/black-and-white-effect.png"), tr("Black and White"), m_pictureUi->effectsList);
-    item_black->setData(Qt::UserRole, CEffect::BlackAndWhite);
+    item_black->setData(Qt::UserRole, PictureEffect::BlackAndWhite);
     QListWidgetItem *glow = new QListWidgetItem(QIcon(":/data/effects-icons/glow-effect.png"), tr("Glow effect"), m_pictureUi->effectsList);
-    glow->setData(Qt::UserRole, CEffect::Glow);
+    glow->setData(Qt::UserRole, PictureEffect::Glow);
     QListWidgetItem *sepia = new QListWidgetItem(QIcon(":/data/effects-icons/sepia-effect.png"), tr("Sepia"), m_pictureUi->effectsList);
-    sepia->setData(Qt::UserRole, CEffect::Sepia);
+    sepia->setData(Qt::UserRole, PictureEffect::Sepia);
 
     connect(m_pictureUi->invertButton, SIGNAL(clicked()), m_pictureContent, SIGNAL(flipVertically()));
     connect(m_pictureUi->flipButton, SIGNAL(clicked()), m_pictureContent, SIGNAL(flipHorizontally()));
@@ -61,7 +61,7 @@ PictureProperties::~PictureProperties()
 
 void PictureProperties::on_applyEffects_clicked()
 {
-    if (m_currentEffect.effect != CEffect::ClearEffects)
+    if (m_currentEffect.effect != PictureEffect::ClearEffects)
         emit applyEffect(m_currentEffect, true);
 }
 
@@ -76,7 +76,7 @@ void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
     qreal param = 0.0;
 
     // show glow editing dialog
-    if (effect == CEffect::Glow) {
+    if (effect == PictureEffect::Glow) {
         QPixmap preview = m_pictureContent->renderAsBackground(QSize(300, 300), true);
         GlowEffectDialog dialog(preview.toImage());
         if (dialog.exec() != QDialog::Accepted)
@@ -85,7 +85,7 @@ void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
     }
 
     // apply the effect
-    m_currentEffect = CEffect((CEffect::Effect)effect, param);
+    m_currentEffect = PictureEffect((PictureEffect::Effect)effect, param);
     emit applyEffect(m_currentEffect, false);
     m_pictureUi->applyEffects->setEnabled(true);
 }

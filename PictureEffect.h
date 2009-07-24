@@ -12,33 +12,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __PictureProperties_h__
-#define __PictureProperties_h__
+#ifndef __PictureEffect_h__
+#define __PictureEffect_h__
 
-#include "AbstractProperties.h"
-#include "CPixmap.h"
-class QListWidgetItem;
-class PictureContent;
-namespace Ui { class PictureProperties; }
+#include <QtGlobal>
 
+struct PictureEffect {
+    enum Effect {
+        ClearEffects    = -1,
+        FlipH           =  1,
+        FlipV           =  2,
+        InvertColors    =  3,
+        NVG             =  4,
+        BlackAndWhite   =  5,
+        Glow            =  6,
+        Sepia           =  7
+    } effect;
+    qreal param;
 
-class PictureProperties : public AbstractProperties {
-    Q_OBJECT
-    public:
-        PictureProperties(PictureContent * pictureContent, QGraphicsItem * parent = 0);
-        ~PictureProperties();
-
-    Q_SIGNALS:
-        void applyEffect(const PictureEffect & effect, bool allPictures);
-
-    private:
-        Ui::PictureProperties * m_pictureUi;
-        PictureContent *        m_pictureContent;
-        PictureEffect           m_currentEffect;
-
-    private Q_SLOTS:
-        void on_applyEffects_clicked();
-        void on_effectsList_itemActivated(QListWidgetItem * item);
+    PictureEffect(Effect effect = ClearEffects, qreal param = 0.0)
+      : effect(effect)
+      , param(param)
+    {
+    }
 };
 
 #endif

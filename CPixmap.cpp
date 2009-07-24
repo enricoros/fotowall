@@ -35,36 +35,36 @@ CPixmap::CPixmap(const QImage &image) : QPixmap(QPixmap::fromImage(image)), m_im
 CPixmap::CPixmap(const QPixmap &pixmap): QPixmap(pixmap){
 }
 
-void CPixmap::addEffect(const CEffect & effect) {
+void CPixmap::addEffect(const PictureEffect & effect) {
     switch (effect.effect) {
-        case CEffect::ClearEffects:
+        case PictureEffect::ClearEffects:
             clearEffects();
             break;
-        case CEffect::FlipH:
+        case PictureEffect::FlipH:
             toHFlip();
             break;
-        case CEffect::FlipV:
+        case PictureEffect::FlipV:
             toVFlip();
             break;
-        case CEffect::InvertColors:
+        case PictureEffect::InvertColors:
             toInvertedColors();
             break;
-        case CEffect::NVG:
+        case PictureEffect::NVG:
             toNVG();
             break;
-        case CEffect::BlackAndWhite:
+        case PictureEffect::BlackAndWhite:
             toBlackAndWhite();
             break;
-        case CEffect::Glow:
+        case PictureEffect::Glow:
             toGlow((int)effect.param);
             break;
-        case CEffect::Sepia:
+        case PictureEffect::Sepia:
             toSepia();
             break;
     }
 }
 
-QList<CEffect> CPixmap::effects() const {
+QList<PictureEffect> CPixmap::effects() const {
     return m_effects;
 }
 
@@ -78,7 +78,7 @@ void CPixmap::clearEffects()
 }
 
 void CPixmap::toNVG() {
-    m_effects.push_back(CEffect::NVG);
+    m_effects.push_back(PictureEffect::NVG);
     QImage img = this->toImage();
     QImage dest(img.size(), img.format());
     QColor pixel;
@@ -96,25 +96,25 @@ void CPixmap::toNVG() {
 }
 
 void CPixmap::toInvertedColors() {
-    m_effects.push_back(CEffect::InvertColors);
+    m_effects.push_back(PictureEffect::InvertColors);
     QImage img = this->toImage();
     img.invertPixels();
     updateImage(img);
 }
 
 void CPixmap::toHFlip() {
-    m_effects.push_back(CEffect::FlipH);
+    m_effects.push_back(PictureEffect::FlipH);
     QImage img = this->toImage().mirrored(true, false);
     updateImage(img);
 }
 void CPixmap::toVFlip() {
-    m_effects.push_back(CEffect::FlipV);
+    m_effects.push_back(PictureEffect::FlipV);
     QImage img = this->toImage().mirrored(false, true);
     updateImage(img);
 }
 
 void CPixmap::toBlackAndWhite() {
-    m_effects.push_back(CEffect::BlackAndWhite);
+    m_effects.push_back(PictureEffect::BlackAndWhite);
     QImage img = this->toImage();
     QImage dest(img.size(), img.format());
     QColor pixel;
@@ -136,14 +136,14 @@ void CPixmap::toBlackAndWhite() {
 }
 
 void CPixmap::toGlow(int radius) {
-    m_effects.push_back(CEffect(CEffect::Glow, (qreal)radius));
+    m_effects.push_back(PictureEffect(PictureEffect::Glow, (qreal)radius));
     GlowEffectWidget effect;
     QImage dest = effect.glow(this->toImage(), radius);
     updateImage(dest);
 }
 
 void CPixmap::toSepia() {
-    m_effects.push_back(CEffect::Sepia);
+    m_effects.push_back(PictureEffect::Sepia);
     QImage img = this->toImage();
     QImage dest(img.size(), img.format());
     QColor pixel;
@@ -192,7 +192,7 @@ void CPixmap::updateImage(QImage &newImage)
 {
     QImage copyImage = m_image;
     QString copyFilePath = m_filePath;
-    QList<CEffect> copyEffects = m_effects;
+    QList<PictureEffect> copyEffects = m_effects;
     *this = fromImage(newImage);
     m_image = copyImage;
     m_filePath = copyFilePath;
