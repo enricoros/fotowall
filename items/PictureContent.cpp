@@ -131,8 +131,11 @@ bool PictureContent::loadFromNetwork(const QString & url, QNetworkReply * reply,
 #endif
 
     // Deferred Decode: listen to the network job
+    setAcceptHoverEvents(false);
+    setControlsVisible(false);
     m_progress = 0.01;
     connect(m_netReply, SIGNAL(finished()), this, SLOT(slotLoadNetworkData()));
+    connect(m_netReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotNetworkError()));
     connect(m_netReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(slotNetworkProgress(qint64,qint64)));
 
     // reset size, if got the network one
@@ -309,7 +312,8 @@ void PictureContent::dropNetworkConnection()
 void PictureContent::applyPostLoadEffects()
 {
     foreach (const PictureEffect & effect, m_afterLoadEffects)
-        m_photo->addEffect(effect);
+        if (m_photo)
+            m_photo->addEffect(effect);
     m_afterLoadEffects.clear();
     update();
     GFX_CHANGED();
@@ -318,6 +322,8 @@ void PictureContent::applyPostLoadEffects()
 bool PictureContent::slotLoadNetworkData()
 {
     // get the data
+    if (!m_netReply)
+        return false;
     QByteArray replyData = m_netReply->readAll();
     dropNetworkConnection();
 
@@ -334,7 +340,19 @@ bool PictureContent::slotLoadNetworkData()
     m_photo = new CPixmap(image);
     m_opaquePhoto = !m_photo->hasAlpha();
     applyPostLoadEffects();
+    setAcceptHoverEvents(true);
     return true;
+}
+
+void PictureContent::slotNetworkError()
+{
+    // clear state
+    if (!m_netReply)
+        return;
+    dropNetworkConnection();
+    m_progress = 0.0;
+    applyPostLoadEffects();
+    setAcceptHoverEvents(true);
 }
 
 void PictureContent::slotNetworkProgress(qint64 a, qint64 b)
