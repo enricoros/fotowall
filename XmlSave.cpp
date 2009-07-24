@@ -69,6 +69,12 @@ void XmlSave::saveContent(const Desk * desk)
         QDomElement element = doc.createElement("renamed-element");
         m_contentElements.appendChild(element);
         content->toXml(element);
+
+        // add a flag to the background element
+        if (desk->m_backContent == content) {
+            QDomElement bgEl = doc.createElement("set-as-background");
+            element.appendChild(bgEl);
+        }
     }
 }
 

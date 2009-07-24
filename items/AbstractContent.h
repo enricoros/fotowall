@@ -86,6 +86,7 @@ class AbstractContent : public AbstractDisposeable
         void changeStack(int opcode);
         void backgroundMe();
         void deleteItem();
+        void contentChanged();
 
     protected:
         // useful to subclasses

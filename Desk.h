@@ -106,6 +106,7 @@ class Desk : public QGraphicsScene
 
     private:
         void initContent(AbstractContent * content, const QPoint & pos);
+        void setBackContent(AbstractContent * content);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
         VideoContent * createVideo(int input, const QPoint & pos);
@@ -150,6 +151,7 @@ class Desk : public QGraphicsScene
         void slotTitleColorChanged();
         void slotForeColorChanged();
         void slotGradColorChanged();
+        void slotBackContentChanged();
 
         void slotCloseIntroduction();
         void slotApplyForce();

@@ -93,6 +93,9 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
         setFrameText(string + tr("..."));
     }
     applyPostLoadEffects();
+
+    // notify image change
+    emit contentChanged();
     return true;
 }
 
@@ -152,6 +155,9 @@ void PictureContent::addEffect(const PictureEffect & effect)
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
+
+    // notify image change
+    emit contentChanged();
 }
 
 bool PictureContent::fromXml(QDomElement & pe)
@@ -198,14 +204,14 @@ void PictureContent::toXml(QDomElement & pe) const
     // save the effects
     domElement = doc.createElement("effects");
     pe.appendChild(domElement);
-    QString effectStr;
-    if (m_photo) {
-        foreach (const PictureEffect & effect, m_photo->effects()) {
-            QDomElement effectElement = doc.createElement("effect");
-            effectElement.setAttribute("type", effect.effect);
-            effectElement.setAttribute("param", effect.param);
-            domElement.appendChild(effectElement);
-        }
+    QList<PictureEffect> effectsList = m_afterLoadEffects;
+    if (m_photo)
+        effectsList.append(m_photo->effects());
+    foreach (const PictureEffect & effect, effectsList) {
+        QDomElement effectElement = doc.createElement("effect");
+        effectElement.setAttribute("type", effect.effect);
+        effectElement.setAttribute("param", effect.param);
+        domElement.appendChild(effectElement);
     }
 }
 
@@ -312,8 +318,7 @@ void PictureContent::dropNetworkConnection()
 void PictureContent::applyPostLoadEffects()
 {
     foreach (const PictureEffect & effect, m_afterLoadEffects)
-        if (m_photo)
-            m_photo->addEffect(effect);
+        m_photo->addEffect(effect);
     m_afterLoadEffects.clear();
     update();
     GFX_CHANGED();
@@ -341,6 +346,9 @@ bool PictureContent::slotLoadNetworkData()
     m_opaquePhoto = !m_photo->hasAlpha();
     applyPostLoadEffects();
     setAcceptHoverEvents(true);
+
+    // notify image change
+    emit contentChanged();
     return true;
 }
 
@@ -351,7 +359,6 @@ void PictureContent::slotNetworkError()
         return;
     dropNetworkConnection();
     m_progress = 0.0;
-    applyPostLoadEffects();
     setAcceptHoverEvents(true);
 }
 

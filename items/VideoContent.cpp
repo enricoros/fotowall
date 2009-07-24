@@ -63,6 +63,9 @@ void VideoContent::setPixmap(const QPixmap & pixmap)
     //    adjustSize();
     update();
     GFX_CHANGED();
+
+    // notify image change
+    emit contentChanged();
 }
 
 bool VideoContent::fromXml(QDomElement & pe)

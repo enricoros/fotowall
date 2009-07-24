@@ -228,12 +228,8 @@ void Desk::setBackMode(int mode)
     update();
 
     // 3: restore picture
-    if (mode != 3 && m_backContent) {
-        m_backContent->show();
-        m_backContent = 0;
-        m_backCache = QPixmap();
-        update();
-    }
+    if (mode != 3 && m_backContent)
+        setBackContent(0);
 
     // notify the change
     emit backModeChanged();
@@ -350,13 +346,14 @@ void Desk::setProjectMode(Mode mode)
 void Desk::toXml(QDomElement & de) const
 {
     QDomDocument doc = de.ownerDocument();
-    // Save Title
+
+    // save Title
     QDomElement titleElement = doc.createElement("title");
     de.appendChild(titleElement);
     QDomText titleText = doc.createTextNode(m_titleText);
     titleElement.appendChild(titleText);
 
-    // Save background colors
+    // save background Colors
     QColor color;
     QString r, g, b;
     QDomElement domElement, topColor, bottomColor,
@@ -411,13 +408,6 @@ void Desk::toXml(QDomElement & de) const
     bElement2.appendChild(doc.createTextNode(b));
     foreColor.appendChild(rElement2); foreColor.appendChild(gElement2); foreColor.appendChild(bElement2);
     de.appendChild(foreColor);
-
-    // Save the background image
-    if(m_backContent) {
-        QDomElement element = doc.createElement("background-content");
-        de.appendChild(element);
-        m_backContent->toXml(element);
-    }
 }
 
 
@@ -427,7 +417,7 @@ void Desk::fromXml(QDomElement & de)
 
     QDomElement domElement;
     int r, g, b;
-    // Load image size saved in the rect node
+
     domElement = de.firstChildElement("background-color").firstChildElement("top");
     r = domElement.firstChildElement("red").text().toInt();
     g = domElement.firstChildElement("green").text().toInt();
@@ -452,25 +442,6 @@ void Desk::fromXml(QDomElement & de)
     b = domElement.firstChildElement("blue").text().toInt();
     m_foreColorPicker->setColor(QColor(r, g, b));
 
-   AbstractContent *backContent = 0;
-   // Load the background picture, if it exists
-   domElement = de.firstChildElement("picture");
-   if(!domElement.isNull()) {
-       backContent = createPicture(QPoint());
-   } else { // load the text background, if it exists
-       domElement = de.firstChildElement("text");
-       if(!domElement.isNull()) {
-           backContent = createText(QPoint());
-       }
-   }
-   if (backContent != 0 && backContent->fromXml(domElement)) {
-       m_backContent = backContent;
-       m_backCache = QPixmap();
-   } else {
-       m_backContent = 0;
-       m_content.removeAll(backContent);
-       delete backContent;
-   }
     update();
 }
 
@@ -789,6 +760,31 @@ void Desk::initContent(AbstractContent * content, const QPoint & pos)
     m_content.append(content);
 }
 
+void Desk::setBackContent(AbstractContent * content)
+{
+    // skip if unchanged
+    if (content == m_backContent)
+        return;
+
+    // re-show previous background
+    if (m_backContent) {
+        disconnect(m_backContent, SIGNAL(contentChanged()), this, SLOT(slotBackContentChanged()));
+        m_backContent->show();
+    }
+
+    // hide content item
+    m_backContent = content;
+    if (m_backContent) {
+        connect(m_backContent, SIGNAL(contentChanged()), this, SLOT(slotBackContentChanged()));
+        m_backContent->hide();
+    }
+
+    // update GUI
+    m_backCache = QPixmap();
+    update();
+    emit backModeChanged();
+}
+
 PictureContent * Desk::createPicture(const QPoint & pos)
 {
     PictureContent * p = new PictureContent(this);
@@ -880,22 +876,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
 
 void Desk::slotBackgroundContent()
 {
-    AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
-    if (!content)
-        return;
-
-    // re-show previous background
-    if (m_backContent)
-        m_backContent->show();
-
-    // hide content item
-    m_backContent = content;
-    m_backContent->hide();
-    m_backCache = QPixmap();
-    update();
-
-    // update GUI
-    emit backModeChanged();
+    setBackContent(dynamic_cast<AbstractContent *>(sender()));
 }
 
 void Desk::slotStackContent(int op)
@@ -976,12 +957,8 @@ void Desk::slotDeleteContent()
     foreach (AbstractContent * content, selectedContent) {
 
         // unset background if deleting its content
-        if (m_backContent == content) {
-            m_backContent = 0;
-            m_backCache = QPixmap();
-            update();
-            emit backModeChanged();
-        }
+        if (m_backContent == content)
+            setBackContent(0);
 
         // remove related property if deleting its content
         foreach (AbstractProperties * properties, m_properties) {
@@ -1063,6 +1040,12 @@ void Desk::slotForeColorChanged()
 
 void Desk::slotGradColorChanged()
 {
+    update();
+}
+
+void Desk::slotBackContentChanged()
+{
+    m_backCache = QPixmap();
     update();
 }
 

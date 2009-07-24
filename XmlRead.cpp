@@ -83,9 +83,11 @@ void XmlRead::readProject(FotoWall *fotowall)
 
 void XmlRead::readDesk(Desk * desk)
 {
-    // clear Desk
+    // clear Desk [TODO: clear every content! or disasters happen]
     qDeleteAll(desk->m_content);
     desk->m_content.clear();
+    desk->m_properties.clear();
+    desk->m_backContent = 0;
 
     desk->fromXml(m_deskElement);
 }
@@ -112,6 +114,16 @@ void XmlRead::readContent(Desk * desk)
         if (!content->fromXml(element)) {
             desk->m_content.removeAll(content);
             delete content;
+            continue;
+        }
+
+        // restore the background element of the desk
+        if (element.firstChildElement("set-as-background").isElement()) {
+            if (desk->m_backContent) {
+                qWarning("XmlRead::readContent: only 1 element with <set-as-background/> allowed");
+                continue;
+            }
+            desk->setBackContent(content);
         }
     }
 }
