@@ -26,7 +26,8 @@ struct PictureEffect {
         NVG             =  4,
         BlackAndWhite   =  5,
         Glow            =  6,
-        Sepia           =  7
+        Sepia           =  7,
+        Opacity         =  8
     } effect;
     qreal param;
 

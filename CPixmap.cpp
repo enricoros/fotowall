@@ -61,6 +61,9 @@ void CPixmap::addEffect(const PictureEffect & effect) {
         case PictureEffect::Sepia:
             toSepia();
             break;
+        case PictureEffect::Opacity:
+            m_effects.push_back(PictureEffect(PictureEffect::Opacity, (qreal)effect.param));
+            break;
     }
 }
 

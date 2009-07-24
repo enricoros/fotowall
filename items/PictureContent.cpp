@@ -119,7 +119,7 @@ bool PictureContent::loadFromNetwork(const QString & url, QNetworkReply * reply,
     } else
         m_netReply = reply;
 
-    // set title    
+    // set title
     if (!title.isEmpty()) {
         setFrameTextEnabled(true);
         setFrameText(title);
@@ -151,6 +151,8 @@ void PictureContent::addEffect(const PictureEffect & effect)
 {
     if (!m_photo)
         return;
+    if(effect.effect == PictureEffect::Opacity)
+        setOpacity(effect.param);
     m_photo->addEffect(effect);
     m_cachedPhoto = QPixmap();
     update();
@@ -174,6 +176,8 @@ bool PictureContent::fromXml(QDomElement & pe)
         PictureEffect fx;
         fx.effect = (PictureEffect::Effect)effectE.attribute("type").toInt();
         fx.param = effectE.attribute("param").toDouble();
+        if (fx.effect == PictureEffect::Opacity)
+            setOpacity(fx.param);
         m_afterLoadEffects.append(fx);
     }
 
