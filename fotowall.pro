@@ -23,6 +23,8 @@ HEADERS += 3rdparty/gsuggest.h \
     FotoWall.h \
     GlowEffectDialog.h \
     GlowEffectWidget.h \
+    CropingDialog.h \
+    CropingWidget.h \
     ModeInfo.h \
     PictureEffect.h \
     RenderOpts.h \
@@ -39,6 +41,8 @@ SOURCES += 3rdparty/gsuggest.cpp \
     FotoWall.cpp \
     GlowEffectDialog.cpp \
     GlowEffectWidget.cpp \
+    CropingDialog.cpp \
+    CropingWidget.cpp \
     ModeInfo.cpp \
     VersionCheckDialog.cpp \
     XmlSave.cpp \

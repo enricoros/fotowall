@@ -27,13 +27,16 @@ struct PictureEffect {
         BlackAndWhite   =  5,
         Glow            =  6,
         Sepia           =  7,
-        Opacity         =  8
+        Opacity         =  8,
+        Crop            =  9
     } effect;
     qreal param;
+    QRect cropingRect;
 
-    PictureEffect(Effect effect = ClearEffects, qreal param = 0.0)
+    PictureEffect(Effect effect = ClearEffects, qreal param = 0.0, QRect cropingRect = QRect())
       : effect(effect)
       , param(param)
+      , cropingRect(cropingRect)
     {
     }
 };

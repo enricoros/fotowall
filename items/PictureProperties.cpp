@@ -52,6 +52,7 @@ PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsI
 
     connect(m_pictureUi->invertButton, SIGNAL(clicked()), m_pictureContent, SIGNAL(flipVertically()));
     connect(m_pictureUi->flipButton, SIGNAL(clicked()), m_pictureContent, SIGNAL(flipHorizontally()));
+    connect(m_pictureUi->cropButton, SIGNAL(clicked()), m_pictureContent, SIGNAL(crop()));
     // autoconnection doesn't work because we don't do ->setupUi(this), so here we connect manually
     connect(m_pictureUi->applyEffects, SIGNAL(clicked()), this, SLOT(on_applyEffects_clicked()));
     connect(m_pictureUi->effectsList, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(on_effectsList_itemActivated(QListWidgetItem*)));

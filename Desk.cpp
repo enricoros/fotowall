@@ -23,6 +23,7 @@
 #include "items/TextProperties.h"
 #include "items/VideoContent.h"
 #include "items/WebContentSelectorItem.h"
+#include "CropingDialog.h"
 #include "FlickrInterface.h"
 #include "RenderOpts.h"
 #include <QAbstractTextDocumentLayout>
@@ -791,6 +792,7 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     initContent(p, pos);
     connect(p, SIGNAL(flipHorizontally()), this, SLOT(slotFlipHorizontally()));
     connect(p, SIGNAL(flipVertically()), this, SLOT(slotFlipVertically()));
+    connect(p, SIGNAL(crop()), this, SLOT(slotCrop()));
     return p;
 }
 
@@ -1001,6 +1003,20 @@ void Desk::slotApplyEffect(const PictureEffect & effect, bool all)
 
         if (all || selectedContent.contains(content))
             picture->addEffect(effect);
+    }
+}
+
+void Desk::slotCrop()
+{
+    QList<AbstractContent *> selectedContent = content(selectedItems());
+    foreach (AbstractContent * content, selectedContent) {
+        PictureContent * picture = dynamic_cast<PictureContent *>(content);
+        if (!picture)
+            continue;
+        CPixmap photo = picture->getPhoto();
+        CropingDialog dial(&photo);
+        if(dial.exec() == QDialog::Accepted)
+            picture->addEffect(PictureEffect(PictureEffect::Crop, 0, dial.getCropingRect()));
     }
 }
 
