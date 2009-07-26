@@ -7,6 +7,7 @@
 CropingWidget::CropingWidget(QWidget *parent) : QWidget(parent)
 {
     m_rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+    m_rubberBand->setGeometry(0,0,0,0);
 }
 
 void CropingWidget::setPixmap(CPixmap *pix)
@@ -43,7 +44,7 @@ void CropingWidget::paintEvent(QPaintEvent *)
 
 QRect CropingWidget::getCropingRect() const
 {
-    QRect selectionRect = m_rubberBand->geometry();
+    QRectF selectionRect = m_rubberBand->geometry();
     return QRect(selectionRect.x()*m_previewRatio, selectionRect.y()*m_previewRatio,
                  selectionRect.width()*m_previewRatio, selectionRect.height()*m_previewRatio);
 }

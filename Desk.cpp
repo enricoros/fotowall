@@ -1015,8 +1015,12 @@ void Desk::slotCrop()
             continue;
         CPixmap photo = picture->getPhoto();
         CropingDialog dial(&photo);
-        if(dial.exec() == QDialog::Accepted)
-            picture->addEffect(PictureEffect(PictureEffect::Crop, 0, dial.getCropingRect()));
+        if(dial.exec() == QDialog::Accepted) {
+            QRect cropingRect = dial.getCropingRect();
+            if(!cropingRect.isNull()) {
+                picture->addEffect(PictureEffect(PictureEffect::Crop, 0, dial.getCropingRect()));
+            }
+        }
     }
 }
 

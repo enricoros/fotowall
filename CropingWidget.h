@@ -5,6 +5,9 @@
 class QRubberBand;
 class CPixmap;
 
+/*
+ * This widget provides a way to select a region of a photo
+ * */
 class CropingWidget : public QWidget {
     private:
         QRubberBand *m_rubberBand;

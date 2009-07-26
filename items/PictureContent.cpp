@@ -151,9 +151,16 @@ void PictureContent::addEffect(const PictureEffect & effect)
 {
     if (!m_photo)
         return;
+
+    m_photo->addEffect(effect);
     if(effect.effect == PictureEffect::Opacity)
         setOpacity(effect.param);
-    m_photo->addEffect(effect);
+    else if (effect.effect == PictureEffect::Crop) {
+        QRect actualContentRect = contentsRect();
+        float reduceRatio = (float)(effect.cropingRect.width()+effect.cropingRect.height())/
+                            (float)(actualContentRect.height() +actualContentRect.width());
+        resizeContents(QRect(0,0, (float)effect.cropingRect.width()/reduceRatio, (float)effect.cropingRect.height()/reduceRatio));
+    }
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
@@ -182,7 +189,7 @@ bool PictureContent::fromXml(QDomElement & pe)
             QString rect = effectE.attribute("cropingRect");
             QStringList coordinates = rect.split(" ");
             if(coordinates.size() >= 3) {
-                QRect cropingRect(coordinates.at(0).toInt(), coordinates.at(1).toInt(), coordinates.at(2).toInt(), coordinates.at(3).toInt());
+                QRect cropingRect (coordinates.at(0).toInt(), coordinates.at(1).toInt(), coordinates.at(2).toInt(), coordinates.at(3).toInt());
                 fx.cropingRect = cropingRect;
             }
         }
