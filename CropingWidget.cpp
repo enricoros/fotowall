@@ -4,7 +4,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 
-CropingWidget::CropingWidget(QWidget *parent) : QWidget(parent)
+CropingWidget::CropingWidget(QWidget *parent) : QWidget(parent), m_previewRatio(1)
 {
     m_rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     m_rubberBand->setGeometry(0,0,0,0);
@@ -14,7 +14,7 @@ void CropingWidget::setPixmap(CPixmap *pix)
 {
     m_photo = pix;
     m_previewPixmap = m_photo->scaled(500, 500, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    m_previewRatio = m_photo->width()/m_previewPixmap.width();
+    m_previewRatio = (float)m_photo->width()/(float)m_previewPixmap.width();
     setFixedSize(m_previewPixmap.size());
 }
 
