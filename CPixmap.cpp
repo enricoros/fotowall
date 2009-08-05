@@ -64,6 +64,9 @@ void CPixmap::addEffect(const PictureEffect & effect) {
         case PictureEffect::Opacity:
             m_effects.push_back(PictureEffect(PictureEffect::Opacity, (qreal)effect.param));
             break;
+        case PictureEffect::Crop:
+            crop(effect.cropingRect);
+            break;
     }
 }
 
@@ -191,6 +194,14 @@ void CPixmap::toLuminosity(int value) {
     updateImage(dest);
 }
 */
+void CPixmap::crop(const QRect &cropingRect)
+{
+    if(cropingRect.isNull()) return;
+    m_effects.push_back(PictureEffect(PictureEffect::Crop, PictureEffect::Crop, cropingRect));
+    QImage img = this->toImage().copy(cropingRect);
+    updateImage(img);
+}
+
 void CPixmap::updateImage(QImage &newImage)
 {
     QImage copyImage = m_image;

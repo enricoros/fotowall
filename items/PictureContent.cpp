@@ -151,9 +151,16 @@ void PictureContent::addEffect(const PictureEffect & effect)
 {
     if (!m_photo)
         return;
+
+    m_photo->addEffect(effect);
     if(effect.effect == PictureEffect::Opacity)
         setOpacity(effect.param);
-    m_photo->addEffect(effect);
+    else if (effect.effect == PictureEffect::Crop) {
+        QRect actualContentRect = contentsRect();
+        float reduceRatio = (float)(effect.cropingRect.width()+effect.cropingRect.height())/
+                            (float)(actualContentRect.height() +actualContentRect.width());
+        resizeContents(QRect(0,0, (float)effect.cropingRect.width()/reduceRatio, (float)effect.cropingRect.height()/reduceRatio));
+    }
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
@@ -178,6 +185,14 @@ bool PictureContent::fromXml(QDomElement & pe)
         fx.param = effectE.attribute("param").toDouble();
         if (fx.effect == PictureEffect::Opacity)
             setOpacity(fx.param);
+        else if (fx.effect == PictureEffect::Crop) {
+            QString rect = effectE.attribute("cropingRect");
+            QStringList coordinates = rect.split(" ");
+            if(coordinates.size() >= 3) {
+                QRect cropingRect (coordinates.at(0).toInt(), coordinates.at(1).toInt(), coordinates.at(2).toInt(), coordinates.at(3).toInt());
+                fx.cropingRect = cropingRect;
+            }
+        }
         m_afterLoadEffects.append(fx);
     }
 
@@ -215,6 +230,13 @@ void PictureContent::toXml(QDomElement & pe) const
         QDomElement effectElement = doc.createElement("effect");
         effectElement.setAttribute("type", effect.effect);
         effectElement.setAttribute("param", effect.param);
+        if(effect.effect == PictureEffect::Crop) {
+            QString cropingRectStr;
+            cropingRectStr = QString::number(effect.cropingRect.x()) + " " + QString::number(effect.cropingRect.y())
+                + " " + QString::number(effect.cropingRect.width()) + " " + QString::number(effect.cropingRect.height());
+
+            effectElement.setAttribute("cropingRect", cropingRectStr );
+        }
         domElement.appendChild(effectElement);
     }
 }
@@ -303,6 +325,11 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 //    if (m_opaquePhoto)
 //        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
+}
+
+CPixmap PictureContent::getPhoto() const
+{
+    return *m_photo;
 }
 
 void PictureContent::dropNetworkConnection()

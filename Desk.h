@@ -145,6 +145,7 @@ class Desk : public QGraphicsScene
         void slotDeleteProperties(AbstractProperties * properties);
         void slotApplyLook(quint32 frameClass, bool mirrored, bool allContent);
         void slotApplyEffect(const PictureEffect & effect, bool allPictures);
+        void slotCrop();
         void slotFlipHorizontally();
         void slotFlipVertically();
 
