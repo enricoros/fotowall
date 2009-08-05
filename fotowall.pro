@@ -47,7 +47,8 @@ SOURCES += 3rdparty/gsuggest.cpp \
     VersionCheckDialog.cpp \
     XmlSave.cpp \
     XmlRead.cpp
-FORMS += ExactSizeDialog.ui \
+FORMS += CropingDialog.ui \
+    ExactSizeDialog.ui \
     ExportWizard.ui \
     FotoWall.ui \
     GlowEffectDialog.ui \
