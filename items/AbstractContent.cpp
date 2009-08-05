@@ -119,7 +119,7 @@ void AbstractContent::dispose()
 
     // little rotate animation
 #if QT_VERSION >= 0x040600
-    QPropertyAnimation * ani = new QPropertyAnimation(this, "zRotation");
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "rotation");
     ani->setEasingCurve(QEasingCurve::InQuad);
     ani->setDuration(300);
     ani->setEndValue(-30.0);
