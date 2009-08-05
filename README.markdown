@@ -95,6 +95,7 @@ I hope to expand the program as soon as I can, since there is many room for impr
 
 * link to web resources
  - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
+* resizing works only with the bottom right corner. fix the others.
 * webcam on windows
 * multiple webcams
 * transparent background of the window

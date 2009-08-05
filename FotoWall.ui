@@ -324,7 +324,7 @@
      <normaloff>:/data/insert-camera.png</normaloff>:/data/insert-camera.png</iconset>
    </property>
    <property name="text">
-    <string>Add Video</string>
+    <string>Add Webcam</string>
    </property>
    <property name="shortcut">
     <string>V</string>

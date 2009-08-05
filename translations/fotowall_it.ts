@@ -745,11 +745,6 @@ Vuoi aprire la pagina?</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
-        <source>Add Video</source>
-        <translation>Aggiungi Webcam</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
         <source>V</source>
         <translation>W</translation>
     </message>
@@ -767,6 +762,11 @@ Vuoi aprire la pagina?</translation>
         <location filename="../FotoWall.ui"/>
         <source>Help</source>
         <translation>Aiuto</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Add Webcam</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -822,47 +822,61 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>PictureProperties</name>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="32"/>
+        <location filename="../items/PictureProperties.cpp" line="33"/>
         <source>Picture</source>
         <translation>Immagine</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="37"/>
+        <location filename="../items/PictureProperties.cpp" line="38"/>
         <source>Invert colors</source>
         <translation>Negativo</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="38"/>
+        <location filename="../items/PictureProperties.cpp" line="39"/>
         <source>Invert the colors of the picture</source>
         <translation>Inverti i colori dell&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="40"/>
+        <location filename="../items/PictureProperties.cpp" line="41"/>
         <source>NVG</source>
         <translation>Visione Notturna</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="41"/>
+        <location filename="../items/PictureProperties.cpp" line="42"/>
         <source>Set the colors to levels of gray</source>
         <translation>Scala di grigi</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="43"/>
+        <location filename="../items/PictureProperties.cpp" line="44"/>
         <source>Black and White</source>
         <translation>Bianco e Nero</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="45"/>
+        <location filename="../items/PictureProperties.cpp" line="46"/>
         <source>Glow effect</source>
         <translation>Luminescenza</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="47"/>
+        <location filename="../items/PictureProperties.cpp" line="48"/>
         <source>Sepia</source>
         <translation>Seppia</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="35"/>
+        <location filename="../items/PictureProperties.cpp" line="50"/>
+        <location filename="../items/PictureProperties.cpp" line="91"/>
+        <source>Opacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PictureProperties.cpp" line="92"/>
+        <source>Opacity value.
+
+0: transparent
+100: opaque</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PictureProperties.cpp" line="36"/>
         <source>No effects</source>
         <translation>Elimina Effetti</translation>
     </message>
