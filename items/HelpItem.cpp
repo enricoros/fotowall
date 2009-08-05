@@ -59,8 +59,8 @@ HelpItem::HelpItem(QGraphicsItem * parent)
 
     // create an item to display it
     QGraphicsTextItem * ti = new QGraphicsTextItem(this);
-    ti->setPos(boundingRect().adjusted(12, 12, -12, -12).topLeft());
     ti->setHtml(htmlFile.readAll());
+    ti->setPos(boundingRect().adjusted(12, 12, -12, -12).topLeft());
     ti->setTextInteractionFlags(Qt::NoTextInteraction);
 #endif
 }
@@ -72,7 +72,9 @@ HelpItem::~HelpItem()
 
 QRectF HelpItem::boundingRect() const
 {
-    return QRectF(-280, -160, 560, 320);
+    QRectF r = childrenBoundingRect ().adjusted(-12, -12, 12, 12);
+    r.moveCenter(QPointF());
+    return r;
 }
 
 void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
