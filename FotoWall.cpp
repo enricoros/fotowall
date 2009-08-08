@@ -14,6 +14,7 @@
 
 #include "FotoWall.h"
 #include "items/VideoProvider.h"
+#include "items/BezierTextDialog.h"
 #include "Desk.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
@@ -525,6 +526,12 @@ void FotoWall::on_aAddPicture_triggered()
 void FotoWall::on_aAddText_triggered()
 {
     m_desk->addTextContent();
+}
+
+void FotoWall::on_aAddBezierText_triggered()
+{
+    BezierTextDialog dial;
+    dial.exec();
 }
 
 void FotoWall::on_aAddVideo_triggered()

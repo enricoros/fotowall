@@ -26,6 +26,7 @@ HEADERS += 3rdparty/gsuggest.h \
     GroupBoxWidget.h \
     CropingDialog.h \
     CropingWidget.h \
+    BezierTextDialog.h \
     ModeInfo.h \
     PictureEffect.h \
     RenderOpts.h \
@@ -45,6 +46,7 @@ SOURCES += 3rdparty/gsuggest.cpp \
     GroupBoxWidget.cpp \
     CropingDialog.cpp \
     CropingWidget.cpp \
+    BezierTextDialog.cpp \
     ModeInfo.cpp \
     VersionCheckDialog.cpp \
     XmlSave.cpp \
@@ -54,6 +56,7 @@ FORMS += CropingDialog.ui \
     ExportWizard.ui \
     FotoWall.ui \
     GlowEffectDialog.ui \
+    BezierTextDialog.ui \
     VersionCheckDialog.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \
@@ -68,6 +71,7 @@ include(frames/frames.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 include(3rdparty/posterazor/posterazor.pri)
+include(3rdparty/bezier/bezier.pri)
 
 # deployment on Linux
 unix {

@@ -67,6 +67,7 @@ class FotoWall : public QWidget
         void on_aAddFlickr_toggled(bool on);
         void on_aAddPicture_triggered();
         void on_aAddText_triggered();
+        void on_aAddBezierText_triggered();
         void on_aAddVideo_triggered();
         void on_loadButton_clicked();
         void on_saveButton_clicked();

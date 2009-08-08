@@ -162,6 +162,19 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="4">
+          <widget class="QToolButton" name="b5">
+           <property name="iconSize">
+            <size>
+             <width>54</width>
+             <height>48</height>
+            </size>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -629,6 +642,21 @@
    </property>
    <property name="shortcut">
     <string>T</string>
+   </property>
+  </action>
+  <action name="aAddBezierText">
+   <property name="icon">
+    <iconset resource="fotowall.qrc">
+     <normaloff>:/data/insert-text.png</normaloff>:/data/insert-text.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Bezier Text</string>
+   </property>
+   <property name="shortcut">
+    <string>B</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a text following a Bezier curve</string>
    </property>
   </action>
   <action name="aAddVideo">
