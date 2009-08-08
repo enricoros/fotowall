@@ -160,7 +160,7 @@ FotoWall::FotoWall(QWidget * parent)
     createMiscActions();
 
     // set the startup project mode
-    on_projectType_currentIndexChanged(0);
+    on_projectType_activated(0);
     m_modeInfo.setDeskDpi(ui->view->logicalDpiX(), ui->view->logicalDpiY());
     m_modeInfo.setPrintDpi(300);
 
@@ -192,7 +192,12 @@ ModeInfo FotoWall::getModeInfo()
 
 void FotoWall::restoreMode(int mode)
 {
-    on_projectType_currentIndexChanged(mode);
+    if (mode == 3) { // If exact size project
+        // Called here not to have the unneeded size dialog
+        setExactSizeProject();
+    } else {
+        on_projectType_activated(mode);
+    }
 }
 
 void FotoWall::loadXml(const QString & filePath)
@@ -471,7 +476,7 @@ void FotoWall::setExactSizeProject()
     ui->projectType->setCurrentIndex(3);
 }
 
-void FotoWall::on_projectType_currentIndexChanged(int index)
+void FotoWall::on_projectType_activated(int index)
 {
     m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (so if it is a mode that require
                                         // asking size, it will be asked !

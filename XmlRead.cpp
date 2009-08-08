@@ -74,10 +74,10 @@ void XmlRead::readProject(FotoWall *fotowall)
     if(!dpiElement.isNull()) {
         int dpi = dpiElement.text().toInt();
         modeInfo.setPrintDpi(dpi);
-        fotowall->setModeInfo(modeInfo);
     }
 
     int mode = modeElement.firstChildElement("id").text().toInt();
+    fotowall->setModeInfo(modeInfo);
     fotowall->restoreMode(mode);
 }
 
