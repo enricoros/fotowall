@@ -361,6 +361,9 @@ bool AbstractContent::fromXml(QDomElement & pe)
         m_zRotationAngle = te.attribute("zRot").toDouble();
         applyRotations();
     }
+    domElement = pe.firstChildElement("mirror");
+    setMirrorEnabled(domElement.attribute("state").toInt());
+
     return true;
 }
 
@@ -446,6 +449,10 @@ void AbstractContent::toXml(QDomElement & pe) const
         domElement.setAttribute("zRot", m_zRotationAngle);
         pe.appendChild(domElement);
     }
+    domElement = doc.createElement("mirror");
+    domElement.setAttribute("state", mirrorEnabled());
+    pe.appendChild(domElement);
+
 }
 
 QPixmap AbstractContent::renderAsBackground(const QSize & size, bool keepAspect) const
