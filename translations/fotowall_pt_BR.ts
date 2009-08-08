@@ -776,6 +776,42 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>HelpItem</name>
+    <message>
+        <location filename="../items/HelpItem.cpp" line="74"/>
+        <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
+&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
+&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
+  &lt;div&gt;
+    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
+    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;Welcome&lt;/span&gt;
+    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
+  &lt;/div&gt;
+
+  &lt;br /&gt;
+  &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;&lt;b&gt;Playing&lt;/b&gt; with &lt;b&gt;FotoWall&lt;/b&gt; is easy&lt;/div&gt;
+
+  &lt;div&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;b&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;add&lt;/b&gt; a picture&amp;nbsp;using the&amp;nbsp;&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;add pictures&lt;/span&gt;&lt;/i&gt;&amp;nbsp;button or &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;drop it&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;i&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt;&amp;nbsp;&amp;nbsp; to &lt;b&gt;place it where you want&lt;/b&gt;,&amp;nbsp;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;try&lt;/span&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;every small icon&lt;/i&gt;&lt;/span&gt;&lt;i&gt;&amp;nbsp;&lt;/i&gt;on the frame&lt;/i&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;i&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;right click&lt;/span&gt;&lt;/i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;on the picture&lt;/span&gt; to &lt;b&gt;change its look&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;double click&lt;/span&gt;&lt;/i&gt;&lt;b&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&amp;nbsp;&lt;/span&gt;&lt;/b&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;the picture&lt;/span&gt; to set it as &lt;b&gt;background&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;click&lt;/span&gt;&lt;/i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&amp;nbsp;the&amp;nbsp;corners&lt;/span&gt; to change wall&amp;nbsp;&lt;b&gt;colors&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;just look and you will find ...&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+
+  &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;Please make sure to share your best work with your friends ;-)&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
+
+  &lt;br/&gt;
+  &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;FotoWall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HtmlTextEdit</name>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="202"/>
