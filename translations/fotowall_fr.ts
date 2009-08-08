@@ -150,22 +150,22 @@ Utiliser CTRL pour annuler les transformations.</translation>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="822"/>
+        <location filename="../Desk.cpp" line="824"/>
         <source>Back</source>
         <translation>Arrière</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="826"/>
+        <location filename="../Desk.cpp" line="828"/>
         <source>Front</source>
         <translation>Avant</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="953"/>
+        <location filename="../Desk.cpp" line="955"/>
         <source>Delete content</source>
         <translation>Supprimer l&apos;élément</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="953"/>
+        <location filename="../Desk.cpp" line="955"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
         <translation>Les %1 éléments sélectionnés seront supprimés, voulez-vous continuer ?</translation>
     </message>
@@ -790,7 +790,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HelpItem</name>
     <message>
-        <location filename="../items/HelpItem.cpp" line="74"/>
+        <location filename="../items/HelpItem.cpp" line="37"/>
         <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
@@ -923,12 +923,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../items/PictureProperties.cpp" line="50"/>
-        <location filename="../items/PictureProperties.cpp" line="91"/>
+        <location filename="../items/PictureProperties.cpp" line="92"/>
         <source>Opacity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="92"/>
+        <location filename="../items/PictureProperties.cpp" line="93"/>
         <source>Opacity value.
 
 0: transparent
@@ -964,6 +964,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../items/PictureProperties.ui"/>
         <source>apply to all</source>
         <translation>appliquer à tous</translation>
+    </message>
+    <message>
+        <location filename="../items/PictureProperties.ui"/>
+        <source>Crop</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
