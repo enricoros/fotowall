@@ -21,9 +21,10 @@ class BezierTextContent : public AbstractContent
         void setText(const QString &text);
         QString text();
         void setFont(const QFont &font);
+        void setFontSize(const int size);
         void setPath(const QPainterPath &path);
 
-        void configureBezier();
+        void resizeContents(const QRect & rect, bool keepRatio = true);
 
         // ::AbstractContent
         bool fromXml(QDomElement & parentElement);

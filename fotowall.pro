@@ -27,8 +27,6 @@ HEADERS += 3rdparty/gsuggest.h \
     GroupBoxWidget.h \
     CropingDialog.h \
     CropingWidget.h \
-    BezierTextContent.h \
-    BezierTextDialog.h \
     ModeInfo.h \
     PictureEffect.h \
     RenderOpts.h \
@@ -48,8 +46,6 @@ SOURCES += 3rdparty/gsuggest.cpp \
     GroupBoxWidget.cpp \
     CropingDialog.cpp \
     CropingWidget.cpp \
-    BezierTextContent.cpp \
-    BezierTextDialog.cpp \
     ModeInfo.cpp \
     VersionCheckDialog.cpp \
     XmlSave.cpp \

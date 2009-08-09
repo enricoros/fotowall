@@ -19,6 +19,8 @@ HEADERS += AbstractContent.h \
     PictureProperties.h \
     TextContent.h \
     TextProperties.h \
+    BezierTextContent.h \
+    BezierTextProperties.h \
     VideoContent.h \
     VideoProvider.h \
     CornerItem.h \
@@ -35,6 +37,8 @@ SOURCES += AbstractContent.cpp \
     PictureProperties.cpp \
     TextContent.cpp \
     TextProperties.cpp \
+    BezierTextContent.cpp \
+    BezierTextProperties.cpp \
     VideoContent.cpp \
     VideoProvider.cpp \
     CornerItem.cpp \

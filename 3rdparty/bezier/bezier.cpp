@@ -56,34 +56,34 @@ Bezier::Bezier(QWidget *parent)
     pt.fillRect(50, 50, 50, 50, color);
     pt.end();
 
-#if 0
+//#if 0
     one = QPointF(50, 50);
     two = QPointF(150, 150);
     three = QPointF(100, 250);
     four = QPointF(300, 50);
-#else
+//#else
     //one   = QPointF(157, 211);
     //two   = QPointF(150, 150);
     //three = QPointF(329,  50);
     //four  = QPointF(335, 126);
 
-//     one   = QPointF(153, 199);
-//     two   = QPointF(153, 100);
-//     three = QPointF(300, 100);
-//     four  = QPointF(300, 199);
+    //one   = QPointF(153, 199);
+    //two   = QPointF(153, 100);
+    //three = QPointF(300, 100);
+    //four  = QPointF(300, 199);
 
 //     one   = QPointF(153, 199);
 //     two   = QPointF(147, 61);
 //     three = QPointF(414, 18);
 //     four  = QPointF(355, 201);
 
-    one   = QPointF(153, 199);
-    two   = QPointF(59, 53);
-    three = QPointF(597, 218);
-    four  = QPointF(355, 201);
+    //one   = QPointF(153, 199);
+    //two   = QPointF(59, 53);
+    //three = QPointF(597, 218);
+    //four  = QPointF(355, 201);
 
 
-#endif
+//#endif
 
     setMouseTracking(true);
     moving = 0;

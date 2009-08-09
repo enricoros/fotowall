@@ -23,6 +23,7 @@
 #include "items/TextContent.h"
 #include "items/TextProperties.h"
 #include "items/BezierTextContent.h"
+#include "items/BezierTextProperties.h"
 #include "items/VideoContent.h"
 #include "items/WebContentSelectorItem.h"
 #include "CropingDialog.h"
@@ -856,6 +857,7 @@ void Desk::clearMarkers()
 /// Slots
 void Desk::slotConfigureContent(const QPoint & scenePoint)
 {
+    qDebug() << "slotConfigureContent()";
     // get the content and ensure it hasn't already a property window
     AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
     foreach (AbstractProperties * properties, m_properties) {
@@ -877,6 +879,8 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     if (TextContent * text = dynamic_cast<TextContent *>(content))
         p = new TextProperties(text);
 
+    if (BezierTextContent * bezierText = dynamic_cast<BezierTextContent *>(content))
+        p = new BezierTextProperties(bezierText);
     // generic properties
     if (!p)
         p = new AbstractProperties(content);
