@@ -116,6 +116,14 @@ QFont Bezier::font()
 {
     return m_fontBox->currentFont();
 }
+int Bezier::fontSize()
+{
+    return m_fontSize->value();
+}
+QString Bezier::text()
+{
+    return m_lineEdit->text();
+}
 /*  /FotoWall */
 
 void Bezier::drawBackground(QPainter *painter, const QRectF &fullRect)

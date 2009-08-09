@@ -44,6 +44,8 @@ public:
     //FotoWall
     QPainterPath path();
     QFont font();
+    int fontSize();
+    QString text();
 
 public slots:
     void changeFont(const QFont &font);

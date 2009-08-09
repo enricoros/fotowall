@@ -12,6 +12,7 @@ QT = core \
     svg \
     network \
     xml
+CONFIG += debug
 
 # FotoWall input files
 HEADERS += 3rdparty/gsuggest.h \
@@ -26,6 +27,7 @@ HEADERS += 3rdparty/gsuggest.h \
     GroupBoxWidget.h \
     CropingDialog.h \
     CropingWidget.h \
+    BezierTextContent.h \
     BezierTextDialog.h \
     ModeInfo.h \
     PictureEffect.h \
@@ -46,6 +48,7 @@ SOURCES += 3rdparty/gsuggest.cpp \
     GroupBoxWidget.cpp \
     CropingDialog.cpp \
     CropingWidget.cpp \
+    BezierTextContent.cpp \
     BezierTextDialog.cpp \
     ModeInfo.cpp \
     VersionCheckDialog.cpp \

@@ -26,6 +26,7 @@
 class AbstractContent;
 class AbstractProperties;
 struct PictureEffect;
+class BezierTextContent;
 class ColorPickerItem;
 class HelpItem;
 class HighlightItem;
@@ -48,6 +49,7 @@ class Desk : public QGraphicsScene
         // add content
         void addPictures(const QStringList & fileNames);
         void addTextContent();
+        void addBezierTextContent();
         void addVideoContent(int input);
 
         // selectors
@@ -109,6 +111,7 @@ class Desk : public QGraphicsScene
         void setBackContent(AbstractContent * content);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
+        BezierTextContent * createBezierText(const QPoint & pos);
         VideoContent * createVideo(int input, const QPoint & pos);
         void setDVDMarkers();
         void clearMarkers();

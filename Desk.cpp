@@ -12,6 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDebug>
 #include "Desk.h"
 #include "frames/FrameFactory.h"
 #include "items/ColorPickerItem.h"
@@ -21,6 +22,7 @@
 #include "items/PictureProperties.h"
 #include "items/TextContent.h"
 #include "items/TextProperties.h"
+#include "items/BezierTextContent.h"
 #include "items/VideoContent.h"
 #include "items/WebContentSelectorItem.h"
 #include "CropingDialog.h"
@@ -133,6 +135,11 @@ void Desk::addPictures(const QStringList & fileNames)
 void Desk::addTextContent()
 {
     createText(nearCenter(sceneRect()));
+}
+
+void Desk::addBezierTextContent()
+{
+    createBezierText(nearCenter(sceneRect()));
 }
 
 void Desk::addVideoContent(int input)
@@ -799,6 +806,14 @@ PictureContent * Desk::createPicture(const QPoint & pos)
 TextContent * Desk::createText(const QPoint & pos)
 {
     TextContent * t = new TextContent(this);
+    initContent(t, pos);
+    return t;
+}
+
+BezierTextContent * Desk::createBezierText(const QPoint &pos)
+{
+    qDebug() << "Desk::createBezierText at pos " << pos;
+    BezierTextContent* t = new BezierTextContent(this);
     initContent(t, pos);
     return t;
 }

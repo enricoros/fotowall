@@ -12,6 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDebug>
 #include "FotoWall.h"
 #include "items/VideoProvider.h"
 #include "items/BezierTextDialog.h"
@@ -530,8 +531,8 @@ void FotoWall::on_aAddText_triggered()
 
 void FotoWall::on_aAddBezierText_triggered()
 {
-    BezierTextDialog dial;
-    dial.exec();
+    qDebug() << "FotoWall::on_aAddBezierText_triggered";
+    m_desk->addBezierTextContent();
 }
 
 void FotoWall::on_aAddVideo_triggered()
