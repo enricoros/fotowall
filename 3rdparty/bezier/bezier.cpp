@@ -195,7 +195,9 @@ void Bezier::paintEvent(QPaintEvent *e)
     for (int i = 0; i < str.length(); ++i) {
         qreal t = m_path.percentAtLength(curLen);
         QPointF pt = m_path.pointAtPercent(t);
-        qreal angle = m_path.angleAtPercent(t);
+        //qreal angle = m_path.angleAtPercent(t);
+        qreal angle = -m_path.angleAtPercent(t);
+
         QString txt;
         txt.append(str[i]);
         p.save();

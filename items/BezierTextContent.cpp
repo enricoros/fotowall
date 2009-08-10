@@ -77,7 +77,7 @@ void BezierTextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem
     // paint parent
     AbstractContent::paint(painter, option, widget);
     if(m_text.isEmpty()) {
-        painter->drawText(0, 0, tr("Right clic to configure."));
+        painter->drawText(boundingRect().x(), boundingRect().y() + 30, tr("Right clic to configure."));
         return;
     }
 
@@ -95,7 +95,7 @@ void BezierTextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem
     for (int i = 0; i < m_text.length(); ++i) {
         qreal t = m_path.percentAtLength(curLen);
         QPointF pt = QPointF(m_path.pointAtPercent(t).x(), m_path.pointAtPercent(t).y()) - resetOrigin;
-        qreal angle = m_path.angleAtPercent(t);
+        qreal angle = -m_path.angleAtPercent(t);
         QString txt;
         txt.append(m_text[i]);
         painter->save();
