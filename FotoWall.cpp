@@ -15,7 +15,6 @@
 #include <QDebug>
 #include "FotoWall.h"
 #include "items/VideoProvider.h"
-#include "items/BezierTextDialog.h"
 #include "Desk.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"

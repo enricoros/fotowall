@@ -55,7 +55,6 @@ FORMS += CropingDialog.ui \
     ExportWizard.ui \
     FotoWall.ui \
     GlowEffectDialog.ui \
-    BezierTextDialog.ui \
     VersionCheckDialog.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \

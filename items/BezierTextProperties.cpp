@@ -21,6 +21,10 @@ BezierTextProperties::BezierTextProperties(BezierTextContent * bezierTextContent
       , m_bezierTextContent (bezierTextContent)
 {
     m_bezierWidget = new Bezier();
+    m_bezierWidget->setFont(m_bezierTextContent->font());
+    m_bezierWidget->setFontSize(m_bezierTextContent->font().pointSize());
+    m_bezierWidget->setText(m_bezierTextContent->text());
+    m_bezierWidget->setControlPoints(m_bezierTextContent->controlPoints());
     addTab(m_bezierWidget, tr("Bezier Text"), false, true);
 }
 
@@ -34,4 +38,5 @@ void BezierTextProperties::closing()
     m_bezierTextContent->setPath(m_bezierWidget->path());
     m_bezierTextContent->setFont(m_bezierWidget->font());
     m_bezierTextContent->setFontSize(m_bezierWidget->fontSize());
+    m_bezierTextContent->setControlPoints(m_bezierWidget->controlPoints());
 }

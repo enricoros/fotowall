@@ -29,6 +29,7 @@
 #include <QFontComboBox>
 #include <QSpinBox>
 #include <QMovie>
+#include <QList>
 
 class QPaintEvent;
 class QPainter;
@@ -42,10 +43,15 @@ public:
     Bezier(QWidget *parent=0);
 
     //FotoWall
-    QPainterPath path();
-    QFont font();
-    int fontSize();
-    QString text();
+    QPainterPath path() const;
+    QFont font() const;
+    void setFont(const QFont &);
+    int fontSize() const;
+    void setFontSize(int size);
+    QString text() const;
+    void setText(const QString &);
+    void setControlPoints(const QList<QPointF> &);
+    QList<QPointF> controlPoints() const;
 
 public slots:
     void changeFont(const QFont &font);

@@ -20,6 +20,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #include "bezier.h"
 
 #include <QPainter>
@@ -108,21 +109,49 @@ Bezier::Bezier(QWidget *parent)
 }
 
 /* FotoWall */
-QPainterPath Bezier::path()
+QPainterPath Bezier::path() const
 {
     return m_path;
 }
-QFont Bezier::font()
+QFont Bezier::font() const
 {
     return m_fontBox->currentFont();
 }
-int Bezier::fontSize()
+void Bezier::setFont(const QFont &font)
+{
+    m_fontBox->setCurrentFont(font);
+}
+int Bezier::fontSize() const
 {
     return m_fontSize->value();
 }
-QString Bezier::text()
+void Bezier::setFontSize(int size)
+{
+    m_fontSize->setValue(size);
+}
+QString Bezier::text() const
 {
     return m_lineEdit->text();
+}
+void Bezier::setText(const QString &text)
+{
+    m_lineEdit->setText(text);
+}
+
+QList<QPointF> Bezier::controlPoints() const
+{
+    QList<QPointF> controlPts;
+    controlPts << one << two << three << four;
+    return controlPts;
+}
+void Bezier::setControlPoints(const QList<QPointF> &controlPts)
+{
+    if (controlPts.length() == 4) {
+        one = controlPts[0];
+        two = controlPts[1];
+        three = controlPts[2];
+        four = controlPts[3];
+    }
 }
 /*  /FotoWall */
 
@@ -160,7 +189,8 @@ void Bezier::paintEvent(QPaintEvent *e)
     p.setFont(font);
     QString str = m_lineEdit->text();
     QFontMetricsF metrics(p.font());
-    qreal curLen = 0;
+    //qreal curLen = 0;
+    qreal curLen = 20;
     //qDebug()<<one<<two<<three<<four;
     for (int i = 0; i < str.length(); ++i) {
         qreal t = m_path.percentAtLength(curLen);
