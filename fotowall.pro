@@ -57,6 +57,7 @@ RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \
     translations/fotowall_fr.ts \
     translations/fotowall_it.ts \
+    translations/fotowall_pl.ts \
     translations/fotowall_pt_BR.ts
 
 # Sub-Components

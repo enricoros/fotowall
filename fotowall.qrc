@@ -38,6 +38,7 @@
         <file>translations/fotowall_de.qm</file>
         <file>translations/fotowall_fr.qm</file>
         <file>translations/fotowall_it.qm</file>
+        <file>translations/fotowall_pl.qm</file>
         <file>translations/fotowall_pt_BR.qm</file>
     </qresource>
     <qresource prefix="/plasma-frames" >

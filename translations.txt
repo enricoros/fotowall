@@ -9,36 +9,50 @@
 # See also the Translations chapter in 'fotowall.pro'.
 
 # FotoWall input files
-HEADERS += CPixmap.h \
+HEADERS += 3rdparty/gsuggest.h \
+    CPixmap.h \
     Desk.h \
     ExactSizeDialog.h \
     ExportWizard.h \
+    FlickrInterface.h \
     FotoWall.h \
     GlowEffectDialog.h \
     GlowEffectWidget.h \
+    CropingDialog.h \
+    CropingWidget.h \
     ModeInfo.h \
+    PictureEffect.h \
     RenderOpts.h \
+    VersionCheckDialog.h \
     XmlSave.h \
     XmlRead.h
-SOURCES += main.cpp \
+SOURCES += 3rdparty/gsuggest.cpp \
+    main.cpp \
     CPixmap.cpp \
     Desk.cpp \
     ExactSizeDialog.cpp \
     ExportWizard.cpp \
+    FlickrInterface.cpp \
     FotoWall.cpp \
     GlowEffectDialog.cpp \
     GlowEffectWidget.cpp \
+    CropingDialog.cpp \
+    CropingWidget.cpp \
     ModeInfo.cpp \
+    VersionCheckDialog.cpp \
     XmlSave.cpp \
     XmlRead.cpp
-FORMS += ExactSizeDialog.ui \
+FORMS += CropingDialog.ui \
+    ExactSizeDialog.ui \
     ExportWizard.ui \
     FotoWall.ui \
-    GlowEffectDialog.ui
+    GlowEffectDialog.ui \
+    VersionCheckDialog.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \
     translations/fotowall_fr.ts \
     translations/fotowall_it.ts \
+    translations/fotowall_pl.ts \
     translations/fotowall_pt_BR.ts
 
 # Sub-Components
@@ -46,3 +60,4 @@ include(items/items.pri)
 include(frames/frames.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
+### EXCLUDED ### include(3rdparty/posterazor/posterazor.pri)
