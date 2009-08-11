@@ -25,16 +25,10 @@
 }</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="leftMargin">
-       <number>6</number>
-      </property>
-      <property name="topMargin">
+      <property name="margin">
        <number>0</number>
       </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="spacing">
        <number>0</number>
       </property>
       <item row="0" column="5" rowspan="2">
@@ -66,10 +60,10 @@
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="64">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
+             <color alpha="128">
+              <red>255</red>
+              <green>255</green>
+              <blue>255</blue>
              </color>
             </brush>
            </colorrole>
@@ -86,10 +80,10 @@
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="64">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
+             <color alpha="128">
+              <red>255</red>
+              <green>255</green>
+              <blue>255</blue>
              </color>
             </brush>
            </colorrole>
@@ -97,19 +91,19 @@
           <disabled>
            <colorrole role="Base">
             <brush brushstyle="SolidPattern">
-             <color alpha="64">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
+             <color alpha="128">
+              <red>255</red>
+              <green>255</green>
+              <blue>255</blue>
              </color>
             </brush>
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="64">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
+             <color alpha="128">
+              <red>255</red>
+              <green>255</green>
+              <blue>255</blue>
              </color>
             </brush>
            </colorrole>
