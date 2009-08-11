@@ -71,7 +71,7 @@ class FotoWall : public QWidget
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_exportButton_clicked();
-        void on_quitButton_clicked();
+        //void on_quitButton_clicked();
 
         void slotActionSelectAll();
 

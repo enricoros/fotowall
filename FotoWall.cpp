@@ -145,6 +145,10 @@ FotoWall::FotoWall(QWidget * parent)
     ui->setupUi(this);
     ui->view->setDesk(m_desk);
     ui->view->setFocus();
+    ui->b1->setDefaultAction(ui->aAddPicture);
+    ui->b2->setDefaultAction(ui->aAddText);
+    ui->b3->setDefaultAction(ui->aAddVideo);
+    ui->b4->setDefaultAction(ui->aAddFlickr);
 
     // attach menus
     //ui->arrangeButton->setMenu(createArrangeMenu());
@@ -555,12 +559,12 @@ void FotoWall::on_exportButton_clicked()
     // print on other modes
     m_desk->printAsImage(m_modeInfo.printDpi(), m_modeInfo.printPixelSize(), m_modeInfo.landscape());
 }
-
+/*
 void FotoWall::on_quitButton_clicked()
 {
     QCoreApplication::quit();
 }
-
+*/
 void FotoWall::slotActionSelectAll()
 {
     m_desk->selectAllContent();

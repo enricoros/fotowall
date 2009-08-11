@@ -23,6 +23,7 @@ HEADERS += 3rdparty/gsuggest.h \
     FotoWall.h \
     GlowEffectDialog.h \
     GlowEffectWidget.h \
+    GroupBoxWidget.h \
     CropingDialog.h \
     CropingWidget.h \
     ModeInfo.h \
@@ -41,6 +42,7 @@ SOURCES += 3rdparty/gsuggest.cpp \
     FotoWall.cpp \
     GlowEffectDialog.cpp \
     GlowEffectWidget.cpp \
+    GroupBoxWidget.cpp \
     CropingDialog.cpp \
     CropingWidget.cpp \
     ModeInfo.cpp \
