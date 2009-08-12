@@ -24,27 +24,14 @@
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.190 rgba(232, 232, 232, 255), stop:0.191 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
 }</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <property name="margin">
-       <number>0</number>
-      </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
        <number>0</number>
       </property>
-      <item row="0" column="5" rowspan="2">
-       <spacer name="spacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>17</width>
-          <height>48</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="0" rowspan="2">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
        <widget class="GroupBoxWidget" name="contentWidget" native="true">
         <property name="palette">
          <palette>
@@ -178,7 +165,7 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="1" rowspan="2">
+      <item>
        <widget class="GroupBoxWidget" name="widget" native="true">
         <property name="palette">
          <palette>
@@ -296,7 +283,7 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="2" rowspan="2">
+      <item>
        <widget class="GroupBoxWidget" name="widget_2" native="true">
         <property name="palette">
          <palette>
@@ -425,7 +412,42 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="10" rowspan="2">
+      <item>
+       <widget class="QWidget" name="widget_4" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <widget class="QToolButton" name="howtoButton">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>16</y>
+           <width>46</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Help</string>
+         </property>
+         <property name="popupMode">
+          <enum>QToolButton::InstantPopup</enum>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
        <widget class="GroupBoxWidget" name="widget_3" native="true">
         <property name="palette">
          <palette>
@@ -537,6 +559,9 @@
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item row="0" column="2">
@@ -569,25 +594,6 @@
           </widget>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item row="0" column="6" rowspan="2">
-       <widget class="QToolButton" name="howtoButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Help</string>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::InstantPopup</enum>
-        </property>
-        <property name="autoRaise">
-         <bool>true</bool>
-        </property>
        </widget>
       </item>
      </layout>
