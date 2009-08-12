@@ -40,11 +40,12 @@ class TextContent : public AbstractContent
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
+        void updateTextConstraints();
         QTextDocument * m_text;
-        QSizeF m_textSize;
+        int m_margin;
 
-    private Q_SLOTS:
-        void slotTextResized(const QSizeF & size);
+        QList<QRect> m_blockRects;
+        QRect m_textRect;
 };
 
 #endif

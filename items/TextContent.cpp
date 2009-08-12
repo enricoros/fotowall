@@ -21,13 +21,16 @@
 #include <QGraphicsScene>
 #include <QMimeData>
 #include <QPainter>
-#include <QUrl>
 #include <QTextDocument>
-#include <QAbstractTextDocumentLayout>
+#include <QTextFrame>
+#include <QUrl>
+#include <QDebug>
 
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
     , m_text(0)
+    , m_margin(4)
+    , m_textRect(0, 0, 0, 0)\
 {
     setFrame(0);
     setFrameTextEnabled(false);
@@ -35,8 +38,9 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
 
     // create a text document
     m_text = new QTextDocument(this);
-    QAbstractTextDocumentLayout * layout = m_text->documentLayout();
-    connect(layout, SIGNAL(documentSizeChanged(const QSizeF &)), this, SLOT(slotTextResized(const QSizeF &)));
+#if QT_VERSION >= 0x040500
+    m_margin = m_text->documentMargin();
+#endif
 
     // template text
     QFont font;
@@ -45,7 +49,8 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
 #endif
     font.setPointSize(16);
     m_text->setDefaultFont(font);
-    m_text->setPlainText(tr("insert text here..."));
+    m_text->setPlainText(tr("right click to edit..."));
+    setHtml(m_text->toHtml());
 }
 
 TextContent::~TextContent()
@@ -60,7 +65,10 @@ QString TextContent::toHtml() const
 
 void TextContent::setHtml(const QString & htmlCode)
 {
+    qWarning() << "SHTML";
     m_text->setHtml(htmlCode);
+    updateTextConstraints();
+    qWarning() << "/SHTML";
 }
 
 bool TextContent::fromXml(QDomElement & pe)
@@ -119,9 +127,9 @@ QPixmap TextContent::renderAsBackground(const QSize & size, bool keepAspect) con
 int TextContent::contentHeightForWidth(int width) const
 {
     // if no text size is available, use default
-    if (m_textSize.width() < 1 || m_textSize.height() < 1)
+    if (m_textRect.width() < 1 || m_textRect.height() < 1)
         return AbstractContent::contentHeightForWidth(width);
-    return (m_textSize.height() * width) / m_textSize.width();
+    return (m_textRect.height() * width) / m_textRect.width();
 }
 
 void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
@@ -135,32 +143,67 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     // paint parent
     AbstractContent::paint(painter, option, widget);
 
-    // skip if no photo
-
-/*    painter->save();
-    QRectF r = option->exposedRect;
-    painter->translate(-dd->controlOffset());
-    r.translate(dd->controlOffset());
-*/
     //QTextDocumentLayout * layout = qobject_cast<QTextDocumentLayout *>(m_text->documentLayout());
-
     //m_text->documentLayout();
-
     // the layout might need to expand the root frame to
     // the viewport if NoWrap is set
     //if (layout)
     //    layout->setViewport(boundingRect().toRect());
 
-    QRect rect = contentsRect();
+    // scale painter for adapting the Text Rect to the Contents Rect
+    QRect cRect = contentsRect();
     painter->save();
-    painter->translate(-rect.width() / 2, -rect.height() / 2);
-    if (m_textSize.width() > 0 && m_textSize.height() > 0) {
-        qreal xScale = (qreal)rect.width() / (qreal)m_textSize.width();
-        qreal yScale = (qreal)rect.height() / (qreal)m_textSize.height();
+    painter->translate(cRect.topLeft());
+    if (m_textRect.width() > 0 && m_textRect.height() > 0) {
+        qreal xScale = (qreal)cRect.width() / (qreal)m_textRect.width();
+        qreal yScale = (qreal)cRect.height() / (qreal)m_textRect.height();
         if (!qFuzzyCompare(xScale, 1.0) || !qFuzzyCompare(yScale, 1.0))
             painter->scale(xScale, yScale);
     }
-    m_text->drawContents(painter);
+
+#if 0
+    // standard rich text document drawing
+    QAbstractTextDocumentLayout::PaintContext pCtx;
+    m_text->documentLayout()->draw(painter, pCtx);
+#else
+    // manual drawing
+    QPointF blockPos = -m_textRect.topLeft();
+
+    // 1. for each Text Block
+    int blockRectIdx = 0;
+    for (QTextBlock tb = m_text->begin(); tb.isValid(); tb = tb.next()) {
+        if (!tb.isVisible() || blockRectIdx > m_blockRects.size())
+            continue;
+
+        // 1.1. compute text insertion position
+        const QRect & blockRect = m_blockRects[blockRectIdx++];
+        QPointF iPos = blockPos - blockRect.topLeft();
+        blockPos += QPointF(0, blockRect.height());
+
+        // 1.2. iterate over text fragments
+        for (QTextBlock::iterator tbIt = tb.begin(); !(tbIt.atEnd()); ++tbIt) {
+            QTextFragment frag = tbIt.fragment();
+            if (!frag.isValid())
+                continue;
+
+            // 1.2.1. setup painter and metrics for text fragment
+            QTextCharFormat format = frag.charFormat();
+            QFont font = format.font();
+            painter->setFont(font);
+            painter->setPen(format.foreground().color());
+            //painter->setPen(QColor::fromHsv(qrand() % 360, 255, 255));
+            painter->setBrush(Qt::NoBrush);
+            QFontMetrics metrics(font);
+
+            // 1.2.2. draw each character
+            QString text = frag.text();
+            foreach (const QChar & textChar, text) {
+                painter->drawText(iPos, textChar);
+                iPos += QPointF(metrics.width(textChar), 0);
+            }
+        }
+    }
+#endif
 
     //if (layout)
     //    layout->setViewport(QRect());
@@ -168,20 +211,80 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     painter->restore();
 }
 
-void TextContent::slotTextResized(const QSizeF & size)
+void TextContent::updateTextConstraints()
 {
+    // 1. actual content stretch
     double prevXScale = 1.0;
     double prevYScale = 1.0;
-    if (m_textSize.width() > 0 && m_textSize.height() > 0) {
-        QSize cSize = contentsRect().size();
-        prevXScale = (qreal)cSize.width() / (qreal)m_textSize.width();
-        prevYScale = (qreal)cSize.height() / (qreal)m_textSize.height();
+    if (m_textRect.width() > 0 && m_textRect.height() > 0) {
+        QRect cRect = contentsRect();
+        prevXScale = (qreal)cRect.width() / (qreal)m_textRect.width();
+        prevYScale = (qreal)cRect.height() / (qreal)m_textRect.height();
     }
 
-    int w = size.width();
-    int h = size.height();
-    m_textSize = QSizeF(w, h);
-    w = (int)(prevXScale * (qreal)w);
-    h = (int)(prevYScale * (qreal)h);
+    // 2. LAYOUT TEXT. find out Block rects and Document rect
+    m_blockRects.clear();
+    m_textRect = QRect(0, 0, 0, 0);
+    for (QTextBlock tb = m_text->begin(); tb.isValid(); tb = tb.next()) {
+        if (!tb.isVisible())
+            continue;
+
+        // 2.1.A. calc the Block size uniting Fragments bounding rects
+        QRect blockRect(0, 0, 0, 0);
+        for (QTextBlock::iterator tbIt = tb.begin(); !(tbIt.atEnd()); ++tbIt) {
+            QTextFragment frag = tbIt.fragment();
+            if (!frag.isValid())
+                continue;
+
+            QFontMetrics metrics(frag.charFormat().font());
+            QString text = frag.text();
+            if (text.trimmed().isEmpty())
+                continue;
+
+            // TODO: implement superscript / subscript (it's in charFormat's alignment)
+            // it must be implemented in paint too
+
+            QRect textRect = metrics.boundingRect(text);
+            if (textRect.left() > 9999)
+                continue;
+            if (textRect.top() < blockRect.top())
+                blockRect.setTop(textRect.top());
+            if (textRect.bottom() > blockRect.bottom())
+                blockRect.setBottom(textRect.bottom());
+
+            int textWidth = metrics.width(text);
+            blockRect.setWidth(blockRect.width() + textWidth);
+        }
+        // 2.1.B. calc the Block size of blank lines
+        if (tb.begin() == tb.end()) {
+            QFontMetrics metrics(tb.charFormat().font());
+            int textHeight = metrics.height();
+            blockRect.setWidth(1);
+            blockRect.setHeight(textHeight);
+        }
+
+        // 2.2. add the Block's margins
+        QTextBlockFormat tbFormat = tb.blockFormat();
+        blockRect.adjust(-tbFormat.leftMargin(), -tbFormat.topMargin(), tbFormat.rightMargin(), tbFormat.bottomMargin());
+
+        // 2.3. store the original block rect
+        m_blockRects.append(blockRect);
+
+        // 2.4. enlarge the Document rect (uniting the Block rect)
+        blockRect.translate(0, m_textRect.bottom() - blockRect.top() + 1);
+        if (blockRect.left() < m_textRect.left())
+            m_textRect.setLeft(blockRect.left());
+        if (blockRect.right() > m_textRect.right())
+            m_textRect.setRight(blockRect.right());
+        if (blockRect.top() < m_textRect.top())
+            m_textRect.setTop(blockRect.top());
+        if (blockRect.bottom() > m_textRect.bottom())
+            m_textRect.setBottom(blockRect.bottom());
+    }
+    m_textRect.adjust(-m_margin, -m_margin, m_margin, m_margin);
+
+    // 3. resize content keeping stretch
+    int w = (int)(prevXScale * (qreal)m_textRect.width());
+    int h = (int)(prevYScale * (qreal)m_textRect.height());
     resizeContents(QRect(-w / 2, -h / 2, w, h));
 }

@@ -264,8 +264,6 @@ ColorAction::ColorAction(QObject *parent):
 
 void ColorAction::setColor(const QColor &color)
 {
-    if (color == m_color)
-        return;
     m_color = color;
     QPixmap pix(24, 24);
     QPainter painter(&pix);
@@ -278,7 +276,6 @@ void ColorAction::setColor(const QColor &color)
 
 void ColorAction::chooseColor()
 {
-    if(m_color == QColor(0,0,0)) m_color = QColor(255,255,255); // +fotowall
     const QColor col = QColorDialog::getColor(m_color, 0);
     if (col.isValid() && col != m_color) {
         setColor(col);
@@ -304,7 +301,7 @@ private slots:
     void setVAlignSuper(bool super);
     void setVAlignSub(bool sub);
     ///void insertLink();
-    void insertImage();
+    ///void insertImage();
     void slotWheelScrolled(int steps);    // +fotowall
 
 protected: // +fotowall
@@ -321,7 +318,7 @@ private:
     ///QAction *m_align_right_action;
     ///QAction *m_align_justify_action;
     ///QAction *m_link_action;
-    QAction *m_image_action;
+    //QAction *m_image_action;
     ColorAction *m_color_action;
     QComboBox *m_font_size_input;
 
@@ -348,7 +345,7 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
                                              QWidget *parent) :
     QToolBar(parent),
     ///m_link_action(new QAction(this)),
-    m_image_action(new QAction(this)),
+    ///m_image_action(new QAction(this)),
     m_color_action(new ColorAction(this)),
     m_font_size_input(new QComboBox),
     m_font_face_input(new QFontComboBox(this)), // +fotowall
@@ -446,28 +443,28 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
             createIconSet(QLatin1String("textsuperscript.png")),
             tr("Superscript"),
             this, SLOT(setVAlignSuper(bool)), this);
-    addAction(m_valign_sup_action);
+    ///addAction(m_valign_sup_action);
 
     m_valign_sub_action = createCheckableAction(
             createIconSet(QLatin1String("textsubscript.png")),
             tr("Subscript"),
             this, SLOT(setVAlignSub(bool)), this);
-    addAction(m_valign_sub_action);
+    ///addAction(m_valign_sub_action);
 
     ///addSeparator();
 
     // Insert hyperlink and image buttons
-/**
-    m_link_action->setIcon(createIconSet(QLatin1String("textanchor.png")));
-    m_link_action->setText(tr("Insert &Link"));
-    connect(m_link_action, SIGNAL(triggered()), SLOT(insertLink()));
-    addAction(m_link_action);
-*/
+///    m_link_action->setIcon(createIconSet(QLatin1String("textanchor.png")));
+///    m_link_action->setText(tr("Insert &Link"));
+///    connect(m_link_action, SIGNAL(triggered()), SLOT(insertLink()));
+///    addAction(m_link_action);
+
+/** Commented because the new Text Rendering algorithm doesn't support that
     m_image_action->setIcon(createIconSet(QLatin1String("insertimage.png")));
     m_image_action->setText(tr("Insert &Image"));
     connect(m_image_action, SIGNAL(triggered()), SLOT(insertImage()));
     addAction(m_image_action);
-
+*/
 
     connect(editor, SIGNAL(wheelScrolled(int)), this, SLOT(slotWheelScrolled(int)));    // +fotowall
     connect(editor, SIGNAL(textChanged()), this, SLOT(updateActions()));
@@ -547,7 +544,7 @@ void RichTextEditorToolBar::insertLink()
     //linkDialog.showDialog();
     //sm_editor->setFocus();
 }
-*/
+
 void RichTextEditorToolBar::insertImage()
 {
     ///const QString path = IconSelector::choosePixmapResource(m_core, m_core->resourceModel(), QString(), this);
@@ -555,7 +552,7 @@ void RichTextEditorToolBar::insertImage()
     if (!path.isEmpty())
         m_editor->insertHtml(QLatin1String("<img src=\"") + path + QLatin1String("\"/>"));
 }
-
+*/
 void RichTextEditorToolBar::slotWheelScrolled(int steps)    // +fotowall
 {
     // find out the new font index
