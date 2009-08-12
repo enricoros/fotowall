@@ -74,10 +74,8 @@ QString TextContent::toPlainText() const
 
 void TextContent::setHtml(const QString & htmlCode)
 {
-    qWarning() << "SHTML";
     m_text->setHtml(htmlCode);
     updateTextConstraints();
-    qWarning() << "/SHTML";
 }
 
 QFont TextContent::defaultFont() const
@@ -90,7 +88,15 @@ void TextContent::setShapeEnabled(bool enabled)
     if (enabled == m_shapeEnabled)
         return;
     m_shapeEnabled = enabled;
+
+    // invalidate rectangles
     m_textRect = QRect();
+    m_shapeRect = QRect();
+
+    // use caching only when drawing shaped
+    setCacheMode(enabled ? QGraphicsItem::DeviceCoordinateCache : QGraphicsItem::NoCache);
+
+    // regenerate text layouting
     updateTextConstraints();
 }
 
@@ -129,12 +135,10 @@ QList<QPointF> TextContent::shapeControlPoints() const
 
 bool TextContent::fromXml(QDomElement & pe)
 {
-    // FIRST load text properties
+    // FIRST load text properties and shape
     // NOTE: order matters here, we don't want to override the size restored later
     QString text = pe.firstChildElement("html-text").text();
     setHtml(text);
-
-    AbstractContent::fromXml(pe);
 
     // load default font
     QDomElement domElement;
@@ -165,6 +169,10 @@ bool TextContent::fromXml(QDomElement & pe)
             setShapeControlPoints(points);
         }
     }
+
+    // THEN restore the geometry
+    AbstractContent::fromXml(pe);
+
     return true;
 }
 

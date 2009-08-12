@@ -288,6 +288,13 @@ stop:1 rgba(237, 237, 237, 255))
            </item>
           </widget>
          </item>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="accelBox">
+           <property name="text">
+            <string notr="true">OpenGL</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>

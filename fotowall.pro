@@ -13,6 +13,12 @@ QT = core \
     network \
     xml
 
+# OpenGL support
+win32 {
+    QT += opengl
+    DEFINES += HAS_OPENGL
+}
+
 # FotoWall input files
 HEADERS += 3rdparty/gsuggest.h \
     CPixmap.h \

@@ -149,6 +149,11 @@ FotoWall::FotoWall(QWidget * parent)
     ui->b2->setDefaultAction(ui->aAddText);
     ui->b3->setDefaultAction(ui->aAddVideo);
     ui->b4->setDefaultAction(ui->aAddFlickr);
+#ifdef HAS_OPENGL
+    ui->accelBox->setChecked(false);
+#else
+    ui->accelBox->hide();
+#endif
 
     // attach menus
     //ui->arrangeButton->setMenu(createArrangeMenu());
@@ -530,6 +535,24 @@ void FotoWall::on_aAddText_triggered()
 void FotoWall::on_aAddVideo_triggered()
 {
     m_desk->addVideoContent(0);
+}
+
+#include <QGLWidget>
+#ifdef HAS_OPENGL
+#endif
+void FotoWall::on_accelBox_toggled(bool checked)
+{
+    if (checked) {
+        // 3D MODE
+#ifdef HAS_OPENGL
+        ui->canvas->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+        ui->canvas->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+#endif
+    } else {
+        // normal mode
+        ui->canvas->setViewport(new QWidget());
+        ui->canvas->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+    }
 }
 
 void FotoWall::on_loadButton_clicked()
