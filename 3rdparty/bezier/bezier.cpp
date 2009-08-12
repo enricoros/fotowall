@@ -57,11 +57,17 @@ Bezier::Bezier(QWidget *parent)
     pt.fillRect(50, 50, 50, 50, color);
     pt.end();
 
+// FotoWall
+one = QPointF(50, 50);
+two = QPointF(140, 140);
+three = QPointF(300, 250);
+four = QPointF(300, 50);
+
 //#if 0
-    one = QPointF(50, 50);
-    two = QPointF(150, 150);
-    three = QPointF(100, 250);
-    four = QPointF(300, 50);
+    //one = QPointF(50, 50);
+    //two = QPointF(150, 150);
+    //three = QPointF(100, 250);
+    //four = QPointF(300, 50);
 //#else
     //one   = QPointF(157, 211);
     //two   = QPointF(150, 150);

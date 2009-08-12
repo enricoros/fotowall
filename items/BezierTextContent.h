@@ -15,6 +15,9 @@ class BezierTextContent : public AbstractContent
         QFont m_font;
         QPainterPath m_path;
         QList<QPointF> m_controlPoints;
+        QPixmap m_cachePixmap;
+
+        void updateCache();
 
     public:
         BezierTextContent(QGraphicsScene *scene, QGraphicsItem *parent = 0);
@@ -27,13 +30,12 @@ class BezierTextContent : public AbstractContent
         void setControlPoints(const QList<QPointF> controlPts);
         QList<QPointF> controlPoints() const;
 
-        void resizeContents(const QRect & rect, bool keepRatio = true);
-
         // ::AbstractContent
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
-        //QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;
+        QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;
         // ::QGraphicsItem
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 };
 

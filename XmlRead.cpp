@@ -22,6 +22,7 @@
 #include "items/ColorPickerItem.h"
 #include "items/PictureContent.h"
 #include "items/TextContent.h"
+#include "items/BezierTextContent.h"
 #include "items/VideoContent.h"
 #include "CPixmap.h"
 #include "Desk.h"
@@ -103,6 +104,8 @@ void XmlRead::readContent(Desk * desk)
             content = desk->createPicture(QPoint());
         else if (element.tagName() == "text")
             content = desk->createText(QPoint());
+        else if (element.tagName() == "bezier-text")
+            content = desk->createBezierText(QPoint());
         else if (element.tagName() == "video")
             content = desk->createVideo(element.attribute("input").toInt(), QPoint());
         if (!content) {
