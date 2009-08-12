@@ -12,7 +12,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDebug>
 #include "Desk.h"
 #include "frames/FrameFactory.h"
 #include "items/ColorPickerItem.h"
@@ -813,7 +812,6 @@ TextContent * Desk::createText(const QPoint & pos)
 
 BezierTextContent * Desk::createBezierText(const QPoint &pos)
 {
-    qDebug() << "Desk::createBezierText at pos " << pos;
     BezierTextContent* t = new BezierTextContent(this);
     initContent(t, pos);
     return t;
@@ -857,7 +855,6 @@ void Desk::clearMarkers()
 /// Slots
 void Desk::slotConfigureContent(const QPoint & scenePoint)
 {
-    qDebug() << "slotConfigureContent()";
     // get the content and ensure it hasn't already a property window
     AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
     foreach (AbstractProperties * properties, m_properties) {
@@ -881,6 +878,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
 
     if (BezierTextContent * bezierText = dynamic_cast<BezierTextContent *>(content))
         p = new BezierTextProperties(bezierText);
+
     // generic properties
     if (!p)
         p = new AbstractProperties(content);

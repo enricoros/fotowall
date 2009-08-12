@@ -153,6 +153,11 @@ void Bezier::setControlPoints(const QList<QPointF> &controlPts)
         four = controlPts[3];
     }
 }
+
+void Bezier::focusLineEdit()
+{
+    m_lineEdit->setFocus();
+}
 /*  /FotoWall */
 
 void Bezier::drawBackground(QPainter *painter, const QRectF &fullRect)

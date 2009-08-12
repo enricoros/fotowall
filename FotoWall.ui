@@ -18,11 +18,16 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="topBar" native="true">
+    <widget class="QWidget" name="bar" native="true">
      <property name="styleSheet">
-      <string notr="true">#topBar {
-    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.190 rgba(232, 232, 232, 255), stop:0.191 rgba(202, 202, 202, 255), stop:1 rgba(237, 237, 237, 255))
-}</string>
+      <string notr="true">#bar {
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+stop:0 rgba(255, 255, 255, 255),
+stop:0.190 rgba(232, 232, 232, 255),
+stop:0.191 rgba(202, 202, 202, 255),
+stop:1 rgba(237, 237, 237, 255))
+}
+</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
@@ -103,14 +108,14 @@
         <property name="title" stdset="0">
          <string>ADD NEW</string>
         </property>
-        <layout class="QGridLayout">
-         <property name="margin">
-          <number>0</number>
-         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="spacing">
           <number>0</number>
          </property>
-         <item row="0" column="0">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
           <widget class="QToolButton" name="b1">
            <property name="iconSize">
             <size>
@@ -123,7 +128,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item>
           <widget class="QToolButton" name="b2">
            <property name="iconSize">
             <size>
@@ -136,7 +141,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
+         <item>
           <widget class="QToolButton" name="b3">
            <property name="iconSize">
             <size>
@@ -149,7 +154,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="3">
+         <item>
           <widget class="QToolButton" name="b4">
            <property name="iconSize">
             <size>
@@ -162,7 +167,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="4">
+         <item>
           <widget class="QToolButton" name="b5">
            <property name="iconSize">
             <size>
@@ -179,7 +184,7 @@
        </widget>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="widget" native="true">
+       <widget class="GroupBoxWidget" name="widgetMode" native="true">
         <property name="palette">
          <palette>
           <active>
@@ -263,6 +268,9 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
+         <property name="verticalSpacing">
+          <number>0</number>
+         </property>
          <item row="0" column="0">
           <widget class="QComboBox" name="projectType">
            <property name="sizePolicy">
@@ -297,7 +305,7 @@
        </widget>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="widget_2" native="true">
+       <widget class="GroupBoxWidget" name="widgetCanvas" native="true">
         <property name="palette">
          <palette>
           <active>
@@ -426,7 +434,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget_4" native="true">
+       <widget class="QWidget" name="widgetSpacer" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -461,7 +469,7 @@
        </widget>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="widget_3" native="true">
+       <widget class="GroupBoxWidget" name="widgetFile" native="true">
         <property name="palette">
          <palette>
           <active>
@@ -613,7 +621,7 @@
     </widget>
    </item>
    <item>
-    <widget class="FWGraphicsView" name="view">
+    <widget class="FWGraphicsView" name="canvas">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -652,11 +660,11 @@
    <property name="text">
     <string>Add Bezier Text</string>
    </property>
-   <property name="shortcut">
-    <string>B</string>
-   </property>
    <property name="toolTip">
     <string>Add a text following a Bezier curve</string>
+   </property>
+   <property name="shortcut">
+    <string>B</string>
    </property>
   </action>
   <action name="aAddVideo">

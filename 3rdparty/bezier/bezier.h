@@ -52,6 +52,7 @@ public:
     void setText(const QString &);
     void setControlPoints(const QList<QPointF> &);
     QList<QPointF> controlPoints() const;
+    void focusLineEdit();
 
 public slots:
     void changeFont(const QFont &font);

@@ -12,7 +12,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDebug>
 #include "FotoWall.h"
 #include "items/VideoProvider.h"
 #include "Desk.h"
@@ -144,12 +143,13 @@ FotoWall::FotoWall(QWidget * parent)
 
     // init ui
     ui->setupUi(this);
-    ui->view->setDesk(m_desk);
-    ui->view->setFocus();
+    ui->canvas->setDesk(m_desk);
+    ui->canvas->setFocus();
     ui->b1->setDefaultAction(ui->aAddPicture);
     ui->b2->setDefaultAction(ui->aAddText);
-    ui->b3->setDefaultAction(ui->aAddVideo);
-    ui->b4->setDefaultAction(ui->aAddFlickr);
+    ui->b3->setDefaultAction(ui->aAddBezierText);
+    ui->b4->setDefaultAction(ui->aAddVideo);
+    ui->b5->setDefaultAction(ui->aAddFlickr);
 
     // attach menus
     //ui->arrangeButton->setMenu(createArrangeMenu());
@@ -166,7 +166,7 @@ FotoWall::FotoWall(QWidget * parent)
 
     // set the startup project mode
     on_projectType_activated(0);
-    m_modeInfo.setDeskDpi(ui->view->logicalDpiX(), ui->view->logicalDpiY());
+    m_modeInfo.setDeskDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
     m_modeInfo.setPrintDpi(300);
 
     // check stuff on the net
@@ -187,7 +187,7 @@ FotoWall::~FotoWall()
 void FotoWall::setModeInfo(ModeInfo modeInfo)
 {
     m_modeInfo = modeInfo;
-    m_modeInfo.setDeskDpi(ui->view->logicalDpiX(), ui->view->logicalDpiY());
+    m_modeInfo.setDeskDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
 }
 
 ModeInfo FotoWall::getModeInfo()
@@ -416,8 +416,8 @@ void FotoWall::setNormalProject()
 {
     m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
     static bool skipFirstMaximizeHack = true;
-    ui->view->setMinimumSize(ui->view->minimumSizeHint());
-    ui->view->setMaximumSize(QSize(16777215, 16777215));
+    ui->canvas->setMinimumSize(ui->canvas->minimumSizeHint());
+    ui->canvas->setMaximumSize(QSize(16777215, 16777215));
     if (skipFirstMaximizeHack)
         skipFirstMaximizeHack = false;
     else
@@ -432,7 +432,7 @@ void FotoWall::setCDProject()
     // A CD cover is a 4.75x4.715 inches square.
     m_modeInfo.setRealSizeInches(4.75, 4.75);
     m_modeInfo.setLandscape(false);
-    ui->view->setFixedSize(m_modeInfo.deskPixelSize());
+    ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
     m_desk->setProjectMode(Desk::ModeCD);
@@ -443,7 +443,7 @@ void FotoWall::setDVDProject()
 {
     m_modeInfo.setRealSizeInches((float)10.83, (float)7.2);
     m_modeInfo.setLandscape(true);
-    ui->view->setFixedSize(m_modeInfo.deskPixelSize());
+    ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
     m_desk->setProjectMode(Desk::ModeDVD);
@@ -474,7 +474,7 @@ void FotoWall::setExactSizeProject()
         else
             m_modeInfo.setRealSizeInches(w, h);
     }
-    ui->view->setFixedSize(m_modeInfo.deskPixelSize());
+    ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
     m_desk->setProjectMode(Desk::ModeExactSize);
@@ -518,7 +518,7 @@ void FotoWall::on_aAddPicture_triggered()
     }
 
     // show the files dialog
-    QStringList fileNames = QFileDialog::getOpenFileNames(ui->view, tr("Select one or more pictures to add"), QString(), tr("Images (%1)").arg(extensions));
+    QStringList fileNames = QFileDialog::getOpenFileNames(ui->canvas, tr("Select one or more pictures to add"), QString(), tr("Images (%1)").arg(extensions));
     if (!fileNames.isEmpty())
         m_desk->addPictures(fileNames);
 }
@@ -530,7 +530,6 @@ void FotoWall::on_aAddText_triggered()
 
 void FotoWall::on_aAddBezierText_triggered()
 {
-    qDebug() << "FotoWall::on_aAddBezierText_triggered";
     m_desk->addBezierTextContent();
 }
 

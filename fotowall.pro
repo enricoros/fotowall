@@ -12,7 +12,6 @@ QT = core \
     svg \
     network \
     xml
-CONFIG += debug
 
 # FotoWall input files
 HEADERS += 3rdparty/gsuggest.h \
@@ -68,8 +67,8 @@ include(items/items.pri)
 include(frames/frames.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
-include(3rdparty/posterazor/posterazor.pri)
 include(3rdparty/bezier/bezier.pri)
+include(3rdparty/posterazor/posterazor.pri)
 
 # deployment on Linux
 unix {

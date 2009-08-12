@@ -26,6 +26,7 @@ BezierTextProperties::BezierTextProperties(BezierTextContent * bezierTextContent
     m_bezierWidget->setText(m_bezierTextContent->text());
     m_bezierWidget->setControlPoints(m_bezierTextContent->controlPoints());
     addTab(m_bezierWidget, tr("Bezier Text"), false, true);
+    m_bezierWidget->focusLineEdit();
 }
 
 BezierTextProperties::~BezierTextProperties()

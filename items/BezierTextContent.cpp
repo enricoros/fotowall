@@ -76,8 +76,9 @@ void BezierTextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem
 {
     // paint parent
     AbstractContent::paint(painter, option, widget);
+    painter->setPen(Qt::black);
     if(m_text.isEmpty()) {
-        painter->drawText(boundingRect().x(), boundingRect().y() + 30, tr("Right clic to configure."));
+        painter->drawText(boundingRect().x(), boundingRect().y() + 30, tr("Right click to configure."));
         return;
     }
 
