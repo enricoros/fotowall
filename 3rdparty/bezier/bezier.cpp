@@ -96,27 +96,11 @@ four = QPointF(300, 50);
     setMouseTracking(true);
     moving = 0;
     onThePath = false;
-    currentT = 0.5;
 
     m_enableBox = new QCheckBox(this);
-    m_enableBox->setText(tr("Enabled"));
+    m_enableBox->setText(tr("enabled"));
+    m_enableBox->move(15, 10);
     connect(m_enableBox, SIGNAL(toggled(bool)),
-            SLOT(update()));
-
-    m_fontBox = new QFontComboBox(this);
-    connect(m_fontBox, SIGNAL(currentFontChanged(const QFont&)),
-            SLOT(changeFont(const QFont &)));
-
-    m_lineEdit = new QLineEdit(this);
-    m_lineEdit->setText(tr("Change this text"));
-    connect(m_lineEdit, SIGNAL(textChanged(const QString&)),
-            SLOT(update()));
-
-    m_fontSize = new QSpinBox(this);
-    m_fontSize->setValue(12);
-    m_fontSize->setMinimum(6);
-    m_fontSize->setMaximum(128);
-    connect(m_fontSize, SIGNAL(valueChanged(int)),
             SLOT(update()));
 }
 
@@ -127,22 +111,21 @@ QPainterPath Bezier::path() const
 }
 QFont Bezier::font() const
 {
-    QFont font = m_fontBox->currentFont();
-    font.setPointSize(m_fontSize->value());
-    return font;
+    return m_font;
 }
 void Bezier::setFont(const QFont &font)
 {
-    m_fontBox->setCurrentFont(font);
-    m_fontSize->setValue(font.pointSize());
+    m_font = font;
+    update();
 }
 QString Bezier::text() const
 {
-    return m_lineEdit->text();
+    return m_text;
 }
 void Bezier::setText(const QString &text)
 {
-    m_lineEdit->setText(text);
+    m_text = text;
+    update();
 }
 
 QList<QPointF> Bezier::controlPoints() const
@@ -170,9 +153,9 @@ void Bezier::setEnabled(bool enabled)
     m_enableBox->setChecked(enabled);
 }
 
-void Bezier::focusLineEdit()
+void Bezier::focusCheckbox()
 {
-    m_lineEdit->setFocus();
+    m_enableBox->setFocus();
 }
 /*  /FotoWall */
 
@@ -205,22 +188,19 @@ void Bezier::paintEvent(QPaintEvent *e)
     drawPoint(&p, two);
     drawPoint(&p, three);
 
-    QFont font = m_fontBox->currentFont();
-    font.setPointSize(m_fontSize->value());
-    p.setFont(font);
-    QString str = m_lineEdit->text();
+    p.setFont(m_font);
     QFontMetricsF metrics(p.font());
     //qreal curLen = 0;
     qreal curLen = 10;
     //qDebug()<<one<<two<<three<<four;
-    for (int i = 0; i < str.length(); ++i) {
+    for (int i = 0; i < m_text.length(); ++i) {
         qreal t = m_path.percentAtLength(curLen);
         QPointF pt = m_path.pointAtPercent(t);
         //qreal angle = m_path.angleAtPercent(t);
         qreal angle = -m_path.angleAtPercent(t);
 
         QString txt;
-        txt.append(str[i]);
+        txt.append(m_text[i]);
         p.save();
         p.translate(pt);
         //qDebug()<<"txt = "<<txt<<", angle = "<<angle<<curLen<<t;
@@ -237,23 +217,12 @@ void Bezier::paintEvent(QPaintEvent *e)
 
 void Bezier::drawFrames(QPainter *p)
 {
-    QFont font("ComicSans", 8);
-    const QSize  bsize(160, 105);
-    const QRect boxRect(10, rect().height()-bsize.height()-10,
-                         bsize.width(), bsize.height());
-
+    const QRect boxRect(10, 6, 10 + m_enableBox->width(), 8 + m_enableBox->height());
     p->save();
     p->setRenderHint(QPainter::Antialiasing);
-    p->setRenderHint(QPainter::SmoothPixmapTransform);
     p->setPen(QPen(Qt::black));
     p->setBrush(QBrush(QColor(193, 193, 193, 127)));
-    p->drawRoundRect(boxRect, 25*boxRect.height()/boxRect.width(), 25);
-
-    font.setPointSize(10);
-    font.setUnderline(true);
-    p->setFont(font);
-    //p->drawText(boxRect.x()+10, boxRect.y()+15, "Info:");
-
+    p->drawRoundRect(boxRect, 75*boxRect.height()/boxRect.width(), 75);
     p->restore();
 }
 
@@ -322,7 +291,6 @@ void Bezier::mouseMoveEvent(QMouseEvent *e)
         bezier[1] = two;
         bezier[2] = three;
         bezier[3] = four;
-        //currentT = tAtPointOnCurve(tPoint, bezier);
         update();
         mouseStart = e->pos();
     } else if (onThePath) {
@@ -336,7 +304,6 @@ void Bezier::mouseMoveEvent(QMouseEvent *e)
         bezier[1] = two;
         bezier[2] = three;
         bezier[3] = four;
-        //currentT = tAtPointOnCurve(currentT, bezier);
         update();
         mouseStart = e->pos();
     }
@@ -357,21 +324,4 @@ bool Bezier::markContains(const QPointF &pos, const QPointF &coord) const
     QPainterPath path;
     path.addEllipse(rect);
     return path.contains(coord);
-}
-
-void Bezier::resizeEvent(QResizeEvent *e)
-{
-    QSize s = e->size();
-
-    m_enableBox->setGeometry(20, rect().height() - 110, 140, 20);
-    m_fontBox->setGeometry(20, rect().height() - 85, 140, 20);
-    m_lineEdit->setGeometry(20, rect().height() - 60, 140, 20);
-    m_fontSize->setGeometry(20, rect().height() - 35, 140, 20);
-
-}
-
-void Bezier::changeFont(const QFont &font)
-{
-    Q_UNUSED(font);
-    update();
 }

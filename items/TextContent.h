@@ -51,6 +51,7 @@ class TextContent : public AbstractContent
 
     private:
         void updateTextConstraints();
+        void updateCache();
 
         // text document, layouting & rendering
         QTextDocument * m_text;

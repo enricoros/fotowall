@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
+    <width>650</width>
     <height>400</height>
    </rect>
   </property>
@@ -156,19 +156,6 @@ stop:1 rgba(237, 237, 237, 255))
          </item>
          <item>
           <widget class="QToolButton" name="b4">
-           <property name="iconSize">
-            <size>
-             <width>54</width>
-             <height>48</height>
-            </size>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="b5">
            <property name="iconSize">
             <size>
              <width>54</width>
@@ -650,21 +637,6 @@ stop:1 rgba(237, 237, 237, 255))
    </property>
    <property name="shortcut">
     <string>T</string>
-   </property>
-  </action>
-  <action name="aAddBezierText">
-   <property name="icon">
-    <iconset resource="fotowall.qrc">
-     <normaloff>:/data/insert-text.png</normaloff>:/data/insert-text.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Bezier Text</string>
-   </property>
-   <property name="toolTip">
-    <string>Add a text following a Bezier curve</string>
-   </property>
-   <property name="shortcut">
-    <string>B</string>
    </property>
   </action>
   <action name="aAddVideo">

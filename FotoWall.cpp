@@ -147,9 +147,8 @@ FotoWall::FotoWall(QWidget * parent)
     ui->canvas->setFocus();
     ui->b1->setDefaultAction(ui->aAddPicture);
     ui->b2->setDefaultAction(ui->aAddText);
-    ui->b3->setDefaultAction(ui->aAddBezierText);
-    ui->b4->setDefaultAction(ui->aAddVideo);
-    ui->b5->setDefaultAction(ui->aAddFlickr);
+    ui->b3->setDefaultAction(ui->aAddVideo);
+    ui->b4->setDefaultAction(ui->aAddFlickr);
 
     // attach menus
     //ui->arrangeButton->setMenu(createArrangeMenu());
@@ -526,11 +525,6 @@ void FotoWall::on_aAddPicture_triggered()
 void FotoWall::on_aAddText_triggered()
 {
     m_desk->addTextContent();
-}
-
-void FotoWall::on_aAddBezierText_triggered()
-{
-    m_desk->addBezierTextContent();
 }
 
 void FotoWall::on_aAddVideo_triggered()

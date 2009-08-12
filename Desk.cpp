@@ -21,8 +21,6 @@
 #include "items/PictureProperties.h"
 #include "items/TextContent.h"
 #include "items/TextProperties.h"
-#include "items/BezierTextContent.h"
-#include "items/BezierTextProperties.h"
 #include "items/VideoContent.h"
 #include "items/WebContentSelectorItem.h"
 #include "CropingDialog.h"
@@ -135,11 +133,6 @@ void Desk::addPictures(const QStringList & fileNames)
 void Desk::addTextContent()
 {
     createText(nearCenter(sceneRect()));
-}
-
-void Desk::addBezierTextContent()
-{
-    createBezierText(nearCenter(sceneRect()));
 }
 
 void Desk::addVideoContent(int input)
@@ -810,13 +803,6 @@ TextContent * Desk::createText(const QPoint & pos)
     return t;
 }
 
-BezierTextContent * Desk::createBezierText(const QPoint &pos)
-{
-    BezierTextContent* t = new BezierTextContent(this);
-    initContent(t, pos);
-    return t;
-}
-
 VideoContent * Desk::createVideo(int input, const QPoint & pos)
 {
     VideoContent * v = new VideoContent(input, this);
@@ -875,9 +861,6 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     // text properties (dialog and connections)
     if (TextContent * text = dynamic_cast<TextContent *>(content))
         p = new TextProperties(text);
-
-    if (BezierTextContent * bezierText = dynamic_cast<BezierTextContent *>(content))
-        p = new BezierTextProperties(bezierText);
 
     // generic properties
     if (!p)

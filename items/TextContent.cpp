@@ -90,6 +90,7 @@ void TextContent::setShapeEnabled(bool enabled)
     if (enabled == m_shapeEnabled)
         return;
     m_shapeEnabled = enabled;
+    m_textRect = QRect();
     updateTextConstraints();
 }
 
@@ -135,8 +136,35 @@ bool TextContent::fromXml(QDomElement & pe)
 
     AbstractContent::fromXml(pe);
 
-    // load other values
-    // ...
+    // load default font
+    QDomElement domElement;
+    domElement = pe.firstChildElement("default-font");
+    if (domElement.isElement()) {
+        QFont font;
+        font.setFamily(domElement.attribute("font-family"));
+        font.setPointSize(domElement.attribute("font-size").toInt());
+        m_text->setDefaultFont(font);
+    }
+
+    // load shape
+    domElement = pe.firstChildElement("shape");
+    if (domElement.isElement()) {
+        setShapeEnabled(domElement.attribute("enabled").toInt());
+        domElement = domElement.firstChildElement("control-points");
+        if (domElement.isElement()) {
+            QList<QPointF> points;
+            QStringList strPoint;
+            strPoint = domElement.attribute("one").split(" ");
+            points << QPointF(strPoint.at(0).toFloat(), strPoint.at(1).toFloat());
+            strPoint = domElement.attribute("two").split(" ");
+            points << QPointF(strPoint.at(0).toFloat(), strPoint.at(1).toFloat());
+            strPoint = domElement.attribute("three").split(" ");
+            points << QPointF(strPoint.at(0).toFloat(), strPoint.at(1).toFloat());
+            strPoint = domElement.attribute("four").split(" ");
+            points << QPointF(strPoint.at(0).toFloat(), strPoint.at(1).toFloat());
+            setShapeControlPoints(points);
+        }
+    }
     return true;
 }
 
@@ -150,11 +178,34 @@ void TextContent::toXml(QDomElement & pe) const
     QDomElement domElement;
     QDomText text;
 
-    // Save item position and size
+    // save text (in html)
     domElement = doc.createElement("html-text");
     pe.appendChild(domElement);
     text = doc.createTextNode(m_text->toHtml());
     domElement.appendChild(text);
+
+    // save default font
+    domElement = doc.createElement("default-font");
+    domElement.setAttribute("font-family", m_text->defaultFont().family());
+    domElement.setAttribute("font-size", m_text->defaultFont().pointSize());
+    pe.appendChild(domElement);
+
+    // save shape and control points
+    QDomElement shapeElement = doc.createElement("shape");
+    shapeElement.setAttribute("enabled", m_shapeEnabled);
+    pe.appendChild(shapeElement);
+    if (m_shapeControlPoints.length() == 4) {
+        domElement = doc.createElement("control-points");
+        shapeElement.appendChild(domElement);
+        domElement.setAttribute("one", QString::number(m_shapeControlPoints[0].x())
+                + " " + QString::number(m_shapeControlPoints[0].y()));
+        domElement.setAttribute("two", QString::number(m_shapeControlPoints[1].x())
+                + " " + QString::number(m_shapeControlPoints[1].y()));
+        domElement.setAttribute("three", QString::number(m_shapeControlPoints[2].x())
+                + " " + QString::number(m_shapeControlPoints[2].y()));
+        domElement.setAttribute("four", QString::number(m_shapeControlPoints[3].x())
+                + " " + QString::number(m_shapeControlPoints[3].y()));
+    }
 }
 
 QPixmap TextContent::renderAsBackground(const QSize & size, bool keepAspect) const
@@ -275,7 +326,6 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
 
                     // draw rotated letter
                     painter->save();
-                    painter->drawPoint(pt);
                     painter->translate(pt);
                     painter->rotate(angle);
                     painter->drawText(iPos, textChar);
@@ -392,4 +442,16 @@ void TextContent::updateTextConstraints()
     int w = (int)(prevXScale * (qreal)m_textRect.width());
     int h = (int)(prevYScale * (qreal)m_textRect.height());
     resizeContents(QRect(-w / 2, -h / 2, w, h));
+}
+
+void TextContent::updateCache()
+{
+    /*
+    m_cachePixmap = QPixmap(contentsRect().size());
+    m_cachePixmap.fill(QColor(0, 0, 0, 0));
+    QPainter painter(&m_cachePixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    ...
+    */
 }

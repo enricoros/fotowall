@@ -53,17 +53,13 @@ public:
     void setControlPoints(const QList<QPointF> &);
     bool enabled() const;
     void setEnabled(bool);
-    void focusLineEdit();
-
-public slots:
-    void changeFont(const QFont &font);
+    void focusCheckbox();
 
 protected slots:
     void paintEvent(QPaintEvent *e);
     void mousePressEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
-    void resizeEvent(QResizeEvent *e);
 
 protected:
     void drawBackground(QPainter *painter, const QRectF &rect);
@@ -82,12 +78,9 @@ private:
     QPointF *moving;
     bool     onThePath;
 
-    qreal   currentT;
-
     QCheckBox     *m_enableBox;
-    QFontComboBox *m_fontBox;
-    QSpinBox      *m_fontSize;
-    QLineEdit     *m_lineEdit;
+    QString m_text;
+    QFont m_font;
 };
 
 #endif
