@@ -17,6 +17,7 @@
 
 #include "AbstractProperties.h"
 class QListWidgetItem;
+class Bezier;
 class RichTextEditorDialog;
 class TextContent;
 
@@ -33,6 +34,7 @@ class TextProperties : public AbstractProperties {
     private:
         TextContent * m_textContent;
         RichTextEditorDialog * m_editor;
+        Bezier * m_bezierWidget;
 };
 
 #endif

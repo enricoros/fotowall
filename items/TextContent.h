@@ -27,7 +27,17 @@ class TextContent : public AbstractContent
         ~TextContent();
 
         QString toHtml() const;
+        QString toPlainText() const;
         void setHtml(const QString & htmlCode);
+        QFont defaultFont() const;
+
+        // bezier shape controls
+        void setShapeEnabled(bool enabled);
+        void setShapePath(const QPainterPath & path);
+        void setShapeControlPoints(const QList<QPointF> & points);
+        bool shapeEnabled() const;
+        QPainterPath shapePath() const;
+        QList<QPointF> shapeControlPoints() const;
 
         // ::AbstractContent
         bool fromXml(QDomElement & parentElement);
@@ -41,11 +51,18 @@ class TextContent : public AbstractContent
 
     private:
         void updateTextConstraints();
-        QTextDocument * m_text;
-        int m_margin;
 
+        // text document, layouting & rendering
+        QTextDocument * m_text;
         QList<QRect> m_blockRects;
         QRect m_textRect;
+        int m_textMargin;
+
+        // shape related stuff
+        bool m_shapeEnabled;
+        QList<QPointF> m_shapeControlPoints;
+        QPainterPath m_shapePath;
+        QRect m_shapeRect;
 };
 
 #endif

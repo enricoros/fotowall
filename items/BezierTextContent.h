@@ -25,7 +25,6 @@ class BezierTextContent : public AbstractContent
         QString text() const;
         void setFont(const QFont &font);
         QFont font() const;
-        void setFontSize(const int size);
         void setPath(const QPainterPath &path);
         void setControlPoints(const QList<QPointF> controlPts);
         QList<QPointF> controlPoints() const;

@@ -731,7 +731,7 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
 #if QT_VERSION >= 0x040500
     m_tab_widget->setDocumentMode(true); // +fotowall
 #endif
-    m_tab_widget->addTab(rich_edit, tr("Rich Text"));
+    m_tab_widget->addTab(rich_edit, tr("Visual Editor"));
     m_tab_widget->addTab(plain_edit, tr("Source"));
     connect(m_tab_widget, SIGNAL(currentChanged(int)),
                           SLOT(tabIndexChanged(int)));

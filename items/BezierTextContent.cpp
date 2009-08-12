@@ -52,13 +52,6 @@ void BezierTextContent::setPath(const QPainterPath &path)
     update();
 }
 
-void BezierTextContent::setFontSize(const int size)
-{
-    m_font.setPointSize(size);
-    m_cachePixmap = QPixmap();
-    update();
-}
-
 void BezierTextContent::setControlPoints(const QList<QPointF> controlPts)
 {
     m_controlPoints = controlPts;
@@ -82,8 +75,10 @@ bool BezierTextContent::fromXml(QDomElement & parentElement)
     // restore text
     QDomElement domElement;
     domElement = parentElement.firstChildElement("text");
-    setFont(domElement.attribute("font-family"));
-    setFontSize(domElement.attribute("font-size").toInt());
+    QFont font;
+    font.setFamily(domElement.attribute("font-family"));
+    font.setPointSize(domElement.attribute("font-size").toInt());
+    setFont(font);
     setText(domElement.text());
 
     //restore path

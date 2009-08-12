@@ -31,6 +31,7 @@
 #include <QMovie>
 #include <QList>
 
+class QCheckBox;
 class QPaintEvent;
 class QPainter;
 class QMouseEvent;
@@ -46,12 +47,12 @@ public:
     QPainterPath path() const;
     QFont font() const;
     void setFont(const QFont &);
-    int fontSize() const;
-    void setFontSize(int size);
     QString text() const;
     void setText(const QString &);
-    void setControlPoints(const QList<QPointF> &);
     QList<QPointF> controlPoints() const;
+    void setControlPoints(const QList<QPointF> &);
+    bool enabled() const;
+    void setEnabled(bool);
     void focusLineEdit();
 
 public slots:
@@ -83,6 +84,7 @@ private:
 
     qreal   currentT;
 
+    QCheckBox     *m_enableBox;
     QFontComboBox *m_fontBox;
     QSpinBox      *m_fontSize;
     QLineEdit     *m_lineEdit;

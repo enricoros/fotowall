@@ -23,6 +23,7 @@
 
 #include "bezier.h"
 
+#include <QCheckBox>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPainterPathStroker>
@@ -97,6 +98,11 @@ four = QPointF(300, 50);
     onThePath = false;
     currentT = 0.5;
 
+    m_enableBox = new QCheckBox(this);
+    m_enableBox->setText(tr("Enabled"));
+    connect(m_enableBox, SIGNAL(toggled(bool)),
+            SLOT(update()));
+
     m_fontBox = new QFontComboBox(this);
     connect(m_fontBox, SIGNAL(currentFontChanged(const QFont&)),
             SLOT(changeFont(const QFont &)));
@@ -121,19 +127,14 @@ QPainterPath Bezier::path() const
 }
 QFont Bezier::font() const
 {
-    return m_fontBox->currentFont();
+    QFont font = m_fontBox->currentFont();
+    font.setPointSize(m_fontSize->value());
+    return font;
 }
 void Bezier::setFont(const QFont &font)
 {
     m_fontBox->setCurrentFont(font);
-}
-int Bezier::fontSize() const
-{
-    return m_fontSize->value();
-}
-void Bezier::setFontSize(int size)
-{
-    m_fontSize->setValue(size);
+    m_fontSize->setValue(font.pointSize());
 }
 QString Bezier::text() const
 {
@@ -158,6 +159,15 @@ void Bezier::setControlPoints(const QList<QPointF> &controlPts)
         three = controlPts[2];
         four = controlPts[3];
     }
+}
+
+bool Bezier::enabled() const
+{
+    return m_enableBox->isChecked();
+}
+void Bezier::setEnabled(bool enabled)
+{
+    m_enableBox->setChecked(enabled);
 }
 
 void Bezier::focusLineEdit()
@@ -201,7 +211,7 @@ void Bezier::paintEvent(QPaintEvent *e)
     QString str = m_lineEdit->text();
     QFontMetricsF metrics(p.font());
     //qreal curLen = 0;
-    qreal curLen = 20;
+    qreal curLen = 10;
     //qDebug()<<one<<two<<three<<four;
     for (int i = 0; i < str.length(); ++i) {
         qreal t = m_path.percentAtLength(curLen);
@@ -228,7 +238,7 @@ void Bezier::paintEvent(QPaintEvent *e)
 void Bezier::drawFrames(QPainter *p)
 {
     QFont font("ComicSans", 8);
-    const QSize  bsize(160, 100);
+    const QSize  bsize(160, 105);
     const QRect boxRect(10, rect().height()-bsize.height()-10,
                          bsize.width(), bsize.height());
 
@@ -242,7 +252,7 @@ void Bezier::drawFrames(QPainter *p)
     font.setPointSize(10);
     font.setUnderline(true);
     p->setFont(font);
-    p->drawText(boxRect.x()+10, boxRect.y()+15, "Info:");
+    //p->drawText(boxRect.x()+10, boxRect.y()+15, "Info:");
 
     p->restore();
 }
@@ -353,6 +363,7 @@ void Bezier::resizeEvent(QResizeEvent *e)
 {
     QSize s = e->size();
 
+    m_enableBox->setGeometry(20, rect().height() - 110, 140, 20);
     m_fontBox->setGeometry(20, rect().height() - 85, 140, 20);
     m_lineEdit->setGeometry(20, rect().height() - 60, 140, 20);
     m_fontSize->setGeometry(20, rect().height() - 35, 140, 20);

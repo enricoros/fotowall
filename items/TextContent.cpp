@@ -29,8 +29,9 @@
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
     , m_text(0)
-    , m_margin(4)
-    , m_textRect(0, 0, 0, 0)\
+    , m_textRect(0, 0, 0, 0)
+    , m_textMargin(4)
+    , m_shapeEnabled(false)
 {
     setFrame(0);
     setFrameTextEnabled(false);
@@ -39,7 +40,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     // create a text document
     m_text = new QTextDocument(this);
 #if QT_VERSION >= 0x040500
-    m_margin = m_text->documentMargin();
+    m_textMargin = m_text->documentMargin();
 #endif
 
     // template text
@@ -51,6 +52,9 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     m_text->setDefaultFont(font);
     m_text->setPlainText(tr("right click to edit..."));
     setHtml(m_text->toHtml());
+
+    // init shape (default control points)
+    setShapeControlPoints(QList<QPointF>() << QPointF(50, 50) << QPointF(140, 140) << QPointF(300, 250) << QPointF(300, 50));
 }
 
 TextContent::~TextContent()
@@ -63,12 +67,63 @@ QString TextContent::toHtml() const
     return m_text->toHtml();
 }
 
+QString TextContent::toPlainText() const
+{
+    return m_text->toPlainText();
+}
+
 void TextContent::setHtml(const QString & htmlCode)
 {
     qWarning() << "SHTML";
     m_text->setHtml(htmlCode);
     updateTextConstraints();
     qWarning() << "/SHTML";
+}
+
+QFont TextContent::defaultFont() const
+{
+    return m_text->defaultFont();
+}
+
+void TextContent::setShapeEnabled(bool enabled)
+{
+    if (enabled == m_shapeEnabled)
+        return;
+    m_shapeEnabled = enabled;
+    updateTextConstraints();
+}
+
+void TextContent::setShapePath(const QPainterPath & path)
+{
+    if (path == m_shapePath)
+        return;
+    m_shapePath = path;
+    updateTextConstraints();
+}
+
+void TextContent::setShapeControlPoints(const QList<QPointF> & points)
+{
+    if (points == m_shapeControlPoints || points.length() != 4)
+        return;
+    m_shapeControlPoints = points;
+    m_shapePath = QPainterPath(m_shapeControlPoints[0]);
+    m_shapePath.cubicTo(m_shapeControlPoints[1], m_shapeControlPoints[2], m_shapeControlPoints[3]);
+    updateTextConstraints();
+}
+
+bool TextContent::shapeEnabled() const
+{
+    return m_shapeEnabled;
+}
+
+QPainterPath TextContent::shapePath() const
+{
+    return m_shapePath;
+}
+
+QList<QPointF> TextContent::shapeControlPoints() const
+{
+    return m_shapeControlPoints;
 }
 
 bool TextContent::fromXml(QDomElement & pe)
@@ -150,16 +205,28 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     //if (layout)
     //    layout->setViewport(boundingRect().toRect());
 
+    // check whether we're drawing shaped
+    const bool shapedPaint = m_shapeEnabled && !m_shapeRect.isEmpty();
+    QPointF shapeOffset = m_shapeRect.topLeft();
+
     // scale painter for adapting the Text Rect to the Contents Rect
     QRect cRect = contentsRect();
+    QRect sRect = shapedPaint ? m_shapeRect : m_textRect;
     painter->save();
     painter->translate(cRect.topLeft());
-    if (m_textRect.width() > 0 && m_textRect.height() > 0) {
-        qreal xScale = (qreal)cRect.width() / (qreal)m_textRect.width();
-        qreal yScale = (qreal)cRect.height() / (qreal)m_textRect.height();
+    if (sRect.width() > 0 && sRect.height() > 0) {
+        qreal xScale = (qreal)cRect.width() / (qreal)sRect.width();
+        qreal yScale = (qreal)cRect.height() / (qreal)sRect.height();
         if (!qFuzzyCompare(xScale, 1.0) || !qFuzzyCompare(yScale, 1.0))
             painter->scale(xScale, yScale);
     }
+
+    // shape
+    const bool drawHovering = RenderOpts::HQRendering ? false : isSelected();
+    if (shapedPaint)
+        painter->translate(-shapeOffset);
+    if (shapedPaint && drawHovering)
+        painter->strokePath(m_shapePath, QPen(Qt::red, 0));
 
 #if 0
     // standard rich text document drawing
@@ -167,7 +234,7 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     m_text->documentLayout()->draw(painter, pCtx);
 #else
     // manual drawing
-    QPointF blockPos = -m_textRect.topLeft();
+    QPointF blockPos = shapedPaint ? QPointF(0, 0) : -m_textRect.topLeft();
 
     // 1. for each Text Block
     int blockRectIdx = 0;
@@ -177,8 +244,10 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
 
         // 1.1. compute text insertion position
         const QRect & blockRect = m_blockRects[blockRectIdx++];
-        QPointF iPos = blockPos - blockRect.topLeft();
+        QPointF iPos = shapedPaint ? blockPos : blockPos - blockRect.topLeft();
         blockPos += QPointF(0, blockRect.height());
+
+        qreal curLen = 10;
 
         // 1.2. iterate over text fragments
         for (QTextBlock::iterator tbIt = tb.begin(); !(tbIt.atEnd()); ++tbIt) {
@@ -191,15 +260,32 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
             QFont font = format.font();
             painter->setFont(font);
             painter->setPen(format.foreground().color());
-            //painter->setPen(QColor::fromHsv(qrand() % 360, 255, 255));
             painter->setBrush(Qt::NoBrush);
             QFontMetrics metrics(font);
 
             // 1.2.2. draw each character
             QString text = frag.text();
             foreach (const QChar & textChar, text) {
-                painter->drawText(iPos, textChar);
-                iPos += QPointF(metrics.width(textChar), 0);
+                if (shapedPaint) {
+                    // find point on shape and angle
+                    qreal interval = metrics.width(textChar);
+                    qreal t = m_shapePath.percentAtLength(curLen);
+                    QPointF pt = m_shapePath.pointAtPercent(t);
+                    qreal angle = -m_shapePath.angleAtPercent(t);
+
+                    // draw rotated letter
+                    painter->save();
+                    painter->drawPoint(pt);
+                    painter->translate(pt);
+                    painter->rotate(angle);
+                    painter->drawText(iPos, textChar);
+                    painter->restore();
+
+                    curLen += interval;
+                } else {
+                    painter->drawText(iPos, textChar);
+                    iPos += QPointF(metrics.width(textChar), 0);
+                }
             }
         }
     }
@@ -281,9 +367,28 @@ void TextContent::updateTextConstraints()
         if (blockRect.bottom() > m_textRect.bottom())
             m_textRect.setBottom(blockRect.bottom());
     }
-    m_textRect.adjust(-m_margin, -m_margin, m_margin, m_margin);
+    m_textRect.adjust(-m_textMargin, -m_textMargin, m_textMargin, m_textMargin);
 
-    // 3. resize content keeping stretch
+    // 3. use shape-based rendering
+    if (m_shapeEnabled && !m_shapePath.isEmpty()) {
+#if 0
+        // more precise, but too close to the path
+        m_shapeRect = m_shapePath.boundingRect().toRect();
+#else
+        // faster, but less precise (as it uses the controls points to determine
+        // the path rect, instead of the path itself)
+        m_shapeRect = m_shapePath.controlPointRect().toRect();
+#endif
+        static const int bezierMargin = 20;
+        m_shapeRect.adjust(-bezierMargin, -bezierMargin, bezierMargin, bezierMargin);
+
+        int w = m_shapeRect.width();
+        int h = m_shapeRect.height();
+        resizeContents(QRect(-w / 2, -h / 2, w, h));
+        return;
+    }
+
+    // 4. resize content keeping stretch
     int w = (int)(prevXScale * (qreal)m_textRect.width());
     int h = (int)(prevYScale * (qreal)m_textRect.height());
     resizeContents(QRect(-w / 2, -h / 2, w, h));
