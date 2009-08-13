@@ -14,6 +14,7 @@
 
 #include "TextContent.h"
 #include "frames/Frame.h"
+#include "items/BezierCubicItem.h"
 #include "ButtonItem.h"
 #include "CPixmap.h"
 #include "RenderOpts.h"
@@ -25,6 +26,7 @@
 #include <QTextFrame>
 #include <QUrl>
 #include <QDebug>
+
 
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
@@ -55,6 +57,9 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
 
     // init shape (default control points)
     setShapeControlPoints(QList<QPointF>() << QPointF(50, 50) << QPointF(140, 140) << QPointF(300, 250) << QPointF(300, 50));
+
+    // init controls
+    BezierCubicItem * bezierItem = new BezierCubicItem(this);
 }
 
 TextContent::~TextContent()
@@ -94,7 +99,8 @@ void TextContent::setShapeEnabled(bool enabled)
     m_shapeRect = QRect();
 
     // use caching only when drawing shaped
-    setCacheMode(enabled ? QGraphicsItem::DeviceCoordinateCache : QGraphicsItem::NoCache);
+    /// disabled because updates are wrong when cached!
+    ///setCacheMode(enabled ? QGraphicsItem::DeviceCoordinateCache : QGraphicsItem::NoCache);
 
     // regenerate text layouting
     updateTextConstraints();

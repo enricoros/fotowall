@@ -22,7 +22,8 @@ HEADERS += AbstractContent.h \
     VideoContent.h \
     VideoProvider.h \
     CornerItem.h \
-    WebContentSelectorItem.h
+    WebContentSelectorItem.h \
+    BezierCubicItem.h
 SOURCES += AbstractContent.cpp \
     AbstractDisposeable.cpp \
     AbstractProperties.cpp \
@@ -38,7 +39,8 @@ SOURCES += AbstractContent.cpp \
     VideoContent.cpp \
     VideoProvider.cpp \
     CornerItem.cpp \
-    WebContentSelectorItem.cpp
+    WebContentSelectorItem.cpp \
+    BezierCubicItem.cpp
 FORMS += AbstractProperties.ui \
     PictureProperties.ui \
     WebContentSelectorItem.ui

@@ -53,10 +53,9 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 #if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 #endif
-    // TODO: check this
-    setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
+    // allow some items (eg. the bezier controls for text) to be shown
+    setFlag(QGraphicsItem::ItemClipsChildrenToShape, false);
     setAcceptHoverEvents(true);
-    setAcceptDrops(true);
 
     // create child controls
     createCorner(Qt::TopLeftCorner, noRescale);
@@ -81,7 +80,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     addButtonItem(bPersp);
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
-    bDelete->setSelectesParent(false);
+    bDelete->setSelectsParent(false);
     bDelete->setToolTip(tr("Remove"));
     connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteItem()));
     addButtonItem(bDelete);

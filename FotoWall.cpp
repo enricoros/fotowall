@@ -537,8 +537,8 @@ void FotoWall::on_aAddVideo_triggered()
     m_desk->addVideoContent(0);
 }
 
-#include <QGLWidget>
 #ifdef HAS_OPENGL
+#include <QGLWidget>
 #endif
 void FotoWall::on_accelBox_toggled(bool checked)
 {

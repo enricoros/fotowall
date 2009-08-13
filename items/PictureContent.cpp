@@ -39,6 +39,9 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     setFrameTextEnabled(true);
     setFrameText(tr("..."));
 
+    // allow dropping
+    setAcceptDrops(true);
+
     // add flipping buttons
     ButtonItem * bFlipH = new ButtonItem(ButtonItem::FlipH, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
     bFlipH->setToolTip(tr("Flip horizontally"));

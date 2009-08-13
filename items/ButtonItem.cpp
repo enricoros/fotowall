@@ -46,7 +46,7 @@ int ButtonItem::height() const
     return 16;
 }
 
-void ButtonItem::setSelectesParent(bool selects)
+void ButtonItem::setSelectsParent(bool selects)
 {
     m_selectsParent = selects;
 }
