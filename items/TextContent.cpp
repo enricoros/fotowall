@@ -59,7 +59,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     setShapeControlPoints(QList<QPointF>() << QPointF(50, 50) << QPointF(140, 140) << QPointF(300, 250) << QPointF(300, 50));
 
     // init controls
-    BezierCubicItem * bezierItem = new BezierCubicItem(this);
+    /*BezierCubicItem * bezierItem =*/ new BezierCubicItem(this);
 }
 
 TextContent::~TextContent()

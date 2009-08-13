@@ -24,6 +24,7 @@ class GroupBoxWidget : public QWidget
     Q_PROPERTY(QString title READ title WRITE setTitle)
     Q_PROPERTY(int titleSize READ titleSize WRITE setTitleSize)
     Q_PROPERTY(qreal shading READ shading WRITE setShading)
+    Q_PROPERTY(int fixedWidth READ minimumWidth WRITE setFixedWidth)
     public:
         GroupBoxWidget(QWidget * parent = 0);
 
@@ -36,12 +37,17 @@ class GroupBoxWidget : public QWidget
         qreal shading() const;
         void setShading(qreal value);
 
+        // an elegant alternative to show and hide
+        void collapse();
+        void expand();
+
     protected:
         void enterEvent(QEvent *);
         void leaveEvent(QEvent *);
         void paintEvent(QPaintEvent * event);
 
     private:
+        int calcMinWidth();
         QString m_titleText;
         QFont m_titleFont;
         qreal m_shading;

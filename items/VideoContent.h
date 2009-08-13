@@ -29,6 +29,7 @@ class VideoContent : public AbstractContent
         ~VideoContent();
 
         // ::AbstractContent
+        QString contentName() const { return tr("Webcam"); }
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;

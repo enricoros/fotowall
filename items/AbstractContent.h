@@ -65,7 +65,8 @@ class AbstractContent : public AbstractDisposeable
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;
 
-        // may be reimplemented by subclasses
+        // to be reimplemented by subclasses
+        virtual QString contentName() const = 0;
         virtual bool fromXml(QDomElement & parentElement);
         virtual void toXml(QDomElement & parentElement) const;
         virtual QPixmap renderAsBackground(const QSize & size, bool keepAspect = false) const;

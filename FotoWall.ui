@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
+    <width>700</width>
     <height>400</height>
    </rect>
   </property>
@@ -171,7 +171,7 @@ stop:1 rgba(237, 237, 237, 255))
        </widget>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="widgetMode" native="true">
+       <widget class="GroupBoxWidget" name="widgetProperties" native="true">
         <property name="palette">
          <palette>
           <active>
@@ -186,7 +186,7 @@ stop:1 rgba(237, 237, 237, 255))
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="32">
+             <color alpha="16">
               <red>0</red>
               <green>0</green>
               <blue>0</blue>
@@ -206,7 +206,7 @@ stop:1 rgba(237, 237, 237, 255))
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="32">
+             <color alpha="16">
               <red>0</red>
               <green>0</green>
               <blue>0</blue>
@@ -217,7 +217,7 @@ stop:1 rgba(237, 237, 237, 255))
           <disabled>
            <colorrole role="Base">
             <brush brushstyle="SolidPattern">
-             <color alpha="32">
+             <color alpha="16">
               <red>0</red>
               <green>0</green>
               <blue>0</blue>
@@ -226,7 +226,7 @@ stop:1 rgba(237, 237, 237, 255))
            </colorrole>
            <colorrole role="Window">
             <brush brushstyle="SolidPattern">
-             <color alpha="32">
+             <color alpha="16">
               <red>0</red>
               <green>0</green>
               <blue>0</blue>
@@ -239,10 +239,10 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="autoFillBackground">
          <bool>true</bool>
         </property>
-        <property name="title" stdset="0">
-         <string>MODE</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
+        <layout class="QHBoxLayout" name="propLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="leftMargin">
           <number>6</number>
          </property>
@@ -255,46 +255,6 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="verticalSpacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QComboBox" name="projectType">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <item>
-            <property name="text">
-             <string>FotoWall</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>CD Cover</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>DVD Cover</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Exact Size</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="accelBox">
-           <property name="text">
-            <string notr="true">OpenGL</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
@@ -395,7 +355,7 @@ stop:1 rgba(237, 237, 237, 255))
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Background</string>
+            <string>background</string>
            </property>
            <property name="popupMode">
             <enum>QToolButton::InstantPopup</enum>
@@ -414,7 +374,45 @@ stop:1 rgba(237, 237, 237, 255))
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Decorations</string>
+            <string>decorations</string>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::InstantPopup</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QToolButton" name="arrangeButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>arrange</string>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::InstantPopup</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QToolButton" name="effectsButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>effects</string>
            </property>
            <property name="popupMode">
             <enum>QToolButton::InstantPopup</enum>
@@ -428,38 +426,144 @@ stop:1 rgba(237, 237, 237, 255))
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widgetSpacer" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <widget class="QToolButton" name="howtoButton">
-         <property name="geometry">
-          <rect>
-           <x>9</x>
-           <y>16</y>
-           <width>46</width>
-           <height>25</height>
-          </rect>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="GroupBoxWidget" name="widgetMode" native="true">
+        <property name="palette">
+         <palette>
+          <active>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Window">
+            <brush brushstyle="SolidPattern">
+             <color alpha="16">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </active>
+          <inactive>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Window">
+            <brush brushstyle="SolidPattern">
+             <color alpha="16">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </inactive>
+          <disabled>
+           <colorrole role="Base">
+            <brush brushstyle="SolidPattern">
+             <color alpha="16">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Window">
+            <brush brushstyle="SolidPattern">
+             <color alpha="16">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </disabled>
+         </palette>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="title" stdset="0">
+         <string>MODE</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="leftMargin">
+          <number>6</number>
          </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="topMargin">
+          <number>0</number>
          </property>
-         <property name="text">
-          <string>Help</string>
+         <property name="rightMargin">
+          <number>6</number>
          </property>
-         <property name="popupMode">
-          <enum>QToolButton::InstantPopup</enum>
+         <property name="bottomMargin">
+          <number>0</number>
          </property>
-         <property name="autoRaise">
-          <bool>true</bool>
+         <property name="verticalSpacing">
+          <number>0</number>
          </property>
-        </widget>
+         <item row="0" column="0">
+          <widget class="QComboBox" name="projectType">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <item>
+            <property name="text">
+             <string>Screen</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>CD Cover</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>DVD Cover</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Exact Size</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="accelBox">
+           <property name="text">
+            <string notr="true">OpenGL</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -550,7 +654,36 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="verticalSpacing">
           <number>0</number>
          </property>
-         <item row="0" column="1" rowspan="2">
+         <item row="0" column="2">
+          <widget class="QToolButton" name="loadButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Load</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QToolButton" name="saveButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Save</string>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
           <widget class="QToolButton" name="exportButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -567,44 +700,31 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
            <property name="iconSize">
             <size>
-             <width>32</width>
-             <height>32</height>
+             <width>16</width>
+             <height>16</height>
             </size>
            </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QToolButton" name="howtoButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>help</string>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::InstantPopup</enum>
+           </property>
            <property name="autoRaise">
             <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QToolButton" name="loadButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>load</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QToolButton" name="saveButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>save</string>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
           </widget>
          </item>

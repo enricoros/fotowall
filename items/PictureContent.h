@@ -35,6 +35,7 @@ class PictureContent : public AbstractContent
         void addEffect(const PictureEffect & effect);
 
         // ::AbstractContent
+        QString contentName() const { return tr("Picture"); }
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;

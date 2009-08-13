@@ -90,6 +90,23 @@ Desk::Desk(QObject * parent)
     m_grad2ColorPicker->setZValue(10000);
     connect(m_grad2ColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotGradColorChanged()));
     addItem(m_grad2ColorPicker);
+
+    // hooks
+    connect(this, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+
+#if 0
+    // crazy background stuff
+    #define RP QPointF(-400 + qrand() % 2000, -300 + qrand() % 1500)
+    for ( int i = 0; i < 100; i++ ) {
+        QGraphicsPathItem * p = new QGraphicsPathItem();
+        addItem(p);
+        p->show();
+        p->setPen(QPen(QColor::fromHsv(qrand() % 20, 128 + qrand() % 127, qrand() % 255)));
+        QPainterPath path(RP);
+        path.cubicTo(RP, RP, RP);
+        p->setPath(path);
+    }
+#endif
 }
 
 Desk::~Desk()
@@ -839,6 +856,28 @@ void Desk::clearMarkers()
 }
 
 /// Slots
+void Desk::slotSelectionChanged()
+{
+    // show the config widget if 1 AbstractContent is selected
+    QList<QGraphicsItem *> selection = selectedItems();
+    if (selection.size() == 1) {
+        AbstractContent * content = dynamic_cast<AbstractContent *>(selection.first());
+        if (content) {
+            QWidget * w = new QWidget();
+            QPalette pal;
+            pal.setBrush(QPalette::Window, QColor::fromHsv(qrand() % 360, 255, 255));
+            w->setAutoFillBackground(true);
+            w->setPalette(pal);
+            QString title = tr("%1 PROPERTIES").arg(content->contentName().toUpper());
+            emit showConfigWidget(w, title);
+            return;
+        }
+    }
+
+    // or don't show anything
+    emit showConfigWidget(0, QString());
+}
+
 void Desk::slotConfigureContent(const QPoint & scenePoint)
 {
     // get the content and ensure it hasn't already a property window

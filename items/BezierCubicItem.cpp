@@ -66,7 +66,7 @@ BezierCubicItem::BezierCubicItem(QGraphicsItem * parent)
     m_cps.resize(4);
     for (int i = 0; i < 4; i++) {
         m_cps[i] = new BezierControlPoint(this, i);
-        m_cps[i]->setPos(-50 + qrand() % 100, -50 + qrand() % 100);
+        m_cps[i]->setPos(-100 + qrand() % 200, -70 + qrand() % 140);
     }
     controlPointMoved(0);
     controlPointMoved(2);

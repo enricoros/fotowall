@@ -40,6 +40,7 @@ class TextContent : public AbstractContent
         QList<QPointF> shapeControlPoints() const;
 
         // ::AbstractContent
+        QString contentName() const { return tr("Text"); }
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;

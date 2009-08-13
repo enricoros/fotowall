@@ -13,8 +13,8 @@
  ***************************************************************************/
 
 #include "GroupBoxWidget.h"
+#include <QFontMetrics>
 #include <QPainter>
-
 #if QT_VERSION >= 0x040600
 #include <QPropertyAnimation>
 #endif
@@ -62,12 +62,40 @@ void GroupBoxWidget::setShading(qreal value)
     update();
 }
 
+void GroupBoxWidget::collapse()
+{
+#if QT_VERSION >= 0x040600
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "fixedWidth", this);
+    ani->setEasingCurve(QEasingCurve::OutQuint);
+    ani->setDuration(200);
+    ani->setEndValue(0);
+    ani->start(QPropertyAnimation::DeleteWhenStopped);
+#else
+    setMinimumWidth(0);
+    hide();
+#endif
+}
+
+void GroupBoxWidget::expand()
+{
+#if QT_VERSION >= 0x040600
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "fixedWidth", this);
+    ani->setEasingCurve(QEasingCurve::OutQuint);
+    ani->setDuration(300);
+    ani->setEndValue(calcMinWidth());
+    ani->start(QPropertyAnimation::DeleteWhenStopped);
+#else
+    setMinimumWidth(calcMinWidth());
+    show();
+#endif
+}
+
 void GroupBoxWidget::enterEvent(QEvent *)
 {
 #if QT_VERSION >= 0x040600
     QPropertyAnimation * ani = new QPropertyAnimation(this, "shading", this);
     ani->setEasingCurve(QEasingCurve::OutQuad);
-    ani->setDuration(300);
+    ani->setDuration(400);
     ani->setEndValue(1.0);
     ani->start(QPropertyAnimation::DeleteWhenStopped);
 #else
@@ -80,7 +108,7 @@ void GroupBoxWidget::leaveEvent(QEvent *)
 #if QT_VERSION >= 0x040600
     QPropertyAnimation * ani = new QPropertyAnimation(this, "shading", this);
     ani->setEasingCurve(QEasingCurve::OutQuad);
-    ani->setDuration(500);
+    ani->setDuration(400);
     ani->setEndValue(0.0);
     ani->start(QPropertyAnimation::DeleteWhenStopped);
 #else
@@ -105,4 +133,10 @@ void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
         p.setFont(m_titleFont);
         p.drawText(QRect(0, 0, width(), m_titleFont.pixelSize() + 4), Qt::AlignHCenter | Qt::AlignTop, m_titleText);
     }
+}
+
+int GroupBoxWidget::calcMinWidth()
+{
+    QFontMetrics metrics(m_titleFont);
+    return qMax(metrics.width(m_titleText) + 12, QWidget::sizeHint().width());
 }

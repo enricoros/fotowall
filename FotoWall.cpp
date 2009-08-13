@@ -140,6 +140,7 @@ FotoWall::FotoWall(QWidget * parent)
     // create our custom desk
     m_desk = new Desk(this);
     connect(m_desk, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
+    connect(m_desk, SIGNAL(showConfigWidget(QWidget*,const QString &)), this, SLOT(slotShowConfigWidget(QWidget*,const QString &)));
 
     // init ui
     ui->setupUi(this);
@@ -154,9 +155,11 @@ FotoWall::FotoWall(QWidget * parent)
 #else
     ui->accelBox->hide();
 #endif
+    ui->widgetProperties->collapse();
+    ui->widgetCanvas->expand();
 
     // attach menus
-    //ui->arrangeButton->setMenu(createArrangeMenu());
+    ///ui->arrangeButton->setMenu(createArrangeMenu());
     ui->backButton->setMenu(createBackgroundMenu());
     ui->decoButton->setMenu(createDecorationMenu());
     ui->howtoButton->setMenu(createHelpMenu());
@@ -426,7 +429,7 @@ void FotoWall::setNormalProject()
         skipFirstMaximizeHack = false;
     else
         showMaximized();
-    ui->exportButton->setText(tr("export"));
+    ui->exportButton->setText(tr("Export"));
     m_desk->setProjectMode(Desk::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
@@ -667,6 +670,29 @@ void FotoWall::slotBackModeChanged()
     int mode = m_desk->backMode();
     m_gBackActions->actions()[mode - 1]->setChecked(true);
     m_gBackActions->actions()[2]->setEnabled(mode == 3);
+}
+
+void FotoWall::slotShowConfigWidget(QWidget * widget, const QString & title)
+{
+    // delete current Properties content
+    QLayoutItem * prevItem = ui->propLayout->takeAt(0);
+    if (prevItem) {
+        delete prevItem->widget();
+        delete prevItem;
+    }
+
+    // show the Properties container with new content and title
+    if (widget) {
+        ui->widgetCanvas->collapse();
+        ui->propLayout->addWidget(widget);
+        ui->widgetProperties->setTitle(title);
+        ui->widgetProperties->expand();
+    }
+    // or show the Canvas containter
+    else {
+        ui->widgetProperties->collapse();
+        ui->widgetCanvas->expand();
+    }
 }
 
 void FotoWall::slotVerifyTutorial(QNetworkReply * reply)
