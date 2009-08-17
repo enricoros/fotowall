@@ -23,8 +23,9 @@ class GroupBoxWidget : public QWidget
     Q_OBJECT
     Q_PROPERTY(QString title READ title WRITE setTitle)
     Q_PROPERTY(int titleSize READ titleSize WRITE setTitleSize)
-    Q_PROPERTY(qreal shading READ shading WRITE setShading)
     Q_PROPERTY(int fixedWidth READ minimumWidth WRITE setFixedWidth)
+    Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked)
     public:
         GroupBoxWidget(QWidget * parent = 0);
 
@@ -34,23 +35,46 @@ class GroupBoxWidget : public QWidget
         int titleSize() const;
         void setTitleSize(int titleSize);
 
-        qreal shading() const;
-        void setShading(qreal value);
+        bool isCheckable() const;
+        void setCheckable(bool checkable);
+
+        bool isChecked() const;
+        void setChecked(bool checked);
 
         // an elegant alternative to show and hide
         void collapse();
         void expand();
 
+    Q_SIGNALS:
+        void toggled(bool on);
+
     protected:
         void enterEvent(QEvent *);
         void leaveEvent(QEvent *);
+        void mousePressEvent(QMouseEvent *);
         void paintEvent(QPaintEvent * event);
 
     private:
-        int calcMinWidth();
+        // for internal animation only
+        Q_PROPERTY(qreal cAnim READ checkValue WRITE setCheckValue)
+        Q_PROPERTY(qreal hAnim READ hoverValue WRITE setHoverValue)
+        qreal checkValue() const;
+        void setCheckValue(qreal value);
+        qreal hoverValue() const;
+        void setHoverValue(qreal value);
+
         QString m_titleText;
         QFont m_titleFont;
-        qreal m_shading;
+        bool m_collapsed;
+        bool m_checkable;
+        bool m_checked;
+        qreal m_checkValue;
+        qreal m_hoverValue;
+
+   private Q_SLOTS:
+        void recalcLayout();
+        void slotFixupLayout();
 };
+
 
 #endif

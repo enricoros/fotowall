@@ -330,6 +330,9 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="title" stdset="0">
          <string>CANVAS</string>
         </property>
+        <property name="checkable" stdset="0">
+         <bool>true</bool>
+        </property>
         <layout class="QGridLayout" name="gridLayout_3">
          <property name="leftMargin">
           <number>6</number>
@@ -529,6 +532,9 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="title" stdset="0">
          <string>MODE</string>
         </property>
+        <property name="checkable" stdset="0">
+         <bool>true</bool>
+        </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <property name="leftMargin">
           <number>6</number>
@@ -656,6 +662,9 @@ stop:1 rgba(237, 237, 237, 255))
         </property>
         <property name="title" stdset="0">
          <string>FILE</string>
+        </property>
+        <property name="checkable" stdset="0">
+         <bool>true</bool>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
          <property name="leftMargin">
