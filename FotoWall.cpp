@@ -429,7 +429,7 @@ void FotoWall::setNormalProject()
         skipFirstMaximizeHack = false;
     else
         showMaximized();
-    ui->exportButton->setText(tr("Export"));
+    ui->exportButton->setText(tr("export"));
     m_desk->setProjectMode(Desk::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
