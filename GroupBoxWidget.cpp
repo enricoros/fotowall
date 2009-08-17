@@ -15,6 +15,8 @@
 #include "GroupBoxWidget.h"
 #include <QFontMetrics>
 #include <QPainter>
+#include <QStyleOptionButton>
+#include <QStyle>
 #include <QVariant>
 #if QT_VERSION >= 0x040600
 #include <QPropertyAnimation>
@@ -139,25 +141,41 @@ void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
         p.fillRect(0, 0, width(), height() - m_checkValue * (height() - 12) , rg);
     }
 
-    // draw text
+    // precalc text position and move painter
+    QStyle * ss = m_checkable ? style() : 0;
+    int indW = ss ? ss->pixelMetric(QStyle::PM_IndicatorWidth, 0, 0) : 0;
+    int indH = ss ? ss->pixelMetric(QStyle::PM_IndicatorHeight, 0, 0) : 0;
+    p.save();
     p.setFont(m_titleFont);
     QFontMetrics metrics(m_titleFont);
     QRect textRect = metrics.boundingRect(m_titleText);
+    int textHeight = textRect.height();
+    int dx = 0;
     if (m_checkValue < 1.0) {
-        qreal xStart = -textRect.top() + 2,
-              xStop = (width() - textRect.width()) / 2.0;
-        qreal yStart = height() - 2, //height() + textRect.width()) / 2.0,
-              yStop = -textRect.top();
-        qreal xT = xStart + m_checkValue * (xStop - xStart);
-        qreal yT = yStart + m_checkValue * (yStop - yStart);
-
-        p.save();
-        p.translate(xT, yT);
+        qreal x1 = -textRect.top() + 2,
+              x2 = (width() - textRect.width() - indW - 4) / 2;
+        qreal y1 = height() - 2, //height() + textRect.width()) / 2,
+              y2 = -textRect.top();
+        p.translate(x1 + m_checkValue * (x2 - x1), y1 + m_checkValue * (y2 - y1));
         p.rotate(m_checkValue * 90 - 90);
-        p.drawText(0, 0, m_titleText);
-        p.restore();
     } else
-        p.drawText((width() - textRect.width()) / 2.0, -textRect.top(), m_titleText);
+        p.translate((width() - textRect.width() - indW - 4) / 2, -textRect.top());
+
+    // draw checkbox indicator
+    if (m_checkable && indW && indH) {
+        QStyleOptionButton opt;
+        opt.rect = QRect(0, -indH + 3, indW, indH);
+        dx = indW + 4;
+        opt.state |= m_checked ? QStyle::State_On : QStyle::State_Off;
+        if (testAttribute(Qt::WA_Hover) && underMouse())
+            opt.state |= QStyle::State_MouseOver;
+        //p.setRenderHints(QPainter::Antialiasing);
+        style()->drawPrimitive(QStyle::PE_IndicatorCheckBox, &opt, &p, this);
+    }
+
+    // draw text
+    p.drawText(dx, 0, m_titleText);
+    p.restore();
 }
 
 
@@ -185,7 +203,6 @@ void GroupBoxWidget::setHoverValue(qreal value)
 
 void GroupBoxWidget::recalcLayout()
 {
-    qWarning("RL");
     // full collapse: shrink to zero
     if (m_collapsed) {
         ANIMATE_PARAM("fixedWidth", 200, 0, true)
