@@ -31,6 +31,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
 #include <QImageReader>
+#include <QLabel>
 #include <QList>
 #include <QMessageBox>
 #include <QMimeData>
@@ -872,6 +873,13 @@ void Desk::slotSelectionChanged()
             emit showConfigWidget(w, title);
             return;
         }
+    }
+
+    // show a 'selection' properties widget
+    if (selection.size() > 1) {
+        QLabel * label = new QLabel(tr("%1 objects selected").arg(selection.size()));
+        emit showConfigWidget(label, tr("SELECTION PROPERTIES"));
+        return;
     }
 
     // or don't show anything
