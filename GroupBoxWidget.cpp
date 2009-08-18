@@ -168,7 +168,7 @@ void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
         opt.rect = QRect(0, -indH + 3, indW, indH);
         dx = indW + 4;
         opt.state |= m_checked ? QStyle::State_On : QStyle::State_Off;
-        if (testAttribute(Qt::WA_Hover) && underMouse())
+        if (underMouse())
             opt.state |= QStyle::State_MouseOver;
         //p.setRenderHints(QPainter::Antialiasing);
         style()->drawPrimitive(QStyle::PE_IndicatorCheckBox, &opt, &p, this);
