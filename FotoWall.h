@@ -89,7 +89,7 @@ class FotoWall : public QWidget
         void slotSetBackMode(QAction* action);
 
         void slotBackModeChanged();
-        void slotShowPropertiesWidget(QWidget *, const QString &);
+        void slotShowPropertiesWidget(QWidget *);
 
         void slotVerifyTutorial(QNetworkReply * reply);
         void slotVerifySupport(/*const KnowledgeItemV1List & items*/);

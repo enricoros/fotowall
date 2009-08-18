@@ -140,7 +140,7 @@ FotoWall::FotoWall(QWidget * parent)
     // create our custom desk
     m_desk = new Desk(this);
     connect(m_desk, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
-    connect(m_desk, SIGNAL(showPropertiesWidget(QWidget*,const QString &)), this, SLOT(slotShowPropertiesWidget(QWidget*,const QString &)));
+    connect(m_desk, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
 
     // init ui
     ui->setupUi(this);
@@ -672,7 +672,7 @@ void FotoWall::slotBackModeChanged()
     m_gBackActions->actions()[2]->setEnabled(mode == 3);
 }
 
-void FotoWall::slotShowPropertiesWidget(QWidget * widget, const QString & title)
+void FotoWall::slotShowPropertiesWidget(QWidget * widget)
 {
     // delete current Properties content
     QLayoutItem * prevItem = ui->propLayout->takeAt(0);
@@ -685,7 +685,7 @@ void FotoWall::slotShowPropertiesWidget(QWidget * widget, const QString & title)
     if (widget) {
         ui->widgetCanvas->collapse();
         ui->propLayout->addWidget(widget);
-        ui->widgetProperties->setTitle(title);
+        ui->widgetProperties->setTitle(widget->windowTitle());
         ui->widgetProperties->expand();
     }
     // or show the Canvas containter

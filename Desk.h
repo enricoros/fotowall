@@ -93,7 +93,7 @@ class Desk : public QGraphicsScene
 
     Q_SIGNALS:
         void backModeChanged();
-        void showPropertiesWidget(QWidget * widget, const QString & title);
+        void showPropertiesWidget(QWidget * widget);
 
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );

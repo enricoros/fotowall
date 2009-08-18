@@ -869,8 +869,8 @@ void Desk::slotSelectionChanged()
             pal.setBrush(QPalette::Window, QColor::fromHsv(qrand() % 360, 255, 255));
             w->setAutoFillBackground(true);
             w->setPalette(pal);
-            QString title = tr("%1 PROPERTIES").arg(content->contentName().toUpper());
-            emit showPropertiesWidget(w, title);
+            w->setWindowTitle(tr("%1 PROPERTIES").arg(content->contentName().toUpper()));
+            emit showPropertiesWidget(w);
             return;
         }
     }
@@ -878,12 +878,13 @@ void Desk::slotSelectionChanged()
     // show a 'selection' properties widget
     if (selection.size() > 1) {
         QLabel * label = new QLabel(tr("%1 objects selected").arg(selection.size()));
-        emit showPropertiesWidget(label, tr("SELECTION PROPERTIES"));
+        label->setWindowTitle(tr("SELECTION PROPERTIES"));
+        emit showPropertiesWidget(label);
         return;
     }
 
     // or don't show anything
-    emit showPropertiesWidget(0, QString());
+    emit showPropertiesWidget(0);
 }
 
 void Desk::slotConfigureContent(const QPoint & scenePoint)
