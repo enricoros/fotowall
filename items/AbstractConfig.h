@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __AbstractProperties_h__
-#define __AbstractProperties_h__
+#ifndef __AbstractConfig_h__
+#define __AbstractConfig_h__
 
 #include <QGraphicsProxyWidget>
 #include <QBasicTimer>
@@ -22,14 +22,14 @@ class Frame;
 class PixmapButton;
 class QAbstractButton;
 class QListWidgetItem;
-namespace Ui { class AbstractProperties; }
+namespace Ui { class AbstractConfig; }
 
 
-class AbstractProperties : public QGraphicsProxyWidget {
+class AbstractConfig : public QGraphicsProxyWidget {
     Q_OBJECT
     public:
-        AbstractProperties(AbstractContent * content, QGraphicsItem * parent = 0);
-        virtual ~AbstractProperties();
+        AbstractConfig(AbstractContent * content, QGraphicsItem * parent = 0);
+        virtual ~AbstractConfig();
 
         void dispose();
 
@@ -56,7 +56,7 @@ class AbstractProperties : public QGraphicsProxyWidget {
 
     private:
         AbstractContent *           m_content;
-        Ui::AbstractProperties *    m_commonUi;
+        Ui::AbstractConfig *    m_commonUi;
         PixmapButton *              m_closeButton;
         Frame *                     m_frame;
 

@@ -18,7 +18,7 @@
 #include "AbstractDisposeable.h"
 #include <QDomElement>
 #include "3rdparty/enricomath.h"
-class AbstractProperties;
+class AbstractConfig;
 class ButtonItem;
 class CornerItem;
 class Frame;

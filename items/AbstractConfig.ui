@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AbstractProperties</class>
- <widget class="QWidget" name="AbstractProperties">
+ <class>AbstractConfig</class>
+ <widget class="QWidget" name="AbstractConfig">
   <property name="geometry">
    <rect>
     <x>0</x>

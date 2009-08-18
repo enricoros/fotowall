@@ -12,33 +12,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __PictureProperties_h__
-#define __PictureProperties_h__
+#ifndef __TextConfig_h__
+#define __TextConfig_h__
 
-#include "AbstractProperties.h"
-#include "CPixmap.h"
+#include "AbstractConfig.h"
 class QListWidgetItem;
-class PictureContent;
-namespace Ui { class PictureProperties; }
+class Bezier;
+class RichTextEditorDialog;
+class TextContent;
 
 
-class PictureProperties : public AbstractProperties {
-    Q_OBJECT
+class TextConfig : public AbstractConfig {
     public:
-        PictureProperties(PictureContent * pictureContent, QGraphicsItem * parent = 0);
-        ~PictureProperties();
+        TextConfig(TextContent * textContent, QGraphicsItem * parent = 0);
+        ~TextConfig();
 
-    Q_SIGNALS:
-        void applyEffect(const PictureEffect & effect, bool allPictures);
+    protected:
+        // ::AbstractConfig
+        void closing();
 
     private:
-        Ui::PictureProperties * m_pictureUi;
-        PictureContent *        m_pictureContent;
-        PictureEffect           m_currentEffect;
-
-    private Q_SLOTS:
-        void on_applyEffects_clicked();
-        void on_effectsList_itemActivated(QListWidgetItem * item);
+        TextContent * m_textContent;
+        RichTextEditorDialog * m_editor;
+        Bezier * m_bezierWidget;
 };
 
 #endif

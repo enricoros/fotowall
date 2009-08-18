@@ -140,7 +140,7 @@ FotoWall::FotoWall(QWidget * parent)
     // create our custom desk
     m_desk = new Desk(this);
     connect(m_desk, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
-    connect(m_desk, SIGNAL(showConfigWidget(QWidget*,const QString &)), this, SLOT(slotShowConfigWidget(QWidget*,const QString &)));
+    connect(m_desk, SIGNAL(showPropertiesWidget(QWidget*,const QString &)), this, SLOT(slotShowPropertiesWidget(QWidget*,const QString &)));
 
     // init ui
     ui->setupUi(this);
@@ -672,7 +672,7 @@ void FotoWall::slotBackModeChanged()
     m_gBackActions->actions()[2]->setEnabled(mode == 3);
 }
 
-void FotoWall::slotShowConfigWidget(QWidget * widget, const QString & title)
+void FotoWall::slotShowPropertiesWidget(QWidget * widget, const QString & title)
 {
     // delete current Properties content
     QLayoutItem * prevItem = ui->propLayout->takeAt(0);

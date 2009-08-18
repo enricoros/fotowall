@@ -2,14 +2,97 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de">
 <context>
+    <name>AbstractConfig</name>
+    <message>
+        <location filename="../items/AbstractConfig.cpp" line="319"/>
+        <source>Choose frame images</source>
+        <translation type="unfinished">Wähle Rahmenbilder aus</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.cpp" line="319"/>
+        <source>Images (*.svg)</source>
+        <translation type="unfinished">Bilder (*.svg)</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>General</source>
+        <translation type="unfinished">Allgemein</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>Stacking</source>
+        <translation type="unfinished">Reihenfolge</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>To Front</source>
+        <translation type="unfinished">in Vordergrund</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>Raise</source>
+        <translation type="unfinished">Anheben</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>Lower</source>
+        <translation type="unfinished">Absenken</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>To Back</source>
+        <translation type="unfinished">in Hintergrund</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>Operations</source>
+        <translation type="unfinished">Operationen</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>To Background</source>
+        <translation type="unfinished">in Hintergrund</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>Save</source>
+        <translation type="unfinished">Speichern</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>Remove</source>
+        <translation type="unfinished">Entfernen</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>Looks</source>
+        <translation type="unfinished">Aussehen</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>new frame</source>
+        <translation type="unfinished">Neuer Rahmen</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>apply to all</source>
+        <translation type="unfinished">Allen zuweisen</translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.ui"/>
+        <source>Show Reflection</source>
+        <translation type="unfinished">Zeige Reflektionen</translation>
+    </message>
+</context>
+<context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="73"/>
+        <location filename="../items/AbstractContent.cpp" line="72"/>
         <source>Change properties...</source>
         <translation type="unfinished">Eigenschaften ändern ...</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="78"/>
+        <location filename="../items/AbstractContent.cpp" line="77"/>
         <source>Drag around to change the perspective.
 Hold SHIFT to move faster.
 Use CTRL to cancel the transformations.</source>
@@ -17,32 +100,32 @@ Use CTRL to cancel the transformations.</source>
 STRG benutzen um die Umwandlung abzubrechen.</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="85"/>
+        <location filename="../items/AbstractContent.cpp" line="84"/>
         <source>Remove</source>
         <translation type="unfinished">Entfernen</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="640"/>
+        <location filename="../items/AbstractContent.cpp" line="639"/>
         <source>Choose the Image file</source>
         <translation type="unfinished">Wähle die Bild-Datei aus</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="640"/>
+        <location filename="../items/AbstractContent.cpp" line="639"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation type="unfinished">Bilder (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="679"/>
+        <location filename="../items/AbstractContent.cpp" line="678"/>
         <source>File Error</source>
         <translation type="unfinished">Dateifehler</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="679"/>
+        <location filename="../items/AbstractContent.cpp" line="678"/>
         <source>Error saving the Object to &apos;%1&apos;</source>
         <translation type="unfinished">Fehler beim Speichern des Objektes in &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="689"/>
+        <location filename="../items/AbstractContent.cpp" line="688"/>
         <source>Drag with Left or Right mouse button.
  - Hold down SHIFT for free resize
  - Hold down CTRL to allow rotation
@@ -56,86 +139,11 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     </message>
 </context>
 <context>
-    <name>AbstractProperties</name>
+    <name>Bezier</name>
     <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>Stacking</source>
-        <translation type="unfinished">Reihenfolge</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>Raise</source>
-        <translation type="unfinished">Anheben</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>Lower</source>
-        <translation type="unfinished">Absenken</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>Operations</source>
-        <translation type="unfinished">Operationen</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>Remove</source>
-        <translation type="unfinished">Entfernen</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>To Front</source>
-        <translation type="unfinished">in Vordergrund</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>To Back</source>
-        <translation type="unfinished">in Hintergrund</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>To Background</source>
-        <translation type="unfinished">in Hintergrund</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>Looks</source>
-        <translation type="unfinished">Aussehen</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>apply to all</source>
-        <translation type="unfinished">Allen zuweisen</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>Show Reflection</source>
-        <translation type="unfinished">Zeige Reflektionen</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.cpp" line="319"/>
-        <source>Choose frame images</source>
-        <translation type="unfinished">Wähle Rahmenbilder aus</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.cpp" line="319"/>
-        <source>Images (*.svg)</source>
-        <translation type="unfinished">Bilder (*.svg)</translation>
-    </message>
-    <message>
-        <location filename="../items/AbstractProperties.ui"/>
-        <source>new frame</source>
-        <translation type="unfinished">Neuer Rahmen</translation>
+        <location filename="../3rdparty/bezier/bezier.cpp" line="101"/>
+        <source>enabled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -157,22 +165,37 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="824"/>
+        <location filename="../Desk.cpp" line="842"/>
         <source>Back</source>
         <translation type="unfinished">Hintergrund</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="828"/>
+        <location filename="../Desk.cpp" line="846"/>
         <source>Front</source>
         <translation type="unfinished">Vordergrund</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="955"/>
+        <location filename="../Desk.cpp" line="872"/>
+        <source>%1 PROPERTIES</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Desk.cpp" line="880"/>
+        <source>%1 objects selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Desk.cpp" line="881"/>
+        <source>SELECTION PROPERTIES</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Desk.cpp" line="1001"/>
         <source>Delete content</source>
         <translation type="unfinished">Inhalt löschen</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="955"/>
+        <location filename="../Desk.cpp" line="1001"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
         <translation type="unfinished">Der ausgewählte Inhalt (%1) wird komplett gelöscht! Fortfahren ?</translation>
     </message>
@@ -490,133 +513,133 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
 <context>
     <name>FotoWall</name>
     <message>
-        <location filename="../FotoWall.cpp" line="516"/>
+        <location filename="../FotoWall.cpp" line="528"/>
         <source>Select one or more pictures to add</source>
         <translation type="unfinished">Zum Hinzufügen wähle ein oder mehrere Bild(er) aus</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="516"/>
+        <location filename="../FotoWall.cpp" line="528"/>
         <source>Images (%1)</source>
         <translation type="unfinished">Bild(er) (%1)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="249"/>
+        <location filename="../FotoWall.cpp" line="261"/>
         <source>Enable force field</source>
         <translation type="unfinished">Aktiviere &apos;Erzwingen&apos;-Feld</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="255"/>
+        <location filename="../FotoWall.cpp" line="267"/>
         <source>Auto-arrange new pictures</source>
         <translation type="unfinished">Neue Bilder automatisch anordnen</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="261"/>
+        <location filename="../FotoWall.cpp" line="273"/>
         <source>Rearrange</source>
         <translation type="unfinished">Neuanordnen</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="263"/>
+        <location filename="../FotoWall.cpp" line="275"/>
         <source>Uniform</source>
         <translation type="unfinished">Einheitlich</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="268"/>
+        <location filename="../FotoWall.cpp" line="280"/>
         <source>Shaped</source>
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="273"/>
+        <location filename="../FotoWall.cpp" line="285"/>
         <source>Collage</source>
         <translation type="unfinished">Kollage</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="288"/>
+        <location filename="../FotoWall.cpp" line="300"/>
         <source>Gradient</source>
         <translation type="unfinished">Steigung</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="294"/>
+        <location filename="../FotoWall.cpp" line="306"/>
         <source>Transparent</source>
         <translation type="unfinished">Transparenz</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="295"/>
+        <location filename="../FotoWall.cpp" line="307"/>
         <source>Transparency can be saved to PNG images only.</source>
         <translation type="unfinished">Die gewählte Transparenz kann im PNG Bild gespeichert werden.</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="301"/>
+        <location filename="../FotoWall.cpp" line="313"/>
         <source>Content</source>
         <translation type="unfinished">Inhalt</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="302"/>
+        <location filename="../FotoWall.cpp" line="314"/>
         <source>Double click on any content to put it on background.</source>
         <translation type="unfinished">Jeder Inhalt kann durch einen Doppelklick als Hintergrund eingestellt werden.</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="318"/>
+        <location filename="../FotoWall.cpp" line="330"/>
         <source>Top bar</source>
         <translation type="unfinished">Balken oben</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="324"/>
+        <location filename="../FotoWall.cpp" line="336"/>
         <source>Bottom bar</source>
         <translation type="unfinished">Balken unten</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="332"/>
+        <location filename="../FotoWall.cpp" line="344"/>
         <source>Set title...</source>
         <translation type="unfinished">Setze Titeltext ...</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="333"/>
+        <location filename="../FotoWall.cpp" line="345"/>
         <source>CTRL+T</source>
         <translation type="unfinished">STRG+T</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="337"/>
+        <location filename="../FotoWall.cpp" line="349"/>
         <source>Clear title</source>
         <translation type="unfinished">Lösche Titeltext</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="349"/>
+        <location filename="../FotoWall.cpp" line="361"/>
         <source>About</source>
         <translation type="unfinished">Über</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="353"/>
+        <location filename="../FotoWall.cpp" line="365"/>
         <source>Introduction</source>
         <translation type="unfinished">Einführung</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="383"/>
+        <location filename="../FotoWall.cpp" line="395"/>
         <source>Select all</source>
         <translation type="unfinished">Alles auswählen</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="384"/>
+        <location filename="../FotoWall.cpp" line="396"/>
         <source>CTRL+A</source>
         <translation type="unfinished">STRG+A</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="533"/>
-        <location filename="../FotoWall.cpp" line="539"/>
+        <location filename="../FotoWall.cpp" line="563"/>
+        <location filename="../FotoWall.cpp" line="569"/>
         <source>Select FotoWall file</source>
         <translation type="unfinished">Wähle die FotoWall Datei aus</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="533"/>
+        <location filename="../FotoWall.cpp" line="563"/>
         <source>FotoWall (*.fotowall)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="604"/>
+        <location filename="../FotoWall.cpp" line="634"/>
         <source>Opening FotoWall&apos;s author Blog</source>
         <translation type="unfinished">Öffne das Blog des FotoWall Autors</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="604"/>
+        <location filename="../FotoWall.cpp" line="634"/>
         <source>This is the blog of the main author of FotoWall.
 You can find some news while we set up a proper website ;-)
 Do you want to open the web page?</source>
@@ -624,7 +647,7 @@ Do you want to open the web page?</source>
 Wollen Sie mit dem Öffnen der Webseite fortfahren?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="620"/>
+        <location filename="../FotoWall.cpp" line="650"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 It&apos;s about FotoWall 0.2 a rather old version.
 Do you want to open the web page?</source>
@@ -633,61 +656,56 @@ Zur Zeit bassiert diese Anleitung noch auf Fotowall Version 0.2, eine sehr alte 
 Wollen Sie mit dem Öffnen der Webseite fortfahren?</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="659"/>
+        <location filename="../FotoWall.cpp" line="712"/>
         <source>Support (%1)</source>
         <translation type="unfinished">Unterstützung (%1)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="620"/>
+        <location filename="../FotoWall.cpp" line="650"/>
         <source>Opening the Web Tutorial</source>
         <translation type="unfinished">Öffne die Anleitung im Internet</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="357"/>
+        <location filename="../FotoWall.cpp" line="369"/>
         <source>Internet Resources</source>
         <translation type="unfinished">Internet Quellen</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="361"/>
+        <location filename="../FotoWall.cpp" line="373"/>
         <source>Tutorial Video (0.2)</source>
         <translation type="unfinished">Videoanleitung (zu Fotowall V0.2)</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="365"/>
+        <location filename="../FotoWall.cpp" line="377"/>
         <source>Check for Updates</source>
         <translation type="unfinished">Prüfe auf Updates</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="369"/>
+        <location filename="../FotoWall.cpp" line="381"/>
         <source>Fotowall&apos;s Blog</source>
         <translation type="unfinished">Blog zu Fotowall</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="420"/>
+        <location filename="../FotoWall.cpp" line="432"/>
         <source>export</source>
         <translation type="unfinished">Export</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="432"/>
-        <location filename="../FotoWall.cpp" line="443"/>
-        <location filename="../FotoWall.cpp" line="474"/>
+        <location filename="../FotoWall.cpp" line="444"/>
+        <location filename="../FotoWall.cpp" line="455"/>
+        <location filename="../FotoWall.cpp" line="486"/>
         <source>print</source>
         <translation type="unfinished">Drucken</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="592"/>
+        <location filename="../FotoWall.cpp" line="622"/>
         <source>Title</source>
         <translation type="unfinished">Titel</translation>
     </message>
     <message>
-        <location filename="../FotoWall.cpp" line="592"/>
+        <location filename="../FotoWall.cpp" line="622"/>
         <source>Insert the title</source>
         <translation type="unfinished">Gebe eine Überschrift ein</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>FotoWall</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
@@ -708,16 +726,6 @@ Wollen Sie mit dem Öffnen der Webseite fortfahren?</translation>
         <location filename="../FotoWall.ui"/>
         <source>load</source>
         <translation type="unfinished">Laden</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>save</source>
-        <translation type="unfinished">Speichern</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>quit</source>
-        <translation type="unfinished">Beenden</translation>
     </message>
     <message>
         <location filename="../FotoWall.ui"/>
@@ -773,6 +781,46 @@ Wollen Sie mit dem Öffnen der Webseite fortfahren?</translation>
         <location filename="../FotoWall.ui"/>
         <source>Add Webcam</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>ADD NEW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>CANVAS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Effects</source>
+        <translation type="unfinished">Effekte</translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Arrange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>MODE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>FILE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FotoWall.ui"/>
+        <source>Save</source>
+        <translation type="unfinished">Speichern</translation>
     </message>
 </context>
 <context>
@@ -866,74 +914,60 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>PictureContent</name>
+    <name>PictureConfig</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="40"/>
-        <location filename="../items/PictureContent.cpp" line="93"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../items/PictureContent.cpp" line="44"/>
-        <source>Flip horizontally</source>
-        <translation type="unfinished">Horizontal spiegeln</translation>
-    </message>
-    <message>
-        <location filename="../items/PictureContent.cpp" line="50"/>
-        <source>Flip vertically</source>
-        <translation type="unfinished">Vertikal spiegeln</translation>
-    </message>
-</context>
-<context>
-    <name>PictureProperties</name>
-    <message>
-        <location filename="../items/PictureProperties.cpp" line="33"/>
+        <location filename="../items/PictureConfig.cpp" line="33"/>
         <source>Picture</source>
         <translation type="unfinished">Bild</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="38"/>
+        <location filename="../items/PictureConfig.cpp" line="36"/>
+        <source>No effects</source>
+        <translation type="unfinished">Kein Effekt</translation>
+    </message>
+    <message>
+        <location filename="../items/PictureConfig.cpp" line="38"/>
         <source>Invert colors</source>
         <translation type="unfinished">Farben invertieren</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="39"/>
+        <location filename="../items/PictureConfig.cpp" line="39"/>
         <source>Invert the colors of the picture</source>
         <translation type="unfinished">Invertiere die Farben des Bildes</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="41"/>
+        <location filename="../items/PictureConfig.cpp" line="41"/>
         <source>NVG</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="42"/>
+        <location filename="../items/PictureConfig.cpp" line="42"/>
         <source>Set the colors to levels of gray</source>
         <translation type="unfinished">Setze die Farben des Bildes in Graustufen um</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="44"/>
+        <location filename="../items/PictureConfig.cpp" line="44"/>
         <source>Black and White</source>
         <translation type="unfinished">Schwarz und Weiß</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="46"/>
+        <location filename="../items/PictureConfig.cpp" line="46"/>
         <source>Glow effect</source>
         <translation type="unfinished">Glut-Effekt</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="48"/>
+        <location filename="../items/PictureConfig.cpp" line="48"/>
         <source>Sepia</source>
         <translation type="unfinished">Sepia-Effekt</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="50"/>
-        <location filename="../items/PictureProperties.cpp" line="92"/>
+        <location filename="../items/PictureConfig.cpp" line="50"/>
+        <location filename="../items/PictureConfig.cpp" line="92"/>
         <source>Opacity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="93"/>
+        <location filename="../items/PictureConfig.cpp" line="93"/>
         <source>Opacity value.
 
 0: transparent
@@ -941,129 +975,143 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.cpp" line="36"/>
-        <source>No effects</source>
-        <translation type="unfinished">Kein Effekt</translation>
-    </message>
-    <message>
-        <location filename="../items/PictureProperties.ui"/>
+        <location filename="../items/PictureConfig.ui"/>
         <source>Transform</source>
         <translation type="unfinished">Umwandeln</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui"/>
+        <location filename="../items/PictureConfig.ui"/>
         <source>Invert</source>
         <translation type="unfinished">Invertieren</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui"/>
+        <location filename="../items/PictureConfig.ui"/>
         <source>Flip</source>
         <translation type="unfinished">Spiegeln</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui"/>
+        <location filename="../items/PictureConfig.ui"/>
+        <source>Crop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/PictureConfig.ui"/>
         <source>Effects</source>
         <translation type="unfinished">Effekte</translation>
     </message>
     <message>
-        <location filename="../items/PictureProperties.ui"/>
+        <location filename="../items/PictureConfig.ui"/>
         <source>apply to all</source>
         <translation type="unfinished">Allen zuweisen</translation>
     </message>
+</context>
+<context>
+    <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureProperties.ui"/>
-        <source>Crop</source>
-        <translation type="unfinished"></translation>
+        <location filename="../items/PictureContent.cpp" line="40"/>
+        <location filename="../items/PictureContent.cpp" line="96"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../items/PictureContent.cpp" line="47"/>
+        <source>Flip horizontally</source>
+        <translation type="unfinished">Horizontal spiegeln</translation>
+    </message>
+    <message>
+        <location filename="../items/PictureContent.cpp" line="53"/>
+        <source>Flip vertically</source>
+        <translation type="unfinished">Vertikal spiegeln</translation>
+    </message>
+    <message>
+        <location filename="../items/PictureContent.h" line="38"/>
+        <source>Picture</source>
+        <translation type="unfinished">Bild</translation>
     </message>
 </context>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="737"/>
-        <source>Rich Text</source>
-        <translation type="unfinished">RichText Format</translation>
-    </message>
-    <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="738"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="735"/>
         <source>Source</source>
         <translation type="unfinished">Ursprung</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="734"/>
+        <source>Visual Editor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="395"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="392"/>
         <source>Bold</source>
         <translation type="unfinished">Fett</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="396"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="393"/>
         <source>CTRL+B</source>
         <translation type="unfinished">STRG+B</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="401"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="398"/>
         <source>Italic</source>
         <translation type="unfinished">schräg</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="402"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="399"/>
         <source>CTRL+I</source>
         <translation type="unfinished">STRG+I</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="407"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="404"/>
         <source>Underline</source>
         <translation type="unfinished">unterstreichen</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="408"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="405"/>
         <source>CTRL+U</source>
         <translation type="unfinished">STRG+U</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="447"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="444"/>
         <source>Superscript</source>
         <translation type="unfinished">Hochstellen</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="453"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="450"/>
         <source>Subscript</source>
         <translation type="unfinished">Tiefstellen</translation>
     </message>
+</context>
+<context>
+    <name>TextConfig</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="467"/>
-        <source>Insert &amp;Image</source>
-        <translation type="unfinished">Bild e&amp;infügen</translation>
+        <location filename="../items/TextConfig.cpp" line="29"/>
+        <source>Text</source>
+        <translation type="unfinished">Text</translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="554"/>
-        <source>Open File</source>
-        <translation type="unfinished">Datei öffnen</translation>
-    </message>
-    <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="554"/>
-        <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
-        <translation type="unfinished">Bilder (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+        <location filename="../items/TextConfig.cpp" line="37"/>
+        <source>Bezier Path</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../items/TextContent.cpp" line="34"/>
+        <location filename="../items/TextContent.cpp" line="40"/>
         <source>Right click to Edit the text</source>
         <translation type="unfinished">Nutze die rechte Maustaste um den Text zu ändern.</translation>
     </message>
     <message>
-        <location filename="../items/TextContent.cpp" line="48"/>
-        <source>insert text here...</source>
-        <translation type="unfinished">Füge den Text hier ein ...</translation>
+        <location filename="../items/TextContent.cpp" line="55"/>
+        <source>right click to edit...</source>
+        <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>TextProperties</name>
     <message>
-        <location filename="../items/TextProperties.cpp" line="28"/>
+        <location filename="../items/TextContent.h" line="43"/>
         <source>Text</source>
         <translation type="unfinished">Text</translation>
     </message>
@@ -1122,6 +1170,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../items/VideoContent.cpp" line="43"/>
         <source>Still picture</source>
         <translation type="unfinished">Standbild</translation>
+    </message>
+    <message>
+        <location filename="../items/VideoContent.h" line="32"/>
+        <source>Webcam</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

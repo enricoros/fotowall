@@ -13,17 +13,17 @@
  ***************************************************************************/
 
 #include <QInputDialog>
-#include "PictureProperties.h"
+#include "PictureConfig.h"
 #include "PictureContent.h"
 #include "GlowEffectDialog.h"
-#include "ui_PictureProperties.h"
+#include "ui_PictureConfig.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QListWidgetItem>
 #include <QSettings>
 
-PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsItem * parent)
-    : AbstractProperties(pictureContent, parent)
-    , m_pictureUi(new Ui::PictureProperties())
+PictureConfig::PictureConfig(PictureContent * pictureContent, QGraphicsItem * parent)
+    : AbstractConfig(pictureContent, parent)
+    , m_pictureUi(new Ui::PictureConfig())
     , m_pictureContent(pictureContent)
 {
     // WIDGET setup
@@ -58,18 +58,18 @@ PictureProperties::PictureProperties(PictureContent * pictureContent, QGraphicsI
     connect(m_pictureUi->effectsList, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(on_effectsList_itemActivated(QListWidgetItem*)));
 }
 
-PictureProperties::~PictureProperties()
+PictureConfig::~PictureConfig()
 {
     delete m_pictureUi;
 }
 
-void PictureProperties::on_applyEffects_clicked()
+void PictureConfig::on_applyEffects_clicked()
 {
     if (m_currentEffect.effect != PictureEffect::ClearEffects)
         emit applyEffect(m_currentEffect, true);
 }
 
-void PictureProperties::on_effectsList_itemActivated(QListWidgetItem * item)
+void PictureConfig::on_effectsList_itemActivated(QListWidgetItem * item)
 {
     // get the effect class
     if (!item)

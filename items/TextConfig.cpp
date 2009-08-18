@@ -12,13 +12,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "TextProperties.h"
+#include "TextConfig.h"
 #include "3rdparty/richtextedit/richtexteditor_p.h"
 #include "3rdparty/bezier/bezier.h"
 #include "TextContent.h"
 
-TextProperties::TextProperties(TextContent * textContent, QGraphicsItem * parent)
-    : AbstractProperties(textContent, parent)
+TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
+    : AbstractConfig(textContent, parent)
     , m_textContent(textContent)
 {
     // inject Text Editor
@@ -39,11 +39,11 @@ TextProperties::TextProperties(TextContent * textContent, QGraphicsItem * parent
     m_editor->focusEditor();
 }
 
-TextProperties::~TextProperties()
+TextConfig::~TextConfig()
 {
 }
 
-void TextProperties::closing()
+void TextConfig::closing()
 {
     m_textContent->setHtml(m_editor->text(Qt::RichText));
     m_textContent->setShapeEnabled(m_bezierWidget->enabled());

@@ -9,16 +9,16 @@ DEPENDPATH += $$PWD
 # SOURCES += BrowserItem.cpp
 HEADERS += AbstractContent.h \
     AbstractDisposeable.h \
-    AbstractProperties.h \
+    AbstractConfig.h \
     ButtonItem.h \
     ColorPickerItem.h \
     HighlightItem.h \
     HelpItem.h \
     MirrorItem.h \
     PictureContent.h \
-    PictureProperties.h \
+    PictureConfig.h \
     TextContent.h \
-    TextProperties.h \
+    TextConfig.h \
     VideoContent.h \
     VideoProvider.h \
     CornerItem.h \
@@ -26,21 +26,21 @@ HEADERS += AbstractContent.h \
     BezierCubicItem.h
 SOURCES += AbstractContent.cpp \
     AbstractDisposeable.cpp \
-    AbstractProperties.cpp \
+    AbstractConfig.cpp \
     ButtonItem.cpp \
     ColorPickerItem.cpp \
     HighlightItem.cpp \
     HelpItem.cpp \
     MirrorItem.cpp \
     PictureContent.cpp \
-    PictureProperties.cpp \
+    PictureConfig.cpp \
     TextContent.cpp \
-    TextProperties.cpp \
+    TextConfig.cpp \
     VideoContent.cpp \
     VideoProvider.cpp \
     CornerItem.cpp \
     WebContentSelectorItem.cpp \
     BezierCubicItem.cpp
-FORMS += AbstractProperties.ui \
-    PictureProperties.ui \
+FORMS += AbstractConfig.ui \
+    PictureConfig.ui \
     WebContentSelectorItem.ui

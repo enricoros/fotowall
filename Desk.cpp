@@ -18,9 +18,9 @@
 #include "items/HelpItem.h"
 #include "items/HighlightItem.h"
 #include "items/PictureContent.h"
-#include "items/PictureProperties.h"
+#include "items/PictureConfig.h"
 #include "items/TextContent.h"
-#include "items/TextProperties.h"
+#include "items/TextConfig.h"
 #include "items/VideoContent.h"
 #include "items/WebContentSelectorItem.h"
 #include "CropingDialog.h"
@@ -199,8 +199,8 @@ void Desk::resize(const QSize & size)
     // ensure visibility
     foreach (AbstractContent * content, m_content)
         content->ensureVisible(m_rect);
-    foreach (AbstractProperties * properties, m_properties)
-        properties->keepInBoundaries(m_rect.toRect());
+    foreach (AbstractConfig * config, m_configs)
+        config->keepInBoundaries(m_rect.toRect());
 
     // change my rect
     setSceneRect(m_rect);
@@ -469,15 +469,15 @@ void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF
     clearSelection();
     foreach(QGraphicsItem *item, m_markerItems)
         item->hide();
-    foreach(AbstractProperties *prop, m_properties)
-        prop->hide();
+    foreach(AbstractConfig *conf, m_configs)
+        conf->hide();
 
     RenderOpts::HQRendering = true;
     QGraphicsScene::render(painter, target, source, aspectRatioMode);
     RenderOpts::HQRendering = false;
 
-    foreach(AbstractProperties *prop, m_properties)
-        prop->show();
+    foreach(AbstractConfig *conf, m_configs)
+        conf->show();
     foreach(QGraphicsItem *item, m_markerItems)
         item->show();
 }
@@ -870,7 +870,7 @@ void Desk::slotSelectionChanged()
             w->setAutoFillBackground(true);
             w->setPalette(pal);
             QString title = tr("%1 PROPERTIES").arg(content->contentName().toUpper());
-            emit showConfigWidget(w, title);
+            emit showPropertiesWidget(w, title);
             return;
         }
     }
@@ -878,43 +878,42 @@ void Desk::slotSelectionChanged()
     // show a 'selection' properties widget
     if (selection.size() > 1) {
         QLabel * label = new QLabel(tr("%1 objects selected").arg(selection.size()));
-        emit showConfigWidget(label, tr("SELECTION PROPERTIES"));
+        emit showPropertiesWidget(label, tr("SELECTION PROPERTIES"));
         return;
     }
 
     // or don't show anything
-    emit showConfigWidget(0, QString());
+    emit showPropertiesWidget(0, QString());
 }
 
 void Desk::slotConfigureContent(const QPoint & scenePoint)
 {
     // get the content and ensure it hasn't already a property window
     AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
-    foreach (AbstractProperties * properties, m_properties) {
-        if (properties->content() == content)
+    foreach (AbstractConfig * config, m_configs) {
+        if (config->content() == content)
             return;
         // force only 1 property instance
-        properties->dispose();
-        m_properties.removeAll(properties);
+        slotDeleteConfig(config);
     }
-    AbstractProperties * p = 0;
+    AbstractConfig * p = 0;
 
-    // picture properties (dialog and connections)
+    // picture config (dialog and connections)
     if (PictureContent * picture = dynamic_cast<PictureContent *>(content)) {
-        p = new PictureProperties(picture);
+        p = new PictureConfig(picture);
         connect(p, SIGNAL(applyEffect(const PictureEffect &, bool)), this, SLOT(slotApplyEffect(const PictureEffect &, bool)));
     }
 
-    // text properties (dialog and connections)
+    // text config (dialog and connections)
     if (TextContent * text = dynamic_cast<TextContent *>(content))
-        p = new TextProperties(text);
+        p = new TextConfig(text);
 
-    // generic properties
+    // generic config
     if (!p)
-        p = new AbstractProperties(content);
+        p = new AbstractConfig(content);
 
     // common links
-    m_properties.append(p);
+    m_configs.append(p);
     addItem(p);
     connect(p, SIGNAL(applyLook(quint32,bool,bool)), this, SLOT(slotApplyLook(quint32,bool,bool)));
     p->show();
@@ -1009,9 +1008,9 @@ void Desk::slotDeleteContent()
             setBackContent(0);
 
         // remove related property if deleting its content
-        foreach (AbstractProperties * properties, m_properties) {
-            if (properties->content() == content) {
-                slotDeleteProperties(properties);
+        foreach (AbstractConfig * config, m_configs) {
+            if (config->content() == content) {
+                slotDeleteConfig(config);
                 break;
             }
         }
@@ -1022,10 +1021,10 @@ void Desk::slotDeleteContent()
     }
 }
 
-void Desk::slotDeleteProperties(AbstractProperties * properties)
+void Desk::slotDeleteConfig(AbstractConfig * config)
 {
-    m_properties.removeAll(properties);
-    properties->dispose();
+    m_configs.removeAll(config);
+    config->dispose();
 }
 
 void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)

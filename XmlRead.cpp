@@ -86,7 +86,7 @@ void XmlRead::readDesk(Desk * desk)
     // clear Desk [TODO: clear every content! or disasters happen]
     qDeleteAll(desk->m_content);
     desk->m_content.clear();
-    desk->m_properties.clear();
+    desk->m_configs.clear();
     desk->m_backContent = 0;
 
     desk->fromXml(m_deskElement);

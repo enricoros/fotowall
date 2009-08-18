@@ -24,7 +24,7 @@
 #include <QDomElement>
 
 class AbstractContent;
-class AbstractProperties;
+class AbstractConfig;
 struct PictureEffect;
 class ColorPickerItem;
 class HelpItem;
@@ -93,7 +93,7 @@ class Desk : public QGraphicsScene
 
     Q_SIGNALS:
         void backModeChanged();
-        void showConfigWidget(QWidget * widget, const QString & title);
+        void showPropertiesWidget(QWidget * widget, const QString & title);
 
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
@@ -115,7 +115,7 @@ class Desk : public QGraphicsScene
         void clearMarkers();
         QNetworkAccessManager * m_networkAccessManager;
         QList<AbstractContent *> m_content;
-        QList<AbstractProperties *> m_properties;
+        QList<AbstractConfig *> m_configs;
         QList<HighlightItem *> m_highlightItems;
         HelpItem * m_helpItem;
         AbstractContent * m_backContent;
@@ -137,14 +137,14 @@ class Desk : public QGraphicsScene
         QTime m_forceFieldTime;
 
     private Q_SLOTS:
-        friend class AbstractProperties; // HACK here, only to call 1 method
+        friend class AbstractConfig; // HACK here, only to call 1 method
         friend class PixmapButton; // HACK here, only to call 1 method
         void slotSelectionChanged();
         void slotConfigureContent(const QPoint & scenePoint);
         void slotBackgroundContent();
         void slotStackContent(int);
         void slotDeleteContent();
-        void slotDeleteProperties(AbstractProperties * properties);
+        void slotDeleteConfig(AbstractConfig * config);
         void slotApplyLook(quint32 frameClass, bool mirrored, bool allContent);
         void slotApplyEffect(const PictureEffect & effect, bool allPictures);
         void slotCrop();

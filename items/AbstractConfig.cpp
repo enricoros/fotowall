@@ -12,11 +12,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "AbstractProperties.h"
+#include "AbstractConfig.h"
 #include "AbstractContent.h"
 #include "Desk.h"
 #include "RenderOpts.h"
-#include "ui_AbstractProperties.h"
+#include "ui_AbstractConfig.h"
 #include "frames/FrameFactory.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QFileDialog>
@@ -133,16 +133,16 @@ void PixmapButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     // HACK: close property window
     if (boundingRect().contains(event->pos())) {
         Desk * desk = static_cast<Desk *>(scene());
-        desk->slotDeleteProperties(static_cast<AbstractProperties *>(parentItem()));
+        desk->slotDeleteConfig(static_cast<AbstractConfig *>(parentItem()));
     }
 }
 //END PixmapButton
 
 
-AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem * parent)
+AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent)
     : QGraphicsProxyWidget(parent)
     , m_content(content)
-    , m_commonUi(new Ui::AbstractProperties())
+    , m_commonUi(new Ui::AbstractConfig())
     , m_closeButton(0)
     , m_frame(FrameFactory::defaultPanelFrame())
 {
@@ -204,13 +204,13 @@ AbstractProperties::AbstractProperties(AbstractContent * content, QGraphicsItem 
 #endif
 }
 
-AbstractProperties::~AbstractProperties()
+AbstractConfig::~AbstractConfig()
 {
     delete m_frame;
     delete m_commonUi;
 }
 
-void AbstractProperties::dispose()
+void AbstractConfig::dispose()
 {
     // inform subclasses about the closure
     closing();
@@ -229,12 +229,12 @@ void AbstractProperties::dispose()
 #endif
 }
 
-AbstractContent * AbstractProperties::content() const
+AbstractContent * AbstractConfig::content() const
 {
     return m_content;
 }
 
-void AbstractProperties::populateFrameList()
+void AbstractConfig::populateFrameList()
 {
     m_commonUi->listWidget->clear();
     // add frame items to the listview
@@ -250,7 +250,7 @@ void AbstractProperties::populateFrameList()
         item->setData(Qt::UserRole, frameClass);
     }
 }
-void AbstractProperties::keepInBoundaries(const QRect & rect)
+void AbstractConfig::keepInBoundaries(const QRect & rect)
 {
     QRect r = mapToScene(boundingRect()).boundingRect().toRect();
     r.setLeft(qBound(rect.left(), r.left(), rect.right() - r.width()));
@@ -258,23 +258,23 @@ void AbstractProperties::keepInBoundaries(const QRect & rect)
     setPos(r.topLeft());
 }
 
-void AbstractProperties::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void AbstractConfig::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     QGraphicsProxyWidget::mousePressEvent(event);
     if (!event->isAccepted() && event->button() == Qt::RightButton) {
         Desk * desk = static_cast<Desk *>(scene());
-        desk->slotDeleteProperties(this);
+        desk->slotDeleteConfig(this);
     }
     event->accept();
 }
 
-void AbstractProperties::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void AbstractConfig::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     QGraphicsProxyWidget::mouseDoubleClickEvent(event);
     event->accept();
 }
 
-void AbstractProperties::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+void AbstractConfig::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     // draw custom background
 #if QT_VERSION < 0x040500
@@ -287,7 +287,7 @@ void AbstractProperties::paint(QPainter * painter, const QStyleOptionGraphicsIte
     QGraphicsProxyWidget::paint(painter, option, widget);
 }
 
-void AbstractProperties::resizeEvent(QGraphicsSceneResizeEvent * event)
+void AbstractConfig::resizeEvent(QGraphicsSceneResizeEvent * event)
 {
     // layout the close button
     QRect cRect = boundingRect().toRect().adjusted(12, 12, -12, -12);
@@ -300,7 +300,7 @@ void AbstractProperties::resizeEvent(QGraphicsSceneResizeEvent * event)
     QGraphicsProxyWidget::resizeEvent(event);
 }
 
-void AbstractProperties::addTab(QWidget * widget, const QString & label, bool front, bool setCurrent)
+void AbstractConfig::addTab(QWidget * widget, const QString & label, bool front, bool setCurrent)
 {
     // insert on front/back
     int idx = m_commonUi->tab->insertTab(front ? 0 : m_commonUi->tab->count(), widget, label);
@@ -314,7 +314,7 @@ void AbstractProperties::addTab(QWidget * widget, const QString & label, bool fr
         m_commonUi->tab->parentWidget()->adjustSize();
 }
 
-void AbstractProperties::on_newFrame_clicked()
+void AbstractConfig::on_newFrame_clicked()
 {
     QStringList framesPath = QFileDialog::getOpenFileNames(0, tr("Choose frame images"), QString(), tr("Images (*.svg)"));
     if (!framesPath.isEmpty())
@@ -324,12 +324,12 @@ void AbstractProperties::on_newFrame_clicked()
     populateFrameList();
 }
 
-void AbstractProperties::on_applyLooks_clicked()
+void AbstractConfig::on_applyLooks_clicked()
 {
     emit applyLook(m_content->frameClass(), m_content->mirrorEnabled(), true);
 }
 
-void AbstractProperties::on_listWidget_itemSelectionChanged()
+void AbstractConfig::on_listWidget_itemSelectionChanged()
 {
     // get the frameClass
     QList<QListWidgetItem *> items = m_commonUi->listWidget->selectedItems();
@@ -342,7 +342,7 @@ void AbstractProperties::on_listWidget_itemSelectionChanged()
     emit applyLook(frameClass, m_content->mirrorEnabled(), false);
 }
 
-void AbstractProperties::on_reflection_toggled(bool checked)
+void AbstractConfig::on_reflection_toggled(bool checked)
 {
     RenderOpts::LastMirrorEnabled = checked;
     emit applyLook(m_content->frameClass(), checked, false);
