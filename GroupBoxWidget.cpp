@@ -149,7 +149,7 @@ void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
     p.setFont(m_titleFont);
     QFontMetrics metrics(m_titleFont);
     QRect textRect = metrics.boundingRect(m_titleText);
-    int textHeight = textRect.height();
+//    int textHeight = textRect.height();
     int dx = 0;
     if (m_checkValue < 1.0) {
         qreal x1 = -textRect.top() + 2,

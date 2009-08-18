@@ -440,9 +440,10 @@ void TextContent::updateTextConstraints()
         int w = m_shapeRect.width();
         int h = m_shapeRect.height();
         //resizeContents(QRect(-w / 2, -h / 2, w, h));
+#ifdef Q_OS_UNIX
 #warning FIXME
+#endif
         resizeContents(m_shapeRect);
-
 
   //      moveBy(m_shapeRect.left(), m_shapeRect.top());
 //        m_shapePath.translate(-m_shapeRect.left(), -m_shapeRect.top());
