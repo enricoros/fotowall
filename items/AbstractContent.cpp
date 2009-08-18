@@ -316,6 +316,11 @@ bool AbstractContent::beingTransformed() const
     return m_dirtyTransforming;
 }
 
+QWidget * AbstractContent::createPropertyWidget()
+{
+    return 0;
+}
+
 bool AbstractContent::fromXml(QDomElement & pe)
 {
     // restore content properties

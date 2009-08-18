@@ -140,6 +140,12 @@ QList<QPointF> TextContent::shapeControlPoints() const
     return m_shapeControlPoints;
 }
 
+#include "TextProperties.h"
+QWidget * TextContent::createPropertyWidget()
+{
+    return new TextProperties();
+}
+
 bool TextContent::fromXml(QDomElement & pe)
 {
     // FIRST load text properties and shape

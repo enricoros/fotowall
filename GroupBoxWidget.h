@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include <QFont>
+class QTimer;
 
 class GroupBoxWidget : public QWidget
 {
@@ -63,6 +64,8 @@ class GroupBoxWidget : public QWidget
         qreal hoverValue() const;
         void setHoverValue(qreal value);
 
+        void updateAppearance();
+        QTimer * m_redesignTimer;
         QString m_titleText;
         QFont m_titleFont;
         bool m_collapsed;
@@ -72,8 +75,8 @@ class GroupBoxWidget : public QWidget
         qreal m_hoverValue;
 
    private Q_SLOTS:
-        void recalcLayout();
-        void slotFixupLayout();
+        void slotUpdateDesign();
+        void slotFixupDesign();
 };
 
 

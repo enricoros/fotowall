@@ -13,16 +13,18 @@
  ***************************************************************************/
 
 #include "GroupBoxWidget.h"
+#include <QLayout>
 #include <QFontMetrics>
 #include <QPainter>
 #include <QStyleOptionButton>
 #include <QStyle>
+#include <QTimer>
 #include <QVariant>
 #if QT_VERSION >= 0x040600
 #include <QPropertyAnimation>
 #define ANIMATE_PARAM(propName, duration, endValue, fixupLayout) \
     {QPropertyAnimation * ani = new QPropertyAnimation(this, propName, this); \
-    if (fixupLayout) connect(ani, SIGNAL(finished()), this, SLOT(slotFixupLayout())); \
+    if (fixupLayout) connect(ani, SIGNAL(finished()), this, SLOT(slotFixupDesign())); \
     ani->setEasingCurve(QEasingCurve::OutQuint); \
     ani->setDuration(duration); \
     ani->setEndValue(endValue); \
@@ -30,19 +32,22 @@
 #else
 #define ANIMATE_PARAM(propName, duration, endValue, fixupLayout) \
     setProperty(propName, endValue); \
-    if (fixupLayout) slotFixupLayout();
+    if (fixupLayout) slotFixupDesign();
 #endif
 
 GroupBoxWidget::GroupBoxWidget(QWidget * parent)
   : QWidget(parent)
+  , m_redesignTimer(0)
   , m_collapsed(false)
   , m_checkable(false)
   , m_checked(true)
   , m_checkValue(1.0)
   , m_hoverValue(0.0)
 {
+    // hide junk before initial layouting
+    hide();
     m_titleFont = font();
-    m_titleFont.setPixelSize(10);
+    m_titleFont.setPixelSize(10);    
 }
 
 QString GroupBoxWidget::title() const
@@ -53,7 +58,7 @@ QString GroupBoxWidget::title() const
 void GroupBoxWidget::setTitle(const QString & title)
 {
     m_titleText = title;
-    recalcLayout();
+    updateAppearance();
 }
 
 int GroupBoxWidget::titleSize() const
@@ -64,7 +69,7 @@ int GroupBoxWidget::titleSize() const
 void GroupBoxWidget::setTitleSize(int titleSize)
 {
     m_titleFont.setPointSize(titleSize);
-    recalcLayout();
+    updateAppearance();
 }
 
 bool GroupBoxWidget::isCheckable() const
@@ -77,7 +82,7 @@ void GroupBoxWidget::setCheckable(bool checkable)
     if (m_checkable == checkable)
         return;
     m_checkable = checkable;
-    recalcLayout();
+    updateAppearance();
 }
 
 bool GroupBoxWidget::isChecked() const
@@ -91,19 +96,19 @@ void GroupBoxWidget::setChecked(bool checked)
         return;
     m_checked = checked;
     emit toggled(checked);
-    recalcLayout();
+    updateAppearance();
 }
 
 void GroupBoxWidget::collapse()
 {
     m_collapsed = true;
-    recalcLayout();
+    updateAppearance();
 }
 
 void GroupBoxWidget::expand()
 {
     m_collapsed = false;
-    recalcLayout();
+    updateAppearance();
 }
 
 void GroupBoxWidget::enterEvent(QEvent *)
@@ -130,7 +135,7 @@ void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
     // draw hovering
     QPainter p(this);
     if (m_hoverValue > 0 && (m_checkValue == 0.0 || m_checkValue == 1.0)) {
-        QRadialGradient rg = m_checkValue == 1.0 ? QRadialGradient(0.5, 0.2, 0.8) : QRadialGradient(0.5, 0.9, 1.5);
+        QRadialGradient rg = m_checkValue == 1.0 ? QRadialGradient(0.5, 0.2, 0.8) : QRadialGradient(0.5, 1.0, 1.5);
         QColor startColor(Qt::white);
         startColor.setAlpha((int)(255.0 * m_hoverValue));
         rg.setColorAt(0.0, startColor);
@@ -202,8 +207,21 @@ void GroupBoxWidget::setHoverValue(qreal value)
     update();
 }
 
-void GroupBoxWidget::recalcLayout()
+void GroupBoxWidget::updateAppearance()
 {
+    if (!m_redesignTimer) {
+        m_redesignTimer = new QTimer(this);
+        m_redesignTimer->setSingleShot(true);
+        connect(m_redesignTimer, SIGNAL(timeout()), this, SLOT(slotUpdateDesign()));
+    }
+    m_redesignTimer->start();
+}
+
+void GroupBoxWidget::slotUpdateDesign()
+{
+    // it was hidden in the constructor for not showing junk before initial layouting
+    show();
+
     // full collapse: shrink to zero
     if (m_collapsed) {
         ANIMATE_PARAM("fixedWidth", 200, 0, true)
@@ -215,7 +233,7 @@ void GroupBoxWidget::recalcLayout()
     if (m_checkable && !m_checked) {
         setContentsMargins(textHeight, 0, 0, 0);
         setCursor(Qt::PointingHandCursor);
-        ANIMATE_PARAM("fixedWidth", 200, textHeight, true);
+        ANIMATE_PARAM("fixedWidth", 300, textHeight, true);
         ANIMATE_PARAM("cAnim", 300, 0.0, false);
         return;
     }
@@ -224,12 +242,12 @@ void GroupBoxWidget::recalcLayout()
     setContentsMargins(0, textHeight, 0, 0);
     setCursor(Qt::ArrowCursor);
     QFontMetrics metrics(m_titleFont);
-    int minWidth = qMax(metrics.width(m_titleText) + 12, QWidget::sizeHint().width());
-    ANIMATE_PARAM("fixedWidth", 300, minWidth, true);
-    ANIMATE_PARAM("cAnim", 400, 1.0, false);
+    int minWidth =  qMax(metrics.width(m_titleText) + 12, QWidget::sizeHint().width());
+    ANIMATE_PARAM("fixedWidth", 400, minWidth, true);
+    ANIMATE_PARAM("cAnim", 200, 1.0, false);
 }
 
-void GroupBoxWidget::slotFixupLayout()
+void GroupBoxWidget::slotFixupDesign()
 {
     if (m_collapsed) {
         setFixedWidth(0);
@@ -237,7 +255,7 @@ void GroupBoxWidget::slotFixupLayout()
         setFixedWidth(m_titleFont.pixelSize() + 8);
         setCheckValue(0.0);
     } else  {
-        setMaximumWidth(QWIDGETSIZE_MAX);
+        //setMaximumWidth(99999);
         setCheckValue(1.0);
     }
 }

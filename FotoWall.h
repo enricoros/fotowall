@@ -46,7 +46,7 @@ class FotoWall : public QWidget
         QMenu * createArrangeMenu();
         QMenu * createBackgroundMenu();
         QMenu * createDecorationMenu();
-        QMenu * createHelpMenu();
+        QMenu * createOnlineHelpMenu();
         void createMiscActions();
         void checkForTutorial();
         void checkForSupport();
@@ -69,6 +69,7 @@ class FotoWall : public QWidget
         void on_aAddText_triggered();
         void on_aAddVideo_triggered();
         void on_accelBox_toggled(bool checked);
+        void on_introButton_clicked();
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_exportButton_clicked();
@@ -82,7 +83,6 @@ class FotoWall : public QWidget
         void slotDecoSetTitle();
         void slotDecoClearTitle();
         void slotHelpBlog();
-        void slotHelpIntroduction();
         void slotHelpSupport();
         void slotHelpTutorial();
         void slotHelpUpdates();

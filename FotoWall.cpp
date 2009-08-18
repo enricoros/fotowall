@@ -162,7 +162,7 @@ FotoWall::FotoWall(QWidget * parent)
     ///ui->arrangeButton->setMenu(createArrangeMenu());
     ui->backButton->setMenu(createBackgroundMenu());
     ui->decoButton->setMenu(createDecorationMenu());
-    ui->howtoButton->setMenu(createHelpMenu());
+    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
 
     // react to VideoProvider
     ui->aAddVideo->setVisible(VideoProvider::instance()->inputCount() > 0);
@@ -353,22 +353,10 @@ QMenu * FotoWall::createDecorationMenu()
     return menu;
 }
 
-QMenu * FotoWall::createHelpMenu()
+QMenu * FotoWall::createOnlineHelpMenu()
 {
     QMenu * menu = new QMenu();
     menu->setSeparatorsCollapsible(false);
-
-    QAction * aSep = new QAction(tr("About"), menu);
-    aSep->setSeparator(true);
-    menu->addAction(aSep);
-
-    QAction * aIntroduction = new QAction(tr("Introduction"), menu);
-    connect(aIntroduction, SIGNAL(triggered()), this, SLOT(slotHelpIntroduction()));
-    menu->addAction(aIntroduction);
-
-    QAction * aSep2 = new QAction(tr("Internet Resources"), menu);
-    aSep2->setSeparator(true);
-    menu->addAction(aSep2);
 
     m_aHelpTutorial = new QAction(tr("Tutorial Video (0.2)"), menu);
     connect(m_aHelpTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
@@ -415,7 +403,6 @@ void FotoWall::checkForSupport()
     m_aHelpSupport->setVisible(false);
 
     // check the Open Collaboration Services knowledgebase for FotoWall
-    // TODO
     QTimer::singleShot(2000, this, SLOT(slotVerifySupport()));
 }
 
@@ -558,6 +545,11 @@ void FotoWall::on_accelBox_toggled(bool checked)
     }
 }
 
+void FotoWall::on_introButton_clicked()
+{
+    m_desk->showIntroduction();
+}
+
 void FotoWall::on_loadButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select FotoWall file"), QString(), tr("FotoWall (*.fotowall)"));
@@ -636,11 +628,6 @@ void FotoWall::slotHelpBlog()
         QDesktopServices::openUrl(ENRICOBLOG_URL);
 }
 
-void FotoWall::slotHelpIntroduction()
-{
-    m_desk->showIntroduction();
-}
-
 void FotoWall::slotHelpSupport()
 {
 }
@@ -684,6 +671,7 @@ void FotoWall::slotShowPropertiesWidget(QWidget * widget)
     // show the Properties container with new content and title
     if (widget) {
         ui->widgetCanvas->collapse();
+        widget->setParent(ui->widgetProperties);
         ui->propLayout->addWidget(widget);
         ui->widgetProperties->setTitle(widget->windowTitle());
         ui->widgetProperties->expand();
@@ -723,4 +711,3 @@ void FotoWall::slotVerifyVideoInputs(int count)
     // maybe blink or something?
     ui->aAddVideo->setVisible(count > 0);
 }
-

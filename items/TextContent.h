@@ -41,6 +41,7 @@ class TextContent : public AbstractContent
 
         // ::AbstractContent
         QString contentName() const { return tr("Text"); }
+        QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;

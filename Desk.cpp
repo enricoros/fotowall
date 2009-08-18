@@ -864,13 +864,10 @@ void Desk::slotSelectionChanged()
     if (selection.size() == 1) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(selection.first());
         if (content) {
-            QWidget * w = new QWidget();
-            QPalette pal;
-            pal.setBrush(QPalette::Window, QColor::fromHsv(qrand() % 360, 255, 255));
-            w->setAutoFillBackground(true);
-            w->setPalette(pal);
-            w->setWindowTitle(tr("%1 PROPERTIES").arg(content->contentName().toUpper()));
-            emit showPropertiesWidget(w);
+            QWidget * pWidget = content->createPropertyWidget();
+            if (pWidget)
+                pWidget->setWindowTitle(tr("%1 PROPERTIES").arg(content->contentName().toUpper()));
+            emit showPropertiesWidget(pWidget);
             return;
         }
     }
