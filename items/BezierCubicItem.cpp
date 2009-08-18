@@ -72,6 +72,11 @@ BezierCubicItem::BezierCubicItem(QGraphicsItem * parent)
     controlPointMoved(2);
 }
 
+QPainterPath BezierCubicItem::shape() const
+{
+    return m_path ? m_path->path() : QPainterPath();
+}
+
 QRectF BezierCubicItem::boundingRect() const
 {
     return QRectF(-5, -5, 11, 11);
@@ -104,6 +109,7 @@ void BezierCubicItem::controlPointMoved(int index)
     QPainterPath path(m_cps[0]->pos());
     path.cubicTo(m_cps[1]->pos(), m_cps[3]->pos(), m_cps[2]->pos());
     m_path->setPath(path);
+    emit shapeChanged(path);
 }
 
 

@@ -59,7 +59,8 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     setShapeControlPoints(QList<QPointF>() << QPointF(50, 50) << QPointF(140, 140) << QPointF(300, 250) << QPointF(300, 50));
 
     // init controls
-    /*BezierCubicItem * bezierItem =*/ new BezierCubicItem(this);
+    BezierCubicItem * bezierItem = new BezierCubicItem(this);
+    connect(bezierItem, SIGNAL(shapeChanged(const QPainterPath &)), this, SLOT(slotShapeChanged(const QPainterPath &)));
 }
 
 TextContent::~TextContent()
@@ -263,13 +264,6 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     // paint parent
     AbstractContent::paint(painter, option, widget);
 
-    //QTextDocumentLayout * layout = qobject_cast<QTextDocumentLayout *>(m_text->documentLayout());
-    //m_text->documentLayout();
-    // the layout might need to expand the root frame to
-    // the viewport if NoWrap is set
-    //if (layout)
-    //    layout->setViewport(boundingRect().toRect());
-
     // check whether we're drawing shaped
     const bool shapedPaint = m_shapeEnabled && !m_shapeRect.isEmpty();
     QPointF shapeOffset = m_shapeRect.topLeft();
@@ -355,9 +349,6 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     }
 #endif
 
-    //if (layout)
-    //    layout->setViewport(QRect());
-
     painter->restore();
 }
 
@@ -435,7 +426,7 @@ void TextContent::updateTextConstraints()
 
     // 3. use shape-based rendering
     if (m_shapeEnabled && !m_shapePath.isEmpty()) {
-#if 0
+#if 1
         // more precise, but too close to the path
         m_shapeRect = m_shapePath.boundingRect().toRect();
 #else
@@ -443,12 +434,19 @@ void TextContent::updateTextConstraints()
         // the path rect, instead of the path itself)
         m_shapeRect = m_shapePath.controlPointRect().toRect();
 #endif
-        static const int bezierMargin = 20;
+        static const int bezierMargin = 30;
         m_shapeRect.adjust(-bezierMargin, -bezierMargin, bezierMargin, bezierMargin);
 
         int w = m_shapeRect.width();
         int h = m_shapeRect.height();
-        resizeContents(QRect(-w / 2, -h / 2, w, h));
+        //resizeContents(QRect(-w / 2, -h / 2, w, h));
+#warning FIXME
+        resizeContents(m_shapeRect);
+
+
+  //      moveBy(m_shapeRect.left(), m_shapeRect.top());
+//        m_shapePath.translate(-m_shapeRect.left(), -m_shapeRect.top());
+        //setPos(m_shapeRect.center());
         return;
     }
 
@@ -468,4 +466,9 @@ void TextContent::updateCache()
 
     ...
     */
+}
+
+void TextContent::slotShapeChanged(const QPainterPath & path)
+{
+    setShapePath(path);
 }

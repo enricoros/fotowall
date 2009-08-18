@@ -65,6 +65,9 @@ class TextContent : public AbstractContent
         QList<QPointF> m_shapeControlPoints;
         QPainterPath m_shapePath;
         QRect m_shapeRect;
+
+    private Q_SLOTS:
+        void slotShapeChanged(const QPainterPath &);
 };
 
 #endif

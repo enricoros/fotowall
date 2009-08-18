@@ -21,10 +21,14 @@ class BezierControlLine;
 class BezierControlPoint;
 class BezierCubicPath;
 
-class BezierCubicItem : public QGraphicsItem
+class BezierCubicItem : public QObject, public QGraphicsItem
 {
+    Q_OBJECT
     public:
         BezierCubicItem(QGraphicsItem * parent = 0);
+
+
+        QPainterPath shape() const;
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
@@ -32,6 +36,9 @@ class BezierCubicItem : public QGraphicsItem
 
         // called by control points
         void controlPointMoved(int index);
+
+    Q_SIGNALS:
+        void shapeChanged(const QPainterPath & path);
 
     private:
         QVector<BezierControlPoint *> m_cps;
