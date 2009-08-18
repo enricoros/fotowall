@@ -64,6 +64,7 @@ class GroupBoxWidget : public QWidget
         qreal hoverValue() const;
         void setHoverValue(qreal value);
 
+        int calcMinWidth() const;
         void updateDesign();
         QTimer * m_redesignTimer;
         QString m_titleText;

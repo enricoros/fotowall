@@ -106,14 +106,18 @@ void GroupBoxWidget::setChecked(bool checked)
 
 void GroupBoxWidget::collapse()
 {
-    m_collapsed = true;
-    updateDesign();
+    if (!m_collapsed) {
+        m_collapsed = true;
+        updateDesign();
+    }
 }
 
 void GroupBoxWidget::expand()
 {
-    m_collapsed = false;
-    updateDesign();
+    if (m_collapsed) {
+        m_collapsed = false;
+        updateDesign();
+    }
 }
 
 void GroupBoxWidget::enterEvent(QEvent *)
@@ -212,6 +216,11 @@ void GroupBoxWidget::setHoverValue(qreal value)
     update();
 }
 
+int GroupBoxWidget::calcMinWidth() const
+{
+    return qMax(QFontMetrics(m_titleFont).width(m_titleText) + 12, QWidget::sizeHint().width());
+}
+
 void GroupBoxWidget::updateDesign()
 {
     if (m_collapsed) {
@@ -246,8 +255,7 @@ void GroupBoxWidget::slotAnimateDesign()
         ANIMATE_PARAM("cAnim", 300, 0.0, false);
     } else {
         // normal: expand to the full size
-        int minWidth =  qMax(QFontMetrics(m_titleFont).width(m_titleText) + 12, QWidget::sizeHint().width());
-        ANIMATE_PARAM("fixedWidth", 400, minWidth, true);
+        ANIMATE_PARAM("fixedWidth", 400, calcMinWidth(), true);
         ANIMATE_PARAM("cAnim", 200, 1.0, false);
     }
 
@@ -266,7 +274,7 @@ void GroupBoxWidget::slotFinalizeDesign()
         setCheckValue(0.0);
     } else  {
         // normal: layout driven
-        setMinimumWidth(QFontMetrics(m_titleFont).width(m_titleText) + 12);
+        setMinimumWidth(calcMinWidth());
         setMaximumWidth(QWIDGETSIZE_MAX);
         setCheckValue(1.0);
     }
