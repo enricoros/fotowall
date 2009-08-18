@@ -64,7 +64,7 @@ class GroupBoxWidget : public QWidget
         qreal hoverValue() const;
         void setHoverValue(qreal value);
 
-        void updateAppearance();
+        void updateDesign();
         QTimer * m_redesignTimer;
         QString m_titleText;
         QFont m_titleFont;
@@ -75,8 +75,8 @@ class GroupBoxWidget : public QWidget
         qreal m_hoverValue;
 
    private Q_SLOTS:
-        void slotUpdateDesign();
-        void slotFixupDesign();
+        void slotAnimateDesign();
+        void slotFinalizeDesign();
 };
 
 
