@@ -164,6 +164,7 @@ void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
     // draw checkbox indicator
     if (m_checkable && indW && indH) {
         QStyleOptionButton opt;
+        opt.state = QStyle::State_Enabled;
         opt.rect = QRect(0, -indH + 3, indW, indH);
         dx = indW + 4;
         opt.state |= m_checked ? QStyle::State_On : QStyle::State_Off;
