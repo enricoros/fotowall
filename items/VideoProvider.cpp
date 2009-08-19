@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "VideoProvider.h"
+#include "RenderOpts.h"
 #include <QDirIterator>
 #include <QTimer>
 #if defined(HAS_VIDEOCAPTURE)
@@ -30,8 +31,9 @@ VideoProvider::VideoProvider()
     : QObject()
     , m_snapTimer(0)
 {
-    // defer video initialization, to show gui...
-    QTimer::singleShot(900, this, SLOT(scanDevices()));
+    // defer video initialization, to offload gui on startup...
+    if (!RenderOpts::DisableVideoProvider)
+        QTimer::singleShot(1600, this, SLOT(scanDevices()));
 }
 
 VideoProvider::~VideoProvider()

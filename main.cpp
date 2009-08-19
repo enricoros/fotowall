@@ -34,6 +34,7 @@ bool RenderOpts::LastMirrorEnabled = true;
 bool RenderOpts::HQRendering = false;
 bool RenderOpts::FirstRun = false;
 bool RenderOpts::OxygenStyleQuirks = false;
+bool RenderOpts::DisableVideoProvider = false;
 QColor RenderOpts::hiColor;
 
 int main( int argc, char ** args )
@@ -63,12 +64,13 @@ int main( int argc, char ** args )
     QSettings s;
     RenderOpts::FirstRun = s.value("fotowall/firstTime", true).toBool();
     RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
+    RenderOpts::DisableVideoProvider = app.arguments().contains("-novideo");
     s.setValue("fotowall/firstTime", false);
 
     FotoWall fw;
     fw.showMaximized();
     QStringList images;
-    for(int i=0; i<argc; i++) {
+    for (int i = 1; i < argc; i++) {
         QString filePath = args[i];
         if (filePath.endsWith(".fotowall", Qt::CaseInsensitive))
             fw.loadXml(filePath);
