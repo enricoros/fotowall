@@ -11,6 +11,7 @@ ChangeLog
 
 Unreleased Version:
 
+* restore the common behavior for rotating (left click)
 * Auto-placement (nearly done)
 * Google-suggest completion (ok, misplaced)
 
@@ -99,7 +100,6 @@ I hope to expand the program as soon as I can, since there is many room for impr
 * webcam on windows
 * multiple webcams
 * transparent background of the window
-* restore the common behavior for rotating (left click)
 * add the undo support
 * link the download to blogs and fix links everywhere
 * check for updates + add a link to the website
