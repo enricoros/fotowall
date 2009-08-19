@@ -667,6 +667,16 @@ stop:1 rgba(237, 237, 237, 255))
            <property name="text">
             <string notr="true">OpenGL</string>
            </property>
+           <property name="icon">
+            <iconset resource="fotowall.qrc">
+             <normaloff>:/data/opengl-logo.png</normaloff>:/data/opengl-logo.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>16</height>
+            </size>
+           </property>
           </widget>
          </item>
         </layout>
