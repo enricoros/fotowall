@@ -16,29 +16,39 @@
 #define __TextContent_h__
 
 #include "AbstractContent.h"
+class BezierCubicItem;
 class QTextDocument;
 
 /// \brief TODO
 class TextContent : public AbstractContent
 {
     Q_OBJECT
+    Q_PROPERTY(QString html READ toHtml WRITE setHtml)
+    Q_PROPERTY(bool hasShape READ hasShape NOTIFY notifyHasShape)
+    Q_PROPERTY(bool shapeEditing READ isShapeEditing WRITE setShapeEditing NOTIFY notifyShapeEditing)
+    Q_PROPERTY(QPainterPath shapePath READ shapePath WRITE setShapePath)
     public:
         TextContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~TextContent();
 
+    public Q_SLOTS:
         QString toHtml() const;
-        QString toPlainText() const;
         void setHtml(const QString & htmlCode);
-        QFont defaultFont() const;
 
-        // bezier shape controls
-        void setShapeEnabled(bool enabled);
-        void setShapePath(const QPainterPath & path);
-        void setShapeControlPoints(const QList<QPointF> & points);
-        bool shapeEnabled() const;
+        bool hasShape() const;
+        void clearShape();
+
+        bool isShapeEditing() const;
+        void setShapeEditing(bool enabled);
+
         QPainterPath shapePath() const;
-        QList<QPointF> shapeControlPoints() const;
+        void setShapePath(const QPainterPath & path);
 
+    Q_SIGNALS:
+        void notifyHasShape(bool);
+        void notifyShapeEditing(bool);
+
+    public:
         // ::AbstractContent
         QString contentName() const { return tr("Text"); }
         QWidget * createPropertyWidget();
@@ -62,13 +72,9 @@ class TextContent : public AbstractContent
         int m_textMargin;
 
         // shape related stuff
-        bool m_shapeEnabled;
-        QList<QPointF> m_shapeControlPoints;
+        BezierCubicItem * m_shapeEditor;
         QPainterPath m_shapePath;
         QRect m_shapeRect;
-
-    private Q_SLOTS:
-        void slotShapeChanged(const QPainterPath &);
 };
 
 #endif

@@ -15,9 +15,11 @@
 #include "TextContent.h"
 #include "frames/Frame.h"
 #include "items/BezierCubicItem.h"
-#include "ButtonItem.h"
+#include "items/ButtonItem.h"
+#include "items/TextProperties.h"
 #include "CPixmap.h"
 #include "RenderOpts.h"
+#include <QDebug>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QMimeData>
@@ -25,7 +27,6 @@
 #include <QTextDocument>
 #include <QTextFrame>
 #include <QUrl>
-#include <QDebug>
 
 
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
@@ -33,7 +34,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     , m_text(0)
     , m_textRect(0, 0, 0, 0)
     , m_textMargin(4)
-    , m_shapeEnabled(false)
+    , m_shapeEditor(0)
 {
     setFrame(0);
     setFrameTextEnabled(false);
@@ -55,16 +56,16 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     m_text->setPlainText(tr("right click to edit..."));
     setHtml(m_text->toHtml());
 
-    // init shape (default control points)
-    setShapeControlPoints(QList<QPointF>() << QPointF(50, 50) << QPointF(140, 140) << QPointF(300, 250) << QPointF(300, 50));
-
-    // init controls
-    BezierCubicItem * bezierItem = new BezierCubicItem(this);
-    connect(bezierItem, SIGNAL(shapeChanged(const QPainterPath &)), this, SLOT(slotShapeChanged(const QPainterPath &)));
+    // shape editor
+    m_shapeEditor = new BezierCubicItem(this);
+    m_shapeEditor->setVisible(false);
+    m_shapeEditor->setControlPoints(QList<QPointF>() << QPointF(-100, -50) << QPointF(-10, 40) << QPointF(100, -50) << QPointF(100, 50));
+    connect(m_shapeEditor, SIGNAL(shapeChanged(const QPainterPath &)), this, SLOT(setShapePath(const QPainterPath &)));
 }
 
 TextContent::~TextContent()
 {
+    delete m_shapeEditor;
     delete m_text;
 }
 
@@ -73,77 +74,76 @@ QString TextContent::toHtml() const
     return m_text->toHtml();
 }
 
-QString TextContent::toPlainText() const
-{
-    return m_text->toPlainText();
-}
-
 void TextContent::setHtml(const QString & htmlCode)
 {
     m_text->setHtml(htmlCode);
     updateTextConstraints();
 }
 
-QFont TextContent::defaultFont() const
+bool TextContent::hasShape() const
 {
-    return m_text->defaultFont();
+    return !m_shapePath.isEmpty();
 }
 
-void TextContent::setShapeEnabled(bool enabled)
+void TextContent::clearShape()
 {
-    if (enabled == m_shapeEnabled)
-        return;
-    m_shapeEnabled = enabled;
-
-    // invalidate rectangles
-    m_textRect = QRect();
-    m_shapeRect = QRect();
-
-    // use caching only when drawing shaped
-    /// disabled because updates are wrong when cached!
-    ///setCacheMode(enabled ? QGraphicsItem::DeviceCoordinateCache : QGraphicsItem::NoCache);
-
-    // regenerate text layouting
-    updateTextConstraints();
+    setShapePath(QPainterPath());
+    setShapeEditing(false);
+    emit notifyHasShape(false);
 }
 
-void TextContent::setShapePath(const QPainterPath & path)
+bool TextContent::isShapeEditing() const
 {
-    if (path == m_shapePath)
-        return;
-    m_shapePath = path;
-    updateTextConstraints();
+    return m_shapeEditor->isVisible();
 }
 
-void TextContent::setShapeControlPoints(const QList<QPointF> & points)
+void TextContent::setShapeEditing(bool enabled)
 {
-    if (points == m_shapeControlPoints || points.length() != 4)
-        return;
-    m_shapeControlPoints = points;
-    m_shapePath = QPainterPath(m_shapeControlPoints[0]);
-    m_shapePath.cubicTo(m_shapeControlPoints[1], m_shapeControlPoints[2], m_shapeControlPoints[3]);
-    updateTextConstraints();
+    if (enabled) {
+        // shape editor on
+        if (!m_shapeEditor->isVisible()) {
+            m_shapeEditor->show();
+            emit notifyShapeEditing(true);
+        }
+
+        // begin new shape
+        if (!hasShape()) {
+            // use caching only when drawing shaped [disabled because updates are wrong when cached!]
+            //setCacheMode(enabled ? QGraphicsItem::DeviceCoordinateCache : QGraphicsItem::NoCache);
+
+            // use new shape
+            setShapePath(m_shapeEditor->shape());
+            emit notifyHasShape(true);
+        }
+    } else {
+        // shape editor off
+        if (m_shapeEditor->isVisible()) {
+            m_shapeEditor->hide();
+            emit notifyShapeEditing(false);
+        }
+    }
 }
 
-bool TextContent::shapeEnabled() const
-{
-    return m_shapeEnabled;
-}
-
-QPainterPath TextContent::shapePath() const
-{
-    return m_shapePath;
-}
-
-QList<QPointF> TextContent::shapeControlPoints() const
-{
-    return m_shapeControlPoints;
-}
-
-#include "TextProperties.h"
 QWidget * TextContent::createPropertyWidget()
 {
-    return new TextProperties();
+    TextProperties * p = new TextProperties();
+
+    // common properties
+    connect(p->bFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
+    connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
+    connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
+    connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
+    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(deleteItem()), Qt::QueuedConnection);
+
+    // shape properties
+    p->bEditShape->setChecked(isShapeEditing());
+    connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
+    connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));
+    p->bClearShape->setVisible(hasShape());
+    connect(this, SIGNAL(notifyHasShape(bool)), p->bClearShape, SLOT(setVisible(bool)));
+    connect(p->bClearShape, SIGNAL(clicked()), this, SLOT(clearShape()));
+
+    return p;
 }
 
 bool TextContent::fromXml(QDomElement & pe)
@@ -166,9 +166,9 @@ bool TextContent::fromXml(QDomElement & pe)
     // load shape
     domElement = pe.firstChildElement("shape");
     if (domElement.isElement()) {
-        setShapeEnabled(domElement.attribute("enabled").toInt());
+        bool shapeEnabled = domElement.attribute("enabled").toInt();
         domElement = domElement.firstChildElement("control-points");
-        if (domElement.isElement()) {
+        if (shapeEnabled && domElement.isElement()) {
             QList<QPointF> points;
             QStringList strPoint;
             strPoint = domElement.attribute("one").split(" ");
@@ -179,7 +179,7 @@ bool TextContent::fromXml(QDomElement & pe)
             points << QPointF(strPoint.at(0).toFloat(), strPoint.at(1).toFloat());
             strPoint = domElement.attribute("four").split(" ");
             points << QPointF(strPoint.at(0).toFloat(), strPoint.at(1).toFloat());
-            setShapeControlPoints(points);
+            m_shapeEditor->setControlPoints(points);
         }
     }
 
@@ -213,19 +213,20 @@ void TextContent::toXml(QDomElement & pe) const
 
     // save shape and control points
     QDomElement shapeElement = doc.createElement("shape");
-    shapeElement.setAttribute("enabled", m_shapeEnabled);
+    shapeElement.setAttribute("enabled", hasShape());
     pe.appendChild(shapeElement);
-    if (m_shapeControlPoints.length() == 4) {
+    if (hasShape()) {
+        QList<QPointF> cp = m_shapeEditor->controlPoints();
         domElement = doc.createElement("control-points");
         shapeElement.appendChild(domElement);
-        domElement.setAttribute("one", QString::number(m_shapeControlPoints[0].x())
-                + " " + QString::number(m_shapeControlPoints[0].y()));
-        domElement.setAttribute("two", QString::number(m_shapeControlPoints[1].x())
-                + " " + QString::number(m_shapeControlPoints[1].y()));
-        domElement.setAttribute("three", QString::number(m_shapeControlPoints[2].x())
-                + " " + QString::number(m_shapeControlPoints[2].y()));
-        domElement.setAttribute("four", QString::number(m_shapeControlPoints[3].x())
-                + " " + QString::number(m_shapeControlPoints[3].y()));
+        domElement.setAttribute("one", QString::number(cp[0].x())
+                + " " + QString::number(cp[0].y()));
+        domElement.setAttribute("two", QString::number(cp[1].x())
+                + " " + QString::number(cp[1].y()));
+        domElement.setAttribute("three", QString::number(cp[2].x())
+                + " " + QString::number(cp[2].y()));
+        domElement.setAttribute("four", QString::number(cp[3].x())
+                + " " + QString::number(cp[3].y()));
     }
 }
 
@@ -271,7 +272,7 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     AbstractContent::paint(painter, option, widget);
 
     // check whether we're drawing shaped
-    const bool shapedPaint = m_shapeEnabled && !m_shapeRect.isEmpty();
+    const bool shapedPaint = hasShape() && !m_shapeRect.isEmpty();
     QPointF shapeOffset = m_shapeRect.topLeft();
 
     // scale painter for adapting the Text Rect to the Contents Rect
@@ -287,11 +288,11 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     }
 
     // shape
-    const bool drawHovering = RenderOpts::HQRendering ? false : isSelected();
+    //const bool drawHovering = RenderOpts::HQRendering ? false : isSelected();
     if (shapedPaint)
         painter->translate(-shapeOffset);
-    if (shapedPaint && drawHovering)
-        painter->strokePath(m_shapePath, QPen(Qt::red, 0));
+    //if (shapedPaint && drawHovering)
+    //    painter->strokePath(m_shapePath, QPen(Qt::red, 0));
 
 #if 0
     // standard rich text document drawing
@@ -358,16 +359,37 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
     painter->restore();
 }
 
+QPainterPath TextContent::shapePath() const
+{
+    return m_shapePath;
+}
+
+void TextContent::setShapePath(const QPainterPath & path)
+{
+    if (path == m_shapePath)
+        return;
+
+    // invalidate rectangles
+    m_textRect = QRect();
+    m_shapeRect = QRect();
+
+    // set new path
+    m_shapePath = path;
+
+    // regenerate text layouting
+    updateTextConstraints();
+}
+
 void TextContent::updateTextConstraints()
 {
     // 1. actual content stretch
     double prevXScale = 1.0;
     double prevYScale = 1.0;
-    if (m_textRect.width() > 0 && m_textRect.height() > 0) {
+   /* if (m_textRect.width() > 0 && m_textRect.height() > 0) {
         QRect cRect = contentsRect();
         prevXScale = (qreal)cRect.width() / (qreal)m_textRect.width();
         prevYScale = (qreal)cRect.height() / (qreal)m_textRect.height();
-    }
+    }*/
 
     // 2. LAYOUT TEXT. find out Block rects and Document rect
     m_blockRects.clear();
@@ -431,7 +453,7 @@ void TextContent::updateTextConstraints()
     m_textRect.adjust(-m_textMargin, -m_textMargin, m_textMargin, m_textMargin);
 
     // 3. use shape-based rendering
-    if (m_shapeEnabled && !m_shapePath.isEmpty()) {
+    if (hasShape()) {
 #if 1
         // more precise, but too close to the path
         m_shapeRect = m_shapePath.boundingRect().toRect();
@@ -473,9 +495,4 @@ void TextContent::updateCache()
 
     ...
     */
-}
-
-void TextContent::slotShapeChanged(const QPainterPath & path)
-{
-    setShapePath(path);
 }
