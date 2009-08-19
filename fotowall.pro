@@ -73,7 +73,6 @@ include(items/items.pri)
 include(frames/frames.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
-include(3rdparty/bezier/bezier.pri)
 include(3rdparty/posterazor/posterazor.pri)
 
 # deployment on Linux
