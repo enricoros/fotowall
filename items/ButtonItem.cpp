@@ -100,8 +100,9 @@ void ButtonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     bool dragging = !m_startPos.isNull();
     m_startPos = QPointF();
     update();
-    if (dragging)
-        emit clicked();
+    if (contains(event->pos()))
+        if (dragging)
+            emit clicked();
 }
 
 void ButtonItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)

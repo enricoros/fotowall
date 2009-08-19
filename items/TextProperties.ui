@@ -10,16 +10,8 @@
     <height>56</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <property name="styleSheet">
-   <string notr="true">QFrame {
-    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(250, 250, 250, 255), stop:0.500 rgba(200, 200, 200, 255), stop:0.501 rgba(202, 202, 202, 255), stop:1 rgba(230, 230, 230, 255));
-    border: 1px solid rgb(190, 190, 190);
-    border-radius: 4px;
-}
-</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -35,6 +27,14 @@
      </property>
      <item>
       <widget class="QFrame" name="stackFrame">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(250, 250, 250, 255), stop:0.500 rgba(200, 200, 200, 255), stop:0.501 rgba(202, 202, 202, 255), stop:1 rgba(230, 230, 230, 255));
+    border: 1px solid rgb(190, 190, 190);
+    border-radius: 4px;
+}
+</string>
+       </property>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <property name="spacing">
          <number>0</number>
@@ -142,7 +142,7 @@
      <item>
       <widget class="QToolButton" name="bClearShape">
        <property name="text">
-        <string>clear shape</string>
+        <string>X</string>
        </property>
       </widget>
      </item>

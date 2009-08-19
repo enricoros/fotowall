@@ -138,7 +138,7 @@ BezierControlPoint::BezierControlPoint(BezierCubicItem * parent, int index)
     , m_index(index)
 {
     setFlags(ItemIsMovable);
-    setZValue(1.0);
+    setZValue(2.1);
 }
 
 QRectF BezierControlPoint::boundingRect() const
@@ -172,7 +172,7 @@ BezierControlLine::BezierControlLine(BezierCubicItem * parent)
     dashes << 8 << 6;
     pen.setDashPattern(dashes);
     setPen(pen);
-    setZValue(0.9);
+    setZValue(1.9);
 }
 
 
@@ -183,5 +183,5 @@ BezierCubicPath::BezierCubicPath(BezierCubicItem * parent)
 {
     QPen pen(QColor(200, 0, 0), 1);
     setPen(pen);
-    setZValue(1.1);
+    setZValue(2.2);
 }
