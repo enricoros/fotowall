@@ -31,7 +31,6 @@ class BezierControlPoint : public QGraphicsItem
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
@@ -74,7 +73,25 @@ BezierCubicItem::BezierCubicItem(QGraphicsItem * parent)
 
 QPainterPath BezierCubicItem::shape() const
 {
-    return m_path ? m_path->path() : QPainterPath();
+    return m_path->path();
+}
+
+void BezierCubicItem::setControlPoints(const QList<QPointF> & points)
+{
+    if (points.size() != 4)
+        return;
+    for (int i = 0; i < 4; i++)
+        m_cps[i]->setPos(points[i]);
+    controlPointMoved(1);
+    controlPointMoved(3);
+}
+
+QList<QPointF> BezierCubicItem::controlPoints() const
+{
+    QList<QPointF> cp;
+    for (int i = 0; i < 4; i++)
+        cp.append(m_cps[i]->pos());
+    return cp;
 }
 
 QRectF BezierCubicItem::boundingRect() const
@@ -129,17 +146,12 @@ QRectF BezierControlPoint::boundingRect() const
     return QRectF(-7, -7, 15, 15);
 }
 
-void BezierControlPoint::mousePressEvent(QGraphicsSceneMouseEvent * event)
-{
-    scene()->clearSelection();
-    QGraphicsItem::mousePressEvent(event);
-}
-
 void BezierControlPoint::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-    QGraphicsItem::mouseMoveEvent(event);
-    if (event->buttons() != Qt::NoButton)
+    if (event->buttons() == Qt::LeftButton) {
+        setPos(mapToParent(event->pos()));
         m_parent->controlPointMoved(m_index);
+    }
 }
 
 void BezierControlPoint::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)

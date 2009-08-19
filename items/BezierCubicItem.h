@@ -27,8 +27,10 @@ class BezierCubicItem : public QObject, public QGraphicsItem
     public:
         BezierCubicItem(QGraphicsItem * parent = 0);
 
-
         QPainterPath shape() const;
+
+        void setControlPoints(const QList<QPointF> & points);
+        QList<QPointF> controlPoints() const;
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
