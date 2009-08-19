@@ -14,7 +14,6 @@
 
 #include "TextConfig.h"
 #include "3rdparty/richtextedit/richtexteditor_p.h"
-#include "3rdparty/bezier/bezier.h"
 #include "TextContent.h"
 
 TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
@@ -27,15 +26,6 @@ TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
     m_editor->setText(m_textContent->toHtml());
     m_editor->adjustSize();
     addTab(m_editor, tr("Text"), false, true);
-
-    // inject Bezier Shape Editor
-    m_bezierWidget = new Bezier();
-    m_bezierWidget->setEnabled(m_textContent->shapeEnabled());
-    m_bezierWidget->setFont(m_textContent->defaultFont());
-    m_bezierWidget->setText(m_textContent->toPlainText());
-    m_bezierWidget->setControlPoints(m_textContent->shapeControlPoints());
-    addTab(m_bezierWidget, tr("Bezier Path"), false, false);
-
     m_editor->focusEditor();
 }
 
@@ -46,6 +36,4 @@ TextConfig::~TextConfig()
 void TextConfig::closing()
 {
     m_textContent->setHtml(m_editor->text(Qt::RichText));
-    m_textContent->setShapeEnabled(m_bezierWidget->enabled());
-    m_textContent->setShapeControlPoints(m_bezierWidget->controlPoints());
 }

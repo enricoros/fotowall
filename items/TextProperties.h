@@ -16,17 +16,14 @@
 #define __TextProperties_h__
 
 #include <QWidget>
+#include "ui_TextProperties.h"
 
-namespace Ui { class TextProperties; }
-
-class TextProperties : public QWidget {
+class TextProperties : public QWidget, public Ui::TextProperties {
     Q_OBJECT
     public:
+        friend class TextContent;
         TextProperties(QWidget *parent = 0);
         ~TextProperties();
-
-    private:
-        Ui::TextProperties *ui;
 };
 
 #endif

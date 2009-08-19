@@ -13,16 +13,13 @@
  ***************************************************************************/
 
 #include "TextProperties.h"
-#include "ui_TextProperties.h"
 
 TextProperties::TextProperties(QWidget *parent)
   : QWidget(parent)
-  , ui(new Ui::TextProperties)
 {
-    ui->setupUi(this);
+    setupUi(this);
 }
 
 TextProperties::~TextProperties()
 {
-    delete ui;
 }

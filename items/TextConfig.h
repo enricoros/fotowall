@@ -17,7 +17,6 @@
 
 #include "AbstractConfig.h"
 class QListWidgetItem;
-class Bezier;
 class RichTextEditorDialog;
 class TextContent;
 
@@ -34,7 +33,6 @@ class TextConfig : public AbstractConfig {
     private:
         TextContent * m_textContent;
         RichTextEditorDialog * m_editor;
-        Bezier * m_bezierWidget;
 };
 
 #endif
