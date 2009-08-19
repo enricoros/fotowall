@@ -55,10 +55,10 @@ class AbstractConfig : public QGraphicsProxyWidget {
         void resizeEvent(QGraphicsSceneResizeEvent * event);
 
     private:
-        AbstractContent *           m_content;
+        AbstractContent *       m_content;
         Ui::AbstractConfig *    m_commonUi;
-        PixmapButton *              m_closeButton;
-        Frame *                     m_frame;
+        PixmapButton *          m_closeButton;
+        Frame *                 m_frame;
 
         void populateFrameList();
 

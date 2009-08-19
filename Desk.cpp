@@ -866,7 +866,7 @@ void Desk::slotSelectionChanged()
         if (content) {
             QWidget * pWidget = content->createPropertyWidget();
             if (pWidget)
-                pWidget->setWindowTitle(tr("%1 PROPERTIES").arg(content->contentName().toUpper()));
+                pWidget->setWindowTitle(tr("%1").arg(content->contentName().toUpper()));
             emit showPropertiesWidget(pWidget);
             return;
         }
@@ -875,7 +875,7 @@ void Desk::slotSelectionChanged()
     // show a 'selection' properties widget
     if (selection.size() > 1) {
         QLabel * label = new QLabel(tr("%1 objects selected").arg(selection.size()));
-        label->setWindowTitle(tr("SELECTION PROPERTIES"));
+        label->setWindowTitle(tr("SELECTION"));
         emit showPropertiesWidget(label);
         return;
     }

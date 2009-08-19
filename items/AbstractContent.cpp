@@ -53,7 +53,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 #if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 #endif
-    // allow some items (eg. the bezier controls for text) to be shown
+    // allow some items (eg. the shape controls for text) to be shown
     setFlag(QGraphicsItem::ItemClipsChildrenToShape, false);
     setAcceptHoverEvents(true);
 

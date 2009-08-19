@@ -197,7 +197,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     // fade in animation
     QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
     ani->setEasingCurve(QEasingCurve::OutCubic);
-    ani->setDuration(500);
+    ani->setDuration(400);
     ani->setStartValue(0.0);
     ani->setEndValue(1.0);
     ani->start(QPropertyAnimation::DeleteWhenStopped);
@@ -220,7 +220,7 @@ void AbstractConfig::dispose()
     QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
     connect(ani, SIGNAL(finished()), this, SLOT(deleteLater()));
     ani->setEasingCurve(QEasingCurve::OutCubic);
-    ani->setDuration(300);
+    ani->setDuration(200);
     ani->setEndValue(0.0);
     ani->start(QPropertyAnimation::DeleteWhenStopped);
 #else
@@ -241,7 +241,7 @@ void AbstractConfig::populateFrameList()
     foreach (quint32 frameClass, FrameFactory::classes()) {
         // make icon from frame preview
         Frame * frame = FrameFactory::createFrame(frameClass);
-        QIcon icon(frame->preview(48, 48));
+        QIcon icon(frame->preview(32, 32));
         delete frame;
 
         // add the item to the list (and attach it the class)
