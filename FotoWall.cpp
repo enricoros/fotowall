@@ -132,10 +132,6 @@ FotoWall::FotoWall(QWidget * parent)
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
     setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     setWindowIcon(QIcon(":/data/fotowall.png"));
-#if 0 //QT_VERSION >= 0x040500
-    // this produces cool results, but it's premature for something this heavy
-    setAttribute(Qt::WA_TranslucentBackground, true);
-#endif
 
     // create our custom desk
     m_desk = new Desk(this);
@@ -154,6 +150,11 @@ FotoWall::FotoWall(QWidget * parent)
     ui->accelBox->setChecked(false);
 #else
     ui->accelBox->hide();
+#endif
+#if QT_VERSION >= 0x040500
+    ui->transpBox->setChecked(false);
+#else
+    ui->transpBox->hide();
 #endif
     ui->widgetProperties->collapse();
     ui->widgetCanvas->expand();
@@ -543,6 +544,20 @@ void FotoWall::on_accelBox_toggled(bool checked)
         ui->canvas->setViewport(new QWidget());
         ui->canvas->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     }
+}
+
+void FotoWall::on_transpBox_toggled(bool checked)
+{
+#if QT_VERSION >= 0x040500
+    if (checked) {
+        setAttribute(Qt::WA_NoSystemBackground, true);
+        setAttribute(Qt::WA_TranslucentBackground, true);
+    } else {
+        setAttribute(Qt::WA_TranslucentBackground, false);
+        setAttribute(Qt::WA_NoSystemBackground, false);
+    }
+    update();
+#endif
 }
 
 void FotoWall::on_introButton_clicked()

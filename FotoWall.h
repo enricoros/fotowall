@@ -69,6 +69,7 @@ class FotoWall : public QWidget
         void on_aAddText_triggered();
         void on_aAddVideo_triggered();
         void on_accelBox_toggled(bool checked);
+        void on_transpBox_toggled(bool checked);
         void on_introButton_clicked();
         void on_loadButton_clicked();
         void on_saveButton_clicked();
