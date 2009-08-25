@@ -27,6 +27,7 @@ class GroupBoxWidget : public QWidget
     Q_PROPERTY(int fixedWidth READ minimumWidth WRITE setFixedWidth)
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
     Q_PROPERTY(bool checked READ isChecked WRITE setChecked)
+    Q_PROPERTY(int borderFlags READ borderFlags WRITE setBorderFlags)
     public:
         GroupBoxWidget(QWidget * parent = 0);
 
@@ -41,6 +42,9 @@ class GroupBoxWidget : public QWidget
 
         bool isChecked() const;
         void setChecked(bool checked);
+
+        int borderFlags() const;
+        void setBorderFlags(int flags);
 
         // an elegant alternative to show and hide
         void collapse();
@@ -72,6 +76,7 @@ class GroupBoxWidget : public QWidget
         bool m_collapsed;
         bool m_checkable;
         bool m_checked;
+        int m_borderFlags;
         qreal m_checkValue;
         qreal m_hoverValue;
 

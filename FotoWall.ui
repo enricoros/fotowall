@@ -108,6 +108,9 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="title" stdset="0">
          <string>ADD NEW</string>
         </property>
+        <property name="borderFlags" stdset="0">
+         <number>2</number>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="spacing">
           <number>0</number>
@@ -239,6 +242,9 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="autoFillBackground">
          <bool>true</bool>
         </property>
+        <property name="borderFlags" stdset="0">
+         <number>2</number>
+        </property>
         <layout class="QHBoxLayout" name="propLayout">
          <property name="spacing">
           <number>0</number>
@@ -332,6 +338,9 @@ stop:1 rgba(237, 237, 237, 255))
         </property>
         <property name="checkable" stdset="0">
          <bool>false</bool>
+        </property>
+        <property name="borderFlags" stdset="0">
+         <number>2</number>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
          <property name="leftMargin">
@@ -481,6 +490,9 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="checked" stdset="0">
          <bool>false</bool>
         </property>
+        <property name="borderFlags" stdset="0">
+         <number>1</number>
+        </property>
         <layout class="QGridLayout" name="gridLayout">
          <property name="leftMargin">
           <number>6</number>
@@ -608,13 +620,16 @@ stop:1 rgba(237, 237, 237, 255))
          <bool>true</bool>
         </property>
         <property name="title" stdset="0">
-         <string>MODE</string>
+         <string>SETUP</string>
         </property>
         <property name="checkable" stdset="0">
          <bool>true</bool>
         </property>
         <property name="checked" stdset="0">
          <bool>false</bool>
+        </property>
+        <property name="borderFlags" stdset="0">
+         <number>1</number>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <property name="leftMargin">
@@ -632,56 +647,71 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="verticalSpacing">
           <number>0</number>
          </property>
-         <item row="0" column="0" colspan="2">
-          <widget class="QComboBox" name="projectType">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <property name="text">
-             <string>Screen</string>
-            </property>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Mode:</string>
+             </property>
+            </widget>
            </item>
            <item>
-            <property name="text">
-             <string>CD Cover</string>
-            </property>
+            <widget class="QComboBox" name="projectType">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <item>
+              <property name="text">
+               <string>Screen</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>CD Cover</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>DVD Cover</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Exact Size</string>
+              </property>
+             </item>
+            </widget>
            </item>
-           <item>
-            <property name="text">
-             <string>DVD Cover</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Exact Size</string>
-            </property>
-           </item>
-          </widget>
+          </layout>
          </item>
          <item row="1" column="0">
-          <widget class="QCheckBox" name="accelBox">
-           <property name="icon">
-            <iconset resource="fotowall.qrc">
-             <normaloff>:/data/opengl-logo.png</normaloff>:/data/opengl-logo.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>16</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="transpBox">
-           <property name="text">
-            <string>Transparent</string>
-           </property>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QCheckBox" name="accelBox">
+             <property name="icon">
+              <iconset resource="fotowall.qrc">
+               <normaloff>:/data/opengl-logo.png</normaloff>:/data/opengl-logo.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>32</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="transpBox">
+             <property name="text">
+              <string>Transparent</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -760,6 +790,9 @@ stop:1 rgba(237, 237, 237, 255))
         </property>
         <property name="checkable" stdset="0">
          <bool>true</bool>
+        </property>
+        <property name="borderFlags" stdset="0">
+         <number>1</number>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
          <property name="leftMargin">

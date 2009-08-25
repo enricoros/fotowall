@@ -41,6 +41,7 @@ GroupBoxWidget::GroupBoxWidget(QWidget * parent)
   , m_collapsed(false)
   , m_checkable(false)
   , m_checked(true)
+  , m_borderFlags(0)
   , m_checkValue(1.0)
   , m_hoverValue(0.0)
 {
@@ -104,6 +105,17 @@ void GroupBoxWidget::setChecked(bool checked)
     updateDesign();
 }
 
+int GroupBoxWidget::borderFlags() const
+{
+    return m_borderFlags;
+}
+
+void GroupBoxWidget::setBorderFlags(int flags)
+{
+    m_borderFlags = flags;
+    update();
+}
+
 void GroupBoxWidget::collapse()
 {
     if (!m_collapsed) {
@@ -137,7 +149,7 @@ void GroupBoxWidget::mousePressEvent(QMouseEvent * /*event*/)
 
 void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
 {
-    // skip painting if no text
+    // skip the rest of the painting if no text
     if (m_titleText.isEmpty())
         return;
 
@@ -154,6 +166,12 @@ void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
         rg.setCoordinateMode(QGradient::ObjectBoundingMode);
         p.fillRect(0, 0, width(), height() - m_checkValue * (height() - 12) , rg);
     }
+
+    // draw left/right lines
+    if (m_borderFlags & 0x0001)
+        p.fillRect(0, 0, 1, height(), QColor(230, 230, 230));
+    if (m_borderFlags & 0x0002)
+        p.fillRect(width() - 1, 0, 1, height(), Qt::white);
 
     // precalc text position and move painter
     QStyle * ss = m_checkable ? style() : 0;
