@@ -88,7 +88,10 @@ class AbstractContent : public AbstractDisposeable
         void contentChanged();
 
     protected:
-        // useful to subclasses
+        // may be reimplemented by subclasses
+        virtual void selectionChanged(bool selected);
+
+        // called by subclasses too
         void GFX_CHANGED() const;
         void setControlsVisible(bool visible);
 

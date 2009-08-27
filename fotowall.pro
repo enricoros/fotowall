@@ -1,3 +1,9 @@
+# Check Qt >= 4.4
+contains(QT_VERSION, ^4\.[0-3]\..*) {
+    message("Cannot build Qt Creator with Qt version $$QT_VERSION.")
+    error("Use at least Qt 4.4.")
+}
+
 # Project Options
 TEMPLATE = app
 TARGET = fotowall

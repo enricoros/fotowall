@@ -501,6 +501,11 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     }
 }
 
+void AbstractContent::selectionChanged(bool /*selected*/)
+{
+    // nothing to do here.. only used by subclasses
+}
+
 void AbstractContent::GFX_CHANGED() const
 {
     if (m_gfxChangeTimer && m_mirrorItem)
@@ -574,6 +579,10 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
             return newPos;
         }
     }
+
+    // tell subclasses about selection changes
+    if (change == ItemSelectedHasChanged)
+        selectionChanged(value.toBool());
 
     // changes that affect the mirror item
     if (m_mirrorItem) {

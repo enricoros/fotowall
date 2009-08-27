@@ -537,7 +537,7 @@ stop:1 rgba(237, 237, 237, 255))
             </sizepolicy>
            </property>
            <property name="text">
-            <string>introduction</string>
+            <string>Introduction</string>
            </property>
            <property name="popupMode">
             <enum>QToolButton::InstantPopup</enum>
@@ -819,7 +819,7 @@ stop:1 rgba(237, 237, 237, 255))
             </sizepolicy>
            </property>
            <property name="text">
-            <string>load</string>
+            <string>Load</string>
            </property>
           </widget>
          </item>
@@ -832,7 +832,7 @@ stop:1 rgba(237, 237, 237, 255))
             </sizepolicy>
            </property>
            <property name="text">
-            <string>save</string>
+            <string>Save</string>
            </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>

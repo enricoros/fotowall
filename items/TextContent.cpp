@@ -260,6 +260,13 @@ int TextContent::contentHeightForWidth(int width) const
     return (m_textRect.height() * width) / m_textRect.width();
 }
 
+void TextContent::selectionChanged(bool selected)
+{
+    // hide shape editing controls
+    if (!selected && isShapeEditing())
+        setShapeEditing(false);
+}
+
 void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     emit backgroundMe();

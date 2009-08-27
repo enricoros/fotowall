@@ -56,6 +56,7 @@ class TextContent : public AbstractContent
         void toXml(QDomElement & parentElement) const;
         QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;
         int contentHeightForWidth(int width) const;
+        void selectionChanged(bool selected);
 
         // ::QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);

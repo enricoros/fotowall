@@ -280,7 +280,9 @@ void AbstractConfig::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 #if QT_VERSION < 0x040500
     painter->fillRect(option->rect, QColor(250, 250, 250, 190));
 #else
+    painter->save();
     m_frame->paint(painter, boundingRect().toRect(), false, false);
+    painter->restore();
 #endif
 
     // unbreak parent
