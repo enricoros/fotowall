@@ -92,11 +92,19 @@ Desk::Desk(QObject * parent)
     connect(m_grad2ColorPicker, SIGNAL(colorChanged(const QColor&)), this, SLOT(slotGradColorChanged()));
     addItem(m_grad2ColorPicker);
 
-    // hooks
+    // selection self-hook
     connect(this, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 
-#if 0
+    // precreate background tile
+    m_backTile = QPixmap(100, 100);
+    m_backTile.fill(Qt::lightGray);
+    QPainter tilePainter(&m_backTile);
+    tilePainter.fillRect(0, 0, 50, 50, Qt::darkGray);
+    tilePainter.fillRect(50, 50, 50, 50, Qt::darkGray);
+    tilePainter.end();
+
     // crazy background stuff
+#if 0
     #define RP QPointF(-400 + qrand() % 2000, -300 + qrand() % 1500)
     for ( int i = 0; i < 100; i++ ) {
         QGraphicsPathItem * p = new QGraphicsPathItem();
@@ -237,8 +245,8 @@ bool Desk::forceFieldEnabled() const
 /// Decorations
 void Desk::setBackMode(int mode)
 {
-    // 1: background gradient / 2: transparent
-    bool enableGradient = mode == 1;
+    // 1: none / 2: background gradient
+    bool enableGradient = mode == 2;
     m_backGradientEnabled = enableGradient;
     m_grad1ColorPicker->setVisible(enableGradient);
     m_grad2ColorPicker->setVisible(enableGradient);
@@ -246,7 +254,7 @@ void Desk::setBackMode(int mode)
         blinkBackGradients();
     update();
 
-    // 3: restore picture
+    // 3: restore picture if changing from mode 3
     if (mode != 3 && m_backContent)
         setBackContent(0);
 
@@ -256,7 +264,7 @@ void Desk::setBackMode(int mode)
 
 int Desk::backMode() const
 {
-    return m_backContent ? 3 : m_backGradientEnabled ? 1 : 2;
+    return m_backContent ? 3 : m_backGradientEnabled ? 2 : 1;
 }
 
 void Desk::setTopBarEnabled(bool enabled)
@@ -704,6 +712,13 @@ void Desk::drawBackground(QPainter * painter, const QRectF & rect)
         painter->setCompositionMode(QPainter::CompositionMode_Source);
         painter->fillRect(rect, lg);
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+        return;
+    }
+
+    // draw checkboard to simulate a transparent background
+    if (!RenderOpts::ARGBWindow) {
+        QRect tileRect = rect.toAlignedRect();
+        painter->drawTiledPixmap(tileRect, m_backTile, QPointF(tileRect.left() % 100, tileRect.top() % 100));
     }
 }
 

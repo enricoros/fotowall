@@ -691,6 +691,16 @@ stop:1 rgba(237, 237, 237, 255))
          <item row="1" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
+            <widget class="QCheckBox" name="transpBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Transparent Window</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QCheckBox" name="accelBox">
              <property name="enabled">
               <bool>false</bool>
@@ -704,16 +714,6 @@ stop:1 rgba(237, 237, 237, 255))
                <width>32</width>
                <height>16</height>
               </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="transpBox">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Transparent</string>
              </property>
             </widget>
            </item>

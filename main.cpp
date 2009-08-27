@@ -31,6 +31,7 @@ Q_IMPORT_PLUGIN(qtiff)
 
 // init RenderOpts defaults
 bool RenderOpts::LastMirrorEnabled = true;
+bool RenderOpts::ARGBWindow = false;
 bool RenderOpts::HQRendering = false;
 bool RenderOpts::FirstRun = false;
 bool RenderOpts::OxygenStyleQuirks = false;

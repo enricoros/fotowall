@@ -24,6 +24,7 @@ class RenderOpts
         static bool LastMirrorEnabled;
 
         // global options
+        static bool ARGBWindow;
         static bool HQRendering;
 
         // other options

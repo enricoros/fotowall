@@ -129,6 +129,7 @@ class Desk : public QGraphicsScene
         QSize m_size;
         QRectF m_rect;
         QString m_titleText;
+        QPixmap m_backTile;
         QPixmap m_backCache;
         Mode m_projectMode;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered

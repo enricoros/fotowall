@@ -18,6 +18,7 @@
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
 #include "ModeInfo.h"
+#include "RenderOpts.h"
 #include "VersionCheckDialog.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
@@ -362,18 +363,18 @@ QMenu * FotoWall::createBackgroundMenu()
     m_gBackActions = new QActionGroup(menu);
     connect(m_gBackActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackMode(QAction*)));
 
+    QAction * aNone = new QAction(tr("None"), menu);
+    aNone->setToolTip(tr("Transparency can be saved to PNG images only."));
+    aNone->setProperty("id", 1);
+    aNone->setCheckable(true);
+    aNone->setActionGroup(m_gBackActions);
+    menu->addAction(aNone);
+
     QAction * aGradient = new QAction(tr("Gradient"), menu);
-    aGradient->setProperty("id", 1);
+    aGradient->setProperty("id", 2);
     aGradient->setCheckable(true);
     aGradient->setActionGroup(m_gBackActions);
     menu->addAction(aGradient);
-
-    QAction * aTransparent = new QAction(tr("Transparent"), menu);
-    aTransparent->setToolTip(tr("Transparency can be saved to PNG images only."));
-    aTransparent->setProperty("id", 2);
-    aTransparent->setCheckable(true);
-    aTransparent->setActionGroup(m_gBackActions);
-    menu->addAction(aTransparent);
 
     QAction * aContent = new QAction(tr("Content"), menu);
     aContent->setToolTip(tr("Double click on any content to put it on background."));
@@ -600,6 +601,7 @@ void FotoWall::on_accelBox_toggled(bool opengl)
     // set OpenGL viewport
     if (opengl) {
         WarningBox("SkipWarnings/opengl", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system. Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"));
+        ui->transpBox->setChecked(false);
         ui->canvas->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
         ui->canvas->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     }
@@ -615,17 +617,31 @@ void FotoWall::on_accelBox_toggled(bool opengl)
 void FotoWall::on_accelBox_toggled(bool) {}
 #endif
 
-void FotoWall::on_transpBox_toggled(bool checked)
+void FotoWall::on_transpBox_toggled(bool transparent)
 {
 #if QT_VERSION >= 0x040500
-    if (checked) {
+    if (transparent) {
+        // one-time warning
         WarningBox("SkipWarnings/transparency", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"));
+
+        // go transparent
         setAttribute(Qt::WA_NoSystemBackground, true);
         setAttribute(Qt::WA_TranslucentBackground, true);
+
+        // hint the render that we're transparent now
+        RenderOpts::ARGBWindow = true;
+
+        // set 'NoBackground' to show that we're transparent for real
+        m_desk->setBackMode(1);
     } else {
+        // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
         setAttribute(Qt::WA_NoSystemBackground, false);
+
+        // hint the render that we're opaque again
+        RenderOpts::ARGBWindow = false;
     }
+    // refresh the window
     update();
 #else
     Q_UNUSED(checked)
