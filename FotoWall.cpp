@@ -115,6 +115,9 @@ class WarningBox : public QDialog
             setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
             QSize screenSize = QApplication::desktop()->availableGeometry(QCursor::pos()).size();
             setMinimumWidth(qMin(screenSize.width() - 480, screenSize.width()/2));
+            setMinimumHeight(190);
+            grid->activate();
+            adjustSize();
             resize(minimumSize());
             exec();
 
@@ -201,15 +204,13 @@ FotoWall::FotoWall(QWidget * parent)
     ui->b2->setDefaultAction(ui->aAddText);
     ui->b3->setDefaultAction(ui->aAddVideo);
     ui->b4->setDefaultAction(ui->aAddFlickr);
-#ifdef HAS_OPENGL
-    ui->accelBox->setChecked(false);
-#else
-    ui->accelBox->hide();
-#endif
 #if QT_VERSION >= 0x040500
-    ui->transpBox->setChecked(false);
-#else
-    ui->transpBox->hide();
+#ifdef QT_OPENGL_LIB
+    ui->accelBox->setEnabled(true);
+#endif
+#ifdef Q_OS_LINUX
+    ui->transpBox->setEnabled(true);
+#endif
 #endif
     ui->widgetProperties->collapse();
     ui->widgetCanvas->expand();
@@ -583,23 +584,28 @@ void FotoWall::on_aAddVideo_triggered()
     m_desk->addVideoContent(0);
 }
 
-#ifdef HAS_OPENGL
+#ifdef QT_OPENGL_LIB
 #include <QGLWidget>
-#endif
-void FotoWall::on_accelBox_toggled(bool checked)
+void FotoWall::on_accelBox_toggled(bool opengl)
 {
-    if (checked) {
-        // 3D MODE
-#ifdef HAS_OPENGL
+    QStyle * style = ui->canvas->viewport()->style();
+    // set OpenGL viewport
+    if (opengl) {
+        WarningBox("SkipWarnings/opengl", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system. Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"));
         ui->canvas->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
         ui->canvas->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-#endif
-    } else {
-        // normal mode
+    }
+    // set Normal viewport
+    else {
         ui->canvas->setViewport(new QWidget());
         ui->canvas->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     }
+    ui->canvas->viewport()->setStyle(style);
+    update();
 }
+#else
+void FotoWall::on_accelBox_toggled(bool) {}
+#endif
 
 void FotoWall::on_transpBox_toggled(bool checked)
 {

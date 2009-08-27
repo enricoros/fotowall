@@ -692,6 +692,9 @@ stop:1 rgba(237, 237, 237, 255))
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QCheckBox" name="accelBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="icon">
               <iconset resource="fotowall.qrc">
                <normaloff>:/data/opengl-logo.png</normaloff>:/data/opengl-logo.png</iconset>
@@ -706,6 +709,9 @@ stop:1 rgba(237, 237, 237, 255))
            </item>
            <item>
             <widget class="QCheckBox" name="transpBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Transparent</string>
              </property>

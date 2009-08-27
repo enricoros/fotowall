@@ -19,10 +19,9 @@ QT = core \
     network \
     xml
 
-# OpenGL support
-win32 {
+# use OpenGL where available
+contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
     QT += opengl
-    DEFINES += HAS_OPENGL
 }
 
 # FotoWall input files
