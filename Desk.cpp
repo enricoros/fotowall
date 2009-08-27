@@ -179,6 +179,7 @@ void Desk::setWebContentSelectorVisible(bool visible)
         if (!m_networkAccessManager)
             m_networkAccessManager = new QNetworkAccessManager(this);
         m_webContentSelector = new WebContentSelectorItem(m_networkAccessManager);
+        m_webContentSelector->setZValue(999999);
         m_webContentSelector->setPos(20, -8);
         addItem(m_webContentSelector);
     }
@@ -672,7 +673,7 @@ void Desk::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
         return;
 
     // unset the background picture, if present
-    setBackMode(m_backGradientEnabled ? 1 : 2);
+    setBackMode(m_backGradientEnabled ? 2 : 1);
 }
 
 void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
