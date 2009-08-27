@@ -74,7 +74,11 @@ class WarningBox : public QDialog
 {
     public:
         WarningBox(const QString & key, const QString & title, const QString & text)
+#if QT_VERSION >= 0x040500
           : QDialog(0, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
+#else
+          : QDialog(0, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
+#endif
         {
             // skip this if asked to not repeat it
             QSettings s;
@@ -188,7 +192,11 @@ FotoWall::FotoWall(QWidget * parent)
     // setup widget
     QRect geom = QApplication::desktop()->availableGeometry();
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
+#if QT_VERSION >= 0x040500
     setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
+#else
+    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion() + "   -Limited Edition (Qt 4.4)-");
+#endif
     setWindowIcon(QIcon(":/data/fotowall.png"));
 
     // create our custom desk
@@ -619,6 +627,8 @@ void FotoWall::on_transpBox_toggled(bool checked)
         setAttribute(Qt::WA_NoSystemBackground, false);
     }
     update();
+#else
+    Q_UNUSED(checked)
 #endif
 }
 

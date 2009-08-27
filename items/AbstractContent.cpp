@@ -73,11 +73,13 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
     addButtonItem(bConf);
 
+#if QT_VERSION >= 0x040500
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag around to change the perspective.\nHold SHIFT to move faster.\nUse CTRL to cancel the transformations."));
     connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotPerspective(const QPointF&,Qt::KeyboardModifiers)));
     connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slotClearPerspective()));
     addButtonItem(bPersp);
+#endif
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bDelete->setSelectsParent(false);

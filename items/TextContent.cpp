@@ -472,12 +472,10 @@ void TextContent::updateTextConstraints()
         static const int bezierMargin = 30;
         m_shapeRect.adjust(-bezierMargin, -bezierMargin, bezierMargin, bezierMargin);
 
-        int w = m_shapeRect.width();
-        int h = m_shapeRect.height();
+        // FIXME: layout, save layouting and calc the exact size!
+        //int w = m_shapeRect.width();
+        //int h = m_shapeRect.height();
         //resizeContents(QRect(-w / 2, -h / 2, w, h));
-#ifdef Q_OS_UNIX
-#warning FIXME
-#endif
         resizeContents(m_shapeRect);
 
   //      moveBy(m_shapeRect.left(), m_shapeRect.top());

@@ -47,8 +47,10 @@ PictureConfig::PictureConfig(PictureContent * pictureContent, QGraphicsItem * pa
     glow->setData(Qt::UserRole, PictureEffect::Glow);
     QListWidgetItem *sepia = new QListWidgetItem(QIcon(":/data/effects-icons/sepia-effect.png"), tr("Sepia"), m_pictureUi->effectsList);
     sepia->setData(Qt::UserRole, PictureEffect::Sepia);
-    QListWidgetItem *opacity = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("Opacity"), m_pictureUi->effectsList);
+#if QT_VERSION >= 0x040500
+    QListWidgetItem *opacity = new QListWidgetItem(QIcon(":/data/effects-icons/opacity-effect.png"), tr("Opacity"), m_pictureUi->effectsList);
     opacity->setData(Qt::UserRole, PictureEffect::Opacity);
+#endif
 
     connect(m_pictureUi->invertButton, SIGNAL(clicked()), m_pictureContent, SIGNAL(flipVertically()));
     connect(m_pictureUi->flipButton, SIGNAL(clicked()), m_pictureContent, SIGNAL(flipHorizontally()));
@@ -88,11 +90,13 @@ void PictureConfig::on_effectsList_itemActivated(QListWidgetItem * item)
         param = (qreal)dialog.currentRadius();
     }
     //show opacity dialog
+#if QT_VERSION >= 0x040500
     else if (effect == PictureEffect::Opacity) {
         int opacity = QInputDialog::getInteger(0, tr("Opacity"),
                      tr("Opacity value.\n\n0: transparent\n100: opaque"), m_pictureContent->opacity()*100, 0, 100);
         param = (float)opacity/100.f;
     }
+#endif
 
     // apply the effect
     m_currentEffect = PictureEffect((PictureEffect::Effect)effect, param);

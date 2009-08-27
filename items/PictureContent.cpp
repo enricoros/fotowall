@@ -156,14 +156,16 @@ void PictureContent::addEffect(const PictureEffect & effect)
         return;
 
     m_photo->addEffect(effect);
-    if(effect.effect == PictureEffect::Opacity)
-        setOpacity(effect.param);
-    else if (effect.effect == PictureEffect::Crop) {
+    if (effect.effect == PictureEffect::Crop) {
         QRect actualContentRect = contentsRect();
         float reduceRatio = (float)(effect.cropingRect.width()+effect.cropingRect.height())/
                             (float)(actualContentRect.height() +actualContentRect.width());
         resizeContents(QRect(0,0, (float)effect.cropingRect.width()/reduceRatio, (float)effect.cropingRect.height()/reduceRatio));
     }
+#if QT_VERSION >= 0x040500
+    else if(effect.effect == PictureEffect::Opacity)
+        setOpacity(effect.param);
+#endif
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
@@ -186,9 +188,7 @@ bool PictureContent::fromXml(QDomElement & pe)
         PictureEffect fx;
         fx.effect = (PictureEffect::Effect)effectE.attribute("type").toInt();
         fx.param = effectE.attribute("param").toDouble();
-        if (fx.effect == PictureEffect::Opacity)
-            setOpacity(fx.param);
-        else if (fx.effect == PictureEffect::Crop) {
+        if (fx.effect == PictureEffect::Crop) {
             QString rect = effectE.attribute("cropingRect");
             QStringList coordinates = rect.split(" ");
             if(coordinates.size() >= 3) {
@@ -196,6 +196,10 @@ bool PictureContent::fromXml(QDomElement & pe)
                 fx.cropingRect = cropingRect;
             }
         }
+#if QT_VERSION >= 0x040500
+        else if (fx.effect == PictureEffect::Opacity)
+            setOpacity(fx.param);
+#endif
         m_afterLoadEffects.append(fx);
     }
 
@@ -228,7 +232,12 @@ void PictureContent::toXml(QDomElement & pe) const
     pe.appendChild(domElement);
     QList<PictureEffect> effectsList = m_afterLoadEffects;
     if (m_photo)
+#if QT_VERSION >= 0x040500
         effectsList.append(m_photo->effects());
+#else
+        foreach(const PictureEffect & effect, m_photo->effects())
+            effectsList.append(effect);
+#endif
     foreach (const PictureEffect & effect, effectsList) {
         QDomElement effectElement = doc.createElement("effect");
         effectElement.setAttribute("type", effect.effect);

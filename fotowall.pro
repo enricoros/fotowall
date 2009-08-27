@@ -1,8 +1,10 @@
 # Check Qt >= 4.4
 contains(QT_VERSION, ^4\.[0-3]\..*) {
-    message("Cannot build Qt Creator with Qt version $$QT_VERSION.")
+    message("Cannot build Qt Creator with Qt version $$QT_VERSION .")
     error("Use at least Qt 4.4.")
 }
+contains(QT_VERSION, ^4\.4\..*): message("Lots of features will be disabled with Qt $$QT_VERSION . Use Qt 4.5 or later.")
+contains(QT_VERSION, ^4\.6\..*): message("Qt $$QT_VERSION support is still experimental, but it already improves the experience!")
 
 # Project Options
 TEMPLATE = app
