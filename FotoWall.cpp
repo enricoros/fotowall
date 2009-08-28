@@ -644,7 +644,7 @@ void FotoWall::on_transpBox_toggled(bool transparent)
     // refresh the window
     update();
 #else
-    Q_UNUSED(checked)
+    Q_UNUSED(transparent)
 #endif
 }
 
