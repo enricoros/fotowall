@@ -31,12 +31,12 @@ struct PictureEffect {
         Crop            =  9
     } effect;
     qreal param;
-    QRect cropingRect;
+    QRect croppingRect;
 
-    PictureEffect(Effect effect = ClearEffects, qreal param = 0.0, QRect cropingRect = QRect())
+    PictureEffect(Effect effect = ClearEffects, qreal param = 0.0, QRect croppingRect = QRect())
       : effect(effect)
       , param(param)
-      , cropingRect(cropingRect)
+      , croppingRect(croppingRect)
     {
     }
 };

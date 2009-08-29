@@ -15,6 +15,13 @@ Unreleased Version:
 * Auto-placement (nearly done)
 * Google-suggest completion (ok, misplaced)
 
+Version 0.8 (unreleased)
+* Image Cropping (by Arnaud Tanguy)
+* Shaped text (bezier curve)
+* Properties in the top bar
+* Window transparency
+* Fixed bugs
+
 Version 0.7.1 (2009-07-23):
 
 * Flickr content download
@@ -98,6 +105,9 @@ I hope to expand the program as soon as I can, since there is many room for impr
 [done] * Fotowall -> Fotowall
 [done] * video -> webcam
 [done] * network image loading from http
+[done] * transparent background of the window
+[done] * display on-screen selection for pictures
+[done] * check for updates + add a link to the website
 * win: photo selection and dragging
 * pictures on background: keep ratio in some way
 * same folder when you open the picture
@@ -108,12 +118,9 @@ I hope to expand the program as soon as I can, since there is many room for impr
 * resizing works only with the bottom right corner. fix the others.
 * webcam on windows
 * multiple webcams
-* transparent background of the window
 * add the undo support
 * link the download to blogs and fix links everywhere
-* check for updates + add a link to the website
 * update the video tutorial
-* display on-screen selection for pictures
 * perform rectangular image composition based on an input picture (color, pattern)
 * perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
 * add the "color changing stuff" to the picture themselves [Contrast, Superstoned
@@ -124,7 +131,6 @@ I hope to expand the program as soon as I can, since there is many room for impr
  - ./GlowEffectWidget.cpp: GPLv2 with all rights reserved, a no-go
  - videocapture is partially BSD and LGPLv2+ - not mentioned + no complete copy of lgplv2 available (add the file into that folder)
  - posterazor GPLv3+ need license file
- - remove qm?
 
 Enrico:
 

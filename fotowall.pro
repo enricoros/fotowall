@@ -29,8 +29,8 @@ contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, o
 # Fotowall input files
 HEADERS += 3rdparty/gsuggest.h \
     CPixmap.h \
-    CropingDialog.h \
-    CropingWidget.h \
+    CroppingDialog.h \
+    CroppingWidget.h \
     Desk.h \
     ExactSizeDialog.h \
     ExportWizard.h \
@@ -48,8 +48,8 @@ HEADERS += 3rdparty/gsuggest.h \
     XmlSave.h
 SOURCES += 3rdparty/gsuggest.cpp \
     CPixmap.cpp \
-    CropingDialog.cpp \
-    CropingWidget.cpp \
+    CroppingDialog.cpp \
+    CroppingWidget.cpp \
     Desk.cpp \
     ExactSizeDialog.cpp \
     ExportWizard.cpp \
@@ -64,7 +64,7 @@ SOURCES += 3rdparty/gsuggest.cpp \
     XmlRead.cpp \
     XmlSave.cpp \
     main.cpp
-FORMS += CropingDialog.ui \
+FORMS += CroppingDialog.ui \
     ExactSizeDialog.ui \
     ExportWizard.ui \
     GlowEffectDialog.ui \
