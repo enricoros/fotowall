@@ -9,18 +9,27 @@ Check out the [home page](http://code.google.com/p/Fotowall) and the [blog](http
 ChangeLog
 ---------
 
-Unreleased Version:
-
-* restore the common behavior for rotating (left click)
-* Auto-placement (nearly done)
-* Google-suggest completion (ok, misplaced)
-
-Version 0.8 (unreleased)
+Version 0.8 (unreleased):
 * Image Cropping (by Arnaud Tanguy)
 * Shaped text (bezier curve)
 * Properties in the top bar
 * Window transparency
 * Fixed bugs
+
+enrico: will merge with the following:
+* restore the common behavior for rotating (left click)
+* add ok button for finalizing the text and just close the tab with X (req. by Rossana)
+* network image loading from http (req. by Rossana)
+* pictures on background: keep ratio in some way (req. by Rossana)
+* video -> webcam (req. by Rossana)
+* Fotowall -> Fotowall (req. by Rossana)
+* transparent background of the window (needs compositing)
+* OpenGL support (where available)
+* picture opacity (by Arnaud Tanguy)
+* fixes from Georges Dubus and Andreas Brech
+* animations with 4.6: top bar, item show/hide, properties show/hide
+* builds with 4.4 (without many features), 4.5 (without animations), 4.6-unreleased (gfx errors on windows)
+* Polish translation? ask Marek Walczak, see 4ba1502
 
 Version 0.7.1 (2009-07-23):
 
@@ -100,30 +109,14 @@ I hope to expand the program as soon as I can, since there is many room for impr
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
-
-[done] * add ok button for finalizing the text and just close the tab with X
-[done] * Fotowall -> Fotowall
-[done] * video -> webcam
-[done] * network image loading from http
-[done] * transparent background of the window
-[done] * display on-screen selection for pictures
-[done] * check for updates + add a link to the website
-* win: photo selection and dragging
-* pictures on background: keep ratio in some way
-* same folder when you open the picture
-* add google images to flickr ones
-
 * link to web resources
  - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
 * resizing works only with the bottom right corner. fix the others.
 * webcam on windows
 * multiple webcams
 * add the undo support
-* link the download to blogs and fix links everywhere
 * update the video tutorial
-* perform rectangular image composition based on an input picture (color, pattern)
-* perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
-* add the "color changing stuff" to the picture themselves [Contrast, Superstoned
+* add the "color changing stuff" to the picture themselves (req. by Contrast, Superstoned)
 * BUG: when loading a .fotowall file from the command line some items are aligned to the left
 * relicences
  - 3rdparty/enricomath.h: Could you re-release it with GPL v2+ like the rest of your source?
@@ -131,10 +124,16 @@ I hope to expand the program as soon as I can, since there is many room for impr
  - ./GlowEffectWidget.cpp: GPLv2 with all rights reserved, a no-go
  - videocapture is partially BSD and LGPLv2+ - not mentioned + no complete copy of lgplv2 available (add the file into that folder)
  - posterazor GPLv3+ need license file
+ - remove qm? note that building on windows requires qm to be on the packages!
 
 Enrico:
-
+* same folder when you open the picture (req. by Rossana)
+* add google images to flickr ones (req. by Rossana)
+* win: photo dragging from the 'add picture' filedialog (seems harder that it should be. works on linux) (req. by Rossana)
 * auto-placement [force field, shape, collage, etc..]
+  * ap: perform rectangular image composition based on an input picture (color, pattern)
+  * ap: perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
+* Google-suggest completion (ok, misplaced)
 * integrate kde-apps knowledgebase
 * svg drawings [balloons, signs, etc..]
 * masked pic
