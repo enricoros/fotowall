@@ -15,7 +15,6 @@
 #include "TextContent.h"
 #include "frames/Frame.h"
 #include "items/BezierCubicItem.h"
-#include "items/ButtonItem.h"
 #include "items/TextProperties.h"
 #include "CPixmap.h"
 #include "RenderOpts.h"

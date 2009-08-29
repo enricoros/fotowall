@@ -13,7 +13,6 @@
  ***************************************************************************/
 
 #include "Frame.h"
-#include "items/ButtonItem.h"
 #include <QRectF>
 
 QRect Frame::frameRect(const QRect & contentsRect) const

@@ -16,21 +16,18 @@
 #define __TextConfig_h__
 
 #include "AbstractConfig.h"
-class QListWidgetItem;
 class RichTextEditorDialog;
 class TextContent;
 
-
-class TextConfig : public AbstractConfig {
+class TextConfig : public AbstractConfig
+{
     public:
         TextConfig(TextContent * textContent, QGraphicsItem * parent = 0);
         ~TextConfig();
 
-    protected:
-        // ::AbstractConfig
-        void closing();
-
     private:
+        // ::AbstractConfig
+        void slotOkClicked();
         TextContent * m_textContent;
         RichTextEditorDialog * m_editor;
 };

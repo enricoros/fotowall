@@ -893,9 +893,6 @@ stop:1 rgba(237, 237, 237, 255))
    <property name="text">
     <string>Add Picture</string>
    </property>
-   <property name="shortcut">
-    <string>P</string>
-   </property>
   </action>
   <action name="aAddText">
    <property name="icon">
@@ -905,9 +902,6 @@ stop:1 rgba(237, 237, 237, 255))
    <property name="text">
     <string>Add Text</string>
    </property>
-   <property name="shortcut">
-    <string>T</string>
-   </property>
   </action>
   <action name="aAddWebcam">
    <property name="icon">
@@ -916,9 +910,6 @@ stop:1 rgba(237, 237, 237, 255))
    </property>
    <property name="text">
     <string>Add Webcam</string>
-   </property>
-   <property name="shortcut">
-    <string>V</string>
    </property>
   </action>
   <action name="aAddFlickr">
@@ -931,9 +922,6 @@ stop:1 rgba(237, 237, 237, 255))
    </property>
    <property name="text">
     <string>Add Flickr</string>
-   </property>
-   <property name="shortcut">
-    <string>F</string>
    </property>
   </action>
  </widget>
