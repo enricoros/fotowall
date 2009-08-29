@@ -25,7 +25,7 @@
 #include "items/VideoContent.h"
 #include "CPixmap.h"
 #include "Desk.h"
-#include "FotoWall.h"
+#include "MainWindow.h"
 #include <QFile>
 #include <QMessageBox>
 #include <QString>
@@ -37,7 +37,7 @@ XmlRead::XmlRead(const QString & filePath)
     // Load the file
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::critical(0, tr("Loading error"), tr("Unable to load the FotoWall file %1").arg(filePath));
+        QMessageBox::critical(0, tr("Loading error"), tr("Unable to load the Fotowall file %1").arg(filePath));
         throw(0);
         return;
     }
@@ -46,7 +46,7 @@ XmlRead::XmlRead(const QString & filePath)
     QString *error = new QString();
     QDomDocument doc;
     if (!doc.setContent(&file, false, error)) {
-        QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the FotoWall file %1. The error was: %2").arg(filePath, *error));
+        QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the Fotowall file %1. The error was: %2").arg(filePath, *error));
         file.close();
         throw(0);
         return;
@@ -59,7 +59,7 @@ XmlRead::XmlRead(const QString & filePath)
     m_contentElement = root.firstChildElement("content");
 }
 
-void XmlRead::readProject(FotoWall *fotowall)
+void XmlRead::readProject(MainWindow *mainWindow)
 {
     ModeInfo modeInfo;
     QDomElement modeElement = m_projectElement.firstChildElement("mode");
@@ -77,8 +77,8 @@ void XmlRead::readProject(FotoWall *fotowall)
     }
 
     int mode = modeElement.firstChildElement("id").text().toInt();
-    fotowall->setModeInfo(modeInfo);
-    fotowall->restoreMode(mode);
+    mainWindow->setModeInfo(modeInfo);
+    mainWindow->restoreMode(mode);
 }
 
 void XmlRead::readDesk(Desk * desk)

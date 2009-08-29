@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the FotoWall project,                            *
+ *   This file is part of the Fotowall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "FotoWall.h"
+#include "MainWindow.h"
 #include "items/VideoProvider.h"
 #include "Desk.h"
 #include "ExactSizeDialog.h"
@@ -178,12 +178,12 @@ class FWGraphicsView : public QGraphicsView {
 };
 
 // added here because it needs the FWGraphicsView declaration
-#include "ui_FotoWall.h"
+#include "ui_MainWindow.h"
 
 
-FotoWall::FotoWall(QWidget * parent)
+MainWindow::MainWindow(QWidget * parent)
     : QWidget(parent)
-    , ui(new Ui::FotoWall())
+    , ui(new Ui::MainWindow())
     , m_desk(0)
     , m_aHelpTutorial(0)
     , m_aHelpSupport(0)
@@ -246,7 +246,7 @@ FotoWall::FotoWall(QWidget * parent)
     checkForSupport();
 }
 
-FotoWall::~FotoWall()
+MainWindow::~MainWindow()
 {
     // dump current layout
     saveXml(QDir::tempPath() + QDir::separator() + "autosave.fotowall");
@@ -256,18 +256,18 @@ FotoWall::~FotoWall()
     delete ui;
 }
 
-void FotoWall::setModeInfo(ModeInfo modeInfo)
+void MainWindow::setModeInfo(ModeInfo modeInfo)
 {
     m_modeInfo = modeInfo;
     m_modeInfo.setDeskDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
 }
 
-ModeInfo FotoWall::getModeInfo()
+ModeInfo MainWindow::getModeInfo()
 {
     return m_modeInfo;
 }
 
-void FotoWall::restoreMode(int mode)
+void MainWindow::restoreMode(int mode)
 {
     if (mode == 3) { // If exact size project
         // Called here not to have the unneeded size dialog
@@ -277,7 +277,7 @@ void FotoWall::restoreMode(int mode)
     }
 }
 
-void FotoWall::loadXml(const QString & filePath)
+void MainWindow::loadXml(const QString & filePath)
 {
     if (filePath.isNull())
         return;
@@ -294,7 +294,7 @@ void FotoWall::loadXml(const QString & filePath)
     delete xmlRead;
 }
 
-void FotoWall::saveXml(const QString & filePath) const
+void MainWindow::saveXml(const QString & filePath) const
 {
     XmlSave *xmlSave = 0;
     try {
@@ -309,17 +309,17 @@ void FotoWall::saveXml(const QString & filePath) const
     delete xmlSave;
 }
 
-void FotoWall::showIntroduction()
+void MainWindow::showIntroduction()
 {
     m_desk->showIntroduction();
 }
 
-void FotoWall::loadImages(QStringList &imagesPath)
+void MainWindow::loadImages(QStringList &imagesPath)
 {
     m_desk->addPictures(imagesPath);
 }
 
-QMenu * FotoWall::createArrangeMenu()
+QMenu * MainWindow::createArrangeMenu()
 {
     QMenu * menu = new QMenu();
 
@@ -355,7 +355,7 @@ QMenu * FotoWall::createArrangeMenu()
     return menu;
 }
 
-QMenu * FotoWall::createBackgroundMenu()
+QMenu * MainWindow::createBackgroundMenu()
 {
     QMenu * menu = new QMenu();
 
@@ -388,7 +388,7 @@ QMenu * FotoWall::createBackgroundMenu()
     return menu;
 }
 
-QMenu * FotoWall::createDecorationMenu()
+QMenu * MainWindow::createDecorationMenu()
 {
     QMenu * menu = new QMenu();
 
@@ -417,7 +417,7 @@ QMenu * FotoWall::createDecorationMenu()
     return menu;
 }
 
-QMenu * FotoWall::createOnlineHelpMenu()
+QMenu * MainWindow::createOnlineHelpMenu()
 {
     QMenu * menu = new QMenu();
     menu->setSeparatorsCollapsible(false);
@@ -441,7 +441,7 @@ QMenu * FotoWall::createOnlineHelpMenu()
     return menu;
 }
 
-void FotoWall::createMiscActions()
+void MainWindow::createMiscActions()
 {
     // select all
     QAction * aSA = new QAction(tr("Select all"), this);
@@ -450,7 +450,7 @@ void FotoWall::createMiscActions()
     addAction(aSA);
 }
 
-void FotoWall::checkForTutorial()
+void MainWindow::checkForTutorial()
 {
     // hide the tutorial link
     m_aHelpTutorial->setVisible(false);
@@ -461,16 +461,16 @@ void FotoWall::checkForTutorial()
     manager->get(QNetworkRequest(TUTORIAL_URL));
 }
 
-void FotoWall::checkForSupport()
+void MainWindow::checkForSupport()
 {
     // hide the support link
     m_aHelpSupport->setVisible(false);
 
-    // check the Open Collaboration Services knowledgebase for FotoWall
+    // check the Open Collaboration Services knowledgebase for Fotowall
     QTimer::singleShot(2000, this, SLOT(slotVerifySupport()));
 }
 
-void FotoWall::setNormalProject()
+void MainWindow::setNormalProject()
 {
     m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
     static bool skipFirstMaximizeHack = true;
@@ -485,7 +485,7 @@ void FotoWall::setNormalProject()
     ui->projectType->setCurrentIndex(0);
 }
 
-void FotoWall::setCDProject()
+void MainWindow::setCDProject()
 {
     // A CD cover is a 4.75x4.715 inches square.
     m_modeInfo.setRealSizeInches(4.75, 4.75);
@@ -497,7 +497,7 @@ void FotoWall::setCDProject()
     ui->projectType->setCurrentIndex(1);
 }
 
-void FotoWall::setDVDProject()
+void MainWindow::setDVDProject()
 {
     m_modeInfo.setRealSizeInches((float)10.83, (float)7.2);
     m_modeInfo.setLandscape(true);
@@ -508,7 +508,7 @@ void FotoWall::setDVDProject()
     ui->projectType->setCurrentIndex(2);
 }
 
-void FotoWall::setExactSizeProject()
+void MainWindow::setExactSizeProject()
 {
     // Exact size mode
     if(m_modeInfo.realSize().isEmpty()) {
@@ -539,7 +539,7 @@ void FotoWall::setExactSizeProject()
     ui->projectType->setCurrentIndex(3);
 }
 
-void FotoWall::on_projectType_activated(int index)
+void MainWindow::on_projectType_activated(int index)
 {
     m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (so if it is a mode that require
                                         // asking size, it will be asked !
@@ -562,12 +562,12 @@ void FotoWall::on_projectType_activated(int index)
     }
 }
 
-void FotoWall::on_aAddFlickr_toggled(bool on)
+void MainWindow::on_aAddFlickr_toggled(bool on)
 {
     m_desk->setWebContentSelectorVisible(on);
 }
 
-void FotoWall::on_aAddPicture_triggered()
+void MainWindow::on_aAddPicture_triggered()
 {
     // build the extensions list
     QString extensions;
@@ -581,24 +581,24 @@ void FotoWall::on_aAddPicture_triggered()
         m_desk->addPictures(fileNames);
 }
 
-void FotoWall::on_aAddText_triggered()
+void MainWindow::on_aAddText_triggered()
 {
     m_desk->addTextContent();
 }
 
-void FotoWall::on_aAddWebcam_triggered()
+void MainWindow::on_aAddWebcam_triggered()
 {
     m_desk->addVideoContent(0);
 }
 
 #ifdef QT_OPENGL_LIB
 #include <QGLWidget>
-void FotoWall::on_accelBox_toggled(bool opengl)
+void MainWindow::on_accelBox_toggled(bool opengl)
 {
     QStyle * style = ui->canvas->viewport()->style();
     // set OpenGL viewport
     if (opengl) {
-        WarningBox("SkipWarnings/opengl", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system. Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"));
+        WarningBox("SkipWarnings/opengl", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system. Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"));
         ui->transpBox->setChecked(false);
         ui->canvas->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
         ui->canvas->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -612,10 +612,10 @@ void FotoWall::on_accelBox_toggled(bool opengl)
     update();
 }
 #else
-void FotoWall::on_accelBox_toggled(bool) {}
+void MainWindow::on_accelBox_toggled(bool) {}
 #endif
 
-void FotoWall::on_transpBox_toggled(bool transparent)
+void MainWindow::on_transpBox_toggled(bool transparent)
 {
 #if QT_VERSION >= 0x040500
     if (transparent) {
@@ -646,20 +646,20 @@ void FotoWall::on_transpBox_toggled(bool transparent)
 #endif
 }
 
-void FotoWall::on_introButton_clicked()
+void MainWindow::on_introButton_clicked()
 {
     m_desk->showIntroduction();
 }
 
-void FotoWall::on_loadButton_clicked()
+void MainWindow::on_loadButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Select FotoWall file"), QString(), tr("FotoWall (*.fotowall)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select the Fotowall file"), QString(), tr("Fotowall (*.fotowall)"));
     loadXml(fileName);
 }
 
-void FotoWall::on_saveButton_clicked()
+void MainWindow::on_saveButton_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Select FotoWall file"), QString(), "FotoWall (*.fotowall)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Select the Fotowall file"), QString(), "Fotowall (*.fotowall)");
     if (fileName.isNull())
         return;
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
@@ -667,7 +667,7 @@ void FotoWall::on_saveButton_clicked()
     saveXml(fileName);
 }
 
-void FotoWall::on_exportButton_clicked()
+void MainWindow::on_exportButton_clicked()
 {
     // show the Export Wizard on normal mode
     if (m_desk->projectMode() == Desk::ModeNormal) {
@@ -679,32 +679,32 @@ void FotoWall::on_exportButton_clicked()
     m_desk->printAsImage(m_modeInfo.printDpi(), m_modeInfo.printPixelSize(), m_modeInfo.landscape());
 }
 /*
-void FotoWall::on_quitButton_clicked()
+void MainWindow::on_quitButton_clicked()
 {
     QCoreApplication::quit();
 }
 */
-void FotoWall::slotActionSelectAll()
+void MainWindow::slotActionSelectAll()
 {
     m_desk->selectAllContent();
 }
 
-void FotoWall::slotArrangeForceField(bool checked)
+void MainWindow::slotArrangeForceField(bool checked)
 {
     m_desk->setForceFieldEnabled(checked);
 }
 
-void FotoWall::slotDecoTopBar(bool checked)
+void MainWindow::slotDecoTopBar(bool checked)
 {
     m_desk->setTopBarEnabled(checked);
 }
 
-void FotoWall::slotDecoBottomBar(bool checked)
+void MainWindow::slotDecoBottomBar(bool checked)
 {
     m_desk->setBottomBarEnabled(checked);
 }
 
-void FotoWall::slotDecoSetTitle()
+void MainWindow::slotDecoSetTitle()
 {
     // set a dummy title, if none
     if (m_desk->titleText().isEmpty())
@@ -717,50 +717,50 @@ void FotoWall::slotDecoSetTitle()
         m_desk->setTitleText(title);
 }
 
-void FotoWall::slotDecoClearTitle()
+void MainWindow::slotDecoClearTitle()
 {
     m_desk->setTitleText(QString());
 }
 
-void FotoWall::slotHelpBlog()
+void MainWindow::slotHelpBlog()
 {
-    int answer = QMessageBox::question(this, tr("Opening FotoWall's author Blog"), tr("This is the blog of the main author of FotoWall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
+    int answer = QMessageBox::question(this, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
     if (answer == QMessageBox::Yes)
         QDesktopServices::openUrl(ENRICOBLOG_URL);
 }
 
-void FotoWall::slotHelpSupport()
+void MainWindow::slotHelpSupport()
 {
 }
 
-void FotoWall::slotHelpTutorial()
+void MainWindow::slotHelpTutorial()
 {
-    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about FotoWall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
+    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about Fotowall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
     if (answer == QMessageBox::Yes)
         QDesktopServices::openUrl(TUTORIAL_URL);
 }
 
 
-void FotoWall::slotHelpUpdates()
+void MainWindow::slotHelpUpdates()
 {
     VersionCheckDialog vcd;
     vcd.exec();
 }
 
-void FotoWall::slotSetBackMode(QAction* action)
+void MainWindow::slotSetBackMode(QAction* action)
 {
     int choice = action->property("id").toUInt();
     m_desk->setBackMode(choice);
 }
 
-void FotoWall::slotBackModeChanged()
+void MainWindow::slotBackModeChanged()
 {
     int mode = m_desk->backMode();
     m_gBackActions->actions()[mode - 1]->setChecked(true);
     m_gBackActions->actions()[2]->setEnabled(mode == 3);
 }
 
-void FotoWall::slotShowPropertiesWidget(QWidget * widget)
+void MainWindow::slotShowPropertiesWidget(QWidget * widget)
 {
     // delete current Properties content
     QLayoutItem * prevItem = ui->propLayout->takeAt(0);
@@ -784,7 +784,7 @@ void FotoWall::slotShowPropertiesWidget(QWidget * widget)
     }
 }
 
-void FotoWall::slotVerifyTutorial(QNetworkReply * reply)
+void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
 {
     if (reply->error() != QNetworkReply::NoError)
         return;
@@ -794,20 +794,20 @@ void FotoWall::slotVerifyTutorial(QNetworkReply * reply)
     m_aHelpTutorial->setVisible(tutorialValid);
 }
 
-void FotoWall::slotVerifySupport(/*const KnowledgeItemV1List & items*/)
+void MainWindow::slotVerifySupport(/*const KnowledgeItemV1List & items*/)
 {
     int supportEntries = 0;
     m_aHelpSupport->setVisible(supportEntries > 0);
     m_aHelpSupport->setText(tr("Support (%1)").arg(supportEntries));
 /*
-    qWarning("FotoWall::slotOcsKbItems: got %d items", items.size());
+    qWarning("MainWindow::slotOcsKbItems: got %d items", items.size());
     foreach (KnowledgeItemV1 * item, items) {
         qWarning() << item->name() << item->description() << item->answer();
     }
 */
 }
 
-void FotoWall::slotVerifyVideoInputs(int count)
+void MainWindow::slotVerifyVideoInputs(int count)
 {
     // maybe blink or something?
     ui->aAddWebcam->setVisible(count > 0);

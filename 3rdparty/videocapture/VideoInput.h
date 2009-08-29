@@ -2,7 +2,7 @@
     VideoInput.h  -  Video Input Class
 
     Copyright (c) 2005-2006 by Cláudio da Silveira Pinheiro   <taupter@gmail.com>
-    Copyright (c) 2009 - Enrico Ros - FotoWall inclusion <enrico.ros@gmail.com>
+    Copyright (c) 2009 - Enrico Ros - Fotowall inclusion <enrico.ros@gmail.com>
 
     *************************************************************************
     *                                                                       *
@@ -32,7 +32,7 @@ namespace VideoCapture {
 
 /**
     @brief Describe/Control the parameters of a single video stream
-    @author Kopete Developers - modified by Enrico Ros for FotoWall inclusion
+    @author Kopete Developers - modified by Enrico Ros for Fotowall inclusion
 */
 class VideoInput{
 public:

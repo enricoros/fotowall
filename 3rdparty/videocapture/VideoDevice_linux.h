@@ -61,7 +61,7 @@ namespace VideoCapture {
 
 /**
     @brief One video grabbing device, can stream multiple inputs.
-    @author Kopete Developers - modified by Enrico Ros for FotoWall inclusion
+    @author Kopete Developers - modified by Enrico Ros for Fotowall inclusion
     @class VideoDevice
 */
 

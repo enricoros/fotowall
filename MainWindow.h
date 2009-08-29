@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the FotoWall project,                            *
+ *   This file is part of the Fotowall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FotoWall_h__
-#define __FotoWall_h__
+#ifndef __MainWindow_h__
+#define __MainWindow_h__
 
 #include <QWidget>
 #include "ModeInfo.h"
@@ -23,14 +23,14 @@ class QActionGroup;
 class QGraphicsView;
 class QMenu;
 class QNetworkReply;
-namespace Ui { class FotoWall; }
+namespace Ui { class MainWindow; }
 
-class FotoWall : public QWidget
+class MainWindow : public QWidget
 {
     Q_OBJECT
     public:
-        FotoWall(QWidget * parent = 0);
-        ~FotoWall();
+        MainWindow(QWidget * parent = 0);
+        ~MainWindow();
 
         void setModeInfo(ModeInfo modeInfo);
         ModeInfo getModeInfo(); // Needed for saving
@@ -55,7 +55,7 @@ class FotoWall : public QWidget
         void setDVDProject();
         void setExactSizeProject();
 
-        Ui::FotoWall *  ui;
+        Ui::MainWindow *  ui;
         Desk *          m_desk;
         ModeInfo        m_modeInfo;
         QAction *       m_aHelpTutorial;

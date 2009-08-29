@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FotoWall</class>
- <widget class="QWidget" name="FotoWall">
+ <class>MainWindow</class>
+ <widget class="QWidget" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -929,7 +929,7 @@ stop:1 rgba(237, 237, 237, 255))
   <customwidget>
    <class>FWGraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header>FotoWall.h</header>
+   <header>MainWindow.h</header>
   </customwidget>
   <customwidget>
    <class>GroupBoxWidget</class>
