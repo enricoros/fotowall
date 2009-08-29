@@ -33,6 +33,9 @@ SOURCES += \
 HEADERS += \
     mainwindow.h
 
+FORMS += \
+    mainwindow.ui \
+
 contains (DEFINES, FREEIMAGE_LIB) {
     SOURCES += \
         imageloaderfreeimage.cpp
