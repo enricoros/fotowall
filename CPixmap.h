@@ -46,7 +46,7 @@ public:
    void toBlackAndWhite();
    void toGlow(int radius);
    void toSepia();  // Old photo style
-   void crop(const QRect &cropingRect);
+   void crop(const QRect &croppingRect);
    //void toLuminosity(int value);
 
 private:

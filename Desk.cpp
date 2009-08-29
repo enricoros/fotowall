@@ -23,7 +23,7 @@
 #include "items/TextConfig.h"
 #include "items/VideoContent.h"
 #include "items/WebContentSelectorItem.h"
-#include "CropingDialog.h"
+#include "CroppingDialog.h"
 #include "FlickrInterface.h"
 #include "RenderOpts.h"
 #include <QAbstractTextDocumentLayout>
@@ -1074,11 +1074,11 @@ void Desk::slotCrop()
         if (!picture)
             continue;
         CPixmap photo = picture->getPhoto();
-        CropingDialog dial(&photo);
+        CroppingDialog dial(&photo);
         if(dial.exec() == QDialog::Accepted) {
-            QRect cropingRect = dial.getCropingRect();
-            if(!cropingRect.isNull()) {
-                picture->addEffect(PictureEffect(PictureEffect::Crop, 0, dial.getCropingRect()));
+            QRect croppingRect = dial.getCroppingRect();
+            if(!croppingRect.isNull()) {
+                picture->addEffect(PictureEffect(PictureEffect::Crop, 0, dial.getCroppingRect()));
             }
         }
     }

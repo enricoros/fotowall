@@ -158,9 +158,9 @@ void PictureContent::addEffect(const PictureEffect & effect)
     m_photo->addEffect(effect);
     if (effect.effect == PictureEffect::Crop) {
         QRect actualContentRect = contentsRect();
-        float reduceRatio = (float)(effect.cropingRect.width()+effect.cropingRect.height())/
+        float reduceRatio = (float)(effect.croppingRect.width()+effect.croppingRect.height())/
                             (float)(actualContentRect.height() +actualContentRect.width());
-        resizeContents(QRect(0,0, (float)effect.cropingRect.width()/reduceRatio, (float)effect.cropingRect.height()/reduceRatio));
+        resizeContents(QRect(0,0, (float)effect.croppingRect.width()/reduceRatio, (float)effect.croppingRect.height()/reduceRatio));
     }
 #if QT_VERSION >= 0x040500
     else if(effect.effect == PictureEffect::Opacity)
@@ -189,11 +189,11 @@ bool PictureContent::fromXml(QDomElement & pe)
         fx.effect = (PictureEffect::Effect)effectE.attribute("type").toInt();
         fx.param = effectE.attribute("param").toDouble();
         if (fx.effect == PictureEffect::Crop) {
-            QString rect = effectE.attribute("cropingRect");
+            QString rect = effectE.attribute("croppingRect");
             QStringList coordinates = rect.split(" ");
             if(coordinates.size() >= 3) {
-                QRect cropingRect (coordinates.at(0).toInt(), coordinates.at(1).toInt(), coordinates.at(2).toInt(), coordinates.at(3).toInt());
-                fx.cropingRect = cropingRect;
+                QRect croppingRect (coordinates.at(0).toInt(), coordinates.at(1).toInt(), coordinates.at(2).toInt(), coordinates.at(3).toInt());
+                fx.croppingRect = croppingRect;
             }
         }
 #if QT_VERSION >= 0x040500
@@ -243,11 +243,11 @@ void PictureContent::toXml(QDomElement & pe) const
         effectElement.setAttribute("type", effect.effect);
         effectElement.setAttribute("param", effect.param);
         if(effect.effect == PictureEffect::Crop) {
-            QString cropingRectStr;
-            cropingRectStr = QString::number(effect.cropingRect.x()) + " " + QString::number(effect.cropingRect.y())
-                + " " + QString::number(effect.cropingRect.width()) + " " + QString::number(effect.cropingRect.height());
+            QString croppingRectStr;
+            croppingRectStr = QString::number(effect.croppingRect.x()) + " " + QString::number(effect.croppingRect.y())
+                + " " + QString::number(effect.croppingRect.width()) + " " + QString::number(effect.croppingRect.height());
 
-            effectElement.setAttribute("cropingRect", cropingRectStr );
+            effectElement.setAttribute("croppingRect", croppingRectStr );
         }
         domElement.appendChild(effectElement);
     }

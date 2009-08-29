@@ -16,19 +16,19 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
  ******************************************************************************/
 
-#include "CropingWidget.h"
+#include "CroppingWidget.h"
 #include "CPixmap.h"
 #include <QRubberBand>
 #include <QMouseEvent>
 #include <QPainter>
 
-CropingWidget::CropingWidget(QWidget *parent) : QWidget(parent), m_previewRatio(1)
+CroppingWidget::CroppingWidget(QWidget *parent) : QWidget(parent), m_previewRatio(1)
 {
     m_rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     m_rubberBand->setGeometry(0,0,0,0);
 }
 
-void CropingWidget::setPixmap(CPixmap *pix)
+void CroppingWidget::setPixmap(CPixmap *pix)
 {
     m_photo = pix;
     m_previewPixmap = m_photo->scaled(500, 500, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -36,31 +36,31 @@ void CropingWidget::setPixmap(CPixmap *pix)
     setFixedSize(m_previewPixmap.size());
 }
 
-void CropingWidget::mousePressEvent(QMouseEvent *event)
+void CroppingWidget::mousePressEvent(QMouseEvent *event)
 {
     m_rubberBand->show();
     m_origin = event->pos();
     m_rubberBand->setGeometry(QRect(m_origin, QSize()));
 }
 
-void CropingWidget::mouseMoveEvent(QMouseEvent *event)
+void CroppingWidget::mouseMoveEvent(QMouseEvent *event)
 {
     m_rubberBand->setGeometry(QRect(m_origin, event->pos()).normalized());
 }
 
-void CropingWidget::mouseReleaseEvent(QMouseEvent *)
+void CroppingWidget::mouseReleaseEvent(QMouseEvent *)
 {
     // determine selection, for example using QRect::intersects()
     // and QRect::contains().
 }
 
-void CropingWidget::paintEvent(QPaintEvent *)
+void CroppingWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
     p.drawPixmap(m_previewPixmap.rect(), m_previewPixmap);
 }
 
-QRect CropingWidget::getCropingRect() const
+QRect CroppingWidget::getCroppingRect() const
 {
     QRectF selectionRect = m_rubberBand->geometry();
     return QRect(selectionRect.x()*m_previewRatio, selectionRect.y()*m_previewRatio,

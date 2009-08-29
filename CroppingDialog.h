@@ -16,21 +16,21 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
 
-#ifndef __CropingDialog__
-#define __CropingDialog__
+#ifndef __CroppingDialog__
+#define __CroppingDialog__
 
 #include <QDialog>
-#include "ui_CropingDialog.h"
-#include "CropingWidget.h"
+#include "ui_CroppingDialog.h"
+#include "CroppingWidget.h"
 
-class CropingDialog : public QDialog
+class CroppingDialog : public QDialog
 {
     Q_OBJECT
     public:
-        CropingDialog(CPixmap *pix);
-        QRect getCropingRect() const;
+        CroppingDialog(CPixmap *pix);
+        QRect getCroppingRect() const;
     private:
-        Ui::CropingDialog ui;
+        Ui::CroppingDialog ui;
 };
 
 #endif

@@ -16,8 +16,8 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
  ******************************************************************************/
 
-#ifndef __CropingWidget__
-#define __CropingWidget__
+#ifndef __CroppingWidget__
+#define __CroppingWidget__
 
 #include <QWidget>
 class QRubberBand;
@@ -26,7 +26,7 @@ class CPixmap;
 /*
  * This widget provides a way to select a region of a photo
  * */
-class CropingWidget : public QWidget {
+class CroppingWidget : public QWidget {
     private:
         QRubberBand *m_rubberBand;
         CPixmap *m_photo;
@@ -34,9 +34,9 @@ class CropingWidget : public QWidget {
         QPoint m_origin;
         float m_previewRatio;
     public:
-        CropingWidget(QWidget *parent=0);
+        CroppingWidget(QWidget *parent=0);
         void setPixmap(CPixmap *pix);
-        QRect getCropingRect() const;
+        QRect getCroppingRect() const;
     protected:
          void mousePressEvent(QMouseEvent *event);
          void mouseMoveEvent(QMouseEvent *event);
