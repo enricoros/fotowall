@@ -95,8 +95,8 @@ I hope to expand the program as soon as I can, since there is many room for impr
 ### Current Wishlist
 
 [done] * add ok button for finalizing the text and just close the tab with X
-[done] * webcam -> video
 [done] * Fotowall -> Fotowall
+[done] * video -> webcam
 * win: photo selection and dragging
 * pictures on background: keep ratio in some way
 * same folder when you open the picture

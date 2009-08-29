@@ -15,8 +15,9 @@
 #ifndef __VideoProvider_h__
 #define __VideoProvider_h__
 
-#include "AbstractContent.h"
+#include <QObject>
 #include <QList>
+class QPixmap;
 class QTimer;
 class VideoInput;
 

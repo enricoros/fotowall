@@ -21,8 +21,8 @@
 #include "items/PictureConfig.h"
 #include "items/TextContent.h"
 #include "items/TextConfig.h"
-#include "items/VideoContent.h"
 #include "items/WebContentSelectorItem.h"
+#include "items/WebcamContent.h"
 #include "CropingDialog.h"
 #include "FlickrInterface.h"
 #include "RenderOpts.h"
@@ -161,9 +161,9 @@ void Desk::addTextContent()
     createText(nearCenter(sceneRect()));
 }
 
-void Desk::addVideoContent(int input)
+void Desk::addWebcamContent(int input)
 {
-    createVideo(input, nearCenter(sceneRect()));
+    createWebcam(input, nearCenter(sceneRect()));
 }
 
 
@@ -837,9 +837,9 @@ TextContent * Desk::createText(const QPoint & pos)
     return t;
 }
 
-VideoContent * Desk::createVideo(int input, const QPoint & pos)
+WebcamContent * Desk::createWebcam(int input, const QPoint & pos)
 {
-    VideoContent * v = new VideoContent(input, this);
+    WebcamContent * v = new WebcamContent(input, this);
     initContent(v, pos);
     return v;
 }

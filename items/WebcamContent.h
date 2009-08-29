@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __VideoContent_h__
-#define __VideoContent_h__
+#ifndef __WebcamContent_h__
+#define __WebcamContent_h__
 
 #include "AbstractContent.h"
 #include <QPixmap>
@@ -21,12 +21,12 @@
 /**
     \brief Displays live video from a WebCam
 */
-class VideoContent : public AbstractContent
+class WebcamContent : public AbstractContent
 {
     Q_OBJECT
     public:
-        VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * parent = 0);
-        ~VideoContent();
+        WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        ~WebcamContent();
 
         // ::AbstractContent
         QString contentName() const { return tr("Webcam"); }

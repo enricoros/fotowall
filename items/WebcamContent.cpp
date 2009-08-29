@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "VideoContent.h"
+#include "WebcamContent.h"
 #include "VideoProvider.h"
 #include "ButtonItem.h"
 #include "RenderOpts.h"
@@ -20,7 +20,7 @@
 #include <QPainter>
 #include <QTimer>
 
-VideoContent::VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * parent)
+WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
     , m_input(input)
     , m_still(false)
@@ -48,13 +48,13 @@ VideoContent::VideoContent(int input, QGraphicsScene * scene, QGraphicsItem * pa
     VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
 }
 
-VideoContent::~VideoContent()
+WebcamContent::~WebcamContent()
 {
     // stop the video flow
     VideoProvider::instance()->disconnectReceiver(this);
 }
 
-void VideoContent::setPixmap(const QPixmap & pixmap)
+void WebcamContent::setPixmap(const QPixmap & pixmap)
 {
     if (m_still)
         return;
@@ -68,7 +68,7 @@ void VideoContent::setPixmap(const QPixmap & pixmap)
     emit contentChanged();
 }
 
-bool VideoContent::fromXml(QDomElement & pe)
+bool WebcamContent::fromXml(QDomElement & pe)
 {
     AbstractContent::fromXml(pe);
 
@@ -77,7 +77,7 @@ bool VideoContent::fromXml(QDomElement & pe)
     return true;
 }
 
-void VideoContent::toXml(QDomElement & pe) const
+void WebcamContent::toXml(QDomElement & pe) const
 {
     AbstractContent::toXml(pe);
     pe.setTagName("webcam");
@@ -86,32 +86,32 @@ void VideoContent::toXml(QDomElement & pe) const
     // nothing to save here... (maybe the still pic?)
 }
 
-QPixmap VideoContent::renderAsBackground(const QSize & size, bool keepAspect) const
+QPixmap WebcamContent::renderAsBackground(const QSize & size, bool keepAspect) const
 {
     if (m_pixmap.isNull())
         return AbstractContent::renderAsBackground(size, keepAspect);
     return m_pixmap.scaled(size, keepAspect ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
-int VideoContent::contentHeightForWidth(int width) const
+int WebcamContent::contentHeightForWidth(int width) const
 {
     if (m_pixmap.width() < 1)
         return -1;
     return (m_pixmap.height() * width) / m_pixmap.width();
 }
 
-bool VideoContent::contentOpaque() const
+bool WebcamContent::contentOpaque() const
 {
     return true;
 }
 
-void VideoContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void WebcamContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     emit backgroundMe();
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-void VideoContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+void WebcamContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     // paint parent
     AbstractContent::paint(painter, option, widget);
@@ -137,12 +137,12 @@ void VideoContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * op
 #endif
 }
 
-void VideoContent::slotToggleStill()
+void WebcamContent::slotToggleStill()
 {
     m_still = !m_still;
 }
 
-void VideoContent::slotToggleSwap()
+void WebcamContent::slotToggleSwap()
 {
     bool swapState = !VideoProvider::instance()->swapped(m_input);
     VideoProvider::instance()->setSwapped(m_input, swapState);
