@@ -103,7 +103,7 @@ void XmlRead::readContent(Desk * desk)
             content = desk->createPicture(QPoint());
         else if (element.tagName() == "text")
             content = desk->createText(QPoint());
-        else if (element.tagName() == "video")
+        else if (element.tagName() == "webcam")
             content = desk->createVideo(element.attribute("input").toInt(), QPoint());
         if (!content) {
             qWarning("XmlRead::readContent: unknown content type '%s'", qPrintable(element.tagName()));
