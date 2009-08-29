@@ -97,10 +97,10 @@ I hope to expand the program as soon as I can, since there is many room for impr
 [done] * add ok button for finalizing the text and just close the tab with X
 [done] * Fotowall -> Fotowall
 [done] * video -> webcam
+[done] * network image loading from http
 * win: photo selection and dragging
 * pictures on background: keep ratio in some way
 * same folder when you open the picture
-* network image loading from http
 * add google images to flickr ones
 
 * link to web resources

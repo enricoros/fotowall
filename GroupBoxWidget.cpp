@@ -197,7 +197,8 @@ void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
     if (m_checkable && indW && indH) {
         QStyleOptionButton opt;
         opt.state = QStyle::State_Enabled;
-        opt.rect = QRect(0, -indH + 3, indW, indH);
+        int styleOffset = (textRect.height() - indH) / 2;
+        opt.rect = QRect(0, -indH + 4 - styleOffset, indW, indH);
         dx = indW + 4;
         opt.state |= m_checked ? QStyle::State_On : QStyle::State_Off;
         if (underMouse())
