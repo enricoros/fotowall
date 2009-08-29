@@ -19,9 +19,9 @@
 #include <QBasicTimer>
 class AbstractContent;
 class Frame;
-class PixmapButton;
 class QAbstractButton;
 class QListWidgetItem;
+class StyledButtonItem;
 namespace Ui { class AbstractConfig; }
 
 
@@ -45,8 +45,8 @@ class AbstractConfig : public QGraphicsProxyWidget {
 
     protected:
         // used by subclasses
-        virtual void closing() {};
         void addTab(QWidget * widget, const QString & label, bool front = false, bool setCurrent = false);
+        void showOkButton(bool show);
 
         // ::QGraphicsProxyWidget
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
@@ -54,13 +54,18 @@ class AbstractConfig : public QGraphicsProxyWidget {
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
         void resizeEvent(QGraphicsSceneResizeEvent * event);
 
+    protected Q_SLOTS:
+        virtual void slotOkClicked() {};
+        void slotRequestClose();
+
     private:
+        void populateFrameList();
+        void layoutButtons();
         AbstractContent *       m_content;
         Ui::AbstractConfig *    m_commonUi;
-        PixmapButton *          m_closeButton;
+        StyledButtonItem *      m_closeButton;
+        StyledButtonItem *      m_okButton;
         Frame *                 m_frame;
-
-        void populateFrameList();
 
     private Q_SLOTS:
         void on_newFrame_clicked();

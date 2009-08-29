@@ -27,7 +27,6 @@
 #include <QDir>
 #include <QDesktopWidget>
 #include <QDesktopServices>
-#include <QDragEnterEvent>
 #include <QFileDialog>
 #include <QFile>
 #include <QImageReader>
@@ -408,7 +407,6 @@ QMenu * FotoWall::createDecorationMenu()
     menu->addSeparator();
 
     QAction * aSetTitle = new QAction(tr("Set title..."), menu);
-    aSetTitle->setShortcut(tr("CTRL+T"));
     connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
     menu->addAction(aSetTitle);
 

@@ -27,13 +27,17 @@ TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
     m_editor->adjustSize();
     addTab(m_editor, tr("Text"), false, true);
     m_editor->focusEditor();
+
+    // show the ok button
+    showOkButton(true);
 }
 
 TextConfig::~TextConfig()
 {
 }
 
-void TextConfig::closing()
+void TextConfig::slotOkClicked()
 {
     m_textContent->setHtml(m_editor->text(Qt::RichText));
+    slotRequestClose();
 }

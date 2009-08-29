@@ -16,6 +16,7 @@
 #include "AbstractContent.h"
 #include "Desk.h"
 #include "RenderOpts.h"
+#include "StyledButtonItem.h"
 #include "ui_AbstractConfig.h"
 #include "frames/FrameFactory.h"
 #include <QGraphicsSceneMouseEvent>
@@ -32,122 +33,17 @@
 #include <QPropertyAnimation>
 #endif
 
-//BEGIN PixmapButton
-class PixmapButton : public QGraphicsItem
-{
-    public:
-        PixmapButton(QGraphicsItem * parent, const QString & normalPixmap, const QString & hoverPixmap, const QString & pressedPixmap = QString());
-
-        QRectF boundingRect() const;
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-
-    protected:
-        void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-        void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-        void mousePressEvent(QGraphicsSceneMouseEvent *event);
-        void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-        void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
-    private:
-        bool m_hovered;
-        bool m_pressed;
-        QPixmap m_bNormal;
-        QPixmap m_bHover;
-        QPixmap m_bPress;
-};
-
-#define CACHED_LOAD(name, pixmap) \
-    if (!QPixmapCache::find(name, pixmap)) { \
-        if (pixmap.load(name)) \
-            QPixmapCache::insert(name, pixmap); \
-    }
-
-PixmapButton::PixmapButton(QGraphicsItem * parent, const QString & normalPixmap, const QString & hoverPixmap, const QString & pressedPixmap)
-    : QGraphicsItem(parent)
-    , m_hovered(false)
-    , m_pressed(false)
-{
-    // load the 3 pixmaps
-    CACHED_LOAD(normalPixmap, m_bNormal);
-    CACHED_LOAD(hoverPixmap, m_bHover);
-    CACHED_LOAD(pressedPixmap, m_bPress);
-    if (m_bHover.isNull())
-        m_bHover = m_bNormal;
-    if (m_bPress.isNull())
-        m_bPress = m_bHover;
-
-    // track mouse events
-    setAcceptHoverEvents(true);
-}
-
-QRectF PixmapButton::boundingRect() const
-{
-    return m_bNormal.rect();
-}
-
-void PixmapButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
-{
-    if (m_pressed)
-        painter->drawPixmap(option->rect, m_bPress, option->rect);
-    else if (m_hovered)
-        painter->drawPixmap(option->rect, m_bHover, option->rect);
-    else
-        painter->drawPixmap(option->rect, m_bNormal, option->rect);
-}
-
-void PixmapButton::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
-{
-    m_hovered = true;
-    update();
-}
-
-void PixmapButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
-{
-    m_hovered = false;
-    update();
-}
-
-void PixmapButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
-{
-    m_pressed = true;
-    update();
-}
-
-void PixmapButton::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-{
-    // check if going inside/outside
-    bool inside = boundingRect().contains(event->pos());
-    if (inside == m_pressed)
-        return;
-    m_pressed = inside;
-    update();
-}
-
-void PixmapButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
-{
-    if (!m_pressed)
-        return;
-    m_pressed = false;
-    update();
-
-    // HACK: close property window
-    if (boundingRect().contains(event->pos())) {
-        Desk * desk = static_cast<Desk *>(scene());
-        desk->slotDeleteConfig(static_cast<AbstractConfig *>(parentItem()));
-    }
-}
-//END PixmapButton
-
-
 AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent)
     : QGraphicsProxyWidget(parent)
     , m_content(content)
     , m_commonUi(new Ui::AbstractConfig())
     , m_closeButton(0)
+    , m_okButton(0)
     , m_frame(FrameFactory::defaultPanelFrame())
 {
     // close button
-    m_closeButton = new PixmapButton(this, ":/data/button-close.png", ":/data/button-close-hovered.png", ":/data/button-close-pressed.png");
+    m_closeButton = new StyledButtonItem(tr(" x "), font(), this);//this, ":/data/button-close.png", ":/data/button-close-hovered.png", ":/data/button-close-pressed.png");
+    connect(m_closeButton, SIGNAL(clicked()), this, SLOT(slotRequestClose()));
 
     // WIDGET setup
     QWidget * widget = new QWidget();
@@ -212,9 +108,6 @@ AbstractConfig::~AbstractConfig()
 
 void AbstractConfig::dispose()
 {
-    // inform subclasses about the closure
-    closing();
-
 #if QT_VERSION >= 0x040600
     // fade out animation, then delete
     QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
@@ -234,22 +127,6 @@ AbstractContent * AbstractConfig::content() const
     return m_content;
 }
 
-void AbstractConfig::populateFrameList()
-{
-    m_commonUi->listWidget->clear();
-    // add frame items to the listview
-    foreach (quint32 frameClass, FrameFactory::classes()) {
-        // make icon from frame preview
-        Frame * frame = FrameFactory::createFrame(frameClass);
-        QIcon icon(frame->preview(32, 32));
-        delete frame;
-
-        // add the item to the list (and attach it the class)
-        QListWidgetItem * item = new QListWidgetItem(icon, QString(), m_commonUi->listWidget);
-        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        item->setData(Qt::UserRole, frameClass);
-    }
-}
 void AbstractConfig::keepInBoundaries(const QRect & rect)
 {
     QRect r = mapToScene(boundingRect()).boundingRect().toRect();
@@ -258,13 +135,38 @@ void AbstractConfig::keepInBoundaries(const QRect & rect)
     setPos(r.topLeft());
 }
 
+void AbstractConfig::addTab(QWidget * widget, const QString & label, bool front, bool setCurrent)
+{
+    // insert on front/back
+    int idx = m_commonUi->tab->insertTab(front ? 0 : m_commonUi->tab->count(), widget, label);
+
+    // show if requested
+    if (setCurrent)
+        m_commonUi->tab->setCurrentIndex(idx);
+
+    // adjust size after inserting the tab
+    if (m_commonUi->tab->parentWidget())
+        m_commonUi->tab->parentWidget()->adjustSize();
+}
+
+void AbstractConfig::showOkButton(bool show)
+{
+    if (show) {
+        if (!m_okButton) {
+            m_okButton = new StyledButtonItem(tr("ok"), font(), this);
+            connect(m_okButton, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
+            layoutButtons();
+        }
+        m_okButton->show();
+    } else if (m_okButton)
+        m_okButton->hide();
+}
+
 void AbstractConfig::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     QGraphicsProxyWidget::mousePressEvent(event);
-    if (!event->isAccepted() && event->button() == Qt::RightButton) {
-        Desk * desk = static_cast<Desk *>(scene());
-        desk->slotDeleteConfig(this);
-    }
+    if (!event->isAccepted() && event->button() == Qt::RightButton)
+        slotRequestClose();
     event->accept();
 }
 
@@ -287,29 +189,46 @@ void AbstractConfig::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 
 void AbstractConfig::resizeEvent(QGraphicsSceneResizeEvent * event)
 {
-    // layout the close button
-    QRect cRect = boundingRect().toRect().adjusted(12, 12, -12, -12);
-    if (QApplication::isLeftToRight())
-        m_closeButton->setPos(cRect.right() - m_closeButton->boundingRect().width(), cRect.top());
-    else
-        m_closeButton->setPos(cRect.left(), cRect.top());
-
-    // unbreak resize
+    layoutButtons();
     QGraphicsProxyWidget::resizeEvent(event);
 }
 
-void AbstractConfig::addTab(QWidget * widget, const QString & label, bool front, bool setCurrent)
+void AbstractConfig::slotRequestClose()
 {
-    // insert on front/back
-    int idx = m_commonUi->tab->insertTab(front ? 0 : m_commonUi->tab->count(), widget, label);
+    Desk * desk = static_cast<Desk *>(scene());
+    desk->slotDeleteConfig(this);
+}
 
-    // show if requested
-    if (setCurrent)
-        m_commonUi->tab->setCurrentIndex(idx);
+void AbstractConfig::populateFrameList()
+{
+    m_commonUi->listWidget->clear();
+    // add frame items to the listview
+    foreach (quint32 frameClass, FrameFactory::classes()) {
+        // make icon from frame preview
+        Frame * frame = FrameFactory::createFrame(frameClass);
+        QIcon icon(frame->preview(32, 32));
+        delete frame;
 
-    // adjust size after inserting the tab
-    if (m_commonUi->tab->parentWidget())
-        m_commonUi->tab->parentWidget()->adjustSize();
+        // add the item to the list (and attach it the class)
+        QListWidgetItem * item = new QListWidgetItem(icon, QString(), m_commonUi->listWidget);
+        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        item->setData(Qt::UserRole, frameClass);
+    }
+}
+
+void AbstractConfig::layoutButtons()
+{
+    // layout the close button
+    QRect cRect = boundingRect().toRect().adjusted(12, 12, -12, -12);
+    if (QApplication::isLeftToRight()) {
+        m_closeButton->setPos(cRect.right() - m_closeButton->boundingRect().width(), cRect.top());
+        if (m_okButton)
+            m_okButton->setPos(m_closeButton->pos().x() - m_okButton->boundingRect().width() - 8, cRect.top());
+    } else {
+        m_closeButton->setPos(cRect.left(), cRect.top());
+        if (m_okButton)
+            m_okButton->setPos(cRect.left() + m_closeButton->boundingRect().width() + 8, cRect.top());
+    }
 }
 
 void AbstractConfig::on_newFrame_clicked()

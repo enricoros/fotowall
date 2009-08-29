@@ -24,7 +24,8 @@ HEADERS += AbstractContent.h \
     CornerItem.h \
     WebContentSelectorItem.h \
     BezierCubicItem.h \
-    TextProperties.h
+    TextProperties.h \
+    StyledButtonItem.h
 SOURCES += AbstractContent.cpp \
     AbstractDisposeable.cpp \
     AbstractConfig.cpp \
@@ -42,7 +43,8 @@ SOURCES += AbstractContent.cpp \
     CornerItem.cpp \
     WebContentSelectorItem.cpp \
     BezierCubicItem.cpp \
-    TextProperties.cpp
+    TextProperties.cpp \
+    StyledButtonItem.cpp
 FORMS += AbstractConfig.ui \
     PictureConfig.ui \
     WebContentSelectorItem.ui \
