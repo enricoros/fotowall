@@ -558,13 +558,15 @@ void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
         foreach (const QByteArray & format, QImageReader::supportedImageFormats())
             extensions.append( "." + format );
 
-        // match each image file with urls
+        // match local and remote urls against all supported extensions
         foreach (const QUrl & url, event->mimeData()->urls()) {
-            QString localFile = url.toLocalFile();
-            foreach (const QString & extension, extensions) {
-                if (localFile.endsWith(extension, Qt::CaseInsensitive)) {
-                    event->accept();
-                    return;
+            if (url.scheme() == "http" || url.scheme() == "ftp" || !url.toLocalFile().isEmpty()) {
+                QString urlString = url.toString();
+                foreach (const QString & extension, extensions) {
+                    if (urlString.endsWith(extension, Qt::CaseInsensitive)) {
+                        event->accept();
+                        return;
+                    }
                 }
             }
         }
@@ -603,17 +605,25 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         event->accept();
         QPoint pos = event->scenePos().toPoint();
         foreach (const QUrl & url, event->mimeData()->urls()) {
-            QString localFile = url.toLocalFile();
-            if (!QFile::exists(localFile))
-                continue;
+            // handle network images
+            if (url.scheme() == "http" || url.scheme() == "ftp") {
+                PictureContent * p = createPicture(pos);
+                if (!p->loadFromNetwork(url.toString(), 0)) {
+                    m_content.removeAll(p);
+                    delete p;
+                } else
+                    pos += QPoint(30, 30);
+            }
 
-            // create PictureContent from file
-            PictureContent * p = createPicture(pos);
-            if (!p->loadPhoto(localFile, true, true)) {
-                m_content.removeAll(p);
-                delete p;
-            } else
-                pos += QPoint(30, 30);
+            // handle local files
+            if (QFile::exists(url.toLocalFile())) {
+                PictureContent * p = createPicture(pos);
+                if (!p->loadPhoto(url.toLocalFile(), true, true)) {
+                    m_content.removeAll(p);
+                    delete p;
+                } else
+                    pos += QPoint(30, 30);
+            }
         }
         return;
     }

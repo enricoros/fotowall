@@ -277,10 +277,20 @@ bool PictureContent::contentOpaque() const
 void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     // load the first valid picture
-    foreach (QUrl url, event->mimeData()->urls()) {
-        if (loadPhoto(url.toLocalFile(), true, false)) {
-            event->accept();
-            return;
+    foreach (const QUrl & url, event->mimeData()->urls()) {
+        // handle network drops
+        if (url.scheme() == "http" || url.scheme() == "ftp") {
+            if (loadFromNetwork(url.toString(), 0)) {
+                event->accept();
+                return;
+            }
+        }
+        // handle local drops
+        if (QFile::exists(url.toLocalFile())) {
+            if (loadPhoto(url.toLocalFile(), true, true)) {
+                event->accept();
+                return;
+            }
         }
     }
 }
