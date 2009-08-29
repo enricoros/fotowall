@@ -1,8 +1,8 @@
-FotoWall
+Fotowall
 ========
 
-FotoWall is a creative tool that allows you to layout your photos or pictures in a personal way. You can add pictures, then resize, move, change colors, text, shadows, etc..
-Check out the [home page](http://code.google.com/p/fotowall) and the [blog](https://enricoros.wordpress.com/tag/fotowall) too.
+Fotowall is a creative tool that allows you to layout your photos or pictures in a personal way. You can add pictures, then resize, move, change colors, text, shadows, etc..
+Check out the [home page](http://code.google.com/p/Fotowall) and the [blog](https://enricoros.wordpress.com/tag/Fotowall) too.
 
 *Focus is on simplicity, express your creativity! ;-)*
 
@@ -57,7 +57,7 @@ Version 0.5 (2009-04-11):
 
 Version 0.4 (2009-03-29):
 
-* Windows executable on [github](http://github.com/enricoros/fotowall/downloads)
+* Windows executable on [github](http://github.com/enricoros/Fotowall/downloads)
 * Image Effects (by Arnaud Tanguy)
 * French Translation (by Arnaud Tanguy)
 * German translation [Martin]
@@ -94,6 +94,15 @@ I hope to expand the program as soon as I can, since there is many room for impr
 
 ### Current Wishlist
 
+[done] * add ok button for finalizing the text and just close the tab with X
+[done] * webcam -> video
+[done] * Fotowall -> Fotowall
+* win: photo selection and dragging
+* pictures on background: keep ratio in some way
+* same folder when you open the picture
+* network image loading from http
+* add google images to flickr ones
+
 * link to web resources
  - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
 * resizing works only with the bottom right corner. fix the others.
@@ -129,7 +138,7 @@ Enrico:
 Building
 --------
 
-This FotoWall package provides source code; to make an executable out of the
+This Fotowall package provides source code; to make an executable out of the
 sources you have to know a little about programming or ask one of your friends
 to do it ;-) Or just grab an 'executable package' from the project homepage.
 
@@ -146,7 +155,7 @@ location and issue the followings commands:
 - qmake  (or qmake-qt4 if your system is weird)
 - make   (or nmake, if you're on windows)
 
-The executable will be built and you can start Enjoying FotoWall! ;-)
+The executable will be built and you can start Enjoying Fotowall! ;-)
 
 ### Notes for the Windows Download
 
@@ -157,11 +166,11 @@ Click [here](http://www.microsoft.com/downloads/details.aspx?familyid=9B2DA534-3
 Old News
 --------
 
-**2009-03-02** FotoWall is now on GitHub. Development will continue here. Changes are coming soon!
+**2009-03-02** Fotowall is now on GitHub. Development will continue here. Changes are coming soon!
 
 **2008-09-03** Peter Upfold put together a great ScreenCast of the application!!
 
-See http://fosswire.com/2008/09/03/fotowall-make-wallpaper-collages-from-your-photos/ fot the article and click on the Video link to see the screencast.
+See http://fosswire.com/2008/09/03/Fotowall-make-wallpaper-collages-from-your-photos/ fot the article and click on the Video link to see the screencast.
 
 **2008-08-01** Thanks to everybody that is sending me patches!
 
@@ -169,7 +178,7 @@ I really appreciate that, even if I don't have time right now to check and apply
 
 **2008-04-14** Updated this page including the Wishlist
 
-**2008-04-06** FotoWall 0.21 released
+**2008-04-06** Fotowall 0.21 released
 
 Changes in this release are: relicensing and a new program icon
 

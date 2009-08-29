@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the FotoWall project,                            *
+ *   This file is part of the Fotowall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Inspired from Plasma Web Applet <www.kde.org> and Qt LGPL sources     *

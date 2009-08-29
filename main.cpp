@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the FotoWall project,                            *
+ *   This file is part of the Fotowall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Copyright (C) 2007-2008 by Enrico Ros <enrico.ros@gmail.com>          *
@@ -19,7 +19,7 @@
 #include <QSettings>
 #include <QStyle>
 #include <QtPlugin>
-#include "FotoWall.h"
+#include "MainWindow.h"
 #include "RenderOpts.h"
 
 #if defined(STATIC_LINK)
@@ -48,8 +48,8 @@ int main( int argc, char ** args )
 #endif
 
     QApplication app(argc, args);
-    app.setApplicationName("FotoWall");
-    app.setApplicationVersion("0.7.4");
+    app.setApplicationName("Fotowall");
+    app.setApplicationVersion("0.8.0");
     app.setOrganizationName("Enrico Ros");
     RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
 
@@ -68,20 +68,20 @@ int main( int argc, char ** args )
     RenderOpts::DisableVideoProvider = app.arguments().contains("-novideo");
     s.setValue("fotowall/firstTime", false);
 
-    FotoWall fw;
-    fw.showMaximized();
+    MainWindow mw;
+    mw.showMaximized();
     QStringList images;
     for (int i = 1; i < argc; i++) {
         QString filePath = args[i];
         if (filePath.endsWith(".fotowall", Qt::CaseInsensitive))
-            fw.loadXml(filePath);
+            mw.loadXml(filePath);
         else
             images << filePath;
     }
-    fw.loadImages(images);
+    mw.loadImages(images);
 
     if (RenderOpts::FirstRun)
-        fw.showIntroduction();
+        mw.showIntroduction();
 
     return app.exec();
 }

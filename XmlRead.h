@@ -27,16 +27,16 @@
 
 class Desk;
 class AbstractContent;
+class MainWindow;
 class PictureContent;
 class TextContent;
-class FotoWall;
 
 class XmlRead : public QObject
 {
     Q_OBJECT
     public:
         XmlRead(const QString & filePath);
-        void readProject(FotoWall * fotoWall);
+        void readProject(MainWindow * mainWindow);
         void readDesk(Desk * desk);
         void readContent(Desk * desk);
 

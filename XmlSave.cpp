@@ -29,7 +29,7 @@ XmlSave::XmlSave(const QString &filePath)
     // Open fotowall file
     file.setFileName(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
-        QMessageBox::warning(0, tr("File Error"), tr("Error saving to the FotoWall file '%1'").arg(filePath));
+        QMessageBox::warning(0, tr("File Error"), tr("Error saving to the Fotowall file '%1'").arg(filePath));
         throw 0;
         return;
     }

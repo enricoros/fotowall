@@ -26,47 +26,47 @@ contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, o
     QT += opengl
 }
 
-# FotoWall input files
+# Fotowall input files
 HEADERS += 3rdparty/gsuggest.h \
     CPixmap.h \
+    CropingDialog.h \
+    CropingWidget.h \
     Desk.h \
     ExactSizeDialog.h \
     ExportWizard.h \
     FlickrInterface.h \
-    FotoWall.h \
     GlowEffectDialog.h \
     GlowEffectWidget.h \
     GroupBoxWidget.h \
-    CropingDialog.h \
-    CropingWidget.h \
+    MainWindow.h \
     ModeInfo.h \
     PictureEffect.h \
     RenderOpts.h \
     VersionCheckDialog.h \
-    XmlSave.h \
-    XmlRead.h
+    XmlRead.h \
+    XmlSave.h
 SOURCES += 3rdparty/gsuggest.cpp \
-    main.cpp \
     CPixmap.cpp \
+    CropingDialog.cpp \
+    CropingWidget.cpp \
     Desk.cpp \
     ExactSizeDialog.cpp \
     ExportWizard.cpp \
     FlickrInterface.cpp \
-    FotoWall.cpp \
     GlowEffectDialog.cpp \
     GlowEffectWidget.cpp \
     GroupBoxWidget.cpp \
-    CropingDialog.cpp \
-    CropingWidget.cpp \
+    MainWindow.cpp \
     ModeInfo.cpp \
     VersionCheckDialog.cpp \
+    XmlRead.cpp \
     XmlSave.cpp \
-    XmlRead.cpp
+    main.cpp
 FORMS += CropingDialog.ui \
     ExactSizeDialog.ui \
     ExportWizard.ui \
-    FotoWall.ui \
     GlowEffectDialog.ui \
+    MainWindow.ui \
     VersionCheckDialog.ui
 RESOURCES += fotowall.qrc
 TRANSLATIONS += translations/fotowall_de.ts \

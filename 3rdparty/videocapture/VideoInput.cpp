@@ -2,7 +2,7 @@
     VideoInput.cpp  -  Video Input Class
 
     Copyright (c) 2005-2008 by Cláudio da Silveira Pinheiro   <taupter@gmail.com>
-    Copyright (c) 2009 - Enrico Ros - FotoWall inclusion <enrico.ros@gmail.com>
+    Copyright (c) 2009 - Enrico Ros - Fotowall inclusion <enrico.ros@gmail.com>
 
     *************************************************************************
     *                                                                       *

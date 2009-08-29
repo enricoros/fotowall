@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the FotoWall project,                            *
+ *   This file is part of the Fotowall project,                            *
  *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
@@ -44,7 +44,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
 "  </div>\n"
 "\n"
 "  <br />\n"
-"  <div style='font-size: 16px; font-weight: normal;'><b>Playing</b> with <b>FotoWall</b> is easy</div>\n"
+"  <div style='font-size: 16px; font-weight: normal;'><b>Playing</b> with <b>Fotowall</b> is easy</div>\n"
 "\n"
 "  <div>\n"
 "    <ul>\n"
@@ -60,7 +60,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
 "  <div><font color='#2B2B2B'><b>Please make sure to share your best work with your friends ;-)</b></font></div>\n"
 "\n"
 "  <br/>\n"
-"  <div><font color='#616161' style='font-size: 11px; font-weight: normal;'>FotoWall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009</font></div>\n"
+"  <div><font color='#616161' style='font-size: 11px; font-weight: normal;'>Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009</font></div>\n"
 "</body>\n"
 "</html>");
 #if defined(USE_QTWEBKIT)
