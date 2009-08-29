@@ -91,13 +91,10 @@ unix {
     dfile.path = /usr/share/applications
     man.files = fotowall.1
     man.path = /usr/share/man/man1
-    scripts.files = 3rdparty/fotowall.sh
-    scripts.path = ~/.gnome2/nautilus-scripts
     INSTALLS += target \
         icon \
         dfile \
-        man \
-        scripts
+        man
 }
 
 # deployment on Windows
