@@ -54,7 +54,7 @@ class TextContent : public AbstractContent
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
-        QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;
+        QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
         int contentHeightForWidth(int width) const;
         void selectionChanged(bool selected);
 

@@ -86,11 +86,11 @@ void WebcamContent::toXml(QDomElement & pe) const
     // nothing to save here... (maybe the still pic?)
 }
 
-QPixmap WebcamContent::renderAsBackground(const QSize & size, bool keepAspect) const
+QPixmap WebcamContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
 {
-    if (m_pixmap.isNull())
-        return AbstractContent::renderAsBackground(size, keepAspect);
-    return m_pixmap.scaled(size, keepAspect ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    if (!m_pixmap.isNull())
+        return ratioScaledPixmap(&m_pixmap, size, ratio);
+    return QPixmap();
 }
 
 int WebcamContent::contentHeightForWidth(int width) const

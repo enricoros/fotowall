@@ -53,6 +53,7 @@ Desk::Desk(QObject * parent)
     , m_topBarEnabled(false)
     , m_bottomBarEnabled(false)
     , m_backGradientEnabled(true)
+    , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
     , m_projectMode(ModeNormal)
     , m_webContentSelector(0)
     , m_forceFieldTimer(0)
@@ -268,6 +269,20 @@ int Desk::backMode() const
     return m_backContent ? 3 : m_backGradientEnabled ? 2 : 1;
 }
 
+void Desk::setBackContentRatio(Qt::AspectRatioMode mode)
+{
+    if (m_backContentRatio != mode) {
+        m_backContentRatio = mode;
+        m_backCache = QPixmap();
+        update();
+    }
+}
+
+Qt::AspectRatioMode Desk::backContentRatio() const
+{
+    return m_backContentRatio;
+}
+
 void Desk::setTopBarEnabled(bool enabled)
 {
     if (enabled == m_topBarEnabled)
@@ -436,6 +451,11 @@ void Desk::toXml(QDomElement & de) const
     bElement2.appendChild(doc.createTextNode(b));
     foreColor.appendChild(rElement2); foreColor.appendChild(gElement2); foreColor.appendChild(bElement2);
     de.appendChild(foreColor);
+
+    // save back content aspect
+    QDomElement backRatioElement = doc.createElement("back-properties");
+    backRatioElement.setAttribute("ratio", (int)m_backContentRatio);
+    de.appendChild(backRatioElement);
 }
 
 
@@ -469,6 +489,10 @@ void Desk::fromXml(QDomElement & de)
     g = domElement.firstChildElement("green").text().toInt();
     b = domElement.firstChildElement("blue").text().toInt();
     m_foreColorPicker->setColor(QColor(r, g, b));
+
+    domElement = de.firstChildElement("back-properties");
+    if (domElement.isElement())
+        m_backContentRatio = (Qt::AspectRatioMode)domElement.attribute("ratio").toInt();
 
     update();
 }
@@ -703,7 +727,7 @@ void Desk::drawBackground(QPainter * painter, const QRectF & rect)
         // regenerate cache if needed
         QSize sceneSize = sceneRect().size().toSize();
         if (m_backCache.isNull() || m_backCache.size() != sceneSize)
-            m_backCache = m_backContent->renderAsBackground(sceneSize, false);
+            m_backCache = m_backContent->renderContent(sceneSize, m_backContentRatio);
 
         // paint cached background
         QRect targetRect = rect.toRect();

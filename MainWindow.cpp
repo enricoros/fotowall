@@ -188,6 +188,7 @@ MainWindow::MainWindow(QWidget * parent)
     , m_aHelpTutorial(0)
     , m_aHelpSupport(0)
     , m_gBackActions(0)
+    , m_gBackRatioActions(0)
 {
     // setup widget
     QRect geom = QApplication::desktop()->availableGeometry();
@@ -358,7 +359,6 @@ QMenu * MainWindow::createArrangeMenu()
 QMenu * MainWindow::createBackgroundMenu()
 {
     QMenu * menu = new QMenu();
-
     m_gBackActions = new QActionGroup(menu);
     connect(m_gBackActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackMode(QAction*)));
 
@@ -383,8 +383,34 @@ QMenu * MainWindow::createBackgroundMenu()
     aContent->setActionGroup(m_gBackActions);
     menu->addAction(aContent);
 
+    menu->addSeparator();
+
+    QMenu * mScaling = new QMenu(tr("Content Aspect Ratio"), menu);
+    m_gBackRatioActions = new QActionGroup(menu);
+    connect(m_gBackRatioActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackRatio(QAction*)));
+    menu->addMenu(mScaling);
+
+    QAction * aRatioKeepEx = new QAction(tr("Keep proportions by expanding"), mScaling);
+    aRatioKeepEx->setProperty("mode", (int)Qt::KeepAspectRatioByExpanding);
+    aRatioKeepEx->setCheckable(true);
+    aRatioKeepEx->setActionGroup(m_gBackRatioActions);
+    mScaling->addAction(aRatioKeepEx);
+
+    QAction * aRatioKeep = new QAction(tr("Keep proportions"), mScaling);
+    aRatioKeep->setProperty("mode", (int)Qt::KeepAspectRatio);
+    aRatioKeep->setCheckable(true);
+    aRatioKeep->setActionGroup(m_gBackRatioActions);
+    mScaling->addAction(aRatioKeep);
+
+    QAction * aRatioIgnore = new QAction(tr("Ignore proportions"), mScaling);
+    aRatioIgnore->setProperty("mode", (int)Qt::IgnoreAspectRatio);
+    aRatioIgnore->setCheckable(true);
+    aRatioIgnore->setActionGroup(m_gBackRatioActions);
+    mScaling->addAction(aRatioIgnore);
+
     // initially check the action
     slotBackModeChanged();
+    slotBackRatioChanged();
     return menu;
 }
 
@@ -753,11 +779,28 @@ void MainWindow::slotSetBackMode(QAction* action)
     m_desk->setBackMode(choice);
 }
 
+void MainWindow::slotSetBackRatio(QAction* action)
+{
+    Qt::AspectRatioMode mode = (Qt::AspectRatioMode)action->property("mode").toInt();
+    m_desk->setBackContentRatio(mode);
+}
+
 void MainWindow::slotBackModeChanged()
 {
     int mode = m_desk->backMode();
     m_gBackActions->actions()[mode - 1]->setChecked(true);
     m_gBackActions->actions()[2]->setEnabled(mode == 3);
+}
+
+void MainWindow::slotBackRatioChanged()
+{
+    Qt::AspectRatioMode mode = m_desk->backContentRatio();
+    if (mode == Qt::KeepAspectRatioByExpanding)
+        m_gBackRatioActions->actions()[0]->setChecked(true);
+    else if (mode == Qt::KeepAspectRatio)
+        m_gBackRatioActions->actions()[1]->setChecked(true);
+    else if (mode == Qt::IgnoreAspectRatio)
+        m_gBackRatioActions->actions()[2]->setChecked(true);
 }
 
 void MainWindow::slotShowPropertiesWidget(QWidget * widget)

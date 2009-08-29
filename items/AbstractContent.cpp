@@ -460,11 +460,11 @@ void AbstractContent::toXml(QDomElement & pe) const
     pe.appendChild(domElement);
 
 }
-
-QPixmap AbstractContent::renderAsBackground(const QSize & size, bool keepAspect) const
+/*
+QPixmap AbstractContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
 {
     QSize realSize = size;
-    if (keepAspect) {
+    if (ratio == Qt::KeepAspectRatio) {
         int hfw = contentHeightForWidth(size.width());
         if (hfw > 1)
             realSize.setHeight(hfw);
@@ -473,7 +473,7 @@ QPixmap AbstractContent::renderAsBackground(const QSize & size, bool keepAspect)
     pix.fill(Qt::transparent);
     return pix;
 }
-
+*/
 QRectF AbstractContent::boundingRect() const
 {
     return m_frameRect;
@@ -521,6 +521,27 @@ void AbstractContent::setControlsVisible(bool visible)
         corner->setVisible(visible);
     foreach (ButtonItem * button, m_controlItems)
         button->setVisible(visible);
+}
+
+QPixmap AbstractContent::ratioScaledPixmap(const QPixmap * source, const QSize & size, Qt::AspectRatioMode ratio) const
+{
+    QPixmap scaledPixmap = source->scaled(size, ratio, Qt::SmoothTransformation);
+    if (scaledPixmap.size() != size) {
+        int offX = (scaledPixmap.width() - size.width()) / 2;
+        int offY = (scaledPixmap.height() - size.height()) / 2;
+        if (ratio == Qt::KeepAspectRatio) {
+            QPixmap rightSizePixmap(size);
+            rightSizePixmap.fill(Qt::transparent);
+            QPainter p(&rightSizePixmap);
+            p.drawPixmap(-offX, -offY, scaledPixmap);
+            p.end();
+            return rightSizePixmap;
+        }
+        if (ratio == Qt::KeepAspectRatioByExpanding) {
+            return scaledPixmap.copy(offX, offY, size.width(), size.height());
+        }
+    }
+    return scaledPixmap;
 }
 
 int AbstractContent::contentHeightForWidth(int width) const

@@ -253,11 +253,11 @@ void PictureContent::toXml(QDomElement & pe) const
     }
 }
 
-QPixmap PictureContent::renderAsBackground(const QSize & size, bool keepAspect) const
+QPixmap PictureContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
 {
     if (m_photo)
-        return m_photo->scaled(size, keepAspect ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    return AbstractContent::renderAsBackground(size, keepAspect);
+        return ratioScaledPixmap(m_photo, size, ratio);
+    return QPixmap();
 }
 
 int PictureContent::contentHeightForWidth(int width) const
