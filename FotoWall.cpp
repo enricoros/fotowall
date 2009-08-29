@@ -211,7 +211,7 @@ FotoWall::FotoWall(QWidget * parent)
     ui->canvas->setFocus();
     ui->b1->setDefaultAction(ui->aAddPicture);
     ui->b2->setDefaultAction(ui->aAddText);
-    ui->b3->setDefaultAction(ui->aAddVideo);
+    ui->b3->setDefaultAction(ui->aAddWebcam);
     ui->b4->setDefaultAction(ui->aAddFlickr);
 #if QT_VERSION >= 0x040500
 #ifdef QT_OPENGL_LIB
@@ -231,7 +231,7 @@ FotoWall::FotoWall(QWidget * parent)
     ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
 
     // react to VideoProvider
-    ui->aAddVideo->setVisible(VideoProvider::instance()->inputCount() > 0);
+    ui->aAddWebcam->setVisible(VideoProvider::instance()->inputCount() > 0);
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // create misc actions
@@ -588,7 +588,7 @@ void FotoWall::on_aAddText_triggered()
     m_desk->addTextContent();
 }
 
-void FotoWall::on_aAddVideo_triggered()
+void FotoWall::on_aAddWebcam_triggered()
 {
     m_desk->addVideoContent(0);
 }
@@ -812,5 +812,5 @@ void FotoWall::slotVerifySupport(/*const KnowledgeItemV1List & items*/)
 void FotoWall::slotVerifyVideoInputs(int count)
 {
     // maybe blink or something?
-    ui->aAddVideo->setVisible(count > 0);
+    ui->aAddWebcam->setVisible(count > 0);
 }

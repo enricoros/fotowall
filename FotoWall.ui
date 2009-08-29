@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>790</width>
+    <width>810</width>
     <height>249</height>
    </rect>
   </property>
@@ -909,7 +909,7 @@ stop:1 rgba(237, 237, 237, 255))
     <string>T</string>
    </property>
   </action>
-  <action name="aAddVideo">
+  <action name="aAddWebcam">
    <property name="icon">
     <iconset resource="fotowall.qrc">
      <normaloff>:/data/insert-camera.png</normaloff>:/data/insert-camera.png</iconset>

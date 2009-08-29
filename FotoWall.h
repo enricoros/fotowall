@@ -67,7 +67,7 @@ class FotoWall : public QWidget
         void on_aAddFlickr_toggled(bool on);
         void on_aAddPicture_triggered();
         void on_aAddText_triggered();
-        void on_aAddVideo_triggered();
+        void on_aAddWebcam_triggered();
         void on_accelBox_toggled(bool checked);
         void on_transpBox_toggled(bool checked);
         void on_introButton_clicked();
