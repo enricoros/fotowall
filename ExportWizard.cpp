@@ -142,7 +142,7 @@ void ExportWizard::setWallpaper()
     QProcess::startDetached(kde3cmd);
 
     // Gnome2
-    QString gnome2Cmd = "gconftool -t string -s /desktop/gnome/background/picture_filename '" + filePath + "'";
+    QString gnome2Cmd = "gconftool -t string -s /desktop/gnome/background/picture_filename " + filePath ;
     QProcess::startDetached(gnome2Cmd);
 #else
 #warning "Implement background change for this OS"
