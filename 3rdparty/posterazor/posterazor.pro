@@ -27,7 +27,11 @@ RC_FILE += \
 #DEFINES += FREEIMAGE_LIB
 
 SOURCES += \
+    mainwindow.cpp \
     main.cpp
+
+HEADERS += \
+    mainwindow.h
 
 contains (DEFINES, FREEIMAGE_LIB) {
     SOURCES += \
