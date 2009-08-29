@@ -33,7 +33,6 @@ HEADERS += \
 }
 
 FORMS += \
-    mainwindow.ui \
     wizard.ui
 
 RESOURCES += \
