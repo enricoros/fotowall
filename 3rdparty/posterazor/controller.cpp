@@ -21,14 +21,16 @@
 */
 
 #include "controller.h"
-#include "mainwindow.h"
+#include "posterazorcore.h"
 #include "wizardcontroller.h"
-#include <QSettings>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QUrl>
+#include <QCoreApplication>
 #include <QDesktopServices>
+#include <QFileDialog>
+#include <QLocale>
+#include <QMessageBox>
+#include <QSettings>
 #include <QTranslator>
+#include <QUrl>
 
 const QLatin1String settingsKey_LaunchPDFApplication("LaunchPDFApplication");
 const QLatin1String settingsKey_TranslationName("TranslationName");
