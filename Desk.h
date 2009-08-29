@@ -33,7 +33,7 @@ class PictureContent;
 class QNetworkAccessManager;
 class QTimer;
 class TextContent;
-class VideoContent;
+class WebcamContent;
 class WebContentSelectorItem;
 
 class Desk : public QGraphicsScene
@@ -48,7 +48,7 @@ class Desk : public QGraphicsScene
         // add content
         void addPictures(const QStringList & fileNames);
         void addTextContent();
-        void addVideoContent(int input);
+        void addWebcamContent(int input);
 
         // selectors
         void setWebContentSelectorVisible(bool visible);
@@ -110,7 +110,7 @@ class Desk : public QGraphicsScene
         void setBackContent(AbstractContent * content);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
-        VideoContent * createVideo(int input, const QPoint & pos);
+        WebcamContent * createWebcam(int input, const QPoint & pos);
         void setDVDMarkers();
         void clearMarkers();
         QNetworkAccessManager * m_networkAccessManager;

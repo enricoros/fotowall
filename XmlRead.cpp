@@ -22,7 +22,7 @@
 #include "items/ColorPickerItem.h"
 #include "items/PictureContent.h"
 #include "items/TextContent.h"
-#include "items/VideoContent.h"
+#include "items/WebcamContent.h"
 #include "CPixmap.h"
 #include "Desk.h"
 #include "MainWindow.h"
@@ -104,7 +104,7 @@ void XmlRead::readContent(Desk * desk)
         else if (element.tagName() == "text")
             content = desk->createText(QPoint());
         else if (element.tagName() == "webcam")
-            content = desk->createVideo(element.attribute("input").toInt(), QPoint());
+            content = desk->createWebcam(element.attribute("input").toInt(), QPoint());
         if (!content) {
             qWarning("XmlRead::readContent: unknown content type '%s'", qPrintable(element.tagName()));
             continue;

@@ -43,6 +43,7 @@ HEADERS += 3rdparty/gsuggest.h \
     PictureEffect.h \
     RenderOpts.h \
     VersionCheckDialog.h \
+    VideoProvider.h \
     XmlRead.h \
     XmlSave.h
 SOURCES += 3rdparty/gsuggest.cpp \
@@ -59,6 +60,7 @@ SOURCES += 3rdparty/gsuggest.cpp \
     MainWindow.cpp \
     ModeInfo.cpp \
     VersionCheckDialog.cpp \
+    VideoProvider.cpp \
     XmlRead.cpp \
     XmlSave.cpp \
     main.cpp

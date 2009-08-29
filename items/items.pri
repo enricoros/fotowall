@@ -7,45 +7,45 @@ DEPENDPATH += $$PWD
 # QT += webkit
 # HEADERS += BrowserItem.h
 # SOURCES += BrowserItem.cpp
-HEADERS += AbstractContent.h \
-    AbstractDisposeable.h \
+HEADERS += \
     AbstractConfig.h \
+    AbstractContent.h \
+    AbstractDisposeable.h \
+    BezierCubicItem.h \
     ButtonItem.h \
     ColorPickerItem.h \
-    HighlightItem.h \
-    HelpItem.h \
-    MirrorItem.h \
-    PictureContent.h \
-    PictureConfig.h \
-    TextContent.h \
-    TextConfig.h \
-    VideoContent.h \
-    VideoProvider.h \
     CornerItem.h \
-    WebContentSelectorItem.h \
-    BezierCubicItem.h \
+    HelpItem.h \
+    HighlightItem.h \
+    MirrorItem.h \
+    PictureConfig.h \
+    PictureContent.h \
+    StyledButtonItem.h \
+    TextConfig.h \
+    TextContent.h \
     TextProperties.h \
-    StyledButtonItem.h
-SOURCES += AbstractContent.cpp \
-    AbstractDisposeable.cpp \
+    WebContentSelectorItem.h \
+    WebcamContent.h
+SOURCES += \
     AbstractConfig.cpp \
+    AbstractContent.cpp \
+    AbstractDisposeable.cpp \
+    BezierCubicItem.cpp \
     ButtonItem.cpp \
     ColorPickerItem.cpp \
-    HighlightItem.cpp \
-    HelpItem.cpp \
-    MirrorItem.cpp \
-    PictureContent.cpp \
-    PictureConfig.cpp \
-    TextContent.cpp \
-    TextConfig.cpp \
-    VideoContent.cpp \
-    VideoProvider.cpp \
     CornerItem.cpp \
-    WebContentSelectorItem.cpp \
-    BezierCubicItem.cpp \
+    HelpItem.cpp \
+    HighlightItem.cpp \
+    MirrorItem.cpp \
+    PictureConfig.cpp \
+    PictureContent.cpp \
+    StyledButtonItem.cpp \
+    TextConfig.cpp \
+    TextContent.cpp \
     TextProperties.cpp \
-    StyledButtonItem.cpp
+    WebContentSelectorItem.cpp \
+    WebcamContent.cpp
 FORMS += AbstractConfig.ui \
     PictureConfig.ui \
-    WebContentSelectorItem.ui \
-    TextProperties.ui
+    TextProperties.ui \
+    WebContentSelectorItem.ui

@@ -15,6 +15,7 @@
 #include "VideoProvider.h"
 #include "RenderOpts.h"
 #include <QDirIterator>
+#include <QPixmap>
 #include <QTimer>
 #if defined(HAS_VIDEOCAPTURE)
 #include "3rdparty/videocapture/VideoDevice_linux.h"

@@ -13,13 +13,13 @@
  ***************************************************************************/
 
 #include "MainWindow.h"
-#include "items/VideoProvider.h"
 #include "Desk.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
 #include "ModeInfo.h"
 #include "RenderOpts.h"
 #include "VersionCheckDialog.h"
+#include "VideoProvider.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include <QAction>
@@ -588,7 +588,7 @@ void MainWindow::on_aAddText_triggered()
 
 void MainWindow::on_aAddWebcam_triggered()
 {
-    m_desk->addVideoContent(0);
+    m_desk->addWebcamContent(0);
 }
 
 #ifdef QT_OPENGL_LIB
