@@ -38,7 +38,7 @@ class PictureContent : public AbstractContent
         QString contentName() const { return tr("Picture"); }
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
-        QPixmap renderAsBackground(const QSize & size, bool keepAspect) const;
+        QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
 

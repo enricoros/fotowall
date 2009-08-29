@@ -67,6 +67,8 @@ class Desk : public QGraphicsScene
         // decorations
         void setBackMode(int mode);
         int backMode() const;
+        void setBackContentRatio(Qt::AspectRatioMode mode);
+        Qt::AspectRatioMode backContentRatio() const;
         void setTopBarEnabled(bool enabled);
         bool topBarEnabled() const;
         void setBottomBarEnabled(bool enabled);
@@ -126,6 +128,7 @@ class Desk : public QGraphicsScene
         bool m_topBarEnabled;
         bool m_bottomBarEnabled;
         bool m_backGradientEnabled;
+        Qt::AspectRatioMode m_backContentRatio;
         QSize m_size;
         QRectF m_rect;
         QString m_titleText;

@@ -61,6 +61,7 @@ class MainWindow : public QWidget
         QAction *       m_aHelpTutorial;
         QAction *       m_aHelpSupport;
         QActionGroup *  m_gBackActions;
+        QActionGroup *  m_gBackRatioActions;
 
     private Q_SLOTS:
         void on_projectType_activated(int index);
@@ -88,8 +89,10 @@ class MainWindow : public QWidget
         void slotHelpTutorial();
         void slotHelpUpdates();
         void slotSetBackMode(QAction* action);
+        void slotSetBackRatio(QAction* action);
 
         void slotBackModeChanged();
+        void slotBackRatioChanged();
         void slotShowPropertiesWidget(QWidget *);
 
         void slotVerifyTutorial(QNetworkReply * reply);

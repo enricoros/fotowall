@@ -70,7 +70,7 @@ class AbstractContent : public AbstractDisposeable
         virtual QWidget * createPropertyWidget();
         virtual bool fromXml(QDomElement & parentElement);
         virtual void toXml(QDomElement & parentElement) const;
-        virtual QPixmap renderAsBackground(const QSize & size, bool keepAspect = false) const;
+        virtual QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const = 0;
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
@@ -94,6 +94,7 @@ class AbstractContent : public AbstractDisposeable
         // called by subclasses too
         void GFX_CHANGED() const;
         void setControlsVisible(bool visible);
+        QPixmap ratioScaledPixmap(const QPixmap * source, const QSize & size, Qt::AspectRatioMode ratio) const;
 
         // ::QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);

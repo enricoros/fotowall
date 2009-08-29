@@ -229,20 +229,21 @@ void TextContent::toXml(QDomElement & pe) const
     }
 }
 
-QPixmap TextContent::renderAsBackground(const QSize & size, bool keepAspect) const
+QPixmap TextContent::renderContent(const QSize & size, Qt::AspectRatioMode /*ratio*/) const
 {
     // get the base empty pixmap
-    QPixmap pix = AbstractContent::renderAsBackground(size, keepAspect);
     QSize textSize = boundingRect().size().toSize();
     const float w = size.width(),
                 h = size.height(),
                 tw = textSize.width(),
                 th = textSize.height();
     if (w < 2 || h < 2 || tw < 2 || th < 2)
-        return pix;
+        return QPixmap();
 
     // draw text (centered, maximized keeping aspect ratio)
     float scale = qMin(w / (tw + 16), h / (th + 16));
+    QPixmap pix(size);
+    pix.fill(Qt::transparent);
     QPainter pixPainter(&pix);
     pixPainter.translate((w - (int)((float)tw * scale)) / 2, (h - (int)((float)th * scale)) / 2);
     pixPainter.scale(scale, scale);
