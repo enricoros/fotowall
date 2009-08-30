@@ -357,20 +357,20 @@ bool AbstractContent::fromXml(QDomElement & pe)
 
     // Load image size saved in the rect node
     domElement = pe.firstChildElement("rect");
-    int x, y, w, h;
-    x = domElement.firstChildElement("x").text().toInt();
-    y = domElement.firstChildElement("y").text().toInt();
-    w = domElement.firstChildElement("w").text().toInt();
-    h = domElement.firstChildElement("h").text().toInt();
+    qreal x, y, w, h;
+    x = domElement.firstChildElement("x").text().toDouble();
+    y = domElement.firstChildElement("y").text().toDouble();
+    w = domElement.firstChildElement("w").text().toDouble();
+    h = domElement.firstChildElement("h").text().toDouble();
     resizeContents(QRect(x, y, w, h));
 
     // Load position coordinates
     domElement = pe.firstChildElement("pos");
-    x = domElement.firstChildElement("x").text().toInt();
-    y = domElement.firstChildElement("y").text().toInt();
+    x = domElement.firstChildElement("x").text().toDouble();
+    y = domElement.firstChildElement("y").text().toDouble();
     setPos(x, y);
 
-    int zvalue = pe.firstChildElement("zvalue").text().toInt();
+    int zvalue = pe.firstChildElement("zvalue").text().toDouble();
     setZValue(zvalue);
 
     bool visible = pe.firstChildElement("visible").text().toInt();

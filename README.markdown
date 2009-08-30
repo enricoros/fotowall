@@ -10,13 +10,13 @@ ChangeLog
 ---------
 
 Version 0.8 (unreleased):
+
 * Image Cropping (by Arnaud Tanguy)
 * Shaped text (bezier curve)
 * Properties in the top bar
 * Window transparency
 * Fixed bugs
 
-enrico: will merge with the following:
 * restore the common behavior for rotating (left click)
 * add ok button for finalizing the text and just close the tab with X (req. by Rossana)
 * network image loading from http (req. by Rossana)
@@ -31,6 +31,7 @@ enrico: will merge with the following:
 * builds with 4.4 (without many features), 4.5 (without animations), 4.6-unreleased (gfx errors on windows)
 * Polish translation? ask Marek Walczak, see 4ba1502
 * same folder when you open the picture (req. by Rossana)
+* when loading a .fotowall file from the command line some items are aligned to the left
 
 Version 0.7.1 (2009-07-23):
 
@@ -118,7 +119,6 @@ I hope to expand the program as soon as I can, since there is many room for impr
 * add the undo support
 * update the video tutorial
 * add the "color changing stuff" to the picture themselves (req. by Contrast, Superstoned)
-* BUG: when loading a .fotowall file from the command line some items are aligned to the left
 * relicences
  - 3rdparty/enricomath.h: Could you re-release it with GPL v2+ like the rest of your source?
  - 3rdparty/richtextedit/richtexteditor*: redo 'cause non free
