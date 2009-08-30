@@ -144,6 +144,7 @@ improvement and the code is kept clean and small.
 * embedded examples (inside/network)
 * templates
 * new graphics effects (like Colorize or Warhol-ize ;-)
+  * mosaic effect: from 1 picture to a grid of misaligned pics
 * update the video tutorial (still at 0.2!)
 * add the "color changing stuff" to the picture themselves (req. by Contrast, Superstoned)
 * add google images, like flickr ones (req. by Rossana)
