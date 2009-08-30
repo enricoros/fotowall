@@ -98,7 +98,7 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
     // modify the operation using the shortcuts
     int op = m_operation;
     if (event->modifiers() & Qt::ShiftModifier)
-        op &= ~FixScale;
+        op &= ~FixScale & ~Rotate;
     if (event->modifiers() & Qt::ControlModifier)
         //op |= FixRotate;
         op |= Rotate;
@@ -127,8 +127,8 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
             int H = qMax((int)((2*D)/(r*K)), 40);
             m_content->resizeContents(QRect(-W / 2, -H / 2, W, H));
         } else {
-            int W = qMax(2 * v.x(), 50.0); //(m_contentsRect.width() * v.x()) / oldPos.x();
-            int H = qMax(2 * v.y(), 40.0); //(m_contentsRect.height() * v.y()) / oldPos.y();
+            int W = qMax(2 * fabs(v.x()), 50.0); //(m_contentsRect.width() * v.x()) / oldPos.x();
+            int H = qMax(2 * fabs(v.y()), 40.0); //(m_contentsRect.height() * v.y()) / oldPos.y();
             //if (W != (int)cRect.width() || H != (int)cRect.height())
                 m_content->resizeContents(QRect(-W / 2, -H / 2, W, H));
         }
