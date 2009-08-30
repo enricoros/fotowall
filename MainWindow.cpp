@@ -169,7 +169,7 @@ MainWindow::MainWindow(QWidget * parent)
     ui->widgetCanvas->expand();
 
     // attach menus
-    ///ui->arrangeButton->setMenu(createArrangeMenu());
+    ui->arrangeButton->setMenu(createArrangeMenu());
     ui->backButton->setMenu(createBackgroundMenu());
     ui->decoButton->setMenu(createDecorationMenu());
     ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
@@ -289,9 +289,8 @@ QMenu * MainWindow::createArrangeMenu()
 
     menu->addSeparator()->setText(tr("Rearrange"));
 
-    QAction * aAU = new QAction(tr("Uniform"), menu);
-    aAU->setEnabled(false);
-    //connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeUniform()));
+    QAction * aAU = new QAction(tr("Random"), menu);
+    connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeRandom()));
     menu->addAction(aAU);
 
     QAction * aAS = new QAction(tr("Shaped"), menu);
@@ -789,6 +788,20 @@ void MainWindow::slotActionSelectAll()
 void MainWindow::slotArrangeForceField(bool checked)
 {
     m_desk->setForceFieldEnabled(checked);
+}
+
+#include "items/AbstractContent.h"
+void MainWindow::slotArrangeRandom()
+{
+    QRectF r = m_desk->sceneRect();
+    foreach (QGraphicsItem * item, m_desk->items()) {
+        AbstractContent * content = dynamic_cast<AbstractContent *>(item);
+        if (!content)
+            continue;
+        content->setPos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
+        content->setRotation(-30 + (qrand() % 60), Qt::ZAxis);
+        content->setOpacity((qreal)(qrand() % 100) / 99.0);
+    }
 }
 
 void MainWindow::slotDecoTopBar(bool checked)

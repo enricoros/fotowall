@@ -89,6 +89,7 @@ class MainWindow : public QWidget
         void slotActionSelectAll();
 
         void slotArrangeForceField(bool enabled);
+        void slotArrangeRandom();
         void slotDecoTopBar(bool checked);
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
