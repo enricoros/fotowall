@@ -1,8 +1,11 @@
 Fotowall
 ========
 
-Fotowall is a creative tool that allows you to layout your photos or pictures in a personal way. You can add pictures, then resize, move, change colors, text, shadows, etc..
-Check out the [home page](http://code.google.com/p/Fotowall) and the [blog](https://enricoros.wordpress.com/tag/Fotowall) too.
+Fotowall is a creative tool that allows you to layout your photos or pictures
+in a personal way. You can add pictures, then resize, move, change colors, text,
+shadows, etc..
+Check out the [home page](http://code.google.com/p/fotowall) and the
+[blog](https://enricoros.wordpress.com/tag/fotowall) too.
 
 *Focus is on simplicity, express your creativity! ;-)*
 
@@ -14,24 +17,24 @@ Version 0.8 (unreleased):
 * Image Cropping (by Arnaud Tanguy)
 * Shaped text (bezier curve)
 * Properties in the top bar
-* Window transparency
+* Window transparency (needs compositing)
+* OpenGL support (where available)
 * Fixed bugs
-
-* restore the common behavior for rotating (left click)
+* ___minor changes:
+* picture opacity (by Arnaud Tanguy)
 * add ok button for finalizing the text and just close the tab with X (req. by Rossana)
 * network image loading from http (req. by Rossana)
 * pictures on background: keep ratio in some way (req. by Rossana)
 * Video -> Webcam (req. by Rossana)
 * FotoWall -> Fotowall (req. by Rossana)
-* transparent background of the window (needs compositing)
-* OpenGL support (where available)
-* picture opacity (by Arnaud Tanguy)
-* fixes from Georges Dubus and Andreas Brech
+* restore the common behavior for rotating (left click)
+* fixes from Georges Dubus (intro overflow and translation) and Andreas Brech (bad accelereators, scale with all corners)
 * animations with 4.6: top bar, item show/hide, properties show/hide
 * builds with 4.4 (without many features), 4.5 (without animations), 4.6-unreleased (gfx errors on windows)
 * Polish translation? ask Marek Walczak, see 4ba1502
-* same folder when you open the picture (req. by Rossana)
-* when loading a .fotowall file from the command line some items are aligned to the left
+* fix: same folder when you open the picture (req. by Rossana)
+* fix: when loading a .fotowall file from the command line some items are aligned to the left
+* fix: resizing works only with the bottom right corner. fix the others.
 
 Version 0.7.1 (2009-07-23):
 
@@ -103,22 +106,33 @@ Version 0.3.1 (2009-03-13):
 Sharing Ideas
 -------------
 
-I hope to expand the program as soon as I can, since there is many room for improvement and the code is kept clean and small.
+I hope to expand the program as soon as I can, since there is many room for
+improvement and the code is kept clean and small.
 
-- You can join the development.. the whole stuff is done with Qt 4.5 using the
-  GraphicsView framework.
+- You can join the development.. the whole stuff is done with Qt 4.5 or higher
+  using the GraphicsView framework.
 - And if you have any Idea or Suggestion, just drop me a line, on the project
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
-* link to web resources
- - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
-* resizing works only with the bottom right corner. fix the others.
-* webcam on windows
-* multiple webcams
-* add the undo support
-* update the video tutorial
+* svg drawings [balloons, signs, etc..]
+* masked pic
+* both new and old resize&co
+* webcam: on win32
+* webcam: multiple webcams
+* add the undo/redo support
+* update the video tutorial (still at 0.2!)
 * add the "color changing stuff" to the picture themselves (req. by Contrast, Superstoned)
+* add google images, like flickr ones (req. by Rossana)
+* win: photo dragging from the 'add picture' filedialog (seems harder that it should be. works on linux) (req. by Rossana)
+* auto-placement [force field, shape, collage, etc..]
+  * ap: perform rectangular image composition based on an input picture (color, pattern)
+  * ap: perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
+* Google-suggest completion (already in, but misplaced when embedded into qgraphicsview)
+* integrate kde-apps knowledgebase (already in, but doesn't work great)
+* regional links to web resources
+ - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
+ - french: ubuntu-fr ?
 * relicences
  - 3rdparty/enricomath.h: Could you re-release it with GPL v2+ like the rest of your source?
  - 3rdparty/richtextedit/richtexteditor*: redo 'cause non free
@@ -126,18 +140,6 @@ I hope to expand the program as soon as I can, since there is many room for impr
  - videocapture is partially BSD and LGPLv2+ - not mentioned + no complete copy of lgplv2 available (add the file into that folder)
  - posterazor GPLv3+ need license file
  - remove qm? note that building on windows requires qm to be on the packages!
-
-Enrico:
-* add google images to flickr ones (req. by Rossana)
-* win: photo dragging from the 'add picture' filedialog (seems harder that it should be. works on linux) (req. by Rossana)
-* auto-placement [force field, shape, collage, etc..]
-  * ap: perform rectangular image composition based on an input picture (color, pattern)
-  * ap: perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
-* Google-suggest completion (ok, misplaced)
-* integrate kde-apps knowledgebase
-* svg drawings [balloons, signs, etc..]
-* masked pic
-* both new and old resize&co
 
 
 Building
@@ -150,9 +152,9 @@ to do it ;-) Or just grab an 'executable package' from the project homepage.
 In Linux/X11, Mac, or Windows, install the latest Qt development packages that
 you will find on http://www.trolltech.com:
 
-- on linux this is tested with Qt 4.4 and GCC 4.0+
-- on windows this is tested witn Qt 4.4 and MSVC Express 2005 and 2008
-- on mac this was not tested, report me if it simply works out of the box ;-)
+- on linux this is tested with Qt 4.4/4.5/4.6-git and GCC 4.0+
+- on windows this is tested witn Qt 4.5.2+ and MSVC Express 2005 and 2008
+- on mac it is tested with Qt 4.5+
 
 Just open a command prompt (win), shell (linux, mac) and go the sources
 location and issue the followings commands:
@@ -160,12 +162,7 @@ location and issue the followings commands:
 - qmake  (or qmake-qt4 if your system is weird)
 - make   (or nmake, if you're on windows)
 
-The executable will be built and you can start Enjoying Fotowall! ;-)
-
-### Notes for the Windows Download
-
-You must have the Microsoft Visual Studio 2008 Redistributable package (1.7MB) installed in your system, otherwise you will get an error.
-Click [here](http://www.microsoft.com/downloads/details.aspx?familyid=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF) for downloading the file.
+The executable will be built and you can start enjoying Fotowall! ;-)
 
 
 Old News
