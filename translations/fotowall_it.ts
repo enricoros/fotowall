@@ -826,7 +826,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../MainWindow.ui"/>
         <source>CANVAS</source>
-        <translation>FONDO</translation>
+        <translation>SFONDO</translation>
     </message>
     <message>
         <location filename="../MainWindow.ui"/>
