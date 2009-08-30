@@ -30,6 +30,7 @@ enrico: will merge with the following:
 * animations with 4.6: top bar, item show/hide, properties show/hide
 * builds with 4.4 (without many features), 4.5 (without animations), 4.6-unreleased (gfx errors on windows)
 * Polish translation? ask Marek Walczak, see 4ba1502
+* same folder when you open the picture (req. by Rossana)
 
 Version 0.7.1 (2009-07-23):
 
@@ -127,7 +128,6 @@ I hope to expand the program as soon as I can, since there is many room for impr
  - remove qm? note that building on windows requires qm to be on the packages!
 
 Enrico:
-* same folder when you open the picture (req. by Rossana)
 * add google images to flickr ones (req. by Rossana)
 * win: photo dragging from the 'add picture' filedialog (seems harder that it should be. works on linux) (req. by Rossana)
 * auto-placement [force field, shape, collage, etc..]
