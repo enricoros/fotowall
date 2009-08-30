@@ -36,6 +36,7 @@ class PictureContent : public AbstractContent
 
         // ::AbstractContent
         QString contentName() const { return tr("Picture"); }
+        QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;

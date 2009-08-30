@@ -127,14 +127,14 @@ QWidget * TextContent::createPropertyWidget()
 {
     TextProperties * p = new TextProperties();
 
-    // common properties
+    // connect actions
     connect(p->bFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
     connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
     connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
     connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
     connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(deleteItem()), Qt::QueuedConnection);
 
-    // shape properties
+    // properties link
     p->bEditShape->setChecked(isShapeEditing());
     connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
     connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));

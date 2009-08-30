@@ -15,6 +15,7 @@
 #include "PictureContent.h"
 #include "ButtonItem.h"
 #include "CPixmap.h"
+#include "PictureProperties.h"
 #include "RenderOpts.h"
 #include "frames/Frame.h"
 #include <QFileInfo>
@@ -172,6 +173,22 @@ void PictureContent::addEffect(const PictureEffect & effect)
 
     // notify image change
     emit contentChanged();
+}
+
+#include "PropertyEditors.h"
+QWidget * PictureContent::createPropertyWidget()
+{
+    PictureProperties * p = new PictureProperties();
+
+    // connect actions
+    PE_AbstractSlider * pe = new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
+
+    // properties link
+    //p->bEditShape->setChecked(isShapeEditing());
+    //connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
+    //connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));
+
+    return p;
 }
 
 bool PictureContent::fromXml(QDomElement & pe)
