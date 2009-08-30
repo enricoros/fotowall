@@ -4,12 +4,22 @@
 <context>
     <name>AbstractConfig</name>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="319"/>
+        <location filename="../items/AbstractConfig.cpp" line="45"/>
+        <source> x </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.cpp" line="156"/>
+        <source>ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/AbstractConfig.cpp" line="236"/>
         <source>Choose frame images</source>
         <translation type="unfinished">Wähle Rahmenbilder aus</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="319"/>
+        <location filename="../items/AbstractConfig.cpp" line="236"/>
         <source>Images (*.svg)</source>
         <translation type="unfinished">Bilder (*.svg)</translation>
     </message>
@@ -87,12 +97,12 @@
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="72"/>
+        <location filename="../items/AbstractContent.cpp" line="73"/>
         <source>Change properties...</source>
         <translation type="unfinished">Eigenschaften ändern ...</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="77"/>
+        <location filename="../items/AbstractContent.cpp" line="79"/>
         <source>Drag around to change the perspective.
 Hold SHIFT to move faster.
 Use CTRL to cancel the transformations.</source>
@@ -100,32 +110,32 @@ Use CTRL to cancel the transformations.</source>
 STRG benutzen um die Umwandlung abzubrechen.</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="84"/>
+        <location filename="../items/AbstractContent.cpp" line="87"/>
         <source>Remove</source>
         <translation type="unfinished">Entfernen</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="639"/>
+        <location filename="../items/AbstractContent.cpp" line="703"/>
         <source>Choose the Image file</source>
         <translation type="unfinished">Wähle die Bild-Datei aus</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="639"/>
+        <location filename="../items/AbstractContent.cpp" line="703"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation type="unfinished">Bilder (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="678"/>
+        <location filename="../items/AbstractContent.cpp" line="742"/>
         <source>File Error</source>
         <translation type="unfinished">Dateifehler</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="678"/>
+        <location filename="../items/AbstractContent.cpp" line="742"/>
         <source>Error saving the Object to &apos;%1&apos;</source>
         <translation type="unfinished">Fehler beim Speichern des Objektes in &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="688"/>
+        <location filename="../items/AbstractContent.cpp" line="752"/>
         <source>Drag with Left or Right mouse button.
  - Hold down SHIFT for free resize
  - Hold down CTRL to allow rotation
@@ -139,14 +149,6 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     </message>
 </context>
 <context>
-    <name>Bezier</name>
-    <message>
-        <location filename="../3rdparty/bezier/bezier.cpp" line="101"/>
-        <source>enabled</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>ColorAction</name>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="260"/>
@@ -155,47 +157,39 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     </message>
 </context>
 <context>
-    <name>CropingDialog</name>
-    <message>
-        <location filename="../CropingDialog.ui"/>
-        <source>Croping</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="842"/>
+        <location filename="../Desk.cpp" line="892"/>
         <source>Back</source>
         <translation type="unfinished">Hintergrund</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="846"/>
+        <location filename="../Desk.cpp" line="896"/>
         <source>Front</source>
         <translation type="unfinished">Vordergrund</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="872"/>
-        <source>%1 PROPERTIES</source>
+        <location filename="../Desk.cpp" line="919"/>
+        <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="880"/>
+        <location filename="../Desk.cpp" line="928"/>
+        <source>SELECTION</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Desk.cpp" line="927"/>
         <source>%1 objects selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="881"/>
-        <source>SELECTION PROPERTIES</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../Desk.cpp" line="1001"/>
+        <location filename="../Desk.cpp" line="1049"/>
         <source>Delete content</source>
         <translation type="unfinished">Inhalt löschen</translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="1001"/>
+        <location filename="../Desk.cpp" line="1049"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
         <translation type="unfinished">Der ausgewählte Inhalt (%1) wird komplett gelöscht! Fortfahren ?</translation>
     </message>
@@ -511,319 +505,6 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
     </message>
 </context>
 <context>
-    <name>FotoWall</name>
-    <message>
-        <location filename="../FotoWall.cpp" line="528"/>
-        <source>Select one or more pictures to add</source>
-        <translation type="unfinished">Zum Hinzufügen wähle ein oder mehrere Bild(er) aus</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="528"/>
-        <source>Images (%1)</source>
-        <translation type="unfinished">Bild(er) (%1)</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="261"/>
-        <source>Enable force field</source>
-        <translation type="unfinished">Aktiviere &apos;Erzwingen&apos;-Feld</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="267"/>
-        <source>Auto-arrange new pictures</source>
-        <translation type="unfinished">Neue Bilder automatisch anordnen</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="273"/>
-        <source>Rearrange</source>
-        <translation type="unfinished">Neuanordnen</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="275"/>
-        <source>Uniform</source>
-        <translation type="unfinished">Einheitlich</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="280"/>
-        <source>Shaped</source>
-        <translation type="unfinished">Form</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="285"/>
-        <source>Collage</source>
-        <translation type="unfinished">Kollage</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="300"/>
-        <source>Gradient</source>
-        <translation type="unfinished">Steigung</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="306"/>
-        <source>Transparent</source>
-        <translation type="unfinished">Transparenz</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="307"/>
-        <source>Transparency can be saved to PNG images only.</source>
-        <translation type="unfinished">Die gewählte Transparenz kann im PNG Bild gespeichert werden.</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="313"/>
-        <source>Content</source>
-        <translation type="unfinished">Inhalt</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="314"/>
-        <source>Double click on any content to put it on background.</source>
-        <translation type="unfinished">Jeder Inhalt kann durch einen Doppelklick als Hintergrund eingestellt werden.</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="330"/>
-        <source>Top bar</source>
-        <translation type="unfinished">Balken oben</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="336"/>
-        <source>Bottom bar</source>
-        <translation type="unfinished">Balken unten</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="344"/>
-        <source>Set title...</source>
-        <translation type="unfinished">Setze Titeltext ...</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="345"/>
-        <source>CTRL+T</source>
-        <translation type="unfinished">STRG+T</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="349"/>
-        <source>Clear title</source>
-        <translation type="unfinished">Lösche Titeltext</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="361"/>
-        <source>About</source>
-        <translation type="unfinished">Über</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="365"/>
-        <source>Introduction</source>
-        <translation type="unfinished">Einführung</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="395"/>
-        <source>Select all</source>
-        <translation type="unfinished">Alles auswählen</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="396"/>
-        <source>CTRL+A</source>
-        <translation type="unfinished">STRG+A</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="563"/>
-        <location filename="../FotoWall.cpp" line="569"/>
-        <source>Select FotoWall file</source>
-        <translation type="unfinished">Wähle die FotoWall Datei aus</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="563"/>
-        <source>FotoWall (*.fotowall)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="634"/>
-        <source>Opening FotoWall&apos;s author Blog</source>
-        <translation type="unfinished">Öffne das Blog des FotoWall Autors</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="634"/>
-        <source>This is the blog of the main author of FotoWall.
-You can find some news while we set up a proper website ;-)
-Do you want to open the web page?</source>
-        <translation type="unfinished">Dies ist das Blog des Fotowall Autor.Hier könnte Ihr bis zur Eröffnung der richtigen Webseite einige News finden.
-Wollen Sie mit dem Öffnen der Webseite fortfahren?</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="650"/>
-        <source>The Tutorial is provided on Fosswire by Peter Upfold.
-It&apos;s about FotoWall 0.2 a rather old version.
-Do you want to open the web page?</source>
-        <translation type="unfinished">Die Anleitung wird auf Fosswire von Peter Upfold bereitgestellt.
-Zur Zeit bassiert diese Anleitung noch auf Fotowall Version 0.2, eine sehr alte Version.
-Wollen Sie mit dem Öffnen der Webseite fortfahren?</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="712"/>
-        <source>Support (%1)</source>
-        <translation type="unfinished">Unterstützung (%1)</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="650"/>
-        <source>Opening the Web Tutorial</source>
-        <translation type="unfinished">Öffne die Anleitung im Internet</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="369"/>
-        <source>Internet Resources</source>
-        <translation type="unfinished">Internet Quellen</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="373"/>
-        <source>Tutorial Video (0.2)</source>
-        <translation type="unfinished">Videoanleitung (zu Fotowall V0.2)</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="377"/>
-        <source>Check for Updates</source>
-        <translation type="unfinished">Prüfe auf Updates</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="381"/>
-        <source>Fotowall&apos;s Blog</source>
-        <translation type="unfinished">Blog zu Fotowall</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="432"/>
-        <source>export</source>
-        <translation type="unfinished">Export</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="444"/>
-        <location filename="../FotoWall.cpp" line="455"/>
-        <location filename="../FotoWall.cpp" line="486"/>
-        <source>print</source>
-        <translation type="unfinished">Drucken</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="622"/>
-        <source>Title</source>
-        <translation type="unfinished">Titel</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.cpp" line="622"/>
-        <source>Insert the title</source>
-        <translation type="unfinished">Gebe eine Überschrift ein</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>CD Cover</source>
-        <translation type="unfinished">CD Hülle</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>DVD Cover</source>
-        <translation type="unfinished">DVD Hülle</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Exact Size</source>
-        <translation type="unfinished">Genaue Größe</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>load</source>
-        <translation type="unfinished">Laden</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Background</source>
-        <translation type="unfinished">Hintergrund</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Decorations</source>
-        <translation type="unfinished">Dekoration</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Add Picture</source>
-        <translation type="unfinished">Bild hinzufügen</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>P</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Add Text</source>
-        <translation type="unfinished">Text hinzufügen</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>T</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>V</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Add Flickr</source>
-        <translation type="unfinished">Flickr-Objekt hinzufügen</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Help</source>
-        <translation type="unfinished">Hilfe</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Add Webcam</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>ADD NEW</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>CANVAS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Effects</source>
-        <translation type="unfinished">Effekte</translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Arrange</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>MODE</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Screen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>FILE</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../FotoWall.ui"/>
-        <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
-    </message>
-</context>
-<context>
     <name>GlowEffectDialog</name>
     <message>
         <location filename="../GlowEffectDialog.ui"/>
@@ -855,7 +536,7 @@ p, li { white-space: pre-wrap; }
   &lt;/div&gt;
 
   &lt;br /&gt;
-  &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;&lt;b&gt;Playing&lt;/b&gt; with &lt;b&gt;FotoWall&lt;/b&gt; is easy&lt;/div&gt;
+  &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;&lt;b&gt;Playing&lt;/b&gt; with &lt;b&gt;Fotowall&lt;/b&gt; is easy&lt;/div&gt;
 
   &lt;div&gt;
     &lt;ul&gt;
@@ -871,38 +552,10 @@ p, li { white-space: pre-wrap; }
   &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;Please make sure to share your best work with your friends ;-)&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
 
   &lt;br/&gt;
-  &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;FotoWall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
+  &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;&lt;/head&gt;&lt;body style=&quot;font-family: &apos;Sans Serif&apos;;&quot;&gt;
-  &lt;div&gt;
-    &lt;img src=&quot;:/data/action-remove.png&quot;&gt; &lt;span style=&quot;font-size: 26px; font-weight: normal; color: rgb(255, 0, 0);&quot;&gt;Herzlich Willkommen&lt;/span&gt;&lt;img src=&quot;:/data/action-remove.png&quot;&gt;
-  &lt;/div&gt;
-
-  &lt;br&gt;
-  &lt;div style=&quot;font-size: 16px; font-weight: normal;&quot;&gt;&lt;b&gt;Einfach ausprobieren! Das Spielen mit Fotowall ist sehr einfach ...&lt;/b&gt;&lt;/div&gt;
-
-  &lt;div&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;b&gt;&lt;img src=&quot;:/data/action-add.png&quot;&gt;&amp;nbsp;&amp;nbsp; Neues Bild&lt;/b&gt; einfach mit &lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Bild hinzufügen&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: yellow;&quot;&gt;&lt;/span&gt; Knopf hinzufügen oder nutze Drag-and-Drop&lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;img src=&quot;:/data/action-rotate.png&quot;&gt;&amp;nbsp;&amp;nbsp; Das &lt;/i&gt;&lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Bild einfach &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;irgendwo plazieren&lt;/span&gt;&lt;/i&gt; und anschließend einfach zum Modifizieren jedes der kleinen Symbole auf dem Rahmen ausprobieren.&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;img src=&quot;:/data/action-configure.png&quot;&gt;&amp;nbsp;&amp;nbsp; &lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Klicke mit der rechten Maustaste auf das Bild&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um das &lt;b&gt;&lt;span style=&quot;font-style: italic;&quot;&gt;Aussehen des Bildes zu verändern&lt;/span&gt;&lt;/b&gt;.&lt;/li&gt;
-      &lt;li&gt; Nutze einen &lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Doppelklick auf das Bild&lt;/span&gt;&lt;/i&gt;&lt;b&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um es als &lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Hintergrundbild&lt;/span&gt; zu nutzen.&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Klicke auf die Bildecken&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um die &lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Hintergrundfarben&lt;/span&gt; zu ändern.&lt;/li&gt;
-      
-    &lt;/ul&gt;Einfach hinschauen und ausprobieren! Du kannst nichts kaputt machen, aber wunderbar krativ sein ...&lt;br&gt;
-&lt;br&gt;
-
-  &lt;/div&gt;
-
-  &lt;div&gt;&lt;font color=&quot;#2b2b2b&quot;&gt;&lt;b&gt;Es wäre toll, wenn Ihr Eure schönsten Arbeiten mit anderen Leuten und Freunden teilen würdet :-) ...&lt;br&gt;
-&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
-
-  &lt;br&gt;
-  &lt;div&gt;&lt;font style=&quot;font-size: 11px; font-weight: normal;&quot; color=&quot;#616161&quot;&gt;FotoWall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
-
-&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -911,6 +564,326 @@ p, li { white-space: pre-wrap; }
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="202"/>
         <source>Insert HTML entity</source>
         <translation type="unfinished">Füge HTML Teile ein</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../MainWindow.cpp" line="327"/>
+        <source>Enable force field</source>
+        <translation type="unfinished">Aktiviere &apos;Erzwingen&apos;-Feld</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="333"/>
+        <source>Auto-arrange new pictures</source>
+        <translation type="unfinished">Neue Bilder automatisch anordnen</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="339"/>
+        <source>Rearrange</source>
+        <translation type="unfinished">Neuanordnen</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="341"/>
+        <source>Uniform</source>
+        <translation type="unfinished">Einheitlich</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="346"/>
+        <source>Shaped</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="351"/>
+        <source>Collage</source>
+        <translation type="unfinished">Kollage</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="365"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="366"/>
+        <source>Transparency can be saved to PNG images only.</source>
+        <translation type="unfinished">Die gewählte Transparenz kann im PNG Bild gespeichert werden.</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="372"/>
+        <source>Gradient</source>
+        <translation type="unfinished">Steigung</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="378"/>
+        <source>Content</source>
+        <translation type="unfinished">Inhalt</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="379"/>
+        <source>Double click on any content to put it on background.</source>
+        <translation type="unfinished">Jeder Inhalt kann durch einen Doppelklick als Hintergrund eingestellt werden.</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="388"/>
+        <source>Content Aspect Ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="393"/>
+        <source>Keep proportions by expanding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="399"/>
+        <source>Keep proportions</source>
+        <translation type="unfinished">Erhalte Seitenverhältnis</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="405"/>
+        <source>Ignore proportions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="421"/>
+        <source>Top bar</source>
+        <translation type="unfinished">Balken oben</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="427"/>
+        <source>Bottom bar</source>
+        <translation type="unfinished">Balken unten</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="435"/>
+        <source>Set title...</source>
+        <translation type="unfinished">Setze Titeltext ...</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="439"/>
+        <source>Clear title</source>
+        <translation type="unfinished">Lösche Titeltext</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="451"/>
+        <source>Tutorial Video (0.2)</source>
+        <translation type="unfinished">Videoanleitung (zu Fotowall V0.2)</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="455"/>
+        <source>Check for Updates</source>
+        <translation type="unfinished">Prüfe auf Updates</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="459"/>
+        <source>Fotowall&apos;s Blog</source>
+        <translation type="unfinished">Blog zu Fotowall</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="473"/>
+        <source>Select all</source>
+        <translation type="unfinished">Alles auswählen</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="474"/>
+        <source>CTRL+A</source>
+        <translation type="unfinished">STRG+A</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="509"/>
+        <source>Export</source>
+        <translation type="unfinished">Exportiere</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="521"/>
+        <location filename="../MainWindow.cpp" line="532"/>
+        <location filename="../MainWindow.cpp" line="563"/>
+        <source>print</source>
+        <translation type="unfinished">Drucken</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="605"/>
+        <source>Select one or more pictures to add</source>
+        <translation type="unfinished">Zum Hinzufügen wähle ein oder mehrere Bild(er) aus</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="605"/>
+        <source>Images (%1)</source>
+        <translation type="unfinished">Bild(er) (%1)</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="627"/>
+        <source>OpenGL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="627"/>
+        <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system. Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="649"/>
+        <source>Transparency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="649"/>
+        <source>This feature has not been widely tested yet.&lt;br&gt; - on linux it requires compositing (like compiz/beryl, kwin4)&lt;br&gt; - on windows and mac it seems to work&lt;br&gt;If you see a black background then transparency is not supported on your system.&lt;br&gt;&lt;br&gt;NOTE: you should set the &apos;Transparent&apos; Background to notice the the window transparency.&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="682"/>
+        <location filename="../MainWindow.cpp" line="688"/>
+        <source>Select the Fotowall file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="682"/>
+        <source>Fotowall (*.fotowall)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="741"/>
+        <source>Title</source>
+        <translation type="unfinished">Titel</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="741"/>
+        <source>Insert the title</source>
+        <translation type="unfinished">Gebe eine Überschrift ein</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="753"/>
+        <source>Opening Fotowall&apos;s author Blog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="753"/>
+        <source>This is the blog of the main author of Fotowall.
+You can find some news while we set up a proper website ;-)
+Do you want to open the web page?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="764"/>
+        <source>Opening the Web Tutorial</source>
+        <translation type="unfinished">Öffne die Anleitung im Internet</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="764"/>
+        <source>The Tutorial is provided on Fosswire by Peter Upfold.
+It&apos;s about Fotowall 0.2 a rather old version.
+Do you want to open the web page?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.cpp" line="844"/>
+        <source>Support (%1)</source>
+        <translation type="unfinished">Unterstützung (%1)</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>ADD NEW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>CANVAS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Background</source>
+        <translation type="unfinished">Hintergrund</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Decorations</source>
+        <translation type="unfinished">Dekoration</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>HELP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>OnLine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Introduction</source>
+        <translation type="unfinished">Einführung</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>SETUP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>CD Cover</source>
+        <translation type="unfinished">CD Hülle</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>DVD Cover</source>
+        <translation type="unfinished">DVD Hülle</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Exact Size</source>
+        <translation type="unfinished">Genaue Größe</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Transparent Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>FILE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Save</source>
+        <translation type="unfinished">Speichern</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Add Picture</source>
+        <translation type="unfinished">Bild hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Add Text</source>
+        <translation type="unfinished">Text hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Add Webcam</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MainWindow.ui"/>
+        <source>Add Flickr</source>
+        <translation type="unfinished">Flickr-Objekt hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -961,13 +934,13 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Sepia-Effekt</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="50"/>
-        <location filename="../items/PictureConfig.cpp" line="92"/>
+        <location filename="../items/PictureConfig.cpp" line="51"/>
+        <location filename="../items/PictureConfig.cpp" line="95"/>
         <source>Opacity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="93"/>
+        <location filename="../items/PictureConfig.cpp" line="96"/>
         <source>Opacity value.
 
 0: transparent
@@ -1088,14 +1061,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TextConfig</name>
     <message>
-        <location filename="../items/TextConfig.cpp" line="29"/>
+        <location filename="../items/TextConfig.cpp" line="28"/>
         <source>Text</source>
         <translation type="unfinished">Text</translation>
-    </message>
-    <message>
-        <location filename="../items/TextConfig.cpp" line="37"/>
-        <source>Bezier Path</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1111,9 +1079,22 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/TextContent.h" line="43"/>
+        <location filename="../items/TextContent.h" line="53"/>
         <source>Text</source>
         <translation type="unfinished">Text</translation>
+    </message>
+</context>
+<context>
+    <name>TextProperties</name>
+    <message>
+        <location filename="../items/TextProperties.ui"/>
+        <source>edit shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../items/TextProperties.ui"/>
+        <source>X</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1155,25 +1136,10 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>VideoContent</name>
+    <name>WarningBox</name>
     <message>
-        <location filename="../items/VideoContent.cpp" line="30"/>
-        <source>This is a mirror ;-)</source>
-        <translation type="unfinished">Dies ist ein Spiegel ;-)</translation>
-    </message>
-    <message>
-        <location filename="../items/VideoContent.cpp" line="37"/>
-        <source>Mirror Video</source>
-        <translation type="unfinished">Videospiegel</translation>
-    </message>
-    <message>
-        <location filename="../items/VideoContent.cpp" line="43"/>
-        <source>Still picture</source>
-        <translation type="unfinished">Standbild</translation>
-    </message>
-    <message>
-        <location filename="../items/VideoContent.h" line="32"/>
-        <source>Webcam</source>
+        <location filename="../MainWindow.cpp" line="103"/>
+        <source>show this warning again next time</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1196,6 +1162,29 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>WebcamContent</name>
+    <message>
+        <location filename="../items/WebcamContent.cpp" line="30"/>
+        <source>This is a mirror ;-)</source>
+        <translation type="unfinished">Dies ist ein Spiegel ;-)</translation>
+    </message>
+    <message>
+        <location filename="../items/WebcamContent.cpp" line="37"/>
+        <source>Mirror Video</source>
+        <translation type="unfinished">Videospiegel</translation>
+    </message>
+    <message>
+        <location filename="../items/WebcamContent.cpp" line="43"/>
+        <source>Still picture</source>
+        <translation type="unfinished">Standbild</translation>
+    </message>
+    <message>
+        <location filename="../items/WebcamContent.h" line="32"/>
+        <source>Webcam</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>XmlRead</name>
     <message>
         <location filename="../XmlRead.cpp" line="40"/>
@@ -1204,18 +1193,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../XmlRead.cpp" line="40"/>
-        <source>Unable to load the FotoWall file %1</source>
-        <translation type="unfinished">Unmöglich die Fotowall Datei &apos;%1&apos; zu landen!</translation>
+        <source>Unable to load the Fotowall file %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../XmlRead.cpp" line="49"/>
+        <source>Unable to parse the Fotowall file %1. The error was: %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../XmlRead.cpp" line="49"/>
         <source>Parsing error</source>
         <translation type="unfinished">Fehler bei der Analyse</translation>
-    </message>
-    <message>
-        <location filename="../XmlRead.cpp" line="49"/>
-        <source>Unable to parse the FotoWall file %1. The error was: %2</source>
-        <translation type="unfinished">Beim Speichern der FotoWall-Datei &apos;%1&apos; ist der Fehler &apos;%2&apos; aufgetreten.</translation>
     </message>
 </context>
 <context>
@@ -1227,8 +1216,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../XmlSave.cpp" line="32"/>
-        <source>Error saving to the FotoWall file &apos;%1&apos;</source>
-        <translation type="unfinished">Fehler beim Speichern der FotoWall Datei &apos;%1&apos;.</translation>
+        <source>Error saving to the Fotowall file &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -9,42 +9,23 @@
         <translation type="unfinished">Schritt %1 von %2:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="+83"/>
-        <location filename="wizardcontroller.cpp" line="-69"/>
+        <location line="-69"/>
         <source>&amp;Manual</source>
         <translation type="unfinished">&amp;Bedienungsanleitung</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <location line="+317"/>
-        <source>&amp;About PosteRazor</source>
-        <translation type="unfinished">&amp;Über den PosteRazor</translation>
-    </message>
-    <message>
-        <location line="-318"/>
-        <source>PosteRazor &amp;website</source>
-        <translation type="unfinished">PosteRazor-&amp;Internetseite</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>About &amp;Qt</source>
-        <translation type="unfinished">Über &amp;Qt</translation>
-    </message>
-    <message>
-        <location filename="controller.cpp" line="+538"/>
-        <location filename="mainwindow.cpp" line="+318"/>
+        <location filename="controller.cpp" line="+540"/>
         <source>http://posterazor.sourceforge.net/</source>
         <comment>Only translate, if the website has this language.</comment>
         <translation type="unfinished">http://posterazor.sourceforge.net/?lang=german</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="-323"/>
         <location filename="wizardcontroller.cpp" line="+78"/>
         <source>Load an input image</source>
         <translation type="unfinished">Ein Ausgangsbild laden</translation>
     </message>
     <message>
-        <location filename="wizardcontroller.cpp" line="+1"/>
+        <location line="+1"/>
         <source>Printer paper format</source>
         <translation type="unfinished">Druckerpapier-Maße</translation>
     </message>
@@ -59,13 +40,12 @@
         <translation type="unfinished">Die finale Postergröße</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="+1"/>
-        <location filename="wizardcontroller.cpp" line="+1"/>
+        <location line="+1"/>
         <source>Save the Poster</source>
         <translation type="unfinished">Das Poster speichern</translation>
     </message>
     <message>
-        <location filename="wizardcontroller.cpp" line="+9"/>
+        <location line="+9"/>
         <source>Load an image by clicking the button with the open icon and selecting an image file, or by drag &amp; dropping an image file on the PosteRazor. The drag &amp; drop also works during the other steps.
 After loading the image, the most important informations are listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
         <comment>Wizard step 1. Place holders: %1 = &apos;Image informations&apos; (will be automatically inserted)</comment>
@@ -142,15 +122,6 @@ All entries and choices are remembered until the next usage of the PosteRazor.</
 Die &lt;b&gt;%2&lt;/b&gt; und &lt;b&gt;%3&lt;/b&gt;-Knöpfe blättern durch diese Schritte. Der &lt;b&gt;?&lt;/b&gt;-Knopf öffnet ein Hilfefenster mit der Beschreibung des aktuellen Schrittes.
 Der PosteRazor merkt sich jede Eingabe und Auswahl bis zur nächsten Benutzung des Programms.</translation>
     </message>
-    <message>
-        <location filename="mainwindow.cpp" line="+326"/>
-        <source>The PosteRazor cuts a raster image into pieces which can be printed on a printer and be put together to a poster.
-As an input image, raster files of various image file formats are supported. Instead of directly printing the poster, the PosteRazor produces a multi page PDF file which contains the poster tiles.
-It is an open source program which depends on other open source projects. The PosteRazor is hosted on %1.</source>
-        <translation type="unfinished">Der PosteRazor schneidet ein Rasterbild in Stücke, die auf einem Drucker ausgedruckt und zu einem Poster zusammengefügt werden können. Als Ausgangsbilder werden Dateien in vielen Formaten unterstützt.
-Anstatt das Bild direkt zu drucken, generiert der PosteRazor ein mehrseitiges PDF-Dokument welches die Bildteile enthält.
-Es ist ein Open-Source-Programm, das seinerseits von Open-Source-Projekten abhängt. Der PosteRazor ist unter %1 zu finden.</translation>
-    </message>
 </context>
 <context>
     <name>Main window</name>
@@ -187,17 +158,7 @@ Es ist ein Open-Source-Programm, das seinerseits von Open-Source-Projekten abhä
         <translation type="unfinished">PDF nach Speicherung öffnen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="-320"/>
-        <source>&amp;File</source>
-        <translation type="unfinished">&amp;Datei</translation>
-    </message>
-    <message>
         <location line="+1"/>
-        <source>&amp;Settings</source>
-        <translation type="unfinished">&amp;Einstellungen</translation>
-    </message>
-    <message>
-        <location filename="wizard.cpp" line="+1"/>
         <location filename="wizardcontroller.cpp" line="-141"/>
         <source>Next</source>
         <translation type="unfinished">Weiter</translation>
@@ -425,74 +386,6 @@ Soll sie überschrieben werden?</translation>
         <location line="+4"/>
         <source>The file &apos;%1&apos; could not be saved.</source>
         <translation type="unfinished">Die Datei &apos;%1&apos; konnte nicht gespeichert werden.</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="+296"/>
-        <source>Language name</source>
-        <translation type="unfinished">Deutsch</translation>
-    </message>
-    <message>
-        <location line="-298"/>
-        <source>E&amp;xit</source>
-        <translation type="unfinished">&amp;Beenden</translation>
-    </message>
-</context>
-<context>
-    <name>MainWindow</name>
-    <message>
-        <location filename="mainwindow.ui"/>
-        <source>MainWindow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>&amp;File</source>
-        <translation type="unfinished">&amp;Datei</translation>
-    </message>
-    <message>
-        <location/>
-        <source>&amp;?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>&amp;About Qt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>About PosteRazor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>PosteRazor manual</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>PosteRazor web site</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Load input image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Save poster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>E&amp;xit</source>
-        <translation type="unfinished">&amp;Beenden</translation>
     </message>
 </context>
 <context>
