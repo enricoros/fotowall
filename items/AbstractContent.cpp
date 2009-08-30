@@ -18,6 +18,7 @@
 #include "MirrorItem.h"
 #include "RenderOpts.h"
 #include "frames/FrameFactory.h"
+#include <QApplication>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -208,11 +209,37 @@ class MyTextItem : public QGraphicsTextItem {
         {
         }
 
-        void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) {
+        void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 )
+        {
             painter->save();
             painter->setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform );
             QGraphicsTextItem::paint(painter, option, widget);
             painter->restore();
+        }
+
+        // prevent the TextItem from listening to global shortcuts
+        bool eventFilter(QObject * object, QEvent * event)
+        {
+            if (event->type() == QEvent::Shortcut || event->type() == QEvent::ShortcutOverride) {
+                if (!object->inherits("QGraphicsView")) {
+                    event->accept();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    protected:
+        void focusInEvent(QFocusEvent * event)
+        {
+            QGraphicsTextItem::focusInEvent(event);
+            qApp->installEventFilter(this);
+        }
+
+        void focusOutEvent(QFocusEvent * event)
+        {
+            QGraphicsTextItem::focusOutEvent(event);
+            qApp->removeEventFilter(this);
         }
 };
 
