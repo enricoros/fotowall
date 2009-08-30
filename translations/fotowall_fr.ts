@@ -1,97 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr">
+<!DOCTYPE TS><TS version="1.1" language="fr">
+<defaultcodec></defaultcodec>
 <context>
     <name>AbstractConfig</name>
     <message>
         <location filename="../items/AbstractConfig.cpp" line="45"/>
         <source> x </source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../items/AbstractConfig.cpp" line="156"/>
         <source>ok</source>
-        <translation type="unfinished"></translation>
+        <translation>ok</translation>
     </message>
     <message>
         <location filename="../items/AbstractConfig.cpp" line="236"/>
         <source>Choose frame images</source>
-        <translation type="unfinished">Choisissez l&apos;image</translation>
+        <translation>Choisissez les cadres</translation>
     </message>
     <message>
         <location filename="../items/AbstractConfig.cpp" line="236"/>
         <source>Images (*.svg)</source>
-        <translation type="unfinished">Images (*.svg)</translation>
+        <translation>Images (*.svg)</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>General</source>
-        <translation type="unfinished">Général</translation>
+        <translation>Général</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>Stacking</source>
-        <translation type="unfinished">Empilement</translation>
+        <translation>Empilement</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>To Front</source>
-        <translation type="unfinished">Premier plan</translation>
+        <translation>Premier plan</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>Raise</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>Lower</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>To Back</source>
-        <translation type="unfinished">Arrière plan</translation>
+        <translation>Arrière plan</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>Operations</source>
-        <translation type="unfinished">Opérations</translation>
+        <translation>Opérations</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>To Background</source>
-        <translation type="unfinished">En fond</translation>
+        <translation>En fond</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>Save</source>
-        <translation type="unfinished">Sauvegarder</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>Remove</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>Looks</source>
-        <translation type="unfinished">Apparences</translation>
+        <translation>Apparences</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>new frame</source>
-        <translation type="unfinished">nouveau  cadre</translation>
+        <translation>nouveau  cadre</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>apply to all</source>
-        <translation type="unfinished">appliquer à tous</translation>
+        <translation>appliquer à tous</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
         <source>Show Reflection</source>
-        <translation type="unfinished">Afficher le reflet</translation>
+        <translation>Afficher le reflet</translation>
     </message>
 </context>
 <context>
@@ -172,17 +158,17 @@ Utiliser CTRL pour annuler les transformations.</translation>
     <message>
         <location filename="../Desk.cpp" line="919"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="928"/>
         <source>SELECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>SÉLECTION</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="927"/>
         <source>%1 objects selected</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 objets sélectionnés</translation>
     </message>
     <message>
         <location filename="../Desk.cpp" line="1049"/>
@@ -198,52 +184,42 @@ Utiliser CTRL pour annuler les transformations.</translation>
 <context>
     <name>ExactSizeDialog</name>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>Choose size</source>
         <translation>Choisissez la taille</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>&lt;b&gt;Exact Size&lt;/b&gt; mode&lt;br&gt;The content has &lt;i&gt;the same size&lt;/i&gt; on screen and on printer.</source>
         <translation>&lt;b&gt;Mode Taille Exacte&lt;/b&gt;&lt;br&gt;Le contenu a la même taille sur l&apos;écran qu&apos;à l&apos;impression.</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>Height:</source>
         <translation>Hauteur :</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>inches</source>
         <translation>pouces (inches)</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>Width:</source>
         <translation>Largeur :</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>Dot Per Inch</source>
         <translation>Points par pouce (DPI)</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>Screen Dpi:</source>
         <translation>Dpi écran :</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>Printer Dpi:</source>
         <translation>Dpi imprimante :</translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
         <source>Print in landscape mode</source>
         <translation>Imprimer en mode paysage</translation>
     </message>
@@ -296,157 +272,126 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Export Wizard</source>
         <translation>Assistant d&apos;exportation</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Export</source>
         <translation>Exporter</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Select the target.</source>
         <translation>Sélectionnez la destination.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Wallpaper</source>
         <translation>Fond d&apos;écran</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Image</source>
         <translation>Image</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Poster with PosteRazor</source>
         <translation>Poster avec PosteRazor</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Print</source>
         <translation>Imprimer</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Click the Finish button to change your wallpaper.</source>
         <translation>Cliquez sur le bouton Terminer pour changer votre fond d&apos;écran.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Scale Mode</source>
         <translation>Mode de redimensionnement</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Your work will be saved to a picture. Please fill the following options and click Finish.</source>
         <translation>Votre travail sera sauvegardé dans une image. Merci de remplir les options suivantes, puis cliquez sur Terminer.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>File properties</source>
         <translation>Propriétés du fichier</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Choose...</source>
         <translation>Choisir...</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Size and Orientation</source>
         <translation>Taille et orientation</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Pixels</source>
         <translation>Pixels</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Landscape</source>
         <translation>Paysage</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>PosteRazor</source>
         <translation>PosteRazor</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Print Posters at home.</source>
         <translation>Imprimer des posters à la maison.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
         <translation>PostRazor sépare un image en plusieurs morceaux, qui pourront ensuite être imprimés et assemblés sous forme de poster.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>PosteRazor home (external website)</source>
         <translation>Accueil PosteRazor (site externe)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Click Finish to start PosteRazor</source>
         <translation>Cliquez sur Terminer pour démarrer PosteRazor</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>How to use PosteRazor (external tutorial video)</source>
         <translation>Comment utiliser PosteRazor (tutoriel vidéo externe)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Print Picture</source>
         <translation>Imprimer une image</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Select the paper options and click Finish to print.</source>
         <translation>Sélectionnez les options du papier, puis cliquez sur Terminer pour imprimer.</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Height:</source>
         <translation>Hauteur:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>pixels</source>
         <translation>pixels</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>inches</source>
         <translation>pouces (inches)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Width:</source>
         <translation>Largeur:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Dot Per Inch</source>
         <translation>Points par pouce (DPI)</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Dpi:</source>
         <translation>Dpi:</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Print in landscape mode</source>
         <translation>Imprimer en mode paysage</translation>
     </message>
@@ -474,32 +419,26 @@ Go to the Desktop Settings and select the file:
 Allez dans les Préférences du bureau et selectionnez le fichier : %1</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Zoomed</source>
         <translation>Zoomé</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Scaled, keep proportions</source>
         <translation>Redimensionné, conserver les proportions</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Scaled</source>
         <translation>Redimensionné</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Original Size</source>
         <translation>Taille originale</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Output file:</source>
         <translation>Emplacement de sauvegarde :</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
         <source>Keep proportions</source>
         <translation>Conserver les proportions</translation>
     </message>
@@ -507,12 +446,10 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
 <context>
     <name>GlowEffectDialog</name>
     <message>
-        <location filename="../GlowEffectDialog.ui"/>
         <source>Glow effect</source>
         <translation>Effet lumineux</translation>
     </message>
     <message>
-        <location filename="../GlowEffectDialog.ui"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -555,7 +492,7 @@ p, li { white-space: pre-wrap; }
   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;  &lt;div&gt;    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;Bienvenue&lt;/span&gt;    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;  &lt;/div&gt;  &lt;br /&gt;  &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;&lt;b&gt;S&apos;amuser&lt;/b&gt; avec &lt;b&gt;Fotowall&lt;/b&gt; est simple&lt;/div&gt;  &lt;div&gt;    &lt;ul&gt;      &lt;li&gt;&lt;b&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;ajoutez&lt;/b&gt; une image&amp;nbsp;avec le bouton&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;Ajouter des images&lt;/span&gt;&lt;/i&gt;&amp;nbsp;ou &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;déposez les&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;      &lt;li&gt;&lt;i&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt;&amp;nbsp;&amp;nbsp; Pour les &lt;b&gt;placer où vous voulez&lt;/b&gt;,&amp;nbsp;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;essayez&lt;/span&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;toutes les petites icônes&lt;/i&gt;&lt;/span&gt;&lt;i&gt;&amp;nbsp;&lt;/i&gt;sur le cadre&lt;/i&gt;&lt;/li&gt;      &lt;li&gt;&lt;i&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;clic droit&lt;/span&gt;&lt;/i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;sur l&apos;image&lt;/span&gt; pourr &lt;b&gt;changer son apparence&lt;/b&gt;&lt;/li&gt;      &lt;li&gt;&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;double clic&lt;/span&gt;&lt;/i&gt;&lt;b&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&amp;nbsp;&lt;/span&gt;&lt;/b&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;sur l&apos;image&lt;/span&gt; pour la mettre en &lt;b&gt;fond&lt;/b&gt;&lt;/li&gt;      &lt;li&gt;&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;cliquez&lt;/span&gt;&lt;/i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&amp;nbsp;les&amp;nbsp;coins&lt;/span&gt; pour changer les &lt;b&gt;couleurs&lt;b&gt; du fond.&lt;/li&gt;      &lt;li&gt;Regardez, et vous trouverez...&lt;/li&gt;    &lt;/ul&gt;  &lt;/div&gt;  &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;Partagez vos travaux avec vos amis ;-)&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;  &lt;br/&gt;  &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall est LGPL, par Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -571,319 +508,299 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../MainWindow.cpp" line="327"/>
         <source>Enable force field</source>
-        <translation type="unfinished">Autoriser l&apos;arrangement forcé</translation>
+        <translation>Autoriser l&apos;arrangement forcé</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="333"/>
         <source>Auto-arrange new pictures</source>
-        <translation type="unfinished">Arranger automatiquement les nouvelles images</translation>
+        <translation>Arranger automatiquement les nouvelles images</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="339"/>
         <source>Rearrange</source>
-        <translation type="unfinished">Ré-arranger</translation>
+        <translation>Ré-arranger</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="341"/>
         <source>Uniform</source>
-        <translation type="unfinished">Uniforme</translation>
+        <translation>Uniforme</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="346"/>
         <source>Shaped</source>
-        <translation type="unfinished">Profilé</translation>
+        <translation>Profilé</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="351"/>
         <source>Collage</source>
-        <translation type="unfinished">Collage</translation>
+        <translation>Collage</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="365"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="366"/>
         <source>Transparency can be saved to PNG images only.</source>
-        <translation type="unfinished">La transparence ne peut être sauvegardée que pour des images PNG.</translation>
+        <translation>La transparence ne peut être sauvegardée que pour des images PNG.</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="372"/>
         <source>Gradient</source>
-        <translation type="unfinished">Dégradé</translation>
+        <translation>Dégradé</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="378"/>
         <source>Content</source>
-        <translation type="unfinished">Contenu</translation>
+        <translation>Contenu</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="379"/>
         <source>Double click on any content to put it on background.</source>
-        <translation type="unfinished">Double cliquez sur n&apos;importe quel contenu pour le mettre en arrière plan.</translation>
+        <translation>Double cliquez sur n&apos;importe quel contenu pour le mettre en arrière plan.</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="388"/>
         <source>Content Aspect Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Proportions du contenu</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="393"/>
         <source>Keep proportions by expanding</source>
-        <translation type="unfinished"></translation>
+        <translation>Conserver les proportions en agrandissant</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="399"/>
         <source>Keep proportions</source>
-        <translation type="unfinished">Conserver les proportions</translation>
+        <translation>Conserver les proportions</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="405"/>
         <source>Ignore proportions</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer les proportions</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="421"/>
         <source>Top bar</source>
-        <translation type="unfinished">Barre du haut</translation>
+        <translation>Barre du haut</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="427"/>
         <source>Bottom bar</source>
-        <translation type="unfinished">Barre du bas</translation>
+        <translation>Barre du bas</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="435"/>
         <source>Set title...</source>
-        <translation type="unfinished">Définir le titre...</translation>
+        <translation>Définir le titre...</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="439"/>
         <source>Clear title</source>
-        <translation type="unfinished">Supprimer le titre</translation>
+        <translation>Supprimer le titre</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="451"/>
         <source>Tutorial Video (0.2)</source>
-        <translation type="unfinished">Tutoriel Vidéo (0.2)</translation>
+        <translation>Tutoriel Vidéo (0.2)</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="455"/>
         <source>Check for Updates</source>
-        <translation type="unfinished">Vérifiez les mises à jour.</translation>
+        <translation>Vérifier les mises à jour</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="459"/>
         <source>Fotowall&apos;s Blog</source>
-        <translation type="unfinished">Blog de FotoWall</translation>
+        <translation>Blog de Fotowall</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="473"/>
         <source>Select all</source>
-        <translation type="unfinished">Sélectionner tout</translation>
+        <translation>Sélectionner tout</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="474"/>
         <source>CTRL+A</source>
-        <translation type="unfinished">CTRL+A</translation>
+        <translation>CTRL+A</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="509"/>
         <source>Export</source>
-        <translation type="unfinished">Exporter</translation>
+        <translation>Exporter</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="521"/>
-        <location filename="../MainWindow.cpp" line="532"/>
         <location filename="../MainWindow.cpp" line="563"/>
         <source>print</source>
-        <translation type="unfinished">imprimer</translation>
+        <translation>imprimer</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="605"/>
         <source>Select one or more pictures to add</source>
-        <translation type="unfinished">Sélectionnez une ou plusieur photos à ajouter</translation>
+        <translation>Sélectionnez une ou plusieur photos à ajouter</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="605"/>
         <source>Images (%1)</source>
-        <translation type="unfinished">Images (%1)</translation>
+        <translation>Images (%1)</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="627"/>
         <source>OpenGL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="627"/>
         <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system. Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenGL accélère le graphique. Cependant ce n&apos;est pas garanti que ça fonctionne sur votre système. Essayez et regardez si ça fonctionne pour vous ;-)&lt;br&gt; - Si ça semble plus lent, vérifiez que votre pilote accélère OpenGL&lt;br&gt; - Si Fotowall s&apos;arrête de répondre après être passé à OpenGL, n&apos;utilisez pas cette fonctionnalité la prochaine fois&lt;br&gt;&lt;br&gt;NOTE : OpenGL ne fonctionne pas avec le mode &apos;Transparent&apos;.&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="649"/>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparence</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="649"/>
         <source>This feature has not been widely tested yet.&lt;br&gt; - on linux it requires compositing (like compiz/beryl, kwin4)&lt;br&gt; - on windows and mac it seems to work&lt;br&gt;If you see a black background then transparency is not supported on your system.&lt;br&gt;&lt;br&gt;NOTE: you should set the &apos;Transparent&apos; Background to notice the the window transparency.&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette fonctionnalité n&apos;a pas été largement testée pour l&apos;instant.&lt;br&gt; - Sous GNU/Linux, ça nécessite le compositing (comme compiz/beryl, kwin4)&lt;br&gt; - Sous Windows et mac, ça semble fonctionner&lt;br&gt;Si vous voyez un fond noir, alors la transparence n&apos;est pas supportée par votre système.&lt;br&gt;&lt;br&gt;NOTE : Vous devez définir le fond &apos;Transparent&apos; pour constater la transparence de la fenêtre.&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="682"/>
         <location filename="../MainWindow.cpp" line="688"/>
         <source>Select the Fotowall file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez le fichier Fotowall</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="682"/>
         <source>Fotowall (*.fotowall)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotowall (*.fotowall)</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="741"/>
         <source>Title</source>
-        <translation type="unfinished">Titre</translation>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="741"/>
         <source>Insert the title</source>
-        <translation type="unfinished">Insérez le titre</translation>
+        <translation>Insérez le titre</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="753"/>
         <source>Opening Fotowall&apos;s author Blog</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouverture du blog de l&apos;auteur de Fotowall</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="753"/>
         <source>This is the blog of the main author of Fotowall.
 You can find some news while we set up a proper website ;-)
 Do you want to open the web page?</source>
-        <translation type="unfinished"></translation>
+        <translation>C&apos;est le blog de l&apos;auteur principal de Fotowall.
+Vous y trouverez quelques news pendant que nous mettons en place un vrai site ;-)
+Voulez vous ouvrir la page web ?</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="764"/>
         <source>Opening the Web Tutorial</source>
-        <translation type="unfinished">Ouverture du tutoriel Internet</translation>
+        <translation>Ouverture du tutoriel Internet</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="764"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 It&apos;s about Fotowall 0.2 a rather old version.
 Do you want to open the web page?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le tutoriel est fourni sur Fosswire par Peter Upfold.
+Il concerne Fotowall 0.2, une version plutôt ancienne.
+Voulez vous ouvrir la page web ?</translation>
     </message>
     <message>
         <location filename="../MainWindow.cpp" line="844"/>
         <source>Support (%1)</source>
-        <translation type="unfinished">Supporte (%1)</translation>
+        <translation>Supporte (%1)</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>ADD NEW</source>
-        <translation type="unfinished"></translation>
+        <translation>AJOUTER UN NOUVEAU</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>CANVAS</source>
-        <translation type="unfinished"></translation>
+        <translation>CANEVAS</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Background</source>
-        <translation type="unfinished">Arrière-plan</translation>
+        <translation>Arrière-plan</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Decorations</source>
-        <translation type="unfinished">Décorations</translation>
+        <translation>Décorations</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>HELP</source>
-        <translation type="unfinished"></translation>
+        <translation>AIDE</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>OnLine</source>
-        <translation type="unfinished"></translation>
+        <translation>En ligne</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Introduction</source>
-        <translation type="unfinished">Introduction</translation>
+        <translation>Introduction</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>SETUP</source>
-        <translation type="unfinished"></translation>
+        <translation>CONFIGURATION</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode :</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Écran</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>CD Cover</source>
-        <translation type="unfinished">Couverture de CD</translation>
+        <translation>Couverture de CD</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>DVD Cover</source>
-        <translation type="unfinished">Couverture de DVD</translation>
+        <translation>Couverture de DVD</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Exact Size</source>
-        <translation type="unfinished">Taille exacte</translation>
+        <translation>Taille exacte</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Transparent Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Fenêtre Transparente</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>FILE</source>
-        <translation type="unfinished"></translation>
+        <translation>FICHIER</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Save</source>
-        <translation type="unfinished">Sauvegarder</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Add Picture</source>
-        <translation type="unfinished">Ajouter une Image</translation>
+        <translation>Ajouter une Image</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Add Text</source>
-        <translation type="unfinished">Ajouter du texte</translation>
+        <translation>Ajouter du texte</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Add Webcam</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une Webcam</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
         <source>Add Flickr</source>
-        <translation type="unfinished">Ajouter Flickr</translation>
+        <translation>Ajouter Flickr</translation>
     </message>
 </context>
 <context>
@@ -891,53 +808,52 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../items/PictureConfig.cpp" line="33"/>
         <source>Picture</source>
-        <translation type="unfinished">Image</translation>
+        <translation>Image</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="36"/>
         <source>No effects</source>
-        <translation type="unfinished">Aucun effet</translation>
+        <translation>Aucun effet</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="38"/>
         <source>Invert colors</source>
-        <translation type="unfinished">Inverser les couleurs</translation>
+        <translation>Inverser les couleurs</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="39"/>
         <source>Invert the colors of the picture</source>
-        <translation type="unfinished">Inverse les couleurs de l&apos;image</translation>
+        <translation>Inverse les couleurs de l&apos;image</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="41"/>
         <source>NVG</source>
-        <translation type="unfinished">Niveaux de gris</translation>
+        <translation>Niveaux de gris</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="42"/>
         <source>Set the colors to levels of gray</source>
-        <translation type="unfinished">Convertir en niveau de gris</translation>
+        <translation>Convertir en niveau de gris</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="44"/>
         <source>Black and White</source>
-        <translation type="unfinished">Noir et blanc</translation>
+        <translation>Noir et blanc</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="46"/>
         <source>Glow effect</source>
-        <translation type="unfinished">Effet lumineux</translation>
+        <translation>Effet lumineux</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="48"/>
         <source>Sepia</source>
-        <translation type="unfinished">Sépia</translation>
+        <translation>Sépia</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="51"/>
         <location filename="../items/PictureConfig.cpp" line="95"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Opacité</translation>
     </message>
     <message>
         <location filename="../items/PictureConfig.cpp" line="96"/>
@@ -945,43 +861,39 @@ Do you want to open the web page?</source>
 
 0: transparent
 100: opaque</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur de l&apos;opacité.
+
+0 : Transparent
+100 : Opaque</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
         <source>Transform</source>
-        <translation type="unfinished">Transformer</translation>
+        <translation>Transformer</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
         <source>Invert</source>
-        <translation type="unfinished">Inverser</translation>
+        <translation>Inverser</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
         <source>Flip</source>
-        <translation type="unfinished">Retourner</translation>
+        <translation>Retourner</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
         <source>Crop</source>
-        <translation type="unfinished"></translation>
+        <translation>Recadrer</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
         <source>Effects</source>
-        <translation type="unfinished">Effets</translation>
+        <translation>Effets</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
         <source>apply to all</source>
-        <translation type="unfinished">appliquer à tous</translation>
+        <translation>appliquer à tous</translation>
     </message>
 </context>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="40"/>
         <location filename="../items/PictureContent.cpp" line="96"/>
         <source>...</source>
         <translation>...</translation>
@@ -999,7 +911,7 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../items/PictureContent.h" line="38"/>
         <source>Picture</source>
-        <translation type="unfinished">Image</translation>
+        <translation>Image</translation>
     </message>
 </context>
 <context>
@@ -1012,7 +924,7 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="734"/>
         <source>Visual Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editeur visuel</translation>
     </message>
 </context>
 <context>
@@ -1063,7 +975,7 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../items/TextConfig.cpp" line="28"/>
         <source>Text</source>
-        <translation type="unfinished">Texte</translation>
+        <translation>Texte</translation>
     </message>
 </context>
 <context>
@@ -1076,25 +988,23 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../items/TextContent.cpp" line="55"/>
         <source>right click to edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>clic droit pour modifier...</translation>
     </message>
     <message>
         <location filename="../items/TextContent.h" line="53"/>
         <source>Text</source>
-        <translation type="unfinished">Texte</translation>
+        <translation>Texte</translation>
     </message>
 </context>
 <context>
     <name>TextProperties</name>
     <message>
-        <location filename="../items/TextProperties.ui"/>
         <source>edit shape</source>
-        <translation type="unfinished"></translation>
+        <translation>modifier la forme</translation>
     </message>
     <message>
-        <location filename="../items/TextProperties.ui"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
 </context>
 <context>
@@ -1102,37 +1012,33 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../VersionCheckDialog.cpp" line="37"/>
         <source>checking</source>
-        <translation type="unfinished"></translation>
+        <translation>vérification</translation>
     </message>
     <message>
         <location filename="../VersionCheckDialog.cpp" line="85"/>
         <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Télécharger</translation>
     </message>
     <message>
         <location filename="../VersionCheckDialog.cpp" line="96"/>
         <source>network timeout</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.ui"/>
         <source>Version Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Recherche de version</translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.ui"/>
         <source>Checking for latest version</source>
-        <translation type="unfinished"></translation>
+        <translation>Recherche de la dernière version</translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.ui"/>
         <source>Installed Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Version intallée</translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.ui"/>
         <source>Available Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Version disponible</translation>
     </message>
 </context>
 <context>
@@ -1140,7 +1046,7 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../MainWindow.cpp" line="103"/>
         <source>show this warning again next time</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher cet avertissement à nouveau la prochaine fois</translation>
     </message>
 </context>
 <context>
@@ -1156,7 +1062,6 @@ Do you want to open the web page?</source>
         <translation>Rechercher</translation>
     </message>
     <message>
-        <location filename="../items/WebContentSelectorItem.ui"/>
         <source>Flickr Search</source>
         <translation>Recherche Flickr</translation>
     </message>
@@ -1166,22 +1071,22 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../items/WebcamContent.cpp" line="30"/>
         <source>This is a mirror ;-)</source>
-        <translation type="unfinished">C&apos;est un miroir ;-)</translation>
+        <translation>C&apos;est un miroir ;-)</translation>
     </message>
     <message>
         <location filename="../items/WebcamContent.cpp" line="37"/>
         <source>Mirror Video</source>
-        <translation type="unfinished">Miroir Vidéo</translation>
+        <translation>Miroir Vidéo</translation>
     </message>
     <message>
         <location filename="../items/WebcamContent.cpp" line="43"/>
         <source>Still picture</source>
-        <translation type="unfinished">Image imobile</translation>
+        <translation>Image imobile</translation>
     </message>
     <message>
         <location filename="../items/WebcamContent.h" line="32"/>
         <source>Webcam</source>
-        <translation type="unfinished"></translation>
+        <translation>Webcam</translation>
     </message>
 </context>
 <context>
@@ -1194,12 +1099,12 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../XmlRead.cpp" line="40"/>
         <source>Unable to load the Fotowall file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le fichier Fotowall %1</translation>
     </message>
     <message>
         <location filename="../XmlRead.cpp" line="49"/>
         <source>Unable to parse the Fotowall file %1. The error was: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;analyse le fichier Fotowall %1. L&apos;erreur était : %2</translation>
     </message>
     <message>
         <location filename="../XmlRead.cpp" line="49"/>
@@ -1217,7 +1122,7 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../XmlSave.cpp" line="32"/>
         <source>Error saving to the Fotowall file &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de sauvegarde dans le fichier Fotowall &apos;%1&apos;</translation>
     </message>
 </context>
 </TS>
