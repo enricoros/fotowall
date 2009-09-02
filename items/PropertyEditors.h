@@ -20,39 +20,58 @@
 #include <QAbstractSlider>
 #include <QMetaProperty>
 #include <QPointer>
+#include <QVariant>
 
-class PE_AbstractSlider : public QObject
+template<class C>
+class PE_TypeControl : public QObject
+{
+    public:
+        PE_TypeControl(C * control, QObject * target, const char * propertyName, QObject * parent = 0)
+          : QObject(parent)
+          , m_control(control)
+          , m_target(target)
+          , m_isValid(false)
+        {
+            // find the property
+            int idx = m_target->metaObject()->indexOfProperty(propertyName);
+            if (idx == -1) {
+                qWarning("PE_TypeControl: target has no property '%s'", propertyName ? propertyName : "NULL");
+                return;
+            }
+            m_property = m_target->metaObject()->property(idx);
+        }
+
+        bool isValid() const
+        {
+            return m_isValid;
+        }
+
+    protected:
+        QPointer<C> m_control;
+        QPointer<QObject> m_target;
+        QMetaProperty m_property;
+        bool m_isValid;
+
+    private:
+        PE_TypeControl();
+};
+
+class PE_AbstractSlider : public PE_TypeControl<QAbstractSlider>
 {
     Q_OBJECT
     public:
         PE_AbstractSlider(QAbstractSlider * slider, QObject * target, const char * propertyName, QObject * parent = 0);
-
-        bool isValid() const;
-
-    private:
-        QPointer<QAbstractSlider> m_slider;
-        QPointer<QObject> m_target;
-        QMetaProperty m_property;
-        bool m_isValid;
 
     private Q_SLOTS:
         void slotSliderValueChanged(int);
         void slotPropertyChanged();
 };
 
-class PE_AbstractButton : public QObject
+class PE_AbstractButton : public PE_TypeControl<QAbstractButton>
 {
     Q_OBJECT
     public:
         PE_AbstractButton(QAbstractButton * button, QObject * target, const char * propertyName, QObject * parent = 0);
-
-        bool isValid() const;
-
-    private:
-        QPointer<QAbstractButton> m_button;
-        QPointer<QObject> m_target;
-        QMetaProperty m_property;
-        bool m_isValid;
 
     private Q_SLOTS:
         void slotButtonChecked(bool checked);

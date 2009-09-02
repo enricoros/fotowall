@@ -15,20 +15,10 @@
 #include "PropertyEditors.h"
 #include <QDebug>
 
-PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _target, const char * propertyName, QObject * parent)
-  : QObject(parent)
-  , m_slider(_slider)
-  , m_target(_target)
-  , m_isValid(false)
-{
-    // find the property
-    int idx = m_target->metaObject()->indexOfProperty(propertyName);
-    if (idx == -1) {
-        qWarning("PE_AbstractSlider: target has no property '%s'", propertyName ? propertyName : "NULL");
-        return;
-    }
-    m_property = m_target->metaObject()->property(idx);
 
+PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _target, const char * propertyName, QObject * parent)
+  : PE_TypeControl<QAbstractSlider>(_slider, _target, propertyName, parent)
+{
     // read initial value and link to property changes
     slotPropertyChanged();
 #if QT_VERSION >= 0x040500
@@ -43,7 +33,7 @@ PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _targe
 #endif
 
     // link to the slider changes
-    connect(m_slider.data(), SIGNAL(valueChanged(int)), this, SLOT(slotSliderValueChanged(int)));
+    connect(m_control.data(), SIGNAL(valueChanged(int)), this, SLOT(slotSliderValueChanged(int)));
 
     // allow Int and Double properties only
     if (m_property.type() != QVariant::Int && m_property.type() != QVariant::Double)
@@ -52,15 +42,10 @@ PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _targe
         m_isValid = true;
 }
 
-bool PE_AbstractSlider::isValid() const
-{
-    return m_isValid;
-}
-
 void PE_AbstractSlider::slotSliderValueChanged(int intValue)
 {
     // skip if link dropped
-    if (!m_slider || !m_target)
+    if (!m_control || !m_target)
         return;
 
     // QVariant::Int: properties are directly linked to the slider
@@ -70,8 +55,8 @@ void PE_AbstractSlider::slotSliderValueChanged(int intValue)
 
     // QVariant::Double: remap to the 0..1 range
     else if (m_property.type() == QVariant::Double) {
-        if (m_slider->maximum() > m_slider->minimum()) {
-            qreal realVal = (qreal)(intValue - m_slider->minimum()) / (qreal)(m_slider->maximum() - m_slider->minimum());
+        if (m_control->maximum() > m_control->minimum()) {
+            qreal realVal = (qreal)(intValue - m_control->minimum()) / (qreal)(m_control->maximum() - m_control->minimum());
             m_property.write(m_target.data(), realVal);
         }
     }
@@ -80,20 +65,20 @@ void PE_AbstractSlider::slotSliderValueChanged(int intValue)
 void PE_AbstractSlider::slotPropertyChanged()
 {
     // skip if link dropped
-    if (!m_slider || !m_target)
+    if (!m_control || !m_target)
         return;
 
     // QVariant::Int: slider gets the property value
     if (m_property.type() == QVariant::Int) {
         int intValue = m_property.read(m_target.data()).toInt();
-        m_slider->setValue(intValue);
+        m_control->setValue(intValue);
     }
 
     // QVariant::Double: slider is scrolled from start to stop for the 0..1 property value
     else if (m_property.type() == QVariant::Double) {
         qreal realValue = m_property.read(m_target.data()).toDouble();
-        int intValue = m_slider->minimum() + (int)(realValue * (m_slider->maximum() - m_slider->minimum()));
-        m_slider->setValue(intValue);
+        int intValue = m_control->minimum() + (int)(realValue * (m_control->maximum() - m_control->minimum()));
+        m_control->setValue(intValue);
     }
 }
 
@@ -101,19 +86,8 @@ void PE_AbstractSlider::slotPropertyChanged()
 
 
 PE_AbstractButton::PE_AbstractButton(QAbstractButton * _button, QObject * _target, const char * propertyName, QObject * parent)
-  : QObject(parent)
-  , m_button(_button)
-  , m_target(_target)
-  , m_isValid(false)
+  : PE_TypeControl<QAbstractButton>(_button, _target, propertyName, parent)
 {
-    // find the property
-    int idx = m_target->metaObject()->indexOfProperty(propertyName);
-    if (idx == -1) {
-        qWarning("PE_AbstractButton: target has no property '%s'", propertyName ? propertyName : "NULL");
-        return;
-    }
-    m_property = m_target->metaObject()->property(idx);
-
     // read initial value and link to property changes
     slotPropertyChanged();
 #if QT_VERSION >= 0x040500
@@ -128,7 +102,7 @@ PE_AbstractButton::PE_AbstractButton(QAbstractButton * _button, QObject * _targe
 #endif
 
     // link to the abstract button checkstate change
-    connect(m_button.data(), SIGNAL(toggled(bool)), this, SLOT(slotButtonChecked(bool)));
+    connect(m_control.data(), SIGNAL(toggled(bool)), this, SLOT(slotButtonChecked(bool)));
 
     // allow Bool properties only
     if (m_property.type() != QVariant::Bool)
@@ -137,23 +111,18 @@ PE_AbstractButton::PE_AbstractButton(QAbstractButton * _button, QObject * _targe
         m_isValid = true;
 }
 
-bool PE_AbstractButton::isValid() const
-{
-    return m_isValid;
-}
-
 void PE_AbstractButton::slotButtonChecked(bool boolValue)
 {
     // set the property to the current state of the button
-    if (m_button && m_target && m_property.type() == QVariant::Int)
+    if (m_control && m_target && m_property.type() == QVariant::Int)
         m_property.write(m_target.data(), boolValue);
 }
 
 void PE_AbstractButton::slotPropertyChanged()
 {
     // set the button check state as the bool property
-    if (m_button && m_target && m_property.type() == QVariant::Bool) {
+    if (m_control && m_target && m_property.type() == QVariant::Bool) {
         bool boolValue = m_property.read(m_target.data()).toBool();
-        m_button->setChecked(boolValue);
+        m_control->setChecked(boolValue);
     }
 }
