@@ -16,6 +16,7 @@
 #define __PropertyEditors_h__
 
 #include <QObject>
+#include <QAbstractButton>
 #include <QAbstractSlider>
 #include <QMetaProperty>
 #include <QPointer>
@@ -25,7 +26,6 @@ class PE_AbstractSlider : public QObject
     Q_OBJECT
     public:
         PE_AbstractSlider(QAbstractSlider * slider, QObject * target, const char * propertyName, QObject * parent = 0);
-        ~PE_AbstractSlider();
 
         bool isValid() const;
 
@@ -37,6 +37,25 @@ class PE_AbstractSlider : public QObject
 
     private Q_SLOTS:
         void slotSliderValueChanged(int);
+        void slotPropertyChanged();
+};
+
+class PE_AbstractButton : public QObject
+{
+    Q_OBJECT
+    public:
+        PE_AbstractButton(QAbstractButton * button, QObject * target, const char * propertyName, QObject * parent = 0);
+
+        bool isValid() const;
+
+    private:
+        QPointer<QAbstractButton> m_button;
+        QPointer<QObject> m_target;
+        QMetaProperty m_property;
+        bool m_isValid;
+
+    private Q_SLOTS:
+        void slotButtonChecked(bool checked);
         void slotPropertyChanged();
 };
 

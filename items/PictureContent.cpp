@@ -181,7 +181,7 @@ QWidget * PictureContent::createPropertyWidget()
     PictureProperties * p = new PictureProperties();
 
     // connect actions
-    PE_AbstractSlider * pe = new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
+    /*PE_AbstractSlider * pe =*/ new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
 
     // properties link
     //p->bEditShape->setChecked(isShapeEditing());

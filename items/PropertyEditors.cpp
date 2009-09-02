@@ -31,28 +31,25 @@ PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _targe
 
     // read initial value and link to property changes
     slotPropertyChanged();
-/*#if QT_VERSION >= 0x040500
+#if QT_VERSION >= 0x040500
     if (m_property.hasNotifySignal()) {
         QMetaMethod notifySignal = m_property.notifySignal();
-        connect(m_target.data(), notifySignal.signature(), this, SLOT(slotPropertyChanged()));
+        int nameLength = qstrlen(notifySignal.signature());
+        char signalName[nameLength + 2];
+        signalName[0] = '0' + QSIGNAL_CODE;
+        qstrcpy(signalName + 1, notifySignal.signature());
+        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
     }
-#endif*/
+#endif
 
     // link to the slider changes
     connect(m_slider.data(), SIGNAL(valueChanged(int)), this, SLOT(slotSliderValueChanged(int)));
 
-    // link to the property based on its type
-    if (m_property.type() != QVariant::Int && m_property.type() != QVariant::Double) {
+    // allow Int and Double properties only
+    if (m_property.type() != QVariant::Int && m_property.type() != QVariant::Double)
         qWarning("PE_AbstractSlider: unhandled property '%s' of type %d", propertyName, (int)m_property.type());
-        return;
-    }
-
-    // all ok
-    m_isValid = true;
-}
-
-PE_AbstractSlider::~PE_AbstractSlider()
-{
+    else
+        m_isValid = true;
 }
 
 bool PE_AbstractSlider::isValid() const
@@ -97,5 +94,66 @@ void PE_AbstractSlider::slotPropertyChanged()
         qreal realValue = m_property.read(m_target.data()).toDouble();
         int intValue = m_slider->minimum() + (int)(realValue * (m_slider->maximum() - m_slider->minimum()));
         m_slider->setValue(intValue);
+    }
+}
+
+
+
+
+PE_AbstractButton::PE_AbstractButton(QAbstractButton * _button, QObject * _target, const char * propertyName, QObject * parent)
+  : QObject(parent)
+  , m_button(_button)
+  , m_target(_target)
+  , m_isValid(false)
+{
+    // find the property
+    int idx = m_target->metaObject()->indexOfProperty(propertyName);
+    if (idx == -1) {
+        qWarning("PE_AbstractButton: target has no property '%s'", propertyName ? propertyName : "NULL");
+        return;
+    }
+    m_property = m_target->metaObject()->property(idx);
+
+    // read initial value and link to property changes
+    slotPropertyChanged();
+#if QT_VERSION >= 0x040500
+    if (m_property.hasNotifySignal()) {
+        QMetaMethod notifySignal = m_property.notifySignal();
+        int nameLength = qstrlen(notifySignal.signature());
+        char signalName[nameLength + 2];
+        signalName[0] = '0' + QSIGNAL_CODE;
+        qstrcpy(signalName + 1, notifySignal.signature());
+        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
+    }
+#endif
+
+    // link to the abstract button checkstate change
+    connect(m_button.data(), SIGNAL(toggled(bool)), this, SLOT(slotButtonChecked(bool)));
+
+    // allow Bool properties only
+    if (m_property.type() != QVariant::Bool)
+        qWarning("PE_AbstractSlider: unhandled property '%s' of type %d", propertyName, (int)m_property.type());
+    else
+        m_isValid = true;
+}
+
+bool PE_AbstractButton::isValid() const
+{
+    return m_isValid;
+}
+
+void PE_AbstractButton::slotButtonChecked(bool boolValue)
+{
+    // set the property to the current state of the button
+    if (m_button && m_target && m_property.type() == QVariant::Int)
+        m_property.write(m_target.data(), boolValue);
+}
+
+void PE_AbstractButton::slotPropertyChanged()
+{
+    // set the button check state as the bool property
+    if (m_button && m_target && m_property.type() == QVariant::Bool) {
+        bool boolValue = m_property.read(m_target.data()).toBool();
+        m_button->setChecked(boolValue);
     }
 }
