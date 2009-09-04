@@ -125,7 +125,7 @@ win32|macx {
 }
 
 # Translations (make ts; make qm)
-LUPDATE = lupdate -silent -no-obsolete -no-ui-lines
+LUPDATE = lupdate -silent -no-obsolete -no-ui-lines -locations relative
 LRELEASE = lrelease -silent -compress -removeidentical
 ts.commands = ($$LUPDATE -pro translations.txt && $$LUPDATE 3rdparty/posterazor/posterazor.pri)
 qm.commands = ($$LRELEASE translations/*.ts && $$LRELEASE 3rdparty/posterazor/*.ts)
