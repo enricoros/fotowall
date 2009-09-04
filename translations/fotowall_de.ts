@@ -555,7 +555,34 @@ p, li { white-space: pre-wrap; }
   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
+&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
+&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
+  &lt;div&gt;
+    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
+    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;Herzlich Willkommen&lt;/span&gt;
+    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
+  &lt;/div&gt;
+
+  &lt;br /&gt;
+  &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;&lt;b&gt;Einfach ausprobieren! Das Spielen mit Fotowall ist sehr einfach ...&lt;/b&gt;&lt;/div&gt;
+
+  &lt;div&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;b&gt;&lt;img src=&quot;:/data/action-add.png&quot;&gt;&amp;nbsp;&amp;nbsp; Neues Bild&lt;/b&gt; einfach mit &lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Bild hinzufügen&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: yellow;&quot;&gt;&lt;/span&gt; Knopf hinzufügen oder nutze Drag-and-Drop&lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;i&gt;&lt;img src=&quot;:/data/action-rotate.png&quot;&gt;&amp;nbsp;&amp;nbsp; Das &lt;/i&gt;&lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Bild einfach &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;irgendwo plazieren&lt;/span&gt;&lt;/i&gt; und anschließend einfach zum Modifizieren jedes der kleinen Symbole auf dem Rahmen ausprobieren.&lt;/li&gt;
+      &lt;li&gt;&lt;i&gt;&lt;img src=&quot;:/data/action-configure.png&quot;&gt;&amp;nbsp;&amp;nbsp; &lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Klicke mit der rechten Maustaste auf das Bild&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um das &lt;b&gt;&lt;span style=&quot;font-style: italic;&quot;&gt;Aussehen des Bildes zu verändern&lt;/span&gt;&lt;/b&gt;.&lt;/li&gt;
+      &lt;li&gt; Nutze einen &lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Doppelklick auf das Bild&lt;/span&gt;&lt;/i&gt;&lt;b&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um es als &lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Hintergrundbild&lt;/span&gt; zu nutzen.&lt;/li&gt;
+      &lt;li&gt;&lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Klicke auf die Bildecken&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um die &lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Hintergrundfarben&lt;/span&gt; zu ändern.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+
+  &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;Es wäre toll, wenn Ihr Eure schönsten Arbeiten mit anderen Leuten und Freunden teilen würdet :-) ...&lt;br&gt;&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
+
+  &lt;br/&gt;
+  &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
