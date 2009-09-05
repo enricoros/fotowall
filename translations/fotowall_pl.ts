@@ -4,22 +4,22 @@
 <context>
     <name>AbstractConfig</name>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="45"/>
+        <location filename="../items/AbstractConfig.cpp" line="+45"/>
         <source> x </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="156"/>
+        <location line="+111"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="236"/>
+        <location line="+80"/>
         <source>Choose frame images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="236"/>
+        <location line="+0"/>
         <source>Images (*.svg)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -29,67 +29,67 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>Stacking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>To Front</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>Raise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>Lower</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>To Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>Operations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>To Background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>Looks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>new frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>apply to all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location/>
         <source>Show Reflection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -97,44 +97,44 @@
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="73"/>
+        <location filename="../items/AbstractContent.cpp" line="+73"/>
         <source>Change properties...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="79"/>
+        <location line="+6"/>
         <source>Drag around to change the perspective.
 Hold SHIFT to move faster.
 Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="87"/>
+        <location line="+8"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="703"/>
+        <location line="+616"/>
         <source>Choose the Image file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="703"/>
+        <location line="+0"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="742"/>
+        <location line="+39"/>
         <source>File Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="742"/>
+        <location line="+0"/>
         <source>Error saving the Object to &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="752"/>
+        <location line="+10"/>
         <source>Drag with Left or Right mouse button.
  - Hold down SHIFT for free resize
  - Hold down CTRL to allow rotation
@@ -146,7 +146,7 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>ColorAction</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="260"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+260"/>
         <source>Text Color</source>
         <translation type="unfinished"></translation>
     </message>
@@ -154,37 +154,37 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="892"/>
+        <location filename="../Desk.cpp" line="+892"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="896"/>
+        <location line="+4"/>
         <source>Front</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="919"/>
+        <location line="+23"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="928"/>
+        <location line="+9"/>
         <source>SELECTION</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="927"/>
+        <location line="-1"/>
         <source>%1 objects selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="1049"/>
+        <location line="+122"/>
         <source>Delete content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Desk.cpp" line="1049"/>
+        <location line="+0"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -197,47 +197,47 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>&lt;b&gt;Exact Size&lt;/b&gt; mode&lt;br&gt;The content has &lt;i&gt;the same size&lt;/i&gt; on screen and on printer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>Height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>cm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>inches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>Dot Per Inch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>Screen Dpi:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>Printer Dpi:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location/>
         <source>Print in landscape mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -245,69 +245,69 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="123"/>
+        <location filename="../ExportWizard.cpp" line="+123"/>
         <source>Wallpaper Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="123"/>
+        <location line="+0"/>
         <source>Can&apos;t save the image to disk.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="138"/>
+        <location line="+15"/>
         <source>Manual Wallpaper Change</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="138"/>
+        <location line="+0"/>
         <source>KDE4 doesn&apos;t yet support changing wallpaper automatically.
 Go to the Desktop Settings and select the file:
   %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="155"/>
+        <location line="+17"/>
         <source>No file selected !</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="155"/>
+        <location line="+0"/>
         <source>You need to choose a file path for saving.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="183"/>
+        <location line="+28"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="183"/>
+        <location line="+0"/>
         <source>The target image is %1 bytes long</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="185"/>
+        <location line="+2"/>
         <source>Rendering Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="185"/>
+        <location line="+0"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="215"/>
+        <location line="+30"/>
         <source>Export poster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="283"/>
+        <location line="+68"/>
         <source>Choose the Image file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="283"/>
+        <location line="+0"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -317,182 +317,182 @@ Go to the Desktop Settings and select the file:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Select the target.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Wallpaper</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Poster with PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Click the Finish button to change your wallpaper.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Scale Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Zoomed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Scaled, keep proportions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Scaled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Original Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Your work will be saved to a picture. Please fill the following options and click Finish.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>File properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Output file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Choose...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Size and Orientation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Landscape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Print Posters at home.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>PosteRazor home (external website)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Click Finish to start PosteRazor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>How to use PosteRazor (external tutorial video)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Print Picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Select the paper options and click Finish to print.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>cm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>inches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Dot Per Inch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Dpi:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Print in landscape mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location/>
         <source>Keep proportions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -505,7 +505,7 @@ Go to the Desktop Settings and select the file:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GlowEffectDialog.ui"/>
+        <location/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -518,7 +518,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HelpItem</name>
     <message>
-        <location filename="../items/HelpItem.cpp" line="37"/>
+        <location filename="../items/HelpItem.cpp" line="+37"/>
         <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
@@ -554,7 +554,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HtmlTextEdit</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="202"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="-58"/>
         <source>Insert HTML entity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -562,214 +562,214 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="327"/>
+        <location filename="../MainWindow.cpp" line="+327"/>
         <source>Enable force field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="333"/>
+        <location line="+6"/>
         <source>Auto-arrange new pictures</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="339"/>
+        <location line="+6"/>
         <source>Rearrange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="341"/>
+        <location line="+2"/>
         <source>Uniform</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="346"/>
+        <location line="+5"/>
         <source>Shaped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="351"/>
+        <location line="+5"/>
         <source>Collage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="365"/>
+        <location line="+14"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="366"/>
+        <location line="+1"/>
         <source>Transparency can be saved to PNG images only.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="372"/>
+        <location line="+6"/>
         <source>Gradient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="378"/>
+        <location line="+6"/>
         <source>Content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="379"/>
+        <location line="+1"/>
         <source>Double click on any content to put it on background.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="388"/>
+        <location line="+9"/>
         <source>Content Aspect Ratio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="393"/>
+        <location line="+5"/>
         <source>Keep proportions by expanding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="399"/>
+        <location line="+6"/>
         <source>Keep proportions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="405"/>
+        <location line="+6"/>
         <source>Ignore proportions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="421"/>
+        <location line="+16"/>
         <source>Top bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="427"/>
+        <location line="+6"/>
         <source>Bottom bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="435"/>
+        <location line="+8"/>
         <source>Set title...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="439"/>
+        <location line="+4"/>
         <source>Clear title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="451"/>
+        <location line="+12"/>
         <source>Tutorial Video (0.2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="455"/>
+        <location line="+4"/>
         <source>Check for Updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="459"/>
+        <location line="+4"/>
         <source>Fotowall&apos;s Blog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="473"/>
+        <location line="+14"/>
         <source>Select all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="474"/>
+        <location line="+1"/>
         <source>CTRL+A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="509"/>
+        <location line="+35"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="521"/>
-        <location filename="../MainWindow.cpp" line="532"/>
-        <location filename="../MainWindow.cpp" line="563"/>
+        <location line="+12"/>
+        <location line="+11"/>
+        <location line="+31"/>
         <source>print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="605"/>
+        <location line="+43"/>
         <source>Select one or more pictures to add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="605"/>
+        <location line="+0"/>
         <source>Images (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="627"/>
+        <location line="+25"/>
         <source>OpenGL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="627"/>
+        <location line="+0"/>
         <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system. Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="649"/>
+        <location line="+22"/>
         <source>Transparency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="649"/>
+        <location line="+0"/>
         <source>This feature has not been widely tested yet.&lt;br&gt; - on linux it requires compositing (like compiz/beryl, kwin4)&lt;br&gt; - on windows and mac it seems to work&lt;br&gt;If you see a black background then transparency is not supported on your system.&lt;br&gt;&lt;br&gt;NOTE: you should set the &apos;Transparent&apos; Background to notice the the window transparency.&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="682"/>
-        <location filename="../MainWindow.cpp" line="688"/>
+        <location line="+34"/>
+        <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="682"/>
+        <location line="-12"/>
         <source>Fotowall (*.fotowall)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="741"/>
+        <location line="+68"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="741"/>
+        <location line="+0"/>
         <source>Insert the title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="753"/>
+        <location line="+12"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="753"/>
+        <location line="+0"/>
         <source>This is the blog of the main author of Fotowall.
 You can find some news while we set up a proper website ;-)
 Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="764"/>
+        <location line="+11"/>
         <source>Opening the Web Tutorial</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="764"/>
+        <location line="+0"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 It&apos;s about Fotowall 0.2 a rather old version.
 Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="844"/>
+        <location line="+80"/>
         <source>Support (%1)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -779,102 +779,102 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>CANVAS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Decorations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>HELP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>OnLine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Introduction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>SETUP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Mode:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Screen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>CD Cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>DVD Cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Exact Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Transparent Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>FILE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Add Picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Add Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Add Webcam</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location/>
         <source>Add Flickr</source>
         <translation type="unfinished"></translation>
     </message>
@@ -882,58 +882,58 @@ Do you want to open the web page?</source>
 <context>
     <name>PictureConfig</name>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="33"/>
+        <location filename="../items/PictureConfig.cpp" line="+33"/>
         <source>Picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="36"/>
+        <location line="+3"/>
         <source>No effects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="38"/>
+        <location line="+2"/>
         <source>Invert colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="39"/>
+        <location line="+1"/>
         <source>Invert the colors of the picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="41"/>
+        <location line="+2"/>
         <source>NVG</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="42"/>
+        <location line="+1"/>
         <source>Set the colors to levels of gray</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="44"/>
+        <location line="+2"/>
         <source>Black and White</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="46"/>
+        <location line="+2"/>
         <source>Glow effect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="48"/>
+        <location line="+2"/>
         <source>Sepia</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="51"/>
-        <location filename="../items/PictureConfig.cpp" line="95"/>
+        <location line="+3"/>
+        <location line="+44"/>
         <source>Opacity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="96"/>
+        <location line="+1"/>
         <source>Opacity value.
 
 0: transparent
@@ -946,27 +946,27 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
+        <location/>
         <source>Invert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
+        <location/>
         <source>Flip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
+        <location/>
         <source>Crop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
+        <location/>
         <source>Effects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
+        <location/>
         <source>apply to all</source>
         <translation type="unfinished"></translation>
     </message>
@@ -974,23 +974,23 @@ Do you want to open the web page?</source>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="40"/>
-        <location filename="../items/PictureContent.cpp" line="96"/>
+        <location filename="../items/PictureContent.cpp" line="+40"/>
+        <location line="+56"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureContent.cpp" line="47"/>
+        <location line="-49"/>
         <source>Flip horizontally</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureContent.cpp" line="53"/>
+        <location line="+6"/>
         <source>Flip vertically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/PictureContent.h" line="38"/>
+        <location filename="../items/PictureContent.h" line="+38"/>
         <source>Picture</source>
         <translation type="unfinished"></translation>
     </message>
@@ -998,12 +998,12 @@ Do you want to open the web page?</source>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="735"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+533"/>
         <source>Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="734"/>
+        <location line="-1"/>
         <source>Visual Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1011,42 +1011,42 @@ Do you want to open the web page?</source>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="392"/>
+        <location line="-342"/>
         <source>Bold</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="393"/>
+        <location line="+1"/>
         <source>CTRL+B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="398"/>
+        <location line="+5"/>
         <source>Italic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="399"/>
+        <location line="+1"/>
         <source>CTRL+I</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="404"/>
+        <location line="+5"/>
         <source>Underline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="405"/>
+        <location line="+1"/>
         <source>CTRL+U</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="444"/>
+        <location line="+39"/>
         <source>Superscript</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="450"/>
+        <location line="+6"/>
         <source>Subscript</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1054,7 +1054,7 @@ Do you want to open the web page?</source>
 <context>
     <name>TextConfig</name>
     <message>
-        <location filename="../items/TextConfig.cpp" line="28"/>
+        <location filename="../items/TextConfig.cpp" line="+28"/>
         <source>Text</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1062,17 +1062,17 @@ Do you want to open the web page?</source>
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../items/TextContent.cpp" line="40"/>
+        <location filename="../items/TextContent.cpp" line="+40"/>
         <source>Right click to Edit the text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/TextContent.cpp" line="55"/>
+        <location line="+15"/>
         <source>right click to edit...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/TextContent.h" line="53"/>
+        <location filename="../items/TextContent.h" line="+53"/>
         <source>Text</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1085,7 +1085,7 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/TextProperties.ui"/>
+        <location/>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1093,17 +1093,17 @@ Do you want to open the web page?</source>
 <context>
     <name>VersionCheckDialog</name>
     <message>
-        <location filename="../VersionCheckDialog.cpp" line="37"/>
+        <location filename="../VersionCheckDialog.cpp" line="+38"/>
         <source>checking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.cpp" line="85"/>
+        <location line="+48"/>
         <source>Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.cpp" line="96"/>
+        <location line="+11"/>
         <source>network timeout</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1113,17 +1113,17 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.ui"/>
+        <location/>
         <source>Checking for latest version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.ui"/>
+        <location/>
         <source>Installed Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.ui"/>
+        <location/>
         <source>Available Version</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1131,7 +1131,7 @@ Do you want to open the web page?</source>
 <context>
     <name>WarningBox</name>
     <message>
-        <location filename="../MainWindow.cpp" line="103"/>
+        <location filename="../MainWindow.cpp" line="-755"/>
         <source>show this warning again next time</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1139,12 +1139,12 @@ Do you want to open the web page?</source>
 <context>
     <name>WebContentSelectorItem</name>
     <message>
-        <location filename="../items/WebContentSelectorItem.cpp" line="229"/>
+        <location filename="../items/WebContentSelectorItem.cpp" line="+229"/>
         <source>cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/WebContentSelectorItem.cpp" line="270"/>
+        <location line="+41"/>
         <source>search</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1157,22 +1157,22 @@ Do you want to open the web page?</source>
 <context>
     <name>WebcamContent</name>
     <message>
-        <location filename="../items/WebcamContent.cpp" line="30"/>
+        <location filename="../items/WebcamContent.cpp" line="+30"/>
         <source>This is a mirror ;-)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/WebcamContent.cpp" line="37"/>
+        <location line="+7"/>
         <source>Mirror Video</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/WebcamContent.cpp" line="43"/>
+        <location line="+6"/>
         <source>Still picture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../items/WebcamContent.h" line="32"/>
+        <location filename="../items/WebcamContent.h" line="+32"/>
         <source>Webcam</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1180,22 +1180,22 @@ Do you want to open the web page?</source>
 <context>
     <name>XmlRead</name>
     <message>
-        <location filename="../XmlRead.cpp" line="40"/>
+        <location filename="../XmlRead.cpp" line="+40"/>
         <source>Loading error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="40"/>
+        <location line="+0"/>
         <source>Unable to load the Fotowall file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="49"/>
+        <location line="+9"/>
         <source>Unable to parse the Fotowall file %1. The error was: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlRead.cpp" line="49"/>
+        <location line="+0"/>
         <source>Parsing error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1203,12 +1203,12 @@ Do you want to open the web page?</source>
 <context>
     <name>XmlSave</name>
     <message>
-        <location filename="../XmlSave.cpp" line="32"/>
+        <location filename="../XmlSave.cpp" line="+32"/>
         <source>File Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../XmlSave.cpp" line="32"/>
+        <location line="+0"/>
         <source>Error saving to the Fotowall file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>

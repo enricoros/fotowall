@@ -320,7 +320,7 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
         QPointF iPos = shapedPaint ? blockPos : blockPos - blockRect.topLeft();
         blockPos += QPointF(0, blockRect.height());
 
-        qreal curLen = 10;
+        qreal curLen = 8;
 
         // 1.2. iterate over text fragments
         for (QTextBlock::iterator tbIt = tb.begin(); !(tbIt.atEnd()); ++tbIt) {
@@ -399,6 +399,7 @@ void TextContent::updateTextConstraints()
     }*/
 
     // 2. LAYOUT TEXT. find out Block rects and Document rect
+    int minCharSide = 0;
     m_blockRects.clear();
     m_textRect = QRect(0, 0, 0, 0);
     for (QTextBlock tb = m_text->begin(); tb.isValid(); tb = tb.next()) {
@@ -412,10 +413,13 @@ void TextContent::updateTextConstraints()
             if (!frag.isValid())
                 continue;
 
-            QFontMetrics metrics(frag.charFormat().font());
             QString text = frag.text();
             if (text.trimmed().isEmpty())
                 continue;
+
+            QFontMetrics metrics(frag.charFormat().font());
+            if (!minCharSide || metrics.height() > minCharSide)
+                minCharSide = metrics.height();
 
             // TODO: implement superscript / subscript (it's in charFormat's alignment)
             // it must be implemented in paint too
@@ -469,8 +473,8 @@ void TextContent::updateTextConstraints()
         // the path rect, instead of the path itself)
         m_shapeRect = m_shapePath.controlPointRect().toRect();
 #endif
-        static const int bezierMargin = 30;
-        m_shapeRect.adjust(-bezierMargin, -bezierMargin, bezierMargin, bezierMargin);
+        minCharSide = qBound(10, minCharSide, 500);
+        m_shapeRect.adjust(-minCharSide, -minCharSide, minCharSide, minCharSide);
 
         // FIXME: layout, save layouting and calc the exact size!
         //int w = m_shapeRect.width();

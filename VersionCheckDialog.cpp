@@ -25,6 +25,7 @@
 
 #define MAGIC_TOKEN "Last version is "
 #define DOWNLOADS_URL "http://code.google.com/p/fotowall/downloads/list"
+#define NETWORK_TIMEOUT 10000
 
 VersionCheckDialog::VersionCheckDialog(QWidget * parent)
   : QDialog(parent)
@@ -40,7 +41,7 @@ VersionCheckDialog::VersionCheckDialog(QWidget * parent)
     QNetworkRequest request(QUrl("http://code.google.com/p/fotowall/"));
     QNetworkReply * reply = m_nam->get(request);
     connect(reply, SIGNAL(finished()), this, SLOT(slotGotReply()));
-    QTimer::singleShot(5000, this, SLOT(slotTimeOut()));
+    QTimer::singleShot(NETWORK_TIMEOUT, this, SLOT(slotTimeOut()));
 }
 
 VersionCheckDialog::~VersionCheckDialog()
