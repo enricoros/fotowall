@@ -562,7 +562,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+327"/>
+        <location filename="../MainWindow.cpp" line="+328"/>
         <source>Enable force field</source>
         <translation type="unfinished"></translation>
     </message>

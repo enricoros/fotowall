@@ -72,6 +72,7 @@ class RubberBandStyle : public QCommonStyle {
 #include <QMessageBox>
 class WarningBox : public QDialog
 {
+    Q_OBJECT
     public:
         WarningBox(const QString & key, const QString & title, const QString & text)
 #if QT_VERSION >= 0x040500
