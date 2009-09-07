@@ -1,6 +1,6 @@
 # Check Qt >= 4.4
 contains(QT_VERSION, ^4\.[0-3]\..*) {
-    message("Cannot build Qt Creator with Qt version $$QT_VERSION .")
+    message("Cannot build Fotowall with Qt version $$QT_VERSION .")
     error("Use at least Qt 4.4.")
 }
 contains(QT_VERSION, ^4\.4\..*): message("Lots of features will be disabled with Qt $$QT_VERSION . Use Qt 4.5 or later.")
@@ -27,61 +27,8 @@ contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, o
 }
 
 # Fotowall input files
-HEADERS += 3rdparty/gsuggest.h \
-    CPixmap.h \
-    CroppingDialog.h \
-    CroppingWidget.h \
-    Desk.h \
-    ExactSizeDialog.h \
-    ExportWizard.h \
-    FlickrInterface.h \
-    GlowEffectDialog.h \
-    GlowEffectWidget.h \
-    GroupBoxWidget.h \
-    MainWindow.h \
-    ModeInfo.h \
-    PictureEffect.h \
-    RenderOpts.h \
-    VersionCheckDialog.h \
-    VideoProvider.h \
-    XmlRead.h \
-    XmlSave.h
-SOURCES += 3rdparty/gsuggest.cpp \
-    CPixmap.cpp \
-    CroppingDialog.cpp \
-    CroppingWidget.cpp \
-    Desk.cpp \
-    ExactSizeDialog.cpp \
-    ExportWizard.cpp \
-    FlickrInterface.cpp \
-    GlowEffectDialog.cpp \
-    GlowEffectWidget.cpp \
-    GroupBoxWidget.cpp \
-    MainWindow.cpp \
-    ModeInfo.cpp \
-    VersionCheckDialog.cpp \
-    VideoProvider.cpp \
-    XmlRead.cpp \
-    XmlSave.cpp \
-    main.cpp
-FORMS += CroppingDialog.ui \
-    ExactSizeDialog.ui \
-    ExportWizard.ui \
-    GlowEffectDialog.ui \
-    MainWindow.ui \
-    VersionCheckDialog.ui
-RESOURCES += fotowall.qrc
-TRANSLATIONS += translations/fotowall_de.ts \
-    translations/fotowall_fr.ts \
-    translations/fotowall_it.ts \
-    translations/fotowall_pl.ts \
-    translations/fotowall_pt_BR.ts
-
-# Sub-Components
-include(items/items.pri)
-include(frames/frames.pri)
-include(3rdparty/richtextedit/richtextedit.pri)
-include(3rdparty/videocapture/videocapture.pri)
+include(fotowall.pri)
+# Posterazor input files
 include(3rdparty/posterazor/posterazor.pri)
 
 # deployment on Linux
@@ -127,7 +74,7 @@ win32|macx {
 # Translations (make ts; make qm)
 LUPDATE = lupdate -silent -no-obsolete -no-ui-lines -locations relative
 LRELEASE = lrelease -silent -compress -removeidentical
-ts.commands = ($$LUPDATE -pro translations.txt && $$LUPDATE 3rdparty/posterazor/posterazor.pri)
-qm.commands = ($$LRELEASE translations/*.ts && $$LRELEASE 3rdparty/posterazor/*.ts)
+ts.commands = ($$LUPDATE fotowall.pri && $$LUPDATE 3rdparty/posterazor/posterazor.pri)
+qm.commands = ($$LRELEASE fotowall.pri && $$LRELEASE 3rdparty/posterazor/posterazor.pri)
 QMAKE_EXTRA_TARGETS += ts qm
 !exists(translations/fotowall_it.qm): {message("Compiling translations. To update strings type 'make ts', to recompile 'make qm'") system($$qm.commands)}

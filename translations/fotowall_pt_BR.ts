@@ -158,6 +158,14 @@ Use CTRL para cancelar as transformações.</translation>
     </message>
 </context>
 <context>
+    <name>CroppingDialog</name>
+    <message>
+        <location filename="../CroppingDialog.ui"/>
+        <source>Cropping</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Desk</name>
     <message>
         <location filename="../Desk.cpp" line="+892"/>
