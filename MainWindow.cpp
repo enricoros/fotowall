@@ -20,6 +20,7 @@
 #include "RenderOpts.h"
 #include "VersionCheckDialog.h"
 #include "VideoProvider.h"
+#include "WarningBox.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include <QAction>
@@ -32,6 +33,7 @@
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMenu>
+#include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -66,69 +68,6 @@ class RubberBandStyle : public QCommonStyle {
             if (hint == SH_RubberBand_Mask)
                 return false;
             return QCommonStyle::styleHint(hint, option, widget, returnData);
-        }
-};
-
-#include <QMessageBox>
-class WarningBox : public QDialog
-{
-    Q_OBJECT
-    public:
-        WarningBox(const QString & key, const QString & title, const QString & text)
-#if QT_VERSION >= 0x040500
-          : QDialog(0, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
-#else
-          : QDialog(0, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
-#endif
-        {
-            // skip this if asked to not repeat it
-            QSettings s;
-            if (s.value(key, false).toBool())
-                return;
-
-            // create contents
-            QLabel * label = new QLabel(this);
-            label->setTextInteractionFlags(Qt::NoTextInteraction);
-            label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-            label->setOpenExternalLinks(true);
-            label->setContentsMargins(2, 0, 0, 0);
-            label->setTextFormat(Qt::RichText);
-            label->setWordWrap(true);
-            label->setText(text);
-
-            QLabel * iconLabel = new QLabel(this);
-            iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-            iconLabel->setPixmap(style()->standardIcon(QStyle::SP_MessageBoxInformation).pixmap(32, 32));
-
-            QCheckBox * checkBox = new QCheckBox(this);
-            checkBox->setText(tr("show this warning again next time"));
-
-            QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, this);
-            buttonBox->setCenterButtons(style()->styleHint(QStyle::SH_MessageBox_CenterButtons, 0, this));
-            QObject::connect(buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(close()));
-            buttonBox->setFocus();
-
-            QGridLayout * grid = new QGridLayout(this);
-            grid->addWidget(iconLabel, 0, 0, 2, 1, Qt::AlignTop);
-            grid->addWidget(label, 0, 1, 1, 1);
-            grid->addWidget(checkBox, 1, 1, 1, 1);
-            grid->addWidget(buttonBox, 2, 0, 1, 2);
-
-            // customize and dialog
-            setWindowTitle(title);
-            setModal(true);
-            setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
-            QSize screenSize = QApplication::desktop()->availableGeometry(QCursor::pos()).size();
-            setMinimumWidth(qMin(screenSize.width() - 480, screenSize.width()/2));
-            setMinimumHeight(190);
-            grid->activate();
-            adjustSize();
-            resize(minimumSize());
-            exec();
-
-            // avoid popping up again, if chosen
-            if (!checkBox->isChecked())
-                s.setValue(key, true);
         }
 };
 

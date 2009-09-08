@@ -161,7 +161,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <name>CroppingDialog</name>
     <message>
         <location filename="../CroppingDialog.ui"/>
-        <source>Ritaglio</source>
+        <source>Cropping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -611,7 +611,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+328"/>
+        <location filename="../MainWindow.cpp" line="+267"/>
         <source>Enable force field</source>
         <translation>Campo di Forza</translation>
     </message>
@@ -1187,7 +1187,7 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>WarningBox</name>
     <message>
-        <location filename="../MainWindow.cpp" line="-755"/>
+        <location filename="../WarningBox.cpp" line="+53"/>
         <source>show this warning again next time</source>
         <translation>Mostra di nuovo questo avviso</translation>
     </message>

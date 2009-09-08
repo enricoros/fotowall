@@ -611,7 +611,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+328"/>
+        <location filename="../MainWindow.cpp" line="+267"/>
         <source>Enable force field</source>
         <translation>Habilitar campo de força</translation>
     </message>
@@ -1187,7 +1187,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>WarningBox</name>
     <message>
-        <location filename="../MainWindow.cpp" line="-755"/>
+        <location filename="../WarningBox.cpp" line="+53"/>
         <source>show this warning again next time</source>
         <translation>Mostrar este aviso novamente na próxima vez</translation>
     </message>
