@@ -157,6 +157,14 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     </message>
 </context>
 <context>
+    <name>CroppingDialog</name>
+    <message>
+        <location filename="../CroppingDialog.ui"/>
+        <source>Cropping</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Desk</name>
     <message>
         <location filename="../Desk.cpp" line="+892"/>
@@ -596,7 +604,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+327"/>
+        <location filename="../MainWindow.cpp" line="+328"/>
         <source>Enable force field</source>
         <translation>Aktiviere &apos;Erzwingen&apos;-Feld</translation>
     </message>

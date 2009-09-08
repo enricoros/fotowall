@@ -158,6 +158,14 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     </message>
 </context>
 <context>
+    <name>CroppingDialog</name>
+    <message>
+        <location filename="../CroppingDialog.ui"/>
+        <source>Ritaglio</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Desk</name>
     <message>
         <location filename="../Desk.cpp" line="+892"/>
@@ -603,7 +611,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+327"/>
+        <location filename="../MainWindow.cpp" line="+328"/>
         <source>Enable force field</source>
         <translation>Campo di Forza</translation>
     </message>
@@ -710,7 +718,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+4"/>
         <source>Fotowall&apos;s Blog</source>
-        <translation>Blog di FotoWall</translation>
+        <translation>Blog di Fotowall</translation>
     </message>
     <message>
         <location line="+14"/>

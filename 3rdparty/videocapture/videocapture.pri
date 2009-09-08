@@ -14,6 +14,6 @@ unix:!macx {
         VideoDevice_linux.cpp \
         VideoInput.cpp
 } else: {
-    message("VideoCapture is only available on Linux for now")
+#    message("3rdparty/VideoCapture is only available on Linux for now")
     DEFINES -= HAS_VIDEOCAPTURE
 }
