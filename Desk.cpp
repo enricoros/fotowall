@@ -848,6 +848,10 @@ void Desk::setBackContent(AbstractContent * content)
         m_backContent->hide();
     }
 
+    // hide gradient controls
+    m_grad1ColorPicker->hide();
+    m_grad2ColorPicker->hide();
+
     // update GUI
     m_backCache = QPixmap();
     update();
