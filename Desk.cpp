@@ -722,21 +722,10 @@ void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 /// Scene Background & Foreground
 void Desk::drawBackground(QPainter * painter, const QRectF & rect)
 {
-    // draw content if set
-    if (m_backContent) {
-        // regenerate cache if needed
-        QSize sceneSize = sceneRect().size().toSize();
-        if (m_backCache.isNull() || m_backCache.size() != sceneSize)
-            m_backCache = m_backContent->renderContent(sceneSize, m_backContentRatio);
-
-        // paint cached background
-        QRect targetRect = rect.toRect();
-        if (m_backContent->contentOpaque())
-            painter->setCompositionMode(QPainter::CompositionMode_Source);
-        painter->drawPixmap(targetRect, m_backCache, targetRect);
-        if (m_backContent->contentOpaque())
-            painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-        return;
+    // draw checkboard to simulate a transparent background
+    if (!RenderOpts::ARGBWindow && !m_backGradientEnabled /* && !m_backContent*/) {
+        QRect tileRect = rect.toAlignedRect();
+        painter->drawTiledPixmap(tileRect, m_backTile, QPointF(tileRect.left() % 100, tileRect.top() % 100));
     }
 
     // draw background gradient, if enabled
@@ -747,13 +736,23 @@ void Desk::drawBackground(QPainter * painter, const QRectF & rect)
         painter->setCompositionMode(QPainter::CompositionMode_Source);
         painter->fillRect(rect, lg);
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-        return;
     }
 
-    // draw checkboard to simulate a transparent background
-    if (!RenderOpts::ARGBWindow) {
-        QRect tileRect = rect.toAlignedRect();
-        painter->drawTiledPixmap(tileRect, m_backTile, QPointF(tileRect.left() % 100, tileRect.top() % 100));
+    // draw content if set
+    if (m_backContent) {
+        // regenerate cache if needed
+        QSize sceneSize = sceneRect().size().toSize();
+        if (m_backCache.isNull() || m_backCache.size() != sceneSize)
+            m_backCache = m_backContent->renderContent(sceneSize, m_backContentRatio);
+
+        // paint cached background
+        QRect targetRect = rect.toRect();
+        //if (m_backContent->contentOpaque())
+            //painter->setCompositionMode(QPainter::CompositionMode_Source);
+        painter->drawPixmap(targetRect, m_backCache, targetRect);
+        //if (m_backContent->contentOpaque())
+            //painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+        return;
     }
 }
 
