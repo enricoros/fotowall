@@ -157,9 +157,7 @@ MainWindow::MainWindow(QWidget * parent)
 #ifdef QT_OPENGL_LIB
     ui->accelBox->setEnabled(true);
 #endif
-#ifdef Q_OS_LINUX
     ui->transpBox->setEnabled(true);
-#endif
 #endif
     ui->widgetProperties->collapse();
     ui->widgetCanvas->expand();
@@ -588,6 +586,8 @@ void MainWindow::on_accelBox_toggled(bool) {}
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
 #if QT_VERSION >= 0x040500
+    if (!m_windowFlags)
+        m_windowFlags = windowFlags();
     if (transparent) {
         // one-time warning
         WarningBox("SkipWarnings/transparency", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"));
@@ -599,12 +599,24 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         // hint the render that we're transparent now
         RenderOpts::ARGBWindow = true;
 
+#ifdef Q_OS_WIN
+        // needed on windows for translucency
+        setWindowFlags(m_windowFlags | Qt::FramelessWindowHint);
+        show();
+#endif
+
         // set 'NoBackground' to show that we're transparent for real
         m_desk->setBackMode(1);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
         setAttribute(Qt::WA_NoSystemBackground, false);
+
+#ifdef Q_OS_WIN
+        // disable no-border on windows
+        setWindowFlags(m_windowFlags);
+        show();
+#endif
 
         // hint the render that we're opaque again
         RenderOpts::ARGBWindow = false;

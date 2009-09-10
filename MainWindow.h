@@ -55,9 +55,10 @@ class MainWindow : public QWidget
         void setDVDProject();
         void setExactSizeProject();
 
-        Ui::MainWindow *  ui;
+        Ui::MainWindow * ui;
         Desk *          m_desk;
         ModeInfo        m_modeInfo;
+        Qt::WindowFlags m_windowFlags;
         QAction *       m_aHelpTutorial;
         QAction *       m_aHelpSupport;
         QActionGroup *  m_gBackActions;
