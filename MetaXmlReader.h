@@ -12,29 +12,65 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __VersionCheckDialog_h__
-#define __VersionCheckDialog_h__
+#ifndef __MetaXmlReader_h__
+#define __MetaXmlReader_h__
 
-#include <QDialog>
-#include "MetaXmlReader.h"
-namespace Ui { class VersionCheckDialog; }
+#include <QList>
+#include <QString>
+#include <QXmlStreamReader>
+class QNetworkAccessManager;
 
-class VersionCheckDialog : public QDialog
-{
-    Q_OBJECT
+namespace MetaXml {
+
+// structures definition
+struct Release {
+    QString name;
+    QString version;
+    QString url;
+};
+
+struct Website {
+    QString name;
+    QString url;
+};
+
+/// Reader class
+class Reader_1 : public QXmlStreamReader {
     public:
-        VersionCheckDialog(QWidget * parent = 0);
-        ~VersionCheckDialog();
+        Reader_1(const QByteArray & data);
+        void read();
 
-    private Q_SLOTS:
-        void slotFetched();
-        void slotError(const QString & error);
-        void slotDownload();
+        // out data
+        QList<Release> releases;
+        QList<Website> websites;
 
     private:
-        Ui::VersionCheckDialog * ui;
-        MetaXml::Fetcher_1 * m_fetcher;
-        MetaXml::Release m_release;
+        void readReleases();
+        Release readRelease();
+        void readWebsites();
 };
+
+/// Fetcher class
+class Fetcher_1 : public QObject {
+    Q_OBJECT
+    public:
+        Fetcher_1(QObject * parent);
+
+        const Reader_1 * reader() const;
+
+    Q_SIGNALS:
+        void fetched();
+        void fetchError(const QString & description);
+
+    private:
+        QNetworkAccessManager * m_nam;
+        Reader_1 * m_reader;
+
+    private Q_SLOTS:
+        void slotGotReply();
+        void slotTimeOut();
+};
+
+}
 
 #endif
