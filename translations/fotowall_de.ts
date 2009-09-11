@@ -157,6 +157,19 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     </message>
 </context>
 <context>
+    <name>Connector</name>
+    <message>
+        <location filename="../MetaXmlReader.cpp" line="+164"/>
+        <source>Network Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Network Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CroppingDialog</name>
     <message>
         <location filename="../CroppingDialog.ui"/>
@@ -167,7 +180,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+892"/>
+        <location filename="../Desk.cpp" line="+896"/>
         <source>Back</source>
         <translation>Hintergrund</translation>
     </message>
@@ -724,7 +737,7 @@ p, li { white-space: pre-wrap; }
         <translation>STRG+A</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+49"/>
         <source>Export</source>
         <translation>Exportiere</translation>
     </message>
@@ -756,7 +769,7 @@ p, li { white-space: pre-wrap; }
         <translation>Es ist nicht sichergestellt das OpenGL unterstützte Grafik auf Ihrem System funktioniert. Probiere es einfach aus, ob es funtioniert.&lt;br&gt; - falls sich die Grafikausgabe langsam anfühlt, stelle bitte sicher, daß der Grafiktreiber OpenGL hardwareseitig beschleunigt&lt;br&gt; - falls Fotowall nach der Umstellung auf OpenGL nicht mehr funktioniert, benutzen Sie diese Funktion beim nächsten Start nicht mehr&lt;br&gt;&lt;br&gt;ANMERKUNG: OpenGL funktioniert nicht mit &quot;Transparent&quot; Modus.</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+24"/>
         <source>Transparency</source>
         <translation>Transparenz</translation>
     </message>
@@ -766,7 +779,7 @@ p, li { white-space: pre-wrap; }
         <translation>Die Funktion wurde zur Zeit noch nicht umfangreich getestet.&lt;br&gt; -unter Linux wird composite Modus, wie unter compiz/beryl oder kwin4, benötigt&lt;br&gt; - unter Windows und Mac OS scheint es zu funktionieren&lt;br&gt;Sollten Sie einen schwarzen Hintergrund sehen, dann wird Transparenz auf Ihrem System nicht unterstützt.&lt;br&gt;&lt;br&gt;ANMERKUNG: Sie sollten &quot;transparenten&quot; Hintergrund verwenden um transparente Fenster zu nutzen.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+46"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Wähle die Fotowall Datei aus</translation>
@@ -787,7 +800,7 @@ p, li { white-space: pre-wrap; }
         <translation>Gebe eine Überschrift ein</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation>Öffne das Blog des Fotowall Autor</translation>
     </message>
@@ -801,7 +814,7 @@ Hier findet Ihr einige Neuigkeiten, bis eine richtige Webseite erstellt ist.
 Wollen Sie die Webseite öffnen?</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+33"/>
         <source>Opening the Web Tutorial</source>
         <translation>Öffne die Anleitung im Internet</translation>
     </message>
@@ -1141,19 +1154,24 @@ Wollen Sie die Webseite öffnen?</translation>
 <context>
     <name>VersionCheckDialog</name>
     <message>
-        <location filename="../VersionCheckDialog.cpp" line="+38"/>
+        <location filename="../VersionCheckDialog.cpp" line="+30"/>
         <source>checking</source>
         <translation>Prüfen</translation>
     </message>
     <message>
-        <location line="+48"/>
-        <source>Download</source>
-        <translation>Herunterladen</translation>
+        <location line="+19"/>
+        <source>XML Error</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>network timeout</source>
-        <translation>Zeitüberschreitung im Netzwerk</translation>
+        <location line="+7"/>
+        <source>%1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Download</source>
+        <translation>Herunterladen</translation>
     </message>
     <message>
         <location filename="../VersionCheckDialog.ui"/>

@@ -152,6 +152,19 @@ Use CTRL to cancel the transformations.</source>
     </message>
 </context>
 <context>
+    <name>Connector</name>
+    <message>
+        <location filename="../MetaXmlReader.cpp" line="+164"/>
+        <source>Network Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Network Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CroppingDialog</name>
     <message>
         <location filename="../CroppingDialog.ui"/>
@@ -162,7 +175,7 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+892"/>
+        <location filename="../Desk.cpp" line="+896"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
@@ -690,7 +703,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+49"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -722,7 +735,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+24"/>
         <source>Transparency</source>
         <translation type="unfinished"></translation>
     </message>
@@ -732,7 +745,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+46"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation type="unfinished"></translation>
@@ -753,7 +766,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -765,7 +778,7 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+33"/>
         <source>Opening the Web Tutorial</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1101,18 +1114,23 @@ Do you want to open the web page?</source>
 <context>
     <name>VersionCheckDialog</name>
     <message>
-        <location filename="../VersionCheckDialog.cpp" line="+38"/>
+        <location filename="../VersionCheckDialog.cpp" line="+30"/>
         <source>checking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+48"/>
-        <source>Download</source>
+        <location line="+19"/>
+        <source>XML Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>network timeout</source>
+        <location line="+7"/>
+        <source>%1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

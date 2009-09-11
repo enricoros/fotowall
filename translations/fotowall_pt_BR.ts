@@ -158,6 +158,19 @@ Use CTRL para cancelar as transformações.</translation>
     </message>
 </context>
 <context>
+    <name>Connector</name>
+    <message>
+        <location filename="../MetaXmlReader.cpp" line="+164"/>
+        <source>Network Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Network Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CroppingDialog</name>
     <message>
         <location filename="../CroppingDialog.ui"/>
@@ -168,7 +181,7 @@ Use CTRL para cancelar as transformações.</translation>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+892"/>
+        <location filename="../Desk.cpp" line="+896"/>
         <source>Back</source>
         <translation>Voltar</translation>
     </message>
@@ -731,7 +744,7 @@ p, li { white-space: pre-wrap; }
         <translation>CTRL+A</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+49"/>
         <source>Export</source>
         <translation>Exportar</translation>
     </message>
@@ -763,7 +776,7 @@ p, li { white-space: pre-wrap; }
         <translation>OpenGL acelera gráficos. No entanto, não é garantido que irá funcionar no seu sistema. Basta experimentar e ver se ele funciona para você ;-)&lt;br&gt; - se o sentir mais lento, certifique-se que seu driver acelera o OpenGL&lt;br&gt; - se Fotowall para de responder depois de mudar para OpenGL, só não use este recurso na próxima vez&lt;br&gt;NOTA: OpenGL não funciona com o modo &apos;Transparente&apos;.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+24"/>
         <source>Transparency</source>
         <translation>Transparência</translation>
     </message>
@@ -773,7 +786,7 @@ p, li { white-space: pre-wrap; }
         <translation>Este recurso não tem sido amplamente testado.&lt;br&gt; - no Linux exige a composição (como o compiz/beryl, kwin4)&lt;br&gt; - no Windows e Mac parece funcionar&lt;br&gt;Se você observar um fundo preto, a transparência não é suportada no seu sistema.&lt;br&gt;NOTA: você deve definir o &apos;Plano de fundo transparente&apos; para notar a transparência da janela.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+46"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Selecionar o arquivo Fotowall</translation>
@@ -794,7 +807,7 @@ p, li { white-space: pre-wrap; }
         <translation>Insirir o título</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation>Abrindo o Blog do autor do Fotowall</translation>
     </message>
@@ -808,7 +821,7 @@ Você pode encontrar algumas notícias quando montarmos um bom site ;-)
 Você deseja abrir a página da web?</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+33"/>
         <source>Opening the Web Tutorial</source>
         <translation>Abrindo o Tutorial Web</translation>
     </message>
@@ -1149,19 +1162,24 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>VersionCheckDialog</name>
     <message>
-        <location filename="../VersionCheckDialog.cpp" line="+38"/>
+        <location filename="../VersionCheckDialog.cpp" line="+30"/>
         <source>checking</source>
         <translation>Verificando</translation>
     </message>
     <message>
-        <location line="+48"/>
-        <source>Download</source>
-        <translation>Baixar</translation>
+        <location line="+19"/>
+        <source>XML Error</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>network timeout</source>
-        <translation>Tempo esgotado</translation>
+        <location line="+7"/>
+        <source>%1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Download</source>
+        <translation>Baixar</translation>
     </message>
     <message>
         <location filename="../VersionCheckDialog.ui"/>
