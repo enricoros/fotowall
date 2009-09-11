@@ -617,7 +617,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 
 #ifdef Q_OS_WIN
         // needed on windows for translucency
-        setWindowFlags(m_windowFlags | Qt::FramelessWindowHint);
+        setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
         show();
 #endif
 
