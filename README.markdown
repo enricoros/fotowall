@@ -4,37 +4,44 @@ Fotowall
 Fotowall is a creative tool that allows you to layout your photos or pictures
 in a personal way. You can add pictures, then resize, move, change colors, text,
 shadows, etc..
-Check out the [home page](http://code.google.com/p/fotowall) and the
-[blog](https://enricoros.wordpress.com/tag/fotowall) too.
-
+Check out the [home page](http://www.enricoros.com/opensource/fotowall) and the
+[blog](http://www.enricoros.com/blog/tag/fotowall/) too.
 *Focus is on simplicity, express your creativity! ;-)*
 
 ChangeLog
 ---------
 
-Version 0.8 (unreleased):
+Unreleased 0.9.x:
 
-* Image Cropping (by Arnaud Tanguy)
-* Shaped text (bezier curve)
-* Properties in the top bar
-* Window transparency (needs compositing)
-* OpenGL support (where available)
-* Fixed bugs
-* ___minor changes:
-* picture opacity (by Arnaud Tanguy)
-* add ok button for finalizing the text and just close the tab with X (req. by Rossana)
-* network image loading from http (req. by Rossana)
-* pictures on background: keep ratio in some way (req. by Rossana)
-* Video -> Webcam (req. by Rossana)
-* FotoWall -> Fotowall (req. by Rossana)
-* restore the common behavior for rotating (left click)
-* fixes from Georges Dubus (intro overflow and translation) and Andreas Brech (bad accelereators, scale with all corners)
-* animations with 4.6: top bar, item show/hide, properties show/hide
-* builds with 4.4 (without many features), 4.5 (without animations), 4.6-unreleased (gfx errors on windows)
+* Arnaud's Undo/Redo system
+* More properties in the top bar
+* Arrange Contents, finally!
+* Desk-wide effects
 * Polish translation? ask Marek Walczak, see 4ba1502
-* fix: same folder when you open the picture (req. by Rossana)
-* fix: when loading a .fotowall file from the command line some items are aligned to the left
-* fix: resizing works only with the bottom right corner. fix the others.
+* ...
+
+Version 0.8.0 (2009-09-12):
+
+* Bezier Shaped Text
+* Pictures: Crop and change Opacity
+* Context-sensitive Top-Bar
+* Window Transparency
+* OpenGL Acceleration
+* Added many User Requested Features
+  * add ok button for finalizing the text and just close the tab with X (req. by Rossana)
+  * network image loading from http (req. by Rossana)
+  * pictures on background: keep ratio in some way (req. by Rossana)
+  * same folder when you open the picture (req. by Rossana)
+  * Video -> Webcam (req. by Rossana)
+  * FotoWall -> Fotowall (req. by Rossana)
+* Merged external Contributions
+ * fixes from Georges Dubus (intro overflow and translation) and Andreas Brech (bad accelereators, scale with all corners)
+* Other changes
+  * restore the common behavior for rotating (left click)
+  * animations with 4.6: top bar, item show/hide, properties show/hide
+  * builds with 4.4 (without many features), 4.5 (without animations), 4.6-unreleased (gfx errors on windows)
+  * fix: when loading a .fotowall file from the command line some items are aligned to the left
+  * fix: resizing works only with the bottom right corner. fix the others.
 
 Version 0.7.1 (2009-07-23):
 
