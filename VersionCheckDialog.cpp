@@ -15,22 +15,14 @@
 #include "VersionCheckDialog.h"
 #include <QCoreApplication>
 #include <QDesktopServices>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QPushButton>
-#include <QTimer>
 #include <QUrl>
 #include "ui_VersionCheckDialog.h"
-
-#define MAGIC_TOKEN "Last version is "
-#define DOWNLOADS_URL "http://code.google.com/p/fotowall/downloads/list"
-#define NETWORK_TIMEOUT 10000
 
 VersionCheckDialog::VersionCheckDialog(QWidget * parent)
   : QDialog(parent)
   , ui(new Ui::VersionCheckDialog)
-  , m_nam(new QNetworkAccessManager)
+  , m_connector(0)
 {
     // inject ui
     ui->setupUi(this);
@@ -38,67 +30,45 @@ VersionCheckDialog::VersionCheckDialog(QWidget * parent)
     ui->nextVersion->setText(tr("checking"));
 
     // start the network request
-    QNetworkRequest request(QUrl("http://code.google.com/p/fotowall/"));
-    QNetworkReply * reply = m_nam->get(request);
-    connect(reply, SIGNAL(finished()), this, SLOT(slotGotReply()));
-    QTimer::singleShot(NETWORK_TIMEOUT, this, SLOT(slotTimeOut()));
+    m_connector = new MetaXml::Connector();
+    connect(m_connector, SIGNAL(fetched()), this, SLOT(slotFetched()));
+    connect(m_connector, SIGNAL(fetchError(const QString &)), this, SLOT(slotError(const QString &)));
 }
 
 VersionCheckDialog::~VersionCheckDialog()
 {
-    delete m_nam;
+    delete m_connector;
     delete ui;
 }
 
-void VersionCheckDialog::slotGotReply()
+void VersionCheckDialog::slotFetched()
 {
-    if (!m_nam)
+    // parse the xml for the data
+    const MetaXml::Reader_1 * reader = m_connector->reader();
+    if (!reader || reader->releases.isEmpty()) {
+        slotError(tr("XML Error"));
         return;
-    QNetworkReply * reply = static_cast<QNetworkReply *>(sender());
-    QString replyStr = reply->readAll();
+    }
     ui->progressBar->hide();
-    reply->deleteLater();
-    if (reply->error() != QNetworkReply::NoError) {
-        ui->nextVersion->setText("network error");
-        reply->deleteLater();
-        return;
-    }
-
-    QString magic(MAGIC_TOKEN);
-    int pos1 = replyStr.indexOf(magic) + magic.length();
-    if (pos1 == -1 || pos1 >= (replyStr.length() - 1)) {
-        ui->nextVersion->setText("page error (1)");
-        return;
-    }
-
-    int pos2 = replyStr.indexOf("<", pos1);
-    if (pos2 <= pos1 || pos2 > pos1 + 20) {
-        ui->nextVersion->setText("page error (2)");
-        return;
-    }
 
     // show version
-    QString version = replyStr.mid(pos1, pos2 - pos1);
-    ui->nextVersion->setText(version);
+    m_release = reader->releases.first();
+    ui->nextVersion->setText(tr("%1 (%2)").arg(m_release.version).arg(m_release.name));
 
     // show download button
-    if (version.compare(QCoreApplication::applicationVersion(), Qt::CaseInsensitive)) {
+    if (m_release.version.compare(QCoreApplication::applicationVersion(), Qt::CaseInsensitive)) {
         QPushButton * dlButton = ui->buttonBox->addButton(tr("Download"), QDialogButtonBox::NoRole);
         connect(dlButton, SIGNAL(clicked()), this, SLOT(slotDownload()));
     }
 }
 
-void VersionCheckDialog::slotTimeOut()
+void VersionCheckDialog::slotError(const QString & error)
 {
-    if (ui->progressBar->isVisible()) {
-        m_nam->deleteLater();
-        m_nam = 0;
-        ui->progressBar->hide();
-        ui->nextVersion->setText(tr("network timeout"));
-    }
+    ui->progressBar->hide();
+    ui->nextVersion->setText(error);
 }
 
 void VersionCheckDialog::slotDownload()
 {
-    QDesktopServices::openUrl(QUrl(DOWNLOADS_URL));
+    QDesktopServices::openUrl(QUrl(m_release.url));
 }

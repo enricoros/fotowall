@@ -158,17 +158,30 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     </message>
 </context>
 <context>
+    <name>Connector</name>
+    <message>
+        <location filename="../MetaXmlReader.cpp" line="+164"/>
+        <source>Network Error</source>
+        <translation>Errore di Rete</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Network Timeout</source>
+        <translation>Timeout di Rete</translation>
+    </message>
+</context>
+<context>
     <name>CroppingDialog</name>
     <message>
         <location filename="../CroppingDialog.ui"/>
-        <source>Ritaglio</source>
-        <translation type="unfinished"></translation>
+        <source>Cropping</source>
+        <translation>Ritaglio</translation>
     </message>
 </context>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+892"/>
+        <location filename="../Desk.cpp" line="+896"/>
         <source>Back</source>
         <translation>Retro</translation>
     </message>
@@ -611,7 +624,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+328"/>
+        <location filename="../MainWindow.cpp" line="+267"/>
         <source>Enable force field</source>
         <translation>Campo di Forza</translation>
     </message>
@@ -731,7 +744,7 @@ p, li { white-space: pre-wrap; }
         <translation>CTRL+A</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+49"/>
         <source>Export</source>
         <translation>Esporta</translation>
     </message>
@@ -763,7 +776,7 @@ p, li { white-space: pre-wrap; }
         <translation>OpenGL accelera la gradica. Non è garantito che funzioni sul tuo sistema. Prova e vedi se funziona ;-)&lt;br&gt; - se pare più lento, assicurati che i tuoi driver video accelerino OpenGL&lt;br&gt; - se Fotowall smette di funzionare dopo essere passati ad OpenGL, non usate più questa funzione la prossima volta&lt;br&gt;&lt;br&gt;NOTA: OpenGL non funziona in modalità &apos;Trasparente&apos;.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+24"/>
         <source>Transparency</source>
         <translation>Trasparenza</translation>
     </message>
@@ -773,7 +786,7 @@ p, li { white-space: pre-wrap; }
         <translation>Questa caratteristica non è ancora stata provata a fondo.&lt;br&gt; - su linux richiede il compositing (tipo kwin4 o compiz/beryl)&lt;br&gt; - su windows e mac dovrebbe funzionare&lt;br&gt;Se lo sfondo diviene nero, ciò vuol dire che la trasparenza non è supportata sul tuo sistema.&lt;br&gt;&lt;br&gt;NOTA: devi selezionare lo Sfondo &apos;Trasparente&apos; per apprezzare questa funzionalità.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+46"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Scegli il file Fotowall</translation>
@@ -794,7 +807,7 @@ p, li { white-space: pre-wrap; }
         <translation>Inserire il titolo</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+21"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation>Apertura del Blog dell&apos;autore di Fotowall</translation>
     </message>
@@ -808,7 +821,7 @@ Ci troverai delle news aggiornate mentre noi perdisponiamo un sito come si deve 
 Vuoi aprire la pagina web?</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+33"/>
         <source>Opening the Web Tutorial</source>
         <translation>Apertura del Tutorial da Web</translation>
     </message>
@@ -1149,19 +1162,24 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>VersionCheckDialog</name>
     <message>
-        <location filename="../VersionCheckDialog.cpp" line="+38"/>
+        <location filename="../VersionCheckDialog.cpp" line="+30"/>
         <source>checking</source>
         <translation>controllo</translation>
     </message>
     <message>
-        <location line="+48"/>
-        <source>Download</source>
-        <translation>Scarica</translation>
+        <location line="+19"/>
+        <source>XML Error</source>
+        <translation>Errore XML</translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>network timeout</source>
-        <translation>Timeout di rete</translation>
+        <location line="+7"/>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Download</source>
+        <translation>Scarica</translation>
     </message>
     <message>
         <location filename="../VersionCheckDialog.ui"/>
@@ -1187,7 +1205,7 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>WarningBox</name>
     <message>
-        <location filename="../MainWindow.cpp" line="-755"/>
+        <location filename="../WarningBox.cpp" line="+53"/>
         <source>show this warning again next time</source>
         <translation>Mostra di nuovo questo avviso</translation>
     </message>

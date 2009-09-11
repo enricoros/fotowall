@@ -167,8 +167,9 @@ void VideoProvider::slotInitVideo(const QString & device)
 
     // setup input
     //capture->close();         // leave capture open...
-    //capture->selectInput(0);  // this is not useful
-    capture->setInputParameters();
+    capture->selectInput(0);
+    // called by selectInput(0);
+    //capture->setInputParameters();
 
     // if everything's ok setup the device and add it to the internal queue
     VideoInput * input = new VideoInput();

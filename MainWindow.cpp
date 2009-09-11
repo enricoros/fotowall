@@ -16,10 +16,12 @@
 #include "Desk.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
+#include "MetaXmlReader.h"
 #include "ModeInfo.h"
 #include "RenderOpts.h"
 #include "VersionCheckDialog.h"
 #include "VideoProvider.h"
+#include "WarningBox.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include <QAction>
@@ -32,6 +34,7 @@
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMenu>
+#include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -43,7 +46,7 @@
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
 #define TUTORIAL_STRING "Peter walks you through how to use Foto"
-#define ENRICOBLOG_URL QUrl("http://enricoros.wordpress.com/tag/fotowall/")
+#define ENRICOBLOG_STRING "http://www.enricoros.com/blog/tag/fotowall/"
 
 #include <QCommonStyle>
 class RubberBandStyle : public QCommonStyle {
@@ -66,69 +69,6 @@ class RubberBandStyle : public QCommonStyle {
             if (hint == SH_RubberBand_Mask)
                 return false;
             return QCommonStyle::styleHint(hint, option, widget, returnData);
-        }
-};
-
-#include <QMessageBox>
-class WarningBox : public QDialog
-{
-    Q_OBJECT
-    public:
-        WarningBox(const QString & key, const QString & title, const QString & text)
-#if QT_VERSION >= 0x040500
-          : QDialog(0, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
-#else
-          : QDialog(0, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
-#endif
-        {
-            // skip this if asked to not repeat it
-            QSettings s;
-            if (s.value(key, false).toBool())
-                return;
-
-            // create contents
-            QLabel * label = new QLabel(this);
-            label->setTextInteractionFlags(Qt::NoTextInteraction);
-            label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-            label->setOpenExternalLinks(true);
-            label->setContentsMargins(2, 0, 0, 0);
-            label->setTextFormat(Qt::RichText);
-            label->setWordWrap(true);
-            label->setText(text);
-
-            QLabel * iconLabel = new QLabel(this);
-            iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-            iconLabel->setPixmap(style()->standardIcon(QStyle::SP_MessageBoxInformation).pixmap(32, 32));
-
-            QCheckBox * checkBox = new QCheckBox(this);
-            checkBox->setText(tr("show this warning again next time"));
-
-            QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, this);
-            buttonBox->setCenterButtons(style()->styleHint(QStyle::SH_MessageBox_CenterButtons, 0, this));
-            QObject::connect(buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(close()));
-            buttonBox->setFocus();
-
-            QGridLayout * grid = new QGridLayout(this);
-            grid->addWidget(iconLabel, 0, 0, 2, 1, Qt::AlignTop);
-            grid->addWidget(label, 0, 1, 1, 1);
-            grid->addWidget(checkBox, 1, 1, 1, 1);
-            grid->addWidget(buttonBox, 2, 0, 1, 2);
-
-            // customize and dialog
-            setWindowTitle(title);
-            setModal(true);
-            setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
-            QSize screenSize = QApplication::desktop()->availableGeometry(QCursor::pos()).size();
-            setMinimumWidth(qMin(screenSize.width() - 480, screenSize.width()/2));
-            setMinimumHeight(190);
-            grid->activate();
-            adjustSize();
-            resize(minimumSize());
-            exec();
-
-            // avoid popping up again, if chosen
-            if (!checkBox->isChecked())
-                s.setValue(key, true);
         }
 };
 
@@ -218,9 +158,7 @@ MainWindow::MainWindow(QWidget * parent)
 #ifdef QT_OPENGL_LIB
     ui->accelBox->setEnabled(true);
 #endif
-#ifdef Q_OS_LINUX
     ui->transpBox->setEnabled(true);
-#endif
 #endif
     ui->widgetProperties->collapse();
     ui->widgetCanvas->expand();
@@ -246,6 +184,7 @@ MainWindow::MainWindow(QWidget * parent)
     // check stuff on the net
     checkForTutorial();
     checkForSupport();
+    checkForUpdates();
 }
 
 MainWindow::~MainWindow()
@@ -458,7 +397,7 @@ QMenu * MainWindow::createOnlineHelpMenu()
     menu->addAction(aCheckUpdates);
 
     QAction * aFotowallBlog = new QAction(tr("Fotowall's Blog"), menu);
-    connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpBlog()));
+    connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpWebsite()));
     menu->addAction(aFotowallBlog);
 
     m_aHelpSupport = new QAction("", menu);
@@ -495,6 +434,20 @@ void MainWindow::checkForSupport()
 
     // check the Open Collaboration Services knowledgebase for Fotowall
     QTimer::singleShot(2000, this, SLOT(slotVerifySupport()));
+}
+
+void MainWindow::checkForUpdates()
+{
+    // find out the time of the last update check
+    QDate lastCheck = QSettings().value("fotowall/LastUpdateCheck").toDate();
+    if (lastCheck.isNull()) {
+        QSettings().setValue("fotowall/LastUpdateCheck", QDate::currentDate());
+        return;
+    }
+
+    // check for updates 30 days after the last one
+    if (lastCheck.daysTo(QDate::currentDate()) > 30)
+        QTimer::singleShot(2000, this, SLOT(slotHelpUpdates()));
 }
 
 void MainWindow::setNormalProject()
@@ -649,6 +602,8 @@ void MainWindow::on_accelBox_toggled(bool) {}
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
 #if QT_VERSION >= 0x040500
+    if (!m_windowFlags)
+        m_windowFlags = windowFlags();
     if (transparent) {
         // one-time warning
         WarningBox("SkipWarnings/transparency", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"));
@@ -660,12 +615,24 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         // hint the render that we're transparent now
         RenderOpts::ARGBWindow = true;
 
+#ifdef Q_OS_WIN
+        // needed on windows for translucency
+        setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+        show();
+#endif
+
         // set 'NoBackground' to show that we're transparent for real
         m_desk->setBackMode(1);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
         setAttribute(Qt::WA_NoSystemBackground, false);
+
+#ifdef Q_OS_WIN
+        // disable no-border on windows
+        setWindowFlags(m_windowFlags);
+        show();
+#endif
 
         // hint the render that we're opaque again
         RenderOpts::ARGBWindow = false;
@@ -763,11 +730,42 @@ void MainWindow::slotDecoClearTitle()
     m_desk->setTitleText(QString());
 }
 
-void MainWindow::slotHelpBlog()
+void MainWindow::slotHelpWebsite()
 {
+    // start a fetch if no URL has been determined
+    if (m_website.isEmpty()) {
+        MetaXml::Connector * conn = new MetaXml::Connector();
+        connect(conn, SIGNAL(fetched()), this, SLOT(slotHelpWebsiteFetched()));
+        connect(conn, SIGNAL(fetchError(const QString &)), this, SLOT(slotHelpWebsiteFetchError()));
+        return;
+    }
+
+    // open the website
     int answer = QMessageBox::question(this, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
     if (answer == QMessageBox::Yes)
-        QDesktopServices::openUrl(ENRICOBLOG_URL);
+        QDesktopServices::openUrl(QUrl(m_website));
+}
+
+void MainWindow::slotHelpWebsiteFetched()
+{
+    // get the websites from the conn
+    MetaXml::Connector * conn = dynamic_cast<MetaXml::Connector *>(sender());
+    if (conn && !conn->reader()->websites.isEmpty()) {
+        m_website = conn->reader()->websites.first().url;
+        if (!m_website.isEmpty()) {
+            slotHelpWebsite();
+            return;
+        }
+    }
+
+    // catch-all condition: use default url
+    slotHelpWebsiteFetchError();
+}
+
+void MainWindow::slotHelpWebsiteFetchError()
+{
+    m_website = ENRICOBLOG_STRING;
+    slotHelpWebsite();
 }
 
 void MainWindow::slotHelpSupport()
@@ -781,11 +779,11 @@ void MainWindow::slotHelpTutorial()
         QDesktopServices::openUrl(TUTORIAL_URL);
 }
 
-
 void MainWindow::slotHelpUpdates()
 {
     VersionCheckDialog vcd;
     vcd.exec();
+    QSettings().setValue("fotowall/LastUpdateCheck", QDate::currentDate());
 }
 
 void MainWindow::slotSetBackMode(QAction* action)

@@ -45,7 +45,11 @@ WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * 
     addButtonItem(bStill);
 
     // start the video flow
-    VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
+    if (input >= 0 && input < VideoProvider::instance()->inputCount())
+        VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
+    else {
+        // TODO: show a still picture about a "broken connection to the camera"
+    }
 }
 
 WebcamContent::~WebcamContent()

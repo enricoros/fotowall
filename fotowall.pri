@@ -11,11 +11,13 @@ HEADERS += 3rdparty/gsuggest.h \
     GlowEffectWidget.h \
     GroupBoxWidget.h \
     MainWindow.h \
+    MetaXmlReader.h \
     ModeInfo.h \
     PictureEffect.h \
     RenderOpts.h \
     VersionCheckDialog.h \
     VideoProvider.h \
+    WarningBox.h \
     XmlRead.h \
     XmlSave.h
 
@@ -31,9 +33,11 @@ SOURCES += 3rdparty/gsuggest.cpp \
     GlowEffectWidget.cpp \
     GroupBoxWidget.cpp \
     MainWindow.cpp \
+    MetaXmlReader.cpp \
     ModeInfo.cpp \
     VersionCheckDialog.cpp \
     VideoProvider.cpp \
+    WarningBox.cpp \
     XmlRead.cpp \
     XmlSave.cpp \
     main.cpp
