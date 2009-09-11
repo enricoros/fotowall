@@ -33,7 +33,7 @@ class VersionCheckDialog : public QDialog
 
     private:
         Ui::VersionCheckDialog * ui;
-        MetaXml::Fetcher_1 * m_fetcher;
+        MetaXml::Connector * m_connector;
         MetaXml::Release m_release;
 };
 

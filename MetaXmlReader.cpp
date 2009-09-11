@@ -113,9 +113,17 @@ void Reader_1::readWebsites()
     }
 }
 
-Fetcher_1::Fetcher_1(QObject * parent)
-  : QObject(parent)
-  , m_nam(new QNetworkAccessManager)
+
+/* Connector */
+
+Q_GLOBAL_STATIC(Connector, connectorInstance);
+Connector * Connector::instance()
+{
+    return connectorInstance();
+}
+
+Connector::Connector()
+  : m_nam(new QNetworkAccessManager)
   , m_reader(0)
 {
     QNetworkRequest request(QUrl(METAXML_BASE_URL));
@@ -124,15 +132,30 @@ Fetcher_1::Fetcher_1(QObject * parent)
     QTimer::singleShot(NETWORK_TIMEOUT, this, SLOT(slotTimeOut()));
 }
 
-const Reader_1 * Fetcher_1::reader() const
+bool Connector::hasDone() const
+{
+    return !m_nam;
+}
+
+bool Connector::isValid() const
 {
     return m_reader;
 }
 
-void Fetcher_1::slotGotReply()
+const Reader_1 * Connector::reader() const
 {
+    return m_reader;
+}
+
+void Connector::slotGotReply()
+{
+    // dispose the QNAM
     if (!m_nam)
         return;
+    m_nam->deleteLater();
+    m_nam = 0;
+
+    // get the data from the network reply
     QNetworkReply * reply = static_cast<QNetworkReply *>(sender());
     QByteArray replyData = reply->readAll();
     QNetworkReply::NetworkError error = reply->error();
@@ -142,17 +165,20 @@ void Fetcher_1::slotGotReply()
         return;
     }
 
-    // read the data and notify the completion
+    // parse the data and notify the completion
     delete m_reader;
     m_reader = new Reader_1(replyData);
     emit fetched();
 }
 
-void Fetcher_1::slotTimeOut()
+void Connector::slotTimeOut()
 {
-    if (m_nam) {
-        m_nam->deleteLater();
-        m_nam = 0;
-    }
+    // dispose the QNAM
+    if (!m_nam)
+        return;
+    m_nam->deleteLater();
+    m_nam = 0;
+
+    // emit the error signal
     emit fetchError(tr("Network Timeout"));
 }

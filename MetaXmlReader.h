@@ -51,10 +51,14 @@ class Reader_1 : public QXmlStreamReader {
 };
 
 /// Fetcher class
-class Fetcher_1 : public QObject {
+class Connector : public QObject {
     Q_OBJECT
     public:
-        Fetcher_1(QObject * parent);
+        static Connector * instance();
+        Connector();
+
+        bool hasDone() const;
+        bool isValid() const;
 
         const Reader_1 * reader() const;
 

@@ -16,6 +16,7 @@
 #include "Desk.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
+#include "MetaXmlReader.h"
 #include "ModeInfo.h"
 #include "RenderOpts.h"
 #include "VersionCheckDialog.h"
@@ -45,7 +46,7 @@
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
 #define TUTORIAL_STRING "Peter walks you through how to use Foto"
-#define ENRICOBLOG_URL QUrl("http://enricoros.wordpress.com/tag/fotowall/")
+#define ENRICOBLOG_STRING "http://www.enricoros.com/blog/tag/fotowall/"
 
 #include <QCommonStyle>
 class RubberBandStyle : public QCommonStyle {
@@ -396,7 +397,7 @@ QMenu * MainWindow::createOnlineHelpMenu()
     menu->addAction(aCheckUpdates);
 
     QAction * aFotowallBlog = new QAction(tr("Fotowall's Blog"), menu);
-    connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpBlog()));
+    connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpWebsite()));
     menu->addAction(aFotowallBlog);
 
     m_aHelpSupport = new QAction("", menu);
@@ -729,11 +730,42 @@ void MainWindow::slotDecoClearTitle()
     m_desk->setTitleText(QString());
 }
 
-void MainWindow::slotHelpBlog()
+void MainWindow::slotHelpWebsite()
 {
+    // start a fetch if no URL has been determined
+    if (m_website.isEmpty()) {
+        MetaXml::Connector * conn = new MetaXml::Connector();
+        connect(conn, SIGNAL(fetched()), this, SLOT(slotHelpWebsiteFetched()));
+        connect(conn, SIGNAL(fetchError(const QString &)), this, SLOT(slotHelpWebsiteFetchError()));
+        return;
+    }
+
+    // open the website
     int answer = QMessageBox::question(this, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
     if (answer == QMessageBox::Yes)
-        QDesktopServices::openUrl(ENRICOBLOG_URL);
+        QDesktopServices::openUrl(QUrl(m_website));
+}
+
+void MainWindow::slotHelpWebsiteFetched()
+{
+    // get the websites from the conn
+    MetaXml::Connector * conn = dynamic_cast<MetaXml::Connector *>(sender());
+    if (conn && !conn->reader()->websites.isEmpty()) {
+        m_website = conn->reader()->websites.first().url;
+        if (!m_website.isEmpty()) {
+            slotHelpWebsite();
+            return;
+        }
+    }
+
+    // catch-all condition: use default url
+    slotHelpWebsiteFetchError();
+}
+
+void MainWindow::slotHelpWebsiteFetchError()
+{
+    m_website = ENRICOBLOG_STRING;
+    slotHelpWebsite();
 }
 
 void MainWindow::slotHelpSupport()

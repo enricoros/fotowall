@@ -64,6 +64,7 @@ class MainWindow : public QWidget
         QAction *       m_aHelpSupport;
         QActionGroup *  m_gBackActions;
         QActionGroup *  m_gBackRatioActions;
+        QString         m_website;
 
     private Q_SLOTS:
         void on_projectType_activated(int index);
@@ -86,7 +87,9 @@ class MainWindow : public QWidget
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
         void slotDecoClearTitle();
-        void slotHelpBlog();
+        void slotHelpWebsite();
+        void slotHelpWebsiteFetched();
+        void slotHelpWebsiteFetchError();
         void slotHelpSupport();
         void slotHelpTutorial();
         void slotHelpUpdates();

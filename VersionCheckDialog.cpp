@@ -22,7 +22,7 @@
 VersionCheckDialog::VersionCheckDialog(QWidget * parent)
   : QDialog(parent)
   , ui(new Ui::VersionCheckDialog)
-  , m_fetcher(0)
+  , m_connector(0)
 {
     // inject ui
     ui->setupUi(this);
@@ -30,21 +30,21 @@ VersionCheckDialog::VersionCheckDialog(QWidget * parent)
     ui->nextVersion->setText(tr("checking"));
 
     // start the network request
-    m_fetcher = new MetaXml::Fetcher_1(this);
-    connect(m_fetcher, SIGNAL(fetched()), this, SLOT(slotFetched()));
-    connect(m_fetcher, SIGNAL(fetchError(const QString &)), this, SLOT(slotError(const QString &)));
+    m_connector = new MetaXml::Connector();
+    connect(m_connector, SIGNAL(fetched()), this, SLOT(slotFetched()));
+    connect(m_connector, SIGNAL(fetchError(const QString &)), this, SLOT(slotError(const QString &)));
 }
 
 VersionCheckDialog::~VersionCheckDialog()
 {
-    delete m_fetcher;
+    delete m_connector;
     delete ui;
 }
 
 void VersionCheckDialog::slotFetched()
 {
     // parse the xml for the data
-    const MetaXml::Reader_1 * reader = m_fetcher->reader();
+    const MetaXml::Reader_1 * reader = m_connector->reader();
     if (!reader || reader->releases.isEmpty()) {
         slotError(tr("XML Error"));
         return;
