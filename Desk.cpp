@@ -751,7 +751,7 @@ void Desk::drawBackground(QPainter * painter, const QRectF & rect)
     }
 
     // draw checkboard to simulate a transparent background
-    if (!RenderOpts::ARGBWindow) {
+    if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering) {
         QRect tileRect = rect.toAlignedRect();
         painter->drawTiledPixmap(tileRect, m_backTile, QPointF(tileRect.left() % 100, tileRect.top() % 100));
     }
