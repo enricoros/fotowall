@@ -479,29 +479,31 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
-     <widget class="QGroupBox" name="groupBox_7">
-      <property name="title">
-       <string>File properties</string>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Output file:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="svgFilePath"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="svgChooseFilePath">
+        <property name="text">
+         <string>Choose...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="svgAsIsBox">
+      <property name="text">
+       <string>as you see it (includes tools, lines, etc)</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Output file:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="svgFilePath"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="svgChooseFilePath">
-         <property name="text">
-          <string>Choose...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </item>
    </layout>

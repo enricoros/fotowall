@@ -124,6 +124,7 @@ improvement and the code is kept clean and small.
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
+* save/restore background transparency state (or check current bg code)
 * svg drawings [balloons, signs, etc..]
 * masked pic
 * both new and old resize&co

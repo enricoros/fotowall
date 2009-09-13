@@ -262,7 +262,6 @@ void ExportWizard::saveSvg()
     generator.setFileName(svgFileName);
     generator.setSize(svgRect.size());
 #if QT_VERSION >= 0x040500
-    qWarning("res %d", physicalDpiX());
     generator.setResolution(physicalDpiX());
     generator.setViewBox(svgRect);
     generator.setTitle(m_desk->titleText());
@@ -272,7 +271,7 @@ void ExportWizard::saveSvg()
     // paint over the writer
     QPainter painter(&generator);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_desk->renderVisible(&painter, svgRect, svgRect, Qt::IgnoreAspectRatio);
+    m_desk->renderVisible(&painter, svgRect, svgRect, Qt::IgnoreAspectRatio, !m_ui->svgAsIsBox->isChecked());
     painter.end();
 }
 
