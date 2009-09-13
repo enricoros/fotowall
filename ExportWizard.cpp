@@ -26,6 +26,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QSettings>
+#include <QSvgGenerator>
 #include <QUrl>
 #include <math.h>
 #include "controller.h"
@@ -52,6 +53,7 @@ ExportWizard::ExportWizard(Desk * desk)
     connect(m_ui->clImage, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     connect(m_ui->clPosteRazor, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     connect(m_ui->clPrint, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
+    connect(m_ui->clSvg, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     m_ui->prWebLabel->setText("<html><body><a href='" POSTERAZOR_WEBSITE_LINK "'>" + m_ui->prWebLabel->text() + "</a></body></html>" );
     connect(m_ui->prWebLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
     m_ui->prTutorialLabel->setText("<html><body><a href='" POSTERAZOR_TUTORIAL_LINK "'>" + m_ui->prTutorialLabel->text() + "</a></body></html>" );
@@ -75,10 +77,12 @@ ExportWizard::ExportWizard(Desk * desk)
     connect(m_ui->printUnity, SIGNAL(currentIndexChanged(int)), this, SLOT(slotPrintUnityChanged(int)));
     connect(m_ui->printWidth, SIGNAL(valueChanged(double)), this, SLOT(slotPrintWidthChanged(double)));
     connect(m_ui->printHeight, SIGNAL(valueChanged(double)), this, SLOT(slotPrintHeightChanged(double)));
+    connect(m_ui->svgChooseFilePath, SIGNAL(clicked()), this, SLOT(slotChooseSvgPath()));
 
     // configure Wizard
     setOptions(NoDefaultButton | NoBackButtonOnStartPage | IndependentPages);
     setPage(PageMode);
+    setMinimumWidth(400);
 
     // react to 'finish'
     connect(this, SIGNAL(finished(int)), this, SLOT(slotFinished(int)));
@@ -242,12 +246,42 @@ void ExportWizard::print()
     m_desk->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked(), ratioMode);
 }
 
+void ExportWizard::saveSvg()
+{
+    if (m_ui->svgFilePath->text().isEmpty()) {
+        QMessageBox::warning(this, tr("No file selected !"), tr("You need to choose a file path for saving."));
+        return;
+    }
+    QString svgFileName = m_ui->svgFilePath->text();
+
+    // get the rendering size
+    QRect svgRect(m_desk->sceneRect().toRect());
+
+    // create the SVG writer
+    QSvgGenerator generator;
+    generator.setFileName(svgFileName);
+    generator.setSize(svgRect.size());
+#if QT_VERSION >= 0x040500
+    qWarning("res %d", physicalDpiX());
+    generator.setResolution(physicalDpiX());
+    generator.setViewBox(svgRect);
+    generator.setTitle(m_desk->titleText());
+    generator.setDescription(tr("Created with %1").arg(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion()));
+#endif
+
+    // paint over the writer
+    QPainter painter(&generator);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    m_desk->renderVisible(&painter, svgRect, svgRect, Qt::IgnoreAspectRatio);
+    painter.end();
+}
+
 void ExportWizard::setPage(int pageId)
 {
     // adapt buttons
     QList<QWizard::WizardButton> layout;
     layout << QWizard::Stretch << QWizard::BackButton;
-    if (pageId >= PageWallpaper && pageId <= PagePrint)
+    if (pageId >= PageWallpaper && pageId <= PageSvg)
         layout << QWizard::FinishButton;
     layout << QWizard::CancelButton;
     setButtonLayout(layout);
@@ -270,7 +304,7 @@ int ExportWizard::nextId() const
         return m_nextId;
 
     // final pages
-    if (pageId >= PageWallpaper && pageId <= PagePrint)
+    if (pageId >= PageWallpaper && pageId <= PageSvg)
         return -1;
 
     // fallback
@@ -281,10 +315,21 @@ int ExportWizard::nextId() const
 void ExportWizard::slotChoosePath()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), m_ui->filePath->text(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
-    if(fileName.isEmpty()) return;
+    if (fileName.isEmpty())
+        return;
     if (QFileInfo(fileName).suffix().isEmpty())
         fileName += ".png";
     m_ui->filePath->setText(fileName);
+}
+
+void ExportWizard::slotChooseSvgPath()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the SVG file"), m_ui->filePath->text(), tr("SVG (*.svg)"));
+    if (fileName.isEmpty())
+        return;
+    if (QFileInfo(fileName).suffix().isEmpty())
+        fileName += ".svg";
+    m_ui->svgFilePath->setText(fileName);
 }
 
 void ExportWizard::slotPrintUnityChanged(int index)
@@ -340,6 +385,7 @@ void ExportWizard::slotFinished(int code)
             case PageImage: saveImage(); break;
             case PagePosteRazor: startPosterazor(); break;
             case PagePrint: print(); break;
+            case PageSvg: saveSvg(); break;
             default:
                 qWarning("ExportWizard::slotFinished: unhndled end for page %d", currentId());
                 break;

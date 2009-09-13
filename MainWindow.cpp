@@ -135,9 +135,9 @@ MainWindow::MainWindow(QWidget * parent)
     QRect geom = QApplication::desktop()->availableGeometry();
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
 #if QT_VERSION >= 0x040500
-    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
+    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
 #else
-    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion() + "   -Limited Edition (Qt 4.4)-");
+    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() + "   -Limited Edition (Qt 4.4)-");
 #endif
     setWindowIcon(QIcon(":/data/fotowall.png"));
 

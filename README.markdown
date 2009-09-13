@@ -13,12 +13,14 @@ ChangeLog
 
 Unreleased 0.9.x:
 
-* Arnaud's Undo/Redo system
-* More properties in the top bar
-* Arrange Contents, finally!
-* Desk-wide effects
-* Polish translation? ask Marek Walczak, see 4ba1502
-* ...
+* Export to SVG
+* in branches:
+  * Arnaud's Undo/Redo system
+  * More properties in the top bar
+  * Arrange Contents, finally!
+  * Desk-wide effects
+  * Polish translation? ask Marek Walczak, see 4ba1502
+  * ...
 
 Version 0.8.0 (2009-09-12):
 
@@ -171,6 +173,7 @@ location and issue the followings commands:
 
 The executable will be built and you can start enjoying Fotowall! ;-)
 
+Internal: To prepare the folder for release: make distclean; git clean -fdx; rm -fr data/sources .build .git examples
 
 Old News
 --------
