@@ -99,7 +99,13 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     scene->addItem(this);
 
     // display mirror
+#if QT_VERSION >= 0x040600
+    // with Qt 4.6-tp1 there are crashes activating a mirror before setting the scene
+    // need to rethink this anyway
+    setMirrorEnabled(false);
+#else
     setMirrorEnabled(RenderOpts::LastMirrorEnabled);
+#endif
 }
 
 AbstractContent::~AbstractContent()
