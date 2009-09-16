@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>412</width>
-    <height>278</height>
+    <width>382</width>
+    <height>361</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,6 +91,22 @@
       </property>
       <property name="nextPageId" stdset="0">
        <number>4</number>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCommandLinkButton" name="clSvg">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>SVG Vector Image</string>
+      </property>
+      <property name="nextPageId" stdset="0">
+       <number>5</number>
       </property>
      </widget>
     </item>
@@ -272,7 +288,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="prPage">
+  <widget class="QWizardPage" name="posterazorPage">
    <property name="title">
     <string>PosteRazor</string>
    </property>
@@ -447,6 +463,47 @@
         </widget>
        </item>
       </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage">
+   <property name="title">
+    <string>SVG Vector Image</string>
+   </property>
+   <property name="subTitle">
+    <string>Export to the Scalable Vector Graphics image format.</string>
+   </property>
+   <attribute name="pageId">
+    <string notr="true">5</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout_6">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Output file:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="svgFilePath"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="svgChooseFilePath">
+        <property name="text">
+         <string>Choose...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="svgAsIsBox">
+      <property name="text">
+       <string>as you see it (includes tools, lines, etc)</string>
+      </property>
      </widget>
     </item>
    </layout>

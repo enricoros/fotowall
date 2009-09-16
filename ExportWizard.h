@@ -30,6 +30,7 @@ class ExportWizard : public QWizard {
         void saveImage();
         void startPosterazor();
         void print();
+        void saveSvg();
 
         // manually sets a page
         void setPage(int pageId);
@@ -38,7 +39,7 @@ class ExportWizard : public QWizard {
         int nextId() const;
 
     private:
-        enum PageCode { PageMode = 0, PageWallpaper = 1, PageImage = 2, PagePosteRazor = 3, PagePrint = 4 };
+        enum PageCode { PageMode = 0, PageWallpaper = 1, PageImage = 2, PagePosteRazor = 3, PagePrint = 4, PageSvg = 5 };
         Ui::ExportWizard * m_ui;
         Desk * m_desk;
         int m_nextId;
@@ -47,6 +48,7 @@ class ExportWizard : public QWizard {
     private slots:
         // contents related
         void slotChoosePath();
+        void slotChooseSvgPath();
         void slotPrintUnityChanged(int);
         void slotPrintWidthChanged(double);
         void slotPrintHeightChanged(double);

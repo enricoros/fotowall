@@ -497,22 +497,27 @@ void Desk::fromXml(QDomElement & de)
     update();
 }
 
-void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode)
+void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
 {
-    clearSelection();
-    foreach(QGraphicsItem *item, m_markerItems)
-        item->hide();
-    foreach(AbstractConfig *conf, m_configs)
-        conf->hide();
+    if (hideTools) {
+        clearSelection();
+        setWebContentSelectorVisible(false);
+        foreach(QGraphicsItem *item, m_markerItems)
+            item->hide();
+        foreach(AbstractConfig *conf, m_configs)
+            conf->hide();
+    }
 
     RenderOpts::HQRendering = true;
     QGraphicsScene::render(painter, target, source, aspectRatioMode);
     RenderOpts::HQRendering = false;
 
-    foreach(AbstractConfig *conf, m_configs)
-        conf->show();
-    foreach(QGraphicsItem *item, m_markerItems)
-        item->show();
+    if (hideTools) {
+        foreach(AbstractConfig *conf, m_configs)
+            conf->show();
+        foreach(QGraphicsItem *item, m_markerItems)
+            item->show();
+    }
 }
 
 QImage Desk::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode)
