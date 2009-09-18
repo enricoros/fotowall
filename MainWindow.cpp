@@ -599,6 +599,60 @@ void MainWindow::on_accelBox_toggled(bool opengl)
 void MainWindow::on_accelBox_toggled(bool) {}
 #endif
 
+#ifdef Q_WS_WIN
+/**
+  Blur behind windows (on Windows Vista/7)
+
+  The following code snippet has been borrowed from Jens of Qt Software / Nokia
+  see: http://labs.qt.nokia.com/blogs/2009/09/15/using-blur-behind-on-windows/
+  the license says: Use, modification and distribution is allowed without
+  limitation, warranty, liability or support of any kind.
+**/
+#include <QLibrary>
+#include <qt_windows.h>
+
+// Dwm Data Structures
+#define DWM_BB_ENABLE                 0x00000001  // fEnable has been specified
+typedef struct _DWM_BLURBEHIND
+{
+    DWORD dwFlags;
+    BOOL fEnable;
+    HRGN hRgnBlur;
+    BOOL fTransitionOnMaximized;
+} DWM_BLURBEHIND;
+
+// Dwm entry points
+typedef HRESULT (WINAPI *PtrDwmIsCompositionEnabled)(BOOL * pfEnabled);
+typedef HRESULT (WINAPI *PtrDwmEnableBlurBehindWindow)(HWND hWnd, const DWM_BLURBEHIND * pBlurBehind);
+static PtrDwmIsCompositionEnabled pDwmIsCompositionEnabled = 0;
+static PtrDwmEnableBlurBehindWindow pDwmEnableBlurBehindWindow  = 0;
+
+static bool dwmResolveLibs()
+{
+    if (!pDwmIsCompositionEnabled) {
+        QLibrary dwmLib(QString::fromAscii("dwmapi"));
+        pDwmIsCompositionEnabled = (PtrDwmIsCompositionEnabled)dwmLib.resolve("DwmIsCompositionEnabled");
+        pDwmEnableBlurBehindWindow = (PtrDwmEnableBlurBehindWindow)dwmLib.resolve("DwmEnableBlurBehindWindow");
+    }
+    return pDwmIsCompositionEnabled != 0;
+}
+
+static bool dwmEnableBlurBehindWindow(QWidget * widget, bool enable)
+{
+    bool result = false;
+    if (dwmResolveLibs()) {
+        DWM_BLURBEHIND bb = {0};
+        bb.dwFlags = DWM_BB_ENABLE;
+        bb.fEnable = enable;
+        bb.hRgnBlur = NULL;
+        HRESULT hr = pDwmEnableBlurBehindWindow(widget->winId(), &bb);
+        if (SUCCEEDED(hr))
+            result = true;
+    }
+    return result;
+}
+#endif
+
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
 #if QT_VERSION >= 0x040500
@@ -616,9 +670,12 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         RenderOpts::ARGBWindow = true;
 
 #ifdef Q_OS_WIN
-        // needed on windows for translucency
-        setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-        show();
+        // enable blur behind on Vista/7
+        if (!dwmEnableBlurBehindWindow(this, true)) {
+            // if blur fails, use a frameless window that's needed on XP for transparency
+            setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+            show();
+        }
 #endif
 
         // set 'NoBackground' to show that we're transparent for real
