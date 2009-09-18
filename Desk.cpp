@@ -520,7 +520,7 @@ void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF
     }
 }
 
-QImage Desk::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode)
+QImage Desk::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
 {
     QImage result(iSize, QImage::Format_ARGB32);
     result.fill(0);
@@ -534,7 +534,7 @@ QImage Desk::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioM
     int offsetY = (iSize.height() - targetSize.height()) / 2;
 
     QRect targetRect = QRect(offsetX, offsetY, targetSize.width(), targetSize.height());
-    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio);
+    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio, hideTools);
     painter.end();
 
     return result;

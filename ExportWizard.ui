@@ -286,6 +286,13 @@
       </layout>
      </widget>
     </item>
+    <item>
+     <widget class="QCheckBox" name="imgAsIsBox">
+      <property name="text">
+       <string>as you see it (includes tools, lines, etc)</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWizardPage" name="posterazorPage">
@@ -467,7 +474,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWizardPage" name="wizardPage">
+  <widget class="QWizardPage" name="svgPage">
    <property name="title">
     <string>SVG Vector Image</string>
    </property>

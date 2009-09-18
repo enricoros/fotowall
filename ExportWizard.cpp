@@ -166,12 +166,13 @@ void ExportWizard::saveImage()
 
     // render the image
     QImage image;
+    bool hideTools = !m_ui->imgAsIsBox->isChecked();
     if (m_ui->ibZoom->isChecked())
-        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatioByExpanding);
+        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatioByExpanding, hideTools);
     else if (m_ui->ibScaleKeep->isChecked())
-        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatio);
+        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatio, hideTools);
     else
-        image = m_desk->renderedImage(imageSize, Qt::IgnoreAspectRatio);
+        image = m_desk->renderedImage(imageSize, Qt::IgnoreAspectRatio, hideTools);
 
     // rotate image if requested
     if (m_ui->saveLandscape->isChecked()) {
