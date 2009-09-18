@@ -116,7 +116,7 @@ Use CTRL para cancelar as transformações.</translation>
         <translation>Remover</translation>
     </message>
     <message>
-        <location line="+616"/>
+        <location line="+622"/>
         <source>Choose the Image file</source>
         <translation>Escolher o arquivo de imagem</translation>
     </message>
@@ -181,7 +181,7 @@ Use CTRL para cancelar as transformações.</translation>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+896"/>
+        <location filename="../Desk.cpp" line="+901"/>
         <source>Back</source>
         <translation>Voltar</translation>
     </message>
@@ -272,7 +272,7 @@ Use CTRL para cancelar as transformações.</translation>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="+123"/>
+        <location filename="../ExportWizard.cpp" line="+127"/>
         <source>Wallpaper Error</source>
         <translation>Erro no papel de parede</translation>
     </message>
@@ -297,16 +297,18 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
     </message>
     <message>
         <location line="+17"/>
+        <location line="+94"/>
         <source>No file selected !</source>
         <translation>Nenhum arquivo selecionado!</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-94"/>
+        <location line="+94"/>
         <source>You need to choose a file path for saving.</source>
         <translation>Você precisa escolher um caminho de arquivo para salvar.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="-65"/>
         <source>Done</source>
         <translation>Feito</translation>
     </message>
@@ -331,7 +333,12 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
         <translation>Exportar o pôster</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+49"/>
+        <source>Created with %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
         <source>Choose the Image file</source>
         <translation>Escolher o arquivo imagem</translation>
     </message>
@@ -339,6 +346,16 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
         <location line="+0"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Imagens (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Choose the SVG file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>SVG (*.svg)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui"/>
@@ -524,6 +541,21 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
         <location/>
         <source>Keep proportions</source>
         <translation>Manter proporções</translation>
+    </message>
+    <message>
+        <location/>
+        <source>SVG Vector Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>as you see it (includes tools, lines, etc)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Export to the Scalable Vector Graphics image format.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -776,7 +808,7 @@ p, li { white-space: pre-wrap; }
         <translation>OpenGL acelera gráficos. No entanto, não é garantido que irá funcionar no seu sistema. Basta experimentar e ver se ele funciona para você ;-)&lt;br&gt; - se o sentir mais lento, certifique-se que seu driver acelera o OpenGL&lt;br&gt; - se Fotowall para de responder depois de mudar para OpenGL, só não use este recurso na próxima vez&lt;br&gt;NOTA: OpenGL não funciona com o modo &apos;Transparente&apos;.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+78"/>
         <source>Transparency</source>
         <translation>Transparência</translation>
     </message>
@@ -786,7 +818,7 @@ p, li { white-space: pre-wrap; }
         <translation>Este recurso não tem sido amplamente testado.&lt;br&gt; - no Linux exige a composição (como o compiz/beryl, kwin4)&lt;br&gt; - no Windows e Mac parece funcionar&lt;br&gt;Se você observar um fundo preto, a transparência não é suportada no seu sistema.&lt;br&gt;NOTA: você deve definir o &apos;Plano de fundo transparente&apos; para notar a transparência da janela.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+49"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Selecionar o arquivo Fotowall</translation>
