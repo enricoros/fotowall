@@ -17,51 +17,47 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LIKEBACKDIALOG_H
-#define LIKEBACKDIALOG_H
+#ifndef __LikeBackDialog_h__
+#define __LikeBackDialog_h__
 
-#include <KDialog>
-
+#include <QDialog>
 #include <QButtonGroup>
-
 #include "likeback.h"
-
 #include "ui_likebackdialog.h"
 
-
-class LikeBackDialog : public KDialog, private Ui::LikeBackDialog
+class LikeBackDialog : public QDialog, private Ui::LikeBackDialog
 {
-  Q_OBJECT
-  public:
-    // Constructor
-                  LikeBackDialog( LikeBack::Button reason, const QString &initialComment, const QString &windowPath,
-                                  const QString &context, LikeBack *likeBack );
-    // Destructor
-                ~LikeBackDialog();
+    Q_OBJECT
+    public:
+        // Constructor
+        LikeBackDialog( LikeBack::Button reason, const QString &initialComment, const QString &windowPath,
+                      const QString &context, LikeBack *likeBack );
+        // Destructor
+        ~LikeBackDialog();
 
-  private:
-    // Construct the introductory text of the dialog
-    QString introductionText();
+    private:
+        // Construct the introductory text of the dialog
+        QString introductionText();
 
-  private:
-    // Additional referred window information
-    QString       m_context;
-    // The parent LikeBack instance
-    LikeBack     *m_likeBack;
-    // Group of comment type checkboxes
-    QButtonGroup *m_typeGroup_;
-    // The id of the window this dialog refers to
-    QString       m_windowPath;
-    // Identifier of the sent request
-    int           m_requestNumber_;
+    private:
+        // Additional referred window information
+        QString       m_context;
+        // The parent LikeBack instance
+        LikeBack     *m_likeBack;
+        // Group of comment type checkboxes
+        QButtonGroup *m_typeGroup;
+        // The id of the window this dialog refers to
+        QString       m_windowPath;
+        // Identifier of the sent request
+        int           m_requestNumber;
 
-  private slots:
-    // Check if the UI should allow the user to send the comment
-    void verify();
-    // Send the comment to the developers site (reimpl. from KDialog)
-    void slotButtonClicked( int button );
-    // Display confirmation of the sending action
-    void requestFinished( int id, bool error );
+    private slots:
+        // Check if the UI should allow the user to send the comment
+        void verifyOk();
+        // Send the comment to the developers site (reimpl. from KDialog)
+        void slotSendData();
+        // Display confirmation of the sending action
+        void requestFinished( int id, bool error );
 };
 
 #endif

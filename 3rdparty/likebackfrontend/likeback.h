@@ -23,12 +23,9 @@
 #include <QObject>
 
 // Uncomment to enable debug output
-// #define DEBUG_LIKEBACK
+#define DEBUG_LIKEBACK
 
-class KAboutData;
-class KAction;
-class KConfig;
-class KActionCollection;
+class QAction;
 
 class LikeBackPrivate;
 
@@ -123,7 +120,7 @@ class LikeBack : public QObject
 	 *                         The version is used to store the button-bar visibility per version (can be shown in a development version but not in a final one...)
 	 *                         and to send with the comment, so you can filter per version and know if a comment refers the latest version of the application or not.
 	 */
-	explicit LikeBack(Button buttons = DefaultButtons, bool showBarByDefault = false,  KConfig *config = 0, const KAboutData *aboutData = 0 );
+	explicit LikeBack(Button buttons = DefaultButtons, bool showBarByDefault = false);
 
 	/**
 	 * Destructor.
@@ -226,7 +223,7 @@ class LikeBack : public QObject
    * @endcode
    *
 	 */
-	void createActions( KActionCollection *parent = 0 );
+	///void createActions( KActionCollection *parent = 0 );
 
 	/**
 	 * @returns The path of the currently active window. Each windows are separated with "~~".
@@ -299,7 +296,7 @@ class LikeBack : public QObject
 	/**
 	 * Get the user email address from KControl.
 	 */
-	void fetchUserEmail();
+	///void fetchUserEmail();
 
   private slots:
 	/**
@@ -329,13 +326,13 @@ class LikeBack : public QObject
 	 * @returns A pointer to the KAboutData used to determin the application name and version.
 	 * @see The LikeBack constructor for more information.
 	 */
-	const KAboutData *aboutData();
+	///const KAboutData *aboutData();
 
 	/**
 	 * @returns A pointer to the KConfig group to store user configuration (email address, if the button-bar should be shown).
 	 * @see The LikeBack constructor for more information.
 	 */
-	KConfig *config();
+	///KConfig *config();
 
 	/**
 	 * During the first comment sending, the user is invited to enter his email address for the developers to be able to contact him back.
@@ -368,5 +365,9 @@ class LikeBack : public QObject
   bool isBugActive() const;
   bool isFeatureActive() const;
 };
+
+#ifdef DEBUG_LIKEBACK
+#include <QDebug>
+#endif
 
 #endif // LIKEBACK_H

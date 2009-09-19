@@ -20,12 +20,11 @@
 #ifndef LIKEBACK_PRIVATE_H
 #define LIKEBACK_PRIVATE_H
 
+#include "likebackbar.h"
 #include <QTimer>
 
 
 class QButtonGroup;
-
-class Kaction;
 
 
 
@@ -36,8 +35,8 @@ class LikeBackPrivate
                          ~LikeBackPrivate();
 
   LikeBackBar             *bar;
-  KConfigGroup             config;
-  const KAboutData        *aboutData;
+  ///KConfigGroup             config;
+  ///const KAboutData        *aboutData;
   LikeBack::Button         buttons;
   QString                  hostName;
   QString                  remotePath;
@@ -48,8 +47,8 @@ class LikeBackPrivate
   bool                     showBar;
   int                      disabledCount;
   QString                  fetchedEmail;
-  KAction                 *sendAction;
-  KToggleAction           *showBarAction;
+  ///KAction                 *sendAction;
+  ///KToggleAction           *showBarAction;
 };
 
 
@@ -57,7 +56,7 @@ class LikeBackPrivate
 // Constructor
 LikeBackPrivate::LikeBackPrivate()
  : bar(0)
- , aboutData(0)
+/// , aboutData(0)
  , buttons(LikeBack::DefaultButtons)
  , hostName()
  , remotePath()
@@ -67,8 +66,8 @@ LikeBackPrivate::LikeBackPrivate()
  , showBar(false)
  , disabledCount(0)
  , fetchedEmail()
- , sendAction(0)
- , showBarAction(0)
+/// , sendAction(0)
+/// , showBarAction(0)
 {
 }
 
@@ -78,10 +77,10 @@ LikeBackPrivate::LikeBackPrivate()
 LikeBackPrivate::~LikeBackPrivate()
 {
   delete bar;
-  delete sendAction;
-  delete showBarAction;
+///  delete sendAction;
+///  delete showBarAction;
 
-  aboutData = 0;
+///  aboutData = 0;
 }
 
 

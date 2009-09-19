@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/*
 #include <KAboutData>
 #include <KAction>
 #include <KActionCollection>
@@ -27,33 +27,25 @@
 #include <KMessageBox>
 #include <KStandardDirs>
 #include <KToggleAction>
-
+*/
 #include "likeback.h"
 #include "likebackbar.h"
 #include "likebackdialog.h"
 #include "likeback_p.h"
 
+#include <QApplication>
 
 
 // Constructor
-LikeBack::LikeBack( Button buttons, bool showBarByDefault, KConfig *config, const KAboutData *aboutData )
- : QObject()
+LikeBack::LikeBack( Button buttons, bool showBarByDefault)
+  : QObject()
 {
-  // Use default KApplication config and aboutData if not provided:
-  if( config == 0 )
-  {
-    config = KGlobal::config().data();
-  }
-  if( aboutData == 0 )
-  {
-    aboutData = KGlobal::mainComponent().aboutData();
-  }
 
   // Initialize properties (1/2):
   d = new LikeBackPrivate();
   d->buttons          = buttons;
-  d->config           = config->group( "LikeBack" );
-  d->aboutData        = aboutData;
+  ///d->config           = config->group( "LikeBack" );
+  ///d->aboutData        = aboutData;
   d->showBarByDefault = showBarByDefault;
 
   // Initialize properties (2/2) [Needs aboutData to be set]:
@@ -164,9 +156,7 @@ void LikeBack::enableBar()
 
 #ifdef DEBUG_LIKEBACK
   if( d->disabledCount < 0 )
-  {
-    kError() << "Enabled more times than it was disabled. Please refer to the disableBar() documentation for more information and hints.";
-  }
+    qWarning() << "Enabled more times than it was disabled. Please refer to the disableBar() documentation for more information and hints.";
 #endif
 
   d->bar->setBarVisible( d->bar && d->disabledCount <= 0 );
@@ -216,23 +206,23 @@ LikeBack::Button LikeBack::buttons()
 
 
 // Get the KAboutData stored object
-const KAboutData* LikeBack::aboutData()
+/*const KAboutData* LikeBack::aboutData()
 {
   return d->aboutData;
 }
-
+*/
 
 
 // Get the KDE config stored object
-KConfig *LikeBack::config()
+/*KConfig *LikeBack::config()
 {
   return d->config.config();
 }
-
+*/
 
 
 // Create the menu actions
-void LikeBack::createActions( KActionCollection *parent )
+/*void LikeBack::createActions( KActionCollection *parent )
 {
   if( d->sendAction == 0 )
   {
@@ -253,7 +243,7 @@ void LikeBack::createActions( KActionCollection *parent )
     parent->addAction( "likeBackShowIcons", d->showBarAction );
   }
 }
-
+*/
 
 
 // Return whether the user wants to enable the likeback bar or not
@@ -264,7 +254,8 @@ bool LikeBack::userWantsToShowBar()
   // it's very annoying to have the bar reappearing everytime.
 //   return d->config.readEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), d->showBarByDefault );
 
-  return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
+  return true;
+  ///RESTOREME return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
 }
 
 
@@ -282,9 +273,10 @@ void LikeBack::setUserWantsToShowBar( bool showBar )
   // it's very annoying to have the bar reappearing everytime.
 //   d->config.writeEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), showBar );
 
-  d->config.writeEntry( "userWantToShowBar", showBar );
+  /// RESTOREME
+  ///d->config.writeEntry( "userWantToShowBar", showBar );
 
-  d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
+  ///d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
 
   d->bar->setBarVisible( showBar );
 }
@@ -294,6 +286,8 @@ void LikeBack::setUserWantsToShowBar( bool showBar )
 // Show a dialog box to introduce the user to LikeBack
 void LikeBack::showInformationMessage()
 {
+    ///RESTOREME
+#if 0
   // don't show the message if the bar isn't enabled.
   // message doesn't make sense without the bar
   if ( ! d->showBar ) return;
@@ -415,6 +409,7 @@ void LikeBack::showInformationMessage()
                             i18nc( "Welcome dialog title", "Help Improve the Application" ),
                             "LikeBack_starting_information",
                             KMessageBox::Notify );
+#endif
 }
 
 
@@ -424,7 +419,7 @@ QString LikeBack::activeWindowPath()
 {
   // Compute the window hierarchy (from the oldest to the latest, each time prepending to the list):
   QStringList windowNames;
-  QWidget *window = kapp->activeWindow();
+  QWidget *window = QApplication::activeWindow();
   while( window )
   {
     QString name( window->objectName() );
@@ -448,7 +443,9 @@ QString LikeBack::activeWindowPath()
 // Return whether the email address was confirmed by the user
 bool LikeBack::emailAddressAlreadyProvided()
 {
-  return d->config.readEntry( "emailAlreadyAsked", false );
+    ///RESTOREME
+    return false;
+  ///return d->config.readEntry( "emailAlreadyAsked", false );
 }
 
 
@@ -456,8 +453,10 @@ bool LikeBack::emailAddressAlreadyProvided()
 // Return the currently saved email address, or the account's email address, if present
 QString LikeBack::emailAddress()
 {
-  KEMailSettings emailSettings;
-  return d->config.readEntry( "emailAddress", emailSettings.getSetting( KEMailSettings::EmailAddress ) );
+    return QString();
+    ///RESTOREME
+  ///KEMailSettings emailSettings;
+  ///return d->config.readEntry( "emailAddress", emailSettings.getSetting( KEMailSettings::EmailAddress ) );
 }
 
 
@@ -465,9 +464,10 @@ QString LikeBack::emailAddress()
 // Change the saved email address
 void LikeBack::setEmailAddress( const QString &address, bool userProvided )
 {
-  d->config.writeEntry( "emailAddress", address );
-  d->config.writeEntry( "emailAlreadyAsked", ( userProvided || emailAddressAlreadyProvided() ) );
-  d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
+    ///RESTOREME
+  ///d->config.writeEntry( "emailAddress", address );
+  ///d->config.writeEntry( "emailAlreadyAsked", ( userProvided || emailAddressAlreadyProvided() ) );
+  ///d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
 }
 
 
@@ -475,11 +475,11 @@ void LikeBack::setEmailAddress( const QString &address, bool userProvided )
 // FIXME: Should be moved to KAboutData? Cigogne will also need it.
 bool LikeBack::isDevelopmentVersion( const QString &version )
 {
-  return version.indexOf( "alpha", 0, Qt::CaseInsensitive ) != -1 ||
-         version.indexOf( "beta",  0, Qt::CaseInsensitive ) != -1 ||
-         version.indexOf( "rc",    0, Qt::CaseInsensitive ) != -1 ||
-         version.indexOf( "svn",   0, Qt::CaseInsensitive ) != -1 ||
-         version.indexOf( "cvs",   0, Qt::CaseInsensitive ) != -1;
+    return version.indexOf( "alpha", 0, Qt::CaseInsensitive ) != -1 ||
+           version.indexOf( "beta",  0, Qt::CaseInsensitive ) != -1 ||
+           version.indexOf( "rc",    0, Qt::CaseInsensitive ) != -1 ||
+           version.indexOf( "svn",   0, Qt::CaseInsensitive ) != -1 ||
+           version.indexOf( "cvs",   0, Qt::CaseInsensitive ) != -1;
 }
 
 
@@ -487,7 +487,7 @@ bool LikeBack::isDevelopmentVersion( const QString &version )
 // Return whether the Like button is active
 bool LikeBack::isLikeActive() const
 {
-  return ( d->buttons & Like );
+    return ( d->buttons & Like );
 }
 
 
@@ -495,7 +495,7 @@ bool LikeBack::isLikeActive() const
 // Return whether the Dislike button is active
 bool LikeBack::isDislikeActive() const
 {
-  return ( d->buttons & Dislike );
+    return ( d->buttons & Dislike );
 }
 
 
@@ -503,7 +503,7 @@ bool LikeBack::isDislikeActive() const
 // Return whether the Bug button is active
 bool LikeBack::isBugActive() const
 {
-  return ( d->buttons & Bug );
+    return ( d->buttons & Bug );
 }
 
 
@@ -511,9 +511,6 @@ bool LikeBack::isBugActive() const
 // Return whether the Feature button is active
 bool LikeBack::isFeatureActive() const
 {
-  return ( d->buttons & Feature );
+    return ( d->buttons & Feature );
 }
 
-
-
-#include "likeback.moc"
