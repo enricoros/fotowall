@@ -120,7 +120,7 @@ class LikeBack : public QObject
 	 *                         The version is used to store the button-bar visibility per version (can be shown in a development version but not in a final one...)
 	 *                         and to send with the comment, so you can filter per version and know if a comment refers the latest version of the application or not.
 	 */
-	explicit LikeBack(Button buttons = DefaultButtons, bool showBarByDefault = false);
+	explicit LikeBack(Button buttons = DefaultButtons, bool showBarByDefault = false, QObject * parent = 0);
 
 	/**
 	 * Destructor.

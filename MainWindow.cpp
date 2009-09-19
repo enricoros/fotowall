@@ -24,6 +24,7 @@
 #include "WarningBox.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
+#include "3rdparty/likebackfrontend/likeback.h"
 #include <QAction>
 #include <QApplication>
 #include <QDir>
@@ -130,6 +131,7 @@ MainWindow::MainWindow(QWidget * parent)
     , m_aHelpSupport(0)
     , m_gBackActions(0)
     , m_gBackRatioActions(0)
+    , m_likeBack(0)
 {
     // setup widget
     QRect geom = QApplication::desktop()->availableGeometry();
@@ -185,6 +187,11 @@ MainWindow::MainWindow(QWidget * parent)
     checkForTutorial();
     checkForSupport();
     checkForUpdates();
+
+    // setup likeback
+    m_likeBack = new LikeBack(LikeBack::AllButtons, true, this);
+    m_likeBack->setAcceptedLanguages(QStringList() << "en" << "it" << "fr");
+    m_likeBack->setServer("www.enricoros.com", "/opensource/fotowall/feedback/send.php");
 }
 
 MainWindow::~MainWindow()
@@ -193,6 +200,7 @@ MainWindow::~MainWindow()
     saveXml(QDir::tempPath() + QDir::separator() + "autosave.fotowall");
 
     // delete everything
+    delete m_likeBack;
     delete m_desk;
     delete ui;
 }

@@ -37,12 +37,11 @@
 
 
 // Constructor
-LikeBack::LikeBack( Button buttons, bool showBarByDefault)
-  : QObject()
+LikeBack::LikeBack( Button buttons, bool showBarByDefault, QObject * parent )
+  : QObject( parent )
+  , d( new LikeBackPrivate )
 {
-
   // Initialize properties (1/2):
-  d = new LikeBackPrivate();
   d->buttons          = buttons;
   ///d->config           = config->group( "LikeBack" );
   ///d->aboutData        = aboutData;
@@ -59,9 +58,7 @@ LikeBack::LikeBack( Button buttons, bool showBarByDefault)
 
   // Show the bar if that's wanted by the developer or the user:
   if( d->showBar )
-  {
     d->bar->setBarVisible( true );
-  }
 }
 
 
