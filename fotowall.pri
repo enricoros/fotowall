@@ -54,6 +54,7 @@ RESOURCES += fotowall.qrc
 # More input files
 include(items/items.pri)
 include(frames/frames.pri)
+include(3rdparty/likebackfrontend/likebackfrontend.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 
