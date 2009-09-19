@@ -41,8 +41,8 @@ Version 0.8.0 (2009-09-12):
 * Other changes
   * restore the common behavior for rotating (left click)
   * animations with 4.6: top bar, item show/hide, properties show/hide
-  * builds with 4.4 (without many features), 4.5 (without animations), 4.6-unreleased (gfx errors on windows)
-  * fix: when loading a .fotowall file from the command line some items are aligned to the left
+  * builds with 4.4 (without many features), 4.5 (without animations), 4.6
+  * fix: left alignment of some items
   * fix: resizing works only with the bottom right corner. fix the others.
 
 Version 0.7.1 (2009-07-23):
@@ -124,6 +124,7 @@ improvement and the code is kept clean and small.
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
+* handle initial load-save after being shown. also evaluate normalized rescaling.
 * save/restore background transparency state (or check current bg code)
 * svg drawings [balloons, signs, etc..]
 * masked pic
@@ -131,6 +132,17 @@ improvement and the code is kept clean and small.
 * webcam: on win32
 * webcam: multiple webcams
 * add the undo/redo support
+* provide some default files, also loadable with a short path
+  * use a fotowall scene as gui (4 squared load/save/welcome/etc..)
+  * scene-in-scene for 'recent files'
+* duplicate/clone content
+* real cropping
+* scissors tool
+  * real shaping, intersects frame shape
+* scene matrix (global perspective)
+* embedded examples (inside/network)
+* templates
+* new graphics effects (like Colorize or Warhol-ize ;-)
 * update the video tutorial (still at 0.2!)
 * add the "color changing stuff" to the picture themselves (req. by Contrast, Superstoned)
 * add google images, like flickr ones (req. by Rossana)
