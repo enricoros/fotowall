@@ -16,3 +16,6 @@ SOURCES += \
 FORMS += \
     likebackbar.ui \
     likebackdialog.ui
+
+RESOURCES += \
+    likeback.qrc

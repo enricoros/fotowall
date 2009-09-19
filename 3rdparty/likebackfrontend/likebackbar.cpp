@@ -36,10 +36,10 @@ LikeBackBar::LikeBackBar( LikeBack *likeBack )
   setObjectName( "LikeBackBar" );
 
   // Set the button icons
-  m_likeButton   ->setIcon( QIcon( ":/likeback/likeback_like"    ) );
-  m_dislikeButton->setIcon( QIcon( ":/likeback/likeback_dislike" ) );
-  m_bugButton    ->setIcon( QIcon( ":/likeback/likeback_bug"     ) );
-  m_featureButton->setIcon( QIcon( ":/likeback/likeback_feature" ) );
+  m_likeButton   ->setIcon( QIcon( ":/likeback/like.png"    ) );
+  m_dislikeButton->setIcon( QIcon( ":/likeback/dislike.png" ) );
+  m_bugButton    ->setIcon( QIcon( ":/likeback/bug.png"     ) );
+  m_featureButton->setIcon( QIcon( ":/likeback/feature.png" ) );
 
   // Show buttons for the enabled types of feedback only
   LikeBack::Button buttons = likeBack->buttons();
