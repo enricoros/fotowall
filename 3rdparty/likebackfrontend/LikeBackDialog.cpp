@@ -20,17 +20,20 @@
 #include "LikeBackDialog.h"
 
 #include <QApplication>
-#include <QHttpRequestHeader>
-#include <QHttp>
 #include <QMessageBox>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QPushButton>
 #include <QUrl>
 
 
 // Constructor
-LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialComment,
-                                const QString &windowPath, const QString &context, LikeBack *likeBack )
+LikeBackDialog::LikeBackDialog( QNetworkAccessManager * nam, LikeBack::Button reason,
+                                const QString &initialComment, const QString &windowPath,
+                                const QString &context, LikeBack *likeBack )
   : QDialog( QApplication::activeWindow() )
+  , m_nam( nam )
   , m_context( context )
   , m_likeBack( likeBack )
   , m_windowPath( windowPath )
@@ -227,36 +230,25 @@ void LikeBackDialog::slotSendData()
     qDebug() << data;
 #endif
 
-    // Create the HTTP sending object and the actual request
-    QHttp * http = new QHttp( m_likeBack->hostName(), m_likeBack->hostPort() );
-    connect( http, SIGNAL( requestFinished(int,bool) ), this, SLOT( requestFinished(int,bool) ) );
+    // make up the URL
+    QUrl remoteUrl("http://");
+    remoteUrl.setHost(m_likeBack->hostName());
+    remoteUrl.setPort(m_likeBack->hostPort());
+    remoteUrl.setPath(m_likeBack->remotePath());
 
-    QHttpRequestHeader header( "POST", m_likeBack->remotePath() );
-    header.setValue( "Host", m_likeBack->hostName() );
-    header.setValue( "Content-Type", "application/x-www-form-urlencoded" );
-
-    // Then send it at the developer site
-    http->setHost( m_likeBack->hostName() );
-    m_requestNumber = http->request( header, data.toUtf8() );
+    // do the POST and listen for the reply
+    QNetworkReply * reply = m_nam->post(QNetworkRequest(remoteUrl), data.toUtf8());
+    connect(reply, SIGNAL(finished()), this, SLOT(slotRequestFinished()));
 }
 
 
 
 // Display confirmation of the sending action
-void LikeBackDialog::requestFinished( int id, bool error )
+void LikeBackDialog::slotRequestFinished()
 {
-    // Only analyze the request we've sent
-    if ( id != m_requestNumber )
-    {
-#ifdef DEBUG_LIKEBACK
-        qDebug() << "Ignoring request" << id;
-#endif
-        return;
-    }
-
-#ifdef DEBUG_LIKEBACK
-    qDebug() << "Request has" << (error ? "failed" : "succeeded");
-#endif
+    QNetworkReply * reply = static_cast<QNetworkReply *>(sender());
+    bool error = reply->error() != QNetworkReply::NoError;
+    reply->deleteLater();
 
     m_likeBack->disableBar();
 

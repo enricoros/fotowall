@@ -24,7 +24,7 @@
 #include "WarningBox.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
-#include "3rdparty/likebackfrontend/likeback.h"
+#include "3rdparty/likebackfrontend/LikeBack.h"
 #include <QAction>
 #include <QApplication>
 #include <QDir>

@@ -24,13 +24,15 @@
 #include "LikeBack.h"
 #include "ui_likebackdialog.h"
 class QButtonGroup;
+class QNetworkAccessManager;
 
 class LikeBackDialog : public QDialog, private Ui::LikeBackDialog
 {
     Q_OBJECT
     public:
         // Constructor
-        LikeBackDialog( LikeBack::Button reason, const QString &initialComment, const QString &windowPath,
+        LikeBackDialog( QNetworkAccessManager * nam, LikeBack::Button reason,
+                        const QString &initialComment, const QString &windowPath,
                         const QString &context, LikeBack *likeBack );
         // Destructor
         ~LikeBackDialog();
@@ -40,6 +42,8 @@ class LikeBackDialog : public QDialog, private Ui::LikeBackDialog
         QString introductionText();
 
     private:
+        // External network access manager
+        QNetworkAccessManager * m_nam;
         // Additional referred window information
         QString       m_context;
         // The parent LikeBack instance
@@ -48,8 +52,6 @@ class LikeBackDialog : public QDialog, private Ui::LikeBackDialog
         QButtonGroup *m_typeGroup;
         // The id of the window this dialog refers to
         QString       m_windowPath;
-        // Identifier of the sent request
-        int           m_requestNumber;
 
     private slots:
         // Check if the UI should allow the user to send the comment
@@ -57,7 +59,7 @@ class LikeBackDialog : public QDialog, private Ui::LikeBackDialog
         // Send the comment to the developers site (reimpl. from KDialog)
         void slotSendData();
         // Display confirmation of the sending action
-        void requestFinished( int id, bool error );
+        void slotRequestFinished();
 };
 
 #endif

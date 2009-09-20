@@ -22,6 +22,7 @@
 #include "LikeBack_p.h"
 
 #include <QApplication>
+#include <QSettings>
 
 
 // Constructor
@@ -119,8 +120,8 @@ quint16 LikeBack::hostPort()
 // Disable the LikeBack Bar
 void LikeBack::disableBar()
 {
-#if 0
   d->disabledCount++;
+#if 0
   d->bar->setBarVisible( d->bar && d->disabledCount > 0 );
 #endif
 }
@@ -130,7 +131,6 @@ void LikeBack::disableBar()
 // Enable the LikeBack Bar
 void LikeBack::enableBar()
 {
-#if 0
   d->disabledCount--;
 
 #ifdef DEBUG_LIKEBACK
@@ -138,6 +138,7 @@ void LikeBack::enableBar()
     qWarning() << "Enabled more times than it was disabled. Please refer to the disableBar() documentation for more information and hints.";
 #endif
 
+#if 0
   d->bar->setBarVisible( d->bar && d->disabledCount <= 0 );
 #endif
 }
@@ -147,11 +148,7 @@ void LikeBack::enableBar()
 // Get whether the bar is enabled or not
 bool LikeBack::enabledBar()
 {
-#if 0
   return d->disabledCount <= 0;
-#else
-  return false;
-#endif
 }
 
 
@@ -159,13 +156,11 @@ bool LikeBack::enabledBar()
 // Display the Send Comments dialog
 void LikeBack::execCommentDialog( Button type, const QString &initialComment, const QString &windowPath, const QString &context )
 {
-  LikeBackDialog *dialog = new LikeBackDialog( type, initialComment, windowPath, context, this );
+  LikeBackDialog *dialog = new LikeBackDialog( d->nam, type, initialComment, windowPath, context, this );
 
-  if( userWantsToShowBar() )
-  {
+  if ( userWantsToShowBar() ) {
     disableBar();
-    connect( dialog, SIGNAL( destroyed(QObject*) ),
-             this,   SLOT  ( enableBar()         ) );
+    connect( dialog, SIGNAL( destroyed(QObject*) ), this, SLOT( enableBar() ) );
   }
 
   dialog->show();
@@ -232,14 +227,14 @@ void LikeBack::createActions( KActionCollection *parent )
 // Return whether the user wants to enable the likeback bar or not
 bool LikeBack::userWantsToShowBar()
 {
-#if 0
+#if 1
+  return QSettings().value("LikeBack/userWantToShowBar", d->showBarByDefault).toBool();
+#else
   // You can choose to store the button bar status per version.
   // On debug builds from SVN, where the version changes at almost every build,
   // it's very annoying to have the bar reappearing everytime.
 //   return d->config.readEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), d->showBarByDefault );
   return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
-#else
-  return false;
 #endif
 }
 
@@ -252,7 +247,10 @@ void LikeBack::setUserWantsToShowBar( bool showBar )
     return;
 
   d->showBar = showBar;
-#if 0
+#if 1
+  QSettings().setValue("LikeBack/userWantToShowBar", showBar);
+  // TODO: show bar
+#else
   // You can choose to store the button bar status per version.
   // On debug builds from SVN, where the version changes at almost every build,
   // it's very annoying to have the bar reappearing everytime.
@@ -404,15 +402,12 @@ QString LikeBack::activeWindowPath()
   // Compute the window hierarchy (from the oldest to the latest, each time prepending to the list):
   QStringList windowNames;
   QWidget *window = QApplication::activeWindow();
-  while( window )
-  {
+  while( window ) {
     QString name( window->objectName() );
 
     // Append the class name to the window name if it is unnamed:
-    if( name == "unnamed" )
-    {
+    if( name == "unnamed" && window->metaObject() )
       name += QString( ":" ) + window->metaObject()->className();
-    }
     windowNames.prepend( name );
 
     window = dynamic_cast<QWidget*>( window->parent() );
@@ -427,10 +422,10 @@ QString LikeBack::activeWindowPath()
 // Return whether the email address was confirmed by the user
 bool LikeBack::emailAddressAlreadyProvided()
 {
-#if 0
-  return d->config.readEntry( "emailAlreadyAsked", false );
+#if 1
+  return QSettings().value("LikeBack/emailAlreadyAsked", false).toBool();
 #else
-  return false;
+  return d->config.readEntry( "emailAlreadyAsked", false );
 #endif
 }
 
@@ -439,11 +434,11 @@ bool LikeBack::emailAddressAlreadyProvided()
 // Return the currently saved email address, or the account's email address, if present
 QString LikeBack::emailAddress()
 {
-#if 0
+#if 1
+  return QSettings().value("LikeBack/emailAddress").toString();
+#else
   KEMailSettings emailSettings;
   return d->config.readEntry( "emailAddress", emailSettings.getSetting( KEMailSettings::EmailAddress ) );
-#else
-  return QString();
 #endif
 }
 
@@ -452,13 +447,14 @@ QString LikeBack::emailAddress()
 // Change the saved email address
 void LikeBack::setEmailAddress( const QString &address, bool userProvided )
 {
-#if 0
+#if 1
+  QSettings s;
+  s.setValue("LikeBack/emailAddress", address);
+  s.setValue("LikeBack/emailAlreadyAsked", userProvided || s.value("LikeBack/emailAlreadyAsked", false).toBool());
+#else
   d->config.writeEntry( "emailAddress", address );
   d->config.writeEntry( "emailAlreadyAsked", ( userProvided || emailAddressAlreadyProvided() ) );
   d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
-#else
-  Q_UNUSED(address);
-  Q_UNUSED(userProvided);
 #endif
 }
 

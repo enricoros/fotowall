@@ -21,11 +21,13 @@
 #define __LikeBack_p_h__
 
 #include "LikeBack.h"
+#include <QNetworkAccessManager>
 
 class LikeBackPrivate
 {
     public:
         LikeBackPrivate();
+        ~LikeBackPrivate();
 
         LikeBack::Button         buttons;
         QString                  hostName;
@@ -37,6 +39,7 @@ class LikeBackPrivate
         bool                     showBar;
         int                      disabledCount;
         QString                  fetchedEmail;
+        QNetworkAccessManager *  nam;
 };
 
 
@@ -53,7 +56,16 @@ LikeBackPrivate::LikeBackPrivate()
   , showBar(false)
   , disabledCount(0)
   , fetchedEmail()
+  , nam(new QNetworkAccessManager)
 {
+}
+
+
+
+// Destructor
+LikeBackPrivate::~LikeBackPrivate()
+{
+    delete nam;
 }
 
 
