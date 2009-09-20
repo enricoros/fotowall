@@ -107,7 +107,7 @@
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location line="+616"/>
+        <location line="+622"/>
         <source>Choose the Image file</source>
         <translation>Choisir l&apos;image</translation>
     </message>
@@ -140,7 +140,7 @@
 - Double cliquez pour restorer les proportions/rotation</translation>
     </message>
     <message>
-        <location line="-673"/>
+        <location line="-679"/>
         <source>Drag around to change the perspective.
 Hold SHIFT to move faster.
 Use CTRL to cancel the transformations.</source>
@@ -181,7 +181,7 @@ Utiliser CTRL pour annuler les transformations.</translation>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+896"/>
+        <location filename="../Desk.cpp" line="+901"/>
         <source>Back</source>
         <translation>Arrière</translation>
     </message>
@@ -272,17 +272,19 @@ Utiliser CTRL pour annuler les transformations.</translation>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="+155"/>
+        <location filename="../ExportWizard.cpp" line="+159"/>
+        <location line="+94"/>
         <source>No file selected !</source>
         <translation>Pas de fichier sélectionné !</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-94"/>
+        <location line="+94"/>
         <source>You need to choose a file path for saving.</source>
         <translation>Vous devez choisir un emplacement de sauvegarde.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="-65"/>
         <source>Done</source>
         <translation>Effectué</translation>
     </message>
@@ -307,7 +309,12 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>Eporter en poster</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+49"/>
+        <source>Created with %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
         <source>Choose the Image file</source>
         <translation>Choisissez l&apos;image</translation>
     </message>
@@ -315,6 +322,16 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <location line="+0"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Choose the SVG file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>SVG (*.svg)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui"/>
@@ -472,7 +489,7 @@ Utiliser CTRL pour annuler les transformations.</translation>
         <translation>Imprimer en mode paysage</translation>
     </message>
     <message>
-        <location filename="../ExportWizard.cpp" line="-160"/>
+        <location filename="../ExportWizard.cpp" line="-200"/>
         <source>Wallpaper Error</source>
         <translation>Erreur de fond d&apos;écran</translation>
     </message>
@@ -523,6 +540,21 @@ Allez dans les Préférences du bureau et selectionnez le fichier : %1</translat
         <location/>
         <source>Keep proportions</source>
         <translation>Conserver les proportions</translation>
+    </message>
+    <message>
+        <location/>
+        <source>SVG Vector Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>as you see it (includes tools, lines, etc)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Export to the Scalable Vector Graphics image format.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -742,7 +774,7 @@ p, li { white-space: pre-wrap; }
         <translation>OpenGL accélère le graphique. Cependant ce n&apos;est pas garanti que ça fonctionne sur votre système. Essayez et regardez si ça fonctionne pour vous ;-)&lt;br&gt; - Si ça semble plus lent, vérifiez que votre pilote accélère OpenGL&lt;br&gt; - Si Fotowall s&apos;arrête de répondre après être passé à OpenGL, n&apos;utilisez pas cette fonctionnalité la prochaine fois&lt;br&gt;&lt;br&gt;NOTE : OpenGL ne fonctionne pas avec le mode &apos;Transparent&apos;.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+78"/>
         <source>Transparency</source>
         <translation>Transparence</translation>
     </message>
@@ -752,7 +784,7 @@ p, li { white-space: pre-wrap; }
         <translation>Cette fonctionnalité n&apos;a pas été largement testée pour l&apos;instant.&lt;br&gt; - Sous GNU/Linux, ça nécessite le compositing (comme compiz/beryl, kwin4)&lt;br&gt; - Sous Windows et mac, ça semble fonctionner&lt;br&gt;Si vous voyez un fond noir, alors la transparence n&apos;est pas supportée par votre système.&lt;br&gt;&lt;br&gt;NOTE : Vous devez définir le fond &apos;Transparent&apos; pour constater la transparence de la fenêtre.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+49"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Sélectionnez le fichier Fotowall</translation>

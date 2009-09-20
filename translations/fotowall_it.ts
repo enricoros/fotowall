@@ -116,7 +116,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location line="+616"/>
+        <location line="+622"/>
         <source>Choose the Image file</source>
         <translation>Scegli un&apos;immagine</translation>
     </message>
@@ -181,7 +181,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+896"/>
+        <location filename="../Desk.cpp" line="+901"/>
         <source>Back</source>
         <translation>Retro</translation>
     </message>
@@ -272,7 +272,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="+123"/>
+        <location filename="../ExportWizard.cpp" line="+127"/>
         <source>Wallpaper Error</source>
         <translation>Errore nello Sfondo</translation>
     </message>
@@ -297,16 +297,18 @@ Apri le Impostazioni del Desktop e seleziona il file:
     </message>
     <message>
         <location line="+17"/>
+        <location line="+94"/>
         <source>No file selected !</source>
         <translation>Nessun file selezionato !</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-94"/>
+        <location line="+94"/>
         <source>You need to choose a file path for saving.</source>
         <translation>Devi scegliere il nome del file su cui salvare.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="-65"/>
         <source>Done</source>
         <translation>Fatto</translation>
     </message>
@@ -331,7 +333,12 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <translation>Stampa Poster</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+49"/>
+        <source>Created with %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
         <source>Choose the Image file</source>
         <translation>Scegli un&apos;immagine</translation>
     </message>
@@ -339,6 +346,16 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <location line="+0"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Choose the SVG file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>SVG (*.svg)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui"/>
@@ -524,6 +541,21 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <location/>
         <source>Keep proportions</source>
         <translation>Mantieni le proporzioni</translation>
+    </message>
+    <message>
+        <location/>
+        <source>SVG Vector Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>as you see it (includes tools, lines, etc)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Export to the Scalable Vector Graphics image format.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -776,7 +808,7 @@ p, li { white-space: pre-wrap; }
         <translation>OpenGL accelera la gradica. Non è garantito che funzioni sul tuo sistema. Prova e vedi se funziona ;-)&lt;br&gt; - se pare più lento, assicurati che i tuoi driver video accelerino OpenGL&lt;br&gt; - se Fotowall smette di funzionare dopo essere passati ad OpenGL, non usate più questa funzione la prossima volta&lt;br&gt;&lt;br&gt;NOTA: OpenGL non funziona in modalità &apos;Trasparente&apos;.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+78"/>
         <source>Transparency</source>
         <translation>Trasparenza</translation>
     </message>
@@ -786,7 +818,7 @@ p, li { white-space: pre-wrap; }
         <translation>Questa caratteristica non è ancora stata provata a fondo.&lt;br&gt; - su linux richiede il compositing (tipo kwin4 o compiz/beryl)&lt;br&gt; - su windows e mac dovrebbe funzionare&lt;br&gt;Se lo sfondo diviene nero, ciò vuol dire che la trasparenza non è supportata sul tuo sistema.&lt;br&gt;&lt;br&gt;NOTA: devi selezionare lo Sfondo &apos;Trasparente&apos; per apprezzare questa funzionalità.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+49"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Scegli il file Fotowall</translation>

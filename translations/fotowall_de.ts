@@ -115,7 +115,7 @@ STRG benutzen um die Umwandlung abzubrechen.</translation>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location line="+616"/>
+        <location line="+622"/>
         <source>Choose the Image file</source>
         <translation>Wähle die Bild-Datei aus</translation>
     </message>
@@ -180,7 +180,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+896"/>
+        <location filename="../Desk.cpp" line="+901"/>
         <source>Back</source>
         <translation>Hintergrund</translation>
     </message>
@@ -271,7 +271,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="+123"/>
+        <location filename="../ExportWizard.cpp" line="+127"/>
         <source>Wallpaper Error</source>
         <translation>Fehler beim Hintergrundbild</translation>
     </message>
@@ -296,16 +296,18 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
     </message>
     <message>
         <location line="+17"/>
+        <location line="+94"/>
         <source>No file selected !</source>
         <translation>Keine Datei ausgewählt!</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-94"/>
+        <location line="+94"/>
         <source>You need to choose a file path for saving.</source>
         <translation>Es ist nötig ein Verzeichnis vor dem Speichern auszuwählen.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="-65"/>
         <source>Done</source>
         <translation>Erledigt</translation>
     </message>
@@ -330,7 +332,12 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
         <translation>Exportiere Poster</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+49"/>
+        <source>Created with %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
         <source>Choose the Image file</source>
         <translation>Wählen Sie eine Bilddatei aus</translation>
     </message>
@@ -338,6 +345,16 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
         <location line="+0"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Bilder (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Choose the SVG file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>SVG (*.svg)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui"/>
@@ -523,6 +540,21 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
         <location/>
         <source>Keep proportions</source>
         <translation>Erhalte Seitenverhältnis</translation>
+    </message>
+    <message>
+        <location/>
+        <source>SVG Vector Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>as you see it (includes tools, lines, etc)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Export to the Scalable Vector Graphics image format.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -769,7 +801,7 @@ p, li { white-space: pre-wrap; }
         <translation>Es ist nicht sichergestellt das OpenGL unterstützte Grafik auf Ihrem System funktioniert. Probiere es einfach aus, ob es funtioniert.&lt;br&gt; - falls sich die Grafikausgabe langsam anfühlt, stelle bitte sicher, daß der Grafiktreiber OpenGL hardwareseitig beschleunigt&lt;br&gt; - falls Fotowall nach der Umstellung auf OpenGL nicht mehr funktioniert, benutzen Sie diese Funktion beim nächsten Start nicht mehr&lt;br&gt;&lt;br&gt;ANMERKUNG: OpenGL funktioniert nicht mit &quot;Transparent&quot; Modus.</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+78"/>
         <source>Transparency</source>
         <translation>Transparenz</translation>
     </message>
@@ -779,7 +811,7 @@ p, li { white-space: pre-wrap; }
         <translation>Die Funktion wurde zur Zeit noch nicht umfangreich getestet.&lt;br&gt; -unter Linux wird composite Modus, wie unter compiz/beryl oder kwin4, benötigt&lt;br&gt; - unter Windows und Mac OS scheint es zu funktionieren&lt;br&gt;Sollten Sie einen schwarzen Hintergrund sehen, dann wird Transparenz auf Ihrem System nicht unterstützt.&lt;br&gt;&lt;br&gt;ANMERKUNG: Sie sollten &quot;transparenten&quot; Hintergrund verwenden um transparente Fenster zu nutzen.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+49"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Wähle die Fotowall Datei aus</translation>

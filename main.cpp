@@ -70,6 +70,7 @@ int main( int argc, char ** args )
 
     MainWindow mw;
     mw.showMaximized();
+    app.processEvents();
     QStringList images;
     for (int i = 1; i < argc; i++) {
         QString filePath = args[i];

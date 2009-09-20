@@ -19,6 +19,7 @@
 #include "ModeInfo.h"
 class Desk;
 class FWGraphicsView;
+class LikeBack;
 class QActionGroup;
 class QGraphicsView;
 class QMenu;
@@ -65,6 +66,7 @@ class MainWindow : public QWidget
         QActionGroup *  m_gBackActions;
         QActionGroup *  m_gBackRatioActions;
         QString         m_website;
+        LikeBack *      m_likeBack;
 
     private Q_SLOTS:
         void on_projectType_activated(int index);
