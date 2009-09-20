@@ -14,12 +14,13 @@ ChangeLog
 Unreleased 0.9.x:
 
 * Export to SVG
+* Integrated the LikeBack feedback system
+* Fixes licenses
 * in branches:
   * Arnaud's Undo/Redo system
   * More properties in the top bar
   * Arrange Contents, finally!
   * Desk-wide effects
-  * Polish translation? ask Marek Walczak, see 4ba1502
   * ...
 
 Version 0.8.0 (2009-09-12):
@@ -155,13 +156,8 @@ improvement and the code is kept clean and small.
 * regional links to web resources
  - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
  - french: ubuntu-fr ?
-* relicences
- - 3rdparty/enricomath.h: Could you re-release it with GPL v2+ like the rest of your source?
+* other relicences
  - 3rdparty/richtextedit/richtexteditor*: redo 'cause non free
- - ./GlowEffectWidget.cpp: GPLv2 with all rights reserved, a no-go
- - videocapture is partially BSD and LGPLv2+ - not mentioned + no complete copy of lgplv2 available (add the file into that folder)
- - posterazor GPLv3+ need license file
- - remove qm? note that building on windows requires qm to be on the packages!
 
 
 Building
@@ -186,7 +182,7 @@ location and issue the followings commands:
 
 The executable will be built and you can start enjoying Fotowall! ;-)
 
-Internal: To prepare the folder for release: make distclean; git clean -fdx; rm -fr Makefile data/sources .build .git .gitignore translations/.gitignore examples
+Internal: To prepare the folder for release: make distclean; git clean -fdx; rm -fr Makefile data/sources .build .git .gitignore translations/.gitignore examples; qmake; rm -fr Makefile .build
 
 Old News
 --------
