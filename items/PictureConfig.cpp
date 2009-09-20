@@ -19,7 +19,6 @@
 #include "ui_PictureConfig.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QListWidgetItem>
-#include <QSettings>
 
 PictureConfig::PictureConfig(PictureContent * pictureContent, QGraphicsItem * parent)
     : AbstractConfig(pictureContent, parent)

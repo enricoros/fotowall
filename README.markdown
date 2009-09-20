@@ -186,7 +186,7 @@ location and issue the followings commands:
 
 The executable will be built and you can start enjoying Fotowall! ;-)
 
-Internal: To prepare the folder for release: make distclean; git clean -fdx; rm -fr data/sources .build .git examples
+Internal: To prepare the folder for release: make distclean; git clean -fdx; rm -fr Makefile data/sources .build .git .gitignore translations/.gitignore examples
 
 Old News
 --------
