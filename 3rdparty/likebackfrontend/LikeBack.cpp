@@ -16,22 +16,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*
-#include <KAboutData>
-#include <KAction>
-#include <KActionCollection>
-#include <KApplication>
-#include <KComponentData>
-#include <KConfigGroup>
-#include <KEMailSettings>
-#include <KMessageBox>
-#include <KStandardDirs>
-#include <KToggleAction>
-*/
-#include "likeback.h"
-#include "likebackbar.h"
-#include "likebackdialog.h"
-#include "likeback_p.h"
+
+#include "LikeBack.h"
+#include "LikeBackDialog.h"
+#include "LikeBack_p.h"
 
 #include <QApplication>
 
@@ -41,24 +29,15 @@ LikeBack::LikeBack( Button buttons, bool showBarByDefault, QObject * parent )
   : QObject( parent )
   , d( new LikeBackPrivate )
 {
-  // Initialize properties (1/2):
+  // Initialize properties
   d->buttons          = buttons;
-  ///d->config           = config->group( "LikeBack" );
-  ///d->aboutData        = aboutData;
   d->showBarByDefault = showBarByDefault;
-
-  // Initialize properties (2/2) [Needs aboutData to be set]:
   d->showBar = userWantsToShowBar();
 
-  // Initialize the button-bar:
-  d->bar = new LikeBackBar( this );
+  /// TODO Initialize the button-bars
 
   // Show the information message if it is the first time, and if the button-bar is shown:
   showInformationMessage();
-
-  // Show the bar if that's wanted by the developer or the user:
-  if( d->showBar )
-    d->bar->setBarVisible( true );
 }
 
 
@@ -140,8 +119,10 @@ quint16 LikeBack::hostPort()
 // Disable the LikeBack Bar
 void LikeBack::disableBar()
 {
+#if 0
   d->disabledCount++;
   d->bar->setBarVisible( d->bar && d->disabledCount > 0 );
+#endif
 }
 
 
@@ -149,6 +130,7 @@ void LikeBack::disableBar()
 // Enable the LikeBack Bar
 void LikeBack::enableBar()
 {
+#if 0
   d->disabledCount--;
 
 #ifdef DEBUG_LIKEBACK
@@ -157,6 +139,7 @@ void LikeBack::enableBar()
 #endif
 
   d->bar->setBarVisible( d->bar && d->disabledCount <= 0 );
+#endif
 }
 
 
@@ -164,7 +147,11 @@ void LikeBack::enableBar()
 // Get whether the bar is enabled or not
 bool LikeBack::enabledBar()
 {
+#if 0
   return d->disabledCount <= 0;
+#else
+  return false;
+#endif
 }
 
 
@@ -201,25 +188,24 @@ LikeBack::Button LikeBack::buttons()
 }
 
 
-
+#if 0
 // Get the KAboutData stored object
-/*const KAboutData* LikeBack::aboutData()
+const KAboutData* LikeBack::aboutData()
 {
   return d->aboutData;
 }
-*/
 
 
 // Get the KDE config stored object
-/*KConfig *LikeBack::config()
+KConfig *LikeBack::config()
 {
   return d->config.config();
 }
-*/
+
 
 
 // Create the menu actions
-/*void LikeBack::createActions( KActionCollection *parent )
+void LikeBack::createActions( KActionCollection *parent )
 {
   if( d->sendAction == 0 )
   {
@@ -240,19 +226,21 @@ LikeBack::Button LikeBack::buttons()
     parent->addAction( "likeBackShowIcons", d->showBarAction );
   }
 }
-*/
+#endif
 
 
 // Return whether the user wants to enable the likeback bar or not
 bool LikeBack::userWantsToShowBar()
 {
+#if 0
   // You can choose to store the button bar status per version.
   // On debug builds from SVN, where the version changes at almost every build,
   // it's very annoying to have the bar reappearing everytime.
 //   return d->config.readEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), d->showBarByDefault );
-
+  return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
+#else
   return false;
-  ///RESTOREME return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
+#endif
 }
 
 
@@ -264,18 +252,18 @@ void LikeBack::setUserWantsToShowBar( bool showBar )
     return;
 
   d->showBar = showBar;
-
+#if 0
   // You can choose to store the button bar status per version.
   // On debug builds from SVN, where the version changes at almost every build,
   // it's very annoying to have the bar reappearing everytime.
 //   d->config.writeEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), showBar );
 
-  /// RESTOREME
-  ///d->config.writeEntry( "userWantToShowBar", showBar );
+  d->config.writeEntry( "userWantToShowBar", showBar );
 
-  ///d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
+  d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
 
   d->bar->setBarVisible( showBar );
+#endif
 }
 
 
@@ -283,12 +271,11 @@ void LikeBack::setUserWantsToShowBar( bool showBar )
 // Show a dialog box to introduce the user to LikeBack
 void LikeBack::showInformationMessage()
 {
-    ///RESTOREME
-#if 0
   // don't show the message if the bar isn't enabled.
   // message doesn't make sense without the bar
   if ( ! d->showBar ) return;
 
+#if 0
   // Load and register the images needed by the message:
   KIconLoader *loader = KIconLoader::global();
   QString likeIconPath   ( loader->iconPath( "likeback_like",    KIconLoader::Small ) );
@@ -440,9 +427,11 @@ QString LikeBack::activeWindowPath()
 // Return whether the email address was confirmed by the user
 bool LikeBack::emailAddressAlreadyProvided()
 {
-    ///RESTOREME
-    return false;
-  ///return d->config.readEntry( "emailAlreadyAsked", false );
+#if 0
+  return d->config.readEntry( "emailAlreadyAsked", false );
+#else
+  return false;
+#endif
 }
 
 
@@ -450,10 +439,12 @@ bool LikeBack::emailAddressAlreadyProvided()
 // Return the currently saved email address, or the account's email address, if present
 QString LikeBack::emailAddress()
 {
-    return QString();
-    ///RESTOREME
-  ///KEMailSettings emailSettings;
-  ///return d->config.readEntry( "emailAddress", emailSettings.getSetting( KEMailSettings::EmailAddress ) );
+#if 0
+  KEMailSettings emailSettings;
+  return d->config.readEntry( "emailAddress", emailSettings.getSetting( KEMailSettings::EmailAddress ) );
+#else
+  return QString();
+#endif
 }
 
 
@@ -461,10 +452,14 @@ QString LikeBack::emailAddress()
 // Change the saved email address
 void LikeBack::setEmailAddress( const QString &address, bool userProvided )
 {
-    ///RESTOREME
-  ///d->config.writeEntry( "emailAddress", address );
-  ///d->config.writeEntry( "emailAlreadyAsked", ( userProvided || emailAddressAlreadyProvided() ) );
-  ///d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
+#if 0
+  d->config.writeEntry( "emailAddress", address );
+  d->config.writeEntry( "emailAlreadyAsked", ( userProvided || emailAddressAlreadyProvided() ) );
+  d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
+#else
+  Q_UNUSED(address);
+  Q_UNUSED(userProvided);
+#endif
 }
 
 

@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LIKEBACK_H
-#define LIKEBACK_H
+#ifndef __LikeBack_h__
+#define __LikeBack_h__
 
 #include <QObject>
 
@@ -26,7 +26,6 @@
 #define DEBUG_LIKEBACK
 
 class QAction;
-
 class LikeBackPrivate;
 
 /**

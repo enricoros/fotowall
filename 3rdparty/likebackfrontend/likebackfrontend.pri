@@ -3,19 +3,16 @@ DEPENDPATH += $$PWD
 
 # Input
 HEADERS += \
-    likeback.h \
-    likeback_p.h \
-    likebackbar.h \
-    likebackdialog.h
+    LikeBack.h \
+    LikeBack_p.h \
+    LikeBackDialog.h
 
 SOURCES += \
-    likeback.cpp \
-    likebackbar.cpp \
-    likebackdialog.cpp
+    LikeBack.cpp \
+    LikeBackDialog.cpp
 
 FORMS += \
-    likebackbar.ui \
-    likebackdialog.ui
+    LikeBackDialog.ui
 
 RESOURCES += \
-    likeback.qrc
+    likebackfrontend.qrc

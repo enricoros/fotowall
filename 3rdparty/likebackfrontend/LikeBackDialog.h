@@ -21,9 +21,9 @@
 #define __LikeBackDialog_h__
 
 #include <QDialog>
-#include <QButtonGroup>
-#include "likeback.h"
+#include "LikeBack.h"
 #include "ui_likebackdialog.h"
+class QButtonGroup;
 
 class LikeBackDialog : public QDialog, private Ui::LikeBackDialog
 {
@@ -31,7 +31,7 @@ class LikeBackDialog : public QDialog, private Ui::LikeBackDialog
     public:
         // Constructor
         LikeBackDialog( LikeBack::Button reason, const QString &initialComment, const QString &windowPath,
-                      const QString &context, LikeBack *likeBack );
+                        const QString &context, LikeBack *likeBack );
         // Destructor
         ~LikeBackDialog();
 

@@ -17,8 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "likebackdialog.h"
-#include "likeback.h"
+#include "LikeBackDialog.h"
 
 #include <QApplication>
 #include <QHttpRequestHeader>
