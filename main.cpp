@@ -49,7 +49,7 @@ int main( int argc, char ** args )
 
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.8");
+    app.setApplicationVersion("0.8.2");
     app.setOrganizationName("Enrico Ros");
     RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
 
