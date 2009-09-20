@@ -37,9 +37,11 @@ LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialC
   , m_windowPath( windowPath )
 {
     // Customize QDialog
-    setWindowTitle( tr( "Send a Comment to the Developers" ) );
-    setObjectName( "LikeBackFeedBack" );
     setupUi( this );
+    QFont font = informationLabel->font();
+    font.setPointSize(font.pointSize() - 1);
+    informationLabel->setFont(font);
+    emailLabel->setFont(font);
     connect( buttonBox, SIGNAL( accepted() ), this, SLOT( slotSendData() ) );
     connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
     ///RESTOREME restoreDialogSize( KGlobal::config()->group( "LikeBackDialog" ) );
@@ -88,10 +90,10 @@ LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialC
 
     // Provide the initial status for email address widgets if available
     emailAddressEdit_->setText( m_likeBack->emailAddress() );
-    specifyEmailCheckBox_->setChecked( true );
+    specifyEmailCheck->setChecked( true );
 
     // The introduction message is long and will require a new minimum dialog size
-    m_informationLabel->setText( introductionText() );
+    informationLabel->setText( introductionText() );
     setMinimumSize( minimumSizeHint() );
 
     // Initially verify the widgets status
@@ -185,7 +187,7 @@ void LikeBackDialog::slotSendData()
 {
     // Only send the email if the user wants it to be sent
     QString emailAddress;
-    if( specifyEmailCheckBox_->isChecked() ) {
+    if( specifyEmailCheck->isChecked() ) {
         emailAddress = emailAddressEdit_->text();
 
         // lame-ass way to check if the e-mail address is valid:
