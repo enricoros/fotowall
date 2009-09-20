@@ -77,6 +77,10 @@ class MainWindow : public QWidget
         void on_accelBox_toggled(bool checked);
         void on_transpBox_toggled(bool checked);
         void on_introButton_clicked();
+        void on_lbBug_clicked();
+        void on_lbFeature_clicked();
+        void on_lbDislike_clicked();
+        void on_lbLike_clicked();
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_exportButton_clicked();

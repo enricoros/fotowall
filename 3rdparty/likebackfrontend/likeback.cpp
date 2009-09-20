@@ -251,7 +251,7 @@ bool LikeBack::userWantsToShowBar()
   // it's very annoying to have the bar reappearing everytime.
 //   return d->config.readEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), d->showBarByDefault );
 
-  return true;
+  return false;
   ///RESTOREME return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
 }
 

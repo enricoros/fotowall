@@ -48,6 +48,9 @@
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
 #define TUTORIAL_STRING "Peter walks you through how to use Foto"
 #define ENRICOBLOG_STRING "http://www.enricoros.com/blog/tag/fotowall/"
+#define FOTOWALL_FEEDBACK_LANGS "en,it,fr"
+#define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
+#define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
 #include <QCommonStyle>
 class RubberBandStyle : public QCommonStyle {
@@ -189,9 +192,9 @@ MainWindow::MainWindow(QWidget * parent)
     checkForUpdates();
 
     // setup likeback
-    m_likeBack = new LikeBack(LikeBack::AllButtons, true, this);
-    m_likeBack->setAcceptedLanguages(QStringList() << "en" << "it" << "fr");
-    m_likeBack->setServer("www.enricoros.com", "/opensource/fotowall/feedback/send.php");
+    m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
+    m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
+    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
 }
 
 MainWindow::~MainWindow()
@@ -712,6 +715,27 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 void MainWindow::on_introButton_clicked()
 {
     m_desk->showIntroduction();
+}
+
+
+void MainWindow::on_lbLike_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Like);
+}
+
+void MainWindow::on_lbDislike_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Dislike);
+}
+
+void MainWindow::on_lbFeature_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Feature);
+}
+
+void MainWindow::on_lbBug_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Bug);
 }
 
 void MainWindow::on_loadButton_clicked()
