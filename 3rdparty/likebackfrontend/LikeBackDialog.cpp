@@ -25,6 +25,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QPushButton>
+#include <QSettings>
 #include <QUrl>
 
 
@@ -38,15 +39,22 @@ LikeBackDialog::LikeBackDialog( QNetworkAccessManager * nam, LikeBack::Button re
   , m_likeBack( likeBack )
   , m_windowPath( windowPath )
 {
-    // Customize QDialog
+    // Customize UI
     setupUi( this );
     QFont font = informationLabel->font();
     font.setPointSize(font.pointSize() - 1);
     informationLabel->setFont(font);
     emailLabel->setFont(font);
+    setAttribute(Qt::WA_DeleteOnClose);
+#if 1
+    restoreGeometry(QSettings().value("LikeBack/geometry").toByteArray());
+#else
+    restoreDialogSize( KGlobal::config()->group( "LikeBackDialog" ) );
+#endif
+
+    // Connect the 2 bottom buttons
     connect( buttonBox, SIGNAL( accepted() ), this, SLOT( slotSendData() ) );
     connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-    ///RESTOREME restoreDialogSize( KGlobal::config()->group( "LikeBackDialog" ) );
 
     // Group the buttons together to retrieve the checked one quickly
     m_typeGroup = new QButtonGroup( this );
@@ -107,8 +115,12 @@ LikeBackDialog::LikeBackDialog( QNetworkAccessManager * nam, LikeBack::Button re
 // Destructor
 LikeBackDialog::~LikeBackDialog()
 {
-    ///RESTOREME KConfigGroup group = KGlobal::config()->group( "LikeBackDialog" );
-    ///saveDialogSize( group );
+#if 1
+    QSettings().setValue("LikeBack/geometry", saveGeometry());
+#else
+    KConfigGroup group = KGlobal::config()->group( "LikeBackDialog" );
+    saveDialogSize( group );
+#endif
 }
 
 
