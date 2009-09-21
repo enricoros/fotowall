@@ -291,7 +291,16 @@ void ExportWizard::setPage(int pageId)
     next();
 
     // execute on-entry code
-    // ...
+    switch (pageId) {
+        case PageImage:
+            if (m_ui->filePath->text().isEmpty())
+                slotChoosePath();
+            break;
+        case PageSvg:
+            if (m_ui->svgFilePath->text().isEmpty())
+                slotChooseSvgPath();
+            break;
+    }
 }
 
 int ExportWizard::nextId() const
@@ -312,24 +321,43 @@ int ExportWizard::nextId() const
     return -1;
 }
 
+static QString getSavePath(const QString & initialValue, const QString & defaultExt, const QString & title, const QString & type)
+{
+    // make up the default save path (stored as 'fotowall/exportDir')
+    QString defaultSavePath = initialValue;
+    if (defaultSavePath.isEmpty()) {
+        defaultSavePath = ExportWizard::tr("Unnamed %1.%2").arg(QDate::currentDate().toString()).arg(defaultExt);
+        QSettings s;
+        if (s.contains("fotowall/exportDir"))
+            defaultSavePath.prepend(s.value("fotowall/exportDir").toString() + QDir::separator());
+    }
+
+    // ask the file name, validate it, store back to settings
+    QString fileName = QFileDialog::getSaveFileName(0, title, defaultSavePath, type);
+    if (!fileName.isEmpty()) {
+        QSettings().setValue("fotowall/exportDir", QFileInfo(fileName).absolutePath());
+        if (QFileInfo(fileName).suffix().isEmpty())
+            fileName += "." + defaultExt;
+    }
+    return fileName;
+}
+
 void ExportWizard::slotChoosePath()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the Image file"), m_ui->filePath->text(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
-    if (fileName.isEmpty())
-        return;
-    if (QFileInfo(fileName).suffix().isEmpty())
-        fileName += ".png";
-    m_ui->filePath->setText(fileName);
+    QString savePath = getSavePath(m_ui->filePath->text(), "png",
+                                   tr("Choose the Image file"),
+                                   tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    if (!savePath.isEmpty())
+        m_ui->filePath->setText(savePath);
 }
 
 void ExportWizard::slotChooseSvgPath()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose the SVG file"), m_ui->filePath->text(), tr("SVG (*.svg)"));
-    if (fileName.isEmpty())
-        return;
-    if (QFileInfo(fileName).suffix().isEmpty())
-        fileName += ".svg";
-    m_ui->svgFilePath->setText(fileName);
+    QString savePath = getSavePath(m_ui->svgFilePath->text(), "svg",
+                                   tr("Choose the SVG file"),
+                                   tr("SVG (*.svg)"));
+    if (!savePath.isEmpty())
+        m_ui->svgFilePath->setText(savePath);
 }
 
 void ExportWizard::slotPrintUnityChanged(int index)

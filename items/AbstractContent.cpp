@@ -19,6 +19,7 @@
 #include "RenderOpts.h"
 #include "frames/FrameFactory.h"
 #include <QApplication>
+#include <QDate>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -26,6 +27,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPainter>
+#include <QSettings>
 #include <QTimer>
 #include <QUrl>
 #include <math.h>
@@ -706,9 +708,17 @@ void AbstractContent::slotStackBack()
 
 void AbstractContent::slotSaveAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), QString(), tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    // make up the default save path (stored as 'fotowall/exportDir')
+    QSettings s;
+    QString defaultSavePath = tr("Unnamed %1.png").arg(QDate::currentDate().toString());
+    if (s.contains("fotowall/exportDir"))
+        defaultSavePath.prepend(s.value("fotowall/exportDir").toString() + QDir::separator());
+
+    // ask the file name, validate it, store back to settings
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), defaultSavePath, tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (fileName.isNull())
         return;
+    s.setValue("fotowall/exportDir", QFileInfo(fileName).absolutePath());
     if (QFileInfo(fileName).suffix().isEmpty())
         fileName += ".png";
 

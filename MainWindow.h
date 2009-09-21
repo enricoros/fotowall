@@ -37,11 +37,14 @@ class MainWindow : public QWidget
         ModeInfo getModeInfo(); // Needed for saving
         void restoreMode(int mode);
 
-        void loadXml(const QString & filePath);
-        void saveXml(const QString & filePath) const;
+        bool loadXml(const QString & filePath);
+        bool saveXml(const QString & filePath) const;
 
         void showIntroduction();
         void loadImages(QStringList &imagesPath);
+
+        // ::QWidget
+        void closeEvent(QCloseEvent * event);
 
     private:
         QMenu * createArrangeMenu();
@@ -81,8 +84,8 @@ class MainWindow : public QWidget
         void on_lbFeature_clicked();
         void on_lbDislike_clicked();
         void on_lbLike_clicked();
-        void on_loadButton_clicked();
-        void on_saveButton_clicked();
+        bool on_loadButton_clicked();
+        bool on_saveButton_clicked();
         void on_exportButton_clicked();
         //void on_quitButton_clicked();
 

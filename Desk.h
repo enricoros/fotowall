@@ -77,6 +77,7 @@ class Desk : public QGraphicsScene
         QString titleText() const;
 
         // save, restore, load, help
+        bool pendingChanges() const;
         void showIntroduction();
         void blinkBackGradients();
 

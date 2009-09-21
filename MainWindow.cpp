@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "MainWindow.h"
+#include "ButtonsDialog.h"
 #include "Desk.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
@@ -27,6 +28,7 @@
 #include "3rdparty/likebackfrontend/LikeBack.h"
 #include <QAction>
 #include <QApplication>
+#include <QCloseEvent>
 #include <QDir>
 #include <QDesktopWidget>
 #include <QDesktopServices>
@@ -39,6 +41,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QSettings>
 #include <QTimer>
@@ -229,36 +232,38 @@ void MainWindow::restoreMode(int mode)
     }
 }
 
-void MainWindow::loadXml(const QString & filePath)
+bool MainWindow::loadXml(const QString & filePath)
 {
     if (filePath.isNull())
-        return;
+        return false;
     XmlRead *xmlRead = 0;
     try {
         xmlRead = new XmlRead(filePath);
     } catch (...) {
         // If loading failed
-        return;
+        return false;
     }
     xmlRead->readProject(this);
     xmlRead->readDesk(m_desk);
     xmlRead->readContent(m_desk);
     delete xmlRead;
+    return true;
 }
 
-void MainWindow::saveXml(const QString & filePath) const
+bool MainWindow::saveXml(const QString & filePath) const
 {
     XmlSave *xmlSave = 0;
     try {
         xmlSave = new XmlSave(filePath);
     } catch (...) {
         //if saving failled
-        return;
+        return false;
     }
     xmlSave->saveProject(m_desk->projectMode(), m_modeInfo);
     xmlSave->saveDesk(m_desk);
     xmlSave->saveContent(m_desk);
     delete xmlSave;
+    return true;
 }
 
 void MainWindow::showIntroduction()
@@ -269,6 +274,45 @@ void MainWindow::showIntroduction()
 void MainWindow::loadImages(QStringList &imagesPath)
 {
     m_desk->addPictures(imagesPath);
+}
+
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+    // build the closure dialog
+    ButtonsDialog quitAsk("MainWindow-Exit");
+    quitAsk.setIcon(QIcon(":/data/action-delete.png"));
+    quitAsk.setTitle(tr("Closing Fotowall..."));
+    quitAsk.setMinimumWidth(350);
+    quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
+    if (m_desk->pendingChanges()) {
+        quitAsk.setMessage(tr("Are you sure you want to quit and lose your changes?"));
+        quitAsk.setButtonText(QDialogButtonBox::Save, tr("Save"));
+        quitAsk.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
+        quitAsk.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::Cancel);
+    } else {
+        quitAsk.setMessage(tr("Are you sure you want to quit?"));
+        quitAsk.setButtonText(QDialogButtonBox::Close, tr("Quit"));
+        quitAsk.setButtons(QDialogButtonBox::Close | QDialogButtonBox::Cancel);
+    }
+
+    // react to the dialog's answer
+    switch (quitAsk.execute()) {
+        case QDialogButtonBox::Cancel:
+            event->ignore();
+            break;
+
+        case QDialogButtonBox::Save:
+            // save file and return to Fotowall if canceled
+            if (!on_saveButton_clicked()) {
+                event->ignore();
+                break;
+            }
+            // fall through
+
+        default:
+            event->accept();
+            break;
+    }
 }
 
 QMenu * MainWindow::createArrangeMenu()
@@ -561,18 +605,19 @@ void MainWindow::on_aAddPicture_triggered()
 {
     // build the extensions list
     QString extensions;
-    foreach (const QByteArray & format, QImageReader::supportedImageFormats()) {
+    foreach (const QByteArray & format, QImageReader::supportedImageFormats())
         extensions += "*." + format + " *." + format.toUpper() + " ";
-    }
 
-    // show the files dialog
+    // make up the default load path (stored as 'fotowall/loadImagesDir')
     QSettings s;
-    QStringList fileNames = QFileDialog::getOpenFileNames(ui->canvas, tr("Select one or more pictures to add"), s.value("fotowall/loadImagesDir").toString(), tr("Images (%1)").arg(extensions));
-    if (!fileNames.isEmpty()) {
-        m_desk->addPictures(fileNames);
-        QFileInfo path(fileNames[0]);
-        s.setValue("fotowall/loadImagesDir", path.absolutePath());
-    }
+    QString defaultLoadPath = s.value("fotowall/loadImagesDir").toString();
+
+    // ask the file name, validate it, store back to settings and load the file
+    QStringList fileNames = QFileDialog::getOpenFileNames(ui->canvas, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(extensions));
+    if (fileNames.isEmpty())
+        return;    
+    s.setValue("fotowall/loadImagesDir", QFileInfo(fileNames[0]).absolutePath());
+    m_desk->addPictures(fileNames);
 }
 
 void MainWindow::on_aAddText_triggered()
@@ -737,30 +782,36 @@ void MainWindow::on_lbBug_clicked()
     m_likeBack->execCommentDialog(LikeBack::Bug);
 }
 
-void MainWindow::on_loadButton_clicked()
+bool MainWindow::on_loadButton_clicked()
 {
+    // make up the default load path (stored as 'fotowall/loadProjectDir')
     QSettings s;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Select the Fotowall file"), s.value("fotowall/loadProjectDir").toString(), tr("Fotowall (*.fotowall)"));
-    if (fileName.isNull())
-        return;
+    QString defaultLoadPath = s.value("fotowall/loadProjectDir").toString();
 
-    QFileInfo path(fileName);
-    s.setValue("fotowall/loadProjectDir", path.absolutePath());
-    loadXml(fileName);
+    // ask the file name, validate it, store back to settings and load the file
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
+    if (fileName.isNull())
+        return false;
+    s.setValue("fotowall/loadProjectDir", QFileInfo(fileName).absolutePath());
+    return loadXml(fileName);
 }
 
-void MainWindow::on_saveButton_clicked()
+bool MainWindow::on_saveButton_clicked()
 {
+    // make up the default save path (stored as 'fotowall/saveProjectDir')
     QSettings s;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Select the Fotowall file"), s.value("fotowall/saveProjectDir").toString(), "Fotowall (*.fotowall)");
-    if (fileName.isNull())
-        return;
-    QFileInfo path(fileName);
-    s.setValue("fotowall/saveProjectDir", path.absolutePath());
+    QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
+    if (s.contains("fotowall/saveProjectDir"))
+        defaultSavePath.prepend(s.value("fotowall/saveProjectDir").toString() + QDir::separator());
 
+    // ask the file name, validate it, store back to settings and save over it
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
+    if (fileName.isNull())
+        return false;
+    s.setValue("fotowall/saveProjectDir", QFileInfo(fileName).absolutePath());
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
         fileName += ".fotowall";
-    saveXml(fileName);
+    return saveXml(fileName);
 }
 
 void MainWindow::on_exportButton_clicked()
