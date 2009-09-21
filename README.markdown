@@ -152,6 +152,9 @@ improvement and the code is kept clean and small.
 * auto-placement [force field, shape, collage, etc..]
   * ap: perform rectangular image composition based on an input picture (color, pattern)
   * ap: perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
+* blend images in one another (reqby Ruud)
+* 3d text
+  * global illumitation/shading for shadows, frames, 3d text
 * Google-suggest completion (already in, but misplaced when embedded into qgraphicsview)
 * integrate kde-apps knowledgebase (already in, but doesn't work great)
 * regional links to web resources
