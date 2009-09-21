@@ -4,9 +4,9 @@
 <context>
     <name>AbstractConfig</name>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="+45"/>
+        <location filename="../items/AbstractConfig.cpp" line="+44"/>
         <source> x </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+111"/>
@@ -161,12 +161,12 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location filename="../MetaXmlReader.cpp" line="+164"/>
         <source>Network Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Netzwerkfehler</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Network Timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Netzwerkzeitüberschreitung</translation>
     </message>
 </context>
 <context>
@@ -174,7 +174,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location filename="../CroppingDialog.ui"/>
         <source>Cropping</source>
-        <translation type="unfinished"></translation>
+        <translation>Zurechtschneiden</translation>
     </message>
 </context>
 <context>
@@ -334,7 +334,7 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
     <message>
         <location line="+49"/>
         <source>Created with %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugt mit %1</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -349,12 +349,12 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
     <message>
         <location line="+10"/>
         <source>Choose the SVG file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle die SVG Datei aus.</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>SVG (*.svg)</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG (*.svg)</translation>
     </message>
     <message>
         <location filename="../ExportWizard.ui"/>
@@ -544,17 +544,17 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
     <message>
         <location/>
         <source>SVG Vector Image</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG Vektorbild</translation>
     </message>
     <message>
         <location/>
         <source>as you see it (includes tools, lines, etc)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wie Du es siehst (eingeschlossen Werkzeuge, Linien, usw.)</translation>
     </message>
     <message>
         <location/>
         <source>Export to the Scalable Vector Graphics image format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportiere in eine skalierbares Vektorgrafikformat.</translation>
     </message>
 </context>
 <context>
@@ -572,7 +572,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Scroll &lt;/span&gt;wheel to change the radius. &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Click&lt;/span&gt; on the picture to get a preview.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nutze das Scrollrad&lt;/span&gt; um den Radius zu ändern.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Klicke&lt;/span&gt; auf das Bild um eine Vorschau anzuzeigen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nutze das Scrollrad&lt;/span&gt; um den Radius zu ändern.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Klicke&lt;/span&gt; auf das Bild um eine Vorschau anzuzeigen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -608,7 +608,7 @@ p, li { white-space: pre-wrap; }
   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
   &lt;div&gt;
@@ -647,9 +647,122 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>LikeBackDialog</name>
+    <message>
+        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+165"/>
+        <source>Please, write it in &lt;b&gt;%1&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
+        <comment>Feedback dialog text, message with one accepted language for the comments</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Please, write it in &lt;b&gt;%1 or %2&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
+        <comment>Feedback dialog text, message with list of accepted languages for the comments</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>To make the comments you send more useful in improving this application, try to send the same amount of positive and negative comments.&lt;br/&gt;</source>
+        <comment>Feedback dialog text, message to remind to balance the likes and dislikes</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Please, do not ask for new features: this kind of request will be ignored.&lt;br/&gt;</source>
+        <comment>Feedback dialog text, text to disallow feature requests</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&lt;p&gt;You can provide the developers a brief description of your opinions about %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</source>
+        <comment>Feedback dialog text, %1=Application name,%2=message with list of accepted languages for the comment,%3=optional text to remind to balance the likes and dislikes,%4=optional text to disallow feature requests.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>Wrong Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>The email address you have entered is not valid, and cannot be used: &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+60"/>
+        <source>Comment Sent</source>
+        <comment>Dialog box title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&lt;p&gt;Your comment has been sent successfully. It will help us improve the application!&lt;/p&gt;&lt;p&gt;Thanks for your time.&lt;/p&gt;</source>
+        <comment>Dialog box text</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Comment Sending Error</source>
+        <comment>Dialog box title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&lt;p&gt;There has been an error while trying to send the comment.&lt;/p&gt;&lt;p&gt;Please, try again later.&lt;/p&gt;</source>
+        <comment>Dialog box text</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.ui"/>
+        <source>Send a Comment to the Developers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Your comment is about:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Something you like</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Something you dislike</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>An improper behavior of the application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>A new feature you desire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Your comment:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Specify an email address to be contacted back:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&lt;html&gt;Specifying an email address will allow the developers to ask you for more information on your report, or to tell you when your feature will be implemented.&lt;br/&gt;
+&lt;b&gt;Your email address will not be used for anything else but this report.&lt;/b&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+267"/>
+        <location filename="../MainWindow.cpp" line="+286"/>
         <source>Enable force field</source>
         <translation>Aktiviere &apos;Erzwingen&apos;-Feld</translation>
     </message>
@@ -665,11 +778,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+2"/>
-        <source>Uniform</source>
-        <translation>Einheitlich</translation>
+        <source>Random</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Shaped</source>
         <translation>Form</translation>
     </message>
@@ -811,7 +924,7 @@ p, li { white-space: pre-wrap; }
         <translation>Die Funktion wurde zur Zeit noch nicht umfangreich getestet.&lt;br&gt; -unter Linux wird composite Modus, wie unter compiz/beryl oder kwin4, benötigt&lt;br&gt; - unter Windows und Mac OS scheint es zu funktionieren&lt;br&gt;Sollten Sie einen schwarzen Hintergrund sehen, dann wird Transparenz auf Ihrem System nicht unterstützt.&lt;br&gt;&lt;br&gt;ANMERKUNG: Sie sollten &quot;transparenten&quot; Hintergrund verwenden um transparente Fenster zu nutzen.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+70"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Wähle die Fotowall Datei aus</translation>
@@ -819,10 +932,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="-12"/>
         <source>Fotowall (*.fotowall)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+82"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
@@ -866,7 +979,7 @@ Wollen Sie die Webseite öffnen?</translation>
     <message>
         <location filename="../MainWindow.ui"/>
         <source>ADD NEW</source>
-        <translation type="unfinished">NEUES HINZUFÜGEN</translation>
+        <translation>NEUES HINZUFÜGEN</translation>
     </message>
     <message>
         <location/>
@@ -968,11 +1081,42 @@ Wollen Sie die Webseite öffnen?</translation>
         <source>Add Flickr</source>
         <translation>Flickr-Objekt hinzufügen</translation>
     </message>
+    <message>
+        <location/>
+        <source>Arrange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to tell the developers about something you liked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
+      </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to tell the developers about something you did not like</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to tell the developers about a problem in the application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to tell the developers about new features you would like to have in this application</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PictureConfig</name>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="+33"/>
+        <location filename="../items/PictureConfig.cpp" line="+32"/>
         <source>Picture</source>
         <translation>Bild</translation>
     </message>
@@ -1067,7 +1211,7 @@ Wollen Sie die Webseite öffnen?</translation>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="+40"/>
+        <location filename="../items/PictureContent.cpp" line="+41"/>
         <location line="+56"/>
         <source>...</source>
         <translation>...</translation>
@@ -1086,6 +1230,24 @@ Wollen Sie die Webseite öffnen?</translation>
         <location filename="../items/PictureContent.h" line="+38"/>
         <source>Picture</source>
         <translation>Bild</translation>
+    </message>
+</context>
+<context>
+    <name>PictureProperties</name>
+    <message>
+        <location filename="../items/PictureProperties.ui"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Remove</source>
+        <translation type="unfinished">Entfernen</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Opacity:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1174,12 +1336,17 @@ Wollen Sie die Webseite öffnen?</translation>
     <name>TextProperties</name>
     <message>
         <location filename="../items/TextProperties.ui"/>
-        <source>edit shape</source>
-        <translation>Form ändern</translation>
+        <source>X</source>
+        <translation></translation>
     </message>
     <message>
         <location/>
-        <source>X</source>
+        <source>Remove</source>
+        <translation type="unfinished">Entfernen</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Edit Shape</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1193,12 +1360,12 @@ Wollen Sie die Webseite öffnen?</translation>
     <message>
         <location line="+19"/>
         <source>XML Error</source>
-        <translation type="unfinished"></translation>
+        <translation>XML Fehler</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>%1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>

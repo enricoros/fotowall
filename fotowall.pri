@@ -1,5 +1,6 @@
 # Fotowall input files
 HEADERS += 3rdparty/gsuggest.h \
+    ButtonsDialog.h \
     CPixmap.h \
     CroppingDialog.h \
     CroppingWidget.h \
@@ -22,6 +23,7 @@ HEADERS += 3rdparty/gsuggest.h \
     XmlSave.h
 
 SOURCES += 3rdparty/gsuggest.cpp \
+    ButtonsDialog.cpp \
     CPixmap.cpp \
     CroppingDialog.cpp \
     CroppingWidget.cpp \

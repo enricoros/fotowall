@@ -323,6 +323,11 @@ QString Desk::titleText() const
     return m_titleText;
 }
 
+bool Desk::pendingChanges() const
+{
+    return !m_content.isEmpty();
+}
+
 /// Misc: save, restore, help...
 #define HIGHLIGHT(x, y, del) \
     { \
