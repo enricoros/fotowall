@@ -4,7 +4,7 @@
 <context>
     <name>AbstractConfig</name>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="+45"/>
+        <location filename="../items/AbstractConfig.cpp" line="+44"/>
         <source> x </source>
         <translation>x</translation>
     </message>
@@ -620,9 +620,122 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>LikeBackDialog</name>
+    <message>
+        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+165"/>
+        <source>Please, write it in &lt;b&gt;%1&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
+        <comment>Feedback dialog text, message with one accepted language for the comments</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Please, write it in &lt;b&gt;%1 or %2&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
+        <comment>Feedback dialog text, message with list of accepted languages for the comments</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>To make the comments you send more useful in improving this application, try to send the same amount of positive and negative comments.&lt;br/&gt;</source>
+        <comment>Feedback dialog text, message to remind to balance the likes and dislikes</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Please, do not ask for new features: this kind of request will be ignored.&lt;br/&gt;</source>
+        <comment>Feedback dialog text, text to disallow feature requests</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&lt;p&gt;You can provide the developers a brief description of your opinions about %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</source>
+        <comment>Feedback dialog text, %1=Application name,%2=message with list of accepted languages for the comment,%3=optional text to remind to balance the likes and dislikes,%4=optional text to disallow feature requests.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>Wrong Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>The email address you have entered is not valid, and cannot be used: &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+60"/>
+        <source>Comment Sent</source>
+        <comment>Dialog box title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&lt;p&gt;Your comment has been sent successfully. It will help us improve the application!&lt;/p&gt;&lt;p&gt;Thanks for your time.&lt;/p&gt;</source>
+        <comment>Dialog box text</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Comment Sending Error</source>
+        <comment>Dialog box title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&lt;p&gt;There has been an error while trying to send the comment.&lt;/p&gt;&lt;p&gt;Please, try again later.&lt;/p&gt;</source>
+        <comment>Dialog box text</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.ui"/>
+        <source>Send a Comment to the Developers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Your comment is about:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Something you like</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Something you dislike</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>An improper behavior of the application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>A new feature you desire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Your comment:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Specify an email address to be contacted back:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&lt;html&gt;Specifying an email address will allow the developers to ask you for more information on your report, or to tell you when your feature will be implemented.&lt;br/&gt;
+&lt;b&gt;Your email address will not be used for anything else but this report.&lt;/b&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+267"/>
+        <location filename="../MainWindow.cpp" line="+286"/>
         <source>Enable force field</source>
         <translation>Autoriser l&apos;arrangement forcé</translation>
     </message>
@@ -638,11 +751,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+2"/>
-        <source>Uniform</source>
-        <translation>Uniforme</translation>
+        <source>Random</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Shaped</source>
         <translation>Profilé</translation>
     </message>
@@ -784,7 +897,7 @@ p, li { white-space: pre-wrap; }
         <translation>Cette fonctionnalité n&apos;a pas été largement testée pour l&apos;instant.&lt;br&gt; - Sous GNU/Linux, ça nécessite le compositing (comme compiz/beryl, kwin4)&lt;br&gt; - Sous Windows et mac, ça semble fonctionner&lt;br&gt;Si vous voyez un fond noir, alors la transparence n&apos;est pas supportée par votre système.&lt;br&gt;&lt;br&gt;NOTE : Vous devez définir le fond &apos;Transparent&apos; pour constater la transparence de la fenêtre.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+70"/>
         <location line="+12"/>
         <source>Select the Fotowall file</source>
         <translation>Sélectionnez le fichier Fotowall</translation>
@@ -795,7 +908,7 @@ p, li { white-space: pre-wrap; }
         <translation>Fotowall (*.fotowall)</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+82"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
@@ -942,11 +1055,42 @@ Voulez vous ouvrir la page web ?</translation>
         <source>Add Flickr</source>
         <translation>Ajouter Flickr</translation>
     </message>
+    <message>
+        <location/>
+        <source>Arrange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to tell the developers about something you liked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
+      </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to tell the developers about something you did not like</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to tell the developers about a problem in the application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to tell the developers about new features you would like to have in this application</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PictureConfig</name>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="+33"/>
+        <location filename="../items/PictureConfig.cpp" line="+32"/>
         <source>Picture</source>
         <translation>Image</translation>
     </message>
@@ -1041,7 +1185,7 @@ Voulez vous ouvrir la page web ?</translation>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="+40"/>
+        <location filename="../items/PictureContent.cpp" line="+41"/>
         <location line="+56"/>
         <source>...</source>
         <translation>...</translation>
@@ -1060,6 +1204,24 @@ Voulez vous ouvrir la page web ?</translation>
         <location filename="../items/PictureContent.h" line="+38"/>
         <source>Picture</source>
         <translation>Image</translation>
+    </message>
+</context>
+<context>
+    <name>PictureProperties</name>
+    <message>
+        <location filename="../items/PictureProperties.ui"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Remove</source>
+        <translation type="unfinished">Supprimer</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Opacity:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1148,13 +1310,18 @@ Voulez vous ouvrir la page web ?</translation>
     <name>TextProperties</name>
     <message>
         <location filename="../items/TextProperties.ui"/>
-        <source>edit shape</source>
-        <translation>modifier la forme</translation>
+        <source>X</source>
+        <translation>X</translation>
     </message>
     <message>
         <location/>
-        <source>X</source>
-        <translation>X</translation>
+        <source>Remove</source>
+        <translation type="unfinished">Supprimer</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Edit Shape</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
