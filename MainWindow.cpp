@@ -1,7 +1,7 @@
 /***************************************************************************
  *                                                                         *
  *   This file is part of the Fotowall project,                            *
- *       http://code.google.com/p/fotowall                                 *
+ *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
  *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
@@ -24,7 +24,7 @@
 #include "WarningBox.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
-#include "3rdparty/likebackfrontend/likeback.h"
+#include "3rdparty/likebackfrontend/LikeBack.h"
 #include <QAction>
 #include <QApplication>
 #include <QDir>
@@ -48,6 +48,9 @@
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
 #define TUTORIAL_STRING "Peter walks you through how to use Foto"
 #define ENRICOBLOG_STRING "http://www.enricoros.com/blog/tag/fotowall/"
+#define FOTOWALL_FEEDBACK_LANGS "en,it,fr"
+#define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
+#define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
 #include <QCommonStyle>
 class RubberBandStyle : public QCommonStyle {
@@ -166,7 +169,7 @@ MainWindow::MainWindow(QWidget * parent)
     ui->widgetCanvas->expand();
 
     // attach menus
-    ///ui->arrangeButton->setMenu(createArrangeMenu());
+    ui->arrangeButton->setMenu(createArrangeMenu());
     ui->backButton->setMenu(createBackgroundMenu());
     ui->decoButton->setMenu(createDecorationMenu());
     ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
@@ -189,9 +192,9 @@ MainWindow::MainWindow(QWidget * parent)
     checkForUpdates();
 
     // setup likeback
-    m_likeBack = new LikeBack(LikeBack::AllButtons, true, this);
-    m_likeBack->setAcceptedLanguages(QStringList() << "en" << "it" << "fr");
-    m_likeBack->setServer("www.enricoros.com", "/opensource/fotowall/feedback/send.php");
+    m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
+    m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
+    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
 }
 
 MainWindow::~MainWindow()
@@ -286,9 +289,8 @@ QMenu * MainWindow::createArrangeMenu()
 
     menu->addSeparator()->setText(tr("Rearrange"));
 
-    QAction * aAU = new QAction(tr("Uniform"), menu);
-    aAU->setEnabled(false);
-    //connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeUniform()));
+    QAction * aAU = new QAction(tr("Random"), menu);
+    connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeRandom()));
     menu->addAction(aAU);
 
     QAction * aAS = new QAction(tr("Shaped"), menu);
@@ -714,6 +716,27 @@ void MainWindow::on_introButton_clicked()
     m_desk->showIntroduction();
 }
 
+
+void MainWindow::on_lbLike_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Like);
+}
+
+void MainWindow::on_lbDislike_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Dislike);
+}
+
+void MainWindow::on_lbFeature_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Feature);
+}
+
+void MainWindow::on_lbBug_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Bug);
+}
+
 void MainWindow::on_loadButton_clicked()
 {
     QSettings s;
@@ -765,6 +788,20 @@ void MainWindow::slotActionSelectAll()
 void MainWindow::slotArrangeForceField(bool checked)
 {
     m_desk->setForceFieldEnabled(checked);
+}
+
+#include "items/AbstractContent.h"
+void MainWindow::slotArrangeRandom()
+{
+    QRectF r = m_desk->sceneRect();
+    foreach (QGraphicsItem * item, m_desk->items()) {
+        AbstractContent * content = dynamic_cast<AbstractContent *>(item);
+        if (!content)
+            continue;
+        content->setPos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
+        content->setRotation(-30 + (qrand() % 60), Qt::ZAxis);
+        content->setOpacity((qreal)(qrand() % 100) / 99.0);
+    }
 }
 
 void MainWindow::slotDecoTopBar(bool checked)

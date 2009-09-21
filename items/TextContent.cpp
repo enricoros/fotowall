@@ -1,7 +1,7 @@
 /***************************************************************************
  *                                                                         *
  *   This file is part of the Fotowall project,                            *
- *       http://code.google.com/p/fotowall                                 *
+ *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
@@ -127,14 +127,14 @@ QWidget * TextContent::createPropertyWidget()
 {
     TextProperties * p = new TextProperties();
 
-    // common properties
+    // connect actions
     connect(p->bFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
     connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
     connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
     connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
     connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(deleteItem()), Qt::QueuedConnection);
 
-    // shape properties
+    // properties link
     p->bEditShape->setChecked(isShapeEditing());
     connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
     connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));

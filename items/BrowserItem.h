@@ -1,7 +1,7 @@
 /***************************************************************************
  *                                                                         *
  *   This file is part of the Fotowall project,                            *
- *       http://code.google.com/p/fotowall                                 *
+ *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
  *   Inspired from Plasma Web Applet <www.kde.org> and Qt LGPL sources     *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *

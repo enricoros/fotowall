@@ -1,4 +1,21 @@
 /***************************************************************************
+ *                                                                         *
+ *   This file is part of the Fotowall project,                            *
+ *       http://www.enricoros.com/opensource/fotowall                      *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   Original work                                                         *
+ *      file             : likeback.h                                      *
+ *      license          : GPL v2+                                         *
+ *      copyright notice : follows below                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+/***************************************************************************
                                  likeback.h
                              -------------------
     begin                : unknown
@@ -17,15 +34,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LIKEBACK_H
-#define LIKEBACK_H
+#ifndef __LikeBack_h__
+#define __LikeBack_h__
 
 #include <QObject>
 
 // Uncomment to enable debug output
-#define DEBUG_LIKEBACK
-
-class QAction;
+//#define DEBUG_LIKEBACK
 
 class LikeBackPrivate;
 
@@ -296,7 +311,7 @@ class LikeBack : public QObject
 	/**
 	 * Get the user email address from KControl.
 	 */
-	///void fetchUserEmail();
+	void fetchUserEmail();
 
   private slots:
 	/**
@@ -321,18 +336,19 @@ class LikeBack : public QObject
 	 * @returns true if the user has enabled the LikeBack bar for this version.
 	 */
 	bool userWantsToShowBar();
-
+#if 0
 	/**
 	 * @returns A pointer to the KAboutData used to determin the application name and version.
 	 * @see The LikeBack constructor for more information.
 	 */
-	///const KAboutData *aboutData();
+	const KAboutData *aboutData();
 
 	/**
 	 * @returns A pointer to the KConfig group to store user configuration (email address, if the button-bar should be shown).
 	 * @see The LikeBack constructor for more information.
 	 */
-	///KConfig *config();
+	KConfig *config();
+#endif
 
 	/**
 	 * During the first comment sending, the user is invited to enter his email address for the developers to be able to contact him back.
@@ -370,4 +386,4 @@ class LikeBack : public QObject
 #include <QDebug>
 #endif
 
-#endif // LIKEBACK_H
+#endif // __LikeBack_h__

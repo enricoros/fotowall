@@ -20,6 +20,8 @@ HEADERS += \
     MirrorItem.h \
     PictureConfig.h \
     PictureContent.h \
+    PictureProperties.h \
+    PropertyEditors.h \
     StyledButtonItem.h \
     TextConfig.h \
     TextContent.h \
@@ -39,13 +41,17 @@ SOURCES += \
     MirrorItem.cpp \
     PictureConfig.cpp \
     PictureContent.cpp \
+    PictureProperties.cpp \
+    PropertyEditors.cpp \
     StyledButtonItem.cpp \
     TextConfig.cpp \
     TextContent.cpp \
     TextProperties.cpp \
     WebContentSelectorItem.cpp \
     WebcamContent.cpp
-FORMS += AbstractConfig.ui \
+FORMS += \
+    AbstractConfig.ui \
     PictureConfig.ui \
+    PictureProperties.ui \
     TextProperties.ui \
     WebContentSelectorItem.ui

@@ -1,7 +1,7 @@
 /***************************************************************************
  *                                                                         *
  *   This file is part of the Fotowall project,                            *
- *       http://code.google.com/p/fotowall                                 *
+ *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
  *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
@@ -77,6 +77,10 @@ class MainWindow : public QWidget
         void on_accelBox_toggled(bool checked);
         void on_transpBox_toggled(bool checked);
         void on_introButton_clicked();
+        void on_lbBug_clicked();
+        void on_lbFeature_clicked();
+        void on_lbDislike_clicked();
+        void on_lbLike_clicked();
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_exportButton_clicked();
@@ -85,6 +89,7 @@ class MainWindow : public QWidget
         void slotActionSelectAll();
 
         void slotArrangeForceField(bool enabled);
+        void slotArrangeRandom();
         void slotDecoTopBar(bool checked);
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();

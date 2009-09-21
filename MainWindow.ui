@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>810</width>
+    <width>872</width>
     <height>450</height>
    </rect>
   </property>
@@ -396,6 +396,25 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
           </widget>
          </item>
+         <item row="0" column="1">
+          <widget class="QToolButton" name="arrangeButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Arrange</string>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::InstantPopup</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -506,7 +525,7 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="verticalSpacing">
+         <property name="spacing">
           <number>0</number>
          </property>
          <item row="1" column="0">
@@ -544,6 +563,102 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
            <property name="autoRaise">
             <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QToolButton" name="lbLike">
+           <property name="toolTip">
+            <string>Click here to tell the developers about something you liked</string>
+           </property>
+           <property name="whatsThis">
+            <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
+      </string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="3rdparty/likebackfrontend/likeback.qrc">
+             <normaloff>:/likeback/like.png</normaloff>:/likeback/like.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+           <property name="button" stdset="0">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QToolButton" name="lbDislike">
+           <property name="toolTip">
+            <string>Click here to tell the developers about something you did not like</string>
+           </property>
+           <property name="whatsThis">
+            <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
+      </string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="3rdparty/likebackfrontend/likeback.qrc">
+             <normaloff>:/likeback/dislike.png</normaloff>:/likeback/dislike.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+           <property name="button" stdset="0">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QToolButton" name="lbBug">
+           <property name="toolTip">
+            <string>Click here to tell the developers about a problem in the application</string>
+           </property>
+           <property name="whatsThis">
+            <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
+      </string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="3rdparty/likebackfrontend/likeback.qrc">
+             <normaloff>:/likeback/bug.png</normaloff>:/likeback/bug.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+           <property name="button" stdset="0">
+            <number>4</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QToolButton" name="lbFeature">
+           <property name="toolTip">
+            <string>Click here to tell the developers about new features you would like to have in this application</string>
+           </property>
+           <property name="whatsThis">
+            <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
+      </string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="3rdparty/likebackfrontend/likeback.qrc">
+             <normaloff>:/likeback/feature.png</normaloff>:/likeback/feature.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+           <property name="button" stdset="0">
+            <number>3</number>
            </property>
           </widget>
          </item>
@@ -813,7 +928,7 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="verticalSpacing">
+         <property name="spacing">
           <number>0</number>
          </property>
          <item row="0" column="2">
@@ -939,6 +1054,7 @@ stop:1 rgba(237, 237, 237, 255))
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="3rdparty/likebackfrontend/likeback.qrc"/>
   <include location="fotowall.qrc"/>
  </resources>
  <connections/>

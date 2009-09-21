@@ -1,7 +1,7 @@
 /***************************************************************************
  *                                                                         *
  *   This file is part of the Fotowall project,                            *
- *       http://www.enricoros.com/opensource/fotowall                      *
+ *       http://code.google.com/p/fotowall                                 *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
@@ -12,18 +12,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __TextProperties_h__
-#define __TextProperties_h__
+#ifndef __PictureProperties_h__
+#define __PictureProperties_h__
 
 #include <QWidget>
-#include "ui_TextProperties.h"
+#include "ui_PictureProperties.h"
 
-class TextProperties : public QWidget, public Ui::TextProperties {
+class PictureProperties : public QWidget, public Ui::PictureProperties {
     Q_OBJECT
     public:
-        friend class TextContent;
-        TextProperties(QWidget *parent = 0);
-        ~TextProperties();
+        friend class PictureContent;
+        PictureProperties(QWidget *parent = 0);
+        ~PictureProperties();
 };
 
 #endif

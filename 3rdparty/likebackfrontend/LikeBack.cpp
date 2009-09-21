@@ -1,4 +1,21 @@
 /***************************************************************************
+ *                                                                         *
+ *   This file is part of the Fotowall project,                            *
+ *       http://www.enricoros.com/opensource/fotowall                      *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   Original work                                                         *
+ *      file             : likeback.cpp                                    *
+ *      license          : GPL v2+                                         *
+ *      copyright notice : follows below                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+/***************************************************************************
                                 likeback.cpp
                              -------------------
     begin                : unknown
@@ -16,24 +33,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*
-#include <KAboutData>
-#include <KAction>
-#include <KActionCollection>
-#include <KApplication>
-#include <KComponentData>
-#include <KConfigGroup>
-#include <KEMailSettings>
-#include <KMessageBox>
-#include <KStandardDirs>
-#include <KToggleAction>
-*/
-#include "likeback.h"
-#include "likebackbar.h"
-#include "likebackdialog.h"
-#include "likeback_p.h"
+
+#include "LikeBack.h"
+#include "LikeBackDialog.h"
+#include "LikeBack_p.h"
 
 #include <QApplication>
+#include <QSettings>
 
 
 // Constructor
@@ -41,24 +47,15 @@ LikeBack::LikeBack( Button buttons, bool showBarByDefault, QObject * parent )
   : QObject( parent )
   , d( new LikeBackPrivate )
 {
-  // Initialize properties (1/2):
+  // Initialize properties
   d->buttons          = buttons;
-  ///d->config           = config->group( "LikeBack" );
-  ///d->aboutData        = aboutData;
   d->showBarByDefault = showBarByDefault;
-
-  // Initialize properties (2/2) [Needs aboutData to be set]:
   d->showBar = userWantsToShowBar();
 
-  // Initialize the button-bar:
-  d->bar = new LikeBackBar( this );
+  /// TODO Initialize the button-bars
 
   // Show the information message if it is the first time, and if the button-bar is shown:
   showInformationMessage();
-
-  // Show the bar if that's wanted by the developer or the user:
-  if( d->showBar )
-    d->bar->setBarVisible( true );
 }
 
 
@@ -141,7 +138,9 @@ quint16 LikeBack::hostPort()
 void LikeBack::disableBar()
 {
   d->disabledCount++;
+#if 0
   d->bar->setBarVisible( d->bar && d->disabledCount > 0 );
+#endif
 }
 
 
@@ -156,7 +155,9 @@ void LikeBack::enableBar()
     qWarning() << "Enabled more times than it was disabled. Please refer to the disableBar() documentation for more information and hints.";
 #endif
 
+#if 0
   d->bar->setBarVisible( d->bar && d->disabledCount <= 0 );
+#endif
 }
 
 
@@ -172,13 +173,11 @@ bool LikeBack::enabledBar()
 // Display the Send Comments dialog
 void LikeBack::execCommentDialog( Button type, const QString &initialComment, const QString &windowPath, const QString &context )
 {
-  LikeBackDialog *dialog = new LikeBackDialog( type, initialComment, windowPath, context, this );
+  LikeBackDialog *dialog = new LikeBackDialog( d->nam, type, initialComment, windowPath, context, this );
 
-  if( userWantsToShowBar() )
-  {
+  if ( userWantsToShowBar() ) {
     disableBar();
-    connect( dialog, SIGNAL( destroyed(QObject*) ),
-             this,   SLOT  ( enableBar()         ) );
+    connect( dialog, SIGNAL( destroyed(QObject*) ), this, SLOT( enableBar() ) );
   }
 
   dialog->show();
@@ -201,25 +200,24 @@ LikeBack::Button LikeBack::buttons()
 }
 
 
-
+#if 0
 // Get the KAboutData stored object
-/*const KAboutData* LikeBack::aboutData()
+const KAboutData* LikeBack::aboutData()
 {
   return d->aboutData;
 }
-*/
 
 
 // Get the KDE config stored object
-/*KConfig *LikeBack::config()
+KConfig *LikeBack::config()
 {
   return d->config.config();
 }
-*/
+
 
 
 // Create the menu actions
-/*void LikeBack::createActions( KActionCollection *parent )
+void LikeBack::createActions( KActionCollection *parent )
 {
   if( d->sendAction == 0 )
   {
@@ -240,19 +238,21 @@ LikeBack::Button LikeBack::buttons()
     parent->addAction( "likeBackShowIcons", d->showBarAction );
   }
 }
-*/
+#endif
 
 
 // Return whether the user wants to enable the likeback bar or not
 bool LikeBack::userWantsToShowBar()
 {
+#if 1
+  return QSettings().value("LikeBack/userWantToShowBar", d->showBarByDefault).toBool();
+#else
   // You can choose to store the button bar status per version.
   // On debug builds from SVN, where the version changes at almost every build,
   // it's very annoying to have the bar reappearing everytime.
 //   return d->config.readEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), d->showBarByDefault );
-
-  return true;
-  ///RESTOREME return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
+  return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
+#endif
 }
 
 
@@ -264,18 +264,21 @@ void LikeBack::setUserWantsToShowBar( bool showBar )
     return;
 
   d->showBar = showBar;
-
+#if 1
+  QSettings().setValue("LikeBack/userWantToShowBar", showBar);
+  // TODO: show bar
+#else
   // You can choose to store the button bar status per version.
   // On debug builds from SVN, where the version changes at almost every build,
   // it's very annoying to have the bar reappearing everytime.
 //   d->config.writeEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), showBar );
 
-  /// RESTOREME
-  ///d->config.writeEntry( "userWantToShowBar", showBar );
+  d->config.writeEntry( "userWantToShowBar", showBar );
 
-  ///d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
+  d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
 
   d->bar->setBarVisible( showBar );
+#endif
 }
 
 
@@ -283,12 +286,11 @@ void LikeBack::setUserWantsToShowBar( bool showBar )
 // Show a dialog box to introduce the user to LikeBack
 void LikeBack::showInformationMessage()
 {
-    ///RESTOREME
-#if 0
   // don't show the message if the bar isn't enabled.
   // message doesn't make sense without the bar
   if ( ! d->showBar ) return;
 
+#if 0
   // Load and register the images needed by the message:
   KIconLoader *loader = KIconLoader::global();
   QString likeIconPath   ( loader->iconPath( "likeback_like",    KIconLoader::Small ) );
@@ -417,15 +419,12 @@ QString LikeBack::activeWindowPath()
   // Compute the window hierarchy (from the oldest to the latest, each time prepending to the list):
   QStringList windowNames;
   QWidget *window = QApplication::activeWindow();
-  while( window )
-  {
+  while( window ) {
     QString name( window->objectName() );
 
     // Append the class name to the window name if it is unnamed:
-    if( name == "unnamed" )
-    {
+    if( name == "unnamed" && window->metaObject() )
       name += QString( ":" ) + window->metaObject()->className();
-    }
     windowNames.prepend( name );
 
     window = dynamic_cast<QWidget*>( window->parent() );
@@ -440,9 +439,11 @@ QString LikeBack::activeWindowPath()
 // Return whether the email address was confirmed by the user
 bool LikeBack::emailAddressAlreadyProvided()
 {
-    ///RESTOREME
-    return false;
-  ///return d->config.readEntry( "emailAlreadyAsked", false );
+#if 1
+  return QSettings().value("LikeBack/emailAlreadyAsked", false).toBool();
+#else
+  return d->config.readEntry( "emailAlreadyAsked", false );
+#endif
 }
 
 
@@ -450,10 +451,12 @@ bool LikeBack::emailAddressAlreadyProvided()
 // Return the currently saved email address, or the account's email address, if present
 QString LikeBack::emailAddress()
 {
-    return QString();
-    ///RESTOREME
-  ///KEMailSettings emailSettings;
-  ///return d->config.readEntry( "emailAddress", emailSettings.getSetting( KEMailSettings::EmailAddress ) );
+#if 1
+  return QSettings().value("LikeBack/emailAddress").toString();
+#else
+  KEMailSettings emailSettings;
+  return d->config.readEntry( "emailAddress", emailSettings.getSetting( KEMailSettings::EmailAddress ) );
+#endif
 }
 
 
@@ -461,10 +464,15 @@ QString LikeBack::emailAddress()
 // Change the saved email address
 void LikeBack::setEmailAddress( const QString &address, bool userProvided )
 {
-    ///RESTOREME
-  ///d->config.writeEntry( "emailAddress", address );
-  ///d->config.writeEntry( "emailAlreadyAsked", ( userProvided || emailAddressAlreadyProvided() ) );
-  ///d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
+#if 1
+  QSettings s;
+  s.setValue("LikeBack/emailAddress", address);
+  s.setValue("LikeBack/emailAlreadyAsked", userProvided || s.value("LikeBack/emailAlreadyAsked", false).toBool());
+#else
+  d->config.writeEntry( "emailAddress", address );
+  d->config.writeEntry( "emailAlreadyAsked", ( userProvided || emailAddressAlreadyProvided() ) );
+  d->config.sync(); // Make sure the option is saved, even if the application crashes after that.
+#endif
 }
 
 

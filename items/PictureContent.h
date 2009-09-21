@@ -1,7 +1,7 @@
 /***************************************************************************
  *                                                                         *
  *   This file is part of the Fotowall project,                            *
- *       http://code.google.com/p/fotowall                                 *
+ *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
  *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
@@ -36,6 +36,7 @@ class PictureContent : public AbstractContent
 
         // ::AbstractContent
         QString contentName() const { return tr("Picture"); }
+        QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;

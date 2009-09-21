@@ -1,7 +1,7 @@
 /***************************************************************************
  *                                                                         *
  *   This file is part of the Fotowall project,                            *
- *       http://code.google.com/p/fotowall                                 *
+ *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
  *   Copyright (C) 2007-2008 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
@@ -49,7 +49,7 @@ int main( int argc, char ** args )
 
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.8");
+    app.setApplicationVersion("0.8.96");
     app.setOrganizationName("Enrico Ros");
     RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
 
