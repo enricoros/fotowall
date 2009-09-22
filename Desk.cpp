@@ -19,6 +19,7 @@
 #include "items/HighlightItem.h"
 #include "items/PictureContent.h"
 #include "items/PictureConfig.h"
+#include "items/SelectionProperties.h"
 #include "items/TextContent.h"
 #include "items/TextConfig.h"
 #include "items/WebContentSelectorItem.h"
@@ -31,7 +32,6 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
 #include <QImageReader>
-#include <QLabel>
 #include <QList>
 #include <QMessageBox>
 #include <QMimeData>
@@ -937,10 +937,11 @@ void Desk::slotSelectionChanged()
     }
 
     // show a 'selection' properties widget
-    if (selection.size() > 1) {
-        QLabel * label = new QLabel(tr("%1 objects selected").arg(selection.size()));
-        label->setWindowTitle(tr("SELECTION"));
-        emit showPropertiesWidget(label);
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selection);
+    if (!selectedContent.isEmpty()) {
+        SelectionProperties * pWidget = new SelectionProperties(selectedContent);
+        connect(pWidget, SIGNAL(deleteSelection()), this, SLOT(slotDeleteContent()));
+        emit showPropertiesWidget(pWidget);
         return;
     }
 
@@ -1041,19 +1042,9 @@ void Desk::slotStackContent(int op)
         content->setZValue(z++);
 }
 
-static QList<AbstractContent *> content(const QList<QGraphicsItem *> & items) {
-    QList<AbstractContent *> contentList;
-    foreach (QGraphicsItem * item, items) {
-        AbstractContent * c = dynamic_cast<AbstractContent *>(item);
-        if (c)
-            contentList.append(c);
-    }
-    return contentList;
-}
-
 void Desk::slotDeleteContent()
 {
-    QList<AbstractContent *> selectedContent = content(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     AbstractContent * senderContent = dynamic_cast<AbstractContent *>(sender());
     if (senderContent && !selectedContent.contains(senderContent)) {
         selectedContent.clear();
@@ -1091,7 +1082,7 @@ void Desk::slotDeleteConfig(AbstractConfig * config)
 
 void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 {
-    QList<AbstractContent *> selectedContent = content(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     foreach (AbstractContent * content, m_content) {
         if (all || selectedContent.contains(content)) {
             if (content->frameClass() != frameClass)
@@ -1103,7 +1094,7 @@ void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 
 void Desk::slotApplyEffect(const PictureEffect & effect, bool all)
 {
-    QList<AbstractContent *> selectedContent = content(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     foreach (AbstractContent * content, m_content) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
@@ -1116,7 +1107,7 @@ void Desk::slotApplyEffect(const PictureEffect & effect, bool all)
 
 void Desk::slotCrop()
 {
-    QList<AbstractContent *> selectedContent = content(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     foreach (AbstractContent * content, selectedContent) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
@@ -1134,7 +1125,7 @@ void Desk::slotCrop()
 
 void Desk::slotFlipHorizontally()
 {
-    QList<AbstractContent *> selectedContent = content(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     foreach (AbstractContent * content, selectedContent) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)
@@ -1145,7 +1136,7 @@ void Desk::slotFlipHorizontally()
 
 void Desk::slotFlipVertically()
 {
-    QList<AbstractContent *> selectedContent = content(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     foreach (AbstractContent * content, selectedContent) {
         PictureContent * picture = dynamic_cast<PictureContent *>(content);
         if (!picture)

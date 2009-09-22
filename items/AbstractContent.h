@@ -142,4 +142,16 @@ class AbstractContent : public AbstractDisposeable
         Vector2 vForce, vVel, vPos;
 };
 
+
+/// \brief Utility function to cast a list
+template<typename From, typename To>
+QList<To *> projectList(const QList<From *> list)
+{
+    QList<To *> projectedList;
+    foreach (From * item, list)
+        if (To * to = dynamic_cast<To *>(item))
+            projectedList.append(to);
+    return projectedList;
+}
+
 #endif
