@@ -1,63 +1,59 @@
-VPATH += $$PWD
-DEPENDPATH += $$PWD
-
 # disabling the webkit component on windows, since I can't static link to it
 # disabled webkit on every platform - Enrico 20090410
 # DEFINES += USE_QTWEBKIT
 # QT += webkit
-# HEADERS += BrowserItem.h
-# SOURCES += BrowserItem.cpp
+# HEADERS += Desk/BrowserItem.h
+# SOURCES += Desk/BrowserItem.cpp
+
 HEADERS += \
-    AbstractConfig.h \
-    AbstractContent.h \
-    AbstractDisposeable.h \
-    BezierCubicItem.h \
-    ButtonItem.h \
-    ColorPickerItem.h \
-    CornerItem.h \
-    Desk.h \
-    HelpItem.h \
-    HighlightItem.h \
-    MirrorItem.h \
-    PictureConfig.h \
-    PictureContent.h \
-    PictureProperties.h \
-    PropertyEditors.h \
-    SelectionProperties.h \
-    StyledButtonItem.h \
-    TextConfig.h \
-    TextContent.h \
-    TextProperties.h \
-    WebContentSelectorItem.h \
-    WebcamContent.h
+    Desk/AbstractConfig.h \
+    Desk/AbstractContent.h \
+    Desk/AbstractDisposeable.h \
+    Desk/BezierCubicItem.h \
+    Desk/ButtonItem.h \
+    Desk/CornerItem.h \
+    Desk/Desk.h \
+    Desk/HelpItem.h \
+    Desk/HighlightItem.h \
+    Desk/MirrorItem.h \
+    Desk/PictureConfig.h \
+    Desk/PictureContent.h \
+    Desk/PictureProperties.h \
+    Desk/PropertyEditors.h \
+    Desk/SelectionProperties.h \
+    Desk/StyledButtonItem.h \
+    Desk/TextConfig.h \
+    Desk/TextContent.h \
+    Desk/TextProperties.h \
+    Desk/WebContentSelectorItem.h \
+    Desk/WebcamContent.h
 
 SOURCES += \
-    AbstractConfig.cpp \
-    AbstractContent.cpp \
-    AbstractDisposeable.cpp \
-    BezierCubicItem.cpp \
-    ButtonItem.cpp \
-    ColorPickerItem.cpp \
-    CornerItem.cpp \
-    Desk.cpp \
-    HelpItem.cpp \
-    HighlightItem.cpp \
-    MirrorItem.cpp \
-    PictureConfig.cpp \
-    PictureContent.cpp \
-    PictureProperties.cpp \
-    PropertyEditors.cpp \
-    SelectionProperties.cpp \
-    StyledButtonItem.cpp \
-    TextConfig.cpp \
-    TextContent.cpp \
-    TextProperties.cpp \
-    WebContentSelectorItem.cpp \
-    WebcamContent.cpp
+    Desk/AbstractConfig.cpp \
+    Desk/AbstractContent.cpp \
+    Desk/AbstractDisposeable.cpp \
+    Desk/BezierCubicItem.cpp \
+    Desk/ButtonItem.cpp \
+    Desk/CornerItem.cpp \
+    Desk/Desk.cpp \
+    Desk/HelpItem.cpp \
+    Desk/HighlightItem.cpp \
+    Desk/MirrorItem.cpp \
+    Desk/PictureConfig.cpp \
+    Desk/PictureContent.cpp \
+    Desk/PictureProperties.cpp \
+    Desk/PropertyEditors.cpp \
+    Desk/SelectionProperties.cpp \
+    Desk/StyledButtonItem.cpp \
+    Desk/TextConfig.cpp \
+    Desk/TextContent.cpp \
+    Desk/TextProperties.cpp \
+    Desk/WebContentSelectorItem.cpp \
+    Desk/WebcamContent.cpp
 
 FORMS += \
-    AbstractConfig.ui \
-    PictureConfig.ui \
-    PictureProperties.ui \
-    TextProperties.ui \
-    WebContentSelectorItem.ui
+    Desk/AbstractConfig.ui \
+    Desk/PictureConfig.ui \
+    Desk/PictureProperties.ui \
+    Desk/TextProperties.ui \
+    Desk/WebContentSelectorItem.ui

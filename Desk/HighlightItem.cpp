@@ -13,7 +13,9 @@
  ***************************************************************************/
 
 #include "HighlightItem.h"
-#include "RenderOpts.h"
+
+#include "Shared/RenderOpts.h"
+
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QTimerEvent>

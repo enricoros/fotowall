@@ -16,16 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
  ******************************************************************************/
 
-#include "MainWindow/XmlRead.h"
+#include "App/XmlRead.h"
 
 #include "Desk/AbstractContent.h"
-#include "Desk/ColorPickerItem.h"
 #include "Desk/Desk.h"
 #include "Desk/PictureContent.h"
 #include "Desk/TextContent.h"
 #include "Desk/WebcamContent.h"
 #include "Frames/FrameFactory.h"
-#include "MainWindow/MainWindow.h"
+#include "App/MainWindow.h"
 
 #include <QFile>
 #include <QMessageBox>

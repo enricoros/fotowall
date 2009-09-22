@@ -145,6 +145,7 @@ improvement and the code is kept clean and small.
 * scene matrix (global perspective)
 * embedded examples (inside/network)
 * templates
+* integrate with a gimp-like library for effects/graphics ops
 * new graphics effects (like Colorize or Warhol-ize ;-)
   * mosaic effect: from 1 picture to a grid of misaligned pics
 * update the video tutorial (still at 0.2!)

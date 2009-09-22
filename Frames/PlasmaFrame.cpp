@@ -13,7 +13,9 @@
  ***************************************************************************/
 
 #include "PlasmaFrame.h"
-#include "RenderOpts.h"
+
+#include "Shared/RenderOpts.h"
+
 #include <QLinearGradient>
 #include <QPainter>
 #include <QSvgRenderer>

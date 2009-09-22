@@ -16,8 +16,8 @@
 #define __AbstractContent_h__
 
 #include "AbstractDisposeable.h"
-#include <QDomElement>
 #include "3rdparty/enricomath.h"
+#include <QDomElement>
 class AbstractConfig;
 class ButtonItem;
 class CornerItem;

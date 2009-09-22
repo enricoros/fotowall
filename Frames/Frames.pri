@@ -1,18 +1,15 @@
-VPATH += $$PWD
-DEPENDPATH += $$PWD
-
 HEADERS += \
-    EmptyFrame.h \
-    FrameFactory.h \
-    Frame.h \
-    HeartFrame.h \
-    PlasmaFrame.h \
-    StandardFrame.h
+    Frames/EmptyFrame.h \
+    Frames/FrameFactory.h \
+    Frames/Frame.h \
+    Frames/HeartFrame.h \
+    Frames/PlasmaFrame.h \
+    Frames/StandardFrame.h
 
 SOURCES += \
-    EmptyFrame.cpp \
-    FrameFactory.cpp \
-    Frame.cpp \
-    HeartFrame.cpp \
-    PlasmaFrame.cpp \
-    StandardFrame.cpp
+    Frames/EmptyFrame.cpp \
+    Frames/FrameFactory.cpp \
+    Frames/Frame.cpp \
+    Frames/HeartFrame.cpp \
+    Frames/PlasmaFrame.cpp \
+    Frames/StandardFrame.cpp

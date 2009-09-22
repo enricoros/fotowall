@@ -15,7 +15,7 @@
 #include "PictureConfig.h"
 #include "PictureContent.h"
 #include "ui_PictureConfig.h"
-#include "Tools/GlowEffectDialog.h"
+#include "Shared/GlowEffectDialog.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QInputDialog>
 #include <QListWidgetItem>

@@ -13,11 +13,13 @@
  ***************************************************************************/
 
 #include "AbstractConfig.h"
-#include "AbstractContent.h"
-#include "RenderOpts.h"
-#include "StyledButtonItem.h"
+
 #include "Frames/FrameFactory.h"
+#include "Shared/RenderOpts.h"
+#include "AbstractContent.h"
+#include "StyledButtonItem.h"
 #include "ui_AbstractConfig.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QFileDialog>
 #include <QListWidgetItem>

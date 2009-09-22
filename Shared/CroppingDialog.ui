@@ -33,7 +33,7 @@
   <customwidget>
    <class>CroppingWidget</class>
    <extends>QWidget</extends>
-   <header>Tools/CroppingWidget.h</header>
+   <header>Shared/CroppingWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

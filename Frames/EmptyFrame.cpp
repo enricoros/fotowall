@@ -13,7 +13,9 @@
  ***************************************************************************/
 
 #include "EmptyFrame.h"
-#include "RenderOpts.h"
+
+#include "Shared/RenderOpts.h"
+
 #include <QPainter>
 
 quint32 EmptyFrame::frameClass() const

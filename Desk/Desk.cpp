@@ -13,19 +13,21 @@
  ***************************************************************************/
 
 #include "Desk.h"
+
 #include "Frames/FrameFactory.h"
-#include "Desk/ColorPickerItem.h"
-#include "Desk/HelpItem.h"
-#include "Desk/HighlightItem.h"
-#include "Desk/PictureContent.h"
-#include "Desk/PictureConfig.h"
-#include "Desk/SelectionProperties.h"
-#include "Desk/TextContent.h"
-#include "Desk/TextConfig.h"
-#include "Desk/WebContentSelectorItem.h"
-#include "Desk/WebcamContent.h"
-#include "Tools/FlickrInterface.h"
-#include "RenderOpts.h"
+#include "Shared/ColorPickerItem.h"
+#include "Shared/FlickrInterface.h"
+#include "HelpItem.h"
+#include "HighlightItem.h"
+#include "PictureContent.h"
+#include "PictureConfig.h"
+#include "SelectionProperties.h"
+#include "TextContent.h"
+#include "TextConfig.h"
+#include "WebContentSelectorItem.h"
+#include "WebcamContent.h"
+#include "Shared/RenderOpts.h"
+
 #include <QAbstractTextDocumentLayout>
 #include <QFile>
 #include <QGraphicsSceneDragDropEvent>

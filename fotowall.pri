@@ -1,7 +1,6 @@
 # Fotowall input files
 HEADERS += \
-    3rdparty/gsuggest.h \
-    RenderOpts.h
+    3rdparty/gsuggest.h
 
 SOURCES += \
     3rdparty/gsuggest.cpp \
@@ -11,10 +10,10 @@ RESOURCES += \
     fotowall.qrc
 
 # More input files
+include(App/App.pri)
 include(Desk/Desk.pri)
 include(Frames/Frames.pri)
-include(MainWindow/MainWindow.pri)
-include(Tools/Tools.pri)
+include(Shared/Shared.pri)
 include(3rdparty/likebackfrontend/likebackfrontend.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)

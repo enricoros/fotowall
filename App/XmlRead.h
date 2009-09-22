@@ -23,7 +23,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QList>
-#include "MainWindow/ModeInfo.h"
+#include "App/ModeInfo.h"
 
 class Desk;
 class AbstractContent;

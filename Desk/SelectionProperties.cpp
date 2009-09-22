@@ -13,9 +13,11 @@
  ***************************************************************************/
 
 #include "SelectionProperties.h"
-#include "Desk/PictureContent.h"
-#include "Desk/TextContent.h"
-#include "Desk/WebcamContent.h"
+
+#include "PictureContent.h"
+#include "TextContent.h"
+#include "WebcamContent.h"
+
 #include <QLabel>
 #include <QPushButton>
 #include <QToolButton>

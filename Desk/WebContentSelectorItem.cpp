@@ -18,7 +18,7 @@
 #endif
 #include "Frames/FrameFactory.h"
 #include "Frames/Frame.h"
-#include "Tools/FlickrInterface.h"
+#include "Shared/FlickrInterface.h"
 #include <QBasicTimer>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>

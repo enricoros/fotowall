@@ -13,12 +13,14 @@
  ***************************************************************************/
 
 #include "PictureContent.h"
-#include "RenderOpts.h"
-#include "Desk/ButtonItem.h"
-#include "Desk/PictureProperties.h"
+
 #include "Frames/Frame.h"
-#include "Tools/CPixmap.h"
-#include "Tools/CroppingDialog.h"
+#include "Shared/CPixmap.h"
+#include "Shared/CroppingDialog.h"
+#include "Shared/RenderOpts.h"
+#include "ButtonItem.h"
+#include "PictureProperties.h"
+
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>

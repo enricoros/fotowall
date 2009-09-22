@@ -1044,12 +1044,12 @@ stop:1 rgba(237, 237, 237, 255))
   <customwidget>
    <class>FWGraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header>MainWindow/MainWindow.h</header>
+   <header>App/MainWindow.h</header>
   </customwidget>
   <customwidget>
    <class>GroupBoxWidget</class>
    <extends>QWidget</extends>
-   <header>MainWindow/GroupBoxWidget.h</header>
+   <header>App/GroupBoxWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

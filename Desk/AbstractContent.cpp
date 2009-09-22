@@ -13,11 +13,13 @@
  ***************************************************************************/
 
 #include "AbstractContent.h"
+
+#include "Frames/FrameFactory.h"
+#include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
 #include "CornerItem.h"
 #include "MirrorItem.h"
-#include "RenderOpts.h"
-#include "Frames/FrameFactory.h"
+
 #include <QApplication>
 #include <QDate>
 #include <QFileDialog>

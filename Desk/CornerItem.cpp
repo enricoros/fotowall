@@ -13,9 +13,10 @@
  ***************************************************************************/
 
 #include "CornerItem.h"
+
+#include "Shared/RenderOpts.h"
 #include "AbstractContent.h"
-#include "RenderOpts.h"
-#include <QDebug>
+
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>

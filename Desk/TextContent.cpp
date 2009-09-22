@@ -13,10 +13,12 @@
  ***************************************************************************/
 
 #include "TextContent.h"
+
 #include "Frames/Frame.h"
-#include "Desk/BezierCubicItem.h"
-#include "Desk/TextProperties.h"
-#include "RenderOpts.h"
+#include "Shared/RenderOpts.h"
+#include "BezierCubicItem.h"
+#include "TextProperties.h"
+
 #include <QDebug>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -25,7 +27,6 @@
 #include <QTextDocument>
 #include <QTextFrame>
 #include <QUrl>
-
 
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)

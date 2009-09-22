@@ -16,10 +16,9 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
 
-#include "MainWindow/XmlSave.h"
+#include "App/XmlSave.h"
 
 #include "Desk/AbstractContent.h"
-#include "Desk/ColorPickerItem.h"
 #include "Desk/Desk.h"
 
 #include <QMessageBox>

@@ -16,7 +16,7 @@
 #define __VersionCheckDialog_h__
 
 #include <QDialog>
-#include "Tools/MetaXmlReader.h"
+#include "Shared/MetaXmlReader.h"
 namespace Ui { class VersionCheckDialog; }
 
 class VersionCheckDialog : public QDialog

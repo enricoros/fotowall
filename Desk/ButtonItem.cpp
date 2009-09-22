@@ -13,7 +13,9 @@
  ***************************************************************************/
 
 #include "ButtonItem.h"
-#include "RenderOpts.h"
+
+#include "Shared/RenderOpts.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
 #include <QPainter>

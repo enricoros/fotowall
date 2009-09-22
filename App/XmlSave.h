@@ -25,7 +25,7 @@
 #include <QTextStream>
 #include <QList>
 #include <QSize>
-#include "MainWindow/ModeInfo.h"
+#include "App/ModeInfo.h"
 
 class PictureContent;
 class TextContent;

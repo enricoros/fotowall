@@ -12,19 +12,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "MainWindow/MainWindow.h"
+#include "App/MainWindow.h"
+
 #include "3rdparty/likebackfrontend/LikeBack.h"
 #include "Desk/Desk.h"
-#include "MainWindow/ExactSizeDialog.h"
-#include "MainWindow/ExportWizard.h"
-#include "MainWindow/ModeInfo.h"
-#include "MainWindow/XmlRead.h"
-#include "MainWindow/XmlSave.h"
-#include "MainWindow/VersionCheckDialog.h"
-#include "RenderOpts.h"
-#include "Tools/ButtonsDialog.h"
-#include "Tools/MetaXmlReader.h"
-#include "Tools/VideoProvider.h"
+#include "Shared/ButtonsDialog.h"
+#include "Shared/MetaXmlReader.h"
+#include "Shared/RenderOpts.h"
+#include "Shared/VideoProvider.h"
+#include "ExactSizeDialog.h"
+#include "ExportWizard.h"
+#include "ModeInfo.h"
+#include "VersionCheckDialog.h"
+#include "XmlRead.h"
+#include "XmlSave.h"
+
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>

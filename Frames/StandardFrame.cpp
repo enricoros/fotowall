@@ -13,7 +13,9 @@
  ***************************************************************************/
 
 #include "StandardFrame.h"
-#include "RenderOpts.h"
+
+#include "Shared/RenderOpts.h"
+
 #include <QLinearGradient>
 #include <QPainter>
 
