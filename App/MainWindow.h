@@ -33,6 +33,10 @@ class MainWindow : public QWidget
         MainWindow(QWidget * parent = 0);
         ~MainWindow();
 
+        // TEMP
+        static MainWindow * instance();
+        Desk * swapDesk(Desk * newDesk);
+
         void setModeInfo(ModeInfo modeInfo);
         ModeInfo getModeInfo(); // Needed for saving
         void restoreMode(int mode);
@@ -73,6 +77,7 @@ class MainWindow : public QWidget
 
     private Q_SLOTS:
         void on_projectType_activated(int index);
+        void on_aAddDesk_triggered();
         void on_aAddFlickr_toggled(bool on);
         void on_aAddPicture_triggered();
         void on_aAddText_triggered();

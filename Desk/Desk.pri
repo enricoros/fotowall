@@ -4,7 +4,6 @@
 # QT += webkit
 # HEADERS += Desk/BrowserItem.h
 # SOURCES += Desk/BrowserItem.cpp
-
 HEADERS += \
     Desk/AbstractConfig.h \
     Desk/AbstractContent.h \
@@ -25,6 +24,7 @@ HEADERS += \
     Desk/TextConfig.h \
     Desk/TextContent.h \
     Desk/TextProperties.h \
+    Desk/DeskViewContent.h \
     Desk/WebContentSelectorItem.h \
     Desk/WebcamContent.h
 
@@ -48,6 +48,7 @@ SOURCES += \
     Desk/TextConfig.cpp \
     Desk/TextContent.cpp \
     Desk/TextProperties.cpp \
+    Desk/DeskViewContent.cpp \
     Desk/WebContentSelectorItem.cpp \
     Desk/WebcamContent.cpp
 

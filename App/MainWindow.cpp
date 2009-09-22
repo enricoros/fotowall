@@ -130,6 +130,8 @@ class FWGraphicsView : public QGraphicsView {
 #include "ui_MainWindow.h"
 
 
+static MainWindow * s_instance = 0;
+
 MainWindow::MainWindow(QWidget * parent)
     : QWidget(parent)
     , ui(new Ui::MainWindow())
@@ -140,6 +142,8 @@ MainWindow::MainWindow(QWidget * parent)
     , m_gBackRatioActions(0)
     , m_likeBack(0)
 {
+    s_instance = this;
+
     // setup widget
     QRect geom = QApplication::desktop()->availableGeometry();
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
@@ -163,6 +167,7 @@ MainWindow::MainWindow(QWidget * parent)
     ui->b2->setDefaultAction(ui->aAddText);
     ui->b3->setDefaultAction(ui->aAddWebcam);
     ui->b4->setDefaultAction(ui->aAddFlickr);
+    ui->b5->setDefaultAction(ui->aAddDesk);
 #if QT_VERSION >= 0x040500
 #ifdef QT_OPENGL_LIB
     ui->accelBox->setEnabled(true);
@@ -210,6 +215,28 @@ MainWindow::~MainWindow()
     delete m_likeBack;
     delete m_desk;
     delete ui;
+}
+
+MainWindow * MainWindow::instance()
+{
+    return s_instance;
+}
+
+// TEMP
+Desk * MainWindow::swapDesk(Desk * newDesk)
+{
+    // TEMP
+    Desk * oldDesk = 0;
+    if (m_desk) {
+        oldDesk = m_desk;
+        disconnect(m_desk, 0, this, 0);
+    }
+    m_desk = newDesk;
+    ui->canvas->setScene(m_desk);
+    connect(m_desk, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
+    connect(m_desk, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
+    update();
+    return oldDesk;
 }
 
 void MainWindow::setModeInfo(ModeInfo modeInfo)
@@ -274,7 +301,7 @@ void MainWindow::showIntroduction()
 
 void MainWindow::loadImages(QStringList &imagesPath)
 {
-    m_desk->addPictures(imagesPath);
+    m_desk->addPictureContent(imagesPath);
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -595,6 +622,20 @@ void MainWindow::on_projectType_activated(int index)
     }
 }
 
+void MainWindow::on_aAddDesk_triggered()
+{
+    // make up the default load path (stored as 'fotowall/loadProjectDir')
+    QSettings s;
+    QString defaultLoadPath = s.value("fotowall/loadProjectDir").toString();
+
+    // ask the file name, validate it, store back to settings and load the file
+    QStringList fileNames = QFileDialog::getOpenFileNames(ui->canvas, tr("Select one or more Fotowall files to add"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
+    if (fileNames.isEmpty())
+        return;
+    s.setValue("fotowall/loadProjectDir", QFileInfo(fileNames[0]).absolutePath());
+    m_desk->addDeskContent(fileNames);
+}
+
 void MainWindow::on_aAddFlickr_toggled(bool on)
 {
     m_desk->setWebContentSelectorVisible(on);
@@ -616,7 +657,7 @@ void MainWindow::on_aAddPicture_triggered()
     if (fileNames.isEmpty())
         return;    
     s.setValue("fotowall/loadImagesDir", QFileInfo(fileNames[0]).absolutePath());
-    m_desk->addPictures(fileNames);
+    m_desk->addPictureContent(fileNames);
 }
 
 void MainWindow::on_aAddText_triggered()

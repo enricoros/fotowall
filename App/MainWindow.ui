@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>872</width>
-    <height>450</height>
+    <width>991</width>
+    <height>432</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -159,6 +159,19 @@ stop:1 rgba(237, 237, 237, 255))
          </item>
          <item>
           <widget class="QToolButton" name="b4">
+           <property name="iconSize">
+            <size>
+             <width>54</width>
+             <height>48</height>
+            </size>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="b5">
            <property name="iconSize">
             <size>
              <width>54</width>
@@ -579,7 +592,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="3rdparty/likebackfrontend/likeback.qrc">
+            <iconset>
              <normaloff>:/likeback/like.png</normaloff>:/likeback/like.png</iconset>
            </property>
            <property name="autoRaise">
@@ -603,7 +616,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="3rdparty/likebackfrontend/likeback.qrc">
+            <iconset>
              <normaloff>:/likeback/dislike.png</normaloff>:/likeback/dislike.png</iconset>
            </property>
            <property name="autoRaise">
@@ -627,7 +640,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="3rdparty/likebackfrontend/likeback.qrc">
+            <iconset>
              <normaloff>:/likeback/bug.png</normaloff>:/likeback/bug.png</iconset>
            </property>
            <property name="autoRaise">
@@ -651,7 +664,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="3rdparty/likebackfrontend/likeback.qrc">
+            <iconset>
              <normaloff>:/likeback/feature.png</normaloff>:/likeback/feature.png</iconset>
            </property>
            <property name="autoRaise">
@@ -821,7 +834,7 @@ stop:1 rgba(237, 237, 237, 255))
               <bool>false</bool>
              </property>
              <property name="icon">
-              <iconset resource="fotowall.qrc">
+              <iconset>
                <normaloff>:/data/opengl-logo.png</normaloff>:/data/opengl-logo.png</iconset>
              </property>
              <property name="iconSize">
@@ -972,7 +985,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="fotowall.qrc">
+            <iconset>
              <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
            </property>
            <property name="iconSize">
@@ -1002,7 +1015,7 @@ stop:1 rgba(237, 237, 237, 255))
   </layout>
   <action name="aAddPicture">
    <property name="icon">
-    <iconset resource="fotowall.qrc">
+    <iconset>
      <normaloff>:/data/insert-image.png</normaloff>:/data/insert-image.png</iconset>
    </property>
    <property name="text">
@@ -1011,7 +1024,7 @@ stop:1 rgba(237, 237, 237, 255))
   </action>
   <action name="aAddText">
    <property name="icon">
-    <iconset resource="fotowall.qrc">
+    <iconset>
      <normaloff>:/data/insert-text.png</normaloff>:/data/insert-text.png</iconset>
    </property>
    <property name="text">
@@ -1020,7 +1033,7 @@ stop:1 rgba(237, 237, 237, 255))
   </action>
   <action name="aAddWebcam">
    <property name="icon">
-    <iconset resource="fotowall.qrc">
+    <iconset>
      <normaloff>:/data/insert-camera.png</normaloff>:/data/insert-camera.png</iconset>
    </property>
    <property name="text">
@@ -1032,11 +1045,20 @@ stop:1 rgba(237, 237, 237, 255))
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="fotowall.qrc">
+    <iconset>
      <normaloff>:/data/insert-download.png</normaloff>:/data/insert-download.png</iconset>
    </property>
    <property name="text">
     <string>Add Flickr</string>
+   </property>
+  </action>
+  <action name="aAddDesk">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/data/textinsertimage.png</normaloff>:/data/textinsertimage.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Desk</string>
    </property>
   </action>
  </widget>
@@ -1053,9 +1075,6 @@ stop:1 rgba(237, 237, 237, 255))
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="3rdparty/likebackfrontend/likeback.qrc"/>
-  <include location="fotowall.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

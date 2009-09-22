@@ -27,6 +27,7 @@ class AbstractContent;
 class AbstractConfig;
 struct PictureEffect;
 class ColorPickerItem;
+class DeskViewContent;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
@@ -46,7 +47,8 @@ class Desk : public QGraphicsScene
         ~Desk();
 
         // add content
-        void addPictures(const QStringList & fileNames);
+        void addDeskContent(const QStringList & fileNames);
+        void addPictureContent(const QStringList & fileNames);
         void addTextContent();
         void addWebcamContent(int input);
 
@@ -111,6 +113,7 @@ class Desk : public QGraphicsScene
     private:
         void initContent(AbstractContent * content, const QPoint & pos);
         void setBackContent(AbstractContent * content);
+        DeskViewContent * createDesk(const QPoint & pos);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
         WebcamContent * createWebcam(int input, const QPoint & pos);

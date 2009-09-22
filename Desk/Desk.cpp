@@ -17,6 +17,7 @@
 #include "Frames/FrameFactory.h"
 #include "Shared/ColorPickerItem.h"
 #include "Shared/FlickrInterface.h"
+#include "DeskViewContent.h"
 #include "HelpItem.h"
 #include "HighlightItem.h"
 #include "PictureContent.h"
@@ -141,9 +142,28 @@ static QPoint nearCenter(const QRectF & rect)
     return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
 }
 
-void Desk::addPictures(const QStringList & fileNames)
+void Desk::addDeskContent(const QStringList & fileNames)
 {
-    QPoint pos = nearCenter(sceneRect());
+    int offset = -30 * fileNames.size() / 2;
+    QPoint pos = nearCenter(sceneRect()) - QPoint(offset, offset);
+    foreach (const QString & localFile, fileNames) {
+        if (!QFile::exists(localFile))
+            continue;
+
+        // create picture and load the file
+        DeskViewContent * d = createDesk(pos);
+        if (!d->load(localFile, true, true)) {
+            m_content.removeAll(d);
+            delete d;
+        } else
+            pos += QPoint(30, 30);
+    }
+}
+
+void Desk::addPictureContent(const QStringList & fileNames)
+{
+    int offset = -30 * fileNames.size() / 2;
+    QPoint pos = nearCenter(sceneRect()) - QPoint(offset, offset);
     foreach (const QString & localFile, fileNames) {
         if (!QFile::exists(localFile))
             continue;
@@ -867,6 +887,13 @@ void Desk::setBackContent(AbstractContent * content)
     m_backCache = QPixmap();
     update();
     emit backModeChanged();
+}
+
+DeskViewContent * Desk::createDesk(const QPoint & pos)
+{
+    DeskViewContent * d = new DeskViewContent(this);
+    initContent(d, pos);
+    return d;
 }
 
 PictureContent * Desk::createPicture(const QPoint & pos)
