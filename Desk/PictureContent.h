@@ -16,7 +16,7 @@
 #define __PictureContent_h__
 
 #include "AbstractContent.h"
-#include "PictureEffect.h"
+#include "Tools/PictureEffect.h"
 class CPixmap;
 class QNetworkReply;
 

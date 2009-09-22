@@ -16,9 +16,9 @@
 #ifdef ENABLE_GCOMPLETION
 #include "3rdparty/gsuggest.h"
 #endif
-#include "frames/FrameFactory.h"
-#include "frames/Frame.h"
-#include "tools/FlickrInterface.h"
+#include "Frames/FrameFactory.h"
+#include "Frames/Frame.h"
+#include "Tools/FlickrInterface.h"
 #include <QBasicTimer>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>

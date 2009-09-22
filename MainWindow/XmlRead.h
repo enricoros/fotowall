@@ -16,40 +16,38 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
 
-#ifndef __Save__
-#define __Save__
+#ifndef __XmlRead__
+#define __XmlRead__
 
+#include <QObject>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QFile>
-#include <QTextStream>
 #include <QList>
-#include <QSize>
-#include "ModeInfo.h"
+#include "MainWindow/ModeInfo.h"
 
+class Desk;
+class AbstractContent;
+class MainWindow;
 class PictureContent;
 class TextContent;
-class AbstractContent;
-class Desk;
 
-class XmlSave : public QObject
+class XmlRead : public QObject
 {
     Q_OBJECT
     public:
-        XmlSave(const QString &);
-        ~XmlSave();
-        void saveContent(const Desk *);
-        void saveDesk(const Desk *);
-        void saveProject(int, const ModeInfo&);
+        XmlRead(const QString & filePath);
+        void readProject(MainWindow * mainWindow);
+        void readDesk(Desk * desk);
+        void readContent(Desk * desk);
 
     private :
-        QDomDocument doc;
-        QDomElement m_rootElement;
-        QDomElement m_contentElements;
         QDomElement m_projectElement;
         QDomElement m_deskElement;
-        QFile file;
-        QTextStream out;
+        QDomElement m_contentElement;
+
+    Q_SIGNALS:
+        void changeMode(int);
+        void setModeInfo(ModeInfo);
 };
 
 #endif

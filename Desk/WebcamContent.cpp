@@ -15,8 +15,8 @@
 #include "WebcamContent.h"
 #include "ButtonItem.h"
 #include "RenderOpts.h"
-#include "frames/Frame.h"
-#include "tools/VideoProvider.h"
+#include "Frames/Frame.h"
+#include "Tools/VideoProvider.h"
 #include <QPainter>
 #include <QTimer>
 

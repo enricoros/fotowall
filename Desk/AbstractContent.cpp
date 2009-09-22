@@ -17,7 +17,7 @@
 #include "CornerItem.h"
 #include "MirrorItem.h"
 #include "RenderOpts.h"
-#include "frames/FrameFactory.h"
+#include "Frames/FrameFactory.h"
 #include <QApplication>
 #include <QDate>
 #include <QFileDialog>

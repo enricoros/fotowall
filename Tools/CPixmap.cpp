@@ -20,7 +20,7 @@
  ******************************/
 
 #include "CPixmap.h"
-#include "tools/GlowEffectWidget.h"
+#include "Tools/GlowEffectWidget.h"
 #include <QImage>
 
 CPixmap::CPixmap() {

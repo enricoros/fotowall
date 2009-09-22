@@ -24,7 +24,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QString>
-#include "frames/FrameFactory.h"
+#include "Frames/FrameFactory.h"
 
 #if QT_VERSION >= 0x040600
 #include <QPropertyAnimation>

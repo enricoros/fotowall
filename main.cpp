@@ -19,9 +19,9 @@
 #include <QSettings>
 #include <QStyle>
 #include <QtPlugin>
-#include "MainWindow.h"
 #include "RenderOpts.h"
-#include "tools/VideoProvider.h"
+#include "MainWindow/MainWindow.h"
+#include "Tools/VideoProvider.h"
 
 #if defined(STATIC_LINK)
 Q_IMPORT_PLUGIN(qgif)

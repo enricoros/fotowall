@@ -12,19 +12,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "MainWindow.h"
-#include "ButtonsDialog.h"
-#include "Desk.h"
-#include "ExactSizeDialog.h"
-#include "ExportWizard.h"
-#include "ModeInfo.h"
-#include "RenderOpts.h"
-#include "XmlRead.h"
-#include "XmlSave.h"
+#include "MainWindow/MainWindow.h"
 #include "3rdparty/likebackfrontend/LikeBack.h"
-#include "tools/MetaXmlReader.h"
-#include "tools/VersionCheckDialog.h"
-#include "tools/VideoProvider.h"
+#include "Desk/Desk.h"
+#include "MainWindow/ExactSizeDialog.h"
+#include "MainWindow/ExportWizard.h"
+#include "MainWindow/ModeInfo.h"
+#include "MainWindow/XmlRead.h"
+#include "MainWindow/XmlSave.h"
+#include "MainWindow/VersionCheckDialog.h"
+#include "RenderOpts.h"
+#include "Tools/ButtonsDialog.h"
+#include "Tools/MetaXmlReader.h"
+#include "Tools/VideoProvider.h"
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
@@ -842,7 +842,7 @@ void MainWindow::slotArrangeForceField(bool checked)
     m_desk->setForceFieldEnabled(checked);
 }
 
-#include "items/AbstractContent.h"
+#include "Desk/AbstractContent.h"
 void MainWindow::slotArrangeRandom()
 {
     QRectF r = m_desk->sceneRect();

@@ -12,29 +12,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __VersionCheckDialog_h__
-#define __VersionCheckDialog_h__
+#ifndef __PictureConfig_h__
+#define __PictureConfig_h__
 
-#include <QDialog>
-#include "MetaXmlReader.h"
-namespace Ui { class VersionCheckDialog; }
+#include "AbstractConfig.h"
+#include "Tools/PictureEffect.h"
+class QListWidgetItem;
+class PictureContent;
+namespace Ui { class PictureConfig; }
 
-class VersionCheckDialog : public QDialog
-{
+
+class PictureConfig : public AbstractConfig {
     Q_OBJECT
     public:
-        VersionCheckDialog(QWidget * parent = 0);
-        ~VersionCheckDialog();
+        PictureConfig(PictureContent * pictureContent, QGraphicsItem * parent = 0);
+        ~PictureConfig();
 
-    private Q_SLOTS:
-        void slotFetched();
-        void slotError(const QString & error);
-        void slotDownload();
+    Q_SIGNALS:
+        void applyEffect(const PictureEffect & effect, bool allPictures);
 
     private:
-        Ui::VersionCheckDialog * ui;
-        MetaXml::Connector * m_connector;
-        MetaXml::Release m_release;
+        Ui::PictureConfig * m_pictureUi;
+        PictureContent *    m_pictureContent;
+        PictureEffect       m_currentEffect;
+
+    private Q_SLOTS:
+        void on_applyEffects_clicked();
+        void on_effectsList_itemActivated(QListWidgetItem * item);
 };
 
 #endif

@@ -13,9 +13,9 @@
  ***************************************************************************/
 
 #include "TextContent.h"
-#include "frames/Frame.h"
-#include "items/BezierCubicItem.h"
-#include "items/TextProperties.h"
+#include "Frames/Frame.h"
+#include "Desk/BezierCubicItem.h"
+#include "Desk/TextProperties.h"
 #include "RenderOpts.h"
 #include <QDebug>
 #include <QFileInfo>

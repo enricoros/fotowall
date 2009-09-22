@@ -14,7 +14,7 @@
 
 #include "ExportWizard.h"
 #include "ui_ExportWizard.h"
-#include "Desk.h"
+#include "Desk/Desk.h"
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDir>

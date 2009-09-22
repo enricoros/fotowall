@@ -15,6 +15,7 @@ HEADERS += \
     ButtonItem.h \
     ColorPickerItem.h \
     CornerItem.h \
+    Desk.h \
     HelpItem.h \
     HighlightItem.h \
     MirrorItem.h \
@@ -29,6 +30,7 @@ HEADERS += \
     TextProperties.h \
     WebContentSelectorItem.h \
     WebcamContent.h
+
 SOURCES += \
     AbstractConfig.cpp \
     AbstractContent.cpp \
@@ -37,6 +39,7 @@ SOURCES += \
     ButtonItem.cpp \
     ColorPickerItem.cpp \
     CornerItem.cpp \
+    Desk.cpp \
     HelpItem.cpp \
     HighlightItem.cpp \
     MirrorItem.cpp \
@@ -51,6 +54,7 @@ SOURCES += \
     TextProperties.cpp \
     WebContentSelectorItem.cpp \
     WebcamContent.cpp
+
 FORMS += \
     AbstractConfig.ui \
     PictureConfig.ui \
