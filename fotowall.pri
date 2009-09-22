@@ -62,6 +62,7 @@ include(3rdparty/videocapture/videocapture.pri)
 
 # Translations of the core Fotowall files
 TRANSLATIONS += translations/fotowall_de.ts \
+    translations/fotowall_en.ts \
     translations/fotowall_fr.ts \
     translations/fotowall_it.ts \
     translations/fotowall_pl.ts \
