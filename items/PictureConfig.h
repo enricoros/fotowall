@@ -16,7 +16,7 @@
 #define __PictureConfig_h__
 
 #include "AbstractConfig.h"
-#include "CPixmap.h"
+#include "PictureEffect.h"
 class QListWidgetItem;
 class PictureContent;
 namespace Ui { class PictureConfig; }

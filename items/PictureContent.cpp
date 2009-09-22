@@ -13,12 +13,12 @@
  ***************************************************************************/
 
 #include "PictureContent.h"
-#include "CroppingDialog.h"
 #include "CPixmap.h"
 #include "RenderOpts.h"
 #include "frames/Frame.h"
 #include "items/ButtonItem.h"
 #include "items/PictureProperties.h"
+#include "tools/CroppingDialog.h"
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
@@ -57,11 +57,13 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     addButtonItem(bFlipV);
     connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
 
-    /*ButtonItem * bCrop = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-scale.png"), this);
+#if 0
+    ButtonItem * bCrop = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-scale.png"), this);
     bCrop->setToolTip(tr(""));
     bCrop->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     addButtonItem(bCrop);
-    connect(bCrop, SIGNAL(clicked()), this, SIGNAL(toggleCropMode()));*/
+    connect(bCrop, SIGNAL(clicked()), this, SIGNAL(toggleCropMode()));
+#endif
 }
 
 PictureContent::~PictureContent()
@@ -179,12 +181,14 @@ void PictureContent::addEffect(const PictureEffect & effect)
     emit contentChanged();
 }
 
-QRect PictureContent::getCropRect() const
+void PictureContent::crop()
 {
     CroppingDialog dial(m_photo);
     if (dial.exec() != QDialog::Accepted)
-        return QRect();
-    return dial.getCroppingRect();
+        return;
+    QRect cropRect = dial.getCroppingRect();
+    if (!cropRect.isNull())
+        addEffect(PictureEffect(PictureEffect::Crop, 0, cropRect));
 }
 
 #include "PropertyEditors.h"

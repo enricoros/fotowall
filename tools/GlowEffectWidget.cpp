@@ -54,7 +54,7 @@ int GlowEffectWidget::glowRadius() const
 template<int aprec,int zprec>
 void expblur( QImage &img, int radius );
 
-QImage GlowEffectWidget::glow(const QImage &image, int radius) const
+QImage GlowEffectWidget::glow(const QImage &image, int radius)
 {
     QImage glownImage(image.size(), QImage::Format_ARGB32_Premultiplied);
     glownImage.fill(0x00);

@@ -1109,11 +1109,8 @@ void Desk::slotApplyEffect(const PictureEffect & effect, bool all)
 void Desk::slotCrop()
 {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
-    foreach (PictureContent * picture, pictures) {
-        QRect croppingRect = picture->getCropRect();
-        if (!croppingRect.isNull())
-            picture->addEffect(PictureEffect(PictureEffect::Crop, 0, croppingRect));
-    }
+    foreach (PictureContent * picture, pictures)
+        picture->crop();
 }
 
 void Desk::slotFlipHorizontally()

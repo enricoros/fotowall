@@ -12,12 +12,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QInputDialog>
 #include "PictureConfig.h"
 #include "PictureContent.h"
-#include "GlowEffectDialog.h"
 #include "ui_PictureConfig.h"
+#include "tools/GlowEffectDialog.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QInputDialog>
 #include <QListWidgetItem>
 
 PictureConfig::PictureConfig(PictureContent * pictureContent, QGraphicsItem * parent)
