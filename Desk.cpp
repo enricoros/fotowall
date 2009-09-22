@@ -24,7 +24,6 @@
 #include "items/TextConfig.h"
 #include "items/WebContentSelectorItem.h"
 #include "items/WebcamContent.h"
-#include "CroppingDialog.h"
 #include "FlickrInterface.h"
 #include "RenderOpts.h"
 #include <QAbstractTextDocumentLayout>
@@ -874,7 +873,7 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     initContent(p, pos);
     connect(p, SIGNAL(flipHorizontally()), this, SLOT(slotFlipHorizontally()));
     connect(p, SIGNAL(flipVertically()), this, SLOT(slotFlipVertically()));
-    connect(p, SIGNAL(crop()), this, SLOT(slotCrop()));
+    connect(p, SIGNAL(requestCrop()), this, SLOT(slotCrop()));
     return p;
 }
 
@@ -890,6 +889,14 @@ WebcamContent * Desk::createWebcam(int input, const QPoint & pos)
     WebcamContent * v = new WebcamContent(input, this);
     initContent(v, pos);
     return v;
+}
+
+void Desk::deleteConfig(AbstractConfig * config)
+{
+    if (config) {
+        m_configs.removeAll(config);
+        config->dispose();
+    }
 }
 
 /// Markers
@@ -957,7 +964,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
         if (config->content() == content)
             return;
         // force only 1 property instance
-        slotDeleteConfig(config);
+        deleteConfig(config);
     }
     AbstractConfig * p = 0;
 
@@ -978,6 +985,7 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     // common links
     m_configs.append(p);
     addItem(p);
+    connect(p, SIGNAL(requestClose()), this, SLOT(slotDeleteConfig()));
     connect(p, SIGNAL(applyLook(quint32,bool,bool)), this, SLOT(slotApplyLook(quint32,bool,bool)));
     p->show();
     p->setPos(scenePoint - QPoint(10, 10));
@@ -1063,7 +1071,7 @@ void Desk::slotDeleteContent()
         // remove related property if deleting its content
         foreach (AbstractConfig * config, m_configs) {
             if (config->content() == content) {
-                slotDeleteConfig(config);
+                deleteConfig(config);
                 break;
             }
         }
@@ -1074,17 +1082,15 @@ void Desk::slotDeleteContent()
     }
 }
 
-void Desk::slotDeleteConfig(AbstractConfig * config)
+void Desk::slotDeleteConfig()
 {
-    m_configs.removeAll(config);
-    config->dispose();
+    deleteConfig(dynamic_cast<AbstractConfig *>(sender()));
 }
 
 void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 {
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     foreach (AbstractContent * content, m_content) {
-        if (all || selectedContent.contains(content)) {
+        if (all || content->isSelected()) {
             if (content->frameClass() != frameClass)
                 content->setFrame(FrameFactory::createFrame(frameClass));
             content->setMirrorEnabled(mirrored);
@@ -1094,55 +1100,34 @@ void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 
 void Desk::slotApplyEffect(const PictureEffect & effect, bool all)
 {
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
-    foreach (AbstractContent * content, m_content) {
-        PictureContent * picture = dynamic_cast<PictureContent *>(content);
-        if (!picture)
-            continue;
-
-        if (all || selectedContent.contains(content))
+    QList<PictureContent *> pictures = projectList<AbstractContent, PictureContent>(m_content);
+    foreach (PictureContent * picture, pictures)
+        if (all || picture->isSelected())
             picture->addEffect(effect);
-    }
 }
 
 void Desk::slotCrop()
 {
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
-    foreach (AbstractContent * content, selectedContent) {
-        PictureContent * picture = dynamic_cast<PictureContent *>(content);
-        if (!picture)
-            continue;
-        CPixmap photo = picture->getPhoto();
-        CroppingDialog dial(&photo);
-        if(dial.exec() == QDialog::Accepted) {
-            QRect croppingRect = dial.getCroppingRect();
-            if(!croppingRect.isNull()) {
-                picture->addEffect(PictureEffect(PictureEffect::Crop, 0, dial.getCroppingRect()));
-            }
-        }
+    QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
+    foreach (PictureContent * picture, pictures) {
+        QRect croppingRect = picture->getCropRect();
+        if (!croppingRect.isNull())
+            picture->addEffect(PictureEffect(PictureEffect::Crop, 0, croppingRect));
     }
 }
 
 void Desk::slotFlipHorizontally()
 {
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
-    foreach (AbstractContent * content, selectedContent) {
-        PictureContent * picture = dynamic_cast<PictureContent *>(content);
-        if (!picture)
-            continue;
+    QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
+    foreach (PictureContent * picture, pictures)
         picture->addEffect(PictureEffect::FlipH);
-    }
 }
 
 void Desk::slotFlipVertically()
 {
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
-    foreach (AbstractContent * content, selectedContent) {
-        PictureContent * picture = dynamic_cast<PictureContent *>(content);
-        if (!picture)
-            continue;
+    QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
+    foreach (PictureContent * picture, pictures)
         picture->addEffect(PictureEffect::FlipV);
-    }
 }
 
 void Desk::slotTitleColorChanged()

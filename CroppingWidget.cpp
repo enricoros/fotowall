@@ -17,7 +17,6 @@
  ******************************************************************************/
 
 #include "CroppingWidget.h"
-#include "CPixmap.h"
 #include <QRubberBand>
 #include <QMouseEvent>
 #include <QPainter>
@@ -28,11 +27,10 @@ CroppingWidget::CroppingWidget(QWidget *parent) : QWidget(parent), m_previewRati
     m_rubberBand->setGeometry(0,0,0,0);
 }
 
-void CroppingWidget::setPixmap(CPixmap *pix)
+void CroppingWidget::setPixmap(QPixmap *pix)
 {
-    m_photo = pix;
-    m_previewPixmap = m_photo->scaled(500, 500, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    m_previewRatio = (float)m_photo->width()/(float)m_previewPixmap.width();
+    m_previewPixmap = pix->scaled(500, 500, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    m_previewRatio = (float)pix->width()/(float)m_previewPixmap.width();
     setFixedSize(m_previewPixmap.size());
 }
 

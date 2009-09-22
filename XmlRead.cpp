@@ -23,7 +23,6 @@
 #include "items/PictureContent.h"
 #include "items/TextContent.h"
 #include "items/WebcamContent.h"
-#include "CPixmap.h"
 #include "Desk.h"
 #include "MainWindow.h"
 #include <QFile>

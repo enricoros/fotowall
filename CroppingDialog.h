@@ -27,7 +27,7 @@ class CroppingDialog : public QDialog
 {
     Q_OBJECT
     public:
-        CroppingDialog(CPixmap *pix);
+        CroppingDialog(QPixmap *pix);
         QRect getCroppingRect() const;
     private:
         Ui::CroppingDialog ui;

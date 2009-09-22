@@ -17,9 +17,8 @@
 ******************************************************************************/
 
 #include "CroppingDialog.h"
-#include "CPixmap.h"
 
-CroppingDialog::CroppingDialog(CPixmap *pix) : QDialog()
+CroppingDialog::CroppingDialog(QPixmap *pix) : QDialog()
 {
     ui.setupUi(this);
     ui.croppingWidget->setPixmap(pix);

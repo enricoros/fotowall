@@ -17,7 +17,6 @@
 ******************************************************************************/
 
 #include "GlowEffectDialog.h"
-#include "CPixmap.h"
 
 GlowEffectDialog::GlowEffectDialog(const QImage & previewImage)
 {

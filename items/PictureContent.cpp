@@ -13,11 +13,12 @@
  ***************************************************************************/
 
 #include "PictureContent.h"
-#include "ButtonItem.h"
+#include "CroppingDialog.h"
 #include "CPixmap.h"
-#include "PictureProperties.h"
 #include "RenderOpts.h"
 #include "frames/Frame.h"
+#include "items/ButtonItem.h"
+#include "items/PictureProperties.h"
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
@@ -157,11 +158,14 @@ void PictureContent::addEffect(const PictureEffect & effect)
         return;
 
     m_photo->addEffect(effect);
+    // adapt picture ratio after cropping
     if (effect.effect == PictureEffect::Crop) {
         QRect actualContentRect = contentsRect();
-        float reduceRatio = (float)(effect.croppingRect.width()+effect.croppingRect.height())/
-                            (float)(actualContentRect.height() +actualContentRect.width());
-        resizeContents(QRect(0,0, (float)effect.croppingRect.width()/reduceRatio, (float)effect.croppingRect.height()/reduceRatio));
+        if ((actualContentRect.height() + actualContentRect.width()) > 0) {
+            float reduceRatio = (float)(effect.rect.width()+effect.rect.height())/
+                                (float)(actualContentRect.height() +actualContentRect.width());
+            resizeContents(QRect(0,0, (float)effect.rect.width()/reduceRatio, (float)effect.rect.height()/reduceRatio));
+        }
     }
 #if QT_VERSION >= 0x040500
     else if(effect.effect == PictureEffect::Opacity)
@@ -173,6 +177,14 @@ void PictureContent::addEffect(const PictureEffect & effect)
 
     // notify image change
     emit contentChanged();
+}
+
+QRect PictureContent::getCropRect() const
+{
+    CroppingDialog dial(m_photo);
+    if (dial.exec() != QDialog::Accepted)
+        return QRect();
+    return dial.getCroppingRect();
 }
 
 #include "PropertyEditors.h"
@@ -210,7 +222,7 @@ bool PictureContent::fromXml(QDomElement & pe)
             QStringList coordinates = rect.split(" ");
             if(coordinates.size() >= 3) {
                 QRect croppingRect (coordinates.at(0).toInt(), coordinates.at(1).toInt(), coordinates.at(2).toInt(), coordinates.at(3).toInt());
-                fx.croppingRect = croppingRect;
+                fx.rect = croppingRect;
             }
         }
 #if QT_VERSION >= 0x040500
@@ -261,8 +273,8 @@ void PictureContent::toXml(QDomElement & pe) const
         effectElement.setAttribute("param", effect.param);
         if(effect.effect == PictureEffect::Crop) {
             QString croppingRectStr;
-            croppingRectStr = QString::number(effect.croppingRect.x()) + " " + QString::number(effect.croppingRect.y())
-                + " " + QString::number(effect.croppingRect.width()) + " " + QString::number(effect.croppingRect.height());
+            croppingRectStr = QString::number(effect.rect.x()) + " " + QString::number(effect.rect.y())
+                + " " + QString::number(effect.rect.width()) + " " + QString::number(effect.rect.height());
 
             effectElement.setAttribute("croppingRect", croppingRectStr );
         }
@@ -364,11 +376,6 @@ void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 //    if (m_opaquePhoto)
 //        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
-}
-
-CPixmap PictureContent::getPhoto() const
-{
-    return *m_photo;
 }
 
 void PictureContent::dropNetworkConnection()

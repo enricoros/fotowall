@@ -14,7 +14,6 @@
 
 #include "AbstractConfig.h"
 #include "AbstractContent.h"
-#include "Desk.h"
 #include "RenderOpts.h"
 #include "StyledButtonItem.h"
 #include "ui_AbstractConfig.h"
@@ -42,7 +41,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
 {
     // close button
     m_closeButton = new StyledButtonItem(tr(" x "), font(), this);//this, ":/data/button-close.png", ":/data/button-close-hovered.png", ":/data/button-close-pressed.png");
-    connect(m_closeButton, SIGNAL(clicked()), this, SLOT(slotRequestClose()));
+    connect(m_closeButton, SIGNAL(clicked()), this, SIGNAL(requestClose()));
 
     // WIDGET setup
     QWidget * widget = new QWidget();
@@ -165,7 +164,7 @@ void AbstractConfig::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     QGraphicsProxyWidget::mousePressEvent(event);
     if (!event->isAccepted() && event->button() == Qt::RightButton)
-        slotRequestClose();
+        emit requestClose();
     event->accept();
 }
 
@@ -190,12 +189,6 @@ void AbstractConfig::resizeEvent(QGraphicsSceneResizeEvent * event)
 {
     layoutButtons();
     QGraphicsProxyWidget::resizeEvent(event);
-}
-
-void AbstractConfig::slotRequestClose()
-{
-    Desk * desk = static_cast<Desk *>(scene());
-    desk->slotDeleteConfig(this);
 }
 
 void AbstractConfig::populateFrameList()

@@ -137,7 +137,7 @@ class AbstractContent : public AbstractDisposeable
         void slotClearPerspective();
         void slotDirtyEnded();
 
-        // used by desk arrangement functions
+        // used by arrangement functions FIXME
     public:
         Vector2 vForce, vVel, vPos;
 };

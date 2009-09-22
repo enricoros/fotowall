@@ -159,10 +159,6 @@
            <property name="text">
             <string>To Background</string>
            </property>
-           <property name="icon">
-            <iconset resource="../fotowall.qrc">
-             <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
-           </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>

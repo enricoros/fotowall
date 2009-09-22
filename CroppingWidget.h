@@ -21,7 +21,6 @@
 
 #include <QWidget>
 class QRubberBand;
-class CPixmap;
 
 /*
  * This widget provides a way to select a region of a photo
@@ -29,13 +28,12 @@ class CPixmap;
 class CroppingWidget : public QWidget {
     private:
         QRubberBand *m_rubberBand;
-        CPixmap *m_photo;
         QPixmap m_previewPixmap;
         QPoint m_origin;
         float m_previewRatio;
     public:
         CroppingWidget(QWidget *parent=0);
-        void setPixmap(CPixmap *pix);
+        void setPixmap(QPixmap *pix);
         QRect getCroppingRect() const;
     protected:
          void mousePressEvent(QMouseEvent *event);

@@ -16,12 +16,14 @@ Unreleased 0.9.x:
 * Export to SVG
 * Integrated the LikeBack feedback system
 * Fixes licenses
+* (Work In Progress) More properties in the top bar
+* (Work In Progress) Arrange Contents
 * in branches:
   * Arnaud's Undo/Redo system
-  * More properties in the top bar
-  * Arrange Contents, finally!
   * Desk-wide effects
   * ...
+* queued
+  * 2d property editor (linked to perspective)
 
 Version 0.8.0 (2009-09-12):
 
@@ -126,7 +128,7 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist
 * handle initial load-save after being shown. also evaluate normalized rescaling.
-* save/restore background transparency state (or check current bg code)
+* save/restore background transparency/ratio state (or check current bg code)
 * svg drawings [balloons, signs, etc..]
 * masked pic
 * both new and old resize&co

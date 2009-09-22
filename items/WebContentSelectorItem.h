@@ -30,17 +30,17 @@ class WebContentSelectorItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        WebContentSelectorItem(QNetworkAccessManager * deskAccessManager, QGraphicsItem * parent = 0);
+        WebContentSelectorItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent = 0);
         ~WebContentSelectorItem();
 
-        // used by Desk to download pictures
+        // used to download pictures
         FlickrInterface * flickrInterface() const;
 
         // ::QGraphicsItem
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 
     private:
-        QNetworkAccessManager * m_deskAccessManager;
+        QNetworkAccessManager * m_extAccessManager;
         Frame * m_frame;
         FlickrInterface * m_flickr;
 #ifdef ENABLE_GCOMPLETION

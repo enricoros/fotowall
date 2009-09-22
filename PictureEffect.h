@@ -16,6 +16,7 @@
 #define __PictureEffect_h__
 
 #include <QtGlobal>
+#include <QRect>
 
 struct PictureEffect {
     enum Effect {
@@ -31,12 +32,12 @@ struct PictureEffect {
         Crop            =  9
     } effect;
     qreal param;
-    QRect croppingRect;
+    QRect rect;
 
-    PictureEffect(Effect effect = ClearEffects, qreal param = 0.0, QRect croppingRect = QRect())
+    PictureEffect(Effect effect = ClearEffects, qreal param = 0.0, const QRect & rect = QRect())
       : effect(effect)
       , param(param)
-      , croppingRect(croppingRect)
+      , rect(rect)
     {
     }
 };

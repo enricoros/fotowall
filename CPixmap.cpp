@@ -65,7 +65,7 @@ void CPixmap::addEffect(const PictureEffect & effect) {
             m_effects.push_back(PictureEffect(PictureEffect::Opacity, (qreal)effect.param));
             break;
         case PictureEffect::Crop:
-            crop(effect.croppingRect);
+            crop(effect.rect);
             break;
     }
 }
