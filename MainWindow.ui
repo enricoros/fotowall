@@ -1049,7 +1049,7 @@ stop:1 rgba(237, 237, 237, 255))
   <customwidget>
    <class>GroupBoxWidget</class>
    <extends>QWidget</extends>
-   <header>GroupBoxWidget.h</header>
+   <header>tools/GroupBoxWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

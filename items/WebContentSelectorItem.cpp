@@ -13,10 +13,12 @@
  ***************************************************************************/
 
 #include "WebContentSelectorItem.h"
-#include "FlickrInterface.h"
+#ifdef ENABLE_GCOMPLETION
+#include "3rdparty/gsuggest.h"
+#endif
 #include "frames/FrameFactory.h"
 #include "frames/Frame.h"
-#include "3rdparty/gsuggest.h"
+#include "tools/FlickrInterface.h"
 #include <QBasicTimer>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>

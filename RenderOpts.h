@@ -30,7 +30,6 @@ class RenderOpts
         // other options
         static bool FirstRun;
         static bool OxygenStyleQuirks;
-        static bool DisableVideoProvider;
 
         // global highlight color
         static QColor hiColor;

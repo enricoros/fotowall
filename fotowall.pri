@@ -6,21 +6,21 @@ HEADERS += \
     Desk.h \
     ExactSizeDialog.h \
     ExportWizard.h \
-    FlickrInterface.h \
-    GroupBoxWidget.h \
     MainWindow.h \
-    MetaXmlReader.h \
     ModeInfo.h \
     PictureEffect.h \
     RenderOpts.h \
-    VersionCheckDialog.h \
-    VideoProvider.h \
     XmlRead.h \
     XmlSave.h \
     tools/CroppingDialog.h \
     tools/CroppingWidget.h \
+    tools/FlickrInterface.h \
     tools/GlowEffectDialog.h \
-    tools/GlowEffectWidget.h
+    tools/GlowEffectWidget.h \
+    tools/GroupBoxWidget.h \
+    tools/MetaXmlReader.h \
+    tools/VersionCheckDialog.h \
+    tools/VideoProvider.h
 
 SOURCES += \
     3rdparty/gsuggest.cpp \
@@ -29,28 +29,28 @@ SOURCES += \
     Desk.cpp \
     ExactSizeDialog.cpp \
     ExportWizard.cpp \
-    FlickrInterface.cpp \
-    GroupBoxWidget.cpp \
     MainWindow.cpp \
-    MetaXmlReader.cpp \
     ModeInfo.cpp \
-    VersionCheckDialog.cpp \
-    VideoProvider.cpp \
     XmlRead.cpp \
     XmlSave.cpp \
     tools/CroppingDialog.cpp \
     tools/CroppingWidget.cpp \
+    tools/FlickrInterface.cpp \
     tools/GlowEffectDialog.cpp \
     tools/GlowEffectWidget.cpp \
+    tools/GroupBoxWidget.cpp \
+    tools/MetaXmlReader.cpp \
+    tools/VersionCheckDialog.cpp \
+    tools/VideoProvider.cpp \
     main.cpp
 
 FORMS += \
     ExactSizeDialog.ui \
     ExportWizard.ui \
     MainWindow.ui \
-    VersionCheckDialog.ui \
     tools/CroppingDialog.ui \
-    tools/GlowEffectDialog.ui
+    tools/GlowEffectDialog.ui \
+    tools/VersionCheckDialog.ui
 
 RESOURCES += fotowall.qrc
 

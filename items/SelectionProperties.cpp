@@ -35,9 +35,14 @@ SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWi
     // gather info on the selection
     m_pictures = projectList<AbstractContent, PictureContent>(selection);
     m_texts = projectList<AbstractContent, TextContent>(selection);
+    bool allPictures = m_pictures.size() == selection.size();
 
     // create the controls
-    QLabel * label = new QLabel(tr("%1 objects selected").arg(selection.size()), this);
+    QLabel * label;
+    if (allPictures)
+        label = new QLabel(tr("%1 pictures selected").arg(selection.size()), this);
+    else
+        label = new QLabel(tr("%1 objects selected").arg(selection.size()), this);
     QGridLayout * lay = new QGridLayout(this);
     lay->setMargin(0);
     lay->addWidget(label, 0, 0);
@@ -45,7 +50,7 @@ SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWi
     lay->addWidget(deleteButton, 1, 0);
 
     // pure pictures
-    if (m_pictures.size() == selection.size()) {
+    if (allPictures) {
         ADD_BUTTON(button, tr("Collate Pictures"), SLOT(slotCollatePictures()));
         lay->addWidget(button, 0, 1);
     }

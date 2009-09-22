@@ -24,7 +24,7 @@
 #include "items/TextConfig.h"
 #include "items/WebContentSelectorItem.h"
 #include "items/WebcamContent.h"
-#include "FlickrInterface.h"
+#include "tools/FlickrInterface.h"
 #include "RenderOpts.h"
 #include <QAbstractTextDocumentLayout>
 #include <QFile>

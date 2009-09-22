@@ -17,14 +17,14 @@
 #include "Desk.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
-#include "MetaXmlReader.h"
 #include "ModeInfo.h"
 #include "RenderOpts.h"
-#include "VersionCheckDialog.h"
-#include "VideoProvider.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include "3rdparty/likebackfrontend/LikeBack.h"
+#include "tools/MetaXmlReader.h"
+#include "tools/VersionCheckDialog.h"
+#include "tools/VideoProvider.h"
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>

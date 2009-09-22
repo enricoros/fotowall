@@ -21,6 +21,7 @@
 #include <QtPlugin>
 #include "MainWindow.h"
 #include "RenderOpts.h"
+#include "tools/VideoProvider.h"
 
 #if defined(STATIC_LINK)
 Q_IMPORT_PLUGIN(qgif)
@@ -35,7 +36,7 @@ bool RenderOpts::ARGBWindow = false;
 bool RenderOpts::HQRendering = false;
 bool RenderOpts::FirstRun = false;
 bool RenderOpts::OxygenStyleQuirks = false;
-bool RenderOpts::DisableVideoProvider = false;
+bool VideoProvider::Disable = false;
 QColor RenderOpts::hiColor;
 
 int main( int argc, char ** args )
@@ -65,7 +66,7 @@ int main( int argc, char ** args )
     QSettings s;
     RenderOpts::FirstRun = s.value("fotowall/firstTime", true).toBool();
     RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
-    RenderOpts::DisableVideoProvider = app.arguments().contains("-novideo");
+    VideoProvider::Disable = app.arguments().contains("-novideo");
     s.setValue("fotowall/firstTime", false);
 
     MainWindow mw;
