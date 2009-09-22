@@ -57,7 +57,7 @@ int main( int argc, char ** args )
     // translate fotowall + default-qt messages
     QString locale =  QLocale::system().name();
     QTranslator translator;
-    translator.load(QString( ":/translations/fotowall_%1" ).arg(locale));
+    translator.load(QString(":/translations/fotowall_%1").arg(locale));
     app.installTranslator(&translator);
     QTranslator qtTranslator;
     qtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
