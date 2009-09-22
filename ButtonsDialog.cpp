@@ -14,32 +14,78 @@
 
 #include "ButtonsDialog.h"
 #include <QAbstractButton>
+#include <QCheckBox>
+#include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QSettings>
 #include <QVBoxLayout>
 
-ButtonsDialog::ButtonsDialog(const QString & dialogId, QWidget * parent)
-  : QDialog(parent)
-  , m_dialogId(dialogId)
+ButtonsDialog::ButtonsDialog(const QString & dialogId, const QString & title,
+                             const QString & message, QDialogButtonBox::StandardButtons buttons,
+                             bool buttonsCentered, bool memorize)
+  : m_dialogId(dialogId)
   , m_memorize(false)
-  , m_layout(0)
+  , m_iconLabel(0)
   , m_messageLabel(0)
-  , m_buttons(0)
+  , m_memorizeCheckbox(0)
+  , m_extraLayout(0)
+  , m_buttonBox(0)
   , m_defaultButton(QDialogButtonBox::NoButton)
   , m_pressedButton(QDialogButtonBox::NoButton)
 {
     // create contents
-    m_layout = new QVBoxLayout(this);
+    QGridLayout * mainLay = new QGridLayout(this);
+
+    m_iconLabel = new QLabel(this);
+    m_iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    mainLay->addWidget(m_iconLabel, 0, 0, 3, 1);
 
     m_messageLabel = new QLabel(this);
-    m_layout->addWidget(m_messageLabel);
+    m_messageLabel->setContentsMargins(2, 0, 0, 0);
+    m_messageLabel->setTextFormat(Qt::RichText);
+    m_messageLabel->setTextInteractionFlags(Qt::NoTextInteraction);
+    //m_messageLabel->setWordWrap(true);
+    mainLay->addWidget(m_messageLabel, 0, 1, 1, 1, Qt::AlignVCenter);
 
-    m_buttons = new QDialogButtonBox(this);
-    m_layout->addWidget(m_buttons);
-    m_buttons->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    //setDefaultButton(QDialogButtonBox::Ok);
-    connect(m_buttons, SIGNAL(clicked(QAbstractButton*)), this, SLOT(slotButtonClicked(QAbstractButton *)));
+    m_extraLayout = new QVBoxLayout();
+    mainLay->addLayout(m_extraLayout, 1, 1, 1, 1);
+
+    m_memorizeCheckbox = new QCheckBox(tr("ask again next time"), this);
+    m_memorizeCheckbox->setChecked(true);
+    m_memorizeCheckbox->setVisible(m_memorize);
+    mainLay->addWidget(m_memorizeCheckbox, 2, 1, 1, 1);
+
+    m_buttonBox = new QDialogButtonBox(this);
+    connect(m_buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(slotButtonClicked(QAbstractButton *)));
+    m_buttonBox->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    m_buttonBox->setFocus();
+    mainLay->addWidget(m_buttonBox, 3, 0, 1, 2);
+
+    // apply initial values
+    if (!title.isEmpty())
+        setTitle(title);
+    if (!message.isEmpty())
+        setMessage(message);
+    if (buttons != QDialogButtonBox::NoButton)
+        setButtons(buttons);
+    if (buttonsCentered)
+        setButtonsCentered(true);
+    if (memorize)
+        setMemorizeEnabled(true);
+
+#if 0
+    // useful if the message label word-wraps, so we have to set a minimum size
+    // by hand
+    setModal(true);
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+    QSize screenSize = QApplication::desktop()->availableGeometry(QCursor::pos()).size();
+    setMinimumWidth(qMin(screenSize.width() - 480, screenSize.width()/2));
+    setMinimumHeight(190);
+    mainLay->activate();
+    adjustSize();
+    resize(minimumSize());
+#endif
 }
 
 QDialogButtonBox::StandardButton ButtonsDialog::execute()
@@ -60,7 +106,7 @@ QDialogButtonBox::StandardButton ButtonsDialog::execute()
         return QDialogButtonBox::NoButton;
 
     // save the answer if requested
-    if (m_memorize)
+    if (m_memorize && !m_memorizeCheckbox->isChecked())
         QSettings().setValue(configKey, (int)m_pressedButton);
 
     // return the choosen key
@@ -69,7 +115,7 @@ QDialogButtonBox::StandardButton ButtonsDialog::execute()
 
 void ButtonsDialog::setButtons(QDialogButtonBox::StandardButtons buttons)
 {
-    m_buttons->setStandardButtons(buttons);
+    m_buttonBox->setStandardButtons(buttons);
     setDefaultButton(m_defaultButton);
     foreach (QDialogButtonBox::StandardButton sb, m_buttonNames.keys())
         setButtonText(sb, m_buttonNames[sb]);
@@ -77,33 +123,43 @@ void ButtonsDialog::setButtons(QDialogButtonBox::StandardButtons buttons)
 
 QDialogButtonBox::StandardButtons ButtonsDialog::buttons() const
 {
-    return m_buttons->standardButtons();
+    return m_buttonBox->standardButtons();
 }
 
 void ButtonsDialog::setButtonText(QDialogButtonBox::StandardButton sb, const QString & text)
 {
     m_buttonNames[sb] = text;
-    if (QPushButton * pButton = m_buttons->button(sb))
+    if (QPushButton * pButton = m_buttonBox->button(sb))
         pButton->setText(text);
 }
 
 QString ButtonsDialog::buttonText(QDialogButtonBox::StandardButton sb) const
 {
-    QPushButton * pButton = m_buttons->button(sb);
+    QPushButton * pButton = m_buttonBox->button(sb);
     return pButton ? pButton->text() : QString();
 }
 
 void ButtonsDialog::setDefaultButton(QDialogButtonBox::StandardButton sb)
 {
     m_defaultButton = sb;
-    foreach (QAbstractButton * aButton, m_buttons->buttons())
+    foreach (QAbstractButton * aButton, m_buttonBox->buttons())
         if (QPushButton * pButton = dynamic_cast<QPushButton *>(aButton))
-            pButton->setDefault(m_buttons->standardButton(aButton) == m_defaultButton);
+            pButton->setDefault(m_buttonBox->standardButton(aButton) == m_defaultButton);
 }
 
 QDialogButtonBox::StandardButton ButtonsDialog::defaultButton() const
 {
     return m_defaultButton;
+}
+
+void ButtonsDialog::setButtonsCentered(bool centered)
+{
+    m_buttonBox->setCenterButtons(centered);
+}
+
+bool ButtonsDialog::buttonsCentered() const
+{
+    return m_buttonBox->centerButtons();
 }
 
 void ButtonsDialog::setMessage(const QString & message)
@@ -129,7 +185,13 @@ QString ButtonsDialog::title() const
 void ButtonsDialog::setIcon(const QIcon & icon)
 {
     m_icon = icon;
-    setWindowIcon(icon);
+    setWindowIcon(m_icon);
+    m_iconLabel->setPixmap(m_icon.pixmap(32, 32));
+}
+
+void ButtonsDialog::setIcon(QStyle::StandardPixmap standardIcon)
+{
+    setIcon(style()->standardIcon(standardIcon));
 }
 
 QIcon ButtonsDialog::icon() const
@@ -140,7 +202,7 @@ QIcon ButtonsDialog::icon() const
 void ButtonsDialog::addExtraWidget(QWidget * widget)
 {
     if (widget) {
-        m_layout->insertWidget(1, widget);
+        m_extraLayout->addWidget(widget);
         m_extraWidgets.append(widget);
         connect(widget, SIGNAL(destroyed()), this, SLOT(slotExtraWidgetDeleted(QObject*)));
     }
@@ -154,6 +216,7 @@ QList<QWidget *> ButtonsDialog::extraWidgets() const
 void ButtonsDialog::setMemorizeEnabled(bool enabled)
 {
     m_memorize = enabled;
+    m_memorizeCheckbox->setVisible(m_memorize);
 }
 
 bool ButtonsDialog::memorizeEnabled() const
@@ -164,7 +227,7 @@ bool ButtonsDialog::memorizeEnabled() const
 void ButtonsDialog::slotButtonClicked(QAbstractButton * button)
 {
     // save the pressed button and return from the 'exec()'
-    m_pressedButton = m_buttons->standardButton(button);
+    m_pressedButton = m_buttonBox->standardButton(button);
     accept();
 }
 

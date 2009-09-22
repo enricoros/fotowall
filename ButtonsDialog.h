@@ -20,15 +20,19 @@
 #include <QIcon>
 #include <QList>
 #include <QMap>
-class QLabel;
+#include <QStyle>
+class QCheckBox;
 class QVBoxLayout;
+class QLabel;
 
 
 class ButtonsDialog : public QDialog
 {
     Q_OBJECT
     public:
-        ButtonsDialog(const QString & dialogId, QWidget * parent = 0);
+        ButtonsDialog(const QString & dialogId, const QString & title = QString(),
+                      const QString & message = QString(), QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::NoButton,
+                      bool buttonsCentered = false, bool memorize = false);
 
         QDialogButtonBox::StandardButton execute();
 
@@ -41,6 +45,9 @@ class ButtonsDialog : public QDialog
         void setDefaultButton(QDialogButtonBox::StandardButton button);
         QDialogButtonBox::StandardButton defaultButton() const;
 
+        void setButtonsCentered(bool centered);
+        bool buttonsCentered() const;
+
         void setMessage(const QString & message);
         QString message() const;
 
@@ -48,6 +55,7 @@ class ButtonsDialog : public QDialog
         QString title() const;
 
         void setIcon(const QIcon & icon);
+        void setIcon(QStyle::StandardPixmap icon);
         QIcon icon() const;
 
         void addExtraWidget(QWidget * widget);
@@ -58,12 +66,14 @@ class ButtonsDialog : public QDialog
 
     private:
         QString m_dialogId;
-        bool m_memorize;
-        QVBoxLayout * m_layout;
-        QLabel * m_messageLabel;
-        QDialogButtonBox * m_buttons;
         QIcon m_icon;
+        bool m_memorize;
+        QLabel * m_iconLabel;
+        QLabel * m_messageLabel;
+        QCheckBox * m_memorizeCheckbox;
+        QVBoxLayout * m_extraLayout;
         QList<QWidget *> m_extraWidgets;
+        QDialogButtonBox * m_buttonBox;
         QDialogButtonBox::StandardButton m_defaultButton;
         QDialogButtonBox::StandardButton m_pressedButton;
         QMap<QDialogButtonBox::StandardButton, QString> m_buttonNames;
