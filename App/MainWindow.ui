@@ -18,9 +18,9 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="bar" native="true">
+    <widget class="QWidget" name="topBar" native="true">
      <property name="styleSheet">
-      <string notr="true">#bar {
+      <string notr="true">#topBar {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
 stop:0 rgba(255, 255, 255, 255),
 stop:0.190 rgba(232, 232, 232, 255),
@@ -592,7 +592,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">
              <normaloff>:/likeback/like.png</normaloff>:/likeback/like.png</iconset>
            </property>
            <property name="autoRaise">
@@ -616,7 +616,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">
              <normaloff>:/likeback/dislike.png</normaloff>:/likeback/dislike.png</iconset>
            </property>
            <property name="autoRaise">
@@ -640,7 +640,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">
              <normaloff>:/likeback/bug.png</normaloff>:/likeback/bug.png</iconset>
            </property>
            <property name="autoRaise">
@@ -664,7 +664,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">
              <normaloff>:/likeback/feature.png</normaloff>:/likeback/feature.png</iconset>
            </property>
            <property name="autoRaise">
@@ -834,7 +834,7 @@ stop:1 rgba(237, 237, 237, 255))
               <bool>false</bool>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="../fotowall.qrc">
                <normaloff>:/data/opengl-logo.png</normaloff>:/data/opengl-logo.png</iconset>
              </property>
              <property name="iconSize">
@@ -985,7 +985,7 @@ stop:1 rgba(237, 237, 237, 255))
             <string/>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../fotowall.qrc">
              <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
            </property>
            <property name="iconSize">
@@ -1006,6 +1006,9 @@ stop:1 rgba(237, 237, 237, 255))
     </widget>
    </item>
    <item>
+    <widget class="BreadCrumbBar" name="deskNavBar" native="true"/>
+   </item>
+   <item>
     <widget class="FWGraphicsView" name="canvas">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -1015,7 +1018,7 @@ stop:1 rgba(237, 237, 237, 255))
   </layout>
   <action name="aAddPicture">
    <property name="icon">
-    <iconset>
+    <iconset resource="../fotowall.qrc">
      <normaloff>:/data/insert-image.png</normaloff>:/data/insert-image.png</iconset>
    </property>
    <property name="text">
@@ -1024,7 +1027,7 @@ stop:1 rgba(237, 237, 237, 255))
   </action>
   <action name="aAddText">
    <property name="icon">
-    <iconset>
+    <iconset resource="../fotowall.qrc">
      <normaloff>:/data/insert-text.png</normaloff>:/data/insert-text.png</iconset>
    </property>
    <property name="text">
@@ -1033,7 +1036,7 @@ stop:1 rgba(237, 237, 237, 255))
   </action>
   <action name="aAddWebcam">
    <property name="icon">
-    <iconset>
+    <iconset resource="../fotowall.qrc">
      <normaloff>:/data/insert-camera.png</normaloff>:/data/insert-camera.png</iconset>
    </property>
    <property name="text">
@@ -1045,7 +1048,7 @@ stop:1 rgba(237, 237, 237, 255))
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../fotowall.qrc">
      <normaloff>:/data/insert-download.png</normaloff>:/data/insert-download.png</iconset>
    </property>
    <property name="text">
@@ -1054,7 +1057,7 @@ stop:1 rgba(237, 237, 237, 255))
   </action>
   <action name="aAddDesk">
    <property name="icon">
-    <iconset>
+    <iconset resource="../fotowall.qrc">
      <normaloff>:/data/textinsertimage.png</normaloff>:/data/textinsertimage.png</iconset>
    </property>
    <property name="text">
@@ -1074,7 +1077,16 @@ stop:1 rgba(237, 237, 237, 255))
    <header>App/GroupBoxWidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>BreadCrumbBar</class>
+   <extends>QWidget</extends>
+   <header>Shared/BreadCrumbBar.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../3rdparty/likebackfrontend/likebackfrontend.qrc"/>
+  <include location="../fotowall.qrc"/>
+ </resources>
  <connections/>
 </ui>

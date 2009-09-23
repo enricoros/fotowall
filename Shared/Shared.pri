@@ -1,4 +1,5 @@
 HEADERS += \
+    Shared/BreadCrumbBar.h \
     Shared/ButtonsDialog.h \
     Shared/CPixmap.h \
     Shared/ColorPickerItem.h \
@@ -13,6 +14,7 @@ HEADERS += \
     Shared/VideoProvider.h
 
 SOURCES += \
+    Shared/BreadCrumbBar.cpp \
     Shared/ButtonsDialog.cpp \
     Shared/CPixmap.cpp \
     Shared/ColorPickerItem.cpp \
