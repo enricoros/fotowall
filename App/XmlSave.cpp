@@ -26,6 +26,21 @@
 #include <QMessageBox>
 #include <QTextStream>
 
+
+bool XmlSave::save(const QString & filePath, const Desk * desk, int mode, const ModeInfo & modeInfo)
+{
+    // build up the DOM tree
+    XmlSave xmlSave;
+    xmlSave.saveProject(mode, modeInfo);
+    if (desk) {
+        xmlSave.saveDesk(desk);
+        xmlSave.saveContent(desk);
+    }
+
+    // save to disk
+    return xmlSave.writeFile(filePath);
+}
+
 XmlSave::XmlSave()
 {
     // This element contains all the others.

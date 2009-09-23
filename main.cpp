@@ -13,12 +13,13 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QTranslator>
 #include <QLocale>
 #include <QLibraryInfo>
 #include <QSettings>
 #include <QStyle>
+#include <QTranslator>
 #include <QtPlugin>
+#include "App/App.h"
 #include "App/MainWindow.h"
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
@@ -69,21 +70,13 @@ int main( int argc, char ** args )
     VideoProvider::Disable = app.arguments().contains("-novideo");
     s.setValue("fotowall/firstTime", false);
 
-    MainWindow mw;
-    mw.showMaximized();
-    app.processEvents();
-    QStringList images;
-    for (int i = 1; i < argc; i++) {
-        QString filePath = args[i];
-        if (filePath.endsWith(".fotowall", Qt::CaseInsensitive))
-            mw.loadXml(filePath);
-        else
-            images << filePath;
-    }
-    mw.loadImages(images);
+    QStringList urls;
+    for (int i = 1; i < argc; i++)
+        if (App::isContentUrl(args[i]))
+            urls.append(args[i]);
 
+    MainWindow mw(urls);
     if (RenderOpts::FirstRun)
         mw.showIntroduction();
-
     return app.exec();
 }

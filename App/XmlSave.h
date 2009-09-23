@@ -31,11 +31,12 @@ class XmlSave : public QObject
     public:
         XmlSave();
 
-        bool writeFile(const QString & filePath);
+        static bool save(const QString & filePath, const Desk * desk, int mode, const ModeInfo & modeInfo);
 
+        bool writeFile(const QString & filePath);
         void saveContent(const Desk *);
         void saveDesk(const Desk *);
-        void saveProject(int, const ModeInfo&);
+        void saveProject(int mode, const ModeInfo & modeInfo);
 
     private:
         QDomDocument doc;

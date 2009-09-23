@@ -20,6 +20,7 @@
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
+#include "App.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
 #include "ModeInfo.h"
@@ -55,6 +56,11 @@
 #define FOTOWALL_FEEDBACK_LANGS "en,it,fr"
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
+
+#define REQUIRE_DESK \
+    if (!m_desk) return;
+#define REQUIRE_DESK_R(value) \
+    if (!m_desk) return value;
 
 #include <QCommonStyle>
 class RubberBandStyle : public QCommonStyle {
@@ -132,9 +138,7 @@ class FWGraphicsView : public QGraphicsView {
 #include "ui_MainWindow.h"
 
 
-static MainWindow * s_instance = 0;
-
-MainWindow::MainWindow(QWidget * parent)
+MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     : QWidget(parent)
     , ui(new Ui::MainWindow())
     , m_desk(0)
@@ -144,8 +148,6 @@ MainWindow::MainWindow(QWidget * parent)
     , m_gBackRatioActions(0)
     , m_likeBack(0)
 {
-    s_instance = this;
-
     // setup widget
     QRect geom = QApplication::desktop()->availableGeometry();
     resize(2 * geom.width() / 3, 2 * geom.height() / 3);
@@ -156,12 +158,8 @@ MainWindow::MainWindow(QWidget * parent)
 #endif
     setWindowIcon(QIcon(":/data/fotowall.png"));
 
-    // create our custom desk
-    Desk * initialDesk = new Desk(this);
-
     // init ui
     ui->setupUi(this);
-    stackDesk(initialDesk);
     ui->canvas->setFocus();
     ui->b1->setDefaultAction(ui->aAddPicture);
     ui->b2->setDefaultAction(ui->aAddText);
@@ -201,25 +199,47 @@ MainWindow::MainWindow(QWidget * parent)
     checkForUpdates();
 
     // setup likeback
-    m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
-    m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
-    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
+    createLikeBack();
+
+    // initial behavior: loaded Desk
+    if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first())) {
+        // create a custom desk and load content over it
+        Desk * initialDesk = new Desk(this);
+        stackDesk(initialDesk);
+        XmlRead::read(contentUrls.first(), this, initialDesk);
+    }
+    // initial behavior: new Desk with contents
+    else if (!contentUrls.isEmpty()) {
+        // create a custom desk add contents to it
+        Desk * initialDesk = new Desk(this);
+        stackDesk(initialDesk);
+        initialDesk->addPictureContent(contentUrls);
+    }
+    // initial behavior: show the selection Scene, no Desk!
+    else {
+        Desk * initialDesk = new Desk(this);
+        stackDesk(initialDesk);
+    }
+
+    // show initially
+    showMaximized();
+
+    // save instance. consider this valid from now on
+    App::mainWindow = this;
 }
 
 MainWindow::~MainWindow()
 {
     // dump current layout
-    saveXml(QDir::tempPath() + QDir::separator() + "autosave.fotowall");
+    if (m_desk) {
+        QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
+        XmlSave::save(tempPath, m_desk, m_desk->projectMode(), m_modeInfo);
+    }
 
     // delete everything
     delete m_likeBack;
     delete m_desk;
     delete ui;
-}
-
-MainWindow * MainWindow::instance()
-{
-    return s_instance;
 }
 
 // TEMP
@@ -264,40 +284,10 @@ void MainWindow::restoreMode(int mode)
     }
 }
 
-bool MainWindow::loadXml(const QString & filePath)
-{
-    // parse the DOM of the file
-    XmlRead xmlRead;
-    if (!xmlRead.loadFile(filePath))
-        return false;
-
-    // create objects and read data
-    xmlRead.readProject(this);
-    xmlRead.readDesk(m_desk);
-    xmlRead.readContent(m_desk);
-    return true;
-}
-
-bool MainWindow::saveXml(const QString & filePath) const
-{
-    // build up the DOM tree
-    XmlSave xmlSave;
-    xmlSave.saveProject(m_desk->projectMode(), m_modeInfo);
-    xmlSave.saveDesk(m_desk);
-    xmlSave.saveContent(m_desk);
-
-    // save to disk
-    return xmlSave.writeFile(filePath);
-}
-
 void MainWindow::showIntroduction()
 {
-    m_desk->showIntroduction();
-}
-
-void MainWindow::loadImages(QStringList &imagesPath)
-{
-    m_desk->addPictureContent(imagesPath);
+    if (m_desk)
+        m_desk->showIntroduction();
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -306,7 +296,7 @@ void MainWindow::closeEvent(QCloseEvent * event)
     ButtonsDialog quitAsk("MainWindow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
     quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
-    if (m_desk->pendingChanges()) {
+    if (m_desk && m_desk->pendingChanges()) {
         quitAsk.setMessage(tr("Are you sure you want to quit and lose your changes?"));
         quitAsk.setButtonText(QDialogButtonBox::Save, tr("Save"));
         quitAsk.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
@@ -343,7 +333,8 @@ QMenu * MainWindow::createArrangeMenu()
 
     QAction * aForceField = new QAction(tr("Enable force field"), menu);
     aForceField->setCheckable(true);
-    aForceField->setChecked(m_desk->forceFieldEnabled());
+    if (m_desk) // FIXME: reflect a property
+        aForceField->setChecked(m_desk->forceFieldEnabled());
     connect(aForceField, SIGNAL(toggled(bool)), this, SLOT(slotArrangeForceField(bool)));
     menu->addAction(aForceField);
 
@@ -436,13 +427,15 @@ QMenu * MainWindow::createDecorationMenu()
 
     QAction * aTop = new QAction(tr("Top bar"), menu);
     aTop->setCheckable(true);
-    aTop->setChecked(m_desk->topBarEnabled());
+    if (m_desk) // FIXME: bind to a property
+        aTop->setChecked(m_desk->topBarEnabled());
     connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
     menu->addAction(aTop);
 
     QAction * aBottom = new QAction(tr("Bottom bar"), menu);
     aBottom->setCheckable(true);
-    aBottom->setChecked(m_desk->bottomBarEnabled());
+    if (m_desk) // FIXME: bind to a property
+        aBottom->setChecked(m_desk->bottomBarEnabled());
     connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
     menu->addAction(aBottom);
 
@@ -481,6 +474,13 @@ QMenu * MainWindow::createOnlineHelpMenu()
     menu->addAction(m_aHelpSupport);
 
     return menu;
+}
+
+void MainWindow::createLikeBack()
+{
+    m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
+    m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
+    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
 }
 
 void MainWindow::createMiscActions()
@@ -537,7 +537,8 @@ void MainWindow::setNormalProject()
     else
         showMaximized();
     ui->exportButton->setText(tr("Export"));
-    m_desk->setProjectMode(Desk::ModeNormal);
+    if (m_desk) // FIXME: bind to a property
+        m_desk->setProjectMode(Desk::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
 
@@ -549,7 +550,8 @@ void MainWindow::setCDProject()
     ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
-    m_desk->setProjectMode(Desk::ModeCD);
+    if (m_desk) // FIXME: bind to a property
+        m_desk->setProjectMode(Desk::ModeCD);
     ui->projectType->setCurrentIndex(1);
 }
 
@@ -560,7 +562,8 @@ void MainWindow::setDVDProject()
     ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
-    m_desk->setProjectMode(Desk::ModeDVD);
+    if (m_desk) // FIXME: bind to a property
+        m_desk->setProjectMode(Desk::ModeDVD);
     ui->projectType->setCurrentIndex(2);
 }
 
@@ -591,7 +594,8 @@ void MainWindow::setExactSizeProject()
     ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
-    m_desk->setProjectMode(Desk::ModeExactSize);
+    if (m_desk) // FIXME: bind to a property
+        m_desk->setProjectMode(Desk::ModeExactSize);
     ui->projectType->setCurrentIndex(3);
 }
 
@@ -620,6 +624,7 @@ void MainWindow::on_projectType_activated(int index)
 
 void MainWindow::on_aAddDesk_triggered()
 {
+    REQUIRE_DESK
     // make up the default load path (stored as 'fotowall/loadProjectDir')
     QSettings s;
     QString defaultLoadPath = s.value("fotowall/loadProjectDir").toString();
@@ -634,11 +639,13 @@ void MainWindow::on_aAddDesk_triggered()
 
 void MainWindow::on_aAddFlickr_toggled(bool on)
 {
+    REQUIRE_DESK
     m_desk->setWebContentSelectorVisible(on);
 }
 
 void MainWindow::on_aAddPicture_triggered()
 {
+    REQUIRE_DESK
     // build the extensions list
     QString extensions;
     foreach (const QByteArray & format, QImageReader::supportedImageFormats())
@@ -658,11 +665,13 @@ void MainWindow::on_aAddPicture_triggered()
 
 void MainWindow::on_aAddText_triggered()
 {
+    REQUIRE_DESK
     m_desk->addTextContent();
 }
 
 void MainWindow::on_aAddWebcam_triggered()
 {
+    REQUIRE_DESK
     m_desk->addWebcamContent(0);
 }
 
@@ -774,7 +783,8 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #endif
 
         // set 'NoBackground' to show that we're transparent for real
-        m_desk->setBackMode(1);
+        if (m_desk) // FIXME: bind to a property
+            m_desk->setBackMode(1);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
@@ -798,6 +808,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 
 void MainWindow::on_introButton_clicked()
 {
+    REQUIRE_DESK
     m_desk->showIntroduction();
 }
 
@@ -824,6 +835,8 @@ void MainWindow::on_lbBug_clicked()
 
 bool MainWindow::on_loadButton_clicked()
 {
+    REQUIRE_DESK_R(false)
+
     // make up the default load path (stored as 'fotowall/loadProjectDir')
     QSettings s;
     QString defaultLoadPath = s.value("fotowall/loadProjectDir").toString();
@@ -833,11 +846,13 @@ bool MainWindow::on_loadButton_clicked()
     if (fileName.isNull())
         return false;
     s.setValue("fotowall/loadProjectDir", QFileInfo(fileName).absolutePath());
-    return loadXml(fileName);
+    return XmlRead::read(fileName, this, m_desk);
 }
 
 bool MainWindow::on_saveButton_clicked()
 {
+    REQUIRE_DESK_R(false)
+
     // make up the default save path (stored as 'fotowall/saveProjectDir')
     QSettings s;
     QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
@@ -851,11 +866,12 @@ bool MainWindow::on_saveButton_clicked()
     s.setValue("fotowall/saveProjectDir", QFileInfo(fileName).absolutePath());
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
         fileName += ".fotowall";
-    return saveXml(fileName);
+    return XmlSave::save(fileName, m_desk, m_desk->projectMode(), m_modeInfo);
 }
 
 void MainWindow::on_exportButton_clicked()
 {
+    REQUIRE_DESK
     // show the Export Wizard on normal mode
     if (m_desk->projectMode() == Desk::ModeNormal) {
         ExportWizard(m_desk).exec();
@@ -873,17 +889,20 @@ void MainWindow::on_quitButton_clicked()
 */
 void MainWindow::slotActionSelectAll()
 {
+    REQUIRE_DESK
     m_desk->selectAllContent();
 }
 
 void MainWindow::slotArrangeForceField(bool checked)
 {
+    REQUIRE_DESK
     m_desk->setForceFieldEnabled(checked);
 }
 
 #include "Desk/AbstractContent.h"
 void MainWindow::slotArrangeRandom()
 {
+    REQUIRE_DESK
     QRectF r = m_desk->sceneRect();
     foreach (QGraphicsItem * item, m_desk->items()) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(item);
@@ -899,16 +918,19 @@ void MainWindow::slotArrangeRandom()
 
 void MainWindow::slotDecoTopBar(bool checked)
 {
+    REQUIRE_DESK
     m_desk->setTopBarEnabled(checked);
 }
 
 void MainWindow::slotDecoBottomBar(bool checked)
 {
+    REQUIRE_DESK
     m_desk->setBottomBarEnabled(checked);
 }
 
 void MainWindow::slotDecoSetTitle()
 {
+    REQUIRE_DESK
     // set a dummy title, if none
     if (m_desk->titleText().isEmpty())
         m_desk->setTitleText("...");
@@ -922,6 +944,7 @@ void MainWindow::slotDecoSetTitle()
 
 void MainWindow::slotDecoClearTitle()
 {
+    REQUIRE_DESK
     m_desk->setTitleText(QString());
 }
 
@@ -983,18 +1006,21 @@ void MainWindow::slotHelpUpdates()
 
 void MainWindow::slotSetBackMode(QAction* action)
 {
+    REQUIRE_DESK
     int choice = action->property("id").toUInt();
     m_desk->setBackMode(choice);
 }
 
 void MainWindow::slotSetBackRatio(QAction* action)
 {
+    REQUIRE_DESK
     Qt::AspectRatioMode mode = (Qt::AspectRatioMode)action->property("mode").toInt();
     m_desk->setBackContentRatio(mode);
 }
 
 void MainWindow::slotBackModeChanged()
 {
+    REQUIRE_DESK
     int mode = m_desk->backMode();
     m_gBackActions->actions()[mode - 1]->setChecked(true);
     m_gBackActions->actions()[2]->setEnabled(mode == 3);
@@ -1002,6 +1028,7 @@ void MainWindow::slotBackModeChanged()
 
 void MainWindow::slotBackRatioChanged()
 {
+    REQUIRE_DESK
     Qt::AspectRatioMode mode = m_desk->backContentRatio();
     if (mode == Qt::KeepAspectRatioByExpanding)
         m_gBackRatioActions->actions()[0]->setChecked(true);

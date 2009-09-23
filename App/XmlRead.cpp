@@ -32,6 +32,23 @@
 #include <QStringList>
 
 
+bool XmlRead::read(const QString & filePath, MainWindow * mw, Desk * desk)
+{
+    // parse the DOM of the file
+    XmlRead xmlRead;
+    if (!xmlRead.loadFile(filePath))
+        return false;
+
+    // create objects and read data
+    if (mw)
+        xmlRead.readProject(mw);
+    if (desk) {
+        xmlRead.readDesk(desk);
+        xmlRead.readContent(desk);
+    }
+    return true;
+}
+
 bool XmlRead::loadFile(const QString & filePath)
 {
     // Load the file

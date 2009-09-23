@@ -145,7 +145,7 @@ static QPoint nearCenter(const QRectF & rect)
 void Desk::addDeskContent(const QStringList & fileNames)
 {
     int offset = -30 * fileNames.size() / 2;
-    QPoint pos = nearCenter(sceneRect()) - QPoint(offset, offset);
+    QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
     foreach (const QString & localFile, fileNames) {
         if (!QFile::exists(localFile))
             continue;
@@ -163,7 +163,7 @@ void Desk::addDeskContent(const QStringList & fileNames)
 void Desk::addPictureContent(const QStringList & fileNames)
 {
     int offset = -30 * fileNames.size() / 2;
-    QPoint pos = nearCenter(sceneRect()) - QPoint(offset, offset);
+    QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
     foreach (const QString & localFile, fileNames) {
         if (!QFile::exists(localFile))
             continue;

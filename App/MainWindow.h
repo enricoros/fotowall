@@ -30,22 +30,17 @@ class MainWindow : public QWidget
 {
     Q_OBJECT
     public:
-        MainWindow(QWidget * parent = 0);
+        MainWindow(const QStringList & loadUrls = QStringList(), QWidget * parent = 0);
         ~MainWindow();
 
         // TEMP
-        static MainWindow * instance();
         void stackDesk(Desk * newDesk);
 
         void setModeInfo(ModeInfo modeInfo);
         ModeInfo getModeInfo(); // Needed for saving
         void restoreMode(int mode);
 
-        bool loadXml(const QString & filePath);
-        bool saveXml(const QString & filePath) const;
-
         void showIntroduction();
-        void loadImages(QStringList &imagesPath);
 
         // ::QWidget
         void closeEvent(QCloseEvent * event);
@@ -55,6 +50,7 @@ class MainWindow : public QWidget
         QMenu * createBackgroundMenu();
         QMenu * createDecorationMenu();
         QMenu * createOnlineHelpMenu();
+        void createLikeBack();
         void createMiscActions();
         void checkForTutorial();
         void checkForSupport();

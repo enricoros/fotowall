@@ -27,8 +27,9 @@ class MainWindow;
 class XmlRead : public QObject
 {
     public:
-        bool loadFile(const QString & filePath);
+        static bool read(const QString & filePath, MainWindow * mw, Desk * desk);
 
+        bool loadFile(const QString & filePath);
         void readProject(MainWindow * mainWindow);
         void readDesk(Desk * desk);
         void readContent(Desk * desk);

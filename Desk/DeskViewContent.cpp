@@ -72,10 +72,11 @@ bool DeskViewContent::contentOpaque() const
     return false;
 }
 
+#include "App/App.h"
 #include "App/MainWindow.h"
 void DeskViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-    MainWindow::instance()->stackDesk(m_desk);
+    App::mainWindow->stackDesk(m_desk);
     update();
 }
 
