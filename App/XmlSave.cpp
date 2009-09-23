@@ -21,20 +21,13 @@
 #include "Desk/AbstractContent.h"
 #include "Desk/Desk.h"
 
-#include <QMessageBox>
 #include <QFile>
+#include <QList>
+#include <QMessageBox>
+#include <QTextStream>
 
-XmlSave::XmlSave(const QString &filePath)
+XmlSave::XmlSave()
 {
-    // Open fotowall file
-    file.setFileName(filePath);
-    if (!file.open(QIODevice::WriteOnly)) {
-        QMessageBox::warning(0, tr("File Error"), tr("Error saving to the Fotowall file '%1'").arg(filePath));
-        throw 0;
-        return;
-    }
-    out.setDevice(&file);
-
     // This element contains all the others.
     m_rootElement = doc.createElement("fotowall");
     // This is general informations about the project (title...)
@@ -53,20 +46,30 @@ XmlSave::XmlSave(const QString &filePath)
     doc.appendChild(m_rootElement);
 }
 
-XmlSave::~XmlSave()
+bool XmlSave::writeFile(const QString & filePath)
 {
-   //Add at the begining : <?xml version="1.0" ?>
-   QDomNode noeud = doc.createProcessingInstruction("xml","version=\"1.0\" ");
-   doc.insertBefore(noeud,doc.firstChild());
-   //save in the file (4 spaces indent)
-   doc.save(out, 4);
-   file.close();
+    // Open fotowall file
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::warning(0, tr("File Error"), tr("Error saving to the Fotowall file '%1'").arg(filePath));
+        return false;
+    }
+
+    // Add at the begining : <?xml version="1.0" ?>
+    QDomNode noeud = doc.createProcessingInstruction("xml","version=\"1.0\" ");
+    doc.insertBefore(noeud, doc.firstChild());
+
+    // save in the file (4 spaces indent)
+    QTextStream out(&file);
+    doc.save(out, 4);
+    file.close();
+    return true;
 }
 
 void XmlSave::saveContent(const Desk * desk)
 {
     foreach (AbstractContent * content, desk->m_content) {
-        QDomElement element = doc.createElement("renamed-element");
+        QDomElement element = doc.createElement("dummy-renamed-element");
         m_contentElements.appendChild(element);
         content->toXml(element);
 

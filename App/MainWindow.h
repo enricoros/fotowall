@@ -35,7 +35,7 @@ class MainWindow : public QWidget
 
         // TEMP
         static MainWindow * instance();
-        Desk * swapDesk(Desk * newDesk);
+        void stackDesk(Desk * newDesk);
 
         void setModeInfo(ModeInfo modeInfo);
         ModeInfo getModeInfo(); // Needed for saving

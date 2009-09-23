@@ -14,36 +14,37 @@
 
 #include "DeskViewContent.h"
 
-#include "Desk.h"
 #include "App/XmlRead.h"
+#include "Desk.h"
 
+#include <QFileInfo>
 #include <QPainter>
 
 DeskViewContent::DeskViewContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
-    , m_innerDesk(0)
+    , m_desk(0)
 {
 }
 
 bool DeskViewContent::load(const QString & filePath, bool keepRatio, bool setName)
 {
-    if (filePath.isNull())
+    // parse the DOM of the file
+    XmlRead xmlRead;
+    if (!xmlRead.loadFile(filePath))
         return false;
 
-    m_innerDesk = new Desk(this);
-    m_innerDesk->resize(QSize(800, 600));
+    setFrameTextEnabled(setName);
+    setFrameText(QFileInfo(filePath).baseName());
 
-    XmlRead *xmlRead = 0;
-    try {
-        xmlRead = new XmlRead(filePath);
-    } catch (...) {
-        // If loading failed
-        return false;
-    }
-    //xmlRead->readProject(this);
-    xmlRead->readDesk(m_innerDesk);
-    xmlRead->readContent(m_innerDesk);
-    delete xmlRead;
+    // create the new Desk
+    m_desk = new Desk(this);
+    connect(m_desk, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintDesk(const QList<QRectF> &)));
+    m_desk->resize(QSize(800, 600));
+
+    // read in the properties
+    //xmlRead.readProject(this);
+    xmlRead.readDesk(m_desk);
+    xmlRead.readContent(m_desk);
     return true;
 }
 
@@ -74,14 +75,20 @@ bool DeskViewContent::contentOpaque() const
 #include "App/MainWindow.h"
 void DeskViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-    m_innerDesk = MainWindow::instance()->swapDesk(m_innerDesk);
+    MainWindow::instance()->stackDesk(m_desk);
     update();
 }
 
 void DeskViewContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    if (m_innerDesk)
-        m_innerDesk->render(painter, boundingRect(), m_innerDesk->sceneRect(), Qt::IgnoreAspectRatio);
+    // TODO: see if it paints when the scene is not displayed...
+    if (m_desk)
+        m_desk->render(painter, boundingRect(), m_desk->sceneRect(), Qt::IgnoreAspectRatio);
     else
         painter->fillRect(boundingRect(), Qt::red);
+}
+
+void DeskViewContent::slotRepaintDesk(const QList<QRectF> & /*exposed*/)
+{
+    update();
 }

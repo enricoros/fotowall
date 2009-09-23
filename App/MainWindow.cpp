@@ -112,6 +112,7 @@ class FWGraphicsView : public QGraphicsView {
         {
             setScene(desk);
             m_desk = desk;
+            resizeEvent(0);
         }
 
     protected:
@@ -119,7 +120,8 @@ class FWGraphicsView : public QGraphicsView {
         {
             if (m_desk)
                 m_desk->resize(contentsRect().size());
-            QGraphicsView::resizeEvent(event);
+            if (event)
+                QGraphicsView::resizeEvent(event);
         }
 
     private:
@@ -155,13 +157,11 @@ MainWindow::MainWindow(QWidget * parent)
     setWindowIcon(QIcon(":/data/fotowall.png"));
 
     // create our custom desk
-    m_desk = new Desk(this);
-    connect(m_desk, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
-    connect(m_desk, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
+    Desk * initialDesk = new Desk(this);
 
     // init ui
     ui->setupUi(this);
-    ui->canvas->setDesk(m_desk);
+    stackDesk(initialDesk);
     ui->canvas->setFocus();
     ui->b1->setDefaultAction(ui->aAddPicture);
     ui->b2->setDefaultAction(ui->aAddText);
@@ -223,20 +223,24 @@ MainWindow * MainWindow::instance()
 }
 
 // TEMP
-Desk * MainWindow::swapDesk(Desk * newDesk)
+void MainWindow::stackDesk(Desk * newDesk)
 {
-    // TEMP
-    Desk * oldDesk = 0;
-    if (m_desk) {
-        oldDesk = m_desk;
+    // skip if already set
+    if (newDesk == m_desk)
+        return;
+
+    if (m_desk)
         disconnect(m_desk, 0, this, 0);
-    }
     m_desk = newDesk;
-    ui->canvas->setScene(m_desk);
     connect(m_desk, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
     connect(m_desk, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
+    ui->canvas->setDesk(m_desk);
     update();
-    return oldDesk;
+
+    // update breadcrumb
+    static quint32 baseId = 0;
+    int nextId = baseId + 1;
+    ui->deskNavBar->addNode(nextId, "test", baseId++);
 }
 
 void MainWindow::setModeInfo(ModeInfo modeInfo)
@@ -262,36 +266,28 @@ void MainWindow::restoreMode(int mode)
 
 bool MainWindow::loadXml(const QString & filePath)
 {
-    if (filePath.isNull())
+    // parse the DOM of the file
+    XmlRead xmlRead;
+    if (!xmlRead.loadFile(filePath))
         return false;
-    XmlRead *xmlRead = 0;
-    try {
-        xmlRead = new XmlRead(filePath);
-    } catch (...) {
-        // If loading failed
-        return false;
-    }
-    xmlRead->readProject(this);
-    xmlRead->readDesk(m_desk);
-    xmlRead->readContent(m_desk);
-    delete xmlRead;
+
+    // create objects and read data
+    xmlRead.readProject(this);
+    xmlRead.readDesk(m_desk);
+    xmlRead.readContent(m_desk);
     return true;
 }
 
 bool MainWindow::saveXml(const QString & filePath) const
 {
-    XmlSave *xmlSave = 0;
-    try {
-        xmlSave = new XmlSave(filePath);
-    } catch (...) {
-        //if saving failled
-        return false;
-    }
-    xmlSave->saveProject(m_desk->projectMode(), m_modeInfo);
-    xmlSave->saveDesk(m_desk);
-    xmlSave->saveContent(m_desk);
-    delete xmlSave;
-    return true;
+    // build up the DOM tree
+    XmlSave xmlSave;
+    xmlSave.saveProject(m_desk->projectMode(), m_modeInfo);
+    xmlSave.saveDesk(m_desk);
+    xmlSave.saveContent(m_desk);
+
+    // save to disk
+    return xmlSave.writeFile(filePath);
 }
 
 void MainWindow::showIntroduction()

@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
  ******************************************************************************/
 
-#include "App/XmlRead.h"
+#include "XmlRead.h"
 
 #include "Desk/AbstractContent.h"
 #include "Desk/Desk.h"
@@ -24,7 +24,7 @@
 #include "Desk/TextContent.h"
 #include "Desk/WebcamContent.h"
 #include "Frames/FrameFactory.h"
-#include "App/MainWindow.h"
+#include "MainWindow.h"
 
 #include <QFile>
 #include <QMessageBox>
@@ -32,31 +32,30 @@
 #include <QStringList>
 
 
-XmlRead::XmlRead(const QString & filePath)
+bool XmlRead::loadFile(const QString & filePath)
 {
     // Load the file
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::critical(0, tr("Loading error"), tr("Unable to load the Fotowall file %1").arg(filePath));
-        throw(0);
-        return;
+        return false;
     }
 
     // And create the XML document into memory (with nodes...)
-    QString *error = new QString();
+    QString error;
     QDomDocument doc;
-    if (!doc.setContent(&file, false, error)) {
-        QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the Fotowall file %1. The error was: %2").arg(filePath, *error));
-        file.close();
-        throw(0);
-        return;
+    if (!doc.setContent(&file, false, &error)) {
+        QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the Fotowall file %1. The error was: %2").arg(filePath, error));
+        return false;
     }
     file.close();
 
-    QDomElement root = doc.documentElement(); // The root node
-    m_projectElement = root.firstChildElement("project"); // Get the project node
+    // Get the 3 main Nodes
+    QDomElement root = doc.documentElement(); // the root node
+    m_projectElement = root.firstChildElement("project");
     m_deskElement = root.firstChildElement("desk");
     m_contentElement = root.firstChildElement("content");
+    return true;
 }
 
 void XmlRead::readProject(MainWindow *mainWindow)

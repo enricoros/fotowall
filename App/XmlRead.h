@@ -20,35 +20,23 @@
 #define __XmlRead__
 
 #include <QObject>
-#include <QDomDocument>
 #include <QDomElement>
-#include <QList>
-#include "App/ModeInfo.h"
-
 class Desk;
-class AbstractContent;
 class MainWindow;
-class PictureContent;
-class TextContent;
 
 class XmlRead : public QObject
 {
-    Q_OBJECT
     public:
-        XmlRead(const QString & filePath);
+        bool loadFile(const QString & filePath);
+
         void readProject(MainWindow * mainWindow);
         void readDesk(Desk * desk);
         void readContent(Desk * desk);
 
-    private :
+    private:
         QDomElement m_projectElement;
         QDomElement m_deskElement;
         QDomElement m_contentElement;
-
-    Q_SIGNALS:
-        void changeMode(int);
-        void setModeInfo(ModeInfo);
 };
 
 #endif
-

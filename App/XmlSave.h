@@ -16,41 +16,33 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
 
-#ifndef __Save__
-#define __Save__
+#ifndef __XmlSave_h__
+#define __XmlSave_h__
 
+#include <QObject>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QFile>
-#include <QTextStream>
-#include <QList>
-#include <QSize>
 #include "App/ModeInfo.h"
 
-class PictureContent;
-class TextContent;
-class AbstractContent;
 class Desk;
 
 class XmlSave : public QObject
 {
-    Q_OBJECT
     public:
-        XmlSave(const QString &);
-        ~XmlSave();
+        XmlSave();
+
+        bool writeFile(const QString & filePath);
+
         void saveContent(const Desk *);
         void saveDesk(const Desk *);
         void saveProject(int, const ModeInfo&);
 
-    private :
+    private:
         QDomDocument doc;
         QDomElement m_rootElement;
         QDomElement m_contentElements;
         QDomElement m_projectElement;
         QDomElement m_deskElement;
-        QFile file;
-        QTextStream out;
 };
 
 #endif
-

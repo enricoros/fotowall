@@ -48,7 +48,10 @@ class DeskViewContent : public AbstractContent
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
-        Desk * m_innerDesk;
+        Desk * m_desk;
+
+    private Q_SLOTS:
+        void slotRepaintDesk(const QList<QRectF> & exposed);
 };
 
 #endif
