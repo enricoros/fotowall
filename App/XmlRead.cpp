@@ -24,7 +24,9 @@
 #include "Desk/TextContent.h"
 #include "Desk/WebcamContent.h"
 #include "Frames/FrameFactory.h"
+#include "App.h"
 #include "MainWindow.h"
+#include "Settings.h"
 
 #include <QFile>
 #include <QMessageBox>
@@ -46,6 +48,9 @@ bool XmlRead::read(const QString & filePath, MainWindow * mw, Desk * desk)
         xmlRead.readDesk(desk);
         xmlRead.readContent(desk);
     }
+
+    // add to the recent history
+    App::settings->addRecentFotowallUrl(QUrl(filePath));
     return true;
 }
 

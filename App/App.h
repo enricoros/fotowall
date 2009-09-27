@@ -12,26 +12,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __RenderOpts_h__
-#define __RenderOpts_h__
+#ifndef __App_h__
+#define __App_h__
 
-#include <QColor>
+#include <QObject>
+#include <QUrl>
+class MainWindow;
+class Settings;
 
-class RenderOpts
+class App
 {
     public:
-        // defaults
-        static bool LastMirrorEnabled;
+        // uniquely instanced objects
+        static Settings * settings;
+        static MainWindow * mainWindow;
 
-        // global options
-        static bool ARGBWindow;
-        static bool HQRendering;
-
-        // other options
-        static bool OxygenStyleQuirks;
-
-        // global highlight color
-        static QColor hiColor;
+        // utility functions
+        static QString supportedImageFormats();
+        static bool isPictureFile(const QString & fileName);
+        static bool isFotowallFile(const QString & fileName);
+        static bool isContentUrl(const QString & url);
+        static bool validateFotowallUrl(const QString & url);
 };
 
 #endif

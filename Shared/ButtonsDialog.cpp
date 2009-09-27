@@ -91,7 +91,7 @@ ButtonsDialog::ButtonsDialog(const QString & dialogId, const QString & title,
 QDialogButtonBox::StandardButton ButtonsDialog::execute()
 {
     // handle a previous answer if memorize is on
-    QString configKey = "ButtonsDialog/" + m_dialogId;
+    QString configKey = "ButtonsDialogSkip/" + m_dialogId;
     if (m_memorize) {
         // return the previous answer if such answer exists
         QSettings s;

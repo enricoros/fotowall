@@ -5,6 +5,7 @@ HEADERS += \
     App/GroupBoxWidget.h \
     App/MainWindow.h \
     App/ModeInfo.h \
+    App/Settings.h \
     App/VersionCheckDialog.h \
     App/XmlRead.h \
     App/XmlSave.h
@@ -16,6 +17,7 @@ SOURCES += \
     App/GroupBoxWidget.cpp \
     App/MainWindow.cpp \
     App/ModeInfo.cpp \
+    App/Settings.cpp \
     App/VersionCheckDialog.cpp \
     App/XmlRead.cpp \
     App/XmlSave.cpp

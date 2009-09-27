@@ -13,8 +13,16 @@
  ***************************************************************************/
 
 #include "ExportWizard.h"
-#include "ui_ExportWizard.h"
+
 #include "Desk/Desk.h"
+#include "App.h"
+#include "Settings.h"
+#include "ui_ExportWizard.h"
+#include "controller.h"
+#include "imageloaderqt.h"
+#include "posterazorcore.h"
+#include "wizard.h"
+
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDir>
@@ -29,10 +37,6 @@
 #include <QSvgGenerator>
 #include <QUrl>
 #include <math.h>
-#include "controller.h"
-#include "imageloaderqt.h"
-#include "posterazorcore.h"
-#include "wizard.h"
 
 #if defined(Q_OS_WIN)
 #include <windows.h>    // for background changing stuff
@@ -200,14 +204,13 @@ void ExportWizard::startPosterazor()
     const int posterPixelHeight = posterPixels / posterPixelWidth;
 
     static const QLatin1String settingsGroup("posterazor");
-    QSettings settings;
-    settings.beginGroup(settingsGroup);
+    App::settings->beginGroup(settingsGroup);
 
     // TODO: Eliminate Poster size in %
     ImageLoaderQt loader;
     loader.setQImage(m_desk->renderedImage(QSize(posterPixelWidth, posterPixelHeight)));
     PosteRazorCore posterazor(&loader);
-    posterazor.readSettings(&settings);
+    posterazor.readSettings(App::settings);
     Wizard *wizard = new Wizard;
     Controller controller(&posterazor, wizard);
     controller.setImageLoadingAvailable(false);
@@ -222,8 +225,9 @@ void ExportWizard::startPosterazor()
     dialog.layout()->addWidget(wizard);
     dialog.resize(640, 480);
     dialog.exec();
-    settings.sync();
-    posterazor.writeSettings(&settings);
+    App::settings->sync();
+    posterazor.writeSettings(App::settings);
+    App::settings->endGroup();
 }
 
 void ExportWizard::print()
@@ -323,19 +327,18 @@ int ExportWizard::nextId() const
 
 static QString getSavePath(const QString & initialValue, const QString & defaultExt, const QString & title, const QString & type)
 {
-    // make up the default save path (stored as 'fotowall/exportDir')
+    // make up the default save path (stored as 'Fotowall/ExportDir')
     QString defaultSavePath = initialValue;
     if (defaultSavePath.isEmpty()) {
         defaultSavePath = ExportWizard::tr("Unnamed %1.%2").arg(QDate::currentDate().toString()).arg(defaultExt);
-        QSettings s;
-        if (s.contains("fotowall/exportDir"))
-            defaultSavePath.prepend(s.value("fotowall/exportDir").toString() + QDir::separator());
+        if (App::settings->contains("Fotowall/ExportDir"))
+            defaultSavePath.prepend(App::settings->value("Fotowall/ExportDir").toString() + QDir::separator());
     }
 
     // ask the file name, validate it, store back to settings
     QString fileName = QFileDialog::getSaveFileName(0, title, defaultSavePath, type);
     if (!fileName.isEmpty()) {
-        QSettings().setValue("fotowall/exportDir", QFileInfo(fileName).absolutePath());
+        App::settings->setValue("Fotowall/ExportDir", QFileInfo(fileName).absolutePath());
         if (QFileInfo(fileName).suffix().isEmpty())
             fileName += "." + defaultExt;
     }

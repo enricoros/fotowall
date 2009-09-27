@@ -21,6 +21,7 @@
 #include <QtPlugin>
 #include "App/App.h"
 #include "App/MainWindow.h"
+#include "App/Settings.h"
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
 
@@ -35,7 +36,6 @@ Q_IMPORT_PLUGIN(qtiff)
 bool RenderOpts::LastMirrorEnabled = true;
 bool RenderOpts::ARGBWindow = false;
 bool RenderOpts::HQRendering = false;
-bool RenderOpts::FirstRun = false;
 bool RenderOpts::OxygenStyleQuirks = false;
 bool VideoProvider::Disable = false;
 QColor RenderOpts::hiColor;
@@ -64,19 +64,24 @@ int main( int argc, char ** args )
     qtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
 
-    QSettings s;
-    RenderOpts::FirstRun = s.value("fotowall/firstTime", true).toBool();
+    App::settings = new Settings;
     RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
     VideoProvider::Disable = app.arguments().contains("-novideo");
-    s.setValue("fotowall/firstTime", false);
+    App::settings->setValue("Fotowall/FirstTime", false);
 
     QStringList urls;
     for (int i = 1; i < argc; i++)
         if (App::isContentUrl(args[i]))
             urls.append(args[i]);
 
-    MainWindow mw(urls);
-    if (RenderOpts::FirstRun)
-        mw.showIntroduction();
-    return app.exec();
+    App::mainWindow = new MainWindow(urls);
+    if (App::settings->firstTime())
+        App::mainWindow->showIntroduction();
+
+    int mainLoopResult = app.exec();
+    App::settings->sync();
+
+    delete App::mainWindow;
+    delete App::settings;
+    return mainLoopResult;
 }

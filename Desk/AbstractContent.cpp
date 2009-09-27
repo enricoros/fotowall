@@ -710,17 +710,17 @@ void AbstractContent::slotStackBack()
 
 void AbstractContent::slotSaveAs()
 {
-    // make up the default save path (stored as 'fotowall/exportDir')
+    // make up the default save path (stored as 'Fotowall/ExportDir')
     QSettings s;
     QString defaultSavePath = tr("Unnamed %1.png").arg(QDate::currentDate().toString());
-    if (s.contains("fotowall/exportDir"))
-        defaultSavePath.prepend(s.value("fotowall/exportDir").toString() + QDir::separator());
+    if (s.contains("Fotowall/ExportDir"))
+        defaultSavePath.prepend(s.value("Fotowall/ExportDir").toString() + QDir::separator());
 
     // ask the file name, validate it, store back to settings
     QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), defaultSavePath, tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (fileName.isNull())
         return;
-    s.setValue("fotowall/exportDir", QFileInfo(fileName).absolutePath());
+    s.setValue("Fotowall/ExportDir", QFileInfo(fileName).absolutePath());
     if (QFileInfo(fileName).suffix().isEmpty())
         fileName += ".png";
 

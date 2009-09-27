@@ -12,26 +12,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __RenderOpts_h__
-#define __RenderOpts_h__
+#ifndef __Settings_h__
+#define __Settings_h__
 
-#include <QColor>
+#include <QList>
+#include <QSettings>
+#include <QUrl>
 
-class RenderOpts
+class Settings : public QSettings
 {
     public:
-        // defaults
-        static bool LastMirrorEnabled;
+        Settings();
+        ~Settings();
 
-        // global options
-        static bool ARGBWindow;
-        static bool HQRendering;
+        // is this the first time Fotowall is executed
+        bool firstTime() const;
 
-        // other options
-        static bool OxygenStyleQuirks;
+        // the recent load/save history
+        QList<QUrl> recentFotowallUrls() const;
+        void addRecentFotowallUrl(const QUrl & url);
 
-        // global highlight color
-        static QColor hiColor;
+    private:
+        bool m_firstTime;
+        QList<QUrl> m_recentFotowallUrls;
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
 #include "ModeInfo.h"
+#include "Settings.h"
 #include "VersionCheckDialog.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
@@ -45,9 +46,9 @@
 #include <QNetworkReply>
 #include <QProgressDialog>
 #include <QPushButton>
-#include <QSettings>
 #include <QTimer>
 #include <QVBoxLayout>
+#include "math.h"
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -219,21 +220,32 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     else {
         Desk * initialDesk = new Desk(this);
         stackDesk(initialDesk);
+        QList<QUrl> historyUrls = App::settings->recentFotowallUrls();
+        if (!historyUrls.isEmpty()) {
+            int dCount = historyUrls.size();
+            int dCols = 1 + (int)sqrt((double)dCount);
+            int dRows = 1 + dCount / dCols;
+#warning FROM HERE
+            //int dWidth = (640 - 2*20) / ()
+            int cIdx = 0;
+            int rIdx = 0;
+            foreach (const QUrl & url, historyUrls) {
+                m_desk->addDeskContent(QStringList() << url.toString());
+            }
+        }
     }
 
     // show initially
     showMaximized();
-
-    // save instance. consider this valid from now on
-    App::mainWindow = this;
 }
 
 MainWindow::~MainWindow()
 {
     // dump current layout
     if (m_desk) {
-        QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-        XmlSave::save(tempPath, m_desk, m_desk->projectMode(), m_modeInfo);
+        // this is an example of 'autosave-like function'
+        //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
+        //XmlSave::save(tempPath, m_desk, m_desk->projectMode(), m_modeInfo);
     }
 
     // delete everything
@@ -515,9 +527,9 @@ void MainWindow::checkForSupport()
 void MainWindow::checkForUpdates()
 {
     // find out the time of the last update check
-    QDate lastCheck = QSettings().value("fotowall/LastUpdateCheck").toDate();
+    QDate lastCheck = App::settings->value("Fotowall/LastUpdateCheck").toDate();
     if (lastCheck.isNull()) {
-        QSettings().setValue("fotowall/LastUpdateCheck", QDate::currentDate());
+        App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
         return;
     }
 
@@ -625,15 +637,14 @@ void MainWindow::on_projectType_activated(int index)
 void MainWindow::on_aAddDesk_triggered()
 {
     REQUIRE_DESK
-    // make up the default load path (stored as 'fotowall/loadProjectDir')
-    QSettings s;
-    QString defaultLoadPath = s.value("fotowall/loadProjectDir").toString();
+    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
+    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
     QStringList fileNames = QFileDialog::getOpenFileNames(ui->canvas, tr("Select one or more Fotowall files to add"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
     if (fileNames.isEmpty())
         return;
-    s.setValue("fotowall/loadProjectDir", QFileInfo(fileNames[0]).absolutePath());
+    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileNames[0]).absolutePath());
     m_desk->addDeskContent(fileNames);
 }
 
@@ -651,15 +662,14 @@ void MainWindow::on_aAddPicture_triggered()
     foreach (const QByteArray & format, QImageReader::supportedImageFormats())
         extensions += "*." + format + " *." + format.toUpper() + " ";
 
-    // make up the default load path (stored as 'fotowall/loadImagesDir')
-    QSettings s;
-    QString defaultLoadPath = s.value("fotowall/loadImagesDir").toString();
+    // make up the default load path (stored as 'Fotowall/LoadImagesDir')
+    QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
     QStringList fileNames = QFileDialog::getOpenFileNames(ui->canvas, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(extensions));
     if (fileNames.isEmpty())
         return;    
-    s.setValue("fotowall/loadImagesDir", QFileInfo(fileNames[0]).absolutePath());
+    App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
     m_desk->addPictureContent(fileNames);
 }
 
@@ -837,15 +847,14 @@ bool MainWindow::on_loadButton_clicked()
 {
     REQUIRE_DESK_R(false)
 
-    // make up the default load path (stored as 'fotowall/loadProjectDir')
-    QSettings s;
-    QString defaultLoadPath = s.value("fotowall/loadProjectDir").toString();
+    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
+    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
     if (fileName.isNull())
         return false;
-    s.setValue("fotowall/loadProjectDir", QFileInfo(fileName).absolutePath());
+    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
     return XmlRead::read(fileName, this, m_desk);
 }
 
@@ -853,17 +862,16 @@ bool MainWindow::on_saveButton_clicked()
 {
     REQUIRE_DESK_R(false)
 
-    // make up the default save path (stored as 'fotowall/saveProjectDir')
-    QSettings s;
+    // make up the default save path (stored as 'Fotowall/SaveProjectDir')
     QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-    if (s.contains("fotowall/saveProjectDir"))
-        defaultSavePath.prepend(s.value("fotowall/saveProjectDir").toString() + QDir::separator());
+    if (App::settings->contains("Fotowall/SaveProjectDir"))
+        defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
 
     // ask the file name, validate it, store back to settings and save over it
     QString fileName = QFileDialog::getSaveFileName(this, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
     if (fileName.isNull())
         return false;
-    s.setValue("fotowall/saveProjectDir", QFileInfo(fileName).absolutePath());
+    App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
         fileName += ".fotowall";
     return XmlSave::save(fileName, m_desk, m_desk->projectMode(), m_modeInfo);
@@ -1001,7 +1009,7 @@ void MainWindow::slotHelpUpdates()
 {
     VersionCheckDialog vcd;
     vcd.exec();
-    QSettings().setValue("fotowall/LastUpdateCheck", QDate::currentDate());
+    App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
 }
 
 void MainWindow::slotSetBackMode(QAction* action)

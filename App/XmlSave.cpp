@@ -20,6 +20,8 @@
 
 #include "Desk/AbstractContent.h"
 #include "Desk/Desk.h"
+#include "App.h"
+#include "Settings.h"
 
 #include <QFile>
 #include <QList>
@@ -38,7 +40,14 @@ bool XmlSave::save(const QString & filePath, const Desk * desk, int mode, const 
     }
 
     // save to disk
-    return xmlSave.writeFile(filePath);
+    bool saveOk = xmlSave.writeFile(filePath);
+
+    // if saved, add to the recent history
+    if (saveOk)
+        App::settings->addRecentFotowallUrl(QUrl(filePath));
+
+    // tell about the exit status
+    return saveOk;
 }
 
 XmlSave::XmlSave()

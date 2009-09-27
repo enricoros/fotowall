@@ -26,10 +26,6 @@
 #include <QString>
 #include "Frames/FrameFactory.h"
 
-#if QT_VERSION >= 0x040600
-#include <QPropertyAnimation>
-#endif
-
 HelpItem::HelpItem(QGraphicsItem * parent)
     : AbstractDisposeable(parent, true)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
