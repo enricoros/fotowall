@@ -7,7 +7,7 @@ RESOURCES += fotowall.qrc
 
 # More input files
 include(App/App.pri)
-include(Desk/Desk.pri)
+include(Canvas/Canvas.pri)
 include(Frames/Frames.pri)
 include(Shared/Shared.pri)
 include(3rdparty/likebackfrontend/likebackfrontend.pri)

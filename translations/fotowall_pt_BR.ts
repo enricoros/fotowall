@@ -4,7 +4,7 @@
 <context>
     <name>AbstractConfig</name>
     <message>
-        <location filename="../items/AbstractConfig.cpp" line="+44"/>
+        <location filename="../Canvas/AbstractConfig.cpp" line="+45"/>
         <source> x </source>
         <translation> x </translation>
     </message>
@@ -14,7 +14,7 @@
         <translation>ok</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+74"/>
         <source>Choose frame images</source>
         <translation>Escolher imagens de quadro</translation>
     </message>
@@ -24,7 +24,7 @@
         <translation>Imagens (*.svg)</translation>
     </message>
     <message>
-        <location filename="../items/AbstractConfig.ui"/>
+        <location filename="../Canvas/AbstractConfig.ui"/>
         <source>General</source>
         <translation>Geral</translation>
     </message>
@@ -97,7 +97,7 @@
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="+75"/>
+        <location filename="../Canvas/AbstractContent.cpp" line="+77"/>
         <source>Change properties...</source>
         <translation>Alterar as propriedades...</translation>
     </message>
@@ -157,15 +157,51 @@ Use CTRL para cancelar as transformações.</translation>
 <context>
     <name>ButtonsDialog</name>
     <message>
-        <location filename="../ButtonsDialog.cpp" line="+39"/>
-        <source>show this warning again next time</source>
-        <translation type="unfinished">Mostrar este aviso novamente na próxima vez</translation>
+        <location filename="../Shared/ButtonsDialog.cpp" line="+54"/>
+        <source>ask again next time</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Canvas</name>
+    <message>
+        <location filename="../Canvas/Canvas.cpp" line="+940"/>
+        <source>Back</source>
+        <translation type="unfinished">Voltar</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Front</source>
+        <translation type="unfinished">Frente</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>%1</source>
+        <translation type="unfinished">%1</translation>
+    </message>
+    <message>
+        <location line="+122"/>
+        <source>Delete content</source>
+        <translation type="unfinished">Excluir conteúdo</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>All the %1 selected content will be deleted, do you want to continue ?</source>
+        <translation type="unfinished">Todos os %1 conteúdos selecionados serão excluídos, você deseja continuar?</translation>
+    </message>
+</context>
+<context>
+    <name>CanvasViewContent</name>
+    <message>
+        <location filename="../Canvas/CanvasViewContent.h" line="+37"/>
+        <source>CanvasXXX</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ColorAction</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+260"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+277"/>
         <source>Text Color</source>
         <translation>Cor do texto</translation>
     </message>
@@ -173,7 +209,7 @@ Use CTRL para cancelar as transformações.</translation>
 <context>
     <name>Connector</name>
     <message>
-        <location filename="../MetaXmlReader.cpp" line="+164"/>
+        <location filename="../Shared/MetaXmlReader.cpp" line="+164"/>
         <source>Network Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -186,43 +222,15 @@ Use CTRL para cancelar as transformações.</translation>
 <context>
     <name>CroppingDialog</name>
     <message>
-        <location filename="../CroppingDialog.ui"/>
+        <location filename="../Shared/CroppingDialog.ui"/>
         <source>Cropping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>Desk</name>
-    <message>
-        <location filename="../Desk.cpp" line="+906"/>
-        <source>Back</source>
-        <translation>Voltar</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Front</source>
-        <translation>Frente</translation>
-    </message>
-    <message>
-        <location line="+23"/>
-        <source>%1</source>
-        <translation>%1</translation>
-    </message>
-    <message>
-        <location line="+121"/>
-        <source>Delete content</source>
-        <translation>Excluir conteúdo</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>All the %1 selected content will be deleted, do you want to continue ?</source>
-        <translation>Todos os %1 conteúdos selecionados serão excluídos, você deseja continuar?</translation>
-    </message>
-</context>
-<context>
     <name>ExactSizeDialog</name>
     <message>
-        <location filename="../ExactSizeDialog.ui"/>
+        <location filename="../App/ExactSizeDialog.ui"/>
         <source>Choose size</source>
         <translation>Escolher o tamanho</translation>
     </message>
@@ -275,7 +283,7 @@ Use CTRL para cancelar as transformações.</translation>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../ExportWizard.cpp" line="+127"/>
+        <location filename="../App/ExportWizard.cpp" line="+131"/>
         <source>Wallpaper Error</source>
         <translation>Erro no papel de parede</translation>
     </message>
@@ -331,12 +339,12 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
         <translation>Erro ao renderizar para o arquivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+29"/>
         <source>Export poster</source>
         <translation>Exportar o pôster</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+50"/>
         <source>Created with %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -346,7 +354,7 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+18"/>
         <source>Choose the Image file</source>
         <translation>Escolher o arquivo imagem</translation>
     </message>
@@ -366,7 +374,7 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ExportWizard.ui"/>
+        <location filename="../App/ExportWizard.ui"/>
         <source>Export Wizard</source>
         <translation>Exportar o assistente</translation>
     </message>
@@ -569,7 +577,7 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
 <context>
     <name>GlowEffectDialog</name>
     <message>
-        <location filename="../GlowEffectDialog.ui"/>
+        <location filename="../Shared/GlowEffectDialog.ui"/>
         <source>Glow effect</source>
         <translation>Efeito brilho</translation>
     </message>
@@ -592,7 +600,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HelpItem</name>
     <message>
-        <location filename="../items/HelpItem.cpp" line="+37"/>
+        <location filename="../Canvas/HelpItem.cpp" line="+33"/>
         <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
@@ -777,7 +785,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+284"/>
+        <location filename="../App/MainWindow.cpp" line="+308"/>
         <source>Closing Fotowall...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -812,7 +820,7 @@ p, li { white-space: pre-wrap; }
         <translation>Habilitar campo de força</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+7"/>
         <source>Auto-arrange new pictures</source>
         <translation>Auto-organizar novas figuras</translation>
     </message>
@@ -887,12 +895,12 @@ p, li { white-space: pre-wrap; }
         <translation>Barra superior</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+7"/>
         <source>Bottom bar</source>
         <translation>Barra inferior</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+9"/>
         <source>Set title...</source>
         <translation>Definir título...</translation>
     </message>
@@ -917,7 +925,7 @@ p, li { white-space: pre-wrap; }
         <translation>Blog do Fotowall</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+21"/>
         <source>Select all</source>
         <translation>Selecionar todos</translation>
     </message>
@@ -932,14 +940,19 @@ p, li { white-space: pre-wrap; }
         <translation>Exportar</translation>
     </message>
     <message>
+        <location line="+13"/>
         <location line="+12"/>
-        <location line="+11"/>
-        <location line="+31"/>
+        <location line="+32"/>
         <source>print</source>
         <translation>Imprimir</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+36"/>
+        <source>Select one or more Fotowall files to add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>Select one or more pictures to add</source>
         <translation>Selecionar uma ou mais figuras para adicionar</translation>
     </message>
@@ -949,23 +962,17 @@ p, li { white-space: pre-wrap; }
         <translation>(%1) imagens</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <location line="+21"/>
+        <location line="+26"/>
         <source>OpenGL</source>
         <translation>OpenGL</translation>
     </message>
     <message>
-        <location line="-20"/>
+        <location line="+0"/>
         <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system.&lt;br&gt;Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+20"/>
-        <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system. Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
-        <translation>OpenGL acelera gráficos. No entanto, não é garantido que irá funcionar no seu sistema. Basta experimentar e ver se ele funciona para você ;-)&lt;br&gt; - se o sentir mais lento, certifique-se que seu driver acelera o OpenGL&lt;br&gt; - se Fotowall para de responder depois de mudar para OpenGL, só não use este recurso na próxima vez&lt;br&gt;NOTA: OpenGL não funciona com o modo &apos;Transparente&apos;.&lt;br&gt;</translation>
-    </message>
-    <message>
-        <location line="+78"/>
+        <location line="+80"/>
         <source>Transparency</source>
         <translation>Transparência</translation>
     </message>
@@ -975,23 +982,24 @@ p, li { white-space: pre-wrap; }
         <translation>Este recurso não tem sido amplamente testado.&lt;br&gt; - no Linux exige a composição (como o compiz/beryl, kwin4)&lt;br&gt; - no Windows e Mac parece funcionar&lt;br&gt;Se você observar um fundo preto, a transparência não é suportada no seu sistema.&lt;br&gt;NOTA: você deve definir o &apos;Plano de fundo transparente&apos; para notar a transparência da janela.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+74"/>
-        <location line="+16"/>
+        <location line="+79"/>
+        <location line="+17"/>
         <source>Select the Fotowall file</source>
         <translation>Selecionar o arquivo Fotowall</translation>
     </message>
     <message>
-        <location line="-16"/>
+        <location line="-227"/>
+        <location line="+210"/>
         <source>Fotowall (*.fotowall)</source>
         <translation>Fotowall (*.fotowall)</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>Unnamed %1.fotowall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+82"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
@@ -1001,7 +1009,7 @@ p, li { white-space: pre-wrap; }
         <translation>Insirir o título</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation>Abrindo o Blog do autor do Fotowall</translation>
     </message>
@@ -1029,12 +1037,12 @@ Do you want to open the web page?</source>
 Você deseja abrir a página web?</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+84"/>
         <source>Support (%1)</source>
         <translation>Suporte (%1)</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location filename="../App/MainWindow.ui"/>
         <source>ADD NEW</source>
         <translation>ADICIONAR NOVO</translation>
     </message>
@@ -1114,13 +1122,13 @@ Você deseja abrir a página web?</translation>
         <translation>Carregar</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="-732"/>
-        <location filename="../MainWindow.ui"/>
+        <location filename="../App/MainWindow.cpp" line="-774"/>
+        <location filename="../App/MainWindow.ui"/>
         <source>Save</source>
         <translation>Salvar</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui"/>
+        <location filename="../App/MainWindow.ui"/>
         <source>Add Picture</source>
         <translation>Adicionar uma figura</translation>
     </message>
@@ -1170,11 +1178,16 @@ Você deseja abrir a página web?</translation>
         <source>Click here to tell the developers about new features you would like to have in this application</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location/>
+        <source>Add Fotowall File</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PictureConfig</name>
     <message>
-        <location filename="../items/PictureConfig.cpp" line="+32"/>
+        <location filename="../Canvas/PictureConfig.cpp" line="+32"/>
         <source>Picture</source>
         <translation>Figura</translation>
     </message>
@@ -1236,7 +1249,7 @@ Você deseja abrir a página web?</translation>
 100: opaco</translation>
     </message>
     <message>
-        <location filename="../items/PictureConfig.ui"/>
+        <location filename="../Canvas/PictureConfig.ui"/>
         <source>Transform</source>
         <translation>Transformar</translation>
     </message>
@@ -1269,13 +1282,13 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../items/PictureContent.cpp" line="+41"/>
-        <location line="+56"/>
+        <location filename="../Canvas/PictureContent.cpp" line="+44"/>
+        <location line="+58"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="-49"/>
+        <location line="-51"/>
         <source>Flip horizontally</source>
         <translation>Espelhar horizontalmente</translation>
     </message>
@@ -1285,7 +1298,7 @@ Você deseja abrir a página web?</translation>
         <translation>Espelhar verticalmente</translation>
     </message>
     <message>
-        <location filename="../items/PictureContent.h" line="+38"/>
+        <location filename="../Canvas/PictureContent.h" line="+39"/>
         <source>Picture</source>
         <translation>Figura</translation>
     </message>
@@ -1293,7 +1306,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>PictureProperties</name>
     <message>
-        <location filename="../items/PictureProperties.ui"/>
+        <location filename="../Canvas/PictureProperties.ui"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1306,6 +1319,39 @@ Você deseja abrir a página web?</translation>
         <location/>
         <source>Opacity:</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../App/XmlRead.cpp" line="+62"/>
+        <source>Loading error</source>
+        <translation type="unfinished">Erro ao carregar</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Unable to load the Fotowall file %1</source>
+        <translation type="unfinished">Não foi possível carregar o arquivo %1 do Fotowall</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Parsing error</source>
+        <translation type="unfinished">Erro ao analisar</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Unable to parse the Fotowall file %1. The error was: %2</source>
+        <translation type="unfinished">Não foi possível analisar o arquivo %1 do Fotowall. O erro foi: %2</translation>
+    </message>
+    <message>
+        <location filename="../App/XmlSave.cpp" line="+78"/>
+        <source>File Error</source>
+        <translation type="unfinished">Erro no arquivo</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Error saving to the Fotowall file &apos;%1&apos;</source>
+        <translation type="unfinished">Erro ao salvar para o arquivo &apos;%1&apos; do Fotowall</translation>
     </message>
 </context>
 <context>
@@ -1367,12 +1413,17 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>SelectionProperties</name>
     <message>
-        <location filename="../items/SelectionProperties.cpp" line="+33"/>
+        <location filename="../Canvas/SelectionProperties.cpp" line="+35"/>
         <source>SELECTION</source>
         <translation type="unfinished">SELEÇÃO</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+10"/>
+        <source>%1 pictures selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>%1 objects selected</source>
         <translation type="unfinished">%1 objetos selecionados</translation>
     </message>
@@ -1390,7 +1441,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>TextConfig</name>
     <message>
-        <location filename="../items/TextConfig.cpp" line="+28"/>
+        <location filename="../Canvas/TextConfig.cpp" line="+28"/>
         <source>Text</source>
         <translation>Texto</translation>
     </message>
@@ -1398,7 +1449,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../items/TextContent.cpp" line="+40"/>
+        <location filename="../Canvas/TextContent.cpp" line="+40"/>
         <source>Right click to Edit the text</source>
         <translation>Clique com o botão direito para editar o texto</translation>
     </message>
@@ -1408,7 +1459,7 @@ Você deseja abrir a página web?</translation>
         <translation>Clique com o botão direito para editar...</translation>
     </message>
     <message>
-        <location filename="../items/TextContent.h" line="+53"/>
+        <location filename="../Canvas/TextContent.h" line="+53"/>
         <source>Text</source>
         <translation>Texto</translation>
     </message>
@@ -1416,7 +1467,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>TextProperties</name>
     <message>
-        <location filename="../items/TextProperties.ui"/>
+        <location filename="../Canvas/TextProperties.ui"/>
         <source>X</source>
         <translation>X</translation>
     </message>
@@ -1434,7 +1485,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>VersionCheckDialog</name>
     <message>
-        <location filename="../VersionCheckDialog.cpp" line="+30"/>
+        <location filename="../App/VersionCheckDialog.cpp" line="+30"/>
         <source>checking</source>
         <translation>Verificando</translation>
     </message>
@@ -1454,7 +1505,7 @@ Você deseja abrir a página web?</translation>
         <translation>Baixar</translation>
     </message>
     <message>
-        <location filename="../VersionCheckDialog.ui"/>
+        <location filename="../App/VersionCheckDialog.ui"/>
         <source>Version Check</source>
         <translation>Versão verificada</translation>
     </message>
@@ -1475,17 +1526,9 @@ Você deseja abrir a página web?</translation>
     </message>
 </context>
 <context>
-    <name>WarningBox</name>
-    <message>
-        <location filename="../WarningBox.cpp" line="+53"/>
-        <source>show this warning again next time</source>
-        <translation>Mostrar este aviso novamente na próxima vez</translation>
-    </message>
-</context>
-<context>
     <name>WebContentSelectorItem</name>
     <message>
-        <location filename="../items/WebContentSelectorItem.cpp" line="+229"/>
+        <location filename="../Canvas/WebContentSelectorItem.cpp" line="+231"/>
         <source>cancel</source>
         <translation>Cancelar</translation>
     </message>
@@ -1495,7 +1538,7 @@ Você deseja abrir a página web?</translation>
         <translation>Pesquisar</translation>
     </message>
     <message>
-        <location filename="../items/WebContentSelectorItem.ui"/>
+        <location filename="../Canvas/WebContentSelectorItem.ui"/>
         <source>Flickr Search</source>
         <translation>Pesquisa Flickr</translation>
     </message>
@@ -1503,7 +1546,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>WebcamContent</name>
     <message>
-        <location filename="../items/WebcamContent.cpp" line="+30"/>
+        <location filename="../Canvas/WebcamContent.cpp" line="+32"/>
         <source>This is a mirror ;-)</source>
         <translation>Isso é um espelho ;-)</translation>
     </message>
@@ -1518,45 +1561,9 @@ Você deseja abrir a página web?</translation>
         <translation>Parar figura</translation>
     </message>
     <message>
-        <location filename="../items/WebcamContent.h" line="+32"/>
+        <location filename="../Canvas/WebcamContent.h" line="+32"/>
         <source>Webcam</source>
         <translation>Webcam</translation>
-    </message>
-</context>
-<context>
-    <name>XmlRead</name>
-    <message>
-        <location filename="../XmlRead.cpp" line="+40"/>
-        <source>Loading error</source>
-        <translation>Erro ao carregar</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Unable to load the Fotowall file %1</source>
-        <translation>Não foi possível carregar o arquivo %1 do Fotowall</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Unable to parse the Fotowall file %1. The error was: %2</source>
-        <translation>Não foi possível analisar o arquivo %1 do Fotowall. O erro foi: %2</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Parsing error</source>
-        <translation>Erro ao analisar</translation>
-    </message>
-</context>
-<context>
-    <name>XmlSave</name>
-    <message>
-        <location filename="../XmlSave.cpp" line="+32"/>
-        <source>File Error</source>
-        <translation>Erro no arquivo</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Error saving to the Fotowall file &apos;%1&apos;</source>
-        <translation>Erro ao salvar para o arquivo &apos;%1&apos; do Fotowall</translation>
     </message>
 </context>
 </TS>

@@ -16,13 +16,13 @@
 #define __ExportWizard_h__
 
 #include <QtGui/QWizard>
-class Desk;
+class Canvas;
 namespace Ui { class ExportWizard; }
 
 class ExportWizard : public QWizard {
     Q_OBJECT
     public:
-        ExportWizard(Desk * desk);
+        ExportWizard(Canvas * canvas);
         ~ExportWizard();
 
         // the main functions
@@ -41,7 +41,7 @@ class ExportWizard : public QWizard {
     private:
         enum PageCode { PageMode = 0, PageWallpaper = 1, PageImage = 2, PagePosteRazor = 3, PagePrint = 4, PageSvg = 5 };
         Ui::ExportWizard * m_ui;
-        Desk * m_desk;
+        Canvas * m_canvas;
         int m_nextId;
         QSizeF m_printSize; // the print size in inches
 

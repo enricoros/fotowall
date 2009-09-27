@@ -14,7 +14,7 @@
 
 #include "ExportWizard.h"
 
-#include "Desk/Desk.h"
+#include "Canvas/Canvas.h"
 #include "App.h"
 #include "Settings.h"
 #include "ui_ExportWizard.h"
@@ -45,10 +45,10 @@
 #define POSTERAZOR_WEBSITE_LINK "http://posterazor.sourceforge.net/"
 #define POSTERAZOR_TUTORIAL_LINK "http://www.youtube.com/watch?v=p7XsFZ4Leo8"
 
-ExportWizard::ExportWizard(Desk * desk)
+ExportWizard::ExportWizard(Canvas * canvas)
     : QWizard()
     , m_ui(new Ui::ExportWizard)
-    , m_desk(desk)
+    , m_canvas(canvas)
     , m_nextId(0)
 {
     // create and init UI
@@ -69,12 +69,12 @@ ExportWizard::ExportWizard(Desk * desk)
 #endif
 
     // set default sizes
-    m_ui->saveHeight->setValue(m_desk->height());
-    m_ui->saveWidth->setValue(m_desk->width());
-    m_ui->printWidth->setValue(m_desk->width());
-    m_ui->printHeight->setValue(m_desk->height());
-    m_printSize.setWidth(m_desk->width()/m_ui->printDpi->value());
-    m_printSize.setHeight(m_desk->height()/m_ui->printDpi->value());
+    m_ui->saveHeight->setValue(m_canvas->height());
+    m_ui->saveWidth->setValue(m_canvas->width());
+    m_ui->printWidth->setValue(m_canvas->width());
+    m_ui->printHeight->setValue(m_canvas->height());
+    m_printSize.setWidth(m_canvas->width()/m_ui->printDpi->value());
+    m_printSize.setHeight(m_canvas->height()/m_ui->printDpi->value());
 
     // connect buttons
     connect(m_ui->chooseFilePath, SIGNAL(clicked()), this, SLOT(slotChoosePath()));
@@ -111,16 +111,16 @@ void ExportWizard::setWallpaper()
 
     // render the image
     QImage image;
-    QSize sceneSize(m_desk->width(), m_desk->height());
+    QSize sceneSize(m_canvas->width(), m_canvas->height());
     QSize desktopSize = QApplication::desktop()->screenGeometry().size();
     if (m_ui->wbZoom->isChecked())
-        image = m_desk->renderedImage(desktopSize, Qt::KeepAspectRatioByExpanding);
+        image = m_canvas->renderedImage(desktopSize, Qt::KeepAspectRatioByExpanding);
     else if (m_ui->wbScaleKeep->isChecked())
-        image = m_desk->renderedImage(desktopSize, Qt::KeepAspectRatio);
+        image = m_canvas->renderedImage(desktopSize, Qt::KeepAspectRatio);
     else if (m_ui->wbScaleIgnore->isChecked())
-        image = m_desk->renderedImage(desktopSize, Qt::IgnoreAspectRatio);
+        image = m_canvas->renderedImage(desktopSize, Qt::IgnoreAspectRatio);
     else
-        image = m_desk->renderedImage(sceneSize);
+        image = m_canvas->renderedImage(sceneSize);
 
     // save the right kind of image into the home dir
 #if defined(Q_OS_WIN)
@@ -172,11 +172,11 @@ void ExportWizard::saveImage()
     QImage image;
     bool hideTools = !m_ui->imgAsIsBox->isChecked();
     if (m_ui->ibZoom->isChecked())
-        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatioByExpanding, hideTools);
+        image = m_canvas->renderedImage(imageSize, Qt::KeepAspectRatioByExpanding, hideTools);
     else if (m_ui->ibScaleKeep->isChecked())
-        image = m_desk->renderedImage(imageSize, Qt::KeepAspectRatio, hideTools);
+        image = m_canvas->renderedImage(imageSize, Qt::KeepAspectRatio, hideTools);
     else
-        image = m_desk->renderedImage(imageSize, Qt::IgnoreAspectRatio, hideTools);
+        image = m_canvas->renderedImage(imageSize, Qt::IgnoreAspectRatio, hideTools);
 
     // rotate image if requested
     if (m_ui->saveLandscape->isChecked()) {
@@ -198,7 +198,7 @@ void ExportWizard::startPosterazor()
 {
     static const quint32 posterPixels = 6 * 1000000; // Megapixels * 3 bytes!
     // We will use up the whole posterPixels for the render, respecting the aspect ratio.
-    const qreal widthToHeightRatio = m_desk->width() / m_desk->height();
+    const qreal widthToHeightRatio = m_canvas->width() / m_canvas->height();
     // Thanks to colleague Oswald for some of the math :)
     const int posterPixelWidth = int(sqrt(widthToHeightRatio * posterPixels));
     const int posterPixelHeight = posterPixels / posterPixelWidth;
@@ -208,7 +208,7 @@ void ExportWizard::startPosterazor()
 
     // TODO: Eliminate Poster size in %
     ImageLoaderQt loader;
-    loader.setQImage(m_desk->renderedImage(QSize(posterPixelWidth, posterPixelHeight)));
+    loader.setQImage(m_canvas->renderedImage(QSize(posterPixelWidth, posterPixelHeight)));
     PosteRazorCore posterazor(&loader);
     posterazor.readSettings(App::settings);
     Wizard *wizard = new Wizard;
@@ -248,7 +248,7 @@ void ExportWizard::print()
     int width = (int)(m_printSize.width() * (float)dpi);
     int height = (int)(m_printSize.height() * (float)dpi);
     Qt::AspectRatioMode ratioMode = m_ui->printKeepRatio->isChecked() ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio;
-    m_desk->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked(), ratioMode);
+    m_canvas->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked(), ratioMode);
 }
 
 void ExportWizard::saveSvg()
@@ -260,7 +260,7 @@ void ExportWizard::saveSvg()
     QString svgFileName = m_ui->svgFilePath->text();
 
     // get the rendering size
-    QRect svgRect(m_desk->sceneRect().toRect());
+    QRect svgRect(m_canvas->sceneRect().toRect());
 
     // create the SVG writer
     QSvgGenerator generator;
@@ -269,14 +269,14 @@ void ExportWizard::saveSvg()
 #if QT_VERSION >= 0x040500
     generator.setResolution(physicalDpiX());
     generator.setViewBox(svgRect);
-    generator.setTitle(m_desk->titleText());
+    generator.setTitle(m_canvas->titleText());
     generator.setDescription(tr("Created with %1").arg(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion()));
 #endif
 
     // paint over the writer
     QPainter painter(&generator);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    m_desk->renderVisible(&painter, svgRect, svgRect, Qt::IgnoreAspectRatio, !m_ui->svgAsIsBox->isChecked());
+    m_canvas->renderVisible(&painter, svgRect, svgRect, Qt::IgnoreAspectRatio, !m_ui->svgAsIsBox->isChecked());
     painter.end();
 }
 

@@ -15,7 +15,7 @@
 #include "App/MainWindow.h"
 
 #include "3rdparty/likebackfrontend/LikeBack.h"
-#include "Desk/Desk.h"
+#include "Canvas/Canvas.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
@@ -58,10 +58,10 @@
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
-#define REQUIRE_DESK \
-    if (!m_desk) return;
-#define REQUIRE_DESK_R(value) \
-    if (!m_desk) return value;
+#define REQUIRE_CANVAS \
+    if (!m_canvas) return;
+#define REQUIRE_CANVAS_R(value) \
+    if (!m_canvas) return value;
 
 #include <QCommonStyle>
 class RubberBandStyle : public QCommonStyle {
@@ -92,7 +92,7 @@ class FWGraphicsView : public QGraphicsView {
     public:
         FWGraphicsView(QWidget * parent)
             : QGraphicsView(parent)
-            , m_desk(0)
+            , m_canvas(0)
         {
             // customize widget
             setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -115,24 +115,24 @@ class FWGraphicsView : public QGraphicsView {
             //setCacheMode(CacheBackground);
         }
 
-        void setDesk(Desk * desk)
+        void setCanvas(Canvas * canvas)
         {
-            setScene(desk);
-            m_desk = desk;
+            setScene(canvas);
+            m_canvas = canvas;
             resizeEvent(0);
         }
 
     protected:
         void resizeEvent(QResizeEvent * event)
         {
-            if (m_desk)
-                m_desk->resize(contentsRect().size());
+            if (m_canvas)
+                m_canvas->resize(contentsRect().size());
             if (event)
                 QGraphicsView::resizeEvent(event);
         }
 
     private:
-        Desk * m_desk;
+        Canvas * m_canvas;
 };
 
 // added here because it needs the FWGraphicsView declaration
@@ -142,7 +142,7 @@ class FWGraphicsView : public QGraphicsView {
 MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     : QWidget(parent)
     , ui(new Ui::MainWindow())
-    , m_desk(0)
+    , m_canvas(0)
     , m_aHelpTutorial(0)
     , m_aHelpSupport(0)
     , m_gBackActions(0)
@@ -166,7 +166,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     ui->b2->setDefaultAction(ui->aAddText);
     ui->b3->setDefaultAction(ui->aAddWebcam);
     ui->b4->setDefaultAction(ui->aAddFlickr);
-    ui->b5->setDefaultAction(ui->aAddDesk);
+    ui->b5->setDefaultAction(ui->aAddCanvas);
 #if QT_VERSION >= 0x040500
 #ifdef QT_OPENGL_LIB
     ui->accelBox->setEnabled(true);
@@ -191,7 +191,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
 
     // set the startup project mode
     on_projectType_activated(0);
-    m_modeInfo.setDeskDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
+    m_modeInfo.setCanvasDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
     m_modeInfo.setPrintDpi(300);
 
     // check stuff on the net
@@ -202,24 +202,24 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     // setup likeback
     createLikeBack();
 
-    // initial behavior: loaded Desk
+    // initial behavior: loaded Canvas
     if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first())) {
-        // create a custom desk and load content over it
-        Desk * initialDesk = new Desk(this);
-        stackDesk(initialDesk);
-        XmlRead::read(contentUrls.first(), this, initialDesk);
+        // create a custom canvas and load content over it
+        Canvas * initialCanvas = new Canvas(this);
+        stackCanvas(initialCanvas);
+        XmlRead::read(contentUrls.first(), this, initialCanvas);
     }
-    // initial behavior: new Desk with contents
+    // initial behavior: new Canvas with contents
     else if (!contentUrls.isEmpty()) {
-        // create a custom desk add contents to it
-        Desk * initialDesk = new Desk(this);
-        stackDesk(initialDesk);
-        initialDesk->addPictureContent(contentUrls);
+        // create a custom canvas add contents to it
+        Canvas * initialCanvas = new Canvas(this);
+        stackCanvas(initialCanvas);
+        initialCanvas->addPictureContent(contentUrls);
     }
-    // initial behavior: show the selection Scene, no Desk!
+    // initial behavior: show the selection Scene, no Canvas!
     else {
-        Desk * initialDesk = new Desk(this);
-        stackDesk(initialDesk);
+        Canvas * initialCanvas = new Canvas(this);
+        stackCanvas(initialCanvas);
         QList<QUrl> historyUrls = App::settings->recentFotowallUrls();
         if (!historyUrls.isEmpty()) {
             int dCount = historyUrls.size();
@@ -230,7 +230,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
             int cIdx = 0;
             int rIdx = 0;
             foreach (const QUrl & url, historyUrls) {
-                m_desk->addDeskContent(QStringList() << url.toString());
+                m_canvas->addCanvasContent(QStringList() << url.toString());
             }
         }
     }
@@ -242,43 +242,43 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
 MainWindow::~MainWindow()
 {
     // dump current layout
-    if (m_desk) {
+    if (m_canvas) {
         // this is an example of 'autosave-like function'
         //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-        //XmlSave::save(tempPath, m_desk, m_desk->projectMode(), m_modeInfo);
+        //XmlSave::save(tempPath, m_canvas, m_canvas->projectMode(), m_modeInfo);
     }
 
     // delete everything
     delete m_likeBack;
-    delete m_desk;
+    delete m_canvas;
     delete ui;
 }
 
 // TEMP
-void MainWindow::stackDesk(Desk * newDesk)
+void MainWindow::stackCanvas(Canvas * newCanvas)
 {
     // skip if already set
-    if (newDesk == m_desk)
+    if (newCanvas == m_canvas)
         return;
 
-    if (m_desk)
-        disconnect(m_desk, 0, this, 0);
-    m_desk = newDesk;
-    connect(m_desk, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
-    connect(m_desk, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
-    ui->canvas->setDesk(m_desk);
+    if (m_canvas)
+        disconnect(m_canvas, 0, this, 0);
+    m_canvas = newCanvas;
+    connect(m_canvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
+    connect(m_canvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
+    ui->canvas->setCanvas(m_canvas);
     update();
 
     // update breadcrumb
     static quint32 baseId = 0;
     int nextId = baseId + 1;
-    ui->deskNavBar->addNode(nextId, "test", baseId++);
+    ui->canvasNavBar->addNode(nextId, "test", baseId++);
 }
 
 void MainWindow::setModeInfo(ModeInfo modeInfo)
 {
     m_modeInfo = modeInfo;
-    m_modeInfo.setDeskDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
+    m_modeInfo.setCanvasDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
 }
 
 ModeInfo MainWindow::getModeInfo()
@@ -298,8 +298,8 @@ void MainWindow::restoreMode(int mode)
 
 void MainWindow::showIntroduction()
 {
-    if (m_desk)
-        m_desk->showIntroduction();
+    if (m_canvas)
+        m_canvas->showIntroduction();
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -308,7 +308,7 @@ void MainWindow::closeEvent(QCloseEvent * event)
     ButtonsDialog quitAsk("MainWindow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
     quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
-    if (m_desk && m_desk->pendingChanges()) {
+    if (m_canvas && m_canvas->pendingChanges()) {
         quitAsk.setMessage(tr("Are you sure you want to quit and lose your changes?"));
         quitAsk.setButtonText(QDialogButtonBox::Save, tr("Save"));
         quitAsk.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
@@ -345,8 +345,8 @@ QMenu * MainWindow::createArrangeMenu()
 
     QAction * aForceField = new QAction(tr("Enable force field"), menu);
     aForceField->setCheckable(true);
-    if (m_desk) // FIXME: reflect a property
-        aForceField->setChecked(m_desk->forceFieldEnabled());
+    if (m_canvas) // FIXME: reflect a property
+        aForceField->setChecked(m_canvas->forceFieldEnabled());
     connect(aForceField, SIGNAL(toggled(bool)), this, SLOT(slotArrangeForceField(bool)));
     menu->addAction(aForceField);
 
@@ -439,15 +439,15 @@ QMenu * MainWindow::createDecorationMenu()
 
     QAction * aTop = new QAction(tr("Top bar"), menu);
     aTop->setCheckable(true);
-    if (m_desk) // FIXME: bind to a property
-        aTop->setChecked(m_desk->topBarEnabled());
+    if (m_canvas) // FIXME: bind to a property
+        aTop->setChecked(m_canvas->topBarEnabled());
     connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
     menu->addAction(aTop);
 
     QAction * aBottom = new QAction(tr("Bottom bar"), menu);
     aBottom->setCheckable(true);
-    if (m_desk) // FIXME: bind to a property
-        aBottom->setChecked(m_desk->bottomBarEnabled());
+    if (m_canvas) // FIXME: bind to a property
+        aBottom->setChecked(m_canvas->bottomBarEnabled());
     connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
     menu->addAction(aBottom);
 
@@ -549,8 +549,8 @@ void MainWindow::setNormalProject()
     else
         showMaximized();
     ui->exportButton->setText(tr("Export"));
-    if (m_desk) // FIXME: bind to a property
-        m_desk->setProjectMode(Desk::ModeNormal);
+    if (m_canvas) // FIXME: bind to a property
+        m_canvas->setProjectMode(Canvas::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
 
@@ -559,11 +559,11 @@ void MainWindow::setCDProject()
     // A CD cover is a 4.75x4.715 inches square.
     m_modeInfo.setRealSizeInches(4.75, 4.75);
     m_modeInfo.setLandscape(false);
-    ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
+    ui->canvas->setFixedSize(m_modeInfo.canvasPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
-    if (m_desk) // FIXME: bind to a property
-        m_desk->setProjectMode(Desk::ModeCD);
+    if (m_canvas) // FIXME: bind to a property
+        m_canvas->setProjectMode(Canvas::ModeCD);
     ui->projectType->setCurrentIndex(1);
 }
 
@@ -571,11 +571,11 @@ void MainWindow::setDVDProject()
 {
     m_modeInfo.setRealSizeInches((float)10.83, (float)7.2);
     m_modeInfo.setLandscape(true);
-    ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
+    ui->canvas->setFixedSize(m_modeInfo.canvasPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
-    if (m_desk) // FIXME: bind to a property
-        m_desk->setProjectMode(Desk::ModeDVD);
+    if (m_canvas) // FIXME: bind to a property
+        m_canvas->setProjectMode(Canvas::ModeDVD);
     ui->projectType->setCurrentIndex(2);
 }
 
@@ -584,7 +584,7 @@ void MainWindow::setExactSizeProject()
     // Exact size mode
     if(m_modeInfo.realSize().isEmpty()) {
         ExactSizeDialog sizeDialog;
-        QPointF screenDpi = m_modeInfo.deskDpi();
+        QPointF screenDpi = m_modeInfo.canvasDpi();
         if (screenDpi.x() == screenDpi.y())
             sizeDialog.ui.screenDpi->setValue(screenDpi.x());
         else
@@ -603,11 +603,11 @@ void MainWindow::setExactSizeProject()
         else
             m_modeInfo.setRealSizeInches(w, h);
     }
-    ui->canvas->setFixedSize(m_modeInfo.deskPixelSize());
+    ui->canvas->setFixedSize(m_modeInfo.canvasPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
-    if (m_desk) // FIXME: bind to a property
-        m_desk->setProjectMode(Desk::ModeExactSize);
+    if (m_canvas) // FIXME: bind to a property
+        m_canvas->setProjectMode(Canvas::ModeExactSize);
     ui->projectType->setCurrentIndex(3);
 }
 
@@ -634,9 +634,9 @@ void MainWindow::on_projectType_activated(int index)
     }
 }
 
-void MainWindow::on_aAddDesk_triggered()
+void MainWindow::on_aAddCanvas_triggered()
 {
-    REQUIRE_DESK
+    REQUIRE_CANVAS
     // make up the default load path (stored as 'Fotowall/LoadProjectDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
@@ -645,18 +645,18 @@ void MainWindow::on_aAddDesk_triggered()
     if (fileNames.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileNames[0]).absolutePath());
-    m_desk->addDeskContent(fileNames);
+    m_canvas->addCanvasContent(fileNames);
 }
 
 void MainWindow::on_aAddFlickr_toggled(bool on)
 {
-    REQUIRE_DESK
-    m_desk->setWebContentSelectorVisible(on);
+    REQUIRE_CANVAS
+    m_canvas->setWebContentSelectorVisible(on);
 }
 
 void MainWindow::on_aAddPicture_triggered()
 {
-    REQUIRE_DESK
+    REQUIRE_CANVAS
     // build the extensions list
     QString extensions;
     foreach (const QByteArray & format, QImageReader::supportedImageFormats())
@@ -670,19 +670,19 @@ void MainWindow::on_aAddPicture_triggered()
     if (fileNames.isEmpty())
         return;    
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
-    m_desk->addPictureContent(fileNames);
+    m_canvas->addPictureContent(fileNames);
 }
 
 void MainWindow::on_aAddText_triggered()
 {
-    REQUIRE_DESK
-    m_desk->addTextContent();
+    REQUIRE_CANVAS
+    m_canvas->addTextContent();
 }
 
 void MainWindow::on_aAddWebcam_triggered()
 {
-    REQUIRE_DESK
-    m_desk->addWebcamContent(0);
+    REQUIRE_CANVAS
+    m_canvas->addWebcamContent(0);
 }
 
 #ifdef QT_OPENGL_LIB
@@ -793,8 +793,8 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #endif
 
         // set 'NoBackground' to show that we're transparent for real
-        if (m_desk) // FIXME: bind to a property
-            m_desk->setBackMode(1);
+        if (m_canvas) // FIXME: bind to a property
+            m_canvas->setBackMode(1);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
@@ -818,8 +818,8 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 
 void MainWindow::on_introButton_clicked()
 {
-    REQUIRE_DESK
-    m_desk->showIntroduction();
+    REQUIRE_CANVAS
+    m_canvas->showIntroduction();
 }
 
 
@@ -845,7 +845,7 @@ void MainWindow::on_lbBug_clicked()
 
 bool MainWindow::on_loadButton_clicked()
 {
-    REQUIRE_DESK_R(false)
+    REQUIRE_CANVAS_R(false)
 
     // make up the default load path (stored as 'Fotowall/LoadProjectDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
@@ -855,12 +855,12 @@ bool MainWindow::on_loadButton_clicked()
     if (fileName.isNull())
         return false;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-    return XmlRead::read(fileName, this, m_desk);
+    return XmlRead::read(fileName, this, m_canvas);
 }
 
 bool MainWindow::on_saveButton_clicked()
 {
-    REQUIRE_DESK_R(false)
+    REQUIRE_CANVAS_R(false)
 
     // make up the default save path (stored as 'Fotowall/SaveProjectDir')
     QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
@@ -874,20 +874,20 @@ bool MainWindow::on_saveButton_clicked()
     App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
         fileName += ".fotowall";
-    return XmlSave::save(fileName, m_desk, m_desk->projectMode(), m_modeInfo);
+    return XmlSave::save(fileName, m_canvas, m_canvas->projectMode(), m_modeInfo);
 }
 
 void MainWindow::on_exportButton_clicked()
 {
-    REQUIRE_DESK
+    REQUIRE_CANVAS
     // show the Export Wizard on normal mode
-    if (m_desk->projectMode() == Desk::ModeNormal) {
-        ExportWizard(m_desk).exec();
+    if (m_canvas->projectMode() == Canvas::ModeNormal) {
+        ExportWizard(m_canvas).exec();
         return;
     }
 
     // print on other modes
-    m_desk->printAsImage(m_modeInfo.printDpi(), m_modeInfo.printPixelSize(), m_modeInfo.landscape());
+    m_canvas->printAsImage(m_modeInfo.printDpi(), m_modeInfo.printPixelSize(), m_modeInfo.landscape());
 }
 /*
 void MainWindow::on_quitButton_clicked()
@@ -897,22 +897,22 @@ void MainWindow::on_quitButton_clicked()
 */
 void MainWindow::slotActionSelectAll()
 {
-    REQUIRE_DESK
-    m_desk->selectAllContent();
+    REQUIRE_CANVAS
+    m_canvas->selectAllContent();
 }
 
 void MainWindow::slotArrangeForceField(bool checked)
 {
-    REQUIRE_DESK
-    m_desk->setForceFieldEnabled(checked);
+    REQUIRE_CANVAS
+    m_canvas->setForceFieldEnabled(checked);
 }
 
-#include "Desk/AbstractContent.h"
+#include "Canvas/AbstractContent.h"
 void MainWindow::slotArrangeRandom()
 {
-    REQUIRE_DESK
-    QRectF r = m_desk->sceneRect();
-    foreach (QGraphicsItem * item, m_desk->items()) {
+    REQUIRE_CANVAS
+    QRectF r = m_canvas->sceneRect();
+    foreach (QGraphicsItem * item, m_canvas->items()) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(item);
         if (!content)
             continue;
@@ -926,34 +926,34 @@ void MainWindow::slotArrangeRandom()
 
 void MainWindow::slotDecoTopBar(bool checked)
 {
-    REQUIRE_DESK
-    m_desk->setTopBarEnabled(checked);
+    REQUIRE_CANVAS
+    m_canvas->setTopBarEnabled(checked);
 }
 
 void MainWindow::slotDecoBottomBar(bool checked)
 {
-    REQUIRE_DESK
-    m_desk->setBottomBarEnabled(checked);
+    REQUIRE_CANVAS
+    m_canvas->setBottomBarEnabled(checked);
 }
 
 void MainWindow::slotDecoSetTitle()
 {
-    REQUIRE_DESK
+    REQUIRE_CANVAS
     // set a dummy title, if none
-    if (m_desk->titleText().isEmpty())
-        m_desk->setTitleText("...");
+    if (m_canvas->titleText().isEmpty())
+        m_canvas->setTitleText("...");
 
     // change title dialog
     bool ok = false;
-    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_desk->titleText(), &ok);
+    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_canvas->titleText(), &ok);
     if (ok)
-        m_desk->setTitleText(title);
+        m_canvas->setTitleText(title);
 }
 
 void MainWindow::slotDecoClearTitle()
 {
-    REQUIRE_DESK
-    m_desk->setTitleText(QString());
+    REQUIRE_CANVAS
+    m_canvas->setTitleText(QString());
 }
 
 void MainWindow::slotHelpWebsite()
@@ -1014,30 +1014,30 @@ void MainWindow::slotHelpUpdates()
 
 void MainWindow::slotSetBackMode(QAction* action)
 {
-    REQUIRE_DESK
+    REQUIRE_CANVAS
     int choice = action->property("id").toUInt();
-    m_desk->setBackMode(choice);
+    m_canvas->setBackMode(choice);
 }
 
 void MainWindow::slotSetBackRatio(QAction* action)
 {
-    REQUIRE_DESK
+    REQUIRE_CANVAS
     Qt::AspectRatioMode mode = (Qt::AspectRatioMode)action->property("mode").toInt();
-    m_desk->setBackContentRatio(mode);
+    m_canvas->setBackContentRatio(mode);
 }
 
 void MainWindow::slotBackModeChanged()
 {
-    REQUIRE_DESK
-    int mode = m_desk->backMode();
+    REQUIRE_CANVAS
+    int mode = m_canvas->backMode();
     m_gBackActions->actions()[mode - 1]->setChecked(true);
     m_gBackActions->actions()[2]->setEnabled(mode == 3);
 }
 
 void MainWindow::slotBackRatioChanged()
 {
-    REQUIRE_DESK
-    Qt::AspectRatioMode mode = m_desk->backContentRatio();
+    REQUIRE_CANVAS
+    Qt::AspectRatioMode mode = m_canvas->backContentRatio();
     if (mode == Qt::KeepAspectRatioByExpanding)
         m_gBackRatioActions->actions()[0]->setChecked(true);
     else if (mode == Qt::KeepAspectRatio)

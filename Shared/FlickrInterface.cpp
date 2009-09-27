@@ -68,7 +68,7 @@ FlickrInterface::FlickrInterface(QNetworkAccessManager * manager, QObject * pare
 FlickrInterface::~FlickrInterface()
 {
     dropSearch();
-    m_nam = 0;  // owned by Desk
+    m_nam = 0;  // owned externally
 }
 
 void FlickrInterface::searchPics(const QString & text)

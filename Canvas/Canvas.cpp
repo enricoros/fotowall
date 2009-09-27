@@ -12,12 +12,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "Desk.h"
+#include "Canvas.h"
 
 #include "Frames/FrameFactory.h"
 #include "Shared/ColorPickerItem.h"
 #include "Shared/FlickrInterface.h"
-#include "DeskViewContent.h"
+#include "CanvasViewContent.h"
 #include "HelpItem.h"
 #include "HighlightItem.h"
 #include "PictureContent.h"
@@ -47,7 +47,7 @@
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-Desk::Desk(QObject * parent)
+Canvas::Canvas(QObject * parent)
     : QGraphicsScene(parent)
     , m_networkAccessManager(0)
     , m_helpItem(0)
@@ -121,7 +121,7 @@ Desk::Desk(QObject * parent)
 #endif
 }
 
-Desk::~Desk()
+Canvas::~Canvas()
 {
     delete m_forceFieldTimer;
     qDeleteAll(m_highlightItems);
@@ -142,7 +142,7 @@ static QPoint nearCenter(const QRectF & rect)
     return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
 }
 
-void Desk::addDeskContent(const QStringList & fileNames)
+void Canvas::addCanvasContent(const QStringList & fileNames)
 {
     int offset = -30 * fileNames.size() / 2;
     QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
@@ -151,7 +151,7 @@ void Desk::addDeskContent(const QStringList & fileNames)
             continue;
 
         // create picture and load the file
-        DeskViewContent * d = createDesk(pos);
+        CanvasViewContent * d = createCanvasView(pos);
         if (!d->load(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
@@ -160,7 +160,7 @@ void Desk::addDeskContent(const QStringList & fileNames)
     }
 }
 
-void Desk::addPictureContent(const QStringList & fileNames)
+void Canvas::addPictureContent(const QStringList & fileNames)
 {
     int offset = -30 * fileNames.size() / 2;
     QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
@@ -178,19 +178,19 @@ void Desk::addPictureContent(const QStringList & fileNames)
     }
 }
 
-void Desk::addTextContent()
+void Canvas::addTextContent()
 {
     createText(nearCenter(sceneRect()));
 }
 
-void Desk::addWebcamContent(int input)
+void Canvas::addWebcamContent(int input)
 {
     createWebcam(input, nearCenter(sceneRect()));
 }
 
 
 /// Selectors
-void Desk::setWebContentSelectorVisible(bool visible)
+void Canvas::setWebContentSelectorVisible(bool visible)
 {
     if (!visible && m_webContentSelector) {
         removeItem(m_webContentSelector);
@@ -207,14 +207,12 @@ void Desk::setWebContentSelectorVisible(bool visible)
     }
 }
 
-bool Desk::webContentSelectorVisible() const
+bool Canvas::webContentSelectorVisible() const
 {
     return m_webContentSelector;
 }
 
-
-/// resize Desk
-void Desk::resize(const QSize & size)
+void Canvas::resize(const QSize & size)
 {
     // relayout contents
     m_size = size;
@@ -238,14 +236,14 @@ void Desk::resize(const QSize & size)
 }
 
 /// Item Interaction
-void Desk::selectAllContent(bool selected)
+void Canvas::selectAllContent(bool selected)
 {
     foreach (AbstractContent * content, m_content)
         content->setSelected(selected);
 }
 
 /// Arrangement
-void Desk::setForceFieldEnabled(bool enabled)
+void Canvas::setForceFieldEnabled(bool enabled)
 {
     if (enabled && !m_forceFieldTimer) {
         m_forceFieldTimer = new QTimer(this);
@@ -260,13 +258,13 @@ void Desk::setForceFieldEnabled(bool enabled)
     }
 }
 
-bool Desk::forceFieldEnabled() const
+bool Canvas::forceFieldEnabled() const
 {
     return m_forceFieldTimer;
 }
 
 /// Decorations
-void Desk::setBackMode(int mode)
+void Canvas::setBackMode(int mode)
 {
     // 1: none / 2: background gradient
     bool enableGradient = mode == 2;
@@ -285,12 +283,12 @@ void Desk::setBackMode(int mode)
     emit backModeChanged();
 }
 
-int Desk::backMode() const
+int Canvas::backMode() const
 {
     return m_backContent ? 3 : m_backGradientEnabled ? 2 : 1;
 }
 
-void Desk::setBackContentRatio(Qt::AspectRatioMode mode)
+void Canvas::setBackContentRatio(Qt::AspectRatioMode mode)
 {
     if (m_backContentRatio != mode) {
         m_backContentRatio = mode;
@@ -299,12 +297,12 @@ void Desk::setBackContentRatio(Qt::AspectRatioMode mode)
     }
 }
 
-Qt::AspectRatioMode Desk::backContentRatio() const
+Qt::AspectRatioMode Canvas::backContentRatio() const
 {
     return m_backContentRatio;
 }
 
-void Desk::setTopBarEnabled(bool enabled)
+void Canvas::setTopBarEnabled(bool enabled)
 {
     if (enabled == m_topBarEnabled)
         return;
@@ -313,12 +311,12 @@ void Desk::setTopBarEnabled(bool enabled)
     update();
 }
 
-bool Desk::topBarEnabled() const
+bool Canvas::topBarEnabled() const
 {
     return m_topBarEnabled;
 }
 
-void Desk::setBottomBarEnabled(bool enabled)
+void Canvas::setBottomBarEnabled(bool enabled)
 {
     if (enabled == m_bottomBarEnabled)
         return;
@@ -327,24 +325,24 @@ void Desk::setBottomBarEnabled(bool enabled)
     update();
 }
 
-bool Desk::bottomBarEnabled() const
+bool Canvas::bottomBarEnabled() const
 {
     return m_bottomBarEnabled;
 }
 
-void Desk::setTitleText(const QString & text)
+void Canvas::setTitleText(const QString & text)
 {
     m_titleText = text;
     m_titleColorPicker->setVisible(!text.isEmpty());
     update(0, 0, m_size.width(), 50);
 }
 
-QString Desk::titleText() const
+QString Canvas::titleText() const
 {
     return m_titleText;
 }
 
-bool Desk::pendingChanges() const
+bool Canvas::pendingChanges() const
 {
     return !m_content.isEmpty();
 }
@@ -361,7 +359,7 @@ bool Desk::pendingChanges() const
         highlight->show(); \
     }
 
-void Desk::showIntroduction()
+void Canvas::showIntroduction()
 {
     if (m_helpItem)
         return;
@@ -385,19 +383,19 @@ void Desk::showIntroduction()
     }
 }
 
-void Desk::blinkBackGradients()
+void Canvas::blinkBackGradients()
 {
     HIGHLIGHT(1.0, 0.0, true);
     HIGHLIGHT(1.0, 1.0, true);
 }
 
 /// Modes
-Desk::Mode Desk::projectMode() const
+Canvas::Mode Canvas::projectMode() const
 {
     return m_projectMode;
 }
 
-void Desk::setProjectMode(Mode mode)
+void Canvas::setProjectMode(Mode mode)
 {
     if (m_projectMode != mode) {
         m_projectMode = mode;
@@ -412,7 +410,7 @@ void Desk::setProjectMode(Mode mode)
     }
 }
 
-void Desk::toXml(QDomElement & de) const
+void Canvas::toXml(QDomElement & de) const
 {
     QDomDocument doc = de.ownerDocument();
 
@@ -485,7 +483,7 @@ void Desk::toXml(QDomElement & de) const
 }
 
 
-void Desk::fromXml(QDomElement & de)
+void Canvas::fromXml(QDomElement & de)
 {
     setTitleText(de.firstChildElement("title").text());
 
@@ -523,7 +521,7 @@ void Desk::fromXml(QDomElement & de)
     update();
 }
 
-void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
+void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
 {
     if (hideTools) {
         clearSelection();
@@ -546,7 +544,7 @@ void Desk::renderVisible(QPainter * painter, const QRectF & target, const QRectF
     }
 }
 
-QImage Desk::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
+QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
 {
     QImage result(iSize, QImage::Format_ARGB32);
     result.fill(0);
@@ -566,7 +564,7 @@ QImage Desk::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioM
     return result;
 }
 
-bool Desk::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode)
+bool Canvas::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode)
 {
     // setup printer
     QPrinter printer;
@@ -595,7 +593,7 @@ bool Desk::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape,
 }
 
 /// Drag & Drop image files
-void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
+void Canvas::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
     // dispatch to children but accept it only for image files
     QGraphicsScene::dragEnterEvent(event);
@@ -634,20 +632,20 @@ void Desk::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     }
 }
 
-void Desk::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
+void Canvas::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     // dispatch to children
     event->ignore();
     QGraphicsScene::dragMoveEvent(event);
 
-    // or continue accepting event for the Desk
+    // or continue accepting event for this
     if (!event->isAccepted()) {
         event->setDropAction(Qt::CopyAction);
         event->accept();
     }
 }
 
-void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
+void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     // handle by children
     event->ignore();
@@ -655,7 +653,7 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
     if (event->isAccepted())
         return;
 
-    // handle as a Desk file drop event
+    // handle as an own file drop event
     if (event->mimeData()->hasUrls()) {
         event->accept();
         QPoint pos = event->scenePos().toPoint();
@@ -683,7 +681,7 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
         return;
     }
 
-    // handle as a Desk content drop event
+    // handle as an own content drop event
     if (event->mimeData()->hasFormat("webselector/idx") && m_webContentSelector) {
 
         // get the flickr interface
@@ -722,14 +720,14 @@ void Desk::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 }
 
-void Desk::keyPressEvent(QKeyEvent * keyEvent)
+void Canvas::keyPressEvent(QKeyEvent * keyEvent)
 {
     QGraphicsScene::keyPressEvent(keyEvent);
     if (!keyEvent->isAccepted() && keyEvent->key() == Qt::Key_Delete)
         slotDeleteContent();
 }
 
-void Desk::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
+void Canvas::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
 {
     // first dispatch doubleclick to items
     mouseEvent->ignore();
@@ -741,7 +739,7 @@ void Desk::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
     setBackMode(m_backGradientEnabled ? 2 : 1);
 }
 
-void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
+void Canvas::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 {
     // context menu on empty area
     //if (items(event->scenePos()).isEmpty()) {
@@ -751,7 +749,7 @@ void Desk::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 
 
 /// Scene Background & Foreground
-void Desk::drawBackground(QPainter * painter, const QRectF & rect)
+void Canvas::drawBackground(QPainter * painter, const QRectF & rect)
 {
     // draw content if set
     if (m_backContent) {
@@ -798,7 +796,7 @@ static void drawVerticalShadow(QPainter * painter, int width, int height)
     painter->fillRect( 0, 0, width, height, lg );
 }
 
-void Desk::drawForeground(QPainter * painter, const QRectF & rect)
+void Canvas::drawForeground(QPainter * painter, const QRectF & rect)
 {
     // draw header/footer
     const int top = (int)rect.top();
@@ -844,7 +842,7 @@ void Desk::drawForeground(QPainter * painter, const QRectF & rect)
     }
 }
 
-void Desk::initContent(AbstractContent * content, const QPoint & pos)
+void Canvas::initContent(AbstractContent * content, const QPoint & pos)
 {
     connect(content, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
     connect(content, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
@@ -860,7 +858,7 @@ void Desk::initContent(AbstractContent * content, const QPoint & pos)
     m_content.append(content);
 }
 
-void Desk::setBackContent(AbstractContent * content)
+void Canvas::setBackContent(AbstractContent * content)
 {
     // skip if unchanged
     if (content == m_backContent)
@@ -889,14 +887,14 @@ void Desk::setBackContent(AbstractContent * content)
     emit backModeChanged();
 }
 
-DeskViewContent * Desk::createDesk(const QPoint & pos)
+CanvasViewContent * Canvas::createCanvasView(const QPoint & pos)
 {
-    DeskViewContent * d = new DeskViewContent(this);
+    CanvasViewContent * d = new CanvasViewContent(this);
     initContent(d, pos);
     return d;
 }
 
-PictureContent * Desk::createPicture(const QPoint & pos)
+PictureContent * Canvas::createPicture(const QPoint & pos)
 {
     PictureContent * p = new PictureContent(this);
     initContent(p, pos);
@@ -906,21 +904,21 @@ PictureContent * Desk::createPicture(const QPoint & pos)
     return p;
 }
 
-TextContent * Desk::createText(const QPoint & pos)
+TextContent * Canvas::createText(const QPoint & pos)
 {
     TextContent * t = new TextContent(this);
     initContent(t, pos);
     return t;
 }
 
-WebcamContent * Desk::createWebcam(int input, const QPoint & pos)
+WebcamContent * Canvas::createWebcam(int input, const QPoint & pos)
 {
     WebcamContent * v = new WebcamContent(input, this);
     initContent(v, pos);
     return v;
 }
 
-void Desk::deleteConfig(AbstractConfig * config)
+void Canvas::deleteConfig(AbstractConfig * config)
 {
     if (config) {
         m_configs.removeAll(config);
@@ -929,7 +927,7 @@ void Desk::deleteConfig(AbstractConfig * config)
 }
 
 /// Markers
-void Desk::setDVDMarkers()
+void Canvas::setDVDMarkers()
 {
     // Add informations items to show the back, front, and side position
 
@@ -949,7 +947,7 @@ void Desk::setDVDMarkers()
     m_markerItems.push_back(textFront);
 }
 
-void Desk::clearMarkers()
+void Canvas::clearMarkers()
 {
     // Remove the information items
     qDeleteAll(m_markerItems);
@@ -957,7 +955,7 @@ void Desk::clearMarkers()
 }
 
 /// Slots
-void Desk::slotSelectionChanged()
+void Canvas::slotSelectionChanged()
 {
     // show the config widget if 1 AbstractContent is selected
     QList<QGraphicsItem *> selection = selectedItems();
@@ -985,7 +983,7 @@ void Desk::slotSelectionChanged()
     emit showPropertiesWidget(0);
 }
 
-void Desk::slotConfigureContent(const QPoint & scenePoint)
+void Canvas::slotConfigureContent(const QPoint & scenePoint)
 {
     // get the content and ensure it hasn't already a property window
     AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
@@ -1022,12 +1020,12 @@ void Desk::slotConfigureContent(const QPoint & scenePoint)
     p->setFocus();
 }
 
-void Desk::slotBackgroundContent()
+void Canvas::slotBackgroundContent()
 {
     setBackContent(dynamic_cast<AbstractContent *>(sender()));
 }
 
-void Desk::slotStackContent(int op)
+void Canvas::slotStackContent(int op)
 {
     AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
     if (!content || m_content.size() < 2)
@@ -1079,7 +1077,7 @@ void Desk::slotStackContent(int op)
         content->setZValue(z++);
 }
 
-void Desk::slotDeleteContent()
+void Canvas::slotDeleteContent()
 {
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     AbstractContent * senderContent = dynamic_cast<AbstractContent *>(sender());
@@ -1111,12 +1109,12 @@ void Desk::slotDeleteContent()
     }
 }
 
-void Desk::slotDeleteConfig()
+void Canvas::slotDeleteConfig()
 {
     deleteConfig(dynamic_cast<AbstractConfig *>(sender()));
 }
 
-void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
+void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 {
     foreach (AbstractContent * content, m_content) {
         if (all || content->isSelected()) {
@@ -1127,7 +1125,7 @@ void Desk::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
     }
 }
 
-void Desk::slotApplyEffect(const PictureEffect & effect, bool all)
+void Canvas::slotApplyEffect(const PictureEffect & effect, bool all)
 {
     QList<PictureContent *> pictures = projectList<AbstractContent, PictureContent>(m_content);
     foreach (PictureContent * picture, pictures)
@@ -1135,50 +1133,50 @@ void Desk::slotApplyEffect(const PictureEffect & effect, bool all)
             picture->addEffect(effect);
 }
 
-void Desk::slotCrop()
+void Canvas::slotCrop()
 {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
     foreach (PictureContent * picture, pictures)
         picture->crop();
 }
 
-void Desk::slotFlipHorizontally()
+void Canvas::slotFlipHorizontally()
 {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
     foreach (PictureContent * picture, pictures)
         picture->addEffect(PictureEffect::FlipH);
 }
 
-void Desk::slotFlipVertically()
+void Canvas::slotFlipVertically()
 {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
     foreach (PictureContent * picture, pictures)
         picture->addEffect(PictureEffect::FlipV);
 }
 
-void Desk::slotTitleColorChanged()
+void Canvas::slotTitleColorChanged()
 {
     update(0, 0, m_size.width(), 50);
 }
 
-void Desk::slotForeColorChanged()
+void Canvas::slotForeColorChanged()
 {
     update(0, 0, m_size.width(), 50);
     update(0, m_size.height() - 50, m_size.width(), 50);
 }
 
-void Desk::slotGradColorChanged()
+void Canvas::slotGradColorChanged()
 {
     update();
 }
 
-void Desk::slotBackContentChanged()
+void Canvas::slotBackContentChanged()
 {
     m_backCache = QPixmap();
     update();
 }
 
-void Desk::slotCloseIntroduction()
+void Canvas::slotCloseIntroduction()
 {
     m_helpItem->dispose();
     m_helpItem = 0;
@@ -1187,7 +1185,7 @@ void Desk::slotCloseIntroduction()
     m_highlightItems.clear();
 }
 
-void Desk::slotApplyForce()
+void Canvas::slotApplyForce()
 {
     // initial consts
     const QRectF sRect = sceneRect();

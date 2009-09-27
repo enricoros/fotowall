@@ -22,13 +22,13 @@ ModeInfo::ModeInfo() : m_printDpi(300), m_landscape(false)
 {
 }
 
-void ModeInfo::setDeskDpi(float dpiX, float dpiY)
+void ModeInfo::setCanvasDpi(float dpiX, float dpiY)
 {
-    m_deskDpi = QPointF(dpiX, dpiY);
+    m_canvasDpi = QPointF(dpiX, dpiY);
 }
-QPointF ModeInfo::deskDpi() const
+QPointF ModeInfo::canvasDpi() const
 {
-    return m_deskDpi;
+    return m_canvasDpi;
 }
 
 void ModeInfo::setPrintDpi(float dpi)
@@ -55,9 +55,9 @@ QSizeF ModeInfo::realSize() const
     return m_realSize;
 }
 
-QSize ModeInfo::deskPixelSize() const
+QSize ModeInfo::canvasPixelSize() const
 {
-    return QSize(m_realSize.width() * m_deskDpi.x(), m_realSize.height() * m_deskDpi.y());
+    return QSize(m_realSize.width() * m_canvasDpi.x(), m_realSize.height() * m_canvasDpi.y());
 }
 QSize ModeInfo::printPixelSize() const
 {

@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __Desk_h__
-#define __Desk_h__
+#ifndef __Canvas_h__
+#define __Canvas_h__
 
 #include <QGraphicsScene>
 #include <QDataStream>
@@ -27,7 +27,7 @@ class AbstractContent;
 class AbstractConfig;
 struct PictureEffect;
 class ColorPickerItem;
-class DeskViewContent;
+class CanvasViewContent;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
@@ -37,17 +37,17 @@ class TextContent;
 class WebcamContent;
 class WebContentSelectorItem;
 
-class Desk : public QGraphicsScene
+class Canvas : public QGraphicsScene
 {
     Q_OBJECT
     public:
         friend class XmlRead;
         friend class XmlSave;
-        Desk(QObject * parent = 0);
-        ~Desk();
+        Canvas(QObject * parent = 0);
+        ~Canvas();
 
         // add content
-        void addDeskContent(const QStringList & fileNames);
+        void addCanvasContent(const QStringList & fileNames);
         void addPictureContent(const QStringList & fileNames);
         void addTextContent();
         void addWebcamContent(int input);
@@ -91,7 +91,7 @@ class Desk : public QGraphicsScene
         void toXml(QDomElement &de) const;
         void fromXml(QDomElement &de);
 
-        // render the Desk, but not the invisible items
+        // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
         QImage renderedImage(const QSize & size, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
@@ -113,7 +113,7 @@ class Desk : public QGraphicsScene
     private:
         void initContent(AbstractContent * content, const QPoint & pos);
         void setBackContent(AbstractContent * content);
-        DeskViewContent * createDesk(const QPoint & pos);
+        CanvasViewContent * createCanvasView(const QPoint & pos);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
         WebcamContent * createWebcam(int input, const QPoint & pos);

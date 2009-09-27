@@ -24,18 +24,18 @@
 #include <QDomElement>
 #include "App/ModeInfo.h"
 
-class Desk;
+class Canvas;
 
-class XmlSave : public QObject
+class XmlSave
 {
     public:
         XmlSave();
 
-        static bool save(const QString & filePath, const Desk * desk, int mode, const ModeInfo & modeInfo);
+        static bool save(const QString & filePath, const Canvas * canvas, int mode, const ModeInfo & modeInfo);
 
         bool writeFile(const QString & filePath);
-        void saveContent(const Desk *);
-        void saveDesk(const Desk *);
+        void saveContent(const Canvas *);
+        void saveCanvas(const Canvas *);
         void saveProject(int mode, const ModeInfo & modeInfo);
 
     private:
@@ -43,7 +43,7 @@ class XmlSave : public QObject
         QDomElement m_rootElement;
         QDomElement m_contentElements;
         QDomElement m_projectElement;
-        QDomElement m_deskElement;
+        QDomElement m_canvasElement;
 };
 
 #endif

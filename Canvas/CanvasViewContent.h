@@ -12,29 +12,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __DeskViewContent_h__
-#define __DeskViewContent_h__
+#ifndef __CanvasViewContent_h__
+#define __CanvasViewContent_h__
 
 #include "AbstractContent.h"
 #include <QPixmap>
-class Desk;
+class Canvas;
 
 /**
-    \brief Displays a Desk
+    \brief Use another Canvas as content
 */
-class DeskViewContent : public AbstractContent
+class CanvasViewContent : public AbstractContent
 {
     Q_OBJECT
     public:
-        DeskViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-//        ~DeskViewContent();
+        CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+//        ~CanvasViewContent();
 
         bool load(const QString & filePath, bool keepRatio = false, bool setName = false);
-        //Desk * takeDesk();
-        //void setDesk(Desk * desk);
+        //Canvas * takeCanvas();
+        //void setCanvas(Canvas * canvas);
 
         // ::AbstractContent
-        QString contentName() const { return tr("DeskXXX"); }
+        QString contentName() const { return tr("CanvasXXX"); }
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
@@ -48,10 +48,10 @@ class DeskViewContent : public AbstractContent
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
-        Desk * m_desk;
+        Canvas * m_canvas;
 
     private Q_SLOTS:
-        void slotRepaintDesk(const QList<QRectF> & exposed);
+        void slotRepaintCanvas(const QList<QRectF> & exposed);
 };
 
 #endif

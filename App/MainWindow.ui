@@ -1006,7 +1006,7 @@ stop:1 rgba(237, 237, 237, 255))
     </widget>
    </item>
    <item>
-    <widget class="BreadCrumbBar" name="deskNavBar" native="true"/>
+    <widget class="BreadCrumbBar" name="canvasNavBar" native="true"/>
    </item>
    <item>
     <widget class="FWGraphicsView" name="canvas">
@@ -1055,13 +1055,13 @@ stop:1 rgba(237, 237, 237, 255))
     <string>Add Flickr</string>
    </property>
   </action>
-  <action name="aAddDesk">
+  <action name="aAddCanvas">
    <property name="icon">
     <iconset resource="../fotowall.qrc">
      <normaloff>:/data/textinsertimage.png</normaloff>:/data/textinsertimage.png</iconset>
    </property>
    <property name="text">
-    <string>Add Desk</string>
+    <string>Add Fotowall File</string>
    </property>
   </action>
  </widget>

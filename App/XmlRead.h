@@ -21,22 +21,22 @@
 
 #include <QObject>
 #include <QDomElement>
-class Desk;
+class Canvas;
 class MainWindow;
 
-class XmlRead : public QObject
+class XmlRead
 {
     public:
-        static bool read(const QString & filePath, MainWindow * mw, Desk * desk);
+        static bool read(const QString & filePath, MainWindow * mw, Canvas * canvas);
 
         bool loadFile(const QString & filePath);
         void readProject(MainWindow * mainWindow);
-        void readDesk(Desk * desk);
-        void readContent(Desk * desk);
+        void readCanvas(Canvas * canvas);
+        void readContent(Canvas * canvas);
 
     private:
         QDomElement m_projectElement;
-        QDomElement m_deskElement;
+        QDomElement m_canvasElement;
         QDomElement m_contentElement;
 };
 

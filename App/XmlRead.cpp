@@ -18,11 +18,11 @@
 
 #include "XmlRead.h"
 
-#include "Desk/AbstractContent.h"
-#include "Desk/Desk.h"
-#include "Desk/PictureContent.h"
-#include "Desk/TextContent.h"
-#include "Desk/WebcamContent.h"
+#include "Canvas/AbstractContent.h"
+#include "Canvas/Canvas.h"
+#include "Canvas/PictureContent.h"
+#include "Canvas/TextContent.h"
+#include "Canvas/WebcamContent.h"
 #include "Frames/FrameFactory.h"
 #include "App.h"
 #include "MainWindow.h"
@@ -34,7 +34,7 @@
 #include <QStringList>
 
 
-bool XmlRead::read(const QString & filePath, MainWindow * mw, Desk * desk)
+bool XmlRead::read(const QString & filePath, MainWindow * mw, Canvas * canvas)
 {
     // parse the DOM of the file
     XmlRead xmlRead;
@@ -44,9 +44,9 @@ bool XmlRead::read(const QString & filePath, MainWindow * mw, Desk * desk)
     // create objects and read data
     if (mw)
         xmlRead.readProject(mw);
-    if (desk) {
-        xmlRead.readDesk(desk);
-        xmlRead.readContent(desk);
+    if (canvas) {
+        xmlRead.readCanvas(canvas);
+        xmlRead.readContent(canvas);
     }
 
     // add to the recent history
@@ -59,7 +59,7 @@ bool XmlRead::loadFile(const QString & filePath)
     // Load the file
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::critical(0, tr("Loading error"), tr("Unable to load the Fotowall file %1").arg(filePath));
+        QMessageBox::critical(0, QObject::tr("Loading error"), QObject::tr("Unable to load the Fotowall file %1").arg(filePath));
         return false;
     }
 
@@ -67,7 +67,7 @@ bool XmlRead::loadFile(const QString & filePath)
     QString error;
     QDomDocument doc;
     if (!doc.setContent(&file, false, &error)) {
-        QMessageBox::critical(0, tr("Parsing error"), tr("Unable to parse the Fotowall file %1. The error was: %2").arg(filePath, error));
+        QMessageBox::critical(0, QObject::tr("Parsing error"), QObject::tr("Unable to parse the Fotowall file %1. The error was: %2").arg(filePath, error));
         return false;
     }
     file.close();
@@ -75,7 +75,7 @@ bool XmlRead::loadFile(const QString & filePath)
     // Get the 3 main Nodes
     QDomElement root = doc.documentElement(); // the root node
     m_projectElement = root.firstChildElement("project");
-    m_deskElement = root.firstChildElement("desk");
+    m_canvasElement = root.firstChildElement("desk");
     m_contentElement = root.firstChildElement("content");
     return true;
 }
@@ -102,18 +102,18 @@ void XmlRead::readProject(MainWindow *mainWindow)
     mainWindow->restoreMode(mode);
 }
 
-void XmlRead::readDesk(Desk * desk)
+void XmlRead::readCanvas(Canvas * canvas)
 {
-    // clear Desk [TODO: clear every content! or disasters happen]
-    qDeleteAll(desk->m_content);
-    desk->m_content.clear();
-    desk->m_configs.clear();
-    desk->m_backContent = 0;
+    // clear Canvas [TODO: clear every content! or disasters happen]
+    qDeleteAll(canvas->m_content);
+    canvas->m_content.clear();
+    canvas->m_configs.clear();
+    canvas->m_backContent = 0;
 
-    desk->fromXml(m_deskElement);
+    canvas->fromXml(m_canvasElement);
 }
 
-void XmlRead::readContent(Desk * desk)
+void XmlRead::readContent(Canvas * canvas)
 {
     // for each child of 'content'
     for (QDomElement element = m_contentElement.firstChildElement(); !element.isNull(); element = element.nextSiblingElement()) {
@@ -121,11 +121,11 @@ void XmlRead::readContent(Desk * desk)
         // create the right kind of content
         AbstractContent * content = 0;
         if (element.tagName() == "picture")
-            content = desk->createPicture(QPoint());
+            content = canvas->createPicture(QPoint());
         else if (element.tagName() == "text")
-            content = desk->createText(QPoint());
+            content = canvas->createText(QPoint());
         else if (element.tagName() == "webcam")
-            content = desk->createWebcam(element.attribute("input").toInt(), QPoint());
+            content = canvas->createWebcam(element.attribute("input").toInt(), QPoint());
         if (!content) {
             qWarning("XmlRead::readContent: unknown content type '%s'", qPrintable(element.tagName()));
             continue;
@@ -133,18 +133,18 @@ void XmlRead::readContent(Desk * desk)
 
         // restore the item, and delete it if something goes wrong
         if (!content->fromXml(element)) {
-            desk->m_content.removeAll(content);
+            canvas->m_content.removeAll(content);
             delete content;
             continue;
         }
 
-        // restore the background element of the desk
+        // restore the background element of the canvas
         if (element.firstChildElement("set-as-background").isElement()) {
-            if (desk->m_backContent) {
+            if (canvas->m_backContent) {
                 qWarning("XmlRead::readContent: only 1 element with <set-as-background/> allowed");
                 continue;
             }
-            desk->setBackContent(content);
+            canvas->setBackContent(content);
         }
     }
 }

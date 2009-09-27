@@ -17,7 +17,7 @@
 
 #include <QWidget>
 #include "ModeInfo.h"
-class Desk;
+class Canvas;
 class FWGraphicsView;
 class LikeBack;
 class QActionGroup;
@@ -34,7 +34,7 @@ class MainWindow : public QWidget
         ~MainWindow();
 
         // TEMP
-        void stackDesk(Desk * newDesk);
+        void stackCanvas(Canvas * newCanvas);
 
         void setModeInfo(ModeInfo modeInfo);
         ModeInfo getModeInfo(); // Needed for saving
@@ -61,7 +61,7 @@ class MainWindow : public QWidget
         void setExactSizeProject();
 
         Ui::MainWindow * ui;
-        Desk *          m_desk;
+        Canvas *        m_canvas;
         ModeInfo        m_modeInfo;
         Qt::WindowFlags m_windowFlags;
         QAction *       m_aHelpTutorial;
@@ -73,7 +73,7 @@ class MainWindow : public QWidget
 
     private Q_SLOTS:
         void on_projectType_activated(int index);
-        void on_aAddDesk_triggered();
+        void on_aAddCanvas_triggered();
         void on_aAddFlickr_toggled(bool on);
         void on_aAddPicture_triggered();
         void on_aAddText_triggered();

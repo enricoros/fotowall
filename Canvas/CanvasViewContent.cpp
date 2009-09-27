@@ -12,21 +12,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "DeskViewContent.h"
+#include "CanvasViewContent.h"
 
 #include "App/XmlRead.h"
-#include "Desk.h"
+#include "Canvas.h"
 
 #include <QFileInfo>
 #include <QPainter>
 
-DeskViewContent::DeskViewContent(QGraphicsScene * scene, QGraphicsItem * parent)
+CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
-    , m_desk(0)
+    , m_canvas(0)
 {
 }
 
-bool DeskViewContent::load(const QString & filePath, bool keepRatio, bool setName)
+bool CanvasViewContent::load(const QString & filePath, bool keepRatio, bool setName)
 {
     // parse the DOM of the file
     XmlRead xmlRead;
@@ -36,60 +36,60 @@ bool DeskViewContent::load(const QString & filePath, bool keepRatio, bool setNam
     setFrameTextEnabled(setName);
     setFrameText(QFileInfo(filePath).baseName());
 
-    // create the new Desk
-    m_desk = new Desk(this);
-    connect(m_desk, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintDesk(const QList<QRectF> &)));
-    m_desk->resize(QSize(800, 600));
+    // create the new Canvas
+    m_canvas = new Canvas(this);
+    connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
+    m_canvas->resize(QSize(800, 600));
 
     // read in the properties
     //xmlRead.readProject(this);
-    xmlRead.readDesk(m_desk);
-    xmlRead.readContent(m_desk);
+    xmlRead.readCanvas(m_canvas);
+    xmlRead.readContent(m_canvas);
     return true;
 }
 
-QWidget * DeskViewContent::createPropertyWidget()
+QWidget * CanvasViewContent::createPropertyWidget()
 {
     return 0;
 }
 
-bool DeskViewContent::fromXml(QDomElement & parentElement)
+bool CanvasViewContent::fromXml(QDomElement & parentElement)
 {
     return false;
 }
 
-void DeskViewContent::toXml(QDomElement & parentElement) const
+void CanvasViewContent::toXml(QDomElement & parentElement) const
 {
 }
 
-QPixmap DeskViewContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
+QPixmap CanvasViewContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
 {
     return QPixmap(100, 100);
 }
 
-bool DeskViewContent::contentOpaque() const
+bool CanvasViewContent::contentOpaque() const
 {
     return false;
 }
 
 #include "App/App.h"
 #include "App/MainWindow.h"
-void DeskViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-    App::mainWindow->stackDesk(m_desk);
+    App::mainWindow->stackCanvas(m_canvas);
     update();
 }
 
-void DeskViewContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+void CanvasViewContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // TODO: see if it paints when the scene is not displayed...
-    if (m_desk)
-        m_desk->render(painter, boundingRect(), m_desk->sceneRect(), Qt::IgnoreAspectRatio);
+    if (m_canvas)
+        m_canvas->render(painter, boundingRect(), m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
     else
         painter->fillRect(boundingRect(), Qt::red);
 }
 
-void DeskViewContent::slotRepaintDesk(const QList<QRectF> & /*exposed*/)
+void CanvasViewContent::slotRepaintCanvas(const QList<QRectF> & /*exposed*/)
 {
     update();
 }

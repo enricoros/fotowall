@@ -18,8 +18,8 @@
 
 #include "App/XmlSave.h"
 
-#include "Desk/AbstractContent.h"
-#include "Desk/Desk.h"
+#include "Canvas/AbstractContent.h"
+#include "Canvas/Canvas.h"
 #include "App.h"
 #include "Settings.h"
 
@@ -29,14 +29,14 @@
 #include <QTextStream>
 
 
-bool XmlSave::save(const QString & filePath, const Desk * desk, int mode, const ModeInfo & modeInfo)
+bool XmlSave::save(const QString & filePath, const Canvas * canvas, int mode, const ModeInfo & modeInfo)
 {
     // build up the DOM tree
     XmlSave xmlSave;
     xmlSave.saveProject(mode, modeInfo);
-    if (desk) {
-        xmlSave.saveDesk(desk);
-        xmlSave.saveContent(desk);
+    if (canvas) {
+        xmlSave.saveCanvas(canvas);
+        xmlSave.saveContent(canvas);
     }
 
     // save to disk
@@ -58,12 +58,12 @@ XmlSave::XmlSave()
     m_projectElement = doc.createElement("project");
     // All the contents will be saved in this element
     m_contentElements = doc.createElement("content");
-    // Desk informations (background, colors...)
-    m_deskElement = doc.createElement("desk");
+    // Canvas informations (background, colors...)
+    m_canvasElement = doc.createElement("desk");
 
     // Add elements to the root node (fotowall).
     m_rootElement.appendChild(m_projectElement);
-    m_rootElement.appendChild(m_deskElement);
+    m_rootElement.appendChild(m_canvasElement);
     m_rootElement.appendChild(m_contentElements);
 
     // Add the root (and all the sub-nodes) to the document
@@ -75,7 +75,7 @@ bool XmlSave::writeFile(const QString & filePath)
     // Open fotowall file
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
-        QMessageBox::warning(0, tr("File Error"), tr("Error saving to the Fotowall file '%1'").arg(filePath));
+        QMessageBox::warning(0, QObject::tr("File Error"), QObject::tr("Error saving to the Fotowall file '%1'").arg(filePath));
         return false;
     }
 
@@ -90,24 +90,24 @@ bool XmlSave::writeFile(const QString & filePath)
     return true;
 }
 
-void XmlSave::saveContent(const Desk * desk)
+void XmlSave::saveContent(const Canvas * canvas)
 {
-    foreach (AbstractContent * content, desk->m_content) {
+    foreach (AbstractContent * content, canvas->m_content) {
         QDomElement element = doc.createElement("dummy-renamed-element");
         m_contentElements.appendChild(element);
         content->toXml(element);
 
         // add a flag to the background element
-        if (desk->m_backContent == content) {
+        if (canvas->m_backContent == content) {
             QDomElement bgEl = doc.createElement("set-as-background");
             element.appendChild(bgEl);
         }
     }
 }
 
-void XmlSave::saveDesk(const Desk *desk)
+void XmlSave::saveCanvas(const Canvas *canvas)
 {
-    desk->toXml(m_deskElement);
+    canvas->toXml(m_canvasElement);
 }
 
 void XmlSave::saveProject(int mode, const ModeInfo& modeInfo)
