@@ -8,6 +8,7 @@ HEADERS += \
     Canvas/AbstractConfig.h \
     Canvas/AbstractContent.h \
     Canvas/AbstractDisposeable.h \
+    Canvas/AbstractScene.h \
     Canvas/BezierCubicItem.h \
     Canvas/ButtonItem.h \
     Canvas/CanvasViewContent.h \
@@ -32,6 +33,7 @@ SOURCES += \
     Canvas/AbstractConfig.cpp \
     Canvas/AbstractContent.cpp \
     Canvas/AbstractDisposeable.cpp \
+    Canvas/AbstractScene.cpp \
     Canvas/BezierCubicItem.cpp \
     Canvas/ButtonItem.cpp \
     Canvas/CanvasViewContent.cpp \

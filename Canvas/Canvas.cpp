@@ -48,7 +48,7 @@
 #define COLORPICKER_H 150
 
 Canvas::Canvas(QObject * parent)
-    : QGraphicsScene(parent)
+    : AbstractScene(parent)
     , m_networkAccessManager(0)
     , m_helpItem(0)
     , m_backContent(0)
@@ -142,7 +142,7 @@ static QPoint nearCenter(const QRectF & rect)
     return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
 }
 
-void Canvas::addCanvasContent(const QStringList & fileNames)
+void Canvas::addCanvasViewContent(const QStringList & fileNames)
 {
     int offset = -30 * fileNames.size() / 2;
     QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
@@ -212,27 +212,22 @@ bool Canvas::webContentSelectorVisible() const
     return m_webContentSelector;
 }
 
-void Canvas::resize(const QSize & size)
+void Canvas::resizeEvent(QResizeEvent * /*event*/)
 {
     // relayout contents
-    m_size = size;
-    m_rect = QRectF(0, 0, m_size.width(), m_size.height());
-    m_titleColorPicker->setPos((size.width() - COLORPICKER_W) / 2.0, 10);
-    m_grad1ColorPicker->setPos(size.width() - COLORPICKER_W, 0);
-    m_grad2ColorPicker->setPos(size.width() - COLORPICKER_W, size.height() - COLORPICKER_H);
+    m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
+    m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
+    m_grad2ColorPicker->setPos(sceneWidth() - COLORPICKER_W, sceneHeight() - COLORPICKER_H);
     if (m_helpItem)
-        m_helpItem->setPos(m_rect.center().toPoint());
+        m_helpItem->setPos(sceneCenter().toPoint());
     foreach (HighlightItem * highlight, m_highlightItems)
-        highlight->reposition(m_rect);
+        highlight->reposition(sceneRect());
 
     // ensure visibility
     foreach (AbstractContent * content, m_content)
-        content->ensureVisible(m_rect);
+        content->ensureVisible(sceneRect());
     foreach (AbstractConfig * config, m_configs)
-        config->keepInBoundaries(m_rect.toRect());
-
-    // change my rect
-    setSceneRect(m_rect);
+        config->keepInBoundaries(sceneRect());
 }
 
 /// Item Interaction
@@ -334,7 +329,7 @@ void Canvas::setTitleText(const QString & text)
 {
     m_titleText = text;
     m_titleColorPicker->setVisible(!text.isEmpty());
-    update(0, 0, m_size.width(), 50);
+    update(0, 0, sceneWidth(), 50);
 }
 
 QString Canvas::titleText() const
@@ -770,7 +765,7 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & rect)
 
     // draw background gradient, if enabled
     if (m_backGradientEnabled) {
-        QLinearGradient lg(m_rect.topLeft(), m_rect.bottomLeft());
+        QLinearGradient lg(0, 0, sceneWidth(), sceneHeight());
         lg.setColorAt(0.0, m_grad1ColorPicker->color());
         lg.setColorAt(1.0, m_grad2ColorPicker->color());
         painter->setCompositionMode(QPainter::CompositionMode_Source);
@@ -808,8 +803,8 @@ void Canvas::drawForeground(QPainter * painter, const QRectF & rect)
         hColor.setAlpha(128);
         if (m_topBarEnabled && top < 50)
             painter->fillRect(left, 0, width, 50, hColor);
-        if (m_bottomBarEnabled && bottom >= m_size.height() - 50)
-            painter->fillRect(left, m_size.height() - 50, width, 50, hColor);
+        if (m_bottomBarEnabled && bottom >= sceneHeight() - 50)
+            painter->fillRect(left, sceneHeight() - 50, width, 50, hColor);
     }
 
     // draw text
@@ -822,7 +817,7 @@ void Canvas::drawForeground(QPainter * painter, const QRectF & rect)
         lg.setColorAt(0.51, titleColor.darker(150));
         lg.setColorAt(1.0, titleColor);
         painter->setPen(QPen(lg, 0));
-        painter->drawText(QRect(0, 0, m_size.width(), 50), Qt::AlignCenter, m_titleText);
+        painter->drawText(QRect(0, 0, sceneWidth(), 50), Qt::AlignCenter, m_titleText);
     }
 
     // draw top shadow (only on screen)
@@ -1156,13 +1151,13 @@ void Canvas::slotFlipVertically()
 
 void Canvas::slotTitleColorChanged()
 {
-    update(0, 0, m_size.width(), 50);
+    update(0, 0, sceneWidth(), 50);
 }
 
 void Canvas::slotForeColorChanged()
 {
-    update(0, 0, m_size.width(), 50);
-    update(0, m_size.height() - 50, m_size.width(), 50);
+    update(0, 0, sceneWidth(), 50);
+    update(0, sceneHeight() - 50, sceneWidth(), 50);
 }
 
 void Canvas::slotGradColorChanged()

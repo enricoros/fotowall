@@ -230,7 +230,9 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
             int cIdx = 0;
             int rIdx = 0;
             foreach (const QUrl & url, historyUrls) {
-                m_canvas->addCanvasContent(QStringList() << url.toString());
+                m_canvas->addCanvasViewContent(QStringList() << url.toString());
+                // FIXME: temp, to limit to 1
+                break;
             }
         }
     }
@@ -645,7 +647,7 @@ void MainWindow::on_aAddCanvas_triggered()
     if (fileNames.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileNames[0]).absolutePath());
-    m_canvas->addCanvasContent(fileNames);
+    m_canvas->addCanvasViewContent(fileNames);
 }
 
 void MainWindow::on_aAddFlickr_toggled(bool on)

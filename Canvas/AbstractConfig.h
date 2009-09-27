@@ -37,7 +37,7 @@ class AbstractConfig : public QGraphicsProxyWidget {
         AbstractContent * content() const;
 
         // manage property box
-        void keepInBoundaries(const QRect & rect);
+        void keepInBoundaries(const QRectF & rect);
 
     Q_SIGNALS:
         void applyLook(quint32 frameClass, bool mirrored, bool allContents);

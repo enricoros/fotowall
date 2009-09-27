@@ -15,7 +15,7 @@
 #ifndef __Canvas_h__
 #define __Canvas_h__
 
-#include <QGraphicsScene>
+#include "AbstractScene.h"
 #include <QDataStream>
 #include <QPainter>
 #include <QPixmap>
@@ -37,7 +37,7 @@ class TextContent;
 class WebcamContent;
 class WebContentSelectorItem;
 
-class Canvas : public QGraphicsScene
+class Canvas : public AbstractScene
 {
     Q_OBJECT
     public:
@@ -47,7 +47,7 @@ class Canvas : public QGraphicsScene
         ~Canvas();
 
         // add content
-        void addCanvasContent(const QStringList & fileNames);
+        void addCanvasViewContent(const QStringList & fileNames);
         void addPictureContent(const QStringList & fileNames);
         void addTextContent();
         void addWebcamContent(int input);
@@ -56,8 +56,8 @@ class Canvas : public QGraphicsScene
         void setWebContentSelectorVisible(bool visible);
         bool webContentSelectorVisible() const;
 
-        // resize the scene to 0,0,size
-        void resize(const QSize & size);
+        // ::AbstractScene
+        void resizeEvent(QResizeEvent * event);
 
         // item interaction
         void selectAllContent(bool selected = true);
@@ -134,8 +134,6 @@ class Canvas : public QGraphicsScene
         bool m_bottomBarEnabled;
         bool m_backGradientEnabled;
         Qt::AspectRatioMode m_backContentRatio;
-        QSize m_size;
-        QRectF m_rect;
         QString m_titleText;
         QPixmap m_backTile;
         QPixmap m_backCache;

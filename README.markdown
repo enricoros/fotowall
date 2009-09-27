@@ -13,6 +13,9 @@ ChangeLog
 
 Unreleased 0.9.x:
 
+* FotowallFile
+* AbstractScene
+
 * Export to SVG
 * Integrated the LikeBack feedback system
 * Fixes licenses
@@ -130,6 +133,7 @@ improvement and the code is kept clean and small.
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
+* add Wordle-like text-gen
 * handle initial load-save after being shown. also evaluate normalized rescaling.
 * save/restore background transparency/ratio state (or check current bg code)
 * svg drawings [balloons, signs, etc..]

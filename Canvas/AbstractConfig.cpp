@@ -127,12 +127,13 @@ AbstractContent * AbstractConfig::content() const
     return m_content;
 }
 
-void AbstractConfig::keepInBoundaries(const QRect & rect)
+void AbstractConfig::keepInBoundaries(const QRectF & rect)
 {
-    QRect r = mapToScene(boundingRect()).boundingRect().toRect();
+    QRectF r = mapToScene(boundingRect()).boundingRect();
     r.setLeft(qBound(rect.left(), r.left(), rect.right() - r.width()));
     r.setTop(qBound(rect.top(), r.top(), rect.bottom() - r.height()));
-    setPos(r.topLeft());
+    // CHECK SUBPIXELS
+    setPos(r.topLeft().toPoint());
 }
 
 void AbstractConfig::addTab(QWidget * widget, const QString & label, bool front, bool setCurrent)
