@@ -547,7 +547,7 @@ QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRati
     QPainter painter(&result);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
 
-    QSize targetSize = sceneRect().size().toSize();
+    QSize targetSize = sceneSize();
     targetSize.scale(iSize, aspectRatioMode);
     int offsetX = (iSize.width() - targetSize.width()) / 2;
     int offsetY = (iSize.height() - targetSize.height()) / 2;
@@ -734,7 +734,7 @@ void Canvas::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
     setBackMode(m_backGradientEnabled ? 2 : 1);
 }
 
-void Canvas::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
+void Canvas::contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
 {
     // context menu on empty area
     //if (items(event->scenePos()).isEmpty()) {
@@ -744,17 +744,18 @@ void Canvas::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
 
 
 /// Scene Background & Foreground
-void Canvas::drawBackground(QPainter * painter, const QRectF & rect)
+void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
 {
+    // clip exposedRect to the scene
+    QRect targetRect = sceneRect().toAlignedRect().intersect(exposedRect.toAlignedRect());
+
     // draw content if set
     if (m_backContent) {
         // regenerate cache if needed
-        QSize sceneSize = sceneRect().size().toSize();
-        if (m_backCache.isNull() || m_backCache.size() != sceneSize)
-            m_backCache = m_backContent->renderContent(sceneSize, m_backContentRatio);
+        if (m_backCache.isNull() || m_backCache.size() != sceneSize())
+            m_backCache = m_backContent->renderContent(sceneSize(), m_backContentRatio);
 
         // paint cached background
-        QRect targetRect = rect.toRect();
         if (m_backContent->contentOpaque())
             painter->setCompositionMode(QPainter::CompositionMode_Source);
         painter->drawPixmap(targetRect, m_backCache, targetRect);
@@ -765,49 +766,36 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & rect)
 
     // draw background gradient, if enabled
     if (m_backGradientEnabled) {
-        QLinearGradient lg(0, 0, sceneWidth(), sceneHeight());
+        QLinearGradient lg(0, 0, 0, sceneHeight());
         lg.setColorAt(0.0, m_grad1ColorPicker->color());
         lg.setColorAt(1.0, m_grad2ColorPicker->color());
         painter->setCompositionMode(QPainter::CompositionMode_Source);
-        painter->fillRect(rect, lg);
+        painter->fillRect(targetRect, lg);
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
         return;
     }
 
     // draw checkboard to simulate a transparent background
-    if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering) {
-        QRect tileRect = rect.toAlignedRect();
-        painter->drawTiledPixmap(tileRect, m_backTile, QPointF(tileRect.left() % 100, tileRect.top() % 100));
-    }
+    if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering)
+        painter->drawTiledPixmap(targetRect, m_backTile, QPointF(targetRect.left() % 100, targetRect.top() % 100));
 }
 
-static void drawVerticalShadow(QPainter * painter, int width, int height)
+void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect)
 {
-    QLinearGradient lg( 0, 0, 0, height );
-    lg.setColorAt( 0.0, QColor( 0, 0, 0, 64 ) );
-    lg.setColorAt( 0.4, QColor( 0, 0, 0, 16 ) );
-    lg.setColorAt( 0.7, QColor( 0, 0, 0, 5 ) );
-    lg.setColorAt( 1.0, QColor( 0, 0, 0, 0 ) );
-    painter->fillRect( 0, 0, width, height, lg );
-}
+    // clip exposedRect to the scene
+    QRect targetRect = sceneRect().toAlignedRect().intersect(exposedRect.toAlignedRect());
 
-void Canvas::drawForeground(QPainter * painter, const QRectF & rect)
-{
-    // draw header/footer
-    const int top = (int)rect.top();
-    const int bottom = (int)rect.bottom();
-    const int left = (int)rect.left();
-    const int width = (int)(rect.width() + 1.0);
+    // draw header and footer 50px bars
     if (m_topBarEnabled || m_bottomBarEnabled) {
         QColor hColor = m_foreColorPicker->color();
         hColor.setAlpha(128);
-        if (m_topBarEnabled && top < 50)
-            painter->fillRect(left, 0, width, 50, hColor);
-        if (m_bottomBarEnabled && bottom >= sceneHeight() - 50)
-            painter->fillRect(left, sceneHeight() - 50, width, 50, hColor);
+        if (m_topBarEnabled && targetRect.top() < 50)
+            painter->fillRect(targetRect.left(), 0, targetRect.width(), 50, hColor);
+        if (m_bottomBarEnabled && targetRect.bottom() >= sceneHeight() - 50)
+            painter->fillRect(targetRect.left(), sceneHeight() - 50, targetRect.width(), 50, hColor);
     }
 
-    // draw text
+    // draw Title text
     if (!m_titleText.isEmpty()) {
         painter->setFont(QFont("Courier 10 Pitch", 28));
         QLinearGradient lg(0,15,0,35);
@@ -818,22 +806,6 @@ void Canvas::drawForeground(QPainter * painter, const QRectF & rect)
         lg.setColorAt(1.0, titleColor);
         painter->setPen(QPen(lg, 0));
         painter->drawText(QRect(0, 0, sceneWidth(), 50), Qt::AlignCenter, m_titleText);
-    }
-
-    // draw top shadow (only on screen)
-    if (!RenderOpts::HQRendering) {
-        // the first time create the Shadow Tile
-        static QPixmap shadowTile;
-        if (shadowTile.isNull()) {
-            shadowTile = QPixmap(64, 8);
-            shadowTile.fill(Qt::transparent);
-            QPainter shadowPainter(&shadowTile);
-            drawVerticalShadow(&shadowPainter, 64, 8);
-        }
-
-        // blend the shadow tile
-        if (top < 8)
-            painter->drawTiledPixmap(left, 0, width, 8, shadowTile);
     }
 }
 

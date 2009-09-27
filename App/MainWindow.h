@@ -18,7 +18,6 @@
 #include <QWidget>
 #include "ModeInfo.h"
 class Canvas;
-class FWGraphicsView;
 class LikeBack;
 class QActionGroup;
 class QGraphicsView;
@@ -63,7 +62,6 @@ class MainWindow : public QWidget
         Ui::MainWindow * ui;
         Canvas *        m_canvas;
         ModeInfo        m_modeInfo;
-        Qt::WindowFlags m_windowFlags;
         QAction *       m_aHelpTutorial;
         QAction *       m_aHelpSupport;
         QActionGroup *  m_gBackActions;

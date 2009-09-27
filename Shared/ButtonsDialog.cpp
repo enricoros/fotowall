@@ -106,7 +106,7 @@ QDialogButtonBox::StandardButton ButtonsDialog::execute()
         return QDialogButtonBox::NoButton;
 
     // save the answer if requested
-    if (m_memorize && !m_memorizeCheckbox->isChecked())
+    if (m_memorize && !m_memorizeCheckbox->isChecked() && m_pressedButton != QDialogButtonBox::Cancel)
         QSettings().setValue(configKey, (int)m_pressedButton);
 
     // return the choosen key

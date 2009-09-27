@@ -21,6 +21,10 @@ AbstractScene::AbstractScene(QObject * parent)
 
 void AbstractScene::resize(const QSize & size)
 {
+    // skip if already ok
+    if (size == m_size)
+        return;
+
     // save size and the related rect
     QSize oldSize = m_size;
     m_size = size;

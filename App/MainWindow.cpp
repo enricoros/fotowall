@@ -24,10 +24,12 @@
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
 #include "ModeInfo.h"
+#include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
+#include "ui_MainWindow.h"
 
 #include <QAction>
 #include <QApplication>
@@ -63,81 +65,6 @@
 #define REQUIRE_CANVAS_R(value) \
     if (!m_canvas) return value;
 
-#include <QCommonStyle>
-class RubberBandStyle : public QCommonStyle {
-    public:
-        void drawControl(ControlElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0) const
-        {
-            if (element == CE_RubberBand) {
-                painter->save();
-                QColor color = option->palette.color(QPalette::Highlight);
-                painter->setPen(color);
-                color.setAlpha(80); painter->setBrush(color);
-                painter->drawRect(option->rect.adjusted(0,0,-1,-1));
-                painter->restore();
-                return;
-            }
-            return QCommonStyle::drawControl(element, option, painter, widget);
-        }
-        int styleHint(StyleHint hint, const QStyleOption * option, const QWidget * widget, QStyleHintReturn * returnData) const
-        {
-            if (hint == SH_RubberBand_Mask)
-                return false;
-            return QCommonStyle::styleHint(hint, option, widget, returnData);
-        }
-};
-
-#include <QGraphicsView>
-class FWGraphicsView : public QGraphicsView {
-    public:
-        FWGraphicsView(QWidget * parent)
-            : QGraphicsView(parent)
-            , m_canvas(0)
-        {
-            // customize widget
-            setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-            setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-            setInteractive(true);
-            setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing /*| QPainter::SmoothPixmapTransform */);
-            setDragMode(QGraphicsView::RubberBandDrag);
-            setAcceptDrops(true);
-            setFrameStyle(QFrame::NoFrame);
-
-            // don't autofill the view with the Base brush
-            QPalette pal;
-            pal.setBrush(QPalette::Base, Qt::NoBrush);
-            setPalette(pal);
-
-            // use own style for drawing the RubberBand (opened on the viewport)
-            viewport()->setStyle(new RubberBandStyle);
-
-            // can't activate the cache mode by default, since it inhibits dynamical background picture changing
-            //setCacheMode(CacheBackground);
-        }
-
-        void setCanvas(Canvas * canvas)
-        {
-            setScene(canvas);
-            m_canvas = canvas;
-            resizeEvent(0);
-        }
-
-    protected:
-        void resizeEvent(QResizeEvent * event)
-        {
-            if (m_canvas)
-                m_canvas->resize(contentsRect().size());
-            if (event)
-                QGraphicsView::resizeEvent(event);
-        }
-
-    private:
-        Canvas * m_canvas;
-};
-
-// added here because it needs the FWGraphicsView declaration
-#include "ui_MainWindow.h"
-
 
 MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     : QWidget(parent)
@@ -161,17 +88,15 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
 
     // init ui
     ui->setupUi(this);
-    ui->canvas->setFocus();
+    ui->sceneView->setFocus();
     ui->b1->setDefaultAction(ui->aAddPicture);
     ui->b2->setDefaultAction(ui->aAddText);
     ui->b3->setDefaultAction(ui->aAddWebcam);
     ui->b4->setDefaultAction(ui->aAddFlickr);
     ui->b5->setDefaultAction(ui->aAddCanvas);
 #if QT_VERSION >= 0x040500
-#ifdef QT_OPENGL_LIB
-    ui->accelBox->setEnabled(true);
-#endif
     ui->transpBox->setEnabled(true);
+    ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
     ui->widgetProperties->collapse();
     ui->widgetCanvas->expand();
@@ -191,7 +116,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
 
     // set the startup project mode
     on_projectType_activated(0);
-    m_modeInfo.setCanvasDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
+    m_modeInfo.setCanvasDpi(ui->sceneView->logicalDpiX(), ui->sceneView->logicalDpiY());
     m_modeInfo.setPrintDpi(300);
 
     // check stuff on the net
@@ -216,12 +141,12 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
         stackCanvas(initialCanvas);
         initialCanvas->addPictureContent(contentUrls);
     }
-    // initial behavior: show the selection Scene, no Canvas!
+    // initial behavior: show the selection Scene
     else {
         Canvas * initialCanvas = new Canvas(this);
         stackCanvas(initialCanvas);
         QList<QUrl> historyUrls = App::settings->recentFotowallUrls();
-        if (!historyUrls.isEmpty()) {
+/*        if (!historyUrls.isEmpty()) {
             int dCount = historyUrls.size();
             int dCols = 1 + (int)sqrt((double)dCount);
             int dRows = 1 + dCount / dCols;
@@ -234,7 +159,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
                 // FIXME: temp, to limit to 1
                 break;
             }
-        }
+        }*/
     }
 
     // show initially
@@ -268,7 +193,7 @@ void MainWindow::stackCanvas(Canvas * newCanvas)
     m_canvas = newCanvas;
     connect(m_canvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
     connect(m_canvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
-    ui->canvas->setCanvas(m_canvas);
+    ui->sceneView->setScene(m_canvas);
     update();
 
     // update breadcrumb
@@ -280,7 +205,7 @@ void MainWindow::stackCanvas(Canvas * newCanvas)
 void MainWindow::setModeInfo(ModeInfo modeInfo)
 {
     m_modeInfo = modeInfo;
-    m_modeInfo.setCanvasDpi(ui->canvas->logicalDpiX(), ui->canvas->logicalDpiY());
+    m_modeInfo.setCanvasDpi(ui->sceneView->logicalDpiX(), ui->sceneView->logicalDpiY());
 }
 
 ModeInfo MainWindow::getModeInfo()
@@ -544,8 +469,8 @@ void MainWindow::setNormalProject()
 {
     m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
     static bool skipFirstMaximizeHack = true;
-    ui->canvas->setMinimumSize(ui->canvas->minimumSizeHint());
-    ui->canvas->setMaximumSize(QSize(16777215, 16777215));
+    ui->sceneView->setMinimumSize(ui->sceneView->minimumSizeHint());
+    ui->sceneView->setMaximumSize(QSize(16777215, 16777215));
     if (skipFirstMaximizeHack)
         skipFirstMaximizeHack = false;
     else
@@ -561,7 +486,7 @@ void MainWindow::setCDProject()
     // A CD cover is a 4.75x4.715 inches square.
     m_modeInfo.setRealSizeInches(4.75, 4.75);
     m_modeInfo.setLandscape(false);
-    ui->canvas->setFixedSize(m_modeInfo.canvasPixelSize());
+    ui->sceneView->setFixedSize(m_modeInfo.canvasPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
     if (m_canvas) // FIXME: bind to a property
@@ -573,7 +498,7 @@ void MainWindow::setDVDProject()
 {
     m_modeInfo.setRealSizeInches((float)10.83, (float)7.2);
     m_modeInfo.setLandscape(true);
-    ui->canvas->setFixedSize(m_modeInfo.canvasPixelSize());
+    ui->sceneView->setFixedSize(m_modeInfo.canvasPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
     if (m_canvas) // FIXME: bind to a property
@@ -605,7 +530,7 @@ void MainWindow::setExactSizeProject()
         else
             m_modeInfo.setRealSizeInches(w, h);
     }
-    ui->canvas->setFixedSize(m_modeInfo.canvasPixelSize());
+    ui->sceneView->setFixedSize(m_modeInfo.canvasPixelSize());
     showNormal();
     ui->exportButton->setText(tr("print"));
     if (m_canvas) // FIXME: bind to a property
@@ -643,7 +568,7 @@ void MainWindow::on_aAddCanvas_triggered()
     QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(ui->canvas, tr("Select one or more Fotowall files to add"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
+    QStringList fileNames = QFileDialog::getOpenFileNames(ui->sceneView, tr("Select one or more Fotowall files to add"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
     if (fileNames.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileNames[0]).absolutePath());
@@ -668,7 +593,7 @@ void MainWindow::on_aAddPicture_triggered()
     QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(ui->canvas, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(extensions));
+    QStringList fileNames = QFileDialog::getOpenFileNames(ui->sceneView, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(extensions));
     if (fileNames.isEmpty())
         return;    
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
@@ -687,31 +612,24 @@ void MainWindow::on_aAddWebcam_triggered()
     m_canvas->addWebcamContent(0);
 }
 
-#ifdef QT_OPENGL_LIB
-#include <QGLWidget>
-void MainWindow::on_accelBox_toggled(bool opengl)
+void MainWindow::on_accelBox_toggled(bool enabled)
 {
-    QStyle * style = ui->canvas->viewport()->style();
-    // set OpenGL viewport
-    if (opengl) {
-        ButtonsDialog warning("GoOpenGL", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system.<br>Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"), QDialogButtonBox::Ok, true, true);
+    // ask for confirmation when enabling opengl
+    if (enabled) {
+        ButtonsDialog warning("GoOpenGL", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system.<br>Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"), QDialogButtonBox::Ok | QDialogButtonBox::Cancel, true, true);
         warning.setIcon(QStyle::SP_MessageBoxInformation);
-        warning.execute();
+        if (warning.execute() == QDialogButtonBox::Cancel) {
+            ui->accelBox->setChecked(false);
+            return;
+        }
+
+        // toggle transparency with opengl
         ui->transpBox->setChecked(false);
-        ui->canvas->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
-        ui->canvas->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     }
-    // set Normal viewport
-    else {
-        ui->canvas->setViewport(new QWidget());
-        ui->canvas->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-    }
-    ui->canvas->viewport()->setStyle(style);
-    update();
+
+    // set opengl state
+    ui->sceneView->setOpenGL(enabled);
 }
-#else
-void MainWindow::on_accelBox_toggled(bool) {}
-#endif
 
 #ifdef Q_WS_WIN
 /**
@@ -770,8 +688,7 @@ static bool dwmEnableBlurBehindWindow(QWidget * widget, bool enable)
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
 #if QT_VERSION >= 0x040500
-    if (!m_windowFlags)
-        m_windowFlags = windowFlags();
+    static Qt::WindowFlags initialWindowFlags = windowFlags();
     if (transparent) {
         // one-time warning
         ButtonsDialog warning("GoTransparent", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"), QDialogButtonBox::Ok, true, true);
@@ -804,7 +721,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 
 #ifdef Q_OS_WIN
         // disable no-border on windows
-        setWindowFlags(m_windowFlags);
+        setWindowFlags(initialWindowFlags);
         show();
 #endif
 
@@ -823,7 +740,6 @@ void MainWindow::on_introButton_clicked()
     REQUIRE_CANVAS
     m_canvas->showIntroduction();
 }
-
 
 void MainWindow::on_lbLike_clicked()
 {

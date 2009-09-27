@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>991</width>
+    <width>995</width>
     <height>432</height>
    </rect>
   </property>
@@ -941,7 +941,7 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="spacing">
+         <property name="verticalSpacing">
           <number>0</number>
          </property>
          <item row="0" column="2">
@@ -1009,7 +1009,7 @@ stop:1 rgba(237, 237, 237, 255))
     <widget class="BreadCrumbBar" name="canvasNavBar" native="true"/>
    </item>
    <item>
-    <widget class="FWGraphicsView" name="canvas">
+    <widget class="SceneView" name="sceneView">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -1067,9 +1067,9 @@ stop:1 rgba(237, 237, 237, 255))
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FWGraphicsView</class>
+   <class>SceneView</class>
    <extends>QGraphicsView</extends>
-   <header>App/MainWindow.h</header>
+   <header>App/SceneView.h</header>
   </customwidget>
   <customwidget>
    <class>GroupBoxWidget</class>
