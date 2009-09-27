@@ -31,6 +31,9 @@ class QPointF;
 class AbstractContent : public AbstractDisposeable
 {
     Q_OBJECT
+#if QT_VERSION >= 0x040500 && QT_VERSION <= 0x040600
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+#endif
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
         virtual ~AbstractContent();
