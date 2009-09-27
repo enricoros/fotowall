@@ -649,7 +649,7 @@ QToolBar *RichTextEditor::createToolBar(QWidget *parent)
 
 void RichTextEditor::wheelEvent(QWheelEvent * e)    // +fotowall
 {
-    emit wheelScrolled(-e->delta() / 120);
+    emit wheelScrolled(e->delta() / 120);
 }
 
 void RichTextEditor::setFontBold(bool b)

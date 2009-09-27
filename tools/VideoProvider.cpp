@@ -13,7 +13,6 @@
  ***************************************************************************/
 
 #include "VideoProvider.h"
-#include "RenderOpts.h"
 #include <QDirIterator>
 #include <QPixmap>
 #include <QTimer>
@@ -33,7 +32,7 @@ VideoProvider::VideoProvider()
     , m_snapTimer(0)
 {
     // defer video initialization, to offload gui on startup...
-    if (!RenderOpts::DisableVideoProvider)
+    if (!Disable)
         QTimer::singleShot(1600, this, SLOT(scanDevices()));
 }
 

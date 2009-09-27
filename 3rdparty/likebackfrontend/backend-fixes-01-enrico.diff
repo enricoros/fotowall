@@ -1,0 +1,76 @@
+Index: backend/admin/install.php
+===================================================================
+--- backend/admin/install.php	(revision 5487)
++++ backend/admin/install.php	(working copy)
+@@ -37,7 +37,8 @@
+       `resolution` TINYINT UNSIGNED NOT NULL DEFAULT '0',
+       type    VARCHAR(10),
+       comment TEXT,
+-      email   VARCHAR(255)
++      email   VARCHAR(255),
++      tracbug SMALLINT UNSIGNED NULL
+     ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+   );
+   echo mysql_error() . "<br/>";
+@@ -64,7 +65,11 @@
+       `dateTime` DATETIME NOT NULL,
+       developer  INT(4)   NOT NULL,
+       commentId  INT(4)   NOT NULL,
+-      remark     TEXT     NOT NULL
++      remark     TEXT     NOT NULL,
++      userNotified TINYINT UNSIGNED NOT NULL DEFAULT '0',
++      statusChangedTo VARCHAR(50) NULL,
++      resolutionChangedTo VARCHAR(50) NULL,
++      tracbugChangedTo SMALLINT UNSIGNED NULL
+     ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+   ");
+   echo mysql_error() . "<br/>";
+Index: backend/admin/functions.php
+===================================================================
+--- backend/admin/functions.php	(revision 5487)
++++ backend/admin/functions.php	(working copy)
+@@ -23,6 +23,8 @@
+ 
+ // Include Smarty
+ include_once('/usr/share/php/smarty/libs/Smarty.class.php');
++// If you place the Smarty libs locally (inside 'admin/smarty'), use the following instead:
++//include_once('smarty/Smarty.class.php');
+ 
+ function iconForType($type)
+ {
+@@ -260,6 +262,8 @@
+ 
+   if( isset( $_SERVER['PHP_AUTH_USER'] ) )
+     $userName = $_SERVER['PHP_AUTH_USER'];
++  else if( isset( $_SERVER['REMOTE_USER'] ) )
++    $userName = $_SERVER['REMOTE_USER'];
+ 
+   if( isset( $developer ) && $developer && $developer->login == $userName)
+     return $developer;
+Index: backend/db.conf.template.php
+===================================================================
+--- backend/db.conf.template.php	(revision 5487)
++++ backend/db.conf.template.php	(working copy)
+@@ -46,7 +46,8 @@
+   define( "LIKEBACK_URL", "http://example.org/likeback" );
+ 
+   // The URL to a Trac instance (if empty, support for trac is disabled - also should *not* end in /!)
+-  define( "LIKEBACK_TRAC", "" );
++  define( "LIKEBACK_TRAC_URL", "" );
++
+   // The secret compiled into the trac plugin
+   define( "LIKEBACK_TRAC_SECRET", "" );
+ 
+Index: backend/index.php
+===================================================================
+--- backend/index.php	(revision 5487)
++++ backend/index.php	(working copy)
+@@ -18,5 +18,7 @@
+  *                                                                         *
+  ***************************************************************************/
+ 
+-header( 'Location: admin/' );
++// we go directly to 'view.php' ic case the .htaccess file inside admin
++// was rewrited.
++header( 'Location: admin/view.php' );
+ die();

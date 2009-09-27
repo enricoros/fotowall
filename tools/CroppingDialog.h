@@ -16,23 +16,22 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
 
-#include "GlowEffectDialog.h"
-#include "CPixmap.h"
+#ifndef __CroppingDialog__
+#define __CroppingDialog__
 
-GlowEffectDialog::GlowEffectDialog(const QImage & previewImage)
-{
-    ui.setupUi(this);
-    ui.glowEffectWidget->setPreviewImage(previewImage);
-    connect(ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-}
+#include <QDialog>
+#include "ui_CroppingDialog.h"
+#include "CroppingWidget.h"
 
-int GlowEffectDialog::currentRadius() const
+class CroppingDialog : public QDialog
 {
-    return ui.glowEffectWidget->glowRadius();
-}
+    Q_OBJECT
+    public:
+        CroppingDialog(QPixmap *pix);
+        QRect getCroppingRect() const;
+    private:
+        Ui::CroppingDialog ui;
+};
 
-QImage GlowEffectDialog::glow(const QImage &image, int radius) const
-{
-    return ui.glowEffectWidget->glow(image, radius);
-}
+#endif
+

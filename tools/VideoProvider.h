@@ -28,6 +28,9 @@ class VideoProvider : public QObject
 {
     Q_OBJECT
     public:
+        /// options
+        static bool Disable;
+
         /// singleton
         static VideoProvider * instance();
         VideoProvider();

@@ -13,10 +13,12 @@
  ***************************************************************************/
 
 #include "WebContentSelectorItem.h"
-#include "FlickrInterface.h"
+#ifdef ENABLE_GCOMPLETION
+#include "3rdparty/gsuggest.h"
+#endif
 #include "frames/FrameFactory.h"
 #include "frames/Frame.h"
-#include "3rdparty/gsuggest.h"
+#include "tools/FlickrInterface.h"
 #include <QBasicTimer>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
@@ -120,9 +122,9 @@ class MyListWidget : public QListWidget
 
 #include "ui_WebContentSelectorItem.h"
 
-WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * deskAccessManager, QGraphicsItem * parent)
+WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent)
     : QGraphicsWidget(parent)
-    , m_deskAccessManager(deskAccessManager)
+    , m_extAccessManager(extAccessManager)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
     , m_flickr(0)
 #ifdef ENABLE_GCOMPLETION
@@ -163,7 +165,7 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * deskAcces
 
 WebContentSelectorItem::~WebContentSelectorItem()
 {
-    m_deskAccessManager = 0; // owned by Desk
+    m_extAccessManager = 0;
 #ifdef ENABLE_GCOMPLETION
     delete m_completion;
 #endif
@@ -201,7 +203,7 @@ void WebContentSelectorItem::slotSearchClicked()
 
         // start a flickr search
         if (!m_flickr) {
-            m_flickr = new FlickrInterface(m_deskAccessManager, this);
+            m_flickr = new FlickrInterface(m_extAccessManager, this);
             connect(m_flickr, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
             connect(m_flickr, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
             connect(m_flickr, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
@@ -233,7 +235,7 @@ void WebContentSelectorItem::slotSearchResult(int idx, const QString & title, in
 {
     // create the placeholder Icon
     QLinearGradient lg(0, 0, 0, thumb_h);
-    lg.setColorAt(1.0, Qt::lightGray);
+    lg.setColorAt(0.0, Qt::lightGray);
     lg.setColorAt(1.0, Qt::darkGray);
     QPixmap placeHolderIcon(thumb_w, thumb_h);
     QPainter painter(&placeHolderIcon);

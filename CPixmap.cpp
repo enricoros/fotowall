@@ -20,7 +20,7 @@
  ******************************/
 
 #include "CPixmap.h"
-#include "GlowEffectWidget.h"
+#include "tools/GlowEffectWidget.h"
 #include <QImage>
 
 CPixmap::CPixmap() {
@@ -65,7 +65,7 @@ void CPixmap::addEffect(const PictureEffect & effect) {
             m_effects.push_back(PictureEffect(PictureEffect::Opacity, (qreal)effect.param));
             break;
         case PictureEffect::Crop:
-            crop(effect.croppingRect);
+            toCropped(effect.rect);
             break;
     }
 }
@@ -143,8 +143,7 @@ void CPixmap::toBlackAndWhite() {
 
 void CPixmap::toGlow(int radius) {
     m_effects.push_back(PictureEffect(PictureEffect::Glow, (qreal)radius));
-    GlowEffectWidget effect;
-    QImage dest = effect.glow(this->toImage(), radius);
+    QImage dest = GlowEffectWidget::glow(this->toImage(), radius);
     updateImage(dest);
 }
 
@@ -194,11 +193,11 @@ void CPixmap::toLuminosity(int value) {
     updateImage(dest);
 }
 */
-void CPixmap::crop(const QRect &croppingRect)
+void CPixmap::toCropped(const QRect &cropRect)
 {
-    if(croppingRect.isNull()) return;
-    m_effects.push_back(PictureEffect(PictureEffect::Crop, PictureEffect::Crop, croppingRect));
-    QImage img = this->toImage().copy(croppingRect);
+    if(cropRect.isNull()) return;
+    m_effects.push_back(PictureEffect(PictureEffect::Crop, PictureEffect::Crop, cropRect));
+    QImage img = this->toImage().copy(cropRect);
     updateImage(img);
 }
 

@@ -19,7 +19,6 @@
 #include "XmlSave.h"
 #include "items/AbstractContent.h"
 #include "items/ColorPickerItem.h"
-#include "CPixmap.h"
 #include "Desk.h"
 #include <QMessageBox>
 #include <QFile>

@@ -97,7 +97,7 @@
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="+73"/>
+        <location filename="../items/AbstractContent.cpp" line="+75"/>
         <source>Change properties...</source>
         <translation>Eigenschaften ändern ...</translation>
     </message>
@@ -115,7 +115,12 @@ STRG benutzen um die Umwandlung abzubrechen.</translation>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location line="+622"/>
+        <location line="+624"/>
+        <source>Unnamed %1.png</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Choose the Image file</source>
         <translation>Wähle die Bild-Datei aus</translation>
     </message>
@@ -125,7 +130,7 @@ STRG benutzen um die Umwandlung abzubrechen.</translation>
         <translation>Bilder (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+40"/>
         <source>File Error</source>
         <translation>Dateifehler</translation>
     </message>
@@ -146,6 +151,14 @@ STRG benutzen um die Umwandlung abzubrechen.</translation>
 - Halte STRG um Rotation zu erlauben.
 - Halte ALT um die Rotation festzuhalten.
 Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wieder herzustellen.</translation>
+    </message>
+</context>
+<context>
+    <name>ButtonsDialog</name>
+    <message>
+        <location filename="../ButtonsDialog.cpp" line="+39"/>
+        <source>show this warning again next time</source>
+        <translation type="unfinished">Zeige die Warnung nächstes Mal an</translation>
     </message>
 </context>
 <context>
@@ -180,7 +193,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+901"/>
+        <location filename="../Desk.cpp" line="+906"/>
         <source>Back</source>
         <translation>Hintergrund</translation>
     </message>
@@ -195,17 +208,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
         <translation></translation>
     </message>
     <message>
-        <location line="+9"/>
-        <source>SELECTION</source>
-        <translation>AUSWAHL</translation>
-    </message>
-    <message>
-        <location line="-1"/>
-        <source>%1 objects selected</source>
-        <translation>%1 Objekt(e) ausgewählt</translation>
-    </message>
-    <message>
-        <location line="+122"/>
+        <location line="+121"/>
         <source>Delete content</source>
         <translation>Inhalt löschen</translation>
     </message>
@@ -337,22 +340,27 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
         <translation>Erzeugt mit %1</translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+60"/>
+        <source>Unnamed %1.%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
         <source>Choose the Image file</source>
         <translation>Wählen Sie eine Bilddatei aus</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Bilder (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+8"/>
         <source>Choose the SVG file</source>
         <translation>Wähle die SVG Datei aus.</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>SVG (*.svg)</source>
         <translation>SVG (*.svg)</translation>
     </message>
@@ -762,7 +770,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+286"/>
+        <location filename="../MainWindow.cpp" line="+284"/>
+        <source>Closing Fotowall...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Are you sure you want to quit and lose your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Don&apos;t Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Are you sure you want to quit?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
         <source>Enable force field</source>
         <translation>Aktiviere &apos;Erzwingen&apos;-Feld</translation>
     </message>
@@ -894,7 +932,7 @@ p, li { white-space: pre-wrap; }
         <translation>Drucken</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+45"/>
         <source>Select one or more pictures to add</source>
         <translation>Zum Hinzufügen wähle ein oder mehrere Bild(er) aus</translation>
     </message>
@@ -904,12 +942,18 @@ p, li { white-space: pre-wrap; }
         <translation>Bild(er) (%1)</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+12"/>
+        <location line="+21"/>
         <source>OpenGL</source>
         <translation>OpenGL</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-20"/>
+        <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system.&lt;br&gt;Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
         <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system. Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
         <translation>Es ist nicht sichergestellt das OpenGL unterstützte Grafik auf Ihrem System funktioniert. Probiere es einfach aus, ob es funtioniert.&lt;br&gt; - falls sich die Grafikausgabe langsam anfühlt, stelle bitte sicher, daß der Grafiktreiber OpenGL hardwareseitig beschleunigt&lt;br&gt; - falls Fotowall nach der Umstellung auf OpenGL nicht mehr funktioniert, benutzen Sie diese Funktion beim nächsten Start nicht mehr&lt;br&gt;&lt;br&gt;ANMERKUNG: OpenGL funktioniert nicht mit &quot;Transparent&quot; Modus.</translation>
     </message>
@@ -924,18 +968,23 @@ p, li { white-space: pre-wrap; }
         <translation>Die Funktion wurde zur Zeit noch nicht umfangreich getestet.&lt;br&gt; -unter Linux wird composite Modus, wie unter compiz/beryl oder kwin4, benötigt&lt;br&gt; - unter Windows und Mac OS scheint es zu funktionieren&lt;br&gt;Sollten Sie einen schwarzen Hintergrund sehen, dann wird Transparenz auf Ihrem System nicht unterstützt.&lt;br&gt;&lt;br&gt;ANMERKUNG: Sie sollten &quot;transparenten&quot; Hintergrund verwenden um transparente Fenster zu nutzen.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+70"/>
-        <location line="+12"/>
+        <location line="+74"/>
+        <location line="+16"/>
         <source>Select the Fotowall file</source>
         <translation>Wähle die Fotowall Datei aus</translation>
     </message>
     <message>
-        <location line="-12"/>
+        <location line="-16"/>
         <source>Fotowall (*.fotowall)</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+11"/>
+        <source>Unnamed %1.fotowall</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+75"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
@@ -1057,12 +1106,13 @@ Wollen Sie die Webseite öffnen?</translation>
         <translation>Laden</translation>
     </message>
     <message>
-        <location/>
+        <location filename="../MainWindow.cpp" line="-732"/>
+        <location filename="../MainWindow.ui"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location/>
+        <location filename="../MainWindow.ui"/>
         <source>Add Picture</source>
         <translation>Bild hinzufügen</translation>
     </message>
@@ -1304,6 +1354,29 @@ Wollen Sie die Webseite öffnen?</translation>
         <location line="+6"/>
         <source>Subscript</source>
         <translation>Tiefstellen</translation>
+    </message>
+</context>
+<context>
+    <name>SelectionProperties</name>
+    <message>
+        <location filename="../items/SelectionProperties.cpp" line="+33"/>
+        <source>SELECTION</source>
+        <translation type="unfinished">AUSWAHL</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>%1 objects selected</source>
+        <translation type="unfinished">%1 Objekt(e) ausgewählt</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Collate Pictures</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

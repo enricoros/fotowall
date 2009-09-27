@@ -17,15 +17,14 @@
 #include "Desk.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
-#include "MetaXmlReader.h"
 #include "ModeInfo.h"
 #include "RenderOpts.h"
-#include "VersionCheckDialog.h"
-#include "VideoProvider.h"
-#include "WarningBox.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include "3rdparty/likebackfrontend/LikeBack.h"
+#include "tools/MetaXmlReader.h"
+#include "tools/VersionCheckDialog.h"
+#include "tools/VideoProvider.h"
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
@@ -279,9 +278,7 @@ void MainWindow::loadImages(QStringList &imagesPath)
 void MainWindow::closeEvent(QCloseEvent * event)
 {
     // build the closure dialog
-    ButtonsDialog quitAsk("MainWindow-Exit");
-    quitAsk.setIcon(QIcon(":/data/action-delete.png"));
-    quitAsk.setTitle(tr("Closing Fotowall..."));
+    ButtonsDialog quitAsk("MainWindow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
     quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
     if (m_desk->pendingChanges()) {
@@ -637,7 +634,9 @@ void MainWindow::on_accelBox_toggled(bool opengl)
     QStyle * style = ui->canvas->viewport()->style();
     // set OpenGL viewport
     if (opengl) {
-        WarningBox("SkipWarnings/opengl", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system. Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"));
+        ButtonsDialog warning("GoOpenGL", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system.<br>Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"), QDialogButtonBox::Ok, true, true);
+        warning.setIcon(QStyle::SP_MessageBoxInformation);
+        warning.execute();
         ui->transpBox->setChecked(false);
         ui->canvas->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
         ui->canvas->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -715,7 +714,9 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         m_windowFlags = windowFlags();
     if (transparent) {
         // one-time warning
-        WarningBox("SkipWarnings/transparency", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"));
+        ButtonsDialog warning("GoTransparent", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"), QDialogButtonBox::Ok, true, true);
+        warning.setIcon(QStyle::SP_MessageBoxInformation);
+        warning.execute();
 
         // go transparent
         setAttribute(Qt::WA_NoSystemBackground, true);
@@ -851,7 +852,9 @@ void MainWindow::slotArrangeRandom()
             continue;
         content->setPos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
         content->setRotation(-30 + (qrand() % 60), Qt::ZAxis);
+#if QT_VERSION >= 0x040500
         content->setOpacity((qreal)(qrand() % 100) / 99.0);
+#endif
     }
 }
 

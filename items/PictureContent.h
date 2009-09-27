@@ -33,6 +33,7 @@ class PictureContent : public AbstractContent
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
         bool loadFromNetwork(const QString & url, QNetworkReply * reply = 0, const QString & title = QString(), int width = -1, int height = -1);
         void addEffect(const PictureEffect & effect);
+        void crop();
 
         // ::AbstractContent
         QString contentName() const { return tr("Picture"); }
@@ -48,12 +49,10 @@ class PictureContent : public AbstractContent
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
-        CPixmap getPhoto() const;
-
     Q_SIGNALS:
         void flipHorizontally();
         void flipVertically();
-        void crop();
+        void requestCrop();
 
     private:
         void dropNetworkConnection();

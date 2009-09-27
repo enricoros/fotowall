@@ -114,6 +114,7 @@ class Desk : public QGraphicsScene
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
         WebcamContent * createWebcam(int input, const QPoint & pos);
+        void deleteConfig(AbstractConfig * config);
         void setDVDMarkers();
         void clearMarkers();
         QNetworkAccessManager * m_networkAccessManager;
@@ -149,7 +150,7 @@ class Desk : public QGraphicsScene
         void slotBackgroundContent();
         void slotStackContent(int);
         void slotDeleteContent();
-        void slotDeleteConfig(AbstractConfig * config);
+        void slotDeleteConfig();
         void slotApplyLook(quint32 frameClass, bool mirrored, bool allContent);
         void slotApplyEffect(const PictureEffect & effect, bool allPictures);
         void slotCrop();

@@ -16,7 +16,6 @@
 #include "frames/Frame.h"
 #include "items/BezierCubicItem.h"
 #include "items/TextProperties.h"
-#include "CPixmap.h"
 #include "RenderOpts.h"
 #include <QDebug>
 #include <QFileInfo>

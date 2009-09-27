@@ -22,6 +22,7 @@ HEADERS += \
     PictureContent.h \
     PictureProperties.h \
     PropertyEditors.h \
+    SelectionProperties.h \
     StyledButtonItem.h \
     TextConfig.h \
     TextContent.h \
@@ -43,6 +44,7 @@ SOURCES += \
     PictureContent.cpp \
     PictureProperties.cpp \
     PropertyEditors.cpp \
+    SelectionProperties.cpp \
     StyledButtonItem.cpp \
     TextConfig.cpp \
     TextContent.cpp \

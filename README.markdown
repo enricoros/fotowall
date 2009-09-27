@@ -16,12 +16,14 @@ Unreleased 0.9.x:
 * Export to SVG
 * Integrated the LikeBack feedback system
 * Fixes licenses
+* (Work In Progress) More properties in the top bar
+* (Work In Progress) Arrange Contents
 * in branches:
   * Arnaud's Undo/Redo system
-  * More properties in the top bar
-  * Arrange Contents, finally!
   * Desk-wide effects
   * ...
+* queued
+  * 2d property editor (linked to perspective)
 
 Version 0.8.0 (2009-09-12):
 
@@ -126,7 +128,7 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist
 * handle initial load-save after being shown. also evaluate normalized rescaling.
-* save/restore background transparency state (or check current bg code)
+* save/restore background transparency/ratio state (or check current bg code)
 * svg drawings [balloons, signs, etc..]
 * masked pic
 * both new and old resize&co
@@ -152,6 +154,9 @@ improvement and the code is kept clean and small.
 * auto-placement [force field, shape, collage, etc..]
   * ap: perform rectangular image composition based on an input picture (color, pattern)
   * ap: perform image distribution based on shapes or probability sampling (on a sprayed grayscale canvas)
+* blend images in one another (reqby Ruud)
+* 3d text
+  * global illumitation/shading for shadows, frames, 3d text
 * Google-suggest completion (already in, but misplaced when embedded into qgraphicsview)
 * integrate kde-apps knowledgebase (already in, but doesn't work great)
 * regional links to web resources

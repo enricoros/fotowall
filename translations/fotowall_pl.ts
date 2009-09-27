@@ -97,7 +97,7 @@
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../items/AbstractContent.cpp" line="+73"/>
+        <location filename="../items/AbstractContent.cpp" line="+75"/>
         <source>Change properties...</source>
         <translation>Zmień właściwości...</translation>
     </message>
@@ -116,7 +116,12 @@ Użyj CTRL by anulować transformacje.</translation>
         <translation>Usuń</translation>
     </message>
     <message>
-        <location line="+622"/>
+        <location line="+624"/>
+        <source>Unnamed %1.png</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Choose the Image file</source>
         <translation>Wybierz plik obrazu</translation>
     </message>
@@ -126,7 +131,7 @@ Użyj CTRL by anulować transformacje.</translation>
         <translation>Obrazy (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+40"/>
         <source>File Error</source>
         <translation>Błąd pliku</translation>
     </message>
@@ -147,6 +152,14 @@ Użyj CTRL by anulować transformacje.</translation>
  - Przytrzymaj klawisz CTRL by rozpocząć rotację
  - Przytrzymaj klawisz ALT by przerwać rotację
  - Podwójne kliknięcie (LPM/PPM) przywróci proporcje/rotację</translation>
+    </message>
+</context>
+<context>
+    <name>ButtonsDialog</name>
+    <message>
+        <location filename="../ButtonsDialog.cpp" line="+39"/>
+        <source>show this warning again next time</source>
+        <translation type="unfinished">pokaż to ostrzeżenie następnym razem</translation>
     </message>
 </context>
 <context>
@@ -181,7 +194,7 @@ Użyj CTRL by anulować transformacje.</translation>
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.cpp" line="+901"/>
+        <location filename="../Desk.cpp" line="+906"/>
         <source>Back</source>
         <translation>Wróć</translation>
     </message>
@@ -196,17 +209,7 @@ Użyj CTRL by anulować transformacje.</translation>
         <translation>%1</translation>
     </message>
     <message>
-        <location line="+9"/>
-        <source>SELECTION</source>
-        <translation>WYBÓR</translation>
-    </message>
-    <message>
-        <location line="-1"/>
-        <source>%1 objects selected</source>
-        <translation>%1 obiektów wybrano</translation>
-    </message>
-    <message>
-        <location line="+122"/>
+        <location line="+121"/>
         <source>Delete content</source>
         <translation>Usuń treść</translation>
     </message>
@@ -338,22 +341,27 @@ Przejdź do ustawień pulpitu i wybierz plik:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+60"/>
+        <source>Unnamed %1.%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
         <source>Choose the Image file</source>
         <translation>Wybierz plik obrazu</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
         <translation>Obrazy (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+8"/>
         <source>Choose the SVG file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>SVG (*.svg)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -769,7 +777,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+286"/>
+        <location filename="../MainWindow.cpp" line="+284"/>
+        <source>Closing Fotowall...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Are you sure you want to quit and lose your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Don&apos;t Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Are you sure you want to quit?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
         <source>Enable force field</source>
         <translation>Aktywne pole</translation>
     </message>
@@ -901,7 +939,7 @@ p, li { white-space: pre-wrap; }
         <translation>drukuj</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+45"/>
         <source>Select one or more pictures to add</source>
         <translation>By dodać wybierz jedno lub więcej zdjęć</translation>
     </message>
@@ -911,12 +949,18 @@ p, li { white-space: pre-wrap; }
         <translation>Obrazy (%1)</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+12"/>
+        <location line="+21"/>
         <source>OpenGL</source>
         <translation>OpenGL</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-20"/>
+        <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system.&lt;br&gt;Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
         <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system. Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
         <translation>OpenGL przyspiesza grafikę. Jednakże nie gwarantuję, że będzie działać w Twoim systemie. Po prostu spróbuj i zobacz, czy u Ciebie pracuje ;-)&lt;br&gt; - jeśli wczytuje wolniej, upewnij się, że sterwonik posiada akcelerację OpenGL&lt;br&gt; - 	jeśli Fotowall przestaje odpowiadać po przejściu na OpenGL, po prostu natępnym razem nie używaj tej funkcji&lt;br&gt;&lt;br&gt;UWAGA: OpenGL nie działa trybem &apos;Przezroczystość&apos;.&lt;br&gt;</translation>
     </message>
@@ -931,18 +975,23 @@ p, li { white-space: pre-wrap; }
         <translation>Ta funkcja nie została jeszcze publicznie przetestowana.&lt;br&gt; - w systemie Linux wymaga kompozycji (takich jak compiz/beryl, kwin4)&lt;br&gt; - w Windows i Mac wydaje się, że będzie pracować&lt;br&gt;IJeśli widzisz czarne tło wtedy przezroczystość nie jest obsługiwana przez Twój system.&lt;br&gt;&lt;br&gt;UWAGA: należy ustawić &apos;Przezroczystość&apos; Tła by używać przezroczystości.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+70"/>
-        <location line="+12"/>
+        <location line="+74"/>
+        <location line="+16"/>
         <source>Select the Fotowall file</source>
         <translation>Wybierz plik FotoWall</translation>
     </message>
     <message>
-        <location line="-12"/>
+        <location line="-16"/>
         <source>Fotowall (*.fotowall)</source>
         <translation>Fotowall (*.fotowall)</translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+11"/>
+        <source>Unnamed %1.fotowall</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+75"/>
         <source>Title</source>
         <translation>Tytuł</translation>
     </message>
@@ -1065,12 +1114,13 @@ Czy chcesz otworzyć stronę internetowa?</translation>
         <translation>Wczytaj</translation>
     </message>
     <message>
-        <location/>
+        <location filename="../MainWindow.cpp" line="-732"/>
+        <location filename="../MainWindow.ui"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
     <message>
-        <location/>
+        <location filename="../MainWindow.ui"/>
         <source>Add Picture</source>
         <translation>Dodaj zdjęcie</translation>
     </message>
@@ -1312,6 +1362,29 @@ Czy chcesz otworzyć stronę internetowa?</translation>
         <location line="+6"/>
         <source>Subscript</source>
         <translation>Indeks dolny</translation>
+    </message>
+</context>
+<context>
+    <name>SelectionProperties</name>
+    <message>
+        <location filename="../items/SelectionProperties.cpp" line="+33"/>
+        <source>SELECTION</source>
+        <translation type="unfinished">WYBÓR</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>%1 objects selected</source>
+        <translation type="unfinished">%1 obiektów wybrano</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Collate Pictures</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

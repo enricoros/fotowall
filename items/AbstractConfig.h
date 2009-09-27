@@ -42,6 +42,7 @@ class AbstractConfig : public QGraphicsProxyWidget {
     Q_SIGNALS:
         void applyLook(quint32 frameClass, bool mirrored, bool allContents);
         void createNewFrame(QStringList);
+        void requestClose();
 
     protected:
         // used by subclasses
@@ -56,7 +57,6 @@ class AbstractConfig : public QGraphicsProxyWidget {
 
     protected Q_SLOTS:
         virtual void slotOkClicked() {};
-        void slotRequestClose();
 
     private:
         void populateFrameList();

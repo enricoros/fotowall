@@ -12,15 +12,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WarningBox_h__
-#define __WarningBox_h__
+#ifndef __SelectionProperties_h__
+#define __SelectionProperties_h__
 
-#include <QDialog>
-class WarningBox : public QDialog
-{
+#include <QWidget>
+#include <QList>
+#include "AbstractContent.h"
+class PictureContent;
+class TextContent;
+
+class SelectionProperties : public QWidget {
     Q_OBJECT
     public:
-        WarningBox(const QString & key, const QString & title, const QString & text);
+        SelectionProperties(QList<AbstractContent *> selection, QWidget * parent = 0);
+        ~SelectionProperties();
+
+    Q_SIGNALS:
+        void deleteSelection();
+
+    private:
+        QList<AbstractContent *> m_content;
+        QList<PictureContent *> m_pictures;
+        QList<TextContent *> m_texts;
+
+    private Q_SLOTS:
+        void slotCollatePictures();
 };
 
 #endif

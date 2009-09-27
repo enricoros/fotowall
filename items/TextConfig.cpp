@@ -39,5 +39,5 @@ TextConfig::~TextConfig()
 void TextConfig::slotOkClicked()
 {
     m_textContent->setHtml(m_editor->text(Qt::RichText));
-    slotRequestClose();
+    emit requestClose();
 }

@@ -13,10 +13,10 @@
  ***************************************************************************/
 
 #include "WebcamContent.h"
-#include "VideoProvider.h"
 #include "ButtonItem.h"
 #include "RenderOpts.h"
 #include "frames/Frame.h"
+#include "tools/VideoProvider.h"
 #include <QPainter>
 #include <QTimer>
 
