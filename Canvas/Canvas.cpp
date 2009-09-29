@@ -27,6 +27,7 @@
 #include "TextConfig.h"
 #include "WebContentSelectorItem.h"
 #include "WebcamContent.h"
+#include "WordCloudContent.h"
 #include "Shared/RenderOpts.h"
 
 #include <QAbstractTextDocumentLayout>
@@ -186,6 +187,12 @@ void Canvas::addTextContent()
 void Canvas::addWebcamContent(int input)
 {
     createWebcam(input, nearCenter(sceneRect()));
+}
+
+void Canvas::addWordCloudContent()
+{
+    WordCloudContent * wordCloud = createWordCloud(nearCenter(sceneRect()));
+    wordCloud->stackEditor();
 }
 
 
@@ -880,9 +887,16 @@ TextContent * Canvas::createText(const QPoint & pos)
 
 WebcamContent * Canvas::createWebcam(int input, const QPoint & pos)
 {
-    WebcamContent * v = new WebcamContent(input, this);
-    initContent(v, pos);
-    return v;
+    WebcamContent * w = new WebcamContent(input, this);
+    initContent(w, pos);
+    return w;
+}
+
+WordCloudContent * Canvas::createWordCloud(const QPoint & pos)
+{
+    WordCloudContent * w = new WordCloudContent(this);
+    initContent(w, pos);
+    return w;
 }
 
 void Canvas::deleteConfig(AbstractConfig * config)

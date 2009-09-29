@@ -24,6 +24,7 @@ class QGraphicsView;
 class QMenu;
 class QNetworkReply;
 namespace Ui { class MainWindow; }
+namespace WordCloud { class Cloud; }
 
 class MainWindow : public QWidget
 {
@@ -34,6 +35,8 @@ class MainWindow : public QWidget
 
         // TEMP
         void stackCanvas(Canvas * newCanvas);
+        void stackWordCloud(WordCloud::Cloud * cloud);
+        void popStack();
 
         void setModeInfo(ModeInfo modeInfo);
         ModeInfo getModeInfo(); // Needed for saving
@@ -76,6 +79,7 @@ class MainWindow : public QWidget
         void on_aAddPicture_triggered();
         void on_aAddText_triggered();
         void on_aAddWebcam_triggered();
+        void on_aAddWordCloud_triggered();
         void on_accelBox_toggled(bool checked);
         void on_transpBox_toggled(bool checked);
         void on_introButton_clicked();

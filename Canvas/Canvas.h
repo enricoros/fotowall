@@ -36,6 +36,7 @@ class QTimer;
 class TextContent;
 class WebcamContent;
 class WebContentSelectorItem;
+class WordCloudContent;
 
 class Canvas : public AbstractScene
 {
@@ -51,6 +52,7 @@ class Canvas : public AbstractScene
         void addPictureContent(const QStringList & fileNames);
         void addTextContent();
         void addWebcamContent(int input);
+        void addWordCloudContent();
 
         // selectors
         void setWebContentSelectorVisible(bool visible);
@@ -117,6 +119,7 @@ class Canvas : public AbstractScene
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
         WebcamContent * createWebcam(int input, const QPoint & pos);
+        WordCloudContent * createWordCloud(const QPoint & pos);
         void deleteConfig(AbstractConfig * config);
         void setDVDMarkers();
         void clearMarkers();

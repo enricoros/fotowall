@@ -20,6 +20,7 @@
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
+#include "WordCloud/WordCloud.h"
 #include "App.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
@@ -94,6 +95,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     ui->b3->setDefaultAction(ui->aAddWebcam);
     ui->b4->setDefaultAction(ui->aAddFlickr);
     ui->b5->setDefaultAction(ui->aAddCanvas);
+    ui->b6->setDefaultAction(ui->aAddWordCloud);
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
@@ -191,15 +193,29 @@ void MainWindow::stackCanvas(Canvas * newCanvas)
     if (m_canvas)
         disconnect(m_canvas, 0, this, 0);
     m_canvas = newCanvas;
-    connect(m_canvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
-    connect(m_canvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
     ui->sceneView->setScene(m_canvas);
+    if (m_canvas) {
+        connect(m_canvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
+        connect(m_canvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
+    }
     update();
 
     // update breadcrumb
     static quint32 baseId = 0;
     int nextId = baseId + 1;
     ui->canvasNavBar->addNode(nextId, "test", baseId++);
+}
+
+void MainWindow::stackWordCloud(WordCloud::Cloud * cloud)
+{
+    stackCanvas(0);
+    //WordCloudEditor *
+
+}
+
+void MainWindow::popStack()
+{
+
 }
 
 void MainWindow::setModeInfo(ModeInfo modeInfo)
@@ -610,6 +626,12 @@ void MainWindow::on_aAddWebcam_triggered()
 {
     REQUIRE_CANVAS
     m_canvas->addWebcamContent(0);
+}
+
+void MainWindow::on_aAddWordCloud_triggered()
+{
+    REQUIRE_CANVAS
+    m_canvas->addWordCloudContent();
 }
 
 void MainWindow::on_accelBox_toggled(bool enabled)
