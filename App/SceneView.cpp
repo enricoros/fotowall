@@ -133,10 +133,10 @@ void SceneView::setOpenGL(bool enabled)
 void SceneView::setOpenGL(bool) {};
 #endif
 
-void SceneView::sceneProjectModeUpdated()
+void SceneView::sceneConstraintsUpdated()
 {
     // TODO
-    qWarning("TODO SceneView::sceneProjectModeUpdated()");
+    qWarning("TODO SceneView::sceneConstraintsUpdated");
 }
 
 static void drawVerticalShadow(QPainter * painter, int width, int height)

@@ -13,8 +13,12 @@ ChangeLog
 
 Unreleased 0.9.x:
 
+* modeinfo-per-scene, real resizing of scenes based on modeinfo, support for larger scenes
+  * zoom levels?
+* done: AbstractScene, SceneView
+* imported: WordCloud
 * FotowallFile
-* AbstractScene
+
 
 * Export to SVG
 * Integrated the LikeBack feedback system

@@ -38,7 +38,7 @@ class SceneView : public QGraphicsView
         void setOpenGL(bool enabled);
         
     public Q_SLOTS:
-        void sceneProjectModeUpdated();
+        void sceneConstraintsUpdated();
 
     protected:
         // ::QGraphicsView
