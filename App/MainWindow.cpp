@@ -20,13 +20,13 @@
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
-#include "WordCloud/WordCloud.h"
 #include "App.h"
 #include "CanvasAppliance.h"
 #include "ExportWizard.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
+#include "WordcloudAppliance.h"
 #include "XmlRead.h"
 #include "XmlSave.h"
 #include "ui_MainWindow.h"
@@ -146,17 +146,15 @@ void MainWindow::editCanvas(Canvas * canvas)
     m_appManager->stackAppliance(cApp);
 }
 
-// ###
 void MainWindow::editWordcloud(WordCloud::Cloud * cloud)
 {
-    HERE;
-    //WordcloudAppliance * wApp = new WordcloudAppliance(cloud);
-    //m_appManager->stackAppliance(wApp);
+    WordcloudAppliance * wApp = new WordcloudAppliance(cloud, this);
+    m_appManager->stackAppliance(wApp);
 }
 
-void MainWindow::applianceSetScene(QGraphicsScene * scene)
+void MainWindow::applianceSetScene(AbstractScene * scene)
 {
-    ui->sceneView->setScene(dynamic_cast<AbstractScene *>(scene));
+    ui->sceneView->setScene(scene);
 }
 
 void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)

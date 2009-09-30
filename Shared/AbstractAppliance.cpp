@@ -63,7 +63,7 @@ bool AbstractAppliance::isFloating() const
     return m_containerPtr.isNull();
 }
 
-void AbstractAppliance::sceneSet(QGraphicsScene * scene)
+void AbstractAppliance::sceneSet(AbstractScene * scene)
 {
     m_pScene = scene;
     if (m_containerPtr)

@@ -37,7 +37,7 @@ class MainWindow : public Appliance::Container
 
     protected:
         // ::Appliance::Container
-        void applianceSetScene(QGraphicsScene * scene);
+        void applianceSetScene(AbstractScene * scene);
         void applianceSetTopbar(const QList<QWidget *> & widgets);
         void applianceSetSidebar(QWidget * widget);
         void applianceSetCentralwidget(QWidget * widget);

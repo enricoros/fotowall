@@ -12,30 +12,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __ApplianceContainer_h__
-#define __ApplianceContainer_h__
+#include "WordcloudAppliance.h"
 
-#include <QWidget>
-class AbstractScene;
+#include "Shared/AbstractScene.h"
 
-namespace Appliance {
-class AbstractAppliance;
-
-class Container : public QWidget
+WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * cloud, QObject * parent)
+  : Appliance::AbstractAppliance(parent)
+  , m_cloud(cloud)
+  , m_scene(new AbstractScene(this))
+  , ui(0)
+  , m_dummyWidget(0)
 {
-    Q_OBJECT
-    public:
-        Container(QWidget * parent = 0);
+    // init UI
+    ui = new Ui::WordcloudApplianceElements;
+    m_dummyWidget = new QWidget;
+    ui->setupUi(m_dummyWidget);
 
-    protected:
-        // called by appliances
-        friend class Appliance::AbstractAppliance;
-        virtual void applianceSetScene(AbstractScene * scene) = 0;
-        virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
-        virtual void applianceSetSidebar(QWidget * widget) = 0;
-        virtual void applianceSetCentralwidget(QWidget * widget) = 0;
-};
+    // set the target scene of the cloud to this
+    cloud->setScene(m_scene);
 
+    // configure the appliance
+    sceneSet(m_scene);
 }
 
-#endif
+WordCloud::Cloud * WordcloudAppliance::cloud() const
+{
+    return m_cloud;
+}

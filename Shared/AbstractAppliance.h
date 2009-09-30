@@ -16,8 +16,8 @@
 #define __AbstractAppliance_h__
 
 #include <QObject>
-#include <QGraphicsScene>
 #include <QPointer>
+#include "AbstractScene.h"
 #include "ApplianceContainer.h"
 
 namespace Appliance {
@@ -52,7 +52,7 @@ class AbstractAppliance : public QObject
 
     protected:
         // used by reimpls to access the containter
-        void sceneSet(QGraphicsScene *);
+        void sceneSet(AbstractScene *);
         void sceneClear();
         void topbarAddWidget(QWidget *, int index = -1);
         void topbarRemoveWidget(QWidget *);
@@ -66,7 +66,7 @@ class AbstractAppliance : public QObject
         void setContainerTopbar();
 
         typedef QPointer<QWidget> WidgetPointer;
-        typedef QPointer<QGraphicsScene> ScenePointer;
+        typedef QPointer<AbstractScene> ScenePointer;
         typedef QPointer<Container> ContainerPointer;
 
         ScenePointer m_pScene;

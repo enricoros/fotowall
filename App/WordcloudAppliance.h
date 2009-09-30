@@ -12,30 +12,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __ApplianceContainer_h__
-#define __ApplianceContainer_h__
+#ifndef __WordcloudAppliance_h__
+#define __WordcloudAppliance_h__
 
-#include <QWidget>
+#include "Shared/AbstractAppliance.h"
+#include "WordCloud/WordCloud.h"
+#include "ui_WordcloudAppliance.h"
 class AbstractScene;
+class QMenu;
 
-namespace Appliance {
-class AbstractAppliance;
-
-class Container : public QWidget
+class WordcloudAppliance : public Appliance::AbstractAppliance
 {
     Q_OBJECT
     public:
-        Container(QWidget * parent = 0);
+        WordcloudAppliance(WordCloud::Cloud * cloud, QObject * parent = 0);
 
-    protected:
-        // called by appliances
-        friend class Appliance::AbstractAppliance;
-        virtual void applianceSetScene(AbstractScene * scene) = 0;
-        virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
-        virtual void applianceSetSidebar(QWidget * widget) = 0;
-        virtual void applianceSetCentralwidget(QWidget * widget) = 0;
+        // peek into the cloud
+        WordCloud::Cloud * cloud() const;
+
+        // ::Appliance::AbstractAppliance
+        QString applianceName() const { return tr("Word Cloud"); }
+        int applianceElements() const { return Appliance::UseAllElements; }
+
+    private:
+        WordCloud::Cloud * m_cloud;
+        AbstractScene * m_scene;
+        Ui::WordcloudApplianceElements * ui;
+        QWidget * m_dummyWidget;
 };
-
-}
 
 #endif
