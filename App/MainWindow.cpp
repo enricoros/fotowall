@@ -52,7 +52,6 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include "math.h"
-#include <QDebug>
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -79,8 +78,6 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     , m_likeBack(0)
 {
     // setup widget
-    QRect geom = QApplication::desktop()->availableGeometry();
-    resize(2 * geom.width() / 3, 2 * geom.height() / 3);
 #if QT_VERSION >= 0x040500
     setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
 #else
@@ -164,9 +161,11 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     on_projectType_activated(0);
 
     // show initially
-    if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray()))
+    if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
+        QRect desktopGeometry = QApplication::desktop()->availableGeometry();
+        resize(2 * desktopGeometry.width() / 3, 2 * desktopGeometry.height() / 3);
         showMaximized();
-    else
+    } else
         show();
 }
 
@@ -223,22 +222,10 @@ void MainWindow::stackWordCloud(WordCloud::Cloud * /*cloud*/)
 #warning FROM HERE
     stackCanvas(0);
     //WordCloudEditor *
-
 }
 
 void MainWindow::popStack()
 {
-
-}
-
-void MainWindow::restoreMode(int mode)
-{
-    if (mode == 3) { // If exact size project
-        // Called here not to have the unneeded size dialog
-        setExactSizeProject();
-    } else {
-        on_projectType_activated(mode);
-    }
 }
 
 void MainWindow::showIntroduction()
@@ -576,16 +563,11 @@ void MainWindow::on_aAddFlickr_toggled(bool on)
 void MainWindow::on_aAddPicture_triggered()
 {
     REQUIRE_CANVAS
-    // build the extensions list
-    QString extensions;
-    foreach (const QByteArray & format, QImageReader::supportedImageFormats())
-        extensions += "*." + format + " *." + format.toUpper() + " ";
-
     // make up the default load path (stored as 'Fotowall/LoadImagesDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(ui->sceneView, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(extensions));
+    QStringList fileNames = QFileDialog::getOpenFileNames(ui->sceneView, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()));
     if (fileNames.isEmpty())
         return;    
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
@@ -989,7 +971,13 @@ void MainWindow::slotShowPropertiesWidget(QWidget * widget)
 void MainWindow::slotRefreshCanvas()
 {
     REQUIRE_CANVAS
-    restoreMode(m_canvas->modeInfo()->projectMode());
+    int mode = m_canvas->modeInfo()->projectMode();
+    if (mode == 3) { // If exact size project
+        // Called here not to have the unneeded size dialog
+        setExactSizeProject();
+    } else {
+        on_projectType_activated(mode);
+    }
     update();
 }
 

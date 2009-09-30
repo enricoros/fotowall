@@ -37,8 +37,6 @@ class MainWindow : public QWidget
         void stackWordCloud(WordCloud::Cloud * cloud);
         void popStack();
 
-        void restoreMode(int mode);
-
         void showIntroduction();
 
         // ::QWidget

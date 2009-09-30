@@ -2,7 +2,6 @@ HEADERS += \
     App/App.h \
     App/ExactSizeDialog.h \
     App/ExportWizard.h \
-    App/GroupBoxWidget.h \
     App/MainWindow.h \
     App/SceneView.h \
     App/Settings.h \
@@ -14,7 +13,6 @@ SOURCES += \
     App/App.cpp \
     App/ExactSizeDialog.cpp \
     App/ExportWizard.cpp \
-    App/GroupBoxWidget.cpp \
     App/MainWindow.cpp \
     App/SceneView.cpp \
     App/Settings.cpp \

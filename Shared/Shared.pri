@@ -9,6 +9,7 @@ HEADERS += \
     Shared/FlickrInterface.h \
     Shared/GlowEffectDialog.h \
     Shared/GlowEffectWidget.h \
+    Shared/GroupBoxWidget.h \
     Shared/MetaXmlReader.h \
     Shared/PictureEffect.h \
     Shared/RenderOpts.h \
@@ -25,6 +26,7 @@ SOURCES += \
     Shared/FlickrInterface.cpp \
     Shared/GlowEffectDialog.cpp \
     Shared/GlowEffectWidget.cpp \
+    Shared/GroupBoxWidget.cpp \
     Shared/MetaXmlReader.cpp \
     Shared/VideoProvider.cpp
 
