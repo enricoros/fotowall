@@ -15,7 +15,7 @@
 #ifndef __Canvas_h__
 #define __Canvas_h__
 
-#include "AbstractScene.h"
+#include "Shared/AbstractScene.h"
 #include <QDataStream>
 #include <QPainter>
 #include <QPixmap>
@@ -27,6 +27,7 @@ class AbstractContent;
 class AbstractConfig;
 struct PictureEffect;
 class ColorPickerItem;
+class CanvasModeInfo;
 class CanvasViewContent;
 class HelpItem;
 class HighlightItem;
@@ -54,12 +55,13 @@ class Canvas : public AbstractScene
         void addWebcamContent(int input);
         void addWordCloudContent();
 
+        // ::AbstractScene
+        void resize(const QSize & size);
+        void resizeEvent(QResizeEvent * event);
+
         // selectors
         void setWebContentSelectorVisible(bool visible);
         bool webContentSelectorVisible() const;
-
-        // ::AbstractScene
-        void resizeEvent(QResizeEvent * event);
 
         // item interaction
         void selectAllContent(bool selected = true);
@@ -86,9 +88,7 @@ class Canvas : public AbstractScene
         void blinkBackGradients();
 
         // get and set the project mode (CD cover, DVD,...).
-        enum Mode { ModeNormal = 0, ModeCD = 1, ModeDVD = 2, ModeExactSize = 3 };
-        Mode projectMode() const;
-        void setProjectMode(Mode mode);
+        CanvasModeInfo * modeInfo() const;
 
         void toXml(QDomElement &de) const;
         void fromXml(QDomElement &de);
@@ -123,6 +123,8 @@ class Canvas : public AbstractScene
         void deleteConfig(AbstractConfig * config);
         void setDVDMarkers();
         void clearMarkers();
+
+        CanvasModeInfo * m_modeInfo;
         QNetworkAccessManager * m_networkAccessManager;
         QList<AbstractContent *> m_content;
         QList<AbstractConfig *> m_configs;
@@ -140,7 +142,6 @@ class Canvas : public AbstractScene
         QString m_titleText;
         QPixmap m_backTile;
         QPixmap m_backCache;
-        Mode m_projectMode;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
         WebContentSelectorItem * m_webContentSelector;
         QTimer * m_forceFieldTimer;

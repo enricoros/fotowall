@@ -21,16 +21,16 @@
 
 #include <QObject>
 #include <QDomElement>
+class CanvasModeInfo;
 class Canvas;
-class MainWindow;
 
 class XmlRead
 {
     public:
-        static bool read(const QString & filePath, MainWindow * mw, Canvas * canvas);
+        static bool read(const QString & filePath, Canvas * canvas, CanvasModeInfo * modeInfo);
 
         bool loadFile(const QString & filePath);
-        void readProject(MainWindow * mainWindow);
+        void readProject(CanvasModeInfo * modeInfo);
         void readCanvas(Canvas * canvas);
         void readContent(Canvas * canvas);
 

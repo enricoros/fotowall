@@ -16,7 +16,6 @@
 #define __MainWindow_h__
 
 #include <QWidget>
-#include "ModeInfo.h"
 class Canvas;
 class LikeBack;
 class QActionGroup;
@@ -38,8 +37,6 @@ class MainWindow : public QWidget
         void stackWordCloud(WordCloud::Cloud * cloud);
         void popStack();
 
-        void setModeInfo(ModeInfo modeInfo);
-        ModeInfo getModeInfo(); // Needed for saving
         void restoreMode(int mode);
 
         void showIntroduction();
@@ -64,7 +61,6 @@ class MainWindow : public QWidget
 
         Ui::MainWindow * ui;
         Canvas *        m_canvas;
-        ModeInfo        m_modeInfo;
         QAction *       m_aHelpTutorial;
         QAction *       m_aHelpSupport;
         QActionGroup *  m_gBackActions;

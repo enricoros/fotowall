@@ -41,6 +41,15 @@ bool Scanner::addFromFile(const QString & fileName)
     return true;
 }
 
+bool Scanner::addFromString(const QString & string)
+{
+    QRegExp splitNonWords("\\W");
+    QStringList words = string.split(splitNonWords, QString::SkipEmptyParts);
+    foreach (const QString & word, words)
+        addWord(word);
+    return true;
+}
+
 bool Scanner::addFromUrl(const QUrl & url)
 {
     qWarning() << "Scanner::addFromUrl(" << url.toString() << ") not implemented";
@@ -66,9 +75,10 @@ static bool wordFrequencySorter(const Word &w1, const Word &w2)
 WordList Scanner::takeWords()
 {
     // remove common words, single ones, and sort by frequency
-    removeWordsBelowCount(2);
+    if (m_words.size() >= 100)
+        removeWordsBelowCount(2);
     removeWordsByLanguage(QLocale::Italian);
-    qSort(m_words.begin(), m_words.end(), wordFrequencySorter);
+    //qSort(m_words.begin(), m_words.end(), wordFrequencySorter);
 
     // clear private list and return
     WordList wl = m_words;

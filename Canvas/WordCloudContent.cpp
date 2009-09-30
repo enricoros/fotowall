@@ -15,6 +15,7 @@
 #include "WordCloudContent.h"
 
 #include "App/XmlRead.h"
+#include "WordCloud/WordScanner.h"
 #include "Canvas.h"
 
 #include <QGraphicsScene>
@@ -27,6 +28,19 @@ WordCloudContent::WordCloudContent(QGraphicsScene * scene, QGraphicsItem * paren
 {
     connect(m_cloudScene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintScene(const QList<QRectF> &)));
     m_cloud->setScene(m_cloudScene);
+
+    // temporarily get words
+    WordCloud::Scanner scanner;
+    //scanner.addFromFile("/alchimia");
+    scanner.addFromString(tr("Welcome to WordCloud. Change options on the sidebar."));
+    WordCloud::WordList list = scanner.takeWords();
+    WordCloud::WordList::iterator wIt = list.begin();
+    int ccc = list.size() + 1;
+    while (wIt != list.end()) {
+        wIt->count = ccc--;
+        ++wIt;
+    }
+    m_cloud->newCloud(list);
 }
 
 #include "App/App.h"
@@ -66,9 +80,12 @@ void WordCloudContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * /*event*
     stackEditor();
 }
 
-void WordCloudContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+void WordCloudContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
-    m_cloudScene->render(painter, boundingRect(), m_cloudScene->sceneRect(), Qt::IgnoreAspectRatio);
+    // paint parent
+    AbstractContent::paint(painter, option, widget);
+
+    m_cloudScene->render(painter, contentsRect(), m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
 }
 
 void WordCloudContent::slotRepaintScene(const QList<QRectF> & /*exposed*/)

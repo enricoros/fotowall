@@ -14,7 +14,7 @@
 
 #include "SceneView.h"
 
-#include "Canvas/AbstractScene.h"
+#include "Shared/AbstractScene.h"
 #include "Shared/ButtonsDialog.h"
 
 #include <QCommonStyle>

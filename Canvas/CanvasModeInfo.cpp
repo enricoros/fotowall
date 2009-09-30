@@ -16,60 +16,79 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
  ******************************************************************************/
 
-#include "ModeInfo.h"
+#include "CanvasModeInfo.h"
 
-ModeInfo::ModeInfo() : m_printDpi(300), m_landscape(false)
+CanvasModeInfo::CanvasModeInfo()
+  : m_printDpi(300)
+  , m_landscape(false)
+  , m_projectMode(ModeNormal)
 {
 }
 
-void ModeInfo::setCanvasDpi(float dpiX, float dpiY)
+void CanvasModeInfo::setFixedSizeInches(const QSizeF & size)
+{
+    // 1 inch = 2.54 cm
+    //w /= (float)2.54; h /= (float)2.54;
+    //m_realSizeInches = QSizeF(w, h);
+    m_realSizeInches = size;
+}
+
+bool CanvasModeInfo::fixedSize() const
+{
+    return !m_realSizeInches.isEmpty();
+}
+
+QSizeF CanvasModeInfo::fixedSizeInches() const
+{
+    return m_realSizeInches;
+}
+
+QSize CanvasModeInfo::fixedScreenPixels() const
+{
+    return QSize(m_realSizeInches.width() * m_canvasDpi.x(), m_realSizeInches.height() * m_canvasDpi.y());
+}
+
+QSize CanvasModeInfo::fixedPrinterPixels() const
+{
+    return QSize(m_realSizeInches.width() * m_printDpi, m_realSizeInches.height() * m_printDpi);
+}
+
+void CanvasModeInfo::setScreenDpi(float dpiX, float dpiY)
 {
     m_canvasDpi = QPointF(dpiX, dpiY);
 }
-QPointF ModeInfo::canvasDpi() const
+
+QPointF CanvasModeInfo::screenDpi() const
 {
     return m_canvasDpi;
 }
 
-void ModeInfo::setPrintDpi(float dpi)
+void CanvasModeInfo::setPrintDpi(float dpi)
 {
     m_printDpi = dpi;
 }
-float ModeInfo::printDpi() const
+
+float CanvasModeInfo::printDpi() const
 {
     return m_printDpi;
 }
 
-void ModeInfo::setRealSizeCm(float w, float h)
-{
-    // 1 inch = 2.54 cm
-    w /= (float)2.54; h /= (float)2.54;
-    m_realSize = QSizeF(w, h);
-}
-void ModeInfo::setRealSizeInches(float w, float h)
-{
-    m_realSize = QSizeF(w, h);
-}
-QSizeF ModeInfo::realSize() const
-{
-    return m_realSize;
-}
-
-QSize ModeInfo::canvasPixelSize() const
-{
-    return QSize(m_realSize.width() * m_canvasDpi.x(), m_realSize.height() * m_canvasDpi.y());
-}
-QSize ModeInfo::printPixelSize() const
-{
-    return QSize(m_realSize.width() * m_printDpi, m_realSize.height() * m_printDpi);
-}
-
-void ModeInfo::setLandscape(bool landscape)
+void CanvasModeInfo::setPrintLandscape(bool landscape)
 {
     m_landscape = landscape;
 }
-bool ModeInfo::landscape() const
+
+bool CanvasModeInfo::printLandscape() const
 {
     return m_landscape;
 }
 
+void CanvasModeInfo::setProjectMode(Mode mode)
+{
+    m_projectMode = mode;
+}
+
+CanvasModeInfo::Mode CanvasModeInfo::projectMode() const
+{
+    return m_projectMode;
+}

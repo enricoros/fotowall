@@ -19,6 +19,7 @@
 #include "App/XmlSave.h"
 
 #include "Canvas/AbstractContent.h"
+#include "Canvas/CanvasModeInfo.h"
 #include "Canvas/Canvas.h"
 #include "App.h"
 #include "Settings.h"
@@ -29,11 +30,12 @@
 #include <QTextStream>
 
 
-bool XmlSave::save(const QString & filePath, const Canvas * canvas, int mode, const ModeInfo & modeInfo)
+bool XmlSave::save(const QString & filePath, const Canvas * canvas, const CanvasModeInfo * modeInfo)
 {
     // build up the DOM tree
     XmlSave xmlSave;
-    xmlSave.saveProject(mode, modeInfo);
+    if (modeInfo)
+        xmlSave.saveProject(modeInfo);
     if (canvas) {
         xmlSave.saveCanvas(canvas);
         xmlSave.saveContent(canvas);
@@ -110,15 +112,15 @@ void XmlSave::saveCanvas(const Canvas *canvas)
     canvas->toXml(m_canvasElement);
 }
 
-void XmlSave::saveProject(int mode, const ModeInfo& modeInfo)
+void XmlSave::saveProject(const CanvasModeInfo * modeInfo)
 {
     // Mode element
-    QDomElement modeElement = doc.createElement("mode"), modeId = doc.createElement("id");
+    QDomElement modeElement = doc.createElement("mode");
+    QDomElement modeId = doc.createElement("id");
     modeElement.appendChild(modeId);
-    QString modeStr; modeStr.setNum(mode);
-    QDomText modeText = doc.createTextNode(modeStr);
+    QDomText modeText = doc.createTextNode(QString::number(modeInfo->projectMode()));
     modeId.appendChild(modeText);
-    QSizeF modeSize = modeInfo.realSize();
+    QSizeF modeSize = modeInfo->fixedSizeInches();
     if(!modeSize.isEmpty()) { // If it is a mode that requires additionnal saving
         QDomElement modeSizeElement = doc.createElement("size");
         QDomElement wElement= doc.createElement("w");
@@ -133,7 +135,7 @@ void XmlSave::saveProject(int mode, const ModeInfo& modeInfo)
         modeElement.appendChild(modeSizeElement);
 
         QDomElement dpi = doc.createElement("dpi");
-        QString dpiStr; dpiStr.setNum(modeInfo.printDpi());
+        QString dpiStr; dpiStr.setNum(modeInfo->printDpi());
     }
     m_projectElement.appendChild(modeElement);
 }

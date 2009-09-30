@@ -27,7 +27,7 @@ class AbstractScene : public QGraphicsScene
         AbstractScene(QObject * parent = 0);
 
         // scene size
-        void resize(const QSize & size);
+        virtual void resize(const QSize & size);
         virtual void resizeEvent(QResizeEvent * event);
         inline int sceneWidth() const { return m_size.width(); }
         inline int sceneHeight() const { return m_size.height(); }

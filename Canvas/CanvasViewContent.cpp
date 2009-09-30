@@ -53,16 +53,16 @@ QWidget * CanvasViewContent::createPropertyWidget()
     return 0;
 }
 
-bool CanvasViewContent::fromXml(QDomElement & parentElement)
+bool CanvasViewContent::fromXml(QDomElement & /*parentElement*/)
 {
     return false;
 }
 
-void CanvasViewContent::toXml(QDomElement & parentElement) const
+void CanvasViewContent::toXml(QDomElement & /*parentElement*/) const
 {
 }
 
-QPixmap CanvasViewContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
+QPixmap CanvasViewContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const
 {
     return QPixmap(100, 100);
 }
@@ -74,17 +74,20 @@ bool CanvasViewContent::contentOpaque() const
 
 #include "App/App.h"
 #include "App/MainWindow.h"
-void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
     App::mainWindow->stackCanvas(m_canvas);
     update();
 }
 
-void CanvasViewContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+void CanvasViewContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
+    // paint parent
+    AbstractContent::paint(painter, option, widget);
+
     // TODO: see if it paints when the scene is not displayed...
     if (m_canvas)
-        m_canvas->render(painter, boundingRect(), m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
+        m_canvas->render(painter, contentsRect(), m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
     else
         painter->fillRect(boundingRect(), Qt::red);
 }

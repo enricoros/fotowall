@@ -17,6 +17,7 @@
 #include "Frames/FrameFactory.h"
 #include "Shared/ColorPickerItem.h"
 #include "Shared/FlickrInterface.h"
+#include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"
 #include "HelpItem.h"
 #include "HighlightItem.h"
@@ -48,8 +49,22 @@
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
+/*void Canvas::setProjectMode(Mode mode)
+    if (m_projectMode != mode) {
+        m_projectMode = mode;
+        switch (mode) {
+        case ModeDVD:
+                setDVDMarkers();
+                break;
+        default:
+                clearMarkers();
+                break;
+        }
+    } */
+
 Canvas::Canvas(QObject * parent)
     : AbstractScene(parent)
+    , m_modeInfo(new CanvasModeInfo)
     , m_networkAccessManager(0)
     , m_helpItem(0)
     , m_backContent(0)
@@ -57,7 +72,6 @@ Canvas::Canvas(QObject * parent)
     , m_bottomBarEnabled(false)
     , m_backGradientEnabled(true)
     , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
-    , m_projectMode(ModeNormal)
     , m_webContentSelector(0)
     , m_forceFieldTimer(0)
 {
@@ -135,6 +149,7 @@ Canvas::~Canvas()
     m_content.clear();
     m_backContent = 0;
     delete m_networkAccessManager;
+    delete m_modeInfo;
 }
 
 /// Add Content
@@ -192,11 +207,40 @@ void Canvas::addWebcamContent(int input)
 void Canvas::addWordCloudContent()
 {
     WordCloudContent * wordCloud = createWordCloud(nearCenter(sceneRect()));
-    wordCloud->stackEditor();
+    //wordCloud->stackEditor();
 }
 
+void Canvas::resize(const QSize & size)
+{
+    // handle the fixed resizes
+    if (m_modeInfo->fixedSize()) {
+        QSize fixedSize = m_modeInfo->fixedScreenPixels();
+        if (size != fixedSize)
+            AbstractScene::resize(fixedSize);
+        return;
+    }
+    // handle the normal resizes
+    AbstractScene::resize(size);
+}
 
-/// Selectors
+void Canvas::resizeEvent(QResizeEvent * /*event*/)
+{
+    // relayout contents
+    m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
+    m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
+    m_grad2ColorPicker->setPos(sceneWidth() - COLORPICKER_W, sceneHeight() - COLORPICKER_H);
+    if (m_helpItem)
+        m_helpItem->setPos(sceneCenter().toPoint());
+    foreach (HighlightItem * highlight, m_highlightItems)
+        highlight->reposition(sceneRect());
+
+    // ensure visibility
+    foreach (AbstractContent * content, m_content)
+        content->ensureVisible(sceneRect());
+    foreach (AbstractConfig * config, m_configs)
+        config->keepInBoundaries(sceneRect());
+}
+
 void Canvas::setWebContentSelectorVisible(bool visible)
 {
     if (!visible && m_webContentSelector) {
@@ -217,24 +261,6 @@ void Canvas::setWebContentSelectorVisible(bool visible)
 bool Canvas::webContentSelectorVisible() const
 {
     return m_webContentSelector;
-}
-
-void Canvas::resizeEvent(QResizeEvent * /*event*/)
-{
-    // relayout contents
-    m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
-    m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
-    m_grad2ColorPicker->setPos(sceneWidth() - COLORPICKER_W, sceneHeight() - COLORPICKER_H);
-    if (m_helpItem)
-        m_helpItem->setPos(sceneCenter().toPoint());
-    foreach (HighlightItem * highlight, m_highlightItems)
-        highlight->reposition(sceneRect());
-
-    // ensure visibility
-    foreach (AbstractContent * content, m_content)
-        content->ensureVisible(sceneRect());
-    foreach (AbstractConfig * config, m_configs)
-        config->keepInBoundaries(sceneRect());
 }
 
 /// Item Interaction
@@ -392,24 +418,9 @@ void Canvas::blinkBackGradients()
 }
 
 /// Modes
-Canvas::Mode Canvas::projectMode() const
+CanvasModeInfo * Canvas::modeInfo() const
 {
-    return m_projectMode;
-}
-
-void Canvas::setProjectMode(Mode mode)
-{
-    if (m_projectMode != mode) {
-        m_projectMode = mode;
-        switch (mode) {
-            case ModeDVD:
-                setDVDMarkers();
-                break;
-            default:
-                clearMarkers();
-                break;
-        }
-    }
+    return m_modeInfo;
 }
 
 void Canvas::toXml(QDomElement & de) const

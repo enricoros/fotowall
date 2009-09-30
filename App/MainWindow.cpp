@@ -15,6 +15,7 @@
 #include "App/MainWindow.h"
 
 #include "3rdparty/likebackfrontend/LikeBack.h"
+#include "Canvas/CanvasModeInfo.h"
 #include "Canvas/Canvas.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
@@ -24,7 +25,6 @@
 #include "App.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
-#include "ModeInfo.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
@@ -116,11 +116,6 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     // create misc actions
     createMiscActions();
 
-    // set the startup project mode
-    on_projectType_activated(0);
-    m_modeInfo.setCanvasDpi(ui->sceneView->logicalDpiX(), ui->sceneView->logicalDpiY());
-    m_modeInfo.setPrintDpi(300);
-
     // check stuff on the net
     checkForTutorial();
     checkForSupport();
@@ -134,7 +129,8 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
         // create a custom canvas and load content over it
         Canvas * initialCanvas = new Canvas(this);
         stackCanvas(initialCanvas);
-        XmlRead::read(contentUrls.first(), this, initialCanvas);
+        XmlRead::read(contentUrls.first(), initialCanvas, initialCanvas->modeInfo());
+        restoreMode(initialCanvas->modeInfo()->projectMode());
     }
     // initial behavior: new Canvas with contents
     else if (!contentUrls.isEmpty()) {
@@ -164,6 +160,9 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
         }*/
     }
 
+    // set the startup project mode
+    on_projectType_activated(0);
+
     // show initially
     showMaximized();
 }
@@ -174,7 +173,7 @@ MainWindow::~MainWindow()
     if (m_canvas) {
         // this is an example of 'autosave-like function'
         //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-        //XmlSave::save(tempPath, m_canvas, m_canvas->projectMode(), m_modeInfo);
+        //XmlSave::save(tempPath, m_canvas, m_canvas->modeInfo());
     }
 
     // delete everything
@@ -195,6 +194,8 @@ void MainWindow::stackCanvas(Canvas * newCanvas)
     m_canvas = newCanvas;
     ui->sceneView->setScene(m_canvas);
     if (m_canvas) {
+        m_canvas->modeInfo()->setScreenDpi(ui->sceneView->logicalDpiX(), ui->sceneView->logicalDpiY());
+        m_canvas->modeInfo()->setPrintDpi(300);
         connect(m_canvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
         connect(m_canvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
     }
@@ -206,8 +207,9 @@ void MainWindow::stackCanvas(Canvas * newCanvas)
     ui->canvasNavBar->addNode(nextId, "test", baseId++);
 }
 
-void MainWindow::stackWordCloud(WordCloud::Cloud * cloud)
+void MainWindow::stackWordCloud(WordCloud::Cloud * /*cloud*/)
 {
+#warning FROM HERE
     stackCanvas(0);
     //WordCloudEditor *
 
@@ -216,17 +218,6 @@ void MainWindow::stackWordCloud(WordCloud::Cloud * cloud)
 void MainWindow::popStack()
 {
 
-}
-
-void MainWindow::setModeInfo(ModeInfo modeInfo)
-{
-    m_modeInfo = modeInfo;
-    m_modeInfo.setCanvasDpi(ui->sceneView->logicalDpiX(), ui->sceneView->logicalDpiY());
-}
-
-ModeInfo MainWindow::getModeInfo()
-{
-    return m_modeInfo;
 }
 
 void MainWindow::restoreMode(int mode)
@@ -483,97 +474,72 @@ void MainWindow::checkForUpdates()
 
 void MainWindow::setNormalProject()
 {
-    m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (for the saving function)
-    static bool skipFirstMaximizeHack = true;
-    ui->sceneView->setMinimumSize(ui->sceneView->minimumSizeHint());
-    ui->sceneView->setMaximumSize(QSize(16777215, 16777215));
-    if (skipFirstMaximizeHack)
-        skipFirstMaximizeHack = false;
-    else
-        showMaximized();
+    REQUIRE_CANVAS
+    m_canvas->modeInfo()->setFixedSizeInches();
+    m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
+    showMaximized();
     ui->exportButton->setText(tr("Export"));
-    if (m_canvas) // FIXME: bind to a property
-        m_canvas->setProjectMode(Canvas::ModeNormal);
     ui->projectType->setCurrentIndex(0);
 }
 
 void MainWindow::setCDProject()
 {
-    // A CD cover is a 4.75x4.715 inches square.
-    m_modeInfo.setRealSizeInches(4.75, 4.75);
-    m_modeInfo.setLandscape(false);
-    ui->sceneView->setFixedSize(m_modeInfo.canvasPixelSize());
+    REQUIRE_CANVAS
+    m_canvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
+    m_canvas->modeInfo()->setPrintLandscape(false);
+    m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
     showNormal();
-    ui->exportButton->setText(tr("print"));
-    if (m_canvas) // FIXME: bind to a property
-        m_canvas->setProjectMode(Canvas::ModeCD);
+    ui->exportButton->setText(tr("Print"));
     ui->projectType->setCurrentIndex(1);
 }
 
 void MainWindow::setDVDProject()
 {
-    m_modeInfo.setRealSizeInches((float)10.83, (float)7.2);
-    m_modeInfo.setLandscape(true);
-    ui->sceneView->setFixedSize(m_modeInfo.canvasPixelSize());
+    REQUIRE_CANVAS
+    m_canvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
+    m_canvas->modeInfo()->setPrintLandscape(true);
+    m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
     showNormal();
-    ui->exportButton->setText(tr("print"));
-    if (m_canvas) // FIXME: bind to a property
-        m_canvas->setProjectMode(Canvas::ModeDVD);
+    ui->exportButton->setText(tr("Print"));
     ui->projectType->setCurrentIndex(2);
 }
 
 void MainWindow::setExactSizeProject()
 {
-    // Exact size mode
-    if(m_modeInfo.realSize().isEmpty()) {
+    REQUIRE_CANVAS
+    if (!m_canvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
-        QPointF screenDpi = m_modeInfo.canvasDpi();
+        QPointF screenDpi = m_canvas->modeInfo()->screenDpi();
         if (screenDpi.x() == screenDpi.y())
             sizeDialog.ui.screenDpi->setValue(screenDpi.x());
         else
             sizeDialog.ui.screenDpi->setSpecialValueText(QString("%1, %2").arg(screenDpi.x()).arg(screenDpi.y()));
-        if(sizeDialog.exec() != QDialog::Accepted) {
+        if (sizeDialog.exec() != QDialog::Accepted)
             return;
-        }
         float w = sizeDialog.ui.widthSpinBox->value();
         float h = sizeDialog.ui.heightSpinBox->value();
         int printDpi = sizeDialog.ui.printDpi->value();
         bool landscape = sizeDialog.ui.landscapeCheckBox->isChecked();
-        m_modeInfo.setLandscape(landscape);
-        m_modeInfo.setPrintDpi(printDpi);
-        if(sizeDialog.ui.unityComboBox->currentIndex() == 0)
-            m_modeInfo.setRealSizeCm(w, h);
-        else
-            m_modeInfo.setRealSizeInches(w, h);
+        bool cm = !sizeDialog.ui.unityComboBox->currentIndex();
+        m_canvas->modeInfo()->setPrintLandscape(landscape);
+        m_canvas->modeInfo()->setPrintDpi(printDpi);
+        m_canvas->modeInfo()->setFixedSizeInches(QSizeF(cm?(double)w/2.54:w, cm?(double)h/2.54:h));
     }
-    ui->sceneView->setFixedSize(m_modeInfo.canvasPixelSize());
     showNormal();
-    ui->exportButton->setText(tr("print"));
-    if (m_canvas) // FIXME: bind to a property
-        m_canvas->setProjectMode(Canvas::ModeExactSize);
+    m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
+    ui->exportButton->setText(tr("Print"));
     ui->projectType->setCurrentIndex(3);
 }
 
 void MainWindow::on_projectType_activated(int index)
 {
-    m_modeInfo.setRealSizeInches(-1,-1); // Unset the size (so if it is a mode that require
-                                        // asking size, it will be asked !
+    REQUIRE_CANVAS
     switch (index) {
-        case 0: //Normal project
-            setNormalProject();
-            break;
-
-        case 1: // CD cover
-            setCDProject();
-            break;
-
-        case 2: //DVD cover
-            setDVDProject();
-            break;
-
-        case 3: //Exact Size
-            setExactSizeProject();
-            break;
+        case 0: setNormalProject();     break;
+        case 1: setCDProject();         break;
+        case 2: setDVDProject();        break;
+        case 3: m_canvas->modeInfo()->setFixedSizeInches();
+                setExactSizeProject();  break;
     }
 }
 
@@ -795,7 +761,10 @@ bool MainWindow::on_loadButton_clicked()
     if (fileName.isNull())
         return false;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-    return XmlRead::read(fileName, this, m_canvas);
+    bool ok = XmlRead::read(fileName, m_canvas, m_canvas->modeInfo());
+    if (ok)
+        restoreMode(m_canvas->modeInfo()->projectMode());
+    return ok;
 }
 
 bool MainWindow::on_saveButton_clicked()
@@ -814,20 +783,20 @@ bool MainWindow::on_saveButton_clicked()
     App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
         fileName += ".fotowall";
-    return XmlSave::save(fileName, m_canvas, m_canvas->projectMode(), m_modeInfo);
+    return XmlSave::save(fileName, m_canvas, m_canvas->modeInfo());
 }
 
 void MainWindow::on_exportButton_clicked()
 {
     REQUIRE_CANVAS
     // show the Export Wizard on normal mode
-    if (m_canvas->projectMode() == Canvas::ModeNormal) {
+    if (m_canvas->modeInfo()->projectMode() == CanvasModeInfo::ModeNormal) {
         ExportWizard(m_canvas).exec();
         return;
     }
 
     // print on other modes
-    m_canvas->printAsImage(m_modeInfo.printDpi(), m_modeInfo.printPixelSize(), m_modeInfo.landscape());
+    m_canvas->printAsImage(m_canvas->modeInfo()->printDpi(), m_canvas->modeInfo()->fixedPrinterPixels(), m_canvas->modeInfo()->printLandscape());
 }
 /*
 void MainWindow::on_quitButton_clicked()

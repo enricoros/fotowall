@@ -4,7 +4,6 @@ HEADERS += \
     App/ExportWizard.h \
     App/GroupBoxWidget.h \
     App/MainWindow.h \
-    App/ModeInfo.h \
     App/SceneView.h \
     App/Settings.h \
     App/VersionCheckDialog.h \
@@ -17,7 +16,6 @@ SOURCES += \
     App/ExportWizard.cpp \
     App/GroupBoxWidget.cpp \
     App/MainWindow.cpp \
-    App/ModeInfo.cpp \
     App/SceneView.cpp \
     App/Settings.cpp \
     App/VersionCheckDialog.cpp \

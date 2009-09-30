@@ -1,4 +1,5 @@
 HEADERS += \
+    Shared/AbstractScene.h \
     Shared/BreadCrumbBar.h \
     Shared/ButtonsDialog.h \
     Shared/CPixmap.h \
@@ -14,6 +15,7 @@ HEADERS += \
     Shared/VideoProvider.h
 
 SOURCES += \
+    Shared/AbstractScene.cpp \
     Shared/BreadCrumbBar.cpp \
     Shared/ButtonsDialog.cpp \
     Shared/CPixmap.cpp \
