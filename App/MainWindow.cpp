@@ -23,7 +23,7 @@
 #include "Shared/VideoProvider.h"
 #include "WordCloud/WordCloud.h"
 #include "App.h"
-#include "ExactSizeDialog.h"
+#include "CanvasAppliance.h"
 #include "ExportWizard.h"
 #include "SceneView.h"
 #include "Settings.h"
@@ -61,20 +61,12 @@
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
-#define REQUIRE_CANVAS \
-    if (!m_canvas) return;
-#define REQUIRE_CANVAS_R(value) \
-    if (!m_canvas) return value;
-
 
 MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     : Appliance::Container(parent)
     , ui(new Ui::MainWindow())
-    , m_canvas(0)
+    , m_appManager(new Appliance::Manager)
     , m_aHelpTutorial(0)
-    , m_aHelpSupport(0)
-    , m_gBackActions(0)
-    , m_gBackRatioActions(0)
     , m_likeBack(0)
 {
     // setup widget
@@ -88,77 +80,26 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->sceneView->setFocus();
-    ui->b1->setDefaultAction(ui->aAddPicture);
-    ui->b2->setDefaultAction(ui->aAddText);
-    ui->b3->setDefaultAction(ui->aAddWebcam);
-    ui->b4->setDefaultAction(ui->aAddFlickr);
-    ui->b5->setDefaultAction(ui->aAddCanvas);
-    ui->b6->setDefaultAction(ui->aAddWordCloud);
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
-    ui->widgetProperties->collapse();
-    ui->widgetCanvas->expand();
+    m_appManager->setContainer(this);
+    connect(m_appManager, SIGNAL(structureChanged()), this, SLOT(slotApplianceStructureChanged()));
 
     // attach menus
-    ui->arrangeButton->setMenu(createArrangeMenu());
-    ui->backButton->setMenu(createBackgroundMenu());
-    ui->decoButton->setMenu(createDecorationMenu());
     ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
 
-    // react to VideoProvider
-    ui->aAddWebcam->setVisible(VideoProvider::instance()->inputCount() > 0);
-    connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
+    // create a catch-all select action
+    QAction * aSA = new QAction(tr("Select all"), this);
+    aSA->setShortcut(tr("CTRL+A"));
+    connect(aSA, SIGNAL(triggered()), this, SLOT(slotActionSelectAll()));
+    addAction(aSA);
 
-    // create misc actions
-    createMiscActions();
-
-    // check stuff on the net
-    checkForTutorial();
-    checkForSupport();
-    checkForUpdates();
-
-    // setup likeback
-    createLikeBack();
-
-    // initial behavior: loaded Canvas
-    if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first())) {
-        // create a custom canvas and load content over it
-        Canvas * initialCanvas = new Canvas(this);
-        stackCanvas(initialCanvas);
-        XmlRead::read(contentUrls.first(), initialCanvas);
-    }
-    // initial behavior: new Canvas with contents
-    else if (!contentUrls.isEmpty()) {
-        // create a custom canvas add contents to it
-        Canvas * initialCanvas = new Canvas(this);
-        stackCanvas(initialCanvas);
-        initialCanvas->addPictureContent(contentUrls);
-    }
-    // initial behavior: show the selection Scene
-    else {
-        Canvas * initialCanvas = new Canvas(this);
-        stackCanvas(initialCanvas);
-        QList<QUrl> historyUrls = App::settings->recentFotowallUrls();
-/*        if (!historyUrls.isEmpty()) {
-            int dCount = historyUrls.size();
-            int dCols = 1 + (int)sqrt((double)dCount);
-            int dRows = 1 + dCount / dCols;
-#warning FROM HERE
-            //int dWidth = (640 - 2*20) / ()
-            int cIdx = 0;
-            int rIdx = 0;
-            foreach (const QUrl & url, historyUrls) {
-                m_canvas->addCanvasViewContent(QStringList() << url.toString());
-                // FIXME: temp, to limit to 1
-                break;
-            }
-        }*/
-    }
-
-    // set the startup project mode
-    on_projectType_activated(0);
+    // create likeback
+    m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
+    m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
+    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
 
     // show initially
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
@@ -167,6 +108,31 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
         showMaximized();
     } else
         show();
+
+    // create a Canvas (and load/populate it)
+    Canvas * canvas = new Canvas(this);
+    // open if single fotowall file
+    if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
+        XmlRead::read(contentUrls.first(), canvas);
+
+    // add if many pictures
+    else if (!contentUrls.isEmpty())
+        canvas->addPictureContent(contentUrls);
+
+    // no url: display history
+#if 0
+    else {
+        foreach (const QUrl & url, App::settings->recentFotowallUrls())
+            canvas->addCanvasViewContent(QStringList() << url.toString());
+    }
+#endif
+
+    // use the editing appliance over it
+    editCanvas(canvas);
+
+    // check stuff on the net
+    checkForTutorial();
+    checkForUpdates();
 }
 
 MainWindow::~MainWindow()
@@ -177,87 +143,75 @@ MainWindow::~MainWindow()
     else
         App::settings->remove("Fotowall/Geometry");
 
-    // dump current layout
-    if (m_canvas) {
-        // this is an example of 'autosave-like function'
-        //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-        //XmlSave::save(tempPath, m_canvas, m_canvas->modeInfo());
-    }
+    // this is an example of 'autosave-like function'
+    //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
+    //XmlSave::save(tempPath, m_canvas, m_canvas->modeInfo());
 
     // delete everything
+    delete m_appManager;
     delete m_likeBack;
-    delete m_canvas;
     delete ui;
 }
 
-// TEMP
-void MainWindow::stackCanvas(Canvas * newCanvas)
+void MainWindow::editCanvas(Canvas * canvas)
 {
-    // skip if already set
-    if (newCanvas == m_canvas)
-        return;
-
-    if (m_canvas)
-        disconnect(m_canvas, 0, this, 0);
-    m_canvas = newCanvas;
-    ui->sceneView->setScene(m_canvas);
-    if (m_canvas) {
-        m_canvas->modeInfo()->setScreenDpi(ui->sceneView->logicalDpiX(), ui->sceneView->logicalDpiY());
-        m_canvas->modeInfo()->setPrintDpi(300);
-        connect(m_canvas, SIGNAL(refreshCanvas()), ui->sceneView, SLOT(sceneConstraintsUpdated()));
-        connect(m_canvas, SIGNAL(refreshCanvas()), this, SLOT(slotRefreshCanvas()));
-        connect(m_canvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
-        connect(m_canvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
-    }
-    update();
-
-    // update breadcrumb
-    static quint32 baseId = 0;
-    int nextId = baseId + 1;
-    ui->canvasNavBar->addNode(nextId, "test", baseId++);
+    CanvasAppliance * cApp = new CanvasAppliance(canvas, ui->sceneView, this);
+    m_appManager->stackAppliance(cApp);
 }
 
-void MainWindow::stackWordCloud(WordCloud::Cloud * /*cloud*/)
+void MainWindow::editWordcloud(WordCloud::Cloud * cloud)
 {
-#warning FROM HERE
-    stackCanvas(0);
-    //WordCloudEditor *
-}
-
-void MainWindow::popStack()
-{
+    HERE;
+    //WordcloudAppliance * wApp = new WordcloudAppliance(cloud);
+    //m_appManager->stackAppliance(wApp);
 }
 
 void MainWindow::showIntroduction()
 {
-    if (m_canvas)
-        m_canvas->showIntroduction();
+    if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(m_appManager->currentAppliance()))
+        cApp->canvas()->showIntroduction();
 }
 
-
+// OK
 void MainWindow::applianceSetScene(QGraphicsScene * scene)
 {
-    HERE;
+    ui->sceneView->setScene(dynamic_cast<AbstractScene *>(scene));
 }
 
-void MainWindow::applianceSetTopbar(QList<QWidget *> widgets)
+// OK
+void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
-    HERE;
+    // clear the topbar layout hiding all widgets
+    while (QLayoutItem * oldItem = ui->applianceTopbarLayout->takeAt(0))
+        if (QWidget * oldWidget = oldItem->widget())
+            oldWidget->setVisible(false);
+
+    // add the widgets to the topbar and show them
+    foreach (QWidget * widget, widgets) {
+        ui->applianceTopbarLayout->addWidget(widget);
+        widget->setVisible(true);
+    }
 }
 
+// OK
 void MainWindow::applianceSetSidebar(QWidget * widget)
 {
-    HERE;
+    ui->applianceSidebar->setVisible(widget);
+    if (widget)
+        ui->applianceSidebarLayout->addWidget(widget);
 }
 
+// OK
 void MainWindow::applianceSetCentralwidget(QWidget * widget)
 {
-    HERE;
+    if (widget)
+        qWarning("MainWindow::applianceSetCentralwidget: unsupported");
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
 {
     // build the closure dialog
+#if 0
     ButtonsDialog quitAsk("MainWindow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
     quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
@@ -290,131 +244,7 @@ void MainWindow::closeEvent(QCloseEvent * event)
             event->accept();
             break;
     }
-}
-
-QMenu * MainWindow::createArrangeMenu()
-{
-    QMenu * menu = new QMenu();
-
-    QAction * aForceField = new QAction(tr("Enable force field"), menu);
-    aForceField->setCheckable(true);
-    if (m_canvas) // FIXME: reflect a property
-        aForceField->setChecked(m_canvas->forceFieldEnabled());
-    connect(aForceField, SIGNAL(toggled(bool)), this, SLOT(slotArrangeForceField(bool)));
-    menu->addAction(aForceField);
-
-    QAction * aNP = new QAction(tr("Auto-arrange new pictures"), menu);
-    aNP->setCheckable(true);
-    aNP->setChecked(false);
-    //connect(aNP, SIGNAL(toggled(bool)), this, SLOT(slotArrangeNew(bool)));
-    menu->addAction(aNP);
-
-    menu->addSeparator()->setText(tr("Rearrange"));
-
-    QAction * aAU = new QAction(tr("Random"), menu);
-    connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeRandom()));
-    menu->addAction(aAU);
-
-    QAction * aAS = new QAction(tr("Shaped"), menu);
-    aAS->setEnabled(false);
-    //connect(aAS, SIGNAL(triggered()), this, SLOT(slotArrangeShape()));
-    menu->addAction(aAS);
-
-    QAction * aAC = new QAction(tr("Collage"), menu);
-    aAC->setEnabled(false);
-    //connect(aAC, SIGNAL(triggered()), this, SLOT(slotArrangeCollage()));
-    menu->addAction(aAC);
-
-    return menu;
-}
-
-QMenu * MainWindow::createBackgroundMenu()
-{
-    QMenu * menu = new QMenu();
-    m_gBackActions = new QActionGroup(menu);
-    connect(m_gBackActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackMode(QAction*)));
-
-    QAction * aNone = new QAction(tr("None"), menu);
-    aNone->setToolTip(tr("Transparency can be saved to PNG images only."));
-    aNone->setProperty("id", 1);
-    aNone->setCheckable(true);
-    aNone->setActionGroup(m_gBackActions);
-    menu->addAction(aNone);
-
-    QAction * aGradient = new QAction(tr("Gradient"), menu);
-    aGradient->setProperty("id", 2);
-    aGradient->setCheckable(true);
-    aGradient->setActionGroup(m_gBackActions);
-    menu->addAction(aGradient);
-
-    QAction * aContent = new QAction(tr("Content"), menu);
-    aContent->setToolTip(tr("Double click on any content to put it on background."));
-    aContent->setEnabled(false);
-    aContent->setProperty("id", 3);
-    aContent->setCheckable(true);
-    aContent->setActionGroup(m_gBackActions);
-    menu->addAction(aContent);
-
-    menu->addSeparator();
-
-    QMenu * mScaling = new QMenu(tr("Content Aspect Ratio"), menu);
-    m_gBackRatioActions = new QActionGroup(menu);
-    connect(m_gBackRatioActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackRatio(QAction*)));
-    menu->addMenu(mScaling);
-
-    QAction * aRatioKeepEx = new QAction(tr("Keep proportions by expanding"), mScaling);
-    aRatioKeepEx->setProperty("mode", (int)Qt::KeepAspectRatioByExpanding);
-    aRatioKeepEx->setCheckable(true);
-    aRatioKeepEx->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioKeepEx);
-
-    QAction * aRatioKeep = new QAction(tr("Keep proportions"), mScaling);
-    aRatioKeep->setProperty("mode", (int)Qt::KeepAspectRatio);
-    aRatioKeep->setCheckable(true);
-    aRatioKeep->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioKeep);
-
-    QAction * aRatioIgnore = new QAction(tr("Ignore proportions"), mScaling);
-    aRatioIgnore->setProperty("mode", (int)Qt::IgnoreAspectRatio);
-    aRatioIgnore->setCheckable(true);
-    aRatioIgnore->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioIgnore);
-
-    // initially check the action
-    slotBackModeChanged();
-    slotBackRatioChanged();
-    return menu;
-}
-
-QMenu * MainWindow::createDecorationMenu()
-{
-    QMenu * menu = new QMenu();
-
-    QAction * aTop = new QAction(tr("Top bar"), menu);
-    aTop->setCheckable(true);
-    if (m_canvas) // FIXME: bind to a property
-        aTop->setChecked(m_canvas->topBarEnabled());
-    connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
-    menu->addAction(aTop);
-
-    QAction * aBottom = new QAction(tr("Bottom bar"), menu);
-    aBottom->setCheckable(true);
-    if (m_canvas) // FIXME: bind to a property
-        aBottom->setChecked(m_canvas->bottomBarEnabled());
-    connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
-    menu->addAction(aBottom);
-
-    menu->addSeparator();
-
-    QAction * aSetTitle = new QAction(tr("Set title..."), menu);
-    connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
-    menu->addAction(aSetTitle);
-
-    QAction * aClearTitle = new QAction(tr("Clear title"), menu);
-    connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotDecoClearTitle()));
-    menu->addAction(aClearTitle);
-
-    return menu;
+#endif
 }
 
 QMenu * MainWindow::createOnlineHelpMenu()
@@ -434,27 +264,7 @@ QMenu * MainWindow::createOnlineHelpMenu()
     connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpWebsite()));
     menu->addAction(aFotowallBlog);
 
-    m_aHelpSupport = new QAction("", menu);
-    connect(m_aHelpSupport, SIGNAL(triggered()), this, SLOT(slotHelpSupport()));
-    menu->addAction(m_aHelpSupport);
-
     return menu;
-}
-
-void MainWindow::createLikeBack()
-{
-    m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
-    m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
-    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
-}
-
-void MainWindow::createMiscActions()
-{
-    // select all
-    QAction * aSA = new QAction(tr("Select all"), this);
-    aSA->setShortcut(tr("CTRL+A"));
-    connect(aSA, SIGNAL(triggered()), this, SLOT(slotActionSelectAll()));
-    addAction(aSA);
 }
 
 void MainWindow::checkForTutorial()
@@ -466,15 +276,6 @@ void MainWindow::checkForTutorial()
     QNetworkAccessManager * manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(slotVerifyTutorial(QNetworkReply*)));
     manager->get(QNetworkRequest(TUTORIAL_URL));
-}
-
-void MainWindow::checkForSupport()
-{
-    // hide the support link
-    m_aHelpSupport->setVisible(false);
-
-    // check the Open Collaboration Services knowledgebase for Fotowall
-    QTimer::singleShot(2000, this, SLOT(slotVerifySupport()));
 }
 
 void MainWindow::checkForUpdates()
@@ -491,126 +292,26 @@ void MainWindow::checkForUpdates()
         QTimer::singleShot(2000, this, SLOT(slotHelpUpdates()));
 }
 
-void MainWindow::setNormalProject()
+// OK
+void MainWindow::slotApplianceStructureChanged()
 {
-    REQUIRE_CANVAS
-    m_canvas->modeInfo()->setFixedSizeInches();
-    m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
-    ui->exportButton->setText(tr("Export"));
-    ui->projectType->setCurrentIndex(0);
-}
-
-void MainWindow::setCDProject()
-{
-    REQUIRE_CANVAS
-    m_canvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
-    m_canvas->modeInfo()->setPrintLandscape(false);
-    m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    ui->exportButton->setText(tr("Print"));
-    ui->projectType->setCurrentIndex(1);
-}
-
-void MainWindow::setDVDProject()
-{
-    REQUIRE_CANVAS
-    m_canvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
-    m_canvas->modeInfo()->setPrintLandscape(true);
-    m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
-    ui->exportButton->setText(tr("Print"));
-    ui->projectType->setCurrentIndex(2);
-}
-
-void MainWindow::setExactSizeProject()
-{
-    REQUIRE_CANVAS
-    if (!m_canvas->modeInfo()->fixedSize()) {
-        ExactSizeDialog sizeDialog;
-        QPointF screenDpi = m_canvas->modeInfo()->screenDpi();
-        if (screenDpi.x() == screenDpi.y())
-            sizeDialog.ui.screenDpi->setValue(screenDpi.x());
-        else
-            sizeDialog.ui.screenDpi->setSpecialValueText(QString("%1, %2").arg(screenDpi.x()).arg(screenDpi.y()));
-        if (sizeDialog.exec() != QDialog::Accepted)
-            return;
-        float w = sizeDialog.ui.widthSpinBox->value();
-        float h = sizeDialog.ui.heightSpinBox->value();
-        int printDpi = sizeDialog.ui.printDpi->value();
-        bool landscape = sizeDialog.ui.landscapeCheckBox->isChecked();
-        bool cm = !sizeDialog.ui.unityComboBox->currentIndex();
-        m_canvas->modeInfo()->setPrintLandscape(landscape);
-        m_canvas->modeInfo()->setPrintDpi(printDpi);
-        m_canvas->modeInfo()->setFixedSizeInches(QSizeF(cm?(double)w/2.54:w, cm?(double)h/2.54:h));
+    // build the new breadcrumbbar's contents
+    ui->applianceNavBar->clearNodes();
+    QList<Appliance::AbstractAppliance *> appliances = m_appManager->stackedAppliances();
+    if (!appliances.isEmpty()) {
+        quint32 index = 0;
+        foreach (Appliance::AbstractAppliance * app, appliances) {
+            ui->applianceNavBar->addNode(index + 1, app->applianceName(), index);
+            index++;
+        }
     }
-    m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
-    ui->exportButton->setText(tr("Print"));
-    ui->projectType->setCurrentIndex(3);
+    update();
 }
 
-void MainWindow::on_projectType_activated(int index)
+void MainWindow::slotActionSelectAll()
 {
-    REQUIRE_CANVAS
-    switch (index) {
-        case 0: setNormalProject();     break;
-        case 1: setCDProject();         break;
-        case 2: setDVDProject();        break;
-        case 3: m_canvas->modeInfo()->setFixedSizeInches();
-                setExactSizeProject();  break;
-    }
-    // HACK
-    QResizeEvent ev(ui->sceneView->size(), ui->sceneView->size());
-    ui->sceneView->resizeEvent(&ev);
-}
-
-void MainWindow::on_aAddCanvas_triggered()
-{
-    REQUIRE_CANVAS
-    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
-    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
-
-    // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(ui->sceneView, tr("Select one or more Fotowall files to add"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
-    if (fileNames.isEmpty())
-        return;
-    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileNames[0]).absolutePath());
-    m_canvas->addCanvasViewContent(fileNames);
-}
-
-void MainWindow::on_aAddFlickr_toggled(bool on)
-{
-    REQUIRE_CANVAS
-    m_canvas->setWebContentSelectorVisible(on);
-}
-
-void MainWindow::on_aAddPicture_triggered()
-{
-    REQUIRE_CANVAS
-    // make up the default load path (stored as 'Fotowall/LoadImagesDir')
-    QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
-
-    // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(ui->sceneView, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()));
-    if (fileNames.isEmpty())
-        return;    
-    App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
-    m_canvas->addPictureContent(fileNames);
-}
-
-void MainWindow::on_aAddText_triggered()
-{
-    REQUIRE_CANVAS
-    m_canvas->addTextContent();
-}
-
-void MainWindow::on_aAddWebcam_triggered()
-{
-    REQUIRE_CANVAS
-    m_canvas->addWebcamContent(0);
-}
-
-void MainWindow::on_aAddWordCloud_triggered()
-{
-    REQUIRE_CANVAS
-    m_canvas->addWordCloudContent();
+    HERE;
+    //m_canvas->selectAllContent();
 }
 
 void MainWindow::on_accelBox_toggled(bool enabled)
@@ -711,10 +412,6 @@ void MainWindow::on_transpBox_toggled(bool transparent)
             show();
         }
 #endif
-
-        // set 'NoBackground' to show that we're transparent for real
-        if (m_canvas) // FIXME: bind to a property
-            m_canvas->setBackMode(1);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
@@ -738,8 +435,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 
 void MainWindow::on_introButton_clicked()
 {
-    REQUIRE_CANVAS
-    m_canvas->showIntroduction();
+    showIntroduction();
 }
 
 void MainWindow::on_lbLike_clicked()
@@ -764,8 +460,6 @@ void MainWindow::on_lbBug_clicked()
 
 bool MainWindow::on_loadButton_clicked()
 {
-    REQUIRE_CANVAS_R(false)
-
     // make up the default load path (stored as 'Fotowall/LoadProjectDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
@@ -774,12 +468,26 @@ bool MainWindow::on_loadButton_clicked()
     if (fileName.isNull())
         return false;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-    return XmlRead::read(fileName, m_canvas);
+
+    // try to load the canvas
+    Canvas * canvas = new Canvas(this);
+    if (!XmlRead::read(fileName, canvas)) {
+        delete canvas;
+        return false;
+    }
+
+    // close all and edit the loaded file
+    m_appManager->clearAppliances();
+    editCanvas(canvas);
+    return true;
 }
 
 bool MainWindow::on_saveButton_clicked()
 {
-    REQUIRE_CANVAS_R(false)
+    // support saving only .fotowall files
+    CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(m_appManager->currentAppliance());
+    if (!cApp)
+        return false;
 
     // make up the default save path (stored as 'Fotowall/SaveProjectDir')
     QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
@@ -793,86 +501,26 @@ bool MainWindow::on_saveButton_clicked()
     App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
         fileName += ".fotowall";
-    return XmlSave::save(fileName, m_canvas);
+    return XmlSave::save(fileName, cApp->canvas());
 }
 
 void MainWindow::on_exportButton_clicked()
 {
-    REQUIRE_CANVAS
+    CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(m_appManager->currentAppliance());
+    if (!cApp)
+        return;
+
     // show the Export Wizard on normal mode
-    if (m_canvas->modeInfo()->projectMode() == CanvasModeInfo::ModeNormal) {
-        ExportWizard(m_canvas).exec();
+    Canvas * canvas = cApp->canvas();
+    if (canvas->modeInfo()->projectMode() == CanvasModeInfo::ModeNormal) {
+        ExportWizard(canvas).exec();
         return;
     }
 
     // print on other modes
-    m_canvas->printAsImage(m_canvas->modeInfo()->printDpi(), m_canvas->modeInfo()->fixedPrinterPixels(), m_canvas->modeInfo()->printLandscape());
-}
-/*
-void MainWindow::on_quitButton_clicked()
-{
-    QCoreApplication::quit();
-}
-*/
-void MainWindow::slotActionSelectAll()
-{
-    REQUIRE_CANVAS
-    m_canvas->selectAllContent();
-}
-
-void MainWindow::slotArrangeForceField(bool checked)
-{
-    REQUIRE_CANVAS
-    m_canvas->setForceFieldEnabled(checked);
-}
-
-#include "Canvas/AbstractContent.h"
-void MainWindow::slotArrangeRandom()
-{
-    REQUIRE_CANVAS
-    QRectF r = m_canvas->sceneRect();
-    foreach (QGraphicsItem * item, m_canvas->items()) {
-        AbstractContent * content = dynamic_cast<AbstractContent *>(item);
-        if (!content)
-            continue;
-        content->setPos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
-        content->setRotation(-30 + (qrand() % 60), Qt::ZAxis);
-#if QT_VERSION >= 0x040500
-        content->setOpacity((qreal)(qrand() % 100) / 99.0);
-#endif
-    }
-}
-
-void MainWindow::slotDecoTopBar(bool checked)
-{
-    REQUIRE_CANVAS
-    m_canvas->setTopBarEnabled(checked);
-}
-
-void MainWindow::slotDecoBottomBar(bool checked)
-{
-    REQUIRE_CANVAS
-    m_canvas->setBottomBarEnabled(checked);
-}
-
-void MainWindow::slotDecoSetTitle()
-{
-    REQUIRE_CANVAS
-    // set a dummy title, if none
-    if (m_canvas->titleText().isEmpty())
-        m_canvas->setTitleText("...");
-
-    // change title dialog
-    bool ok = false;
-    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_canvas->titleText(), &ok);
-    if (ok)
-        m_canvas->setTitleText(title);
-}
-
-void MainWindow::slotDecoClearTitle()
-{
-    REQUIRE_CANVAS
-    m_canvas->setTitleText(QString());
+    canvas->printAsImage(canvas->modeInfo()->printDpi(),
+                         canvas->modeInfo()->fixedPrinterPixels(),
+                         canvas->modeInfo()->printLandscape());
 }
 
 void MainWindow::slotHelpWebsite()
@@ -913,10 +561,6 @@ void MainWindow::slotHelpWebsiteFetchError()
     slotHelpWebsite();
 }
 
-void MainWindow::slotHelpSupport()
-{
-}
-
 void MainWindow::slotHelpTutorial()
 {
     int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about Fotowall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
@@ -931,77 +575,6 @@ void MainWindow::slotHelpUpdates()
     App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
 }
 
-void MainWindow::slotSetBackMode(QAction* action)
-{
-    REQUIRE_CANVAS
-    int choice = action->property("id").toUInt();
-    m_canvas->setBackMode(choice);
-}
-
-void MainWindow::slotSetBackRatio(QAction* action)
-{
-    REQUIRE_CANVAS
-    Qt::AspectRatioMode mode = (Qt::AspectRatioMode)action->property("mode").toInt();
-    m_canvas->setBackContentRatio(mode);
-}
-
-void MainWindow::slotBackModeChanged()
-{
-    REQUIRE_CANVAS
-    int mode = m_canvas->backMode();
-    m_gBackActions->actions()[mode - 1]->setChecked(true);
-    m_gBackActions->actions()[2]->setEnabled(mode == 3);
-}
-
-void MainWindow::slotBackRatioChanged()
-{
-    REQUIRE_CANVAS
-    Qt::AspectRatioMode mode = m_canvas->backContentRatio();
-    if (mode == Qt::KeepAspectRatioByExpanding)
-        m_gBackRatioActions->actions()[0]->setChecked(true);
-    else if (mode == Qt::KeepAspectRatio)
-        m_gBackRatioActions->actions()[1]->setChecked(true);
-    else if (mode == Qt::IgnoreAspectRatio)
-        m_gBackRatioActions->actions()[2]->setChecked(true);
-}
-
-void MainWindow::slotShowPropertiesWidget(QWidget * widget)
-{
-    // delete current Properties content
-    QLayoutItem * prevItem = ui->propLayout->takeAt(0);
-    if (prevItem) {
-        delete prevItem->widget();
-        delete prevItem;
-    }
-
-    // show the Properties container with new content and title
-    if (widget) {
-        ui->widgetCanvas->collapse();
-        widget->setParent(ui->widgetProperties);
-        ui->propLayout->addWidget(widget);
-        ui->widgetProperties->setTitle(widget->windowTitle());
-        ui->widgetProperties->expand();
-    }
-    // or show the Canvas container
-    else {
-        ui->widgetProperties->collapse();
-        ui->widgetCanvas->expand();
-    }
-}
-
-void MainWindow::slotRefreshCanvas()
-{
-    REQUIRE_CANVAS
-    int mode = m_canvas->modeInfo()->projectMode();
-    if (mode == 3) { // If exact size project
-        // Called here not to have the unneeded size dialog
-        setExactSizeProject();
-    } else {
-        on_projectType_activated(mode);
-    }
-    update();
-}
-
 void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
 {
     if (reply->error() != QNetworkReply::NoError)
@@ -1010,23 +583,4 @@ void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
     QString htmlCode = reply->readAll();
     bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
     m_aHelpTutorial->setVisible(tutorialValid);
-}
-
-void MainWindow::slotVerifySupport(/*const KnowledgeItemV1List & items*/)
-{
-    int supportEntries = 0;
-    m_aHelpSupport->setVisible(supportEntries > 0);
-    m_aHelpSupport->setText(tr("Support (%1)").arg(supportEntries));
-/*
-    qWarning("MainWindow::slotOcsKbItems: got %d items", items.size());
-    foreach (KnowledgeItemV1 * item, items) {
-        qWarning() << item->name() << item->description() << item->answer();
-    }
-*/
-}
-
-void MainWindow::slotVerifyVideoInputs(int count)
-{
-    // maybe blink or something?
-    ui->aAddWebcam->setVisible(count > 0);
 }

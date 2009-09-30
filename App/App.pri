@@ -1,5 +1,6 @@
 HEADERS += \
     App/App.h \
+    App/CanvasAppliance.h \
     App/ExactSizeDialog.h \
     App/ExportWizard.h \
     App/MainWindow.h \
@@ -11,6 +12,7 @@ HEADERS += \
 
 SOURCES += \
     App/App.cpp \
+    App/CanvasAppliance.cpp \
     App/ExactSizeDialog.cpp \
     App/ExportWizard.cpp \
     App/MainWindow.cpp \
@@ -21,6 +23,7 @@ SOURCES += \
     App/XmlSave.cpp
 
 FORMS += \
+    App/CanvasAppliance.ui \
     App/ExactSizeDialog.ui \
     App/ExportWizard.ui \
     App/MainWindow.ui \

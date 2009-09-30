@@ -245,7 +245,7 @@ void BreadCrumbBar::processLayout()
     setLayout(hLay);
 
     // hide if empty
-    if (!m_root || m_root->children.isEmpty()) {
+    if (!m_root) {
         hide();
         return;
     }

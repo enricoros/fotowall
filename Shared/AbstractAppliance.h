@@ -36,7 +36,7 @@ enum ApplianceElements {
 class AbstractAppliance : public QObject
 {
     public:
-        AbstractAppliance();
+        AbstractAppliance(QObject * parent = 0);
 
         // addition/removal from a container
         bool addToContainer(Container * container);
@@ -54,7 +54,7 @@ class AbstractAppliance : public QObject
         // used by reimpls to access the containter
         void sceneSet(QGraphicsScene *);
         void sceneClear();
-        void topbarAddWidget(QWidget *, int index);
+        void topbarAddWidget(QWidget *, int index = -1);
         void topbarRemoveWidget(QWidget *);
         void sidebarSetWidget(QWidget *);
         void sidebarClearWidget();

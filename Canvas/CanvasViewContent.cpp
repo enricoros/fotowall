@@ -26,7 +26,7 @@ CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * par
 {
 }
 
-bool CanvasViewContent::load(const QString & filePath, bool keepRatio, bool setName)
+bool CanvasViewContent::load(const QString & filePath, bool /*keepRatio*/, bool setName)
 {
     // parse the DOM of the file
     XmlRead xmlRead;
@@ -76,8 +76,7 @@ bool CanvasViewContent::contentOpaque() const
 #include "App/MainWindow.h"
 void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
-    App::mainWindow->stackCanvas(m_canvas);
-    update();
+    App::mainWindow->editCanvas(m_canvas);
 }
 
 void CanvasViewContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)

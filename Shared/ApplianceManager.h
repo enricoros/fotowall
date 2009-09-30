@@ -12,28 +12,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __ApplianceContainer_h__
-#define __ApplianceContainer_h__
+#ifndef __ApplianceManager_h__
+#define __ApplianceManager_h__
 
-#include <QWidget>
-#include <QGraphicsScene>
+#include <QObject>
+#include <QList>
 
 namespace Appliance {
+class Container;
 class AbstractAppliance;
 
-class Container : public QWidget
+class Manager : public QObject
 {
     Q_OBJECT
     public:
-        Container(QWidget * parent = 0);
+        Manager();
+        ~Manager();
 
-    protected:
-        // called by appliances
-        friend class Appliance::AbstractAppliance;
-        virtual void applianceSetScene(QGraphicsScene * scene) = 0;
-        virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
-        virtual void applianceSetSidebar(QWidget * widget) = 0;
-        virtual void applianceSetCentralwidget(QWidget * widget) = 0;
+        void setContainer(Container * container);
+        Container * container() const;
+
+        void stackAppliance(AbstractAppliance * appliance);
+        QList<AbstractAppliance *> stackedAppliances() const;
+        AbstractAppliance * currentAppliance() const;
+        void popAppliance();
+        void clearAppliances();
+
+    Q_SIGNALS:
+        void structureChanged();
+
+    private:
+        Container * m_container;
+        QList<AbstractAppliance *> m_appliances;
 };
 
 }

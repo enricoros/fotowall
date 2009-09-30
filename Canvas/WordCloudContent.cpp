@@ -43,12 +43,9 @@ WordCloudContent::WordCloudContent(QGraphicsScene * scene, QGraphicsItem * paren
     m_cloud->newCloud(list);
 }
 
-#include "App/App.h"
-#include "App/MainWindow.h"
-void WordCloudContent::stackEditor()
+WordCloud::Cloud * WordCloudContent::cloud() const
 {
-    App::mainWindow->stackWordCloud(m_cloud);
-    update();
+    return m_cloud;
 }
 
 QWidget * WordCloudContent::createPropertyWidget()
@@ -75,9 +72,11 @@ bool WordCloudContent::contentOpaque() const
     return false;
 }
 
+#include "App/App.h"
+#include "App/MainWindow.h"
 void WordCloudContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
-    stackEditor();
+    App::mainWindow->editWordcloud(m_cloud);
 }
 
 void WordCloudContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)

@@ -16,7 +16,8 @@
 
 using namespace Appliance;
 
-AbstractAppliance::AbstractAppliance()
+AbstractAppliance::AbstractAppliance(QObject * parent)
+  : QObject(parent)
 {
 }
 
@@ -79,9 +80,7 @@ void AbstractAppliance::topbarAddWidget(QWidget * widget, int index)
     if (!widget)
         return;
     WidgetPointer wPtr(widget);
-    if (index < 0)
-        m_pTopbar.prepend(wPtr);
-    else if (index >= m_pTopbar.size())
+    if (index < 0 || index >= m_pTopbar.size())
         m_pTopbar.append(wPtr);
     else
         m_pTopbar.insert(index, wPtr);

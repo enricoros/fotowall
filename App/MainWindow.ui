@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1064</width>
-    <height>432</height>
+    <width>613</width>
+    <height>382</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
+  <layout class="QGridLayout" name="mainLayout">
    <property name="margin">
     <number>0</number>
    </property>
-   <item>
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item row="0" column="0" colspan="2">
     <widget class="QWidget" name="topBar" native="true">
      <property name="styleSheet">
       <string notr="true">#topBar {
@@ -37,415 +37,19 @@ stop:1 rgba(237, 237, 237, 255))
        <number>0</number>
       </property>
       <item>
-       <widget class="GroupBoxWidget" name="contentWidget" native="true">
-        <property name="palette">
-         <palette>
-          <active>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </active>
-          <inactive>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </inactive>
-          <disabled>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </disabled>
-         </palette>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="title" stdset="0">
-         <string>ADD NEW</string>
-        </property>
-        <property name="borderFlags" stdset="0">
-         <number>2</number>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_5">
+       <widget class="QWidget" name="applianceTopbar" native="true">
+        <layout class="QHBoxLayout" name="applianceTopbarLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="margin">
           <number>0</number>
          </property>
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QToolButton" name="b1">
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QToolButton" name="b2">
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QToolButton" name="b3">
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QToolButton" name="b4">
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QToolButton" name="b5">
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QToolButton" name="b6">
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="widgetProperties" native="true">
-        <property name="palette">
-         <palette>
-          <active>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="16">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </active>
-          <inactive>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="16">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </inactive>
-          <disabled>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="16">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="16">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </disabled>
-         </palette>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="borderFlags" stdset="0">
-         <number>2</number>
-        </property>
-        <layout class="QHBoxLayout" name="propLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>6</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>6</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="GroupBoxWidget" name="widgetCanvas" native="true">
-        <property name="palette">
-         <palette>
-          <active>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="16">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </active>
-          <inactive>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="16">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </inactive>
-          <disabled>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="16">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="16">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </disabled>
-         </palette>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="title" stdset="0">
-         <string>CANVAS</string>
-        </property>
-        <property name="checkable" stdset="0">
-         <bool>false</bool>
-        </property>
-        <property name="borderFlags" stdset="0">
-         <number>2</number>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <property name="leftMargin">
-          <number>6</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>6</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <property name="verticalSpacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QToolButton" name="backButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Background</string>
-           </property>
-           <property name="popupMode">
-            <enum>QToolButton::InstantPopup</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QToolButton" name="decoButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Decorations</string>
-           </property>
-           <property name="popupMode">
-            <enum>QToolButton::InstantPopup</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QToolButton" name="arrangeButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Arrange</string>
-           </property>
-           <property name="popupMode">
-            <enum>QToolButton::InstantPopup</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
+       <spacer name="contentSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -458,7 +62,7 @@ stop:1 rgba(237, 237, 237, 255))
        </spacer>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="widgetHelp" native="true">
+       <widget class="GroupBoxWidget" name="helpWidget" native="true">
         <property name="palette">
          <palette>
           <active>
@@ -692,7 +296,7 @@ stop:1 rgba(237, 237, 237, 255))
        </widget>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="widgetMode" native="true">
+       <widget class="GroupBoxWidget" name="modeWidget" native="true">
         <property name="palette">
          <palette>
           <active>
@@ -789,47 +393,6 @@ stop:1 rgba(237, 237, 237, 255))
           <number>0</number>
          </property>
          <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Mode:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="projectType">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <item>
-              <property name="text">
-               <string>Screen</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>CD Cover</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>DVD Cover</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Exact Size</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QCheckBox" name="transpBox">
@@ -864,7 +427,7 @@ stop:1 rgba(237, 237, 237, 255))
        </widget>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="widgetFile" native="true">
+       <widget class="GroupBoxWidget" name="fileWidget" native="true">
         <property name="palette">
          <palette>
           <active>
@@ -1018,74 +581,29 @@ stop:1 rgba(237, 237, 237, 255))
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="BreadCrumbBar" name="canvasNavBar" native="true"/>
+   <item row="1" column="0" colspan="2">
+    <widget class="BreadCrumbBar" name="applianceNavBar" native="true"/>
    </item>
-   <item>
+   <item row="2" column="0">
     <widget class="SceneView" name="sceneView">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
     </widget>
    </item>
+   <item row="2" column="1">
+    <widget class="QWidget" name="applianceSidebar" native="true">
+     <layout class="QVBoxLayout" name="applianceSidebarLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+     </layout>
+    </widget>
+   </item>
   </layout>
-  <action name="aAddPicture">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-image.png</normaloff>:/data/insert-image.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Picture</string>
-   </property>
-  </action>
-  <action name="aAddText">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-text.png</normaloff>:/data/insert-text.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Text</string>
-   </property>
-  </action>
-  <action name="aAddWebcam">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-camera.png</normaloff>:/data/insert-camera.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Webcam</string>
-   </property>
-  </action>
-  <action name="aAddFlickr">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-download.png</normaloff>:/data/insert-download.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Flickr</string>
-   </property>
-  </action>
-  <action name="aAddCanvas">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/textinsertimage.png</normaloff>:/data/textinsertimage.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Fotowall File</string>
-   </property>
-  </action>
-  <action name="aAddWordCloud">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/textinsertimage.png</normaloff>:/data/textinsertimage.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Word Cloud</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>

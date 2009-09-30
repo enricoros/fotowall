@@ -204,10 +204,12 @@ void Canvas::addWebcamContent(int input)
     createWebcam(input, nearCenter(sceneRect()));
 }
 
+#include "App/App.h"
+#include "App/MainWindow.h"
 void Canvas::addWordCloudContent()
 {
-    WordCloudContent * wordCloud = createWordCloud(nearCenter(sceneRect()));
-    //wordCloud->stackEditor();
+    WordCloudContent * wcc = createWordCloud(nearCenter(sceneRect()));
+    App::mainWindow->editWordcloud(wcc->cloud());
 }
 
 void Canvas::resize(const QSize & size)
@@ -932,8 +934,8 @@ void Canvas::setDVDMarkers()
     // Add informations items to show the back, front, and side position
 
     QGraphicsView * view = views().first();
-    int faceW = 5.08 * view->logicalDpiX();
-    int sideW = 0.67 * view->logicalDpiY();
+    int faceW = 5.08 * view->physicalDpiX();
+    int sideW = 0.67 * view->physicalDpiY();
     m_markerItems.push_back(addLine(faceW, 0, faceW, height()));
     m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
 
