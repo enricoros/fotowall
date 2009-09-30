@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1001</width>
+    <width>1064</width>
     <height>432</height>
    </rect>
   </property>
@@ -111,19 +111,19 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="borderFlags" stdset="0">
          <number>2</number>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="spacing">
-          <number>0</number>
-         </property>
+        <layout class="QGridLayout" name="gridLayout_5">
          <property name="margin">
           <number>0</number>
          </property>
-         <item>
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
           <widget class="QToolButton" name="b1">
            <property name="iconSize">
             <size>
-             <width>54</width>
-             <height>48</height>
+             <width>25</width>
+             <height>22</height>
             </size>
            </property>
            <property name="autoRaise">
@@ -131,12 +131,12 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="1">
           <widget class="QToolButton" name="b2">
            <property name="iconSize">
             <size>
-             <width>54</width>
-             <height>48</height>
+             <width>25</width>
+             <height>22</height>
             </size>
            </property>
            <property name="autoRaise">
@@ -144,12 +144,12 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="2">
           <widget class="QToolButton" name="b3">
            <property name="iconSize">
             <size>
-             <width>54</width>
-             <height>48</height>
+             <width>25</width>
+             <height>22</height>
             </size>
            </property>
            <property name="autoRaise">
@@ -157,12 +157,12 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="0">
           <widget class="QToolButton" name="b4">
            <property name="iconSize">
             <size>
-             <width>54</width>
-             <height>48</height>
+             <width>25</width>
+             <height>22</height>
             </size>
            </property>
            <property name="autoRaise">
@@ -170,12 +170,12 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="1">
           <widget class="QToolButton" name="b5">
            <property name="iconSize">
             <size>
-             <width>54</width>
-             <height>48</height>
+             <width>25</width>
+             <height>22</height>
             </size>
            </property>
            <property name="autoRaise">
@@ -183,12 +183,12 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="2">
           <widget class="QToolButton" name="b6">
            <property name="iconSize">
             <size>
-             <width>54</width>
-             <height>48</height>
+             <width>25</width>
+             <height>22</height>
             </size>
            </property>
            <property name="autoRaise">
@@ -1094,15 +1094,15 @@ stop:1 rgba(237, 237, 237, 255))
    <header>App/SceneView.h</header>
   </customwidget>
   <customwidget>
-   <class>GroupBoxWidget</class>
-   <extends>QWidget</extends>
-   <header>App/GroupBoxWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>BreadCrumbBar</class>
    <extends>QWidget</extends>
    <header>Shared/BreadCrumbBar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GroupBoxWidget</class>
+   <extends>QWidget</extends>
+   <header>Shared/GroupBoxWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
