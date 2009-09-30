@@ -75,10 +75,9 @@ int main( int argc, char ** args )
             urls.append(args[i]);
 
     App::mainWindow = new MainWindow(urls);
-    if (App::settings->firstTime())
-        App::mainWindow->showIntroduction();
 
     int mainLoopResult = app.exec();
+
     App::settings->sync();
 
     delete App::mainWindow;

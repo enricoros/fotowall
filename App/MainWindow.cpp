@@ -20,7 +20,6 @@
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
-#include "Shared/VideoProvider.h"
 #include "WordCloud/WordCloud.h"
 #include "App.h"
 #include "CanvasAppliance.h"
@@ -32,26 +31,19 @@
 #include "XmlSave.h"
 #include "ui_MainWindow.h"
 
-#include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
 #include <QDir>
-#include <QDesktopWidget>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QFile>
-#include <QImageReader>
-#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QProgressDialog>
-#include <QPushButton>
 #include <QTimer>
-#include <QVBoxLayout>
-#include "math.h"
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -66,8 +58,8 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     : Appliance::Container(parent)
     , ui(new Ui::MainWindow())
     , m_appManager(new Appliance::Manager)
-    , m_aHelpTutorial(0)
     , m_likeBack(0)
+    , m_aHelpTutorial(0)
 {
     // setup widget
 #if QT_VERSION >= 0x040500
@@ -80,28 +72,19 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->sceneView->setFocus();
+    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
+    createLikeBack();
+
+    // init the Appliance Manager
     m_appManager->setContainer(this);
     connect(m_appManager, SIGNAL(structureChanged()), this, SLOT(slotApplianceStructureChanged()));
+    connect(ui->applianceNavBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
 
-    // attach menus
-    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
-
-    // create a catch-all select action
-    QAction * aSA = new QAction(tr("Select all"), this);
-    aSA->setShortcut(tr("CTRL+A"));
-    connect(aSA, SIGNAL(triggered()), this, SLOT(slotActionSelectAll()));
-    addAction(aSA);
-
-    // create likeback
-    m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
-    m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
-    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
-
-    // show initially
+    // show (with last geometry)
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
         QRect desktopGeometry = QApplication::desktop()->availableGeometry();
         resize(2 * desktopGeometry.width() / 3, 2 * desktopGeometry.height() / 3);
@@ -111,28 +94,31 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
 
     // create a Canvas (and load/populate it)
     Canvas * canvas = new Canvas(this);
-    // open if single fotowall file
-    if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
-        XmlRead::read(contentUrls.first(), canvas);
+        // open if single fotowall file
+        if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
+            XmlRead::read(contentUrls.first(), canvas);
 
-    // add if many pictures
-    else if (!contentUrls.isEmpty())
-        canvas->addPictureContent(contentUrls);
+        // add if many pictures
+        else if (!contentUrls.isEmpty())
+            canvas->addPictureContent(contentUrls);
 
-    // no url: display history
+        // no url: display history
 #if 0
-    else {
-        foreach (const QUrl & url, App::settings->recentFotowallUrls())
-            canvas->addCanvasViewContent(QStringList() << url.toString());
-    }
+        else {
+            foreach (const QUrl & url, App::settings->recentFotowallUrls())
+                canvas->addCanvasViewContent(QStringList() << url.toString());
+        }
 #endif
-
     // use the editing appliance over it
     editCanvas(canvas);
 
     // check stuff on the net
     checkForTutorial();
     checkForUpdates();
+
+    // the first time, show the introduction
+    if (App::settings->firstTime())
+        on_introButton_clicked();
 }
 
 MainWindow::~MainWindow()
@@ -148,6 +134,7 @@ MainWindow::~MainWindow()
     //XmlSave::save(tempPath, m_canvas, m_canvas->modeInfo());
 
     // delete everything
+    // m_aHelpTutorial is deleted by its menu (that's parented to this)
     delete m_appManager;
     delete m_likeBack;
     delete ui;
@@ -159,6 +146,7 @@ void MainWindow::editCanvas(Canvas * canvas)
     m_appManager->stackAppliance(cApp);
 }
 
+// ###
 void MainWindow::editWordcloud(WordCloud::Cloud * cloud)
 {
     HERE;
@@ -166,25 +154,15 @@ void MainWindow::editWordcloud(WordCloud::Cloud * cloud)
     //m_appManager->stackAppliance(wApp);
 }
 
-void MainWindow::showIntroduction()
-{
-    if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(m_appManager->currentAppliance()))
-        cApp->canvas()->showIntroduction();
-}
-
-// OK
 void MainWindow::applianceSetScene(QGraphicsScene * scene)
 {
     ui->sceneView->setScene(dynamic_cast<AbstractScene *>(scene));
 }
 
-// OK
 void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
     // clear the topbar layout hiding all widgets
-    while (QLayoutItem * oldItem = ui->applianceTopbarLayout->takeAt(0))
-        if (QWidget * oldWidget = oldItem->widget())
-            oldWidget->setVisible(false);
+    hideInLayout(ui->applianceTopbarLayout);
 
     // add the widgets to the topbar and show them
     foreach (QWidget * widget, widgets) {
@@ -193,21 +171,28 @@ void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
     }
 }
 
-// OK
 void MainWindow::applianceSetSidebar(QWidget * widget)
 {
+    // clear the sidebar layout hiding any widget
+    hideInLayout(ui->applianceSidebarLayout);
+
+    // completely hide the sidebar if no widget
     ui->applianceSidebar->setVisible(widget);
-    if (widget)
+
+    // if any, add the widget to the sidebar
+    if (widget) {
         ui->applianceSidebarLayout->addWidget(widget);
+        widget->show();
+    }
 }
 
-// OK
 void MainWindow::applianceSetCentralwidget(QWidget * widget)
 {
     if (widget)
         qWarning("MainWindow::applianceSetCentralwidget: unsupported");
 }
 
+// ###
 void MainWindow::closeEvent(QCloseEvent * event)
 {
     // build the closure dialog
@@ -247,9 +232,24 @@ void MainWindow::closeEvent(QCloseEvent * event)
 #endif
 }
 
+void MainWindow::hideInLayout(QLayout * layout) const
+{
+    while (QLayoutItem * item = layout->takeAt(0)) {
+        if (QWidget * oldWidget = item->widget())
+            oldWidget->setVisible(false);
+        delete item;
+    }
+}
+
+Canvas * MainWindow::currentCanvas() const
+{
+    CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(m_appManager->currentAppliance());
+    return cApp ? cApp->canvas() : 0;
+}
+
 QMenu * MainWindow::createOnlineHelpMenu()
 {
-    QMenu * menu = new QMenu();
+    QMenu * menu = new QMenu(this);
     menu->setSeparatorsCollapsible(false);
 
     m_aHelpTutorial = new QAction(tr("Tutorial Video (0.2)"), menu);
@@ -292,26 +292,189 @@ void MainWindow::checkForUpdates()
         QTimer::singleShot(2000, this, SLOT(slotHelpUpdates()));
 }
 
-// OK
+void MainWindow::createLikeBack()
+{
+    m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
+    m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
+    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
+}
+
+void MainWindow::slotApplianceClicked(quint32 id)
+{
+    m_appManager->dropStackAfter(id - 1);
+}
+
 void MainWindow::slotApplianceStructureChanged()
 {
     // build the new breadcrumbbar's contents
     ui->applianceNavBar->clearNodes();
     QList<Appliance::AbstractAppliance *> appliances = m_appManager->stackedAppliances();
-    if (!appliances.isEmpty()) {
+    if (appliances.size() >= 2) {
         quint32 index = 0;
         foreach (Appliance::AbstractAppliance * app, appliances) {
             ui->applianceNavBar->addNode(index + 1, app->applianceName(), index);
             index++;
         }
     }
+
+    // repaint all
     update();
+
+    // update actions
+    Canvas * canvas = currentCanvas();
+    ui->introButton->setEnabled(canvas);
+    ui->exportButton->setEnabled(canvas);
+    ui->saveButton->setEnabled(canvas);
 }
 
-void MainWindow::slotActionSelectAll()
+bool MainWindow::on_loadButton_clicked()
 {
-    HERE;
-    //m_canvas->selectAllContent();
+    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
+    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
+
+    // ask the file name, validate it, store back to settings and load the file
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
+    if (fileName.isNull())
+        return false;
+    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
+
+    // try to load the canvas
+    Canvas * canvas = new Canvas(this);
+    if (!XmlRead::read(fileName, canvas)) {
+        delete canvas;
+        return false;
+    }
+
+    // close all and edit the loaded file
+    m_appManager->clearAppliances();
+    editCanvas(canvas);
+    return true;
+}
+
+bool MainWindow::on_saveButton_clicked()
+{
+    Canvas * canvas = currentCanvas();
+    if (!canvas)
+        return false;
+
+    // make up the default save path (stored as 'Fotowall/SaveProjectDir')
+    QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
+    if (App::settings->contains("Fotowall/SaveProjectDir"))
+        defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
+
+    // ask the file name, validate it, store back to settings and save over it
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
+    if (fileName.isNull())
+        return false;
+    App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
+    if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
+        fileName += ".fotowall";
+    return XmlSave::save(fileName, canvas);
+}
+
+// ###
+void MainWindow::on_exportButton_clicked()
+{
+    Canvas * canvas = currentCanvas();
+    if (!canvas)
+        return;
+
+    // show the export dialog, or print directly
+    switch (canvas->modeInfo()->projectMode()) {
+        case CanvasModeInfo::ModeNormal:
+            ExportWizard(canvas).exec();
+            break;
+
+        default:
+            canvas->printAsImage(canvas->modeInfo()->printDpi(), canvas->modeInfo()->fixedPrinterPixels(), canvas->modeInfo()->printLandscape());
+            break;
+    }
+}
+
+void MainWindow::on_introButton_clicked()
+{
+    currentCanvas()->showIntroduction();
+}
+
+void MainWindow::on_lbLike_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Like);
+}
+
+void MainWindow::on_lbDislike_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Dislike);
+}
+
+void MainWindow::on_lbFeature_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Feature);
+}
+
+void MainWindow::on_lbBug_clicked()
+{
+    m_likeBack->execCommentDialog(LikeBack::Bug);
+}
+
+void MainWindow::slotHelpWebsite()
+{
+    // start a fetch if no URL has been determined
+    if (m_website.isEmpty()) {
+        MetaXml::Connector * conn = new MetaXml::Connector();
+        connect(conn, SIGNAL(fetched()), this, SLOT(slotHelpWebsiteFetched()));
+        connect(conn, SIGNAL(fetchError(const QString &)), this, SLOT(slotHelpWebsiteFetchError()));
+        return;
+    }
+
+    // open the website
+    if (QMessageBox::question(this, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+        QDesktopServices::openUrl(QUrl(m_website));
+}
+
+void MainWindow::slotHelpWebsiteFetched()
+{
+    // get the websites from the conn
+    MetaXml::Connector * conn = dynamic_cast<MetaXml::Connector *>(sender());
+    if (conn && !conn->reader()->websites.isEmpty()) {
+        m_website = conn->reader()->websites.first().url;
+        if (!m_website.isEmpty()) {
+            slotHelpWebsite();
+            return;
+        }
+    }
+
+    // catch-all condition: use default url
+    slotHelpWebsiteFetchError();
+}
+
+void MainWindow::slotHelpWebsiteFetchError()
+{
+    m_website = ENRICOBLOG_STRING;
+    slotHelpWebsite();
+}
+
+void MainWindow::slotHelpTutorial()
+{
+    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about Fotowall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
+    if (answer == QMessageBox::Yes)
+        QDesktopServices::openUrl(TUTORIAL_URL);
+}
+
+void MainWindow::slotHelpUpdates()
+{
+    VersionCheckDialog vcd;
+    vcd.exec();
+    App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
+}
+
+void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+        return;
+
+    QString htmlCode = reply->readAll();
+    bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
+    m_aHelpTutorial->setVisible(tutorialValid);
 }
 
 void MainWindow::on_accelBox_toggled(bool enabled)
@@ -397,6 +560,9 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         warning.setIcon(QStyle::SP_MessageBoxInformation);
         warning.execute();
 
+        // toggle opengl with transparency
+        ui->accelBox->setChecked(false);
+
         // go transparent
         setAttribute(Qt::WA_NoSystemBackground, true);
         setAttribute(Qt::WA_TranslucentBackground, true);
@@ -412,6 +578,16 @@ void MainWindow::on_transpBox_toggled(bool transparent)
             show();
         }
 #endif
+
+        // ask the user to set 'NoBackground' to show that we're transparent for real
+        Canvas * canvas = currentCanvas();
+        if (canvas && canvas->backMode() != 1) {
+            ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("Now Fotowall's window is transparent.<br>Do you want me to set a transparent Canvas background too?"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
+            query.setButtonText(QDialogButtonBox::Yes, tr("Yes, thanks"));
+            query.setIcon(QStyle::SP_MessageBoxQuestion);
+            if (query.execute() == QDialogButtonBox::Yes)
+                canvas->setBackMode(1);
+        }
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
@@ -431,156 +607,4 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #else
     Q_UNUSED(transparent)
 #endif
-}
-
-void MainWindow::on_introButton_clicked()
-{
-    showIntroduction();
-}
-
-void MainWindow::on_lbLike_clicked()
-{
-    m_likeBack->execCommentDialog(LikeBack::Like);
-}
-
-void MainWindow::on_lbDislike_clicked()
-{
-    m_likeBack->execCommentDialog(LikeBack::Dislike);
-}
-
-void MainWindow::on_lbFeature_clicked()
-{
-    m_likeBack->execCommentDialog(LikeBack::Feature);
-}
-
-void MainWindow::on_lbBug_clicked()
-{
-    m_likeBack->execCommentDialog(LikeBack::Bug);
-}
-
-bool MainWindow::on_loadButton_clicked()
-{
-    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
-    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
-
-    // ask the file name, validate it, store back to settings and load the file
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
-    if (fileName.isNull())
-        return false;
-    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-
-    // try to load the canvas
-    Canvas * canvas = new Canvas(this);
-    if (!XmlRead::read(fileName, canvas)) {
-        delete canvas;
-        return false;
-    }
-
-    // close all and edit the loaded file
-    m_appManager->clearAppliances();
-    editCanvas(canvas);
-    return true;
-}
-
-bool MainWindow::on_saveButton_clicked()
-{
-    // support saving only .fotowall files
-    CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(m_appManager->currentAppliance());
-    if (!cApp)
-        return false;
-
-    // make up the default save path (stored as 'Fotowall/SaveProjectDir')
-    QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-    if (App::settings->contains("Fotowall/SaveProjectDir"))
-        defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
-
-    // ask the file name, validate it, store back to settings and save over it
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
-    if (fileName.isNull())
-        return false;
-    App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
-    if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
-        fileName += ".fotowall";
-    return XmlSave::save(fileName, cApp->canvas());
-}
-
-void MainWindow::on_exportButton_clicked()
-{
-    CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(m_appManager->currentAppliance());
-    if (!cApp)
-        return;
-
-    // show the Export Wizard on normal mode
-    Canvas * canvas = cApp->canvas();
-    if (canvas->modeInfo()->projectMode() == CanvasModeInfo::ModeNormal) {
-        ExportWizard(canvas).exec();
-        return;
-    }
-
-    // print on other modes
-    canvas->printAsImage(canvas->modeInfo()->printDpi(),
-                         canvas->modeInfo()->fixedPrinterPixels(),
-                         canvas->modeInfo()->printLandscape());
-}
-
-void MainWindow::slotHelpWebsite()
-{
-    // start a fetch if no URL has been determined
-    if (m_website.isEmpty()) {
-        MetaXml::Connector * conn = new MetaXml::Connector();
-        connect(conn, SIGNAL(fetched()), this, SLOT(slotHelpWebsiteFetched()));
-        connect(conn, SIGNAL(fetchError(const QString &)), this, SLOT(slotHelpWebsiteFetchError()));
-        return;
-    }
-
-    // open the website
-    int answer = QMessageBox::question(this, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
-    if (answer == QMessageBox::Yes)
-        QDesktopServices::openUrl(QUrl(m_website));
-}
-
-void MainWindow::slotHelpWebsiteFetched()
-{
-    // get the websites from the conn
-    MetaXml::Connector * conn = dynamic_cast<MetaXml::Connector *>(sender());
-    if (conn && !conn->reader()->websites.isEmpty()) {
-        m_website = conn->reader()->websites.first().url;
-        if (!m_website.isEmpty()) {
-            slotHelpWebsite();
-            return;
-        }
-    }
-
-    // catch-all condition: use default url
-    slotHelpWebsiteFetchError();
-}
-
-void MainWindow::slotHelpWebsiteFetchError()
-{
-    m_website = ENRICOBLOG_STRING;
-    slotHelpWebsite();
-}
-
-void MainWindow::slotHelpTutorial()
-{
-    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about Fotowall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
-    if (answer == QMessageBox::Yes)
-        QDesktopServices::openUrl(TUTORIAL_URL);
-}
-
-void MainWindow::slotHelpUpdates()
-{
-    VersionCheckDialog vcd;
-    vcd.exec();
-    App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
-}
-
-void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
-{
-    if (reply->error() != QNetworkReply::NoError)
-        return;
-
-    QString htmlCode = reply->readAll();
-    bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
-    m_aHelpTutorial->setVisible(tutorialValid);
 }

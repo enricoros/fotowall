@@ -35,8 +35,6 @@ class MainWindow : public Appliance::Container
         void editCanvas(Canvas * newCanvas);
         void editWordcloud(WordCloud::Cloud * cloud);
 
-        void showIntroduction();
-
     protected:
         // ::Appliance::Container
         void applianceSetScene(QGraphicsScene * scene);
@@ -48,27 +46,28 @@ class MainWindow : public Appliance::Container
         void closeEvent(QCloseEvent * event);
 
     private:
+        void hideInLayout(QLayout * layout) const;
+        Canvas * currentCanvas() const;
         QMenu * createOnlineHelpMenu();
         void checkForTutorial();
-        void checkForSupport();
         void checkForUpdates();
+        void createLikeBack();
 
         Ui::MainWindow *        ui;
         Appliance::Manager *    m_appManager;
+        LikeBack *              m_likeBack;
         QAction *               m_aHelpTutorial;
         QString                 m_website;
-        LikeBack *              m_likeBack;
 
     private Q_SLOTS:
         // notifications
+        void slotApplianceClicked(quint32);
         void slotApplianceStructureChanged();
 
-        // custom action
-        void slotActionSelectAll();
-
-        // setup box
-        void on_accelBox_toggled(bool checked);
-        void on_transpBox_toggled(bool checked);
+        // file box
+        bool on_loadButton_clicked();
+        bool on_saveButton_clicked();
+        void on_exportButton_clicked();
 
         // help box
         void on_introButton_clicked();
@@ -76,15 +75,16 @@ class MainWindow : public Appliance::Container
         void on_lbFeature_clicked();
         void on_lbDislike_clicked();
         void on_lbLike_clicked();
-        bool on_loadButton_clicked();
-        bool on_saveButton_clicked();
-        void on_exportButton_clicked();
         void slotHelpWebsite();
         void slotHelpWebsiteFetched();
         void slotHelpWebsiteFetchError();
         void slotHelpTutorial();
         void slotHelpUpdates();
         void slotVerifyTutorial(QNetworkReply * reply);
+
+        // setup box
+        void on_accelBox_toggled(bool checked);
+        void on_transpBox_toggled(bool checked);
 };
 
 #endif

@@ -29,21 +29,26 @@ class Manager : public QObject
         Manager();
         ~Manager();
 
+        // set container
         void setContainer(Container * container);
         Container * container() const;
 
+        // stacking operations
         void stackAppliance(AbstractAppliance * appliance);
         QList<AbstractAppliance *> stackedAppliances() const;
         AbstractAppliance * currentAppliance() const;
         void popAppliance();
+        void dropStackAfter(int index);
         void clearAppliances();
 
     Q_SIGNALS:
+        // notify (ex. on a push/pop operation)
         void structureChanged();
 
     private:
         Container * m_container;
         QList<AbstractAppliance *> m_appliances;
+        bool m_disableNotify;
 };
 
 }

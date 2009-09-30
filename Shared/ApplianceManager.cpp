@@ -20,6 +20,7 @@ using namespace Appliance;
 
 Manager::Manager()
   : m_container(0)
+  , m_disableNotify(false)
 {
 }
 
@@ -60,7 +61,9 @@ void Manager::stackAppliance(AbstractAppliance * appliance)
     m_appliances.append(appliance);
     if (m_container)
         appliance->addToContainer(m_container);
-    emit structureChanged();
+
+    if (!m_disableNotify)
+        emit structureChanged();
 }
 
 QList<AbstractAppliance *> Manager::stackedAppliances() const
@@ -91,7 +94,22 @@ void Manager::popAppliance()
         m_appliances.last()->addToContainer(m_container);
 
     // notify about the change
-    if (removed)
+    if (removed && !m_disableNotify)
+        emit structureChanged();
+}
+
+void Manager::dropStackAfter(int index)
+{
+    int count = m_appliances.size();
+
+    // remove appliances up to the index+1'th
+    m_disableNotify = true;
+    while (!m_appliances.isEmpty() && m_appliances.size() > (index + 1))
+        popAppliance();
+    m_disableNotify = false;
+
+    // notify about the change
+    if (m_appliances.size() != count)
         emit structureChanged();
 }
 
