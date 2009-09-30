@@ -27,10 +27,10 @@ class Canvas;
 class XmlRead
 {
     public:
-        static bool read(const QString & filePath, Canvas * canvas, CanvasModeInfo * modeInfo);
+        static bool read(const QString & filePath, Canvas * canvas);
 
         bool loadFile(const QString & filePath);
-        void readProject(CanvasModeInfo * modeInfo);
+        CanvasModeInfo * readModeInfo();
         void readCanvas(Canvas * canvas);
         void readContent(Canvas * canvas);
 

@@ -34,7 +34,7 @@
 #include <QStringList>
 
 
-bool XmlRead::read(const QString & filePath, Canvas * canvas, CanvasModeInfo * modeInfo)
+bool XmlRead::read(const QString & filePath, Canvas * canvas)
 {
     // parse the DOM of the file
     XmlRead xmlRead;
@@ -42,12 +42,9 @@ bool XmlRead::read(const QString & filePath, Canvas * canvas, CanvasModeInfo * m
         return false;
 
     // create objects and read data
-    if (modeInfo)
-        xmlRead.readProject(modeInfo);
-    if (canvas) {
-        xmlRead.readCanvas(canvas);
-        xmlRead.readContent(canvas);
-    }
+    canvas->setModeInfo(xmlRead.readModeInfo());
+    xmlRead.readCanvas(canvas);
+    xmlRead.readContent(canvas);
 
     // add to the recent history
     App::settings->addRecentFotowallUrl(QUrl(filePath));
@@ -80,26 +77,27 @@ bool XmlRead::loadFile(const QString & filePath)
     return true;
 }
 
-void XmlRead::readProject(CanvasModeInfo * modeInfo)
+CanvasModeInfo * XmlRead::readModeInfo()
 {
+    CanvasModeInfo * modeInfo = new CanvasModeInfo();
     QDomElement modeElement = m_projectElement.firstChildElement("mode");
     QDomElement sizeElement = modeElement.firstChildElement("size");
     if (!sizeElement.isNull()) {
         float w = sizeElement.firstChildElement("w").text().toFloat();
         float h = sizeElement.firstChildElement("h").text().toFloat();
         modeInfo->setFixedSizeInches(QSizeF(w, h));
-
     }
     QDomElement dpiElement = sizeElement.firstChildElement("dpi");
-    if(!dpiElement.isNull()) {
+    if (!dpiElement.isNull()) {
         int dpi = dpiElement.text().toInt();
         modeInfo->setPrintDpi((float)dpi);
     }
 
     int mode = modeElement.firstChildElement("id").text().toInt();
     modeInfo->setProjectMode((CanvasModeInfo::Mode)mode);
-#warning NOTIFY1
-    //mainWindow->canvasUpdated();
+
+    // TODO: add the missing properties!
+    return modeInfo;
 }
 
 void XmlRead::readCanvas(Canvas * canvas)

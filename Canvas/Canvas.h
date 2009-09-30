@@ -59,12 +59,12 @@ class Canvas : public AbstractScene
         void resize(const QSize & size);
         void resizeEvent(QResizeEvent * event);
 
+        // item interaction
+        void selectAllContent(bool selected = true);
+
         // selectors
         void setWebContentSelectorVisible(bool visible);
         bool webContentSelectorVisible() const;
-
-        // item interaction
-        void selectAllContent(bool selected = true);
 
         // arrangement
         void setForceFieldEnabled(bool enabled);
@@ -87,8 +87,9 @@ class Canvas : public AbstractScene
         void showIntroduction();
         void blinkBackGradients();
 
-        // get and set the project mode (CD cover, DVD,...).
+        // change size and project mode (CD cover, DVD,...).
         CanvasModeInfo * modeInfo() const;
+        void setModeInfo(CanvasModeInfo * modeInfo);
 
         void toXml(QDomElement &de) const;
         void fromXml(QDomElement &de);
@@ -99,6 +100,7 @@ class Canvas : public AbstractScene
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 
     Q_SIGNALS:
+        void refreshCanvas();
         void backModeChanged();
         void showPropertiesWidget(QWidget * widget);
 

@@ -108,6 +108,7 @@ class MainWindow : public QWidget
         void slotBackModeChanged();
         void slotBackRatioChanged();
         void slotShowPropertiesWidget(QWidget *);
+        void slotRefreshCanvas();
 
         void slotVerifyTutorial(QNetworkReply * reply);
         void slotVerifySupport(/*const KnowledgeItemV1List & items*/);

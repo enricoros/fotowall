@@ -30,7 +30,7 @@ class XmlSave
     public:
         XmlSave();
 
-        static bool save(const QString & filePath, const Canvas * canvas, const CanvasModeInfo * modeInfo);
+        static bool save(const QString & filePath, const Canvas * canvas);
 
         bool writeFile(const QString & filePath);
         void saveContent(const Canvas *);

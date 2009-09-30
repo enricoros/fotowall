@@ -44,7 +44,7 @@ class SceneView : public QGraphicsView
         // ::QGraphicsView
         void drawForeground(QPainter * painter, const QRectF & rect);
         // ::QWidget
-        void resizeEvent(QResizeEvent * event);
+public: void resizeEvent(QResizeEvent * event);
 
     private:
         void adjustSceneSize();

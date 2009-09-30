@@ -52,6 +52,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include "math.h"
+#include <QDebug>
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -129,8 +130,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
         // create a custom canvas and load content over it
         Canvas * initialCanvas = new Canvas(this);
         stackCanvas(initialCanvas);
-        XmlRead::read(contentUrls.first(), initialCanvas, initialCanvas->modeInfo());
-        restoreMode(initialCanvas->modeInfo()->projectMode());
+        XmlRead::read(contentUrls.first(), initialCanvas);
     }
     // initial behavior: new Canvas with contents
     else if (!contentUrls.isEmpty()) {
@@ -164,11 +164,20 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     on_projectType_activated(0);
 
     // show initially
-    showMaximized();
+    if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray()))
+        showMaximized();
+    else
+        show();
 }
 
 MainWindow::~MainWindow()
 {
+    // save window geometry
+    if (!isMaximized() && !isFullScreen())
+        App::settings->setValue("Fotowall/Geometry", saveGeometry());
+    else
+        App::settings->remove("Fotowall/Geometry");
+
     // dump current layout
     if (m_canvas) {
         // this is an example of 'autosave-like function'
@@ -196,6 +205,8 @@ void MainWindow::stackCanvas(Canvas * newCanvas)
     if (m_canvas) {
         m_canvas->modeInfo()->setScreenDpi(ui->sceneView->logicalDpiX(), ui->sceneView->logicalDpiY());
         m_canvas->modeInfo()->setPrintDpi(300);
+        connect(m_canvas, SIGNAL(refreshCanvas()), ui->sceneView, SLOT(sceneConstraintsUpdated()));
+        connect(m_canvas, SIGNAL(refreshCanvas()), this, SLOT(slotRefreshCanvas()));
         connect(m_canvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
         connect(m_canvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
     }
@@ -477,7 +488,6 @@ void MainWindow::setNormalProject()
     REQUIRE_CANVAS
     m_canvas->modeInfo()->setFixedSizeInches();
     m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
-    showMaximized();
     ui->exportButton->setText(tr("Export"));
     ui->projectType->setCurrentIndex(0);
 }
@@ -488,7 +498,6 @@ void MainWindow::setCDProject()
     m_canvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_canvas->modeInfo()->setPrintLandscape(false);
     m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    showNormal();
     ui->exportButton->setText(tr("Print"));
     ui->projectType->setCurrentIndex(1);
 }
@@ -499,7 +508,6 @@ void MainWindow::setDVDProject()
     m_canvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
     m_canvas->modeInfo()->setPrintLandscape(true);
     m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
-    showNormal();
     ui->exportButton->setText(tr("Print"));
     ui->projectType->setCurrentIndex(2);
 }
@@ -525,7 +533,6 @@ void MainWindow::setExactSizeProject()
         m_canvas->modeInfo()->setPrintDpi(printDpi);
         m_canvas->modeInfo()->setFixedSizeInches(QSizeF(cm?(double)w/2.54:w, cm?(double)h/2.54:h));
     }
-    showNormal();
     m_canvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
     ui->exportButton->setText(tr("Print"));
     ui->projectType->setCurrentIndex(3);
@@ -541,6 +548,9 @@ void MainWindow::on_projectType_activated(int index)
         case 3: m_canvas->modeInfo()->setFixedSizeInches();
                 setExactSizeProject();  break;
     }
+    // HACK
+    QResizeEvent ev(ui->sceneView->size(), ui->sceneView->size());
+    ui->sceneView->resizeEvent(&ev);
 }
 
 void MainWindow::on_aAddCanvas_triggered()
@@ -761,10 +771,7 @@ bool MainWindow::on_loadButton_clicked()
     if (fileName.isNull())
         return false;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-    bool ok = XmlRead::read(fileName, m_canvas, m_canvas->modeInfo());
-    if (ok)
-        restoreMode(m_canvas->modeInfo()->projectMode());
-    return ok;
+    return XmlRead::read(fileName, m_canvas);
 }
 
 bool MainWindow::on_saveButton_clicked()
@@ -783,7 +790,7 @@ bool MainWindow::on_saveButton_clicked()
     App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
     if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
         fileName += ".fotowall";
-    return XmlSave::save(fileName, m_canvas, m_canvas->modeInfo());
+    return XmlSave::save(fileName, m_canvas);
 }
 
 void MainWindow::on_exportButton_clicked()
@@ -977,6 +984,13 @@ void MainWindow::slotShowPropertiesWidget(QWidget * widget)
         ui->widgetProperties->collapse();
         ui->widgetCanvas->expand();
     }
+}
+
+void MainWindow::slotRefreshCanvas()
+{
+    REQUIRE_CANVAS
+    restoreMode(m_canvas->modeInfo()->projectMode());
+    update();
 }
 
 void MainWindow::slotVerifyTutorial(QNetworkReply * reply)

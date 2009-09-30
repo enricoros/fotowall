@@ -30,16 +30,13 @@
 #include <QTextStream>
 
 
-bool XmlSave::save(const QString & filePath, const Canvas * canvas, const CanvasModeInfo * modeInfo)
+bool XmlSave::save(const QString & filePath, const Canvas * canvas)
 {
     // build up the DOM tree
     XmlSave xmlSave;
-    if (modeInfo)
-        xmlSave.saveProject(modeInfo);
-    if (canvas) {
-        xmlSave.saveCanvas(canvas);
-        xmlSave.saveContent(canvas);
-    }
+    xmlSave.saveProject(canvas->modeInfo());
+    xmlSave.saveCanvas(canvas);
+    xmlSave.saveContent(canvas);
 
     // save to disk
     bool saveOk = xmlSave.writeFile(filePath);

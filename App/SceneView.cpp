@@ -137,6 +137,7 @@ void SceneView::sceneConstraintsUpdated()
 {
     // TODO
     qWarning("TODO SceneView::sceneConstraintsUpdated");
+    adjustSceneSize();
 }
 
 static void drawVerticalShadow(QPainter * painter, int width, int height)

@@ -241,6 +241,14 @@ void Canvas::resizeEvent(QResizeEvent * /*event*/)
         config->keepInBoundaries(sceneRect());
 }
 
+/// Item Interaction
+void Canvas::selectAllContent(bool selected)
+{
+    foreach (AbstractContent * content, m_content)
+        content->setSelected(selected);
+}
+
+/// Selectors
 void Canvas::setWebContentSelectorVisible(bool visible)
 {
     if (!visible && m_webContentSelector) {
@@ -261,13 +269,6 @@ void Canvas::setWebContentSelectorVisible(bool visible)
 bool Canvas::webContentSelectorVisible() const
 {
     return m_webContentSelector;
-}
-
-/// Item Interaction
-void Canvas::selectAllContent(bool selected)
-{
-    foreach (AbstractContent * content, m_content)
-        content->setSelected(selected);
 }
 
 /// Arrangement
@@ -421,6 +422,13 @@ void Canvas::blinkBackGradients()
 CanvasModeInfo * Canvas::modeInfo() const
 {
     return m_modeInfo;
+}
+
+void Canvas::setModeInfo(CanvasModeInfo * modeInfo)
+{
+    delete m_modeInfo;
+    m_modeInfo = modeInfo;
+    emit refreshCanvas();
 }
 
 void Canvas::toXml(QDomElement & de) const
