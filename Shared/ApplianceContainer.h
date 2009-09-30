@@ -12,29 +12,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __App_h__
-#define __App_h__
+#ifndef __ApplianceContainer_h__
+#define __ApplianceContainer_h__
 
-#include <QObject>
-#include <QUrl>
-class MainWindow;
-class Settings;
+#include <QWidget>
+#include <QGraphicsScene>
 
-#define HERE qWarning("> %s %d: %s", __FILE__, __LINE__, __FUNCTION__);
+namespace Appliance {
 
-class App
+class Container : public QWidget
 {
+    Q_OBJECT
     public:
-        // uniquely instanced objects
-        static Settings * settings;
-        static MainWindow * mainWindow;
+        Container(QWidget * parent = 0);
 
-        // utility functions
-        static QString supportedImageFormats();
-        static bool isPictureFile(const QString & fileName);
-        static bool isFotowallFile(const QString & fileName);
-        static bool isContentUrl(const QString & url);
-        static bool validateFotowallUrl(const QString & url);
+        // called by appliances
+        virtual void applianceSetScene(QGraphicsScene * scene) = 0;
+        virtual void applianceSetTopbar(QList<QWidget *> widgets) = 0;
+        virtual void applianceSetSidebar(QWidget * widget) = 0;
+        virtual void applianceSetCentralwidget(QWidget * widget) = 0;
+
+    Q_SIGNALS:
+
+    private:
+
+    private Q_SLOTS:
+
 };
+
+}
 
 #endif

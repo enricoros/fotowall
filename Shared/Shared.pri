@@ -1,5 +1,7 @@
 HEADERS += \
+    Shared/AbstractAppliance.h \
     Shared/AbstractScene.h \
+    Shared/ApplianceContainer.h \
     Shared/BreadCrumbBar.h \
     Shared/ButtonsDialog.h \
     Shared/CPixmap.h \
@@ -16,7 +18,9 @@ HEADERS += \
     Shared/VideoProvider.h
 
 SOURCES += \
+    Shared/AbstractAppliance.cpp \
     Shared/AbstractScene.cpp \
+    Shared/ApplianceContainer.cpp \
     Shared/BreadCrumbBar.cpp \
     Shared/ButtonsDialog.cpp \
     Shared/CPixmap.cpp \

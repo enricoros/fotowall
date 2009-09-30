@@ -68,7 +68,7 @@
 
 
 MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
-    : QWidget(parent)
+    : Appliance::Container(parent)
     , ui(new Ui::MainWindow())
     , m_canvas(0)
     , m_aHelpTutorial(0)
@@ -232,6 +232,27 @@ void MainWindow::showIntroduction()
 {
     if (m_canvas)
         m_canvas->showIntroduction();
+}
+
+
+void MainWindow::applianceSetScene(QGraphicsScene * scene)
+{
+    HERE;
+}
+
+void MainWindow::applianceSetTopbar(QList<QWidget *> widgets)
+{
+    HERE;
+}
+
+void MainWindow::applianceSetSidebar(QWidget * widget)
+{
+    HERE;
+}
+
+void MainWindow::applianceSetCentralwidget(QWidget * widget)
+{
+    HERE;
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -961,7 +982,7 @@ void MainWindow::slotShowPropertiesWidget(QWidget * widget)
         ui->widgetProperties->setTitle(widget->windowTitle());
         ui->widgetProperties->expand();
     }
-    // or show the Canvas containter
+    // or show the Canvas container
     else {
         ui->widgetProperties->collapse();
         ui->widgetCanvas->expand();

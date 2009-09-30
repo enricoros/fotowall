@@ -15,7 +15,7 @@
 #ifndef __MainWindow_h__
 #define __MainWindow_h__
 
-#include <QWidget>
+#include "Shared/ApplianceContainer.h"
 class Canvas;
 class LikeBack;
 class QActionGroup;
@@ -25,7 +25,7 @@ class QNetworkReply;
 namespace Ui { class MainWindow; }
 namespace WordCloud { class Cloud; }
 
-class MainWindow : public QWidget
+class MainWindow : public Appliance::Container
 {
     Q_OBJECT
     public:
@@ -38,6 +38,12 @@ class MainWindow : public QWidget
         void popStack();
 
         void showIntroduction();
+
+        // ::Appliance::Container
+        void applianceSetScene(QGraphicsScene * scene);
+        void applianceSetTopbar(QList<QWidget *> widgets);
+        void applianceSetSidebar(QWidget * widget);
+        void applianceSetCentralwidget(QWidget * widget);
 
         // ::QWidget
         void closeEvent(QCloseEvent * event);
