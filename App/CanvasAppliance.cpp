@@ -81,6 +81,14 @@ CanvasAppliance::CanvasAppliance(Canvas * canvas, SceneView * view, QObject * pa
     slotProjectTypeActivated(0);
 }
 
+CanvasAppliance::~CanvasAppliance()
+{
+    // ### check this
+    delete m_canvas;
+    delete ui;
+    delete m_dummyWidget;
+}
+
 Canvas * CanvasAppliance::canvas() const
 {
     return m_canvas;

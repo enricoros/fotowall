@@ -26,6 +26,7 @@ class CanvasAppliance : public Appliance::AbstractAppliance
     Q_OBJECT
     public:
         CanvasAppliance(Canvas * canvas, SceneView * view, QObject * parent = 0);
+        ~CanvasAppliance();
 
         // peek the internal canvas
         Canvas * canvas() const;

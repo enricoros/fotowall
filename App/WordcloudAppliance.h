@@ -26,6 +26,7 @@ class WordcloudAppliance : public Appliance::AbstractAppliance
     Q_OBJECT
     public:
         WordcloudAppliance(WordCloud::Cloud * cloud, QObject * parent = 0);
+        ~WordcloudAppliance();
 
         // peek into the cloud
         WordCloud::Cloud * cloud() const;
@@ -39,6 +40,10 @@ class WordcloudAppliance : public Appliance::AbstractAppliance
         AbstractScene * m_scene;
         Ui::WordcloudApplianceElements * ui;
         QWidget * m_dummyWidget;
+
+    private Q_SLOTS:
+        void slotRegenCloud();
+        void slotRandomizeCloud();
 };
 
 #endif
