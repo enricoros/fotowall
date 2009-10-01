@@ -47,8 +47,6 @@ class MainWindow : public Appliance::Container
         void closeEvent(QCloseEvent * event);
 
     private:
-        void hideInLayout(QLayout * layout) const;
-        Canvas * currentCanvas() const;
         QMenu * createOnlineHelpMenu();
         void checkForTutorial();
         void checkForUpdates();

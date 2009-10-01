@@ -18,9 +18,9 @@
 
 #include <QPushButton>
 
-WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * cloud, QObject * parent)
+WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * parent)
   : Appliance::AbstractAppliance(parent)
-  , m_cloud(cloud)
+  , m_extCloud(extCloud)
   , m_scene(new AbstractScene)
   , ui(new Ui::WordcloudApplianceElements)
   , m_dummyWidget(new QWidget)
@@ -29,7 +29,7 @@ WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * cloud, QObject * paren
     ui->setupUi(m_dummyWidget);
 
     // set the target scene of the cloud to this
-    cloud->setScene(m_scene);
+    m_extCloud->setScene(m_scene);
 
     QPushButton * btn = new QPushButton(tr("Randomize"));
     connect(btn, SIGNAL(clicked()), this, SLOT(slotRandomizeCloud()));
@@ -41,23 +41,34 @@ WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * cloud, QObject * paren
 
 WordcloudAppliance::~WordcloudAppliance()
 {
-    qWarning("WCA closed");
+    if (m_extCloud) {
+        qWarning("WordcloudAppliance::~WordcloudAppliance: cloud's still here.. take it!");
+        m_extCloud->setScene(0);
+    }
     delete m_scene;
-    delete ui;
     delete m_dummyWidget;
+    delete ui;
+}
+
+WordCloud::Cloud * WordcloudAppliance::takeCloud()
+{
+    WordCloud::Cloud * cloud = m_extCloud;
+    m_extCloud = 0;
+    cloud->setScene(0);
+    return cloud;
 }
 
 WordCloud::Cloud * WordcloudAppliance::cloud() const
 {
-    return m_cloud;
+    return m_extCloud;
 }
 
 void WordcloudAppliance::slotRegenCloud()
 {
-    m_cloud->regenCloud();
+    m_extCloud->regenCloud();
 }
 
 void WordcloudAppliance::slotRandomizeCloud()
 {
-    m_cloud->randomCloud();
+    m_extCloud->randomCloud();
 }

@@ -25,8 +25,11 @@ class WordcloudAppliance : public Appliance::AbstractAppliance
 {
     Q_OBJECT
     public:
-        WordcloudAppliance(WordCloud::Cloud * cloud, QObject * parent = 0);
+        WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * parent = 0);
         ~WordcloudAppliance();
+
+        // take the cloud (NOTE: DELETE THE OBJECT RIGHT AFTER THIS!)
+        WordCloud::Cloud * takeCloud();
 
         // peek into the cloud
         WordCloud::Cloud * cloud() const;
@@ -37,7 +40,7 @@ class WordcloudAppliance : public Appliance::AbstractAppliance
         bool applianceCommand(int /*command*/) { return false; }
 
     private:
-        WordCloud::Cloud * m_cloud;
+        WordCloud::Cloud * m_extCloud;
         AbstractScene * m_scene;
         Ui::WordcloudApplianceElements * ui;
         QWidget * m_dummyWidget;

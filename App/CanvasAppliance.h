@@ -16,16 +16,15 @@
 #define __CanvasAppliance_h__
 
 #include "Shared/AbstractAppliance.h"
-#include "Canvas/Canvas.h"
 #include "ui_CanvasAppliance.h"
 class QMenu;
-class SceneView;
+class Canvas;
 
 class CanvasAppliance : public Appliance::AbstractAppliance
 {
     Q_OBJECT
     public:
-        CanvasAppliance(Canvas * extCanvas, SceneView * view, QObject * parent = 0);
+        CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent = 0);
         ~CanvasAppliance();
 
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)

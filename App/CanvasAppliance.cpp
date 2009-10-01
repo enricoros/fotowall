@@ -15,12 +15,12 @@
 #include "CanvasAppliance.h"
 
 #include "Canvas/CanvasModeInfo.h"
+#include "Canvas/Canvas.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/VideoProvider.h"
 #include "App.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
-#include "SceneView.h"
 #include "Settings.h"
 #include "XmlSave.h"
 
@@ -29,7 +29,7 @@
 #include <QMenu>
 
 
-CanvasAppliance::CanvasAppliance(Canvas * extCanvas, SceneView * view, QObject * parent)
+CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent)
   : Appliance::AbstractAppliance(parent)
   , m_extCanvas(extCanvas)
   , m_dummyWidget(new QWidget)
@@ -66,9 +66,8 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, SceneView * view, QObject *
     ui.decoButton->setMenu(createDecorationMenu());
 
     // react to canvas
-    m_extCanvas->modeInfo()->setScreenDpi(view->physicalDpiX(), view->physicalDpiY());
+    m_extCanvas->modeInfo()->setScreenDpi(sDpiX, sDpiY);
     m_extCanvas->modeInfo()->setPrintDpi(300);
-    connect(m_extCanvas, SIGNAL(refreshCanvas()), view, SLOT(sceneConstraintsUpdated()));
     connect(m_extCanvas, SIGNAL(refreshCanvas()), this, SLOT(slotRefreshCanvas()));
     connect(m_extCanvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
@@ -102,45 +101,44 @@ Canvas * CanvasAppliance::canvas() const
 
 bool CanvasAppliance::applianceCommand(int command)
 {
-    // Export/Print
-    if (command == App::AC_Export) {
-        // show the export dialog, or print directly
-        switch (m_extCanvas->modeInfo()->projectMode()) {
-            case CanvasModeInfo::ModeNormal:
+    switch (command) {
+        // Export/Print
+        case App::AC_Export:
+            if (m_extCanvas->modeInfo()->projectMode() == CanvasModeInfo::ModeNormal)
                 return ExportWizard(m_extCanvas).exec();
+            return m_extCanvas->printAsImage(m_extCanvas->modeInfo()->printDpi(), m_extCanvas->modeInfo()->fixedPrinterPixels(), m_extCanvas->modeInfo()->printLandscape());
 
-            default:
-                return m_extCanvas->printAsImage(m_extCanvas->modeInfo()->printDpi(), m_extCanvas->modeInfo()->fixedPrinterPixels(), m_extCanvas->modeInfo()->printLandscape());
-        }
-    }
+        // Save
+        case App::AC_Save: {
+            // make up the default save path (stored as 'Fotowall/SaveProjectDir')
+            QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
+            if (App::settings->contains("Fotowall/SaveProjectDir"))
+                defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
 
-    // Save
-    else if (command == App::AC_Save) {    
-        // make up the default save path (stored as 'Fotowall/SaveProjectDir')
-        QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-        if (App::settings->contains("Fotowall/SaveProjectDir"))
-            defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
+            // ask the file name, validate it, store back to settings and save over it
+            QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
+            if (fileName.isNull())
+                return false;
+            App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
+            if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
+                fileName += ".fotowall";
+            return XmlSave::save(fileName, m_extCanvas);}
 
-        // ask the file name, validate it, store back to settings and save over it
-        QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
-        if (fileName.isNull())
-            return false;
-        App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
-        if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
-            fileName += ".fotowall";
-        return XmlSave::save(fileName, m_extCanvas);
-    }
+        // No Background
+        case App::AC_ClearBackground:
+            if (m_extCanvas->backMode() != 1) {
+                ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("Now Fotowall's window is transparent.<br>Do you want me to set a transparent Canvas background too?"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
+                query.setButtonText(QDialogButtonBox::Yes, tr("Yes, thanks"));
+                query.setIcon(QStyle::SP_MessageBoxQuestion);
+                if (query.execute() == QDialogButtonBox::Yes)
+                    m_extCanvas->setBackMode(1);
+            }
+            return true;
 
-    // No Background
-    else if (command == App::AC_ClearBackground) {
-        if (m_extCanvas->backMode() != 1) {
-            ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("Now Fotowall's window is transparent.<br>Do you want me to set a transparent Canvas background too?"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
-            query.setButtonText(QDialogButtonBox::Yes, tr("Yes, thanks"));
-            query.setIcon(QStyle::SP_MessageBoxQuestion);
-            if (query.execute() == QDialogButtonBox::Yes)
-                m_extCanvas->setBackMode(1);
-        }
-        return true;
+        // Show Introduction
+        case App::AC_ShowIntro:
+            m_extCanvas->showIntroduction();
+            return true;
     }
 
     // unimplemented command

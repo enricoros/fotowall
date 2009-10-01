@@ -142,7 +142,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::editCanvas(Canvas * canvas)
 {
-    CanvasAppliance * cApp = new CanvasAppliance(canvas, ui->sceneView, this);
+    CanvasAppliance * cApp = new CanvasAppliance(canvas, ui->sceneView->physicalDpiX(), ui->sceneView->physicalDpiY(), this);
     m_appManager->stackAppliance(cApp);
 }
 
@@ -155,6 +155,15 @@ void MainWindow::editWordcloud(WordCloud::Cloud * cloud)
 void MainWindow::applianceSetScene(AbstractScene * scene)
 {
     ui->sceneView->setScene(scene);
+}
+
+static void hideInLayout(QLayout * layout)
+{
+    while (QLayoutItem * item = layout->takeAt(0)) {
+        if (QWidget * oldWidget = item->widget())
+            oldWidget->setVisible(false);
+        delete item;
+    }
 }
 
 void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
@@ -193,13 +202,16 @@ void MainWindow::applianceSetCentralwidget(QWidget * widget)
 void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
 {
     switch (id) {
-        case App::CV_ExPrint:
-            ui->exportButton->setVisible(!value.isNull());
+        case App::CV_ExPrint: {
+            bool valueSent = !value.isNull();
+            ui->exportButton->setVisible(valueSent);
+            ui->introButton->setEnabled(valueSent);
+            ui->saveButton->setEnabled(valueSent);
             if (!value.isNull()) {
                 ui->exportButton->setText(value.toBool() ? tr("Print") : tr("Export"));
                 ui->exportButton->setProperty("printing", value.toBool());
             }
-            break;
+            }break;
 
          case App::CV_RefreshScene:
             ui->sceneView->layoutScene();
@@ -251,21 +263,6 @@ void MainWindow::closeEvent(QCloseEvent * event)
             event->accept();
             break;
     }
-}
-
-void MainWindow::hideInLayout(QLayout * layout) const
-{
-    while (QLayoutItem * item = layout->takeAt(0)) {
-        if (QWidget * oldWidget = item->widget())
-            oldWidget->setVisible(false);
-        delete item;
-    }
-}
-
-Canvas * MainWindow::currentCanvas() const
-{
-    CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(m_appManager->currentAppliance());
-    return cApp ? cApp->canvas() : 0;
 }
 
 QMenu * MainWindow::createOnlineHelpMenu()
@@ -340,12 +337,6 @@ void MainWindow::slotApplianceStructureChanged()
 
     // repaint all
     update();
-
-    // update actions
-    Canvas * canvas = currentCanvas();
-    ui->introButton->setEnabled(canvas);
-    ui->exportButton->setEnabled(canvas);
-    ui->saveButton->setEnabled(canvas);
 }
 
 bool MainWindow::on_loadButton_clicked()
@@ -384,7 +375,7 @@ void MainWindow::on_exportButton_clicked()
 
 void MainWindow::on_introButton_clicked()
 {
-    currentCanvas()->showIntroduction();
+    m_appManager->currentApplianceCommand(App::AC_ShowIntro);
 }
 
 void MainWindow::on_lbLike_clicked()

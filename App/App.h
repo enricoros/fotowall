@@ -39,7 +39,8 @@ class App
         enum {
             AC_Export           = 0x0001,
             AC_Save             = 0x0002,
-            AC_ClearBackground  = 0x0003
+            AC_ClearBackground  = 0x0003,
+            AC_ShowIntro        = 0x0004
         };
 
         // utility functions
