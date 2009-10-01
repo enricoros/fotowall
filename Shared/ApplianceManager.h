@@ -37,6 +37,7 @@ class Manager : public QObject
         void stackAppliance(AbstractAppliance * appliance);
         QList<AbstractAppliance *> stackedAppliances() const;
         AbstractAppliance * currentAppliance() const;
+        bool currentApplianceCommand(int command);
         void popAppliance();
         void dropStackAfter(int index);
         void clearAppliances();

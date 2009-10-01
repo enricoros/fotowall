@@ -25,15 +25,19 @@ class CanvasAppliance : public Appliance::AbstractAppliance
 {
     Q_OBJECT
     public:
-        CanvasAppliance(Canvas * canvas, SceneView * view, QObject * parent = 0);
+        CanvasAppliance(Canvas * extCanvas, SceneView * view, QObject * parent = 0);
         ~CanvasAppliance();
 
-        // peek the internal canvas
+        // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
+        Canvas * takeCanvas();
+
+        // peek at the internal canvas
         Canvas * canvas() const;
 
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
         int applianceElements() const { return Appliance::UseAllElements; }
+        bool applianceCommand(int command);
 
     private:
         QMenu * createArrangeMenu();
@@ -45,13 +49,11 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         void setExactSizeProject();
 
     private:
-        Canvas * m_canvas;
-
-        Ui::CanvasApplianceElements * ui;
-        QWidget * m_dummyWidget;
-
-        QActionGroup *  m_gBackActions;
-        QActionGroup *  m_gBackRatioActions;
+        Ui::CanvasApplianceElements ui;
+        Canvas *                    m_extCanvas;
+        QWidget *                   m_dummyWidget;
+        QActionGroup *              m_gBackActions;
+        QActionGroup *              m_gBackRatioActions;
 
     private Q_SLOTS:
 

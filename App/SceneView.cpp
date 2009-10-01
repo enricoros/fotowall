@@ -89,7 +89,7 @@ void SceneView::setScene(AbstractScene * scene)
 {
     m_abstractScene = scene;
     QGraphicsView::setScene(m_abstractScene);
-    adjustSceneSize();
+    layoutScene();
 }
 
 AbstractScene * SceneView::scene() const
@@ -138,6 +138,27 @@ void SceneView::setOpenGL(bool enabled)
 void SceneView::setOpenGL(bool) {};
 #endif
 
+void SceneView::layoutScene()
+{
+    if (!m_abstractScene)
+        return;
+
+    // change size
+    QSize viewportSize = viewport()->contentsRect().size();
+    m_abstractScene->resize(viewportSize);
+
+    // change the scrollbars policy
+    QSize sceneSize = m_abstractScene->sceneSize();
+    Qt::ScrollBarPolicy sPolicy = ((sceneSize.width() > viewportSize.width()) ||
+                                  (sceneSize.height() > viewportSize.height())) ?
+                                  Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
+    setVerticalScrollBarPolicy(sPolicy);
+    setHorizontalScrollBarPolicy(sPolicy);
+
+    // update screen
+    update();
+}
+
 void SceneView::addOverlayWidget(QWidget * widget, bool top)
 {
     Qt::Alignment align = Qt::AlignLeft;
@@ -146,13 +167,6 @@ void SceneView::addOverlayWidget(QWidget * widget, bool top)
     else
         align |= Qt::AlignBottom;
     m_viewportLayout->insertWidget(0, widget, 0, align);
-}
-
-void SceneView::sceneConstraintsUpdated()
-{
-    // TODO
-    qWarning("TODO SceneView::sceneConstraintsUpdated");
-    adjustSceneSize();
 }
 
 static void drawVerticalShadow(QPainter * painter, int width, int height)
@@ -189,27 +203,6 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
 
 void SceneView::resizeEvent(QResizeEvent * event)
 {
-    adjustSceneSize();
     QGraphicsView::resizeEvent(event);
-}
-
-void SceneView::adjustSceneSize()
-{
-    if (!m_abstractScene)
-        return;
-
-    QSize viewportSize = viewport()->contentsRect().size();
-
-    // do a real calculation
-    QSize sceneSize = viewportSize; //QSize(qMax(viewportSize.width(), 600), qMax(viewportSize.height(), 400));
-
-    // change the scrollbars policy
-    Qt::ScrollBarPolicy sPolicy = ((sceneSize.width() > viewportSize.width()) ||
-                                  (sceneSize.height() > viewportSize.height())) ?
-                                  Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
-    setVerticalScrollBarPolicy(sPolicy);
-    setHorizontalScrollBarPolicy(sPolicy);
-
-    // change size
-    m_abstractScene->resize(sceneSize);
+    layoutScene();
 }

@@ -22,13 +22,11 @@
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "CanvasAppliance.h"
-#include "ExportWizard.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
 #include "WordcloudAppliance.h"
 #include "XmlRead.h"
-#include "XmlSave.h"
 #include "ui_MainWindow.h"
 
 #include <QApplication>
@@ -192,31 +190,55 @@ void MainWindow::applianceSetCentralwidget(QWidget * widget)
         qWarning("MainWindow::applianceSetCentralwidget: unsupported");
 }
 
+void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
+{
+    switch (id) {
+        case App::CV_ExPrint:
+            ui->exportButton->setVisible(!value.isNull());
+            if (!value.isNull()) {
+                ui->exportButton->setText(value.toBool() ? tr("Print") : tr("Export"));
+                ui->exportButton->setProperty("printing", value.toBool());
+            }
+            break;
+
+         case App::CV_RefreshScene:
+            ui->sceneView->layoutScene();
+            break;
+
+         default:
+            qWarning("MainWindow::applianceSetValue: unknown id 0x%x", id);
+            break;
+    }
+}
+
 // ###
 void MainWindow::closeEvent(QCloseEvent * event)
 {
     // build the closure dialog
-#if 0
     ButtonsDialog quitAsk("MainWindow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
     quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
+#if 0
     if (m_canvas && m_canvas->pendingChanges()) {
         quitAsk.setMessage(tr("Are you sure you want to quit and lose your changes?"));
         quitAsk.setButtonText(QDialogButtonBox::Save, tr("Save"));
         quitAsk.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
         quitAsk.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::Cancel);
     } else {
+#endif
         quitAsk.setMessage(tr("Are you sure you want to quit?"));
         quitAsk.setButtonText(QDialogButtonBox::Close, tr("Quit"));
         quitAsk.setButtons(QDialogButtonBox::Close | QDialogButtonBox::Cancel);
+#if 0
     }
+#endif
 
     // react to the dialog's answer
     switch (quitAsk.execute()) {
         case QDialogButtonBox::Cancel:
             event->ignore();
             break;
-
+#if 0
         case QDialogButtonBox::Save:
             // save file and return to Fotowall if canceled
             if (!on_saveButton_clicked()) {
@@ -224,12 +246,11 @@ void MainWindow::closeEvent(QCloseEvent * event)
                 break;
             }
             // fall through
-
+#endif
         default:
             event->accept();
             break;
     }
-#endif
 }
 
 void MainWindow::hideInLayout(QLayout * layout) const
@@ -353,42 +374,12 @@ bool MainWindow::on_loadButton_clicked()
 
 bool MainWindow::on_saveButton_clicked()
 {
-    Canvas * canvas = currentCanvas();
-    if (!canvas)
-        return false;
-
-    // make up the default save path (stored as 'Fotowall/SaveProjectDir')
-    QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-    if (App::settings->contains("Fotowall/SaveProjectDir"))
-        defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
-
-    // ask the file name, validate it, store back to settings and save over it
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
-    if (fileName.isNull())
-        return false;
-    App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
-    if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
-        fileName += ".fotowall";
-    return XmlSave::save(fileName, canvas);
+    return m_appManager->currentApplianceCommand(App::AC_Save);
 }
 
-// ###
 void MainWindow::on_exportButton_clicked()
 {
-    Canvas * canvas = currentCanvas();
-    if (!canvas)
-        return;
-
-    // show the export dialog, or print directly
-    switch (canvas->modeInfo()->projectMode()) {
-        case CanvasModeInfo::ModeNormal:
-            ExportWizard(canvas).exec();
-            break;
-
-        default:
-            canvas->printAsImage(canvas->modeInfo()->printDpi(), canvas->modeInfo()->fixedPrinterPixels(), canvas->modeInfo()->printLandscape());
-            break;
-    }
+    m_appManager->currentApplianceCommand(App::AC_Export);
 }
 
 void MainWindow::on_introButton_clicked()
@@ -579,15 +570,8 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         }
 #endif
 
-        // ask the user to set 'NoBackground' to show that we're transparent for real
-        Canvas * canvas = currentCanvas();
-        if (canvas && canvas->backMode() != 1) {
-            ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("Now Fotowall's window is transparent.<br>Do you want me to set a transparent Canvas background too?"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
-            query.setButtonText(QDialogButtonBox::Yes, tr("Yes, thanks"));
-            query.setIcon(QStyle::SP_MessageBoxQuestion);
-            if (query.execute() == QDialogButtonBox::Yes)
-                canvas->setBackMode(1);
-        }
+        // disable appliance background too
+        m_appManager->currentApplianceCommand(App::AC_ClearBackground);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);

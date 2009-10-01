@@ -41,6 +41,7 @@ class MainWindow : public Appliance::Container
         void applianceSetTopbar(const QList<QWidget *> & widgets);
         void applianceSetSidebar(QWidget * widget);
         void applianceSetCentralwidget(QWidget * widget);
+        void applianceSetValue(quint32 id, const QVariant & value);
 
         // ::QWidget
         void closeEvent(QCloseEvent * event);

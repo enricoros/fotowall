@@ -44,14 +44,13 @@ class AbstractAppliance : public QObject
         Container * container() const;
         bool isFloating() const;
 
-        // subclassed to describe the appliance:
+        // appliance description and external control
         virtual QString applianceName() const = 0;
         virtual int applianceElements() const = 0;
-        //virtual void activation(bool active);
-        //bool isActive();
+        virtual bool applianceCommand(int command) = 0;
 
     protected:
-        // used by reimpls to access the containter
+        // used by reimpls to access the container
         void sceneSet(AbstractScene *);
         void sceneClear();
         void topbarAddWidget(QWidget *, int index = -1);
@@ -60,6 +59,7 @@ class AbstractAppliance : public QObject
         void sidebarClearWidget();
         void centralwidgetSet(QWidget *);
         void centralwidgetClear();
+        void containerValueSet(quint32 key, const QVariant & value);
 
     private:
         void clearContainer();
@@ -68,12 +68,14 @@ class AbstractAppliance : public QObject
         typedef QPointer<QWidget> WidgetPointer;
         typedef QPointer<AbstractScene> ScenePointer;
         typedef QPointer<Container> ContainerPointer;
+        typedef QMap<int, QVariant> ValueMap;
 
         ScenePointer m_pScene;
         QList<WidgetPointer> m_pTopbar;
         WidgetPointer m_pSidebar;
         WidgetPointer m_pCentral;
         ContainerPointer m_containerPtr;
+        ValueMap m_values;
 };
 
 }

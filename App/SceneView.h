@@ -38,20 +38,19 @@ class SceneView : public QGraphicsView
         bool openGL() const;
         void setOpenGL(bool enabled);
 
+        // layout scene and scrollbars
+        void layoutScene();
+
         // layout widgets inside this
         void addOverlayWidget(QWidget * widget, bool top = true);
-
-    public Q_SLOTS:
-        void sceneConstraintsUpdated();
 
     protected:
         // ::QGraphicsView
         void drawForeground(QPainter * painter, const QRectF & rect);
         // ::QWidget
-public: void resizeEvent(QResizeEvent * event);
+        void resizeEvent(QResizeEvent * event);
 
     private:
-        void adjustSceneSize();
         bool m_openGL;
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;

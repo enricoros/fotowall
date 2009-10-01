@@ -29,6 +29,19 @@ class App
         static Settings * settings;
         static MainWindow * mainWindow;
 
+        // commands understood by the container
+        enum {
+            CV_ExPrint          = 0x0001,
+            CV_RefreshScene     = 0x0002
+        };
+
+        // commands understood by appliances
+        enum {
+            AC_Export           = 0x0001,
+            AC_Save             = 0x0002,
+            AC_ClearBackground  = 0x0003
+        };
+
         // utility functions
         static QString supportedImageFormats();
         static bool isPictureFile(const QString & fileName);

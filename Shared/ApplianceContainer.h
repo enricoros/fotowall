@@ -34,6 +34,7 @@ class Container : public QWidget
         virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
         virtual void applianceSetSidebar(QWidget * widget) = 0;
         virtual void applianceSetCentralwidget(QWidget * widget) = 0;
+        virtual void applianceSetValue(quint32 id, const QVariant & value) = 0;
 };
 
 }

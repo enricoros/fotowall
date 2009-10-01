@@ -36,6 +36,8 @@ bool AbstractAppliance::addToContainer(Container * container)
         setContainerTopbar();
         m_containerPtr->applianceSetSidebar(m_pSidebar.data());
         m_containerPtr->applianceSetCentralwidget(m_pCentral.data());
+        for (ValueMap::iterator it = m_values.begin(); it != m_values.end(); ++it)
+            m_containerPtr->applianceSetValue(it.key(), it.value());
     }
     return true;
 }
@@ -130,6 +132,13 @@ void AbstractAppliance::centralwidgetClear()
     centralwidgetSet(0);
 }
 
+void AbstractAppliance::containerValueSet(quint32 id, const QVariant & value)
+{
+    m_values[id] = value;
+    if (m_containerPtr)
+        m_containerPtr->applianceSetValue(id, value);
+}
+
 void AbstractAppliance::clearContainer()
 {
     if (m_containerPtr) {
@@ -137,6 +146,8 @@ void AbstractAppliance::clearContainer()
         m_containerPtr->applianceSetTopbar(QList<QWidget *>());
         m_containerPtr->applianceSetSidebar(0);
         m_containerPtr->applianceSetCentralwidget(0);
+        for (ValueMap::iterator it = m_values.begin(); it != m_values.end(); ++it)
+            m_containerPtr->applianceSetValue(it.key(), QVariant());
     }
 }
 

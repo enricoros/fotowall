@@ -76,6 +76,13 @@ AbstractAppliance * Manager::currentAppliance() const
     return m_appliances.isEmpty() ? 0 : m_appliances.last();
 }
 
+bool Manager::currentApplianceCommand(int command)
+{
+    if (m_appliances.isEmpty())
+        return false;
+    return m_appliances.last()->applianceCommand(command);
+}
+
 void Manager::popAppliance()
 {
     // delete last

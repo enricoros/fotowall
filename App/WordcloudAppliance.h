@@ -34,6 +34,7 @@ class WordcloudAppliance : public Appliance::AbstractAppliance
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Word Cloud"); }
         int applianceElements() const { return Appliance::UseAllElements; }
+        bool applianceCommand(int /*command*/) { return false; }
 
     private:
         WordCloud::Cloud * m_cloud;
