@@ -73,6 +73,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     ui->setupUi(this);
     ui->sceneView->setFocus();
     ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
+    ui->sceneView->addOverlayWidget(ui->applianceNavBar);
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
@@ -83,6 +84,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     m_appManager->setContainer(this);
     connect(m_appManager, SIGNAL(structureChanged()), this, SLOT(slotApplianceStructureChanged()));
     connect(ui->applianceNavBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
+    ui->applianceSidebar->hide();
 
     // show (with last geometry)
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {

@@ -21,6 +21,7 @@ struct InternalNode;
 class BreadCrumbBar : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(bool translucent READ translucent WRITE setTranslucent)
     public:
         BreadCrumbBar(QWidget * parent);
 
@@ -32,12 +33,17 @@ class BreadCrumbBar : public QWidget
         // QWidget
         void paintEvent(QPaintEvent * event);
 
+        // drawing style
+        void setTranslucent(bool);
+        bool translucent() const;
+
     Q_SIGNALS:
         void nodeClicked(quint32 id);
 
     private:
         void processLayout();
         InternalNode * m_root;
+        bool m_translucent;
 
     private Q_SLOTS:
         void slotLabelClicked(quint32 id);

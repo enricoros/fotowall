@@ -22,6 +22,7 @@
 #include <QPixmap>
 #include <QRectF>
 #include <QStyleOption>
+#include <QVBoxLayout>
 
 /// The style used by the SceneView's rubberband selection
 class RubberBandStyle : public QCommonStyle
@@ -53,6 +54,7 @@ SceneView::SceneView(QWidget * parent)
   , m_openGL(false)
   , m_abstractScene(0)
   , m_style(new RubberBandStyle)
+  , m_viewportLayout(0)
 {
     // customize widget
     setInteractive(true);
@@ -70,6 +72,9 @@ SceneView::SceneView(QWidget * parent)
 
     // use own style for drawing the RubberBand (opened on the viewport)
     viewport()->setStyle(m_style);
+    m_viewportLayout = new QVBoxLayout(viewport());
+    m_viewportLayout->setContentsMargins(0, 4, 0, 4);
+    m_viewportLayout->setSpacing(0);
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
     //setCacheMode(CacheBackground);
@@ -132,6 +137,16 @@ void SceneView::setOpenGL(bool enabled)
 #else
 void SceneView::setOpenGL(bool) {};
 #endif
+
+void SceneView::addOverlayWidget(QWidget * widget, bool top)
+{
+    Qt::Alignment align = Qt::AlignLeft;
+    if (top)
+        align |= Qt::AlignTop;
+    else
+        align |= Qt::AlignBottom;
+    m_viewportLayout->insertWidget(0, widget, 0, align);
+}
 
 void SceneView::sceneConstraintsUpdated()
 {

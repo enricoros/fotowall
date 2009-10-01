@@ -17,6 +17,7 @@
 
 #include <QGraphicsView>
 class AbstractScene;
+class QVBoxLayout;
 class RubberBandStyle;
 
 class SceneView : public QGraphicsView
@@ -36,7 +37,10 @@ class SceneView : public QGraphicsView
         bool supportsOpenGL() const;
         bool openGL() const;
         void setOpenGL(bool enabled);
-        
+
+        // layout widgets inside this
+        void addOverlayWidget(QWidget * widget, bool top = true);
+
     public Q_SLOTS:
         void sceneConstraintsUpdated();
 
@@ -51,6 +55,7 @@ public: void resizeEvent(QResizeEvent * event);
         bool m_openGL;
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
+        QVBoxLayout * m_viewportLayout;
 };
 
 #endif
