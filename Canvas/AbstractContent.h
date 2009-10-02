@@ -31,8 +31,13 @@ class QPointF;
 class AbstractContent : public AbstractDisposeable
 {
     Q_OBJECT
-#if QT_VERSION >= 0x040500 && QT_VERSION <= 0x040600
-    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+    Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
+    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
+#if QT_VERSION < 0x040600 && QT_VERSION >= 0x040500
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+#endif
+#if QT_VERSION < 0x040600
+    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
 #endif
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
@@ -56,13 +61,15 @@ class AbstractContent : public AbstractDisposeable
         QString frameText() const;
         void addButtonItem(ButtonItem * buttonItem);
 
-        // rotation
-        void setRotation(double angle, Qt::Axis axis);
-        double rotation(Qt::Axis axis) const;
-
-        // mirror
-        void setMirrorEnabled(bool enabled);
-        bool mirrorEnabled() const;
+        // properties
+        void setMirrored(bool enabled);
+        bool mirrored() const;
+        void setPerspective(const QPointF & angles);
+        QPointF perspective() const;
+#if QT_VERSION < 0x040600
+        void setRotation(qreal angle);
+        qreal rotation() const;
+#endif
 
         // misc
         void ensureVisible(const QRectF & viewportRect);
@@ -84,11 +91,19 @@ class AbstractContent : public AbstractDisposeable
         virtual bool contentOpaque() const;
 
     Q_SIGNALS:
+        // to canvas
         void configureMe(const QPoint & scenePoint);
         void changeStack(int opcode);
         void backgroundMe();
         void deleteItem();
         void contentChanged();
+
+        // properties
+        void mirroredChanged();
+        void perspectiveChanged();
+#if QT_VERSION < 0x040600
+        void rotationChanged();
+#endif
 
     protected:
         // may be reimplemented by subclasses
@@ -119,7 +134,7 @@ class AbstractContent : public AbstractDisposeable
     private:
         void createCorner(Qt::Corner corner, bool noRescale);
         void layoutChildren();
-        void applyRotations();
+        void applyTransforms();
         QRect               m_contentsRect;
         QRectF              m_frameRect;
         Frame *             m_frame;
@@ -131,12 +146,13 @@ class AbstractContent : public AbstractDisposeable
         QTimer *            m_transformRefreshTimer;
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;
-        double              m_xRotationAngle;
-        double              m_yRotationAngle;
-        double              m_zRotationAngle;
+        QPointF             m_perspectiveAngles;
+#if QT_VERSION < 0x040600
+        double              m_rotationAngle;
+#endif
 
     private Q_SLOTS:
-        void slotPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);
+        void slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);
         void slotClearPerspective();
         void slotDirtyEnded();
 

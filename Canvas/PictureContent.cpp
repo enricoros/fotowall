@@ -200,7 +200,8 @@ QWidget * PictureContent::createPropertyWidget()
     PictureProperties * p = new PictureProperties();
 
     // connect actions
-    /*PE_AbstractSlider * pe =*/ new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
+    new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
+    p->perspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
     new PE_PaneWidget(p->perspWidget, this, "perspective", p);
 
     // properties link

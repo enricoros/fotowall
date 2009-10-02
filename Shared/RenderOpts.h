@@ -21,7 +21,7 @@ class RenderOpts
 {
     public:
         // defaults
-        static bool LastMirrorEnabled;
+        static bool LastMirrored;
 
         // global options
         static bool ARGBWindow;

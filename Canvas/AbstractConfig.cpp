@@ -69,7 +69,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     }
 
     // read other properties
-    m_commonUi->reflection->setChecked(m_content->mirrorEnabled());
+    m_commonUi->reflection->setChecked(m_content->mirrored());
 
     connect(m_commonUi->front, SIGNAL(clicked()), m_content, SLOT(slotStackFront()));
     connect(m_commonUi->raise, SIGNAL(clicked()), m_content, SLOT(slotStackRaise()));
@@ -238,7 +238,7 @@ void AbstractConfig::on_newFrame_clicked()
 
 void AbstractConfig::on_applyLooks_clicked()
 {
-    emit applyLook(m_content->frameClass(), m_content->mirrorEnabled(), true);
+    emit applyLook(m_content->frameClass(), m_content->mirrored(), true);
 }
 
 void AbstractConfig::on_listWidget_itemSelectionChanged()
@@ -251,11 +251,11 @@ void AbstractConfig::on_listWidget_itemSelectionChanged()
     quint32 frameClass = item->data(Qt::UserRole).toUInt();
     if (!frameClass)
         return;
-    emit applyLook(frameClass, m_content->mirrorEnabled(), false);
+    emit applyLook(frameClass, m_content->mirrored(), false);
 }
 
 void AbstractConfig::on_reflection_toggled(bool checked)
 {
-    RenderOpts::LastMirrorEnabled = checked;
+    RenderOpts::LastMirrored = checked;
     emit applyLook(m_content->frameClass(), checked, false);
 }

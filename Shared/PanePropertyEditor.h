@@ -20,6 +20,7 @@
 #include <QPointF>
 #include <QRectF>
 
+/// Pane Widget, a cartesian point selector
 class PaneWidget : public QWidget
 {
     Q_OBJECT
@@ -56,6 +57,7 @@ class PaneWidget : public QWidget
         bool m_pressed;
 };
 
+/// Pane Property Editor, links a property to a PaneWidget
 class PE_PaneWidget : public PE_TypeControl<PaneWidget>
 {
     Q_OBJECT

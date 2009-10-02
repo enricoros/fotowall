@@ -44,9 +44,9 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     , m_transformRefreshTimer(0)
     , m_gfxChangeTimer(0)
     , m_mirrorItem(0)
-    , m_xRotationAngle(0)
-    , m_yRotationAngle(0)
-    , m_zRotationAngle(0)
+#if QT_VERSION < 0x040600
+    , m_rotationAngle(0)
+#endif
 {
     // the buffered graphics changes timer
     m_gfxChangeTimer = new QTimer(this);
@@ -81,7 +81,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 #if QT_VERSION >= 0x040500
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag around to change the perspective.\nHold SHIFT to move faster.\nUse CTRL to cancel the transformations."));
-    connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotPerspective(const QPointF&,Qt::KeyboardModifiers)));
+    connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotSetPerspective(const QPointF&,Qt::KeyboardModifiers)));
     connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slotClearPerspective()));
     addButtonItem(bPersp);
 #endif
@@ -106,9 +106,9 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 #if QT_VERSION >= 0x040600
     // with Qt 4.6-tp1 there are crashes activating a mirror before setting the scene
     // need to rethink this anyway
-    setMirrorEnabled(false);
+    setMirrored(false);
 #else
-    setMirrorEnabled(RenderOpts::LastMirrorEnabled);
+    setMirrored(RenderOpts::LastMirrored);
 #endif
 }
 
@@ -127,7 +127,7 @@ void AbstractContent::dispose()
     setFlags((GraphicsItemFlags)0x00);
 
     // fade out mirror too
-    setMirrorEnabled(false);
+    setMirrored(false);
 
     // little rotate animation
 #if QT_VERSION >= 0x040600
@@ -300,44 +300,55 @@ void AbstractContent::addButtonItem(ButtonItem * button)
     layoutChildren();
 }
 
-void AbstractContent::setRotation(double angle, Qt::Axis axis)
-{
-    switch (axis) {
-        case Qt::XAxis: if (m_xRotationAngle == angle) return; m_xRotationAngle = angle; break;
-        case Qt::YAxis: if (m_yRotationAngle == angle) return; m_yRotationAngle = angle; break;
-        case Qt::ZAxis: if (m_zRotationAngle == angle) return; m_zRotationAngle = angle; break;
-    }
-    applyRotations();
-}
-
-double AbstractContent::rotation(Qt::Axis axis) const
-{
-    switch (axis) {
-        case Qt::XAxis: return m_xRotationAngle;
-        case Qt::YAxis: return m_yRotationAngle;
-        case Qt::ZAxis: return m_zRotationAngle;
-    }
-    // suppress warnings, can't reach here
-    return 0.0;
-}
-
-void AbstractContent::setMirrorEnabled(bool enabled)
+void AbstractContent::setMirrored(bool enabled)
 {
     if (m_mirrorItem && !enabled) {
         m_mirrorItem->dispose();
         m_mirrorItem = 0;
+        emit mirroredChanged();
     }
     if (enabled && !m_mirrorItem) {
         m_mirrorItem = new MirrorItem(this);
         connect(m_gfxChangeTimer, SIGNAL(timeout()), m_mirrorItem, SLOT(sourceChanged()));
         connect(this, SIGNAL(destroyed()), m_mirrorItem, SLOT(deleteLater()));
+        emit mirroredChanged();
     }
 }
 
-bool AbstractContent::mirrorEnabled() const
+bool AbstractContent::mirrored() const
 {
     return m_mirrorItem;
 }
+
+void AbstractContent::setPerspective(const QPointF & angles)
+{
+    if (angles != m_perspectiveAngles) {
+        m_perspectiveAngles = angles;
+        applyTransforms();
+        emit perspectiveChanged();
+    }
+}
+
+QPointF AbstractContent::perspective() const
+{
+    return m_perspectiveAngles;
+}
+
+#if QT_VERSION < 0x040600
+void AbstractContent::setRotation(qreal angle)
+{
+    if (m_rotationAngle != angle) {
+        m_rotationAngle = angle;
+        applyTransforms();
+        emit rotationChanged();
+    }
+}
+
+qreal AbstractContent::rotation() const
+{
+    return m_rotationAngle;
+}
+#endif
 
 void AbstractContent::ensureVisible(const QRectF & rect)
 {
@@ -399,13 +410,16 @@ bool AbstractContent::fromXml(QDomElement & pe)
     // restore transformation
     QDomElement te = pe.firstChildElement("transformation");
     if (!te.isNull()) {
-        m_xRotationAngle = te.attribute("xRot").toDouble();
-        m_yRotationAngle = te.attribute("yRot").toDouble();
-        m_zRotationAngle = te.attribute("zRot").toDouble();
-        applyRotations();
+        m_perspectiveAngles = QPointF(te.attribute("xRot").toDouble(), te.attribute("yRot").toDouble());
+#if QT_VERSION < 0x040600
+        m_rotationAngle = te.attribute("zRot").toDouble();
+#else
+        setRotation(te.attribute("zRot").toDouble());
+#endif
+        applyTransforms();
     }
     domElement = pe.firstChildElement("mirror");
-    setMirrorEnabled(domElement.attribute("state").toInt());
+    setMirrored(domElement.attribute("state").toInt());
 
     return true;
 }
@@ -487,13 +501,17 @@ void AbstractContent::toXml(QDomElement & pe) const
     const QTransform t = transform();
     if (!t.isIdentity()) {
         domElement = doc.createElement("transformation");
-        domElement.setAttribute("xRot", m_xRotationAngle);
-        domElement.setAttribute("yRot", m_yRotationAngle);
-        domElement.setAttribute("zRot", m_zRotationAngle);
+        domElement.setAttribute("xRot", m_perspectiveAngles.x());
+        domElement.setAttribute("yRot", m_perspectiveAngles.y());
+#if QT_VERSION < 0x040600
+        domElement.setAttribute("zRot", m_rotationAngle);
+#else
+        domElement.setAttribute("zRot", rotation());
+#endif
         pe.appendChild(domElement);
     }
     domElement = doc.createElement("mirror");
-    domElement.setAttribute("state", mirrorEnabled());
+    domElement.setAttribute("state", mirrored());
     pe.appendChild(domElement);
 
 }
@@ -796,29 +814,27 @@ void AbstractContent::layoutChildren()
         m_frame->layoutText(m_frameTextItem, m_frameRect.toRect());
 }
 
-void AbstractContent::applyRotations()
+void AbstractContent::applyTransforms()
 {
-    setTransform(QTransform().rotate(m_yRotationAngle, Qt::XAxis).rotate(m_xRotationAngle, Qt::YAxis).rotate(m_zRotationAngle));
+    setTransform(QTransform().rotate(m_perspectiveAngles.y(), Qt::XAxis)
+                 .rotate(m_perspectiveAngles.x(), Qt::YAxis)
+#if QT_VERSION < 0x040600
+                 .rotate(m_rotationAngle, Qt::ZAxis)
+#endif
+                 , false);
 }
 
-void AbstractContent::slotPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers)
+void AbstractContent::slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers)
 {
     if (modifiers & Qt::ControlModifier)
         return slotClearPerspective();
-
-    double k = 0.2;
-    if (modifiers != Qt::NoModifier)
-        k = 0.5;
-    m_xRotationAngle = qBound(-70.0, -k * sceneRelPoint.x(), 70.0);
-    m_yRotationAngle = qBound(-70.0, -k * sceneRelPoint.y(), 70.0);
-    applyRotations();
+    qreal k = modifiers == Qt::NoModifier ? 0.2 : 0.5;
+    setPerspective(QPointF(qBound(-70.0, sceneRelPoint.x()*k, 70.0), qBound(-70.0, sceneRelPoint.y()*k, 70.0)));
 }
 
 void AbstractContent::slotClearPerspective()
 {
-    m_xRotationAngle = 0;
-    m_yRotationAngle = 0;
-    applyRotations();
+    setPerspective(QPointF(0, 0));
 }
 
 void AbstractContent::slotDirtyEnded()

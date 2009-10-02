@@ -63,7 +63,7 @@ void CornerItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
     // do the right op
     switch (event->button()) {
         case Qt::LeftButton:    if (m_opMask & Scale) m_content->resetContentsRatio(); break;
-        case Qt::RightButton:   if (m_opMask & Rotate) m_content->setRotation(0.0, Qt::ZAxis); break;
+        case Qt::RightButton:   if (m_opMask & Rotate) m_content->setRotation(0); break;
         default:                break;
     }
 }
@@ -143,7 +143,7 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
         qreal refAngle = atan2(refPos.y(), refPos.x());
         qreal newAngle = atan2(v.y(), v.x());
         double dZr = 57.29577951308232 * (newAngle - refAngle); // 180 * a / M_PI
-        double zr = m_content->rotation(Qt::ZAxis) + dZr;
+        double zr = m_content->rotation() + dZr;
 
         // snap to M_PI/4
         if (op & FixRotate) {
@@ -152,7 +152,7 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
         }
 
         // apply rotation
-        m_content->setRotation(zr, Qt::ZAxis);
+        m_content->setRotation(zr);
     }
 }
 

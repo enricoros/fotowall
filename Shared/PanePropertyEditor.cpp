@@ -97,13 +97,23 @@ void PaneWidget::paintEvent(QPaintEvent * event)
 {
     // draw background
     QPainter p(this);
-    if (m_hovered)
-        p.fillRect(event->rect(), QColor(250, 250, 250, 128));
+    if (m_hovered) {
+        QLinearGradient lg(0, 0, 0, height());
+        lg.setColorAt(0.0, QColor(128, 128, 128, 64));
+        lg.setColorAt(1.0, QColor(255, 255, 255, 128));
+        p.fillRect(event->rect(), lg);
+    }
+#if 1
+    else
+        p.fillRect(event->rect(), QColor(64, 64, 64, 16));
+#endif
 
     // draw axis
     QPointF pt = screenMap(QPointF(0, 0));
     p.setPen(QPen(Qt::lightGray, 1.0));
+#if 0
     p.drawRect(rect().adjusted(0, 0, -1, -1));
+#endif
     p.setRenderHint(QPainter::Antialiasing, true);
     p.drawLine(pt.x(), 0, pt.x(), height());
     p.drawLine(0, pt.y(), width(), pt.y());

@@ -405,7 +405,7 @@ void CanvasAppliance::slotArrangeRandom()
         if (!content)
             continue;
         content->setPos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
-        content->setRotation(-30 + (qrand() % 60), Qt::ZAxis);
+        content->setRotation(-30 + (qrand() % 60));
 #if QT_VERSION >= 0x040500
         content->setOpacity((qreal)(qrand() % 100) / 99.0);
 #endif

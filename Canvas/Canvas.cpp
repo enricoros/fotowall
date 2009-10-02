@@ -1122,7 +1122,7 @@ void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
         if (all || content->isSelected()) {
             if (content->frameClass() != frameClass)
                 content->setFrame(FrameFactory::createFrame(frameClass));
-            content->setMirrorEnabled(mirrored);
+            content->setMirrored(mirrored);
         }
     }
 }
