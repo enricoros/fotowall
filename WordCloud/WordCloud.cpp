@@ -257,7 +257,13 @@ void Cloud::process()
             int posY = pY * 10;
             const QRectF wordRealRect = word->boundingRect().translated(posX, posY);
             QPainterPath wordRealPath = word->path();
+#if QT_VERSION >= 0x040600
             wordRealPath.translate(posX, posY);
+#elif QT_VERSION >= 0x040500
+            wordRealPath = QTransform::fromTranslate(posX, posY).map(wordRealPath);
+#else
+            wordRealPath = QTransform().translate(posX, posY).map(wordRealPath);
+#endif
 
             bool intersections = false;
             foreach (WordItem * clItem, placed) {
@@ -268,7 +274,13 @@ void Cloud::process()
                 // check for precise intersection
                 if (m_accurate) {
                     QPainterPath placedPath = clItem->path();
+#if QT_VERSION >= 0x040600
                     placedPath.translate(clItem->pos());
+#elif QT_VERSION >= 0x040500
+                    placedPath = QTransform::fromTranslate(clItem->pos().x(), clItem->pos().y()).map(placedPath);
+#else
+                    placedPath = QTransform().translate(clItem->pos().x(), clItem->pos().y()).map(placedPath);
+#endif
                     if (!wordRealPath.intersects(placedPath))
                         continue;
                 }
