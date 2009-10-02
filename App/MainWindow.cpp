@@ -93,7 +93,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
         show();
 
     // create a Canvas (and load/populate it)
-    Canvas * canvas = new Canvas(this);
+    Canvas * canvas = new Canvas(ui->sceneView->size(), this);
         // open if single fotowall file
         if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
             XmlRead::read(contentUrls.first(), canvas);
@@ -351,7 +351,7 @@ bool MainWindow::on_loadButton_clicked()
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
 
     // try to load the canvas
-    Canvas * canvas = new Canvas(this);
+    Canvas * canvas = new Canvas(ui->sceneView->size(), this);
     if (!XmlRead::read(fileName, canvas)) {
         delete canvas;
         return false;

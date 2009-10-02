@@ -18,6 +18,8 @@
 #include "Canvas.h"
 
 #include <QFileInfo>
+#include <QGraphicsView>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
 CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent)
@@ -26,26 +28,22 @@ CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * par
 {
 }
 
-bool CanvasViewContent::load(const QString & filePath, bool /*keepRatio*/, bool setName)
+bool CanvasViewContent::loadCanvas(const QString & filePath, bool /*keepRatio*/, bool setName)
 {
-    // parse the DOM of the file
-    XmlRead xmlRead;
-    if (!xmlRead.loadFile(filePath))
+    // ### HACK ahead
+    if (!scene() || scene()->views().isEmpty())
         return false;
+    QRect viewRect = scene()->views().first()->contentsRect();
 
+    // create a Canvas
+    m_canvas = new Canvas(viewRect.size(), this);
+    connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
+    bool ok = XmlRead::read(filePath, m_canvas);
+
+    // customize the item
     setFrameTextEnabled(setName);
     setFrameText(QFileInfo(filePath).baseName());
-
-    // create the new Canvas
-    m_canvas = new Canvas(this);
-    connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
-    m_canvas->resize(QSize(800, 600));
-
-    // read in the properties
-    //xmlRead.readProject(this);
-    xmlRead.readCanvas(m_canvas);
-    xmlRead.readContent(m_canvas);
-    return true;
+    return ok;
 }
 
 QWidget * CanvasViewContent::createPropertyWidget()
@@ -83,8 +81,10 @@ bool CanvasViewContent::contentOpaque() const
 
 #include "App/App.h"
 #include "App/MainWindow.h"
-void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * /*event*/)
+void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
+    event->accept();
+    setSelected(false);
     App::mainWindow->editCanvas(m_canvas);
 }
 

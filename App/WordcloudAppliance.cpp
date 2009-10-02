@@ -21,7 +21,7 @@
 WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * parent)
   : Appliance::AbstractAppliance(parent)
   , m_extCloud(extCloud)
-  , m_scene(new AbstractScene)
+  , m_scene(new AbstractScene(0))
   , ui(new Ui::WordcloudApplianceElements)
   , m_dummyWidget(new QWidget)
 {

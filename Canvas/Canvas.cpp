@@ -62,7 +62,7 @@
         }
     } */
 
-Canvas::Canvas(QObject * parent)
+Canvas::Canvas(const QSize & initialSize, QObject * parent)
     : AbstractScene(parent)
     , m_modeInfo(new CanvasModeInfo)
     , m_networkAccessManager(0)
@@ -121,6 +121,9 @@ Canvas::Canvas(QObject * parent)
     tilePainter.fillRect(50, 50, 50, 50, Qt::darkGray);
     tilePainter.end();
 
+    // set the initial size of the canvas, don't let it grow automatically
+    resize(initialSize);
+
     // crazy background stuff
 #if 0
     #define RP QPointF(-400 + qrand() % 2000, -300 + qrand() % 1500)
@@ -168,7 +171,7 @@ void Canvas::addCanvasViewContent(const QStringList & fileNames)
 
         // create picture and load the file
         CanvasViewContent * d = createCanvasView(pos);
-        if (!d->load(localFile, true, true)) {
+        if (!d->loadCanvas(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
         } else
@@ -428,8 +431,14 @@ CanvasModeInfo * Canvas::modeInfo() const
 
 void Canvas::setModeInfo(CanvasModeInfo * modeInfo)
 {
+    // set the new modeinfo
     delete m_modeInfo;
     m_modeInfo = modeInfo;
+
+    // apply the fixed size (if defined)
+    resize(sceneSize());
+
+    // notify listeners (if any!) about the change
     emit refreshCanvas();
 }
 

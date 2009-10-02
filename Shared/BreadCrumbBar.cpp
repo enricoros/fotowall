@@ -67,8 +67,10 @@ void BcLabel::leaveEvent(QEvent * /*event*/)
 
 void BcLabel::mousePressEvent(QMouseEvent * event)
 {
-    if (!m_last && event->button() == Qt::LeftButton)
+    if (!m_last && event->button() == Qt::LeftButton) {
+        event->accept();
         emit labelClicked(m_labId);
+    }
 }
 
 void BcLabel::paintEvent(QPaintEvent * event)

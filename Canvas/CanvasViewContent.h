@@ -29,7 +29,7 @@ class CanvasViewContent : public AbstractContent
         CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
 //        ~CanvasViewContent();
 
-        bool load(const QString & filePath, bool keepRatio = false, bool setName = false);
+        bool loadCanvas(const QString & filePath, bool keepRatio = false, bool setName = false);
         //Canvas * takeCanvas();
         //void setCanvas(Canvas * canvas);
 

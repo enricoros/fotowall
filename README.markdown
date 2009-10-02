@@ -24,6 +24,7 @@ Work in progress:
 * FotowallFile
   * (Work In Progress) More properties in the top bar
   * (Work In Progress) Arrange Contents
+* remove RenderContent, check the bad behavior of importing
 
 Done:
 

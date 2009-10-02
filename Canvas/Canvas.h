@@ -45,7 +45,7 @@ class Canvas : public AbstractScene
     public:
         friend class XmlRead;
         friend class XmlSave;
-        Canvas(QObject * parent = 0);
+        Canvas(const QSize & initialSize, QObject * parent = 0);
         ~Canvas();
 
         // add content

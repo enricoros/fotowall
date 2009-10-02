@@ -36,6 +36,7 @@ class AbstractScene : public QGraphicsScene
         inline QPointF sceneCenter() const { return m_rect.center(); }
 
     protected:
+        AbstractScene();
         QSize m_size;
         QRectF m_rect;
 };
