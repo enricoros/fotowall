@@ -14,7 +14,9 @@ HEADERS += \
     Shared/GlowEffectWidget.h \
     Shared/GroupBoxWidget.h \
     Shared/MetaXmlReader.h \
+    Shared/PanePropertyEditor.h \
     Shared/PictureEffect.h \
+    Shared/PropertyEditors.h \
     Shared/RenderOpts.h \
     Shared/VideoProvider.h
 
@@ -33,6 +35,8 @@ SOURCES += \
     Shared/GlowEffectDialog.cpp \
     Shared/GlowEffectWidget.cpp \
     Shared/GroupBoxWidget.cpp \
+    Shared/PanePropertyEditor.cpp \
+    Shared/PropertyEditors.cpp \
     Shared/MetaXmlReader.cpp \
     Shared/VideoProvider.cpp
 

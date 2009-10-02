@@ -193,13 +193,15 @@ void PictureContent::crop()
         addEffect(PictureEffect(PictureEffect::Crop, 0, cropRect));
 }
 
-#include "PropertyEditors.h"
+#include "Shared/PropertyEditors.h"
+#include "Shared/PanePropertyEditor.h"
 QWidget * PictureContent::createPropertyWidget()
 {
     PictureProperties * p = new PictureProperties();
 
     // connect actions
     /*PE_AbstractSlider * pe =*/ new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
+    new PE_PaneWidget(p->perspWidget, this, "perspective", p);
 
     // properties link
     //p->bEditShape->setChecked(isShapeEditing());

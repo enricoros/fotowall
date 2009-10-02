@@ -13,7 +13,6 @@
  ***************************************************************************/
 
 #include "PropertyEditors.h"
-#include <QDebug>
 
 
 PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _target, const char * propertyName, QObject * parent)
