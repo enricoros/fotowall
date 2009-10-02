@@ -542,7 +542,7 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
 
     if (m_frame) {
         // draw the Frame
-        m_frame->drawFrame(painter, frameRect, drawSelection, opaqueContent);
+        m_frame->drawFrame(painter, frameRect, drawSelection && !RenderOpts::OpenGLWindow, opaqueContent);
 
         // use clip path for contents, if set
         if (m_frame->clipContents())
@@ -550,10 +550,10 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     }
 
     // paint the inner contents
-    //if (drawSelection)
-    //    painter->setCompositionMode(QPainter::CompositionMode_Plus);
-    //painter->translate(contentRect().topLeft());
-    drawContent(painter, contentRect());
+    if (drawSelection && RenderOpts::OpenGLWindow)
+        painter->setCompositionMode(QPainter::CompositionMode_Plus);
+    painter->translate(m_contentRect.topLeft());
+    drawContent(painter, QRect(0, 0, m_contentRect.width(), m_contentRect.height()));
 
     // draw the selection only as done in EmptyFrame.cpp
     /*if (drawSelection) {
