@@ -186,7 +186,7 @@ FlickrInterface * WebContentSelectorItem::flickrInterface() const
 void WebContentSelectorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // draw frame
-    m_frame->paint(painter, boundingRect().toRect(), false, false);
+    m_frame->drawFrame(painter, boundingRect().toRect(), false, false);
 }
 
 void WebContentSelectorItem::slotSearchClicked()

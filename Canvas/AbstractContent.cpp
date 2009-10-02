@@ -540,22 +540,28 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     const bool drawSelection = RenderOpts::HQRendering ? false : isSelected();
     const QRect frameRect = m_frameRect.toRect();
 
-    if (!m_frame) {
-        // draw the selection only as done in EmptyFrame.cpp
-        if (drawSelection) {
-            painter->setRenderHint(QPainter::Antialiasing, true);
-            painter->setPen(QPen(RenderOpts::hiColor, 1.0));
-            // FIXME: this draws OUTSIDE (but inside the safe 2px area)
-            painter->drawRect(QRectF(frameRect).adjusted(-0.5, -0.5, +0.5, +0.5));
-        }
-    } else {
+    if (m_frame) {
         // draw the Frame
-        m_frame->paint(painter, frameRect, drawSelection, opaqueContent);
+        m_frame->drawFrame(painter, frameRect, drawSelection, opaqueContent);
 
         // use clip path for contents, if set
         if (m_frame->clipContents())
             painter->setClipPath(m_frame->contentsClipPath(m_contentsRect));
     }
+
+    // paint the inner contents
+    //if (drawSelection)
+    //    painter->setCompositionMode(QPainter::CompositionMode_Plus);
+    drawContent(painter);
+
+    // draw the selection only as done in EmptyFrame.cpp
+    /*if (drawSelection) {
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->setPen(QPen(RenderOpts::hiColor, 3.0));
+        painter->setBrush(Qt::NoBrush);
+        // FIXME: this draws OUTSIDE (but inside the safe 2px area)
+        painter->drawRect(m_contentsRect);
+    }*/
 }
 
 void AbstractContent::selectionChanged(bool /*selected*/)

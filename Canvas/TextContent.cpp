@@ -229,55 +229,8 @@ void TextContent::toXml(QDomElement & pe) const
     }
 }
 
-QPixmap TextContent::renderContent(const QSize & size, Qt::AspectRatioMode /*ratio*/) const
+void TextContent::drawContent(QPainter * painter)
 {
-    // get the base empty pixmap
-    QSize textSize = boundingRect().size().toSize();
-    const float w = size.width(),
-                h = size.height(),
-                tw = textSize.width(),
-                th = textSize.height();
-    if (w < 2 || h < 2 || tw < 2 || th < 2)
-        return QPixmap();
-
-    // draw text (centered, maximized keeping aspect ratio)
-    float scale = qMin(w / (tw + 16), h / (th + 16));
-    QPixmap pix(size);
-    pix.fill(Qt::transparent);
-    QPainter pixPainter(&pix);
-    pixPainter.translate((w - (int)((float)tw * scale)) / 2, (h - (int)((float)th * scale)) / 2);
-    pixPainter.scale(scale, scale);
-    m_text->drawContents(&pixPainter);
-    pixPainter.end();
-    return pix;
-}
-
-int TextContent::contentHeightForWidth(int width) const
-{
-    // if no text size is available, use default
-    if (m_textRect.width() < 1 || m_textRect.height() < 1)
-        return AbstractContent::contentHeightForWidth(width);
-    return (m_textRect.height() * width) / m_textRect.width();
-}
-
-void TextContent::selectionChanged(bool selected)
-{
-    // hide shape editing controls
-    if (!selected && isShapeEditing())
-        setShapeEditing(false);
-}
-
-void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
-{
-    emit backgroundMe();
-    QGraphicsItem::mouseDoubleClickEvent(event);
-}
-
-void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
-{
-    // paint parent
-    AbstractContent::paint(painter, option, widget);
-
     // check whether we're drawing shaped
     const bool shapedPaint = hasShape() && !m_shapeRect.isEmpty();
     QPointF shapeOffset = m_shapeRect.topLeft();
@@ -364,6 +317,50 @@ void TextContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * opt
 #endif
 
     painter->restore();
+}
+
+QPixmap TextContent::renderContent(const QSize & size, Qt::AspectRatioMode /*ratio*/) const
+{
+    // get the base empty pixmap
+    QSize textSize = boundingRect().size().toSize();
+    const float w = size.width(),
+                h = size.height(),
+                tw = textSize.width(),
+                th = textSize.height();
+    if (w < 2 || h < 2 || tw < 2 || th < 2)
+        return QPixmap();
+
+    // draw text (centered, maximized keeping aspect ratio)
+    float scale = qMin(w / (tw + 16), h / (th + 16));
+    QPixmap pix(size);
+    pix.fill(Qt::transparent);
+    QPainter pixPainter(&pix);
+    pixPainter.translate((w - (int)((float)tw * scale)) / 2, (h - (int)((float)th * scale)) / 2);
+    pixPainter.scale(scale, scale);
+    m_text->drawContents(&pixPainter);
+    pixPainter.end();
+    return pix;
+}
+
+int TextContent::contentHeightForWidth(int width) const
+{
+    // if no text size is available, use default
+    if (m_textRect.width() < 1 || m_textRect.height() < 1)
+        return AbstractContent::contentHeightForWidth(width);
+    return (m_textRect.height() * width) / m_textRect.width();
+}
+
+void TextContent::selectionChanged(bool selected)
+{
+    // hide shape editing controls
+    if (!selected && isShapeEditing())
+        setShapeEditing(false);
+}
+
+void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+{
+    emit backgroundMe();
+    QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
 QPainterPath TextContent::shapePath() const

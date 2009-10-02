@@ -91,7 +91,7 @@ void HeartFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect*
     //textItem->setPos( frameRect.left() + d->padL, frameRect.center().y() - textItem->boundingRect().size().height() / 2 );
 }
 
-void HeartFrame::paint(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
+void HeartFrame::drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
 {
     QLinearGradient lg(0, frameRect.top(), frameRect.width() / 8, frameRect.height() / 2);
     lg.setColorAt(0.0, QColor(196,00,00));

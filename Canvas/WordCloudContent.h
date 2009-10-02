@@ -38,6 +38,7 @@ class WordCloudContent : public AbstractContent
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
+        void drawContent(QPainter * painter);
         QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
 
 //        int contentHeightForWidth(int width) const;
@@ -45,7 +46,6 @@ class WordCloudContent : public AbstractContent
 
         // ::QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
         QGraphicsScene * m_cloudScene;

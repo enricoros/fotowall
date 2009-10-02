@@ -24,8 +24,9 @@ class RenderOpts
         static bool LastMirrored;
 
         // global options
-        static bool ARGBWindow;
         static bool HQRendering;
+        static bool ARGBWindow;
+        static bool OpenGLWindow;
 
         // other options
         static bool OxygenStyleQuirks;

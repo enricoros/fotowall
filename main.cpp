@@ -34,8 +34,9 @@ Q_IMPORT_PLUGIN(qtiff)
 
 // init RenderOpts defaults
 bool RenderOpts::LastMirrored = true;
-bool RenderOpts::ARGBWindow = false;
 bool RenderOpts::HQRendering = false;
+bool RenderOpts::ARGBWindow = false;
+bool RenderOpts::OpenGLWindow = false;
 bool RenderOpts::OxygenStyleQuirks = false;
 bool VideoProvider::Disable = false;
 QColor RenderOpts::hiColor;

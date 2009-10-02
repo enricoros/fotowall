@@ -181,7 +181,7 @@ void AbstractConfig::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 {
     // draw custom background
     painter->save();
-    m_frame->paint(painter, boundingRect().toRect(), false, false);
+    m_frame->drawFrame(painter, boundingRect().toRect(), false, false);
     painter->restore();
 
     // unbreak parent

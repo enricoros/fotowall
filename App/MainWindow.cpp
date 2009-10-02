@@ -476,6 +476,9 @@ void MainWindow::on_accelBox_toggled(bool enabled)
 
     // set opengl state
     ui->sceneView->setOpenGL(enabled);
+
+    // save opengl state
+    RenderOpts::OpenGLWindow = ui->sceneView->openGL();
 }
 
 #ifdef Q_WS_WIN

@@ -62,6 +62,11 @@ void WordCloudContent::toXml(QDomElement & /*parentElement*/) const
 {
 }
 
+void WordCloudContent::drawContent(QPainter * painter)
+{
+    m_cloudScene->render(painter, contentsRect(), m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
+}
+
 QPixmap WordCloudContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const
 {
     return QPixmap(100, 100);
@@ -77,14 +82,6 @@ bool WordCloudContent::contentOpaque() const
 void WordCloudContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
     App::mainWindow->editWordcloud(m_cloud);
-}
-
-void WordCloudContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
-{
-    // paint parent
-    AbstractContent::paint(painter, option, widget);
-
-    m_cloudScene->render(painter, contentsRect(), m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
 }
 
 void WordCloudContent::slotRepaintScene(const QList<QRectF> & /*exposed*/)

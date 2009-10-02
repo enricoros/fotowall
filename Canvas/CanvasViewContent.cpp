@@ -62,6 +62,15 @@ void CanvasViewContent::toXml(QDomElement & /*parentElement*/) const
 {
 }
 
+void CanvasViewContent::drawContent(QPainter * painter)
+{
+    // TODO: see if it paints when the scene is not displayed...
+    if (m_canvas)
+        m_canvas->render(painter, contentsRect(), m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
+    else
+        painter->fillRect(contentsRect(), Qt::red);
+}
+
 QPixmap CanvasViewContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const
 {
     return QPixmap(100, 100);
@@ -77,18 +86,6 @@ bool CanvasViewContent::contentOpaque() const
 void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * /*event*/)
 {
     App::mainWindow->editCanvas(m_canvas);
-}
-
-void CanvasViewContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
-{
-    // paint parent
-    AbstractContent::paint(painter, option, widget);
-
-    // TODO: see if it paints when the scene is not displayed...
-    if (m_canvas)
-        m_canvas->render(painter, contentsRect(), m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
-    else
-        painter->fillRect(boundingRect(), Qt::red);
 }
 
 void CanvasViewContent::slotRepaintCanvas(const QList<QRectF> & /*exposed*/)

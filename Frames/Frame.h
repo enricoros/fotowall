@@ -51,7 +51,7 @@ class Frame {
         virtual void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const = 0;
 
         // P: painting
-        virtual void paint(QPainter * painter, const QRect & geometry, bool selected, bool opaqueContents) = 0;
+        virtual void drawFrame(QPainter * painter, const QRect & geometry, bool selected, bool opaqueContents) = 0;
         virtual QPixmap preview(int width = 32, int height = 32);
 
         // unbreak stuff

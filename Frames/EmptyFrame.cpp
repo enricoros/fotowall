@@ -54,7 +54,7 @@ void EmptyFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect*
     textItem->hide();
 }
 
-void EmptyFrame::paint(QPainter *painter, const QRect &rect, bool selected, bool /*opaqueContents*/)
+void EmptyFrame::drawFrame(QPainter *painter, const QRect &rect, bool selected, bool /*opaqueContents*/)
 {
     // draw aligned antialiased rect like in AbstractContent.cpp with !frame
     if (selected) {

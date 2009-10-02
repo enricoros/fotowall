@@ -80,6 +80,7 @@ class AbstractContent : public AbstractDisposeable
         virtual QWidget * createPropertyWidget();
         virtual bool fromXml(QDomElement & parentElement);
         virtual void toXml(QDomElement & parentElement) const;
+        virtual void drawContent(QPainter * painter) = 0;
         virtual QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const = 0;
 
         // ::QGraphicsItem
