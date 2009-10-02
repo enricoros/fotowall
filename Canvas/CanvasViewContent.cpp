@@ -62,13 +62,13 @@ void CanvasViewContent::toXml(QDomElement & /*parentElement*/) const
 {
 }
 
-void CanvasViewContent::drawContent(QPainter * painter)
+void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect)
 {
     // TODO: see if it paints when the scene is not displayed...
     if (m_canvas)
-        m_canvas->render(painter, contentsRect(), m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
+        m_canvas->render(painter, targetRect, m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
     else
-        painter->fillRect(contentsRect(), Qt::red);
+        painter->fillRect(targetRect, Qt::red);
 }
 
 QPixmap CanvasViewContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const

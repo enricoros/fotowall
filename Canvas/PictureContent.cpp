@@ -164,11 +164,13 @@ void PictureContent::addEffect(const PictureEffect & effect)
     m_photo->addEffect(effect);
     // adapt picture ratio after cropping
     if (effect.effect == PictureEffect::Crop) {
-        QRect actualContentRect = contentsRect();
+        QRect actualContentRect = contentRect();
         if ((actualContentRect.height() + actualContentRect.width()) > 0) {
-            float reduceRatio = (float)(effect.rect.width()+effect.rect.height())/
-                                (float)(actualContentRect.height() +actualContentRect.width());
-            resizeContents(QRect(0,0, (float)effect.rect.width()/reduceRatio, (float)effect.rect.height()/reduceRatio));
+            qreal reduceRatio = (qreal)(effect.rect.width()+effect.rect.height())/
+                                (qreal)(actualContentRect.height() +actualContentRect.width());
+            int newW = (int)((qreal)effect.rect.width()/reduceRatio);
+            int newH = (int)((qreal)effect.rect.height()/reduceRatio);
+            resizeContents(QRect(-newW/2, -newH/2, newW, newH), true);
         }
     }
 #if QT_VERSION >= 0x040500
@@ -291,7 +293,7 @@ void PictureContent::toXml(QDomElement & pe) const
     }
 }
 
-void PictureContent::drawContent(QPainter * painter)
+void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
 {
     // draw progress
     if (m_progress > 0.0 && m_progress < 1.0) {
@@ -312,7 +314,6 @@ void PictureContent::drawContent(QPainter * painter)
 #endif
 
     // draw high-resolution photo when exporting png
-    QRect targetRect = contentsRect();
     if (RenderOpts::HQRendering) {
         painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
         painter->drawPixmap(targetRect, *m_photo);

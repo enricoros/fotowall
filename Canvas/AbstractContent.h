@@ -47,7 +47,7 @@ class AbstractContent : public AbstractDisposeable
         void dispose();
 
         // size
-        QRect contentsRect() const;
+        QRect contentRect() const;
         void resizeContents(const QRect & rect, bool keepRatio = false);
         void resetContentsRatio();
         void delayedDirty(int ms = 400);
@@ -80,7 +80,7 @@ class AbstractContent : public AbstractDisposeable
         virtual QWidget * createPropertyWidget();
         virtual bool fromXml(QDomElement & parentElement);
         virtual void toXml(QDomElement & parentElement) const;
-        virtual void drawContent(QPainter * painter) = 0;
+        virtual void drawContent(QPainter * painter, const QRect & targetRect) = 0;
         virtual QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const = 0;
 
         // ::QGraphicsItem
@@ -136,7 +136,7 @@ class AbstractContent : public AbstractDisposeable
         void createCorner(Qt::Corner corner, bool noRescale);
         void layoutChildren();
         void applyTransforms();
-        QRect               m_contentsRect;
+        QRect               m_contentRect;
         QRectF              m_frameRect;
         Frame *             m_frame;
         QGraphicsTextItem * m_frameTextItem;

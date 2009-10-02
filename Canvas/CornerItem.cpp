@@ -84,8 +84,8 @@ void CornerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
     m_operation &= m_opMask;
 
     // intial parameters
-    QRect contentsRect = m_content->contentsRect();
-    m_startRatio = (double)contentsRect.width() / (double)contentsRect.height();
+    QRect cRect = m_content->contentRect();
+    m_startRatio = (double)cRect.width() / (double)cRect.height();
 
     update();
 }
@@ -128,8 +128,8 @@ void CornerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
             int H = qMax((int)((2*D)/(r*K)), 40);
             m_content->resizeContents(QRect(-W / 2, -H / 2, W, H));
         } else {
-            int W = qMax(2 * fabs(v.x()), 50.0); //(m_contentsRect.width() * v.x()) / oldPos.x();
-            int H = qMax(2 * fabs(v.y()), 40.0); //(m_contentsRect.height() * v.y()) / oldPos.y();
+            int W = qMax(2 * fabs(v.x()), 50.0); //(m_contentRect.width() * v.x()) / oldPos.x();
+            int H = qMax(2 * fabs(v.y()), 40.0); //(m_contentRect.height() * v.y()) / oldPos.y();
             //if (W != (int)cRect.width() || H != (int)cRect.height())
                 m_content->resizeContents(QRect(-W / 2, -H / 2, W, H));
         }

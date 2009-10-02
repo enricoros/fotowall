@@ -36,7 +36,7 @@
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noRescale)
     : AbstractDisposeable(parent, true)
-    , m_contentsRect(-100, -75, 200, 150)
+    , m_contentRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)
     , m_controlsVisible(false)
@@ -142,9 +142,9 @@ void AbstractContent::dispose()
     AbstractDisposeable::dispose();
 }
 
-QRect AbstractContent::contentsRect() const
+QRect AbstractContent::contentRect() const
 {
-    return m_contentsRect;
+    return m_contentRect;
 }
 
 void AbstractContent::resizeContents(const QRect & rect, bool keepRatio)
@@ -154,19 +154,19 @@ void AbstractContent::resizeContents(const QRect & rect, bool keepRatio)
 
     prepareGeometryChange();
 
-    m_contentsRect = rect;
+    m_contentRect = rect;
     if (keepRatio) {
         int hfw = contentHeightForWidth(rect.width());
         if (hfw > 1) {
-            m_contentsRect.setTop(-hfw / 2);
-            m_contentsRect.setHeight(hfw);
+            m_contentRect.setTop(-hfw / 2);
+            m_contentRect.setHeight(hfw);
         }
     }
 
     if (m_frame)
-        m_frameRect = m_frame->frameRect(m_contentsRect);
+        m_frameRect = m_frame->frameRect(m_contentRect);
     else
-        m_frameRect = m_contentsRect;
+        m_frameRect = m_contentRect;
 
     layoutChildren();
     update();
@@ -175,7 +175,7 @@ void AbstractContent::resizeContents(const QRect & rect, bool keepRatio)
 
 void AbstractContent::resetContentsRatio()
 {
-    resizeContents(m_contentsRect, true);
+    resizeContents(m_contentRect, true);
 }
 
 void AbstractContent::delayedDirty(int ms)
@@ -198,7 +198,7 @@ void AbstractContent::setFrame(Frame * frame)
     m_frame = frame;
     if (m_frame)
         FrameFactory::setDefaultPictureClass(m_frame->frameClass());
-    resizeContents(m_contentsRect);
+    resizeContents(m_contentRect);
     layoutChildren();
     update();
     GFX_CHANGED();
@@ -444,7 +444,7 @@ void AbstractContent::toXml(QDomElement & pe) const
     QDomElement hElement = doc.createElement("h");
     rectParent.appendChild(hElement);
 
-    QRectF rect = m_contentsRect;
+    QRectF rect = m_contentRect;
     xElement.appendChild(doc.createTextNode(QString::number(rect.left())));
     yElement.appendChild(doc.createTextNode(QString::number(rect.top())));
     wElement.appendChild(doc.createTextNode(QString::number(rect.width())));
@@ -546,13 +546,14 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
 
         // use clip path for contents, if set
         if (m_frame->clipContents())
-            painter->setClipPath(m_frame->contentsClipPath(m_contentsRect));
+            painter->setClipPath(m_frame->contentsClipPath(m_contentRect));
     }
 
     // paint the inner contents
     //if (drawSelection)
     //    painter->setCompositionMode(QPainter::CompositionMode_Plus);
-    drawContent(painter);
+    //painter->translate(contentRect().topLeft());
+    drawContent(painter, contentRect());
 
     // draw the selection only as done in EmptyFrame.cpp
     /*if (drawSelection) {
@@ -560,7 +561,7 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
         painter->setPen(QPen(RenderOpts::hiColor, 3.0));
         painter->setBrush(Qt::NoBrush);
         // FIXME: this draws OUTSIDE (but inside the safe 2px area)
-        painter->drawRect(m_contentsRect);
+        painter->drawRect(m_contentRect);
     }*/
 }
 
@@ -799,7 +800,7 @@ void AbstractContent::layoutChildren()
 {
     // layout corners
     foreach (CornerItem * corner, m_cornerItems)
-        corner->relayout(m_contentsRect);
+        corner->relayout(m_contentRect);
 
     // layout buttons even if no frame
     if (!m_frame) {

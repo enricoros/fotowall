@@ -92,7 +92,7 @@ void WebcamContent::toXml(QDomElement & pe) const
     // nothing to save here... (maybe the still pic?)
 }
 
-void WebcamContent::drawContent(QPainter * painter)
+void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect)
 {
     // skip if no photo
     if (m_pixmap.isNull())
@@ -105,7 +105,6 @@ void WebcamContent::drawContent(QPainter * painter)
 #endif
 
     // draw high-resolution photo when exporting png
-    QRect targetRect = contentsRect();
     bool smoothOn = RenderOpts::HQRendering ? true : !beingTransformed();
     painter->setRenderHint(QPainter::SmoothPixmapTransform, smoothOn);
     painter->drawPixmap(targetRect, m_pixmap);
