@@ -19,6 +19,10 @@
 #include <QPaintEvent>
 #include <QPainter>
 
+#if QT_VERSION >= 0x040600
+#include <QPropertyAnimation>
+#endif
+
 PaneWidget::PaneWidget(QWidget * parent)
   : QWidget(parent)
   , m_range(-1.0, -1.0, 2.0, 2.0)
@@ -90,7 +94,8 @@ void PaneWidget::mouseReleaseEvent(QMouseEvent *)
 
 void PaneWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
-    setValue(QPointF(0, 0));
+    // using setValue directly breaks animations
+    pressing(screenMap(QPointF(0, 0)));
 }
 
 void PaneWidget::paintEvent(QPaintEvent * event)
@@ -131,7 +136,18 @@ void PaneWidget::pressing(const QPointF & pos)
         return;
     double px = m_range.left() + m_range.width() * pos.x() / (double)(width() - 1);
     double py = m_range.top() + m_range.height() * pos.y() / (double)(height() - 1);
-    setValue(QPointF(qBound(m_range.left(), px, m_range.right()), qBound(m_range.top(), py, m_range.bottom())));
+    QPointF endValue = QPointF(qBound(m_range.left(), px, m_range.right()), qBound(m_range.top(), py, m_range.bottom()));
+#if QT_VERSION >= 0x040600
+    // animate the change
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "value");
+    ani->setEasingCurve(QEasingCurve::OutQuad);
+    ani->setDuration(300);
+    ani->setEndValue(endValue);
+    ani->start(QPropertyAnimation::DeleteWhenStopped);
+#else
+    // set the final value
+    setValue(endValue);
+#endif
 }
 
 QPointF PaneWidget::screenMap(const QPointF & value) const
