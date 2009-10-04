@@ -25,6 +25,7 @@ Work in progress:
   * (Work In Progress) More properties in the top bar
   * (Work In Progress) Arrange Contents
 * remove RenderContent, check the bad behavior of importing
+* WordCloud editor
 
 Done:
 
@@ -140,6 +141,7 @@ improvement and the code is kept clean and small.
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
+* transform pictures with a 'magneto tool' (good on grids)
 * handle initial load-save after being shown. also evaluate normalized rescaling.
 * save/restore background transparency/ratio state (or check current bg code)
 * svg drawings [balloons, signs, etc..]
@@ -158,6 +160,7 @@ improvement and the code is kept clean and small.
   * real shaping, intersects frame shape
 * scene matrix (global perspective)
 * templates
+  * the template system could even be some auto-generated fotowall file with changing urls.
 * integrate with a gimp-like library for effects/graphics ops
 * new graphics effects (like Colorize or Warhol-ize ;-)
   * mosaic effect: from 1 picture to a grid of misaligned pics
