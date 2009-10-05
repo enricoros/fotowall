@@ -118,7 +118,7 @@ QGraphicsScene * Cloud::scene() const
 
 void Cloud::removeFromScene()
 {
-    if (m_scene || m_wordItems.isEmpty())
+    if (!m_scene || m_wordItems.isEmpty())
         return;
     foreach (WordItem * word, m_wordItems)
         m_scene->removeItem(word);
