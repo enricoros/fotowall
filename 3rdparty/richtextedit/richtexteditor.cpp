@@ -1,3 +1,20 @@
+/***************************************************************************
+ *                                                                         *
+ *   This file is part of the Fotowall project,                            *
+ *       http://www.enricoros.com/opensource/fotowall                      *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   Original work                                                         *
+ *      file             : richtexteditor.cpp                              *
+ *      license          : LGPL v2.1 and GPL v3                            *
+ *      copyright notice : follows below                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 /****************************************************************************
 **
 ** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).

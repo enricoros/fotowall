@@ -13,15 +13,17 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QTranslator>
 #include <QLocale>
 #include <QLibraryInfo>
 #include <QSettings>
 #include <QStyle>
+#include <QTranslator>
 #include <QtPlugin>
-#include "MainWindow.h"
-#include "RenderOpts.h"
-#include "tools/VideoProvider.h"
+#include "App/App.h"
+#include "App/MainWindow.h"
+#include "App/Settings.h"
+#include "Shared/RenderOpts.h"
+#include "Shared/VideoProvider.h"
 
 #if defined(STATIC_LINK)
 Q_IMPORT_PLUGIN(qgif)
@@ -34,7 +36,6 @@ Q_IMPORT_PLUGIN(qtiff)
 bool RenderOpts::LastMirrorEnabled = true;
 bool RenderOpts::ARGBWindow = false;
 bool RenderOpts::HQRendering = false;
-bool RenderOpts::FirstRun = false;
 bool RenderOpts::OxygenStyleQuirks = false;
 bool VideoProvider::Disable = false;
 QColor RenderOpts::hiColor;
@@ -57,33 +58,30 @@ int main( int argc, char ** args )
     // translate fotowall + default-qt messages
     QString locale =  QLocale::system().name();
     QTranslator translator;
-    translator.load(QString( ":/translations/fotowall_%1" ).arg(locale));
+    translator.load(QString(":/translations/fotowall_%1").arg(locale));
     app.installTranslator(&translator);
     QTranslator qtTranslator;
     qtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
 
-    QSettings s;
-    RenderOpts::FirstRun = s.value("fotowall/firstTime", true).toBool();
+    App::settings = new Settings;
     RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
     VideoProvider::Disable = app.arguments().contains("-novideo");
-    s.setValue("fotowall/firstTime", false);
+    App::settings->setValue("Fotowall/FirstTime", false);
 
-    MainWindow mw;
-    mw.showMaximized();
-    app.processEvents();
-    QStringList images;
-    for (int i = 1; i < argc; i++) {
-        QString filePath = args[i];
-        if (filePath.endsWith(".fotowall", Qt::CaseInsensitive))
-            mw.loadXml(filePath);
-        else
-            images << filePath;
-    }
-    mw.loadImages(images);
+    QStringList urls;
+    for (int i = 1; i < argc; i++)
+        if (App::isContentUrl(args[i]))
+            urls.append(args[i]);
 
-    if (RenderOpts::FirstRun)
-        mw.showIntroduction();
+    App::mainWindow = new MainWindow(urls);
+    if (App::settings->firstTime())
+        App::mainWindow->showIntroduction();
 
-    return app.exec();
+    int mainLoopResult = app.exec();
+    App::settings->sync();
+
+    delete App::mainWindow;
+    delete App::settings;
+    return mainLoopResult;
 }
