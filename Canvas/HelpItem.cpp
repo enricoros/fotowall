@@ -63,7 +63,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
     // show fancy help in internal browser
 #error WebKit was completely disabled, to only have 1 version of the HTML to translate...
     //BrowserItem * bi = new BrowserItem(this);
-    //bi->setGeometry(m_frame->contentsRect(boundingRect().toRect()));
+    //bi->setGeometry(...);
     //bi->write(introduction);
     //bi->setReadOnly(true);
 #else
@@ -89,7 +89,7 @@ QRectF HelpItem::boundingRect() const
 
 void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    m_frame->paint(painter, boundingRect().toRect(), false, false);
+    m_frame->drawFrame(painter, boundingRect().toRect(), false, false);
 }
 
 void HelpItem::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)

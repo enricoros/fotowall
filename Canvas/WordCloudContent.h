@@ -31,13 +31,14 @@ class WordCloudContent : public AbstractContent
         WordCloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
 //        ~WordCloudContent();
 
-        void stackEditor();
+        WordCloud::Cloud * cloud() const;
 
         // ::AbstractContent
         QString contentName() const { return tr("WordCloudXXX"); }
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
+        void drawContent(QPainter * painter, const QRect & targetRect);
         QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
 
 //        int contentHeightForWidth(int width) const;
@@ -45,7 +46,6 @@ class WordCloudContent : public AbstractContent
 
         // ::QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
         QGraphicsScene * m_cloudScene;

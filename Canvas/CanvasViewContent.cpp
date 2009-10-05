@@ -18,6 +18,8 @@
 #include "Canvas.h"
 
 #include <QFileInfo>
+#include <QGraphicsView>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
 CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent)
@@ -26,26 +28,22 @@ CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * par
 {
 }
 
-bool CanvasViewContent::load(const QString & filePath, bool keepRatio, bool setName)
+bool CanvasViewContent::loadCanvas(const QString & filePath, bool /*keepRatio*/, bool setName)
 {
-    // parse the DOM of the file
-    XmlRead xmlRead;
-    if (!xmlRead.loadFile(filePath))
+    // ### HACK ahead
+    if (!scene() || scene()->views().isEmpty())
         return false;
+    QRect viewRect = scene()->views().first()->contentsRect();
 
+    // create a Canvas
+    m_canvas = new Canvas(viewRect.size(), this);
+    connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
+    bool ok = XmlRead::read(filePath, m_canvas);
+
+    // customize the item
     setFrameTextEnabled(setName);
     setFrameText(QFileInfo(filePath).baseName());
-
-    // create the new Canvas
-    m_canvas = new Canvas(this);
-    connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
-    m_canvas->resize(QSize(800, 600));
-
-    // read in the properties
-    //xmlRead.readProject(this);
-    xmlRead.readCanvas(m_canvas);
-    xmlRead.readContent(m_canvas);
-    return true;
+    return ok;
 }
 
 QWidget * CanvasViewContent::createPropertyWidget()
@@ -53,16 +51,25 @@ QWidget * CanvasViewContent::createPropertyWidget()
     return 0;
 }
 
-bool CanvasViewContent::fromXml(QDomElement & parentElement)
+bool CanvasViewContent::fromXml(QDomElement & /*parentElement*/)
 {
     return false;
 }
 
-void CanvasViewContent::toXml(QDomElement & parentElement) const
+void CanvasViewContent::toXml(QDomElement & /*parentElement*/) const
 {
 }
 
-QPixmap CanvasViewContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
+void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect)
+{
+    // TODO: see if it paints when the scene is not displayed...
+    if (m_canvas)
+        m_canvas->render(painter, targetRect, m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
+    else
+        painter->fillRect(targetRect, Qt::red);
+}
+
+QPixmap CanvasViewContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const
 {
     return QPixmap(100, 100);
 }
@@ -76,17 +83,9 @@ bool CanvasViewContent::contentOpaque() const
 #include "App/MainWindow.h"
 void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-    App::mainWindow->stackCanvas(m_canvas);
-    update();
-}
-
-void CanvasViewContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
-{
-    // TODO: see if it paints when the scene is not displayed...
-    if (m_canvas)
-        m_canvas->render(painter, boundingRect(), m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
-    else
-        painter->fillRect(boundingRect(), Qt::red);
+    event->accept();
+    setSelected(false);
+    App::mainWindow->editCanvas(m_canvas);
 }
 
 void CanvasViewContent::slotRepaintCanvas(const QList<QRectF> & /*exposed*/)

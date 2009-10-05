@@ -12,60 +12,51 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FlickrInterface_h__
-#define __FlickrInterface_h__
+#ifndef __AbstractPictureService_h__
+#define __AbstractPictureService_h__
 
 #include <QObject>
-#include <QMap>
-#include <QList>
-#include <QNetworkAccessManager>
-#include <QPair>
+#include <QNetworkRequest>
 #include <QPixmap>
 #include <QUrl>
-namespace Internal {
-    struct Photo;
-};
+class QNetworkAccessManager;
+class QNetworkReply;
 
-class FlickrInterface : public QObject
+/// \brief Base class for accessing Online picture services
+class AbstractPictureService : public QObject
 {
     Q_OBJECT
     public:
-        FlickrInterface(QNetworkAccessManager * manager, QObject * parent = 0);
-        ~FlickrInterface();
+        // construct the object using a shared networkaccessmanager
+        AbstractPictureService(QNetworkAccessManager * manager, QObject * parent = 0);
 
-        void searchPics(const QString & text);
-        void dropSearch();
+        // search pictures
+        virtual void searchPics(const QString & text) = 0;
+        virtual void dropSearch() = 0;
 
-        bool imageInfo(int idx, QString * url, QString * title, int * width, int * height);
+        // describe a search result
+        virtual bool imageInfo(int idx, QString * url, QString * title, int * width, int * height) = 0;
 
-        QNetworkReply * download(int idx);
-        void startPrefetch(int idx);
-        void stopPrefetch(int idx);
+        // download a picture
+        virtual QNetworkReply * download(int idx) = 0;
+        virtual void startPrefetch(int idx) = 0;
+        virtual void stopPrefetch(int idx) = 0;
 
     Q_SIGNALS:
+        // signals are emitted in the following order
         void searchStarted();
         void searchResult(int idx, const QString & text, int thumb_width, int thumb_height);
         void searchThumbnail(int idx, const QPixmap & icon);
-        void searchEnded();
+        void searchEnded(bool error);
 
-    private Q_SLOTS:
-        void slotSearchJobFinished();
-        void slotThumbJobFinished();
+    protected:
+        // will be used by subclasses to access the network
+        QNetworkReply * get(const QNetworkRequest & request);
+        QNetworkReply * get(const QUrl & url);
 
     private:
-        bool startNextThumbnailJobs(int count = 1);
-
-        typedef QPair<QString, QString> KeyValue;
-        typedef QList<KeyValue> KeyValueList;
-
-        QNetworkReply * sendRequest(const QString & method, const KeyValueList & params);
-        QNetworkReply * sendRequestURL(const QUrl & url);
-
-        QString m_apiKey;
+        AbstractPictureService();
         QNetworkAccessManager * m_nam;
-        QNetworkReply * m_searchJob;
-        QList<Internal::Photo *> m_searchResults;
-        QMap<int, QNetworkReply *> m_prefetches;
 };
 
 #endif

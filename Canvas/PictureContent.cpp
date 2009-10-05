@@ -164,11 +164,13 @@ void PictureContent::addEffect(const PictureEffect & effect)
     m_photo->addEffect(effect);
     // adapt picture ratio after cropping
     if (effect.effect == PictureEffect::Crop) {
-        QRect actualContentRect = contentsRect();
+        QRect actualContentRect = contentRect();
         if ((actualContentRect.height() + actualContentRect.width()) > 0) {
-            float reduceRatio = (float)(effect.rect.width()+effect.rect.height())/
-                                (float)(actualContentRect.height() +actualContentRect.width());
-            resizeContents(QRect(0,0, (float)effect.rect.width()/reduceRatio, (float)effect.rect.height()/reduceRatio));
+            qreal reduceRatio = (qreal)(effect.rect.width()+effect.rect.height())/
+                                (qreal)(actualContentRect.height() +actualContentRect.width());
+            int newW = (int)((qreal)effect.rect.width()/reduceRatio);
+            int newH = (int)((qreal)effect.rect.height()/reduceRatio);
+            resizeContents(QRect(-newW/2, -newH/2, newW, newH), true);
         }
     }
 #if QT_VERSION >= 0x040500
@@ -193,13 +195,16 @@ void PictureContent::crop()
         addEffect(PictureEffect(PictureEffect::Crop, 0, cropRect));
 }
 
-#include "PropertyEditors.h"
+#include "Shared/PropertyEditors.h"
+#include "Shared/PanePropertyEditor.h"
 QWidget * PictureContent::createPropertyWidget()
 {
     PictureProperties * p = new PictureProperties();
 
     // connect actions
-    /*PE_AbstractSlider * pe =*/ new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
+    new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
+    p->perspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
+    new PE_PaneWidget(p->perspWidget, this, "perspective", p);
 
     // properties link
     //p->bEditShape->setChecked(isShapeEditing());
@@ -288,6 +293,50 @@ void PictureContent::toXml(QDomElement & pe) const
     }
 }
 
+void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
+{
+    // draw progress
+    if (m_progress > 0.0 && m_progress < 1.0) {
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(Qt::blue);
+        painter->drawPie(QRect(-10, -10, 20, 20), 90 * 16, (int)(-5760.0 * m_progress));
+    }
+
+    // skip if no photo
+    if (!m_photo)
+        return;
+
+    // blit if opaque picture
+#if QT_VERSION >= 0x040500
+    //disabled for 4.5 too, since it relies on raster.
+    //if (m_opaquePhoto)
+    //    painter->setCompositionMode(QPainter::CompositionMode_Source);
+#endif
+
+    // draw high-resolution photo when exporting png
+    if (RenderOpts::HQRendering) {
+        painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+        painter->drawPixmap(targetRect, *m_photo);
+        return;
+    }
+
+    // draw photo using caching and deferred rescales
+    if (beingTransformed()) {
+        if (!m_cachedPhoto.isNull())
+            painter->drawPixmap(targetRect, m_cachedPhoto);
+    } else {
+        if (m_cachedPhoto.isNull() || m_cachedPhoto.size() != targetRect.size())
+            m_cachedPhoto = m_photo->scaled(targetRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        painter->setRenderHints(QPainter::SmoothPixmapTransform);
+        painter->drawPixmap(targetRect.topLeft(), m_cachedPhoto);
+    }
+
+#if QT_VERSION >= 0x040500
+//    if (m_opaquePhoto)
+//        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+#endif
+}
+
 QPixmap PictureContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
 {
     if (m_photo)
@@ -334,54 +383,6 @@ void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     emit backgroundMe();
     QGraphicsItem::mouseDoubleClickEvent(event);
-}
-
-void PictureContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
-{
-    // paint parent
-    AbstractContent::paint(painter, option, widget);
-
-    // draw progress
-    if (m_progress > 0.0 && m_progress < 1.0) {
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(Qt::blue);
-        painter->drawPie(QRect(-10, -10, 20, 20), 90 * 16, (int)(-5760.0 * m_progress));
-    }
-
-    // skip if no photo
-    if (!m_photo)
-        return;
-
-    // blit if opaque picture
-#if QT_VERSION >= 0x040500
-    //disabled for 4.5 too, since it relies on raster.
-    //if (m_opaquePhoto)
-    //    painter->setCompositionMode(QPainter::CompositionMode_Source);
-#endif
-
-    // draw high-resolution photo when exporting png
-    QRect targetRect = contentsRect();
-    if (RenderOpts::HQRendering) {
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-        painter->drawPixmap(targetRect, *m_photo);
-        return;
-    }
-
-    // draw photo using caching and deferred rescales
-    if (beingTransformed()) {
-        if (!m_cachedPhoto.isNull())
-            painter->drawPixmap(targetRect, m_cachedPhoto);
-    } else {
-        if (m_cachedPhoto.isNull() || m_cachedPhoto.size() != targetRect.size())
-            m_cachedPhoto = m_photo->scaled(targetRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        painter->setRenderHints(QPainter::SmoothPixmapTransform);
-        painter->drawPixmap(targetRect.topLeft(), m_cachedPhoto);
-    }
-
-#if QT_VERSION >= 0x040500
-//    if (m_opaquePhoto)
-//        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-#endif
 }
 
 void PictureContent::dropNetworkConnection()

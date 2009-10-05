@@ -8,9 +8,9 @@ HEADERS += \
     Canvas/AbstractConfig.h \
     Canvas/AbstractContent.h \
     Canvas/AbstractDisposeable.h \
-    Canvas/AbstractScene.h \
     Canvas/BezierCubicItem.h \
     Canvas/ButtonItem.h \
+    Canvas/CanvasModeInfo.h \
     Canvas/CanvasViewContent.h \
     Canvas/Canvas.h \
     Canvas/CornerItem.h \
@@ -20,7 +20,6 @@ HEADERS += \
     Canvas/PictureConfig.h \
     Canvas/PictureContent.h \
     Canvas/PictureProperties.h \
-    Canvas/PropertyEditors.h \
     Canvas/SelectionProperties.h \
     Canvas/StyledButtonItem.h \
     Canvas/TextConfig.h \
@@ -34,9 +33,9 @@ SOURCES += \
     Canvas/AbstractConfig.cpp \
     Canvas/AbstractContent.cpp \
     Canvas/AbstractDisposeable.cpp \
-    Canvas/AbstractScene.cpp \
     Canvas/BezierCubicItem.cpp \
     Canvas/ButtonItem.cpp \
+    Canvas/CanvasModeInfo.cpp \
     Canvas/CanvasViewContent.cpp \
     Canvas/Canvas.cpp \
     Canvas/CornerItem.cpp \
@@ -46,7 +45,6 @@ SOURCES += \
     Canvas/PictureConfig.cpp \
     Canvas/PictureContent.cpp \
     Canvas/PictureProperties.cpp \
-    Canvas/PropertyEditors.cpp \
     Canvas/SelectionProperties.cpp \
     Canvas/StyledButtonItem.cpp \
     Canvas/TextConfig.cpp \

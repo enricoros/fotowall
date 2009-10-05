@@ -16,42 +16,43 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
  ******************************************************************************/
 
-#ifndef __ModeInfo__
-#define __ModeInfo__
+#ifndef __CavasModeInfo_h__
+#define __CavasModeInfo_h__
 
 #include <QSizeF>
+#include <QSize>
 #include <QPointF>
 
-/*
- * \brief Hold infos about the current mode
- */
-class ModeInfo
+class CanvasModeInfo
 {
     public:
-        ModeInfo();
+        CanvasModeInfo();
 
-        void setCanvasDpi(float, float);
-        QPointF canvasDpi() const;
-        void setPrintDpi(float);
+        void setFixedSizeInches(const QSizeF & size = QSizeF());
+        bool fixedSize() const;
+        QSizeF fixedSizeInches() const;
+        QSize fixedScreenPixels() const;
+        QSize fixedPrinterPixels() const;
+
+        void setScreenDpi(float dpiX, float dpiY);
+        QPointF screenDpi() const;
+
+        void setPrintDpi(float dpi);
         float printDpi() const;
 
-        void setRealSizeCm(float, float);
-        void setRealSizeInches(float, float);
-        QSizeF realSize() const; //returns the real size in inches
+        void setPrintLandscape(bool landscape);
+        bool printLandscape() const;
 
-        // Convert the real size into a pixel size according to the dpi
-        QSize canvasPixelSize() const;
-        QSize printPixelSize() const;
-
-        void setLandscape(bool);
-        bool landscape() const;
+        enum Mode { ModeNormal = 0, ModeCD = 1, ModeDVD = 2, ModeExactSize = 3 };
+        void setProjectMode(Mode mode);
+        Mode projectMode() const;
 
     private:
-        QSizeF m_realSize; // Store the size in inches
-        QPointF m_canvasDpi; // Store the X and Y dpi
+        QSizeF m_realSizeInches;
+        QPointF m_canvasDpi;
         float m_printDpi;
-
         bool m_landscape;
+        Mode m_projectMode;
 };
 
 #endif

@@ -19,13 +19,13 @@
 #include "XmlRead.h"
 
 #include "Canvas/AbstractContent.h"
+#include "Canvas/CanvasModeInfo.h"
 #include "Canvas/Canvas.h"
 #include "Canvas/PictureContent.h"
 #include "Canvas/TextContent.h"
 #include "Canvas/WebcamContent.h"
 #include "Frames/FrameFactory.h"
 #include "App.h"
-#include "MainWindow.h"
 #include "Settings.h"
 
 #include <QFile>
@@ -34,7 +34,7 @@
 #include <QStringList>
 
 
-bool XmlRead::read(const QString & filePath, MainWindow * mw, Canvas * canvas)
+bool XmlRead::read(const QString & filePath, Canvas * canvas)
 {
     // parse the DOM of the file
     XmlRead xmlRead;
@@ -42,12 +42,9 @@ bool XmlRead::read(const QString & filePath, MainWindow * mw, Canvas * canvas)
         return false;
 
     // create objects and read data
-    if (mw)
-        xmlRead.readProject(mw);
-    if (canvas) {
-        xmlRead.readCanvas(canvas);
-        xmlRead.readContent(canvas);
-    }
+    canvas->setModeInfo(xmlRead.readModeInfo());
+    xmlRead.readCanvas(canvas);
+    xmlRead.readContent(canvas);
 
     // add to the recent history
     App::settings->addRecentFotowallUrl(QUrl(filePath));
@@ -80,26 +77,27 @@ bool XmlRead::loadFile(const QString & filePath)
     return true;
 }
 
-void XmlRead::readProject(MainWindow *mainWindow)
+CanvasModeInfo * XmlRead::readModeInfo()
 {
-    ModeInfo modeInfo;
+    CanvasModeInfo * modeInfo = new CanvasModeInfo();
     QDomElement modeElement = m_projectElement.firstChildElement("mode");
     QDomElement sizeElement = modeElement.firstChildElement("size");
     if (!sizeElement.isNull()) {
         float w = sizeElement.firstChildElement("w").text().toFloat();
         float h = sizeElement.firstChildElement("h").text().toFloat();
-        modeInfo.setRealSizeInches(w, h);
-
+        modeInfo->setFixedSizeInches(QSizeF(w, h));
     }
     QDomElement dpiElement = sizeElement.firstChildElement("dpi");
-    if(!dpiElement.isNull()) {
+    if (!dpiElement.isNull()) {
         int dpi = dpiElement.text().toInt();
-        modeInfo.setPrintDpi(dpi);
+        modeInfo->setPrintDpi((float)dpi);
     }
 
     int mode = modeElement.firstChildElement("id").text().toInt();
-    mainWindow->setModeInfo(modeInfo);
-    mainWindow->restoreMode(mode);
+    modeInfo->setProjectMode((CanvasModeInfo::Mode)mode);
+
+    // TODO: add the missing properties!
+    return modeInfo;
 }
 
 void XmlRead::readCanvas(Canvas * canvas)

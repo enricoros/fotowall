@@ -15,7 +15,7 @@
 #ifndef __Canvas_h__
 #define __Canvas_h__
 
-#include "AbstractScene.h"
+#include "Shared/AbstractScene.h"
 #include <QDataStream>
 #include <QPainter>
 #include <QPixmap>
@@ -27,6 +27,7 @@ class AbstractContent;
 class AbstractConfig;
 struct PictureEffect;
 class ColorPickerItem;
+class CanvasModeInfo;
 class CanvasViewContent;
 class HelpItem;
 class HighlightItem;
@@ -44,7 +45,7 @@ class Canvas : public AbstractScene
     public:
         friend class XmlRead;
         friend class XmlSave;
-        Canvas(QObject * parent = 0);
+        Canvas(const QSize & initialSize, QObject * parent = 0);
         ~Canvas();
 
         // add content
@@ -54,15 +55,16 @@ class Canvas : public AbstractScene
         void addWebcamContent(int input);
         void addWordCloudContent();
 
-        // selectors
-        void setWebContentSelectorVisible(bool visible);
-        bool webContentSelectorVisible() const;
-
         // ::AbstractScene
+        void resize(const QSize & size);
         void resizeEvent(QResizeEvent * event);
 
         // item interaction
         void selectAllContent(bool selected = true);
+
+        // selectors
+        void setWebContentSelectorVisible(bool visible);
+        bool webContentSelectorVisible() const;
 
         // arrangement
         void setForceFieldEnabled(bool enabled);
@@ -85,10 +87,9 @@ class Canvas : public AbstractScene
         void showIntroduction();
         void blinkBackGradients();
 
-        // get and set the project mode (CD cover, DVD,...).
-        enum Mode { ModeNormal = 0, ModeCD = 1, ModeDVD = 2, ModeExactSize = 3 };
-        Mode projectMode() const;
-        void setProjectMode(Mode mode);
+        // change size and project mode (CD cover, DVD,...).
+        CanvasModeInfo * modeInfo() const;
+        void setModeInfo(CanvasModeInfo * modeInfo);
 
         void toXml(QDomElement &de) const;
         void fromXml(QDomElement &de);
@@ -99,6 +100,7 @@ class Canvas : public AbstractScene
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 
     Q_SIGNALS:
+        void refreshCanvas();
         void backModeChanged();
         void showPropertiesWidget(QWidget * widget);
 
@@ -123,6 +125,8 @@ class Canvas : public AbstractScene
         void deleteConfig(AbstractConfig * config);
         void setDVDMarkers();
         void clearMarkers();
+
+        CanvasModeInfo * m_modeInfo;
         QNetworkAccessManager * m_networkAccessManager;
         QList<AbstractContent *> m_content;
         QList<AbstractConfig *> m_configs;
@@ -140,7 +144,6 @@ class Canvas : public AbstractScene
         QString m_titleText;
         QPixmap m_backTile;
         QPixmap m_backCache;
-        Mode m_projectMode;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
         WebContentSelectorItem * m_webContentSelector;
         QTimer * m_forceFieldTimer;

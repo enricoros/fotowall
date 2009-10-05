@@ -12,25 +12,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HeartFrame_h__
-#define __HeartFrame_h__
+#include "ApplianceContainer.h"
 
-#include "StandardFrame.h"
-class QPainter;
+using namespace Appliance;
 
-class HeartFrame : public StandardFrame
+Container::Container(QWidget * parent)
+  : QWidget(parent)
 {
-    public:
-        // ::Frame
-        quint32 frameClass() const;
-        QRect frameRect(const QRect & contentsRect) const;
-        bool clipContents() const;
-        QPainterPath contentsClipPath(const QRect & contentsRect) const;
-        bool isShaped() const;
-        QPainterPath frameShape(const QRect & frameRect) const;
-        void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
-        void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
-};
-
-#endif
+}

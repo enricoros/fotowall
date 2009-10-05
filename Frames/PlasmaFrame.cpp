@@ -153,7 +153,7 @@ void PlasmaFrame::layoutText(QGraphicsItem * textItem, const QRect & /*frameRect
     //textItem->setPos( frameRect.left() + d->padL, frameRect.center().y() - textItem->boundingRect().size().height() / 2 );
 }
 
-void PlasmaFrame::paint(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents)
+void PlasmaFrame::drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents)
 {
     if (selected)
         painter->fillRect(frameRect, RenderOpts::hiColor);

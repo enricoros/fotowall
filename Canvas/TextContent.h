@@ -54,13 +54,13 @@ class TextContent : public AbstractContent
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
+        void drawContent(QPainter * painter, const QRect & targetRect);
         QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
         int contentHeightForWidth(int width) const;
         void selectionChanged(bool selected);
 
         // ::QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
         void updateTextConstraints();

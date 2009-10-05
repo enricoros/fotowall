@@ -12,25 +12,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HeartFrame_h__
-#define __HeartFrame_h__
+#ifndef __AbstractScene_h__
+#define __AbstractScene_h__
 
-#include "StandardFrame.h"
-class QPainter;
+#include <QGraphicsScene>
+#include <QResizeEvent>
+#include <QRectF>
+#include <QSize>
 
-class HeartFrame : public StandardFrame
+class AbstractScene : public QGraphicsScene
 {
+    Q_OBJECT
     public:
-        // ::Frame
-        quint32 frameClass() const;
-        QRect frameRect(const QRect & contentsRect) const;
-        bool clipContents() const;
-        QPainterPath contentsClipPath(const QRect & contentsRect) const;
-        bool isShaped() const;
-        QPainterPath frameShape(const QRect & frameRect) const;
-        void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
-        void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
+        AbstractScene(QObject * parent = 0);
+
+        // scene size
+        virtual void resize(const QSize & size);
+        virtual void resizeEvent(QResizeEvent * event);
+        inline int sceneWidth() const { return m_size.width(); }
+        inline int sceneHeight() const { return m_size.height(); }
+        inline QSize sceneSize() const { return m_size; }
+        inline QRectF sceneRect() const { return m_rect; }
+        inline QPointF sceneCenter() const { return m_rect.center(); }
+
+    protected:
+        AbstractScene();
+        QSize m_size;
+        QRectF m_rect;
 };
 
 #endif

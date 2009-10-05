@@ -12,45 +12,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WebcamContent_h__
-#define __WebcamContent_h__
+#ifndef __WordcloudAppliance_h__
+#define __WordcloudAppliance_h__
 
-#include "AbstractContent.h"
-#include <QPixmap>
+#include "Shared/AbstractAppliance.h"
+#include "WordCloud/WordCloud.h"
+#include "ui_WordcloudAppliance.h"
+class AbstractScene;
+class QMenu;
 
-/**
-    \brief Displays live video from a WebCam
-*/
-class WebcamContent : public AbstractContent
+class WordcloudAppliance : public Appliance::AbstractAppliance
 {
     Q_OBJECT
     public:
-        WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * parent = 0);
-        ~WebcamContent();
+        WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * parent = 0);
+        ~WordcloudAppliance();
 
-        // ::AbstractContent
-        QString contentName() const { return tr("Webcam"); }
-        bool fromXml(QDomElement & parentElement);
-        void toXml(QDomElement & parentElement) const;
-        void drawContent(QPainter * painter, const QRect & targetRect);
-        QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
-        int contentHeightForWidth(int width) const;
-        bool contentOpaque() const;
+        // take the cloud (NOTE: DELETE THE OBJECT RIGHT AFTER THIS!)
+        WordCloud::Cloud * takeCloud();
 
-        // ::QGraphicsItem
-        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+        // peek into the cloud
+        WordCloud::Cloud * cloud() const;
 
-    public Q_SLOTS:
-        void setPixmap(const QPixmap & pixmap);
+        // ::Appliance::AbstractAppliance
+        QString applianceName() const { return tr("Word Cloud"); }
+        int applianceElements() const { return Appliance::UseAllElements; }
+        bool applianceCommand(int /*command*/) { return false; }
 
     private:
-        int m_input;
-        bool m_still;
-        QPixmap m_pixmap;
+        WordCloud::Cloud * m_extCloud;
+        AbstractScene * m_scene;
+        Ui::WordcloudApplianceElements * ui;
+        QWidget * m_dummyWidget;
 
     private Q_SLOTS:
-        void slotToggleStill();
-        void slotToggleSwap();
+        void slotRegenCloud();
+        void slotRandomizeCloud();
 };
 
 #endif

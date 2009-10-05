@@ -68,7 +68,7 @@ void StandardFrame::layoutText(QGraphicsItem * textItem, const QRect & frameRect
     textItem->setPos(frameRect.left() + FW_MARGIN, frameRect.bottom() - FW_MARGIN - FW_LABH + FW_MARGIN);
 }
 
-void StandardFrame::paint(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
+void StandardFrame::drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
 {
     //painter->fillRect(boundingRect(), QColor(0,0,0,64));
     QLinearGradient lg(0, frameRect.top(), 0, frameRect.height() / 2);

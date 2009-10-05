@@ -15,8 +15,9 @@
 #include "Canvas.h"
 
 #include "Frames/FrameFactory.h"
+#include "Shared/AbstractPictureService.h"
 #include "Shared/ColorPickerItem.h"
-#include "Shared/FlickrInterface.h"
+#include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"
 #include "HelpItem.h"
 #include "HighlightItem.h"
@@ -48,8 +49,22 @@
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-Canvas::Canvas(QObject * parent)
+/*void Canvas::setProjectMode(Mode mode)
+    if (m_projectMode != mode) {
+        m_projectMode = mode;
+        switch (mode) {
+        case ModeDVD:
+                setDVDMarkers();
+                break;
+        default:
+                clearMarkers();
+                break;
+        }
+    } */
+
+Canvas::Canvas(const QSize & initialSize, QObject * parent)
     : AbstractScene(parent)
+    , m_modeInfo(new CanvasModeInfo)
     , m_networkAccessManager(0)
     , m_helpItem(0)
     , m_backContent(0)
@@ -57,7 +72,6 @@ Canvas::Canvas(QObject * parent)
     , m_bottomBarEnabled(false)
     , m_backGradientEnabled(true)
     , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
-    , m_projectMode(ModeNormal)
     , m_webContentSelector(0)
     , m_forceFieldTimer(0)
 {
@@ -107,6 +121,9 @@ Canvas::Canvas(QObject * parent)
     tilePainter.fillRect(50, 50, 50, 50, Qt::darkGray);
     tilePainter.end();
 
+    // set the initial size of the canvas, don't let it grow automatically
+    resize(initialSize);
+
     // crazy background stuff
 #if 0
     #define RP QPointF(-400 + qrand() % 2000, -300 + qrand() % 1500)
@@ -135,6 +152,7 @@ Canvas::~Canvas()
     m_content.clear();
     m_backContent = 0;
     delete m_networkAccessManager;
+    delete m_modeInfo;
 }
 
 /// Add Content
@@ -153,7 +171,7 @@ void Canvas::addCanvasViewContent(const QStringList & fileNames)
 
         // create picture and load the file
         CanvasViewContent * d = createCanvasView(pos);
-        if (!d->load(localFile, true, true)) {
+        if (!d->loadCanvas(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
         } else
@@ -189,34 +207,25 @@ void Canvas::addWebcamContent(int input)
     createWebcam(input, nearCenter(sceneRect()));
 }
 
+#include "App/App.h"
+#include "App/MainWindow.h"
 void Canvas::addWordCloudContent()
 {
-    WordCloudContent * wordCloud = createWordCloud(nearCenter(sceneRect()));
-    wordCloud->stackEditor();
+    WordCloudContent * wcc = createWordCloud(nearCenter(sceneRect()));
+    App::mainWindow->editWordcloud(wcc->cloud());
 }
 
-
-/// Selectors
-void Canvas::setWebContentSelectorVisible(bool visible)
+void Canvas::resize(const QSize & size)
 {
-    if (!visible && m_webContentSelector) {
-        removeItem(m_webContentSelector);
-        m_webContentSelector->deleteLater();
-        m_webContentSelector = 0;
+    // handle the fixed resizes
+    if (m_modeInfo->fixedSize()) {
+        QSize fixedSize = m_modeInfo->fixedScreenPixels();
+        if (size != fixedSize)
+            AbstractScene::resize(fixedSize);
+        return;
     }
-    if (visible && !m_webContentSelector) {
-        if (!m_networkAccessManager)
-            m_networkAccessManager = new QNetworkAccessManager(this);
-        m_webContentSelector = new WebContentSelectorItem(m_networkAccessManager);
-        m_webContentSelector->setZValue(999999);
-        m_webContentSelector->setPos(20, -8);
-        addItem(m_webContentSelector);
-    }
-}
-
-bool Canvas::webContentSelectorVisible() const
-{
-    return m_webContentSelector;
+    // handle the normal resizes
+    AbstractScene::resize(size);
 }
 
 void Canvas::resizeEvent(QResizeEvent * /*event*/)
@@ -242,6 +251,29 @@ void Canvas::selectAllContent(bool selected)
 {
     foreach (AbstractContent * content, m_content)
         content->setSelected(selected);
+}
+
+/// Selectors
+void Canvas::setWebContentSelectorVisible(bool visible)
+{
+    if (!visible && m_webContentSelector) {
+        removeItem(m_webContentSelector);
+        m_webContentSelector->deleteLater();
+        m_webContentSelector = 0;
+    }
+    if (visible && !m_webContentSelector) {
+        if (!m_networkAccessManager)
+            m_networkAccessManager = new QNetworkAccessManager(this);
+        m_webContentSelector = new WebContentSelectorItem(m_networkAccessManager);
+        m_webContentSelector->setZValue(999999);
+        m_webContentSelector->setPos(20, -8);
+        addItem(m_webContentSelector);
+    }
+}
+
+bool Canvas::webContentSelectorVisible() const
+{
+    return m_webContentSelector;
 }
 
 /// Arrangement
@@ -392,24 +424,22 @@ void Canvas::blinkBackGradients()
 }
 
 /// Modes
-Canvas::Mode Canvas::projectMode() const
+CanvasModeInfo * Canvas::modeInfo() const
 {
-    return m_projectMode;
+    return m_modeInfo;
 }
 
-void Canvas::setProjectMode(Mode mode)
+void Canvas::setModeInfo(CanvasModeInfo * modeInfo)
 {
-    if (m_projectMode != mode) {
-        m_projectMode = mode;
-        switch (mode) {
-            case ModeDVD:
-                setDVDMarkers();
-                break;
-            default:
-                clearMarkers();
-                break;
-        }
-    }
+    // set the new modeinfo
+    delete m_modeInfo;
+    m_modeInfo = modeInfo;
+
+    // apply the fixed size (if defined)
+    resize(sceneSize());
+
+    // notify listeners (if any!) about the change
+    emit refreshCanvas();
 }
 
 void Canvas::toXml(QDomElement & de) const
@@ -686,9 +716,9 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
     // handle as an own content drop event
     if (event->mimeData()->hasFormat("webselector/idx") && m_webContentSelector) {
 
-        // get the flickr interface
-        FlickrInterface * flickr = m_webContentSelector->flickrInterface();
-        if (!flickr)
+        // get the picture service
+        AbstractPictureService * pictureService = m_webContentSelector->pictureService();
+        if (!pictureService)
             return;
 
         // download each picture
@@ -702,11 +732,11 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             QString title;
             int width = 0;
             int height = 0;
-            if (!flickr->imageInfo(index, &url, &title, &width, &height))
+            if (!pictureService->imageInfo(index, &url, &title, &width, &height))
                 continue;
 
             // get the download
-            QNetworkReply * reply = flickr->download(index);
+            QNetworkReply * reply = pictureService->download(index);
             if (!reply)
                 continue;
 
@@ -913,8 +943,8 @@ void Canvas::setDVDMarkers()
     // Add informations items to show the back, front, and side position
 
     QGraphicsView * view = views().first();
-    int faceW = 5.08 * view->logicalDpiX();
-    int sideW = 0.67 * view->logicalDpiY();
+    int faceW = 5.08 * view->physicalDpiX();
+    int sideW = 0.67 * view->physicalDpiY();
     m_markerItems.push_back(addLine(faceW, 0, faceW, height()));
     m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
 
@@ -1101,7 +1131,7 @@ void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
         if (all || content->isSelected()) {
             if (content->frameClass() != frameClass)
                 content->setFrame(FrameFactory::createFrame(frameClass));
-            content->setMirrorEnabled(mirrored);
+            content->setMirrored(mirrored);
         }
     }
 }

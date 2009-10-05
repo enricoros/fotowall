@@ -22,8 +22,7 @@
 #include <QObject>
 #include <QDomDocument>
 #include <QDomElement>
-#include "App/ModeInfo.h"
-
+class CanvasModeInfo;
 class Canvas;
 
 class XmlSave
@@ -31,12 +30,12 @@ class XmlSave
     public:
         XmlSave();
 
-        static bool save(const QString & filePath, const Canvas * canvas, int mode, const ModeInfo & modeInfo);
+        static bool save(const QString & filePath, const Canvas * canvas);
 
         bool writeFile(const QString & filePath);
         void saveContent(const Canvas *);
         void saveCanvas(const Canvas *);
-        void saveProject(int mode, const ModeInfo & modeInfo);
+        void saveProject(const CanvasModeInfo *);
 
     private:
         QDomDocument doc;

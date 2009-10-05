@@ -25,7 +25,7 @@ class EmptyFrame : public Frame
         quint32 frameClass() const;
         void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
         void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void paint(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
+        void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
         QPixmap preview(int width = 32, int height = 32);
 };
 

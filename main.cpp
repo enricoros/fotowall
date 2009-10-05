@@ -33,9 +33,10 @@ Q_IMPORT_PLUGIN(qtiff)
 #endif
 
 // init RenderOpts defaults
-bool RenderOpts::LastMirrorEnabled = true;
-bool RenderOpts::ARGBWindow = false;
+bool RenderOpts::LastMirrored = true;
 bool RenderOpts::HQRendering = false;
+bool RenderOpts::ARGBWindow = false;
+bool RenderOpts::OpenGLWindow = false;
 bool RenderOpts::OxygenStyleQuirks = false;
 bool VideoProvider::Disable = false;
 QColor RenderOpts::hiColor;
@@ -75,10 +76,9 @@ int main( int argc, char ** args )
             urls.append(args[i]);
 
     App::mainWindow = new MainWindow(urls);
-    if (App::settings->firstTime())
-        App::mainWindow->showIntroduction();
 
     int mainLoopResult = app.exec();
+
     App::settings->sync();
 
     delete App::mainWindow;

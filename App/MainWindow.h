@@ -15,107 +15,75 @@
 #ifndef __MainWindow_h__
 #define __MainWindow_h__
 
-#include <QWidget>
-#include "ModeInfo.h"
+#include "Shared/ApplianceContainer.h"
+#include "Shared/ApplianceManager.h"
 class Canvas;
 class LikeBack;
-class QActionGroup;
-class QGraphicsView;
 class QMenu;
 class QNetworkReply;
 namespace Ui { class MainWindow; }
 namespace WordCloud { class Cloud; }
 
-class MainWindow : public QWidget
+class MainWindow : public Appliance::Container
 {
     Q_OBJECT
     public:
         MainWindow(const QStringList & loadUrls = QStringList(), QWidget * parent = 0);
         ~MainWindow();
 
-        // TEMP
-        void stackCanvas(Canvas * newCanvas);
-        void stackWordCloud(WordCloud::Cloud * cloud);
-        void popStack();
+        // content editing
+        void editCanvas(Canvas * newCanvas);
+        void editWordcloud(WordCloud::Cloud * cloud);
 
-        void setModeInfo(ModeInfo modeInfo);
-        ModeInfo getModeInfo(); // Needed for saving
-        void restoreMode(int mode);
-
-        void showIntroduction();
+    protected:
+        // ::Appliance::Container
+        void applianceSetScene(AbstractScene * scene);
+        void applianceSetTopbar(const QList<QWidget *> & widgets);
+        void applianceSetSidebar(QWidget * widget);
+        void applianceSetCentralwidget(QWidget * widget);
+        void applianceSetValue(quint32 id, const QVariant & value);
 
         // ::QWidget
         void closeEvent(QCloseEvent * event);
 
     private:
-        QMenu * createArrangeMenu();
-        QMenu * createBackgroundMenu();
-        QMenu * createDecorationMenu();
         QMenu * createOnlineHelpMenu();
-        void createLikeBack();
-        void createMiscActions();
         void checkForTutorial();
-        void checkForSupport();
         void checkForUpdates();
-        void setNormalProject();
-        void setCDProject();
-        void setDVDProject();
-        void setExactSizeProject();
+        void createLikeBack();
 
-        Ui::MainWindow * ui;
-        Canvas *        m_canvas;
-        ModeInfo        m_modeInfo;
-        QAction *       m_aHelpTutorial;
-        QAction *       m_aHelpSupport;
-        QActionGroup *  m_gBackActions;
-        QActionGroup *  m_gBackRatioActions;
-        QString         m_website;
-        LikeBack *      m_likeBack;
+        Ui::MainWindow *        ui;
+        Appliance::Manager *    m_appManager;
+        LikeBack *              m_likeBack;
+        QAction *               m_aHelpTutorial;
+        QString                 m_website;
 
     private Q_SLOTS:
-        void on_projectType_activated(int index);
-        void on_aAddCanvas_triggered();
-        void on_aAddFlickr_toggled(bool on);
-        void on_aAddPicture_triggered();
-        void on_aAddText_triggered();
-        void on_aAddWebcam_triggered();
-        void on_aAddWordCloud_triggered();
-        void on_accelBox_toggled(bool checked);
-        void on_transpBox_toggled(bool checked);
+        // notifications
+        void slotApplianceClicked(quint32);
+        void slotApplianceStructureChanged();
+
+        // file box
+        bool on_loadButton_clicked();
+        bool on_saveButton_clicked();
+        void on_exportButton_clicked();
+
+        // help box
         void on_introButton_clicked();
         void on_lbBug_clicked();
         void on_lbFeature_clicked();
         void on_lbDislike_clicked();
         void on_lbLike_clicked();
-        bool on_loadButton_clicked();
-        bool on_saveButton_clicked();
-        void on_exportButton_clicked();
-        //void on_quitButton_clicked();
-
-        void slotActionSelectAll();
-
-        void slotArrangeForceField(bool enabled);
-        void slotArrangeRandom();
-        void slotDecoTopBar(bool checked);
-        void slotDecoBottomBar(bool checked);
-        void slotDecoSetTitle();
-        void slotDecoClearTitle();
         void slotHelpWebsite();
         void slotHelpWebsiteFetched();
         void slotHelpWebsiteFetchError();
-        void slotHelpSupport();
         void slotHelpTutorial();
         void slotHelpUpdates();
-        void slotSetBackMode(QAction* action);
-        void slotSetBackRatio(QAction* action);
-
-        void slotBackModeChanged();
-        void slotBackRatioChanged();
-        void slotShowPropertiesWidget(QWidget *);
-
         void slotVerifyTutorial(QNetworkReply * reply);
-        void slotVerifySupport(/*const KnowledgeItemV1List & items*/);
-        void slotVerifyVideoInputs(int count);
+
+        // setup box
+        void on_accelBox_toggled(bool checked);
+        void on_transpBox_toggled(bool checked);
 };
 
 #endif

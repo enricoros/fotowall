@@ -29,7 +29,7 @@ class CanvasViewContent : public AbstractContent
         CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
 //        ~CanvasViewContent();
 
-        bool load(const QString & filePath, bool keepRatio = false, bool setName = false);
+        bool loadCanvas(const QString & filePath, bool keepRatio = false, bool setName = false);
         //Canvas * takeCanvas();
         //void setCanvas(Canvas * canvas);
 
@@ -38,6 +38,7 @@ class CanvasViewContent : public AbstractContent
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
+        void drawContent(QPainter * painter, const QRect & targetRect);
         QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
 
 //        int contentHeightForWidth(int width) const;
@@ -45,7 +46,6 @@ class CanvasViewContent : public AbstractContent
 
         // ::QGraphicsItem
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
         Canvas * m_canvas;

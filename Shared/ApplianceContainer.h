@@ -12,25 +12,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HeartFrame_h__
-#define __HeartFrame_h__
+#ifndef __ApplianceContainer_h__
+#define __ApplianceContainer_h__
 
-#include "StandardFrame.h"
-class QPainter;
+#include <QWidget>
+class AbstractScene;
 
-class HeartFrame : public StandardFrame
+namespace Appliance {
+class AbstractAppliance;
+
+class Container : public QWidget
 {
+    Q_OBJECT
     public:
-        // ::Frame
-        quint32 frameClass() const;
-        QRect frameRect(const QRect & contentsRect) const;
-        bool clipContents() const;
-        QPainterPath contentsClipPath(const QRect & contentsRect) const;
-        bool isShaped() const;
-        QPainterPath frameShape(const QRect & frameRect) const;
-        void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
-        void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
+        Container(QWidget * parent = 0);
+
+    protected:
+        // called by appliances
+        friend class Appliance::AbstractAppliance;
+        virtual void applianceSetScene(AbstractScene * scene) = 0;
+        virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
+        virtual void applianceSetSidebar(QWidget * widget) = 0;
+        virtual void applianceSetCentralwidget(QWidget * widget) = 0;
+        virtual void applianceSetValue(quint32 id, const QVariant & value) = 0;
 };
+
+}
 
 #endif

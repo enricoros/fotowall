@@ -21,11 +21,12 @@ class RenderOpts
 {
     public:
         // defaults
-        static bool LastMirrorEnabled;
+        static bool LastMirrored;
 
         // global options
-        static bool ARGBWindow;
         static bool HQRendering;
+        static bool ARGBWindow;
+        static bool OpenGLWindow;
 
         // other options
         static bool OxygenStyleQuirks;

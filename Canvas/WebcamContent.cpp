@@ -92,6 +92,28 @@ void WebcamContent::toXml(QDomElement & pe) const
     // nothing to save here... (maybe the still pic?)
 }
 
+void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect)
+{
+    // skip if no photo
+    if (m_pixmap.isNull())
+        return;
+
+    // blit if opaque picture
+#if QT_VERSION >= 0x040500
+    // disabled for 4.5 too, since it relies on raster.
+    //painter->setCompositionMode(QPainter::CompositionMode_Source);
+#endif
+
+    // draw high-resolution photo when exporting png
+    bool smoothOn = RenderOpts::HQRendering ? true : !beingTransformed();
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, smoothOn);
+    painter->drawPixmap(targetRect, m_pixmap);
+
+#if QT_VERSION >= 0x040500
+//    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+#endif
+}
+
 QPixmap WebcamContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
 {
     if (!m_pixmap.isNull())
@@ -115,32 +137,6 @@ void WebcamContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
     emit backgroundMe();
     QGraphicsItem::mouseDoubleClickEvent(event);
-}
-
-void WebcamContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
-{
-    // paint parent
-    AbstractContent::paint(painter, option, widget);
-
-    // skip if no photo
-    if (m_pixmap.isNull())
-        return;
-
-    // blit if opaque picture
-#if QT_VERSION >= 0x040500
-    // disabled for 4.5 too, since it relies on raster.
-    //painter->setCompositionMode(QPainter::CompositionMode_Source);
-#endif
-
-    // draw high-resolution photo when exporting png
-    QRect targetRect = contentsRect();
-    bool smoothOn = RenderOpts::HQRendering ? true : !beingTransformed();
-    painter->setRenderHint(QPainter::SmoothPixmapTransform, smoothOn);
-    painter->drawPixmap(targetRect, m_pixmap);
-
-#if QT_VERSION >= 0x040500
-//    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-#endif
 }
 
 void WebcamContent::slotToggleStill()

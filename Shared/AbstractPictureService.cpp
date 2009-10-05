@@ -3,7 +3,7 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
+ *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,25 +12,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HeartFrame_h__
-#define __HeartFrame_h__
+#include "AbstractPictureService.h"
 
-#include "StandardFrame.h"
-class QPainter;
+#include <QNetworkAccessManager>
 
-class HeartFrame : public StandardFrame
+AbstractPictureService::AbstractPictureService(QNetworkAccessManager * manager, QObject * parent)
+  : QObject(parent)
+  , m_nam(manager)
 {
-    public:
-        // ::Frame
-        quint32 frameClass() const;
-        QRect frameRect(const QRect & contentsRect) const;
-        bool clipContents() const;
-        QPainterPath contentsClipPath(const QRect & contentsRect) const;
-        bool isShaped() const;
-        QPainterPath frameShape(const QRect & frameRect) const;
-        void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
-        void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
-};
+}
 
-#endif
+QNetworkReply * AbstractPictureService::get(const QNetworkRequest & request)
+{
+    return m_nam->get(request);
+}
+
+QNetworkReply * AbstractPictureService::get(const QUrl & url)
+{
+    QNetworkRequest request(url);
+    return m_nam->get(request);
+}

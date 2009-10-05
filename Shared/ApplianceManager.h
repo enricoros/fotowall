@@ -12,32 +12,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __AbstractScene_h__
-#define __AbstractScene_h__
+#ifndef __ApplianceManager_h__
+#define __ApplianceManager_h__
 
-#include <QGraphicsScene>
-#include <QResizeEvent>
-#include <QRectF>
-#include <QSize>
+#include <QObject>
+#include <QList>
 
-class AbstractScene : public QGraphicsScene
+namespace Appliance {
+class Container;
+class AbstractAppliance;
+
+class Manager : public QObject
 {
     Q_OBJECT
     public:
-        AbstractScene(QObject * parent = 0);
+        Manager();
+        ~Manager();
 
-        // scene size
-        void resize(const QSize & size);
-        virtual void resizeEvent(QResizeEvent * event);
-        inline int sceneWidth() const { return m_size.width(); }
-        inline int sceneHeight() const { return m_size.height(); }
-        inline QSize sceneSize() const { return m_size; }
-        inline QRectF sceneRect() const { return m_rect; }
-        inline QPointF sceneCenter() const { return m_rect.center(); }
+        // set container
+        void setContainer(Container * container);
+        Container * container() const;
 
-    protected:
-        QSize m_size;
-        QRectF m_rect;
+        // stacking operations
+        void stackAppliance(AbstractAppliance * appliance);
+        QList<AbstractAppliance *> stackedAppliances() const;
+        AbstractAppliance * currentAppliance() const;
+        bool currentApplianceCommand(int command);
+        void popAppliance();
+        void dropStackAfter(int index);
+        void clearAppliances();
+
+    Q_SIGNALS:
+        // notify (ex. on a push/pop operation)
+        void structureChanged();
+
+    private:
+        Container * m_container;
+        QList<AbstractAppliance *> m_appliances;
+        bool m_disableNotify;
 };
+
+}
 
 #endif

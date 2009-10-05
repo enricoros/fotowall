@@ -14,7 +14,7 @@
 
 #include "SceneView.h"
 
-#include "Canvas/AbstractScene.h"
+#include "Shared/AbstractScene.h"
 #include "Shared/ButtonsDialog.h"
 
 #include <QCommonStyle>
@@ -22,6 +22,7 @@
 #include <QPixmap>
 #include <QRectF>
 #include <QStyleOption>
+#include <QVBoxLayout>
 
 /// The style used by the SceneView's rubberband selection
 class RubberBandStyle : public QCommonStyle
@@ -53,6 +54,7 @@ SceneView::SceneView(QWidget * parent)
   , m_openGL(false)
   , m_abstractScene(0)
   , m_style(new RubberBandStyle)
+  , m_viewportLayout(0)
 {
     // customize widget
     setInteractive(true);
@@ -70,6 +72,9 @@ SceneView::SceneView(QWidget * parent)
 
     // use own style for drawing the RubberBand (opened on the viewport)
     viewport()->setStyle(m_style);
+    m_viewportLayout = new QVBoxLayout(viewport());
+    m_viewportLayout->setContentsMargins(0, 4, 0, 4);
+    m_viewportLayout->setSpacing(0);
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
     //setCacheMode(CacheBackground);
@@ -84,7 +89,7 @@ void SceneView::setScene(AbstractScene * scene)
 {
     m_abstractScene = scene;
     QGraphicsView::setScene(m_abstractScene);
-    adjustSceneSize();
+    layoutScene();
 }
 
 AbstractScene * SceneView::scene() const
@@ -133,10 +138,35 @@ void SceneView::setOpenGL(bool enabled)
 void SceneView::setOpenGL(bool) {};
 #endif
 
-void SceneView::sceneConstraintsUpdated()
+void SceneView::layoutScene()
 {
-    // TODO
-    qWarning("TODO SceneView::sceneConstraintsUpdated");
+    if (!m_abstractScene)
+        return;
+
+    // change size
+    QSize viewportSize = viewport()->contentsRect().size();
+    m_abstractScene->resize(viewportSize);
+
+    // change the scrollbars policy
+    QSize sceneSize = m_abstractScene->sceneSize();
+    Qt::ScrollBarPolicy sPolicy = ((sceneSize.width() > viewportSize.width()) ||
+                                  (sceneSize.height() > viewportSize.height())) ?
+                                  Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
+    setVerticalScrollBarPolicy(sPolicy);
+    setHorizontalScrollBarPolicy(sPolicy);
+
+    // update screen
+    update();
+}
+
+void SceneView::addOverlayWidget(QWidget * widget, bool top)
+{
+    Qt::Alignment align = Qt::AlignLeft;
+    if (top)
+        align |= Qt::AlignTop;
+    else
+        align |= Qt::AlignBottom;
+    m_viewportLayout->insertWidget(0, widget, 0, align);
 }
 
 static void drawVerticalShadow(QPainter * painter, int width, int height)
@@ -173,27 +203,6 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
 
 void SceneView::resizeEvent(QResizeEvent * event)
 {
-    adjustSceneSize();
     QGraphicsView::resizeEvent(event);
-}
-
-void SceneView::adjustSceneSize()
-{
-    if (!m_abstractScene)
-        return;
-
-    QSize viewportSize = viewport()->contentsRect().size();
-
-    // do a real calculation
-    QSize sceneSize = viewportSize; //QSize(qMax(viewportSize.width(), 600), qMax(viewportSize.height(), 400));
-
-    // change the scrollbars policy
-    Qt::ScrollBarPolicy sPolicy = ((sceneSize.width() > viewportSize.width()) ||
-                                  (sceneSize.height() > viewportSize.height())) ?
-                                  Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
-    setVerticalScrollBarPolicy(sPolicy);
-    setHorizontalScrollBarPolicy(sPolicy);
-
-    // change size
-    m_abstractScene->resize(sceneSize);
+    layoutScene();
 }

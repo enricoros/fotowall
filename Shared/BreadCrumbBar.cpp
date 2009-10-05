@@ -12,6 +12,7 @@
 
 #include "BreadCrumbBar.h"
 
+#include <QApplication>
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLinearGradient>
@@ -19,6 +20,9 @@
 #include <QPaintEvent>
 #include <QPainter>
 
+#define BAR_RADIUS 6
+#define BAR_H_MARGIN 7
+#define BAR_V_MARGIN 2
 
 /// BcLabel
 
@@ -37,6 +41,9 @@ BcLabel::BcLabel(quint32 labelId, QWidget * parent)
 void BcLabel::setLast(bool last)
 {
     m_last = last;
+    QPalette pal;
+    pal.setBrush(QPalette::Text, m_last ? Qt::darkRed : Qt::darkGray);
+    setPalette(pal);
     setCursor(m_last ? Qt::ArrowCursor : Qt::PointingHandCursor);
     update();
 }
@@ -60,8 +67,10 @@ void BcLabel::leaveEvent(QEvent * /*event*/)
 
 void BcLabel::mousePressEvent(QMouseEvent * event)
 {
-    if (!m_last && event->button() == Qt::LeftButton)
+    if (!m_last && event->button() == Qt::LeftButton) {
+        event->accept();
         emit labelClicked(m_labId);
+    }
 }
 
 void BcLabel::paintEvent(QPaintEvent * event)
@@ -110,14 +119,25 @@ void BcExpander::paintEvent(QPaintEvent * /*event*/)
 {
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing, true);
-    painter.setPen(QPen(Qt::darkGray, 2));
+    painter.setPen(QPen(Qt::lightGray, 2));
     if (m_count > 1) {
-        painter.drawLine(5, 1, 9, 5);
-        painter.drawLine(9, 5, 5, 9);
-        painter.drawLine(5, 9, 1, 5);
+        if (QApplication::isRightToLeft()) {
+            painter.drawLine(5, 1, 1, 5);
+            painter.drawLine(1, 5, 5, 9);
+            painter.drawLine(5, 9, 9, 5);
+        } else {
+            painter.drawLine(5, 1, 9, 5);
+            painter.drawLine(9, 5, 5, 9);
+            painter.drawLine(5, 9, 1, 5);
+        }
     } else {
-        painter.drawLine(3, 1, 7, 5);
-        painter.drawLine(7, 5, 3, 9);
+        if (QApplication::isRightToLeft()) {
+            painter.drawLine(7, 1, 3, 5);
+            painter.drawLine(3, 5, 7, 9);
+        } else {
+            painter.drawLine(3, 1, 7, 5);
+            painter.drawLine(7, 5, 3, 9);
+        }
     }
 }
 
@@ -175,6 +195,7 @@ struct InternalNode {
 BreadCrumbBar::BreadCrumbBar(QWidget * parent)
   : QWidget(parent)
   , m_root(0)
+  , m_translucent(false)
 {
     // init defaults
     processLayout();
@@ -229,11 +250,58 @@ void BreadCrumbBar::clearNodes()
 
 void BreadCrumbBar::paintEvent(QPaintEvent * event)
 {
-    QPainter p(this);
-    QLinearGradient lg(0, 0, 0, height());
-    lg.setColorAt(0.0, QColor(237, 237, 237));
-    lg.setColorAt(1.0, Qt::lightGray);
-    p.fillRect(event->rect(), lg);
+    // translucent painting
+    if (m_translucent && layout()) {
+#if 0
+        return;
+#else
+        // find children boundaries
+        QRectF boundaries;
+        const QLayout * lay = layout();
+        const int children = lay->count();
+        for (int i = 0; i < children; ++i) {
+            QLayoutItem * child = lay->itemAt(i);
+            if (child->widget())
+                boundaries = boundaries.isNull() ? child->geometry() : boundaries.united(child->geometry());
+        }
+        boundaries.adjust(-BAR_H_MARGIN + 0.5, -BAR_V_MARGIN + 0.5, BAR_H_MARGIN - 0.5, BAR_V_MARGIN - 0.5);
+
+        // adapt a bit the boundaries to hide a round side
+        if (QApplication::isRightToLeft())
+            boundaries.adjust(0, 0, BAR_RADIUS, 0);
+        else
+            boundaries.adjust(-BAR_RADIUS, 0, 0, 0);
+
+        // paint a rounded rect
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing, true);
+        p.setPen(QPen(Qt::darkGray, 1));
+        QLinearGradient lg(0, 0, 0, height());
+        lg.setColorAt(0.0, QColor(255, 255, 255));
+        lg.setColorAt(1.0, QColor(200, 200, 200));
+        p.setBrush(lg);
+        p.drawRoundedRect(boundaries, BAR_RADIUS, BAR_RADIUS, Qt::AbsoluteSize);
+#endif
+    } else {
+        QPainter p(this);
+        QLinearGradient lg(0, 0, 0, height());
+        lg.setColorAt(0.0, QColor(237, 237, 237));
+        lg.setColorAt(1.0, Qt::lightGray);
+        p.fillRect(event->rect(), lg);
+    }
+}
+
+void BreadCrumbBar::setTranslucent(bool translucent)
+{
+    if (m_translucent != translucent) {
+        m_translucent = translucent;
+        update();
+    }
+}
+
+bool BreadCrumbBar::translucent() const
+{
+    return m_translucent;
 }
 
 void BreadCrumbBar::processLayout()
@@ -241,11 +309,12 @@ void BreadCrumbBar::processLayout()
     // recreate the layout
     delete layout();
     QHBoxLayout * hLay = new QHBoxLayout(this);
-    hLay->setMargin(2);
+    hLay->setContentsMargins(BAR_H_MARGIN, BAR_V_MARGIN, BAR_H_MARGIN, BAR_V_MARGIN);
+    hLay->setSpacing(6);
     setLayout(hLay);
 
     // hide if empty
-    if (!m_root || m_root->children.isEmpty()) {
+    if (!m_root) {
         hide();
         return;
     }
@@ -284,6 +353,9 @@ void BreadCrumbBar::processLayout()
 
     // add a stretch to the end
     hLay->addStretch(10);
+
+    // repaint all
+    update();
 }
 
 void BreadCrumbBar::slotLabelClicked(quint32 id)

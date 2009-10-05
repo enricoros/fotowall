@@ -12,14 +12,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "FlickrInterface.h"
-#include <QDebug>
+#include "FlickrPictureService.h"
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QXmlStreamAttributes>
 #include <QXmlStreamReader>
 
-namespace Internal {
+namespace FlickrInternal {
     struct F_PhotoDescription {
         QString id;         // 3743354066
         QString owner;      // 22046259@N04
@@ -57,21 +56,19 @@ namespace Internal {
     };
 }
 
-FlickrInterface::FlickrInterface(QNetworkAccessManager * manager, QObject * parent)
-  : QObject(parent)
-  , m_apiKey("292287089cdba89fdbd9994830cc4327")
-  , m_nam(manager)
+FlickrPictureService::FlickrPictureService(const QString & apiKey, QNetworkAccessManager * manager, QObject * parent)
+  : AbstractPictureService(manager, parent)
+  , m_apiKey(apiKey)
   , m_searchJob(0)
 {
 }
 
-FlickrInterface::~FlickrInterface()
+FlickrPictureService::~FlickrPictureService()
 {
     dropSearch();
-    m_nam = 0;  // owned externally
 }
 
-void FlickrInterface::searchPics(const QString & text)
+void FlickrPictureService::searchPics(const QString & text)
 {
     // clear previous search results
     dropSearch();
@@ -83,13 +80,13 @@ void FlickrInterface::searchPics(const QString & text)
     KeyValueList options;
     options << KeyValue("text", text);
     options << KeyValue("extras", "url_t,url_o");
-    m_searchJob = sendRequest("flickr.photos.search", options);
+    m_searchJob = flickrApiCall("flickr.photos.search", options);
     connect(m_searchJob, SIGNAL(finished()), this, SLOT(slotSearchJobFinished()));
     //connect(m_searchJob, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(...);
     //connect(m_searchJob, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(slotdownloadProgress(qint64, qint64)));
 }
 
-void FlickrInterface::dropSearch()
+void FlickrPictureService::dropSearch()
 {
     if (m_searchJob) {
         m_searchJob->disconnect(0, 0, 0);
@@ -105,14 +102,14 @@ void FlickrInterface::dropSearch()
         reply->deleteLater();
     }
     m_prefetches.clear();
-    emit searchEnded();
+    emit searchEnded(false);
 }
 
-bool FlickrInterface::imageInfo(int idx, QString * url, QString * title, int * width, int * height)
+bool FlickrPictureService::imageInfo(int idx, QString * url, QString * title, int * width, int * height)
 {
     if (idx < 0 || idx >= m_searchResults.size())
         return false;
-    Internal::Photo * photo = m_searchResults[idx];
+    FlickrInternal::Photo * photo = m_searchResults[idx];
     *url = photo->description.url_o.toString();
     *title = photo->description.title;
     *width = photo->description.width_o;
@@ -120,7 +117,7 @@ bool FlickrInterface::imageInfo(int idx, QString * url, QString * title, int * w
     return true;
 }
 
-QNetworkReply * FlickrInterface::download(int idx)
+QNetworkReply * FlickrPictureService::download(int idx)
 {
     if (idx < 0 || idx >= m_searchResults.size())
         return 0;
@@ -130,22 +127,22 @@ QNetworkReply * FlickrInterface::download(int idx)
         return m_prefetches.take(idx);
 
     // or start a new transfer
-    return sendRequestURL(m_searchResults[idx]->description.url_o);
+    return get(m_searchResults[idx]->description.url_o);
 }
 
-void FlickrInterface::startPrefetch(int idx)
+void FlickrPictureService::startPrefetch(int idx)
 {
 #if QT_VERSION >= 0x040600
     if (idx < 0 || idx >= m_searchResults.size() || m_prefetches.contains(idx))
         return;
-    m_prefetches[idx] = sendRequestURL(m_searchResults[idx]->description.url_o);
+    m_prefetches[idx] = get(m_searchResults[idx]->description.url_o);
 #else
     // no precaching with <= 4.5 since QNetworkReply::isFinished doesn't exist
     Q_UNUSED(idx);
 #endif
 }
 
-void FlickrInterface::stopPrefetch(int idx)
+void FlickrPictureService::stopPrefetch(int idx)
 {
     if (!m_prefetches.contains(idx))
         return;
@@ -155,7 +152,7 @@ void FlickrInterface::stopPrefetch(int idx)
     reply->deleteLater();
 }
 
-void FlickrInterface::slotSearchJobFinished()
+void FlickrPictureService::slotSearchJobFinished()
 {
     QByteArray replyContent = m_searchJob->readAll();
     m_searchJob->disconnect(0, 0, 0);
@@ -170,7 +167,7 @@ void FlickrInterface::slotSearchJobFinished()
         if (sr.isStartElement() && sr.name().toString() == "photo") {
 
             // create the F_PhotoDescription
-            Internal::F_PhotoDescription pd;
+            FlickrInternal::F_PhotoDescription pd;
             QXmlStreamAttributes attribs = sr.attributes();
             pd.id = attribs.value("id").toString();
             pd.owner = attribs.value("owner").toString();
@@ -193,29 +190,29 @@ void FlickrInterface::slotSearchJobFinished()
                 pd.url_o = QString("http://farm%1.static.flickr.com/%2/%3_%4.jpg").arg(pd.farm).arg(pd.server).arg(pd.id).arg(pd.secret);
 
             // create a new Photo
-            Internal::Photo * photo = new Internal::Photo();
+            FlickrInternal::Photo * photo = new FlickrInternal::Photo();
             photo->idx = idx++;
             photo->description = pd;
             m_searchResults.append(photo);
 
             // notify about the new item
-            emit searchResult(idx, pd.title, pd.width_t, pd.height_t);
+            emit searchResult(photo->idx, pd.title, pd.width_t, pd.height_t);
         }
     }
 
     // start 2 thumbnail jobs
     if (startNextThumbnailJobs(2))
-        emit searchEnded();
+        emit searchEnded(false);
 }
 
-void FlickrInterface::slotThumbJobFinished()
+void FlickrPictureService::slotThumbJobFinished()
 {
     QNetworkReply * job = static_cast<QNetworkReply *>(sender());
     QByteArray replyContent = job->readAll();
     job->deleteLater();
 
     // find the Photo that owns the job
-    foreach (Internal::Photo * photo, m_searchResults) {
+    foreach (FlickrInternal::Photo * photo, m_searchResults) {
 
         // remove the job from the photo
         if (!photo->jobs.removeAll(job))
@@ -236,13 +233,13 @@ void FlickrInterface::slotThumbJobFinished()
 
     // start a new job
     if (startNextThumbnailJobs(1))
-        emit searchEnded();
+        emit searchEnded(false);
 }
 
-bool FlickrInterface::startNextThumbnailJobs(int count)
+bool FlickrPictureService::startNextThumbnailJobs(int count)
 {
     bool finished = true;
-    foreach (Internal::Photo * photo, m_searchResults) {
+    foreach (FlickrInternal::Photo * photo, m_searchResults) {
         if (photo->thumbRequested)
             continue;
 
@@ -250,7 +247,7 @@ bool FlickrInterface::startNextThumbnailJobs(int count)
             break;
 
         // start the thumbnail job
-        QNetworkReply * job = sendRequestURL(photo->description.url_t);
+        QNetworkReply * job = get(photo->description.url_t);
         connect(job, SIGNAL(finished()), this, SLOT(slotThumbJobFinished()));
         photo->jobs << job;
         photo->thumbRequested = true;
@@ -259,7 +256,7 @@ bool FlickrInterface::startNextThumbnailJobs(int count)
     return finished;
 }
 
-QNetworkReply * FlickrInterface::sendRequest(const QString & method, const KeyValueList & params)
+QNetworkReply * FlickrPictureService::flickrApiCall(const QString & method, const KeyValueList & params)
 {
     // build URL with method+apikey+params
     QUrl url("http://api.flickr.com/services/rest/");
@@ -273,14 +270,5 @@ QNetworkReply * FlickrInterface::sendRequest(const QString & method, const KeyVa
         fullList.append(param);
 #endif
     url.setQueryItems(fullList);
-
-    // create request
-    QNetworkRequest request(url);
-    return m_nam->get(request);
-}
-
-QNetworkReply * FlickrInterface::sendRequestURL(const QUrl & url)
-{
-    QNetworkRequest request(url);
-    return m_nam->get(request);
+    return get(url);
 }
