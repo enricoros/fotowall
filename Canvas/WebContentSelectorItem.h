@@ -16,7 +16,7 @@
 #define __WebContentSelectorItem_h__
 
 #include <QGraphicsWidget>
-class FlickrInterface;
+class AbstractPictureService;
 class Frame;
 class GSuggestCompletion;
 class QLabel;
@@ -34,7 +34,7 @@ class WebContentSelectorItem : public QGraphicsWidget
         ~WebContentSelectorItem();
 
         // used to download pictures
-        FlickrInterface * flickrInterface() const;
+        AbstractPictureService * pictureService() const;
 
         // ::QGraphicsItem
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
@@ -42,7 +42,7 @@ class WebContentSelectorItem : public QGraphicsWidget
     private:
         QNetworkAccessManager * m_extAccessManager;
         Frame * m_frame;
-        FlickrInterface * m_flickr;
+        AbstractPictureService * m_pictureService;
 #ifdef ENABLE_GCOMPLETION
         GSuggestCompletion * m_completion;
 #endif
@@ -54,7 +54,7 @@ class WebContentSelectorItem : public QGraphicsWidget
         void slotSearchBegun();
         void slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h);
         void slotSearchThumbnail(int idx, const QPixmap & thumbnail);
-        void slotSearchEnded();
+        void slotSearchEnded(bool error);
 };
 
 #endif

@@ -71,20 +71,20 @@ class MyListWidget : public QListWidget
     public:
         MyListWidget(QWidget * parent)
           : QListWidget(parent)
-          , m_flickr(0)
+          , m_pictureService(0)
         {
         }
 
-        void setFlickrInterface(FlickrInterface * interface)
+        void setPictureService(AbstractPictureService * service)
         {
-            m_flickr = interface;
+            m_pictureService = service;
         }
 
         void startDrag(Qt::DropActions supportedDropActions)
         {
             QList<QListWidgetItem *> items = selectedItems();
             int count = items.size();
-            if (count < 1 || !m_flickr)
+            if (count < 1 || !m_pictureService)
                 return;
 
             // make the drag pixmap and the indices data
@@ -95,7 +95,7 @@ class MyListWidget : public QListWidget
             int i = 0;
             foreach (QListWidgetItem * item, items) {
                 int idx = row(item);
-                m_flickr->startPrefetch(idx);
+                m_pictureService->startPrefetch(idx);
                 dragPainter.drawPixmap(i * 10, i * 10, item->icon().pixmap(50, 50));
                 indices.append(QString::number(idx));
                 i++;
@@ -113,11 +113,11 @@ class MyListWidget : public QListWidget
             // abort prefetches if action was not accepted
             if (action != Qt::CopyAction)
                 foreach (QListWidgetItem * item, items)
-                    m_flickr->stopPrefetch(row(item));
+                    m_pictureService->stopPrefetch(row(item));
         }
 
     private:
-        FlickrInterface * m_flickr;
+        AbstractPictureService * m_pictureService;
 };
 
 #include "ui_WebContentSelectorItem.h"
@@ -126,7 +126,7 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * extAccess
     : QGraphicsWidget(parent)
     , m_extAccessManager(extAccessManager)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
-    , m_flickr(0)
+    , m_pictureService(0)
 #ifdef ENABLE_GCOMPLETION
     , m_completion(0)
 #endif
@@ -155,7 +155,7 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * extAccess
     m_ui->lineEdit->setFocus();
 
     // init texts
-    slotSearchEnded();
+    slotSearchEnded(false);
 
 #ifdef ENABLE_GCOMPLETION
     // apply google completion to widget
@@ -171,16 +171,16 @@ WebContentSelectorItem::~WebContentSelectorItem()
 #endif
     delete m_searchSymbol;
     m_searchSymbol = 0;
-    if (m_flickr)
-        m_flickr->disconnect(0, 0, 0);
-    delete m_flickr;
+    if (m_pictureService)
+        m_pictureService->disconnect(0, 0, 0);
+    delete m_pictureService;
     delete m_frame;
     delete m_ui;
 }
 
-FlickrInterface * WebContentSelectorItem::flickrInterface() const
+AbstractPictureService * WebContentSelectorItem::pictureService() const
 {
-    return m_flickr;
+    return m_pictureService;
 }
 
 void WebContentSelectorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
@@ -202,20 +202,20 @@ void WebContentSelectorItem::slotSearchClicked()
             return;
 
         // start a flickr search
-        if (!m_flickr) {
-            m_flickr = new FlickrInterface(m_extAccessManager, this);
-            connect(m_flickr, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
-            connect(m_flickr, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
-            connect(m_flickr, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
-            connect(m_flickr, SIGNAL(searchEnded()), this, SLOT(slotSearchEnded()));
-            m_ui->listWidget->setFlickrInterface(m_flickr);
+        if (!m_pictureService) {
+            m_pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
+            connect(m_pictureService, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
+            connect(m_pictureService, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
+            connect(m_pictureService, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
+            connect(m_pictureService, SIGNAL(searchEnded(bool)), this, SLOT(slotSearchEnded(bool)));
+            m_ui->listWidget->setPictureService(m_pictureService);
         }
-        m_flickr->searchPics(searchName);
+        m_pictureService->searchPics(searchName);
     }
 
     // or cancel...
-    else if (m_flickr) {
-        m_flickr->dropSearch();
+    else if (m_pictureService) {
+        m_pictureService->dropSearch();
         m_ui->listWidget->clear();
     }
 }
@@ -263,7 +263,7 @@ void WebContentSelectorItem::slotSearchThumbnail(int idx, const QPixmap & thumbn
         item->setIcon(thumbnail);
 }
 
-void WebContentSelectorItem::slotSearchEnded()
+void WebContentSelectorItem::slotSearchEnded(bool)
 {
     if (m_searchSymbol) {
         delete m_searchSymbol;

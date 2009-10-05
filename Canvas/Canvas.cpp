@@ -15,8 +15,8 @@
 #include "Canvas.h"
 
 #include "Frames/FrameFactory.h"
+#include "Shared/AbstractPictureService.h"
 #include "Shared/ColorPickerItem.h"
-#include "Shared/FlickrInterface.h"
 #include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"
 #include "HelpItem.h"
@@ -716,9 +716,9 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
     // handle as an own content drop event
     if (event->mimeData()->hasFormat("webselector/idx") && m_webContentSelector) {
 
-        // get the flickr interface
-        FlickrInterface * flickr = m_webContentSelector->flickrInterface();
-        if (!flickr)
+        // get the picture service
+        AbstractPictureService * pictureService = m_webContentSelector->pictureService();
+        if (!pictureService)
             return;
 
         // download each picture
@@ -732,11 +732,11 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             QString title;
             int width = 0;
             int height = 0;
-            if (!flickr->imageInfo(index, &url, &title, &width, &height))
+            if (!pictureService->imageInfo(index, &url, &title, &width, &height))
                 continue;
 
             // get the download
-            QNetworkReply * reply = flickr->download(index);
+            QNetworkReply * reply = pictureService->download(index);
             if (!reply)
                 continue;
 

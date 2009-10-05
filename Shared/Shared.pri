@@ -1,5 +1,6 @@
 HEADERS += \
     Shared/AbstractAppliance.h \
+    Shared/AbstractPictureService.h \
     Shared/AbstractScene.h \
     Shared/ApplianceContainer.h \
     Shared/ApplianceManager.h \
@@ -9,9 +10,10 @@ HEADERS += \
     Shared/ColorPickerItem.h \
     Shared/CroppingDialog.h \
     Shared/CroppingWidget.h \
-    Shared/FlickrInterface.h \
+    Shared/FlickrPictureService.h \
     Shared/GlowEffectDialog.h \
     Shared/GlowEffectWidget.h \
+    Shared/GoogleImagesPictureService.h \
     Shared/GroupBoxWidget.h \
     Shared/MetaXmlReader.h \
     Shared/PanePropertyEditor.h \
@@ -22,6 +24,7 @@ HEADERS += \
 
 SOURCES += \
     Shared/AbstractAppliance.cpp \
+    Shared/AbstractPictureService.cpp \
     Shared/AbstractScene.cpp \
     Shared/ApplianceContainer.cpp \
     Shared/ApplianceManager.cpp \
@@ -31,9 +34,10 @@ SOURCES += \
     Shared/ColorPickerItem.cpp \
     Shared/CroppingDialog.cpp \
     Shared/CroppingWidget.cpp \
-    Shared/FlickrInterface.cpp \
+    Shared/FlickrPictureService.cpp \
     Shared/GlowEffectDialog.cpp \
     Shared/GlowEffectWidget.cpp \
+    Shared/GoogleImagesPictureService.cpp \
     Shared/GroupBoxWidget.cpp \
     Shared/PanePropertyEditor.cpp \
     Shared/PropertyEditors.cpp \
