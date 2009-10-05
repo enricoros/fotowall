@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FlickrInterface_h__
-#define __FlickrInterface_h__
+#ifndef __FlickrPictureService_h__
+#define __FlickrPictureService_h__
 
 #include "AbstractPictureService.h"
 #include <QMap>
@@ -48,7 +48,6 @@ class FlickrPictureService : public AbstractPictureService
         QNetworkReply * flickrApiCall(const QString & method, const KeyValueList & params);
 
         QString m_apiKey;
-        QNetworkAccessManager * m_nam;
         QNetworkReply * m_searchJob;
         QList<FlickrInternal::Photo *> m_searchResults;
         QMap<int, QNetworkReply *> m_prefetches;

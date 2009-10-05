@@ -18,7 +18,8 @@
 #endif
 #include "Frames/FrameFactory.h"
 #include "Frames/Frame.h"
-#include "Shared/FlickrInterface.h"
+#include "Shared/FlickrPictureService.h"
+#include "Shared/GoogleImagesPictureService.h"
 #include <QBasicTimer>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
@@ -144,7 +145,8 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * extAccess
     QPalette pal;
     pal.setBrush(QPalette::Base, Qt::transparent);
     m_ui->listWidget->setPalette(pal);
-    connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
+    connect(m_ui->searchFlickr, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
+    connect(m_ui->searchGoogle, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
 
     // embed and layout widget
     QGraphicsProxyWidget * proxy = new QGraphicsProxyWidget(this);
@@ -201,9 +203,13 @@ void WebContentSelectorItem::slotSearchClicked()
         if (searchName.isEmpty())
             return;
 
-        // start a flickr search
+        // start a picture search
         if (!m_pictureService) {
-            m_pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
+            int provider = sender()->property("provider").toInt();
+            if (provider == 1)
+                m_pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
+            else
+                m_pictureService = new GoogleImagesPictureService(m_extAccessManager, this);
             connect(m_pictureService, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
             connect(m_pictureService, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
             connect(m_pictureService, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
@@ -228,7 +234,7 @@ void WebContentSelectorItem::slotSearchBegun()
         m_searchSymbol->move(2, 2);
         m_searchSymbol->show();
     }
-    m_ui->searchButton->setText(tr("cancel"));
+    m_ui->searchFlickr->setText(tr("cancel"));
 }
 
 void WebContentSelectorItem::slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h)
@@ -269,5 +275,5 @@ void WebContentSelectorItem::slotSearchEnded(bool)
         delete m_searchSymbol;
         m_searchSymbol = 0;
     }
-    m_ui->searchButton->setText(tr("search"));
+    //m_ui->searchFlickr->setText(tr("search"));
 }

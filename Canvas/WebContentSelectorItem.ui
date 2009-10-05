@@ -26,10 +26,17 @@
    <item row="0" column="0">
     <widget class="QLineEdit" name="lineEdit"/>
    </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="searchButton"/>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="searchGoogle">
+     <property name="text">
+      <string>Google</string>
+     </property>
+     <property name="provider" stdset="0">
+      <number>2</number>
+     </property>
+    </widget>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0" colspan="3">
     <widget class="MyListWidget" name="listWidget">
      <property name="minimumSize">
       <size>
@@ -75,6 +82,16 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="searchFlickr">
+     <property name="text">
+      <string>Flickr</string>
+     </property>
+     <property name="provider" stdset="0">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -86,7 +103,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>lineEdit</tabstop>
-  <tabstop>searchButton</tabstop>
+  <tabstop>searchGoogle</tabstop>
   <tabstop>listWidget</tabstop>
  </tabstops>
  <resources/>
@@ -94,7 +111,7 @@
   <connection>
    <sender>lineEdit</sender>
    <signal>returnPressed()</signal>
-   <receiver>searchButton</receiver>
+   <receiver>searchGoogle</receiver>
    <slot>animateClick()</slot>
    <hints>
     <hint type="sourcelabel">

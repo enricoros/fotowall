@@ -196,7 +196,7 @@ void FlickrPictureService::slotSearchJobFinished()
             m_searchResults.append(photo);
 
             // notify about the new item
-            emit searchResult(idx, pd.title, pd.width_t, pd.height_t);
+            emit searchResult(photo->idx, pd.title, pd.width_t, pd.height_t);
         }
     }
 
