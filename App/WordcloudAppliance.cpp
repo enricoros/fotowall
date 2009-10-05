@@ -31,12 +31,30 @@ WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * pa
     // set the target scene of the cloud to this
     m_extCloud->setScene(m_scene);
 
-    QPushButton * btn = new QPushButton(tr("Randomize"));
-    connect(btn, SIGNAL(clicked()), this, SLOT(slotRandomizeCloud()));
+    QWidget * sideBar = new QWidget();
+    sideBar->setAutoFillBackground(true);
+    QPalette pal;
+    pal.setBrush(QPalette::Window, Qt::lightGray);
+    sideBar->setPalette(pal);
+    QVBoxLayout * lay = new QVBoxLayout(sideBar);
+
+    QPushButton * btn1 = new QPushButton(tr("Regen"), sideBar);
+    connect(btn1, SIGNAL(clicked()), this, SLOT(slotRegenCloud()));
+    lay->addWidget(btn1);
+
+    QPushButton * btn2 = new QPushButton(tr("Randomize"), sideBar);
+    connect(btn2, SIGNAL(clicked()), this, SLOT(slotRandomizeCloud()));
+    lay->addWidget(btn2);
+
+    lay->addStretch(10);
 
     // configure the appliance
     sceneSet(m_scene);
-    sidebarSetWidget(btn);
+    sidebarSetWidget(sideBar);
+
+    // #temp
+    foreach (QGraphicsItem * item, m_scene->items())
+        item->setPos(item->pos() + QPointF(500,200));
 }
 
 WordcloudAppliance::~WordcloudAppliance()
