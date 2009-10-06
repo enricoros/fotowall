@@ -215,6 +215,7 @@ PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, Q
         m_ui->fRadio->setChecked(true);
     else if (LastProvider == 1)
         m_ui->gRadio->setChecked(true);
+    slotProviderChanged();
 
     // embed and layout widget
     QGraphicsProxyWidget * proxy = new QGraphicsProxyWidget(this);
@@ -275,7 +276,8 @@ void PictureSearchItem::paint(QPainter * painter, const QStyleOptionGraphicsItem
 
 void PictureSearchItem::slotProviderChanged()
 {
-    // nothing to do here, provider will be created when searching
+    // no need to create the provider here, it will be created when searching
+    m_ui->googleOptions->setVisible(m_ui->gRadio->isChecked());
     update();
 }
 
@@ -295,14 +297,17 @@ void PictureSearchItem::slotSearchClicked()
         if (!m_pictureService) {
             if (m_ui->fRadio->isChecked())
                 m_pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
-            else if (m_ui->gRadio->isChecked())
-                m_pictureService = new GoogleImagesPictureService(m_extAccessManager, this);
-            else {
+            else if (m_ui->gRadio->isChecked()) {
+                GoogleImagesPictureService * gis = new GoogleImagesPictureService(m_extAccessManager, this);
+                gis->configure(m_ui->contentCombo->currentIndex(), m_ui->sizeCombo->currentIndex());
+                m_pictureService = gis;
+            } else {
                 qWarning("PictureSearchItem::slotSearchClicked: unknown provider");
                 return;
             }
             m_ui->fRadio->setVisible(false);
             m_ui->gRadio->setVisible(false);
+            m_ui->googleOptions->setVisible(false);
             connect(m_pictureService, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
             connect(m_pictureService, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
             connect(m_pictureService, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));

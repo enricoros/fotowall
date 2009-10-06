@@ -74,6 +74,8 @@ namespace GoogleImagesInternal {
 
 GoogleImagesPictureService::GoogleImagesPictureService(QNetworkAccessManager * manager, QObject * parent)
   : AbstractPictureService(manager, parent)
+  , m_contentType(0)
+  , m_sizeType(0)
   , m_searchJob(0)
 {
     // init regular expressions
@@ -92,9 +94,10 @@ GoogleImagesPictureService::~GoogleImagesPictureService()
     dropSearch();
 }
 
-void GoogleImagesPictureService::configure()
+void GoogleImagesPictureService::configure(int contentType, int sizeType)
 {
-    qWarning("GoogleImagesPictureService::configure: not implemented");
+    m_contentType = contentType;
+    m_sizeType = sizeType;
 }
 
 void GoogleImagesPictureService::searchPics(const QString & text)
@@ -111,10 +114,10 @@ void GoogleImagesPictureService::searchPics(const QString & text)
     int startImageNumber = 0;
     requestString += "&start=" + QString::number(startImageNumber);
 #endif
-#if 0
-    // CB_content_type:
+#if 1
     // 0=any content  1=news content  2=faces  3=photo content  4=clip art 5=line drawings
-    switch (ui->CB_content_type->currentIndex()) {
+    QString content_type;
+    switch (m_contentType) {
         case 0: content_type=""; break;
         case 1: content_type="news"; break;
         case 2: content_type="face"; break;
@@ -122,11 +125,12 @@ void GoogleImagesPictureService::searchPics(const QString & text)
         case 4: content_type="clipart"; break;
         case 5: content_type="lineart"; break;
     }
-    requestString += "&imgtype=" + content_type;
+    if (!content_type.isEmpty())
+        requestString += "&imgtype=" + content_type;
 #endif
 #if 1
     QString image_size;
-    switch (2) {
+    switch (m_sizeType) {
         case 0: image_size=""; break;
         case 1: image_size="m"; break;
         case 2: image_size="l"; break;
@@ -146,7 +150,8 @@ void GoogleImagesPictureService::searchPics(const QString & text)
         case 16: image_size="40mp"; break;
         case 17: image_size="70mp"; break;
     }
-    requestString += "&imgsz=" + image_size;
+    if (!image_size.isEmpty())
+        requestString += "&imgsz=" + image_size;
 #endif
 #if 0
     switch (ui->CB_coloration->currentIndex()) {
