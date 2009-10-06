@@ -253,11 +253,11 @@ void Canvas::selectAllContent(bool selected)
         content->setSelected(selected);
 }
 
-/// Selectors
-void Canvas::setWebSelector(WebSelector selector)
+/// Picture Search
+void Canvas::setSearchPicturesVisible(bool visible)
 {
     // destroy if needed
-    if (selector == NoSelector && m_pictureSearch) {
+    if (!visible && m_pictureSearch) {
         removeItem(m_pictureSearch);
         m_pictureSearch->deleteLater();
         m_pictureSearch = 0;
@@ -265,37 +265,20 @@ void Canvas::setWebSelector(WebSelector selector)
     }
 
     // create if needed
-    if (selector != NoSelector && !m_pictureSearch) {
+    if (visible && !m_pictureSearch) {
         if (!m_networkAccessManager)
             m_networkAccessManager = new QNetworkAccessManager(this);
-        switch (selector) {
-            case FlickrSelector:
-                m_pictureSearch = new PictureSearchItem(PictureSearchItem::FlickrProvider, m_networkAccessManager);
-                break;
-            case GoogleImagesSelector:
-                m_pictureSearch = new PictureSearchItem(PictureSearchItem::GoogleImagesProvider, m_networkAccessManager);
-                break;
-           // shut down warnings
-            case NoSelector:
-                return;
-        }
+        m_pictureSearch = new PictureSearchItem(m_networkAccessManager);
         m_pictureSearch->setZValue(999999);
-        m_pictureSearch->setPos(20, 0);
+        //m_pictureSearch->setPos(20, 0);
         addItem(m_pictureSearch);
+        return;
     }
 }
 
-Canvas::WebSelector Canvas::webSelector() const
+bool Canvas::searchPicturesVisible() const
 {
-    if (m_pictureSearch) {
-        switch (m_pictureSearch->provider()) {
-            case PictureSearchItem::FlickrProvider:
-                return FlickrSelector;
-            case PictureSearchItem::GoogleImagesProvider:
-                return GoogleImagesSelector;
-        }
-    }
-    return NoSelector;
+    return m_pictureSearch;
 }
 
 /// Arrangement
@@ -579,7 +562,7 @@ void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRec
 {
     if (hideTools) {
         clearSelection();
-        setWebSelector(NoSelector);
+        setSearchPicturesVisible(false);
         foreach(QGraphicsItem *item, m_markerItems)
             item->hide();
         foreach(AbstractConfig *conf, m_configs)

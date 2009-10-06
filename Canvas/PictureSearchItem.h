@@ -30,25 +30,19 @@ class PictureSearchItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        enum Provider {
-            FlickrProvider,
-            GoogleImagesProvider,
-        };
-        PictureSearchItem(Provider provider, QNetworkAccessManager * extAccessManager, QGraphicsItem * parent = 0);
+        PictureSearchItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent = 0);
         ~PictureSearchItem();
 
         // used to download pictures
         AbstractPictureService * pictureService() const;
 
-        // query current provider
-        Provider provider() const;
-
         // ::QGraphicsItem
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 
+        static int LastProvider;
+
     private:
         QNetworkAccessManager * m_extAccessManager;
-        Provider m_provider;
         AbstractPictureService * m_pictureService;
 #ifdef ENABLE_GCOMPLETION
         GSuggestCompletion * m_completion;
@@ -57,6 +51,7 @@ class PictureSearchItem : public QGraphicsWidget
         SearchSymbol * m_searchSymbol;
 
     private Q_SLOTS:
+        void slotProviderChanged();
         void slotSearchClicked();
         void slotSearchBegun();
         void slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h);

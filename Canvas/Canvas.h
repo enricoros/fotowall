@@ -63,9 +63,8 @@ class Canvas : public AbstractScene
         void selectAllContent(bool selected = true);
 
         // selectors
-        enum WebSelector { NoSelector, FlickrSelector, GoogleImagesSelector };
-        void setWebSelector(WebSelector);
-        WebSelector webSelector() const;
+        void setSearchPicturesVisible(bool visible);
+        bool searchPicturesVisible() const;
 
         // arrangement
         void setForceFieldEnabled(bool enabled);

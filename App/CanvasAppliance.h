@@ -58,12 +58,11 @@ class CanvasAppliance : public Appliance::AbstractAppliance
 
         // actions in the add contents box
         void slotAddCanvas();
-        void slotAddFlickrToggled(bool on);
-        void slotAddGoogleImageToggled(bool on);
         void slotAddPicture();
         void slotAddText();
         void slotAddWebcam();
         void slotAddWordCloud();
+        void slotSearchPicturesToggled(bool on);
 
         // actions in the canvas box
         void slotProjectTypeActivated(int index);

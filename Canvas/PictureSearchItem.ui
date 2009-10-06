@@ -6,37 +6,86 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
-    <height>294</height>
+    <width>468</width>
+    <height>333</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Flickr Search</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
-    <number>6</number>
+   <property name="verticalSpacing">
+    <number>0</number>
    </property>
-   <property name="spacing">
-    <number>6</number>
+   <property name="margin">
+    <number>4</number>
    </property>
    <item row="0" column="0">
-    <widget class="QLineEdit" name="lineEdit">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
+    <widget class="MyLineEdit" name="lineEdit"/>
    </item>
-   <item row="1" column="0" colspan="3">
+   <item row="0" column="1">
+    <widget class="QPushButton" name="searchButton"/>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="fRadio">
+       <property name="text">
+        <string>Flickr</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="gRadio">
+       <property name="text">
+        <string>Google Images</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0" colspan="2">
     <widget class="MyListWidget" name="listWidget">
      <property name="minimumSize">
       <size>
        <width>450</width>
        <height>250</height>
       </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -76,13 +125,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="searchButton">
-     <property name="provider" stdset="0">
-      <number>1</number>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -91,9 +133,15 @@
    <extends>QListWidget</extends>
    <header>QListWidget</header>
   </customwidget>
+  <customwidget>
+   <class>MyLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>QLineEdit</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>lineEdit</tabstop>
+  <tabstop>searchButton</tabstop>
   <tabstop>listWidget</tabstop>
  </tabstops>
  <resources/>

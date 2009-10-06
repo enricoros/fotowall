@@ -23,6 +23,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsLinearLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QListWidget>
 #include <QPainter>
 #include <QTime>
@@ -120,12 +121,70 @@ class MyListWidget : public QListWidget
         AbstractPictureService * m_pictureService;
 };
 
+class MyLineEdit : public QLineEdit
+{
+    public:
+        MyLineEdit(QWidget * parent = 0)
+          : QLineEdit(parent)
+          , m_welcome(true)
+        {
+            // use a transparent look
+            setFrame(false);
+            QPalette pal;
+            pal.setBrush(QPalette::Base, Qt::transparent);
+            setPalette(pal);
+
+            // inital text
+            setText(tr("Type here..."));
+            selectAll();
+        }
+
+        // ::QWidget
+        void paintEvent(QPaintEvent * event)
+        {
+            // customize background
+            QPainter painter(this);
+            painter.setRenderHint(QPainter::Antialiasing, false);
+            //painter.setPen(Qt::NoPen);//QPen(Qt::lightGray, 1));
+            //painter.setBrush(Qt::white);
+            //painter.drawRect(QRectF(rect()).adjusted(0.5, 0.5, -1.5, -1.5));
+            painter.setPen(QPen(Qt::darkGray, 1, Qt::DotLine));
+            painter.drawLine(2, height() - 2, width() - 3, height() - 2);
+            painter.end();
+
+            // unbreak drawing
+            QLineEdit::paintEvent(event);
+        }
+        void keyPressEvent(QKeyEvent * event)
+        {
+            normalMode();
+            QLineEdit::keyPressEvent(event);
+        }
+        void mousePressEvent(QMouseEvent * event)
+        {
+            normalMode();
+            QLineEdit::mousePressEvent(event);
+        }
+
+    private:
+        void normalMode()
+        {
+            if (m_welcome) {
+                m_welcome = false;
+                clear();
+            }
+        }
+        bool m_welcome;
+};
+
+// included here because it needs the definitions above
 #include "ui_PictureSearchItem.h"
 
-PictureSearchItem::PictureSearchItem(Provider provider, QNetworkAccessManager * extAccessManager, QGraphicsItem * parent)
+int PictureSearchItem::LastProvider = 0;
+
+PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent)
     : QGraphicsWidget(parent)
     , m_extAccessManager(extAccessManager)
-    , m_provider(provider)
     , m_pictureService(0)
 #ifdef ENABLE_GCOMPLETION
     , m_completion(0)
@@ -141,11 +200,21 @@ PictureSearchItem::PictureSearchItem(Provider provider, QNetworkAccessManager * 
     widget->setAttribute(Qt::WA_NoSystemBackground, true);
 #endif
     m_ui->setupUi(widget);
+    m_ui->listWidget->hide();
     QPalette pal;
     pal.setBrush(QPalette::Base, Qt::transparent);
     m_ui->listWidget->setPalette(pal);
-    m_ui->listWidget->hide();
+    QFont font;
+    font.setPointSize(font.pointSize() - 1);
+    widget->setFont(font);
     connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
+    connect(m_ui->lineEdit, SIGNAL(returnPressed()), m_ui->searchButton, SLOT(click()));
+    connect(m_ui->fRadio, SIGNAL(toggled(bool)), this, SLOT(slotProviderChanged()));
+    connect(m_ui->gRadio, SIGNAL(toggled(bool)), this, SLOT(slotProviderChanged()));
+    if (LastProvider == 0)
+        m_ui->fRadio->setChecked(true);
+    else if (LastProvider == 1)
+        m_ui->gRadio->setChecked(true);
 
     // embed and layout widget
     QGraphicsProxyWidget * proxy = new QGraphicsProxyWidget(this);
@@ -167,6 +236,10 @@ PictureSearchItem::PictureSearchItem(Provider provider, QNetworkAccessManager * 
 
 PictureSearchItem::~PictureSearchItem()
 {
+    if (m_ui->fRadio->isChecked())
+        LastProvider = 0;
+    else if (m_ui->gRadio->isChecked())
+        LastProvider = 1;
     m_extAccessManager = 0;
 #ifdef ENABLE_GCOMPLETION
     delete m_completion;
@@ -184,25 +257,26 @@ AbstractPictureService * PictureSearchItem::pictureService() const
     return m_pictureService;
 }
 
-PictureSearchItem::Provider PictureSearchItem::provider() const
-{
-    return m_provider;
-}
-
 void PictureSearchItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // draw background frame
-    QLinearGradient lg(0, 0, 0, size().height());
-    switch (m_provider) {
-        case FlickrProvider:        lg.setColorAt(0.0, QColor(255, 200, 200, 200)); break;
-        case GoogleImagesProvider:  lg.setColorAt(0.0, QColor(200, 220, 255, 200)); break;
-    }
-    lg.setColorAt(1.0, QColor(200, 200, 200, 128));
+    QLinearGradient lg(0, 0, 0, 50);
+    if (m_ui->fRadio->isChecked())
+        lg.setColorAt(0.0, QColor(255, 200, 200, 200));
+    else if (m_ui->gRadio->isChecked())
+        lg.setColorAt(0.0, QColor(200, 220, 255, 200));
+    lg.setColorAt(1.0, QColor(200, 200, 200, 220));
     painter->setBrush(lg);
     painter->setPen(QPen(Qt::darkGray, 1));
     painter->setRenderHint(QPainter::Antialiasing, true);
-    QRectF boundaries = boundingRect().adjusted(0.5, 0.5 - FRAME_RADIUS, 0.5, 0.5);
+    QRectF boundaries = boundingRect().adjusted(0.5 - FRAME_RADIUS, 0.5 - FRAME_RADIUS, 0.5, 0.5);
     painter->drawRoundedRect(boundaries, FRAME_RADIUS, FRAME_RADIUS, Qt::AbsoluteSize);
+}
+
+void PictureSearchItem::slotProviderChanged()
+{
+    // nothing to do here, provider will be created when searching
+    update();
 }
 
 void PictureSearchItem::slotSearchClicked()
@@ -219,14 +293,16 @@ void PictureSearchItem::slotSearchClicked()
 
         // start a picture search
         if (!m_pictureService) {
-            switch (m_provider) {
-                case FlickrProvider:
-                    m_pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
-                    break;
-                case GoogleImagesProvider:
-                    m_pictureService = new GoogleImagesPictureService(m_extAccessManager, this);
-                    break;
+            if (m_ui->fRadio->isChecked())
+                m_pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
+            else if (m_ui->gRadio->isChecked())
+                m_pictureService = new GoogleImagesPictureService(m_extAccessManager, this);
+            else {
+                qWarning("PictureSearchItem::slotSearchClicked: unknown provider");
+                return;
             }
+            m_ui->fRadio->setVisible(false);
+            m_ui->gRadio->setVisible(false);
             connect(m_pictureService, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
             connect(m_pictureService, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
             connect(m_pictureService, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
@@ -252,7 +328,7 @@ void PictureSearchItem::slotSearchBegun()
         m_searchSymbol->move(2, 2);
         m_searchSymbol->show();
     }
-    m_ui->searchButton->setText(tr("cancel"));
+    m_ui->searchButton->setText(tr("Cancel"));
 }
 
 void PictureSearchItem::slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h)
@@ -293,5 +369,5 @@ void PictureSearchItem::slotSearchEnded(bool)
         delete m_searchSymbol;
         m_searchSymbol = 0;
     }
-    m_ui->searchButton->setText(tr("search"));
+    m_ui->searchButton->setText(tr("Search"));
 }

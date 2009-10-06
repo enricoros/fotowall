@@ -166,7 +166,8 @@ void GoogleImagesPictureService::searchPics(const QString & text)
 #endif
 #if 0
     site_search = ui->CB_domain->currentText();
-    requestString += "&as_sitesearch=" + site_search;
+    if (!site_search.isEmpty())
+        requestString += "&as_sitesearch=" + site_search;
 #endif
 
     // make request and connect to reply

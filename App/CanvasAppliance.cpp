@@ -43,15 +43,13 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     ui.b3->setDefaultAction(ui.aAddWebcam);
     ui.b4->setDefaultAction(ui.aAddWordCloud);
     ui.b5->setDefaultAction(ui.aAddCanvas);
-    ui.b6->setDefaultAction(ui.aAddFlickr);
-    ui.b7->setDefaultAction(ui.aAddGoogleImage);
+    ui.b6->setDefaultAction(ui.aSearchPictures);
     connect(ui.aAddPicture, SIGNAL(triggered()), this, SLOT(slotAddPicture()));
     connect(ui.aAddText, SIGNAL(triggered()), this, SLOT(slotAddText()));
     connect(ui.aAddWebcam, SIGNAL(triggered()), this, SLOT(slotAddWebcam()));
     connect(ui.aAddCanvas, SIGNAL(triggered()), this, SLOT(slotAddCanvas()));
     connect(ui.aAddWordCloud, SIGNAL(triggered()), this, SLOT(slotAddWordCloud()));
-    connect(ui.aAddFlickr, SIGNAL(toggled(bool)), this, SLOT(slotAddFlickrToggled(bool)));
-    connect(ui.aAddGoogleImage, SIGNAL(toggled(bool)), this, SLOT(slotAddGoogleImageToggled(bool)));
+    connect(ui.aSearchPictures, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
     connect(ui.projectType, SIGNAL(activated(int)), this, SLOT(slotProjectTypeActivated(int)));
@@ -335,20 +333,6 @@ void CanvasAppliance::slotAddCanvas()
     m_extCanvas->addCanvasViewContent(fileNames);
 }
 
-void CanvasAppliance::slotAddFlickrToggled(bool on)
-{
-    if (on && ui.aAddGoogleImage->isChecked())
-        ui.aAddGoogleImage->setChecked(false);
-    m_extCanvas->setWebSelector(on ? Canvas::FlickrSelector : Canvas::NoSelector);
-}
-
-void CanvasAppliance::slotAddGoogleImageToggled(bool on)
-{
-    if (on && ui.aAddFlickr->isChecked())
-        ui.aAddFlickr->setChecked(false);
-    m_extCanvas->setWebSelector(on ? Canvas::GoogleImagesSelector : Canvas::NoSelector);
-}
-
 void CanvasAppliance::slotAddPicture()
 {
     // make up the default load path (stored as 'Fotowall/LoadImagesDir')
@@ -375,6 +359,11 @@ void CanvasAppliance::slotAddWebcam()
 void CanvasAppliance::slotAddWordCloud()
 {
     m_extCanvas->addWordCloudContent();
+}
+
+void CanvasAppliance::slotSearchPicturesToggled(bool visible)
+{
+    m_extCanvas->setSearchPicturesVisible(visible);
 }
 
 
