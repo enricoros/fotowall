@@ -41,15 +41,17 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     ui.b1->setDefaultAction(ui.aAddPicture);
     ui.b2->setDefaultAction(ui.aAddText);
     ui.b3->setDefaultAction(ui.aAddWebcam);
-    ui.b4->setDefaultAction(ui.aAddFlickr);
+    ui.b4->setDefaultAction(ui.aAddWordCloud);
     ui.b5->setDefaultAction(ui.aAddCanvas);
-    ui.b6->setDefaultAction(ui.aAddWordCloud);
+    ui.b6->setDefaultAction(ui.aAddFlickr);
+    ui.b7->setDefaultAction(ui.aAddGoogleImage);
     connect(ui.aAddPicture, SIGNAL(triggered()), this, SLOT(slotAddPicture()));
     connect(ui.aAddText, SIGNAL(triggered()), this, SLOT(slotAddText()));
     connect(ui.aAddWebcam, SIGNAL(triggered()), this, SLOT(slotAddWebcam()));
-    connect(ui.aAddFlickr, SIGNAL(toggled(bool)), this, SLOT(slotAddFlickrToggled(bool)));
     connect(ui.aAddCanvas, SIGNAL(triggered()), this, SLOT(slotAddCanvas()));
     connect(ui.aAddWordCloud, SIGNAL(triggered()), this, SLOT(slotAddWordCloud()));
+    connect(ui.aAddFlickr, SIGNAL(toggled(bool)), this, SLOT(slotAddFlickrToggled(bool)));
+    connect(ui.aAddGoogleImage, SIGNAL(toggled(bool)), this, SLOT(slotAddGoogleImageToggled(bool)));
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
     connect(ui.projectType, SIGNAL(activated(int)), this, SLOT(slotProjectTypeActivated(int)));
@@ -335,7 +337,16 @@ void CanvasAppliance::slotAddCanvas()
 
 void CanvasAppliance::slotAddFlickrToggled(bool on)
 {
-    m_extCanvas->setWebContentSelectorVisible(on);
+    if (on && ui.aAddGoogleImage->isChecked())
+        ui.aAddGoogleImage->setChecked(false);
+    m_extCanvas->setWebSelector(on ? Canvas::FlickrSelector : Canvas::NoSelector);
+}
+
+void CanvasAppliance::slotAddGoogleImageToggled(bool on)
+{
+    if (on && ui.aAddFlickr->isChecked())
+        ui.aAddFlickr->setChecked(false);
+    m_extCanvas->setWebSelector(on ? Canvas::GoogleImagesSelector : Canvas::NoSelector);
 }
 
 void CanvasAppliance::slotAddPicture()

@@ -20,12 +20,12 @@ HEADERS += \
     Canvas/PictureConfig.h \
     Canvas/PictureContent.h \
     Canvas/PictureProperties.h \
+    Canvas/PictureSearchItem.h \
     Canvas/SelectionProperties.h \
     Canvas/StyledButtonItem.h \
     Canvas/TextConfig.h \
     Canvas/TextContent.h \
     Canvas/TextProperties.h \
-    Canvas/WebContentSelectorItem.h \
     Canvas/WebcamContent.h \
     Canvas/WordCloudContent.h
 
@@ -45,12 +45,12 @@ SOURCES += \
     Canvas/PictureConfig.cpp \
     Canvas/PictureContent.cpp \
     Canvas/PictureProperties.cpp \
+    Canvas/PictureSearchItem.cpp \
     Canvas/SelectionProperties.cpp \
     Canvas/StyledButtonItem.cpp \
     Canvas/TextConfig.cpp \
     Canvas/TextContent.cpp \
     Canvas/TextProperties.cpp \
-    Canvas/WebContentSelectorItem.cpp \
     Canvas/WebcamContent.cpp \
     Canvas/WordCloudContent.cpp
 
@@ -58,5 +58,5 @@ FORMS += \
     Canvas/AbstractConfig.ui \
     Canvas/PictureConfig.ui \
     Canvas/PictureProperties.ui \
-    Canvas/TextProperties.ui \
-    Canvas/WebContentSelectorItem.ui
+    Canvas/PictureSearchItem.ui \
+    Canvas/TextProperties.ui

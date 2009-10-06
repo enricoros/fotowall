@@ -23,10 +23,10 @@
 #include "HighlightItem.h"
 #include "PictureContent.h"
 #include "PictureConfig.h"
+#include "PictureSearchItem.h"
 #include "SelectionProperties.h"
 #include "TextContent.h"
 #include "TextConfig.h"
-#include "WebContentSelectorItem.h"
 #include "WebcamContent.h"
 #include "WordCloudContent.h"
 #include "Shared/RenderOpts.h"
@@ -72,7 +72,7 @@ Canvas::Canvas(const QSize & initialSize, QObject * parent)
     , m_bottomBarEnabled(false)
     , m_backGradientEnabled(true)
     , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
-    , m_webContentSelector(0)
+    , m_pictureSearch(0)
     , m_forceFieldTimer(0)
 {
     // create colorpickers
@@ -254,26 +254,48 @@ void Canvas::selectAllContent(bool selected)
 }
 
 /// Selectors
-void Canvas::setWebContentSelectorVisible(bool visible)
+void Canvas::setWebSelector(WebSelector selector)
 {
-    if (!visible && m_webContentSelector) {
-        removeItem(m_webContentSelector);
-        m_webContentSelector->deleteLater();
-        m_webContentSelector = 0;
+    // destroy if needed
+    if (selector == NoSelector && m_pictureSearch) {
+        removeItem(m_pictureSearch);
+        m_pictureSearch->deleteLater();
+        m_pictureSearch = 0;
+        return;
     }
-    if (visible && !m_webContentSelector) {
+
+    // create if needed
+    if (selector != NoSelector && !m_pictureSearch) {
         if (!m_networkAccessManager)
             m_networkAccessManager = new QNetworkAccessManager(this);
-        m_webContentSelector = new WebContentSelectorItem(m_networkAccessManager);
-        m_webContentSelector->setZValue(999999);
-        m_webContentSelector->setPos(20, -8);
-        addItem(m_webContentSelector);
+        switch (selector) {
+            case FlickrSelector:
+                m_pictureSearch = new PictureSearchItem(PictureSearchItem::FlickrProvider, m_networkAccessManager);
+                break;
+            case GoogleImagesSelector:
+                m_pictureSearch = new PictureSearchItem(PictureSearchItem::GoogleImagesProvider, m_networkAccessManager);
+                break;
+           // shut down warnings
+            case NoSelector:
+                return;
+        }
+        m_pictureSearch->setZValue(999999);
+        m_pictureSearch->setPos(20, 0);
+        addItem(m_pictureSearch);
     }
 }
 
-bool Canvas::webContentSelectorVisible() const
+Canvas::WebSelector Canvas::webSelector() const
 {
-    return m_webContentSelector;
+    if (m_pictureSearch) {
+        switch (m_pictureSearch->provider()) {
+            case PictureSearchItem::FlickrProvider:
+                return FlickrSelector;
+            case PictureSearchItem::GoogleImagesProvider:
+                return GoogleImagesSelector;
+        }
+    }
+    return NoSelector;
 }
 
 /// Arrangement
@@ -557,7 +579,7 @@ void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRec
 {
     if (hideTools) {
         clearSelection();
-        setWebContentSelectorVisible(false);
+        setWebSelector(NoSelector);
         foreach(QGraphicsItem *item, m_markerItems)
             item->hide();
         foreach(AbstractConfig *conf, m_configs)
@@ -658,7 +680,7 @@ void Canvas::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     }
 
     // check content drop
-    if (event->mimeData()->hasFormat("webselector/idx")) {
+    if (event->mimeData()->hasFormat("picturesearch/idx")) {
         event->accept();
         return;
     }
@@ -714,16 +736,16 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 
     // handle as an own content drop event
-    if (event->mimeData()->hasFormat("webselector/idx") && m_webContentSelector) {
+    if (event->mimeData()->hasFormat("picturesearch/idx") && m_pictureSearch) {
 
         // get the picture service
-        AbstractPictureService * pictureService = m_webContentSelector->pictureService();
+        AbstractPictureService * pictureService = m_pictureSearch->pictureService();
         if (!pictureService)
             return;
 
         // download each picture
         QPoint insertPos = event->scenePos().toPoint();
-        QStringList sIndexes = QString(event->mimeData()->data("webselector/idx")).split(",");
+        QStringList sIndexes = QString(event->mimeData()->data("picturesearch/idx")).split(",");
         foreach (const QString & sIndex, sIndexes) {
             int index = sIndex.toUInt();
 

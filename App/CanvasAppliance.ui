@@ -15,8 +15,8 @@
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>131</width>
-     <height>61</height>
+     <width>140</width>
+     <height>62</height>
     </rect>
    </property>
    <property name="palette">
@@ -125,6 +125,32 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="b4">
+      <property name="iconSize">
+       <size>
+        <width>25</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QToolButton" name="b5">
+      <property name="iconSize">
+       <size>
+        <width>25</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="2">
      <widget class="QToolButton" name="b3">
       <property name="iconSize">
@@ -138,8 +164,8 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QToolButton" name="b4">
+    <item row="1" column="2">
+     <widget class="QToolButton" name="b7">
       <property name="iconSize">
        <size>
         <width>25</width>
@@ -152,19 +178,6 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QToolButton" name="b5">
-      <property name="iconSize">
-       <size>
-        <width>25</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
      <widget class="QToolButton" name="b6">
       <property name="iconSize">
        <size>
@@ -560,6 +573,18 @@
    </property>
    <property name="text">
     <string>Add Word Cloud</string>
+   </property>
+  </action>
+  <action name="aAddGoogleImage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../fotowall.qrc">
+     <normaloff>:/data/insert-download.png</normaloff>:/data/insert-download.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Google Image</string>
    </property>
   </action>
  </widget>

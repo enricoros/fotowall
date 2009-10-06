@@ -59,6 +59,7 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         // actions in the add contents box
         void slotAddCanvas();
         void slotAddFlickrToggled(bool on);
+        void slotAddGoogleImageToggled(bool on);
         void slotAddPicture();
         void slotAddText();
         void slotAddWebcam();

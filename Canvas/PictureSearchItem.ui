@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WebContentSelectorItem</class>
- <widget class="QWidget" name="WebContentSelectorItem">
+ <class>PictureSearchItem</class>
+ <widget class="QWidget" name="PictureSearchItem">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
+    <width>462</width>
     <height>294</height>
    </rect>
   </property>
@@ -14,25 +14,19 @@
    <string>Flickr Search</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>0</number>
+   <property name="margin">
+    <number>6</number>
    </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
+   <property name="spacing">
+    <number>6</number>
    </property>
    <item row="0" column="0">
-    <widget class="QLineEdit" name="lineEdit"/>
-   </item>
-   <item row="0" column="2">
-    <widget class="QPushButton" name="searchGoogle">
-     <property name="text">
-      <string>Google</string>
-     </property>
-     <property name="provider" stdset="0">
-      <number>2</number>
+    <widget class="QLineEdit" name="lineEdit">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
    </item>
@@ -83,10 +77,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QPushButton" name="searchFlickr">
-     <property name="text">
-      <string>Flickr</string>
-     </property>
+    <widget class="QPushButton" name="searchButton">
      <property name="provider" stdset="0">
       <number>1</number>
      </property>
@@ -103,26 +94,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>lineEdit</tabstop>
-  <tabstop>searchGoogle</tabstop>
   <tabstop>listWidget</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>lineEdit</sender>
-   <signal>returnPressed()</signal>
-   <receiver>searchGoogle</receiver>
-   <slot>animateClick()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>125</x>
-     <y>13</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>518</x>
-     <y>12</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

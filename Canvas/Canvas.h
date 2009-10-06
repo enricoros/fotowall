@@ -32,11 +32,11 @@ class CanvasViewContent;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
+class PictureSearchItem;
 class QNetworkAccessManager;
 class QTimer;
 class TextContent;
 class WebcamContent;
-class WebContentSelectorItem;
 class WordCloudContent;
 
 class Canvas : public AbstractScene
@@ -63,8 +63,9 @@ class Canvas : public AbstractScene
         void selectAllContent(bool selected = true);
 
         // selectors
-        void setWebContentSelectorVisible(bool visible);
-        bool webContentSelectorVisible() const;
+        enum WebSelector { NoSelector, FlickrSelector, GoogleImagesSelector };
+        void setWebSelector(WebSelector);
+        WebSelector webSelector() const;
 
         // arrangement
         void setForceFieldEnabled(bool enabled);
@@ -145,7 +146,7 @@ class Canvas : public AbstractScene
         QPixmap m_backTile;
         QPixmap m_backCache;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
-        WebContentSelectorItem * m_webContentSelector;
+        PictureSearchItem * m_pictureSearch;
         QTimer * m_forceFieldTimer;
         QTime m_forceFieldTime;
 
