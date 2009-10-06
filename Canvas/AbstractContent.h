@@ -81,7 +81,7 @@ class AbstractContent : public AbstractDisposeable
         virtual bool fromXml(QDomElement & parentElement);
         virtual void toXml(QDomElement & parentElement) const;
         virtual void drawContent(QPainter * painter, const QRect & targetRect) = 0;
-        virtual QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const = 0;
+        virtual QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
 
         // ::QGraphicsItem
         QRectF boundingRect() const;

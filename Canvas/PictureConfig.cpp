@@ -82,7 +82,7 @@ void PictureConfig::on_effectsList_itemActivated(QListWidgetItem * item)
 
     // show glow editing dialog
     if (effect == PictureEffect::Glow) {
-        QPixmap preview = m_pictureContent->renderContent(QSize(300, 300), Qt::KeepAspectRatio);
+        QPixmap preview = m_pictureContent->toPixmap(QSize(300, 300), Qt::KeepAspectRatio);
         GlowEffectDialog dialog(preview.toImage());
         if (dialog.exec() != QDialog::Accepted)
             return;

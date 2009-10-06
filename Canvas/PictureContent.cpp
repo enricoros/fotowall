@@ -337,11 +337,11 @@ void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
 #endif
 }
 
-QPixmap PictureContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
+QPixmap PictureContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
 {
     if (m_photo)
         return ratioScaledPixmap(m_photo, size, ratio);
-    return QPixmap();
+    return AbstractContent::toPixmap(size, ratio);
 }
 
 int PictureContent::contentHeightForWidth(int width) const

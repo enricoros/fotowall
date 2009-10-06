@@ -67,11 +67,6 @@ void WordCloudContent::drawContent(QPainter * painter, const QRect & targetRect)
     m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
 }
 
-QPixmap WordCloudContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const
-{
-    return QPixmap(100, 100);
-}
-
 bool WordCloudContent::contentOpaque() const
 {
     return false;

@@ -41,7 +41,7 @@ class PictureContent : public AbstractContent
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         void drawContent(QPainter * painter, const QRect & targetRect);
-        QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
+        QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
 

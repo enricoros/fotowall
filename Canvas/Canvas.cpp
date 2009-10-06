@@ -795,7 +795,7 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
     if (m_backContent) {
         // regenerate cache if needed
         if (m_backCache.isNull() || m_backCache.size() != sceneSize())
-            m_backCache = m_backContent->renderContent(sceneSize(), m_backContentRatio);
+            m_backCache = m_backContent->toPixmap(sceneSize(), m_backContentRatio);
 
         // paint cached background
         if (m_backContent->contentOpaque())

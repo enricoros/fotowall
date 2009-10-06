@@ -515,20 +515,19 @@ void AbstractContent::toXml(QDomElement & pe) const
     pe.appendChild(domElement);
 
 }
-/*
-QPixmap AbstractContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
+
+QPixmap AbstractContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
 {
-    QSize realSize = size;
-    if (ratio == Qt::KeepAspectRatio) {
-        int hfw = contentHeightForWidth(size.width());
-        if (hfw > 1)
-            realSize.setHeight(hfw);
-    }
-    QPixmap pix(realSize);
-    pix.fill(Qt::transparent);
-    return pix;
+    Q_UNUSED(ratio)
+    // allocate a pixmap and draw the content over it (NOTE: aspect ratio is ignored)
+    QPixmap pixmap(size);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    drawContent(&painter, pixmap.rect());
+    painter.end();
+    return pixmap;
 }
-*/
+
 QRectF AbstractContent::boundingRect() const
 {
     return m_frameRect;

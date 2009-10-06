@@ -114,7 +114,7 @@ void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect)
 #endif
 }
 
-QPixmap WebcamContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
+QPixmap WebcamContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
 {
     if (!m_pixmap.isNull())
         return ratioScaledPixmap(&m_pixmap, size, ratio);

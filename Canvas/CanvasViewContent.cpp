@@ -69,11 +69,6 @@ void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect
         painter->fillRect(targetRect, Qt::red);
 }
 
-QPixmap CanvasViewContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const
-{
-    return QPixmap(100, 100);
-}
-
 bool CanvasViewContent::contentOpaque() const
 {
     return false;
