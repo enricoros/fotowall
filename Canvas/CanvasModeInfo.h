@@ -22,10 +22,17 @@
 #include <QSizeF>
 #include <QSize>
 #include <QPointF>
+#include <QDomElement>
 
 class CanvasModeInfo
 {
     public:
+        enum Mode {
+            ModeNormal      = 0,
+            ModeCD          = 1,
+            ModeDVD         = 2,
+            ModeExactSize   = 3
+        };
         CanvasModeInfo();
 
         void setFixedSizeInches(const QSizeF & size = QSizeF());
@@ -43,9 +50,12 @@ class CanvasModeInfo
         void setPrintLandscape(bool landscape);
         bool printLandscape() const;
 
-        enum Mode { ModeNormal = 0, ModeCD = 1, ModeDVD = 2, ModeExactSize = 3 };
         void setProjectMode(Mode mode);
         Mode projectMode() const;
+
+        // storage
+        void toXml(QDomElement & parentElement) const;
+        void fromXml(QDomElement & parentElement);
 
     private:
         QSizeF m_realSizeInches;

@@ -16,28 +16,35 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                *
 ******************************************************************************/
 
-#ifndef __XmlRead__
-#define __XmlRead__
+#ifndef __FotowallFile_h__
+#define __FotowallFile_h__
 
 #include <QObject>
+#include <QDomDocument>
 #include <QDomElement>
 class CanvasModeInfo;
 class Canvas;
 
-class XmlRead
+class FotowallFile
 {
     public:
+        // Loading
         static bool read(const QString & filePath, Canvas * canvas);
+        static void readContent(Canvas * canvas, QDomElement & parentElement);
 
-        bool loadFile(const QString & filePath);
-        CanvasModeInfo * readModeInfo();
-        void readCanvas(Canvas * canvas);
-        void readContent(Canvas * canvas);
+        // Saving
+        static bool save(const QString & filePath, const Canvas * canvas);
+        void saveContent(const Canvas *);
+        void saveCanvas(const Canvas *);
+        void saveProject(const CanvasModeInfo *);
+        bool writeFile(const QString & filePath);
 
     private:
-        QDomElement m_projectElement;
-        QDomElement m_canvasElement;
-        QDomElement m_contentElement;
+        QDomDocument doc;               // write
+        QDomElement m_rootElement;      // write
+        QDomElement m_projectElement;   // shared
+        QDomElement m_canvasElement;    // shared
+        QDomElement m_contentElement;   // shared
 };
 
 #endif

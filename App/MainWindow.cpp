@@ -22,11 +22,11 @@
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "CanvasAppliance.h"
+#include "FotowallFile.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
 #include "WordcloudAppliance.h"
-#include "XmlRead.h"
 #include "ui_MainWindow.h"
 
 #include <QApplication>
@@ -96,7 +96,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     Canvas * canvas = new Canvas(ui->sceneView->size(), this);
         // open if single fotowall file
         if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
-            XmlRead::read(contentUrls.first(), canvas);
+            FotowallFile::read(contentUrls.first(), canvas);
 
         // add if many pictures
         else if (!contentUrls.isEmpty())
@@ -131,7 +131,7 @@ MainWindow::~MainWindow()
 
     // this is an example of 'autosave-like function'
     //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-    //XmlSave::save(tempPath, m_canvas, m_canvas->modeInfo());
+    //FotowallFile::save(tempPath, m_canvas, m_canvas->modeInfo());
 
     // delete everything
     // m_aHelpTutorial is deleted by its menu (that's parented to this)
@@ -352,7 +352,7 @@ bool MainWindow::on_loadButton_clicked()
 
     // try to load the canvas
     Canvas * canvas = new Canvas(ui->sceneView->size(), this);
-    if (!XmlRead::read(fileName, canvas)) {
+    if (!FotowallFile::read(fileName, canvas)) {
         delete canvas;
         return false;
     }

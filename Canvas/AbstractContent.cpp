@@ -499,7 +499,11 @@ void AbstractContent::toXml(QDomElement & pe) const
 
     // save transformation
     const QTransform t = transform();
-    if (!t.isIdentity()) {
+    if (!t.isIdentity()
+#if QT_VERSION >= 0x040600
+        || rotation() != 0
+#endif
+        ) {
         domElement = doc.createElement("transformation");
         domElement.setAttribute("xRot", m_perspectiveAngles.x());
         domElement.setAttribute("yRot", m_perspectiveAngles.y());

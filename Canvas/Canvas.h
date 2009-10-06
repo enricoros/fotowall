@@ -43,8 +43,7 @@ class Canvas : public AbstractScene
 {
     Q_OBJECT
     public:
-        friend class XmlRead;
-        friend class XmlSave;
+        friend class FotowallFile;
         Canvas(const QSize & initialSize, QObject * parent = 0);
         ~Canvas();
 
@@ -91,8 +90,8 @@ class Canvas : public AbstractScene
         CanvasModeInfo * modeInfo() const;
         void setModeInfo(CanvasModeInfo * modeInfo);
 
-        void toXml(QDomElement &de) const;
-        void fromXml(QDomElement &de);
+        void toXml(QDomElement & parentElement) const;
+        void fromXml(QDomElement & parentElement);
 
         // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
@@ -122,6 +121,7 @@ class Canvas : public AbstractScene
         TextContent * createText(const QPoint & pos);
         WebcamContent * createWebcam(int input, const QPoint & pos);
         WordCloudContent * createWordCloud(const QPoint & pos);
+        void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
         void setDVDMarkers();
         void clearMarkers();

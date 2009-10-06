@@ -21,8 +21,8 @@
 #include "App.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
+#include "FotowallFile.h"
 #include "Settings.h"
-#include "XmlSave.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -122,7 +122,7 @@ bool CanvasAppliance::applianceCommand(int command)
             App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
             if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
                 fileName += ".fotowall";
-            return XmlSave::save(fileName, m_extCanvas);}
+            return FotowallFile::save(fileName, m_extCanvas);}
 
         // No Background
         case App::AC_ClearBackground:

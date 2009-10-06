@@ -520,38 +520,41 @@ void Canvas::toXml(QDomElement & de) const
 }
 
 
-void Canvas::fromXml(QDomElement & de)
+void Canvas::fromXml(QDomElement & parentElement)
 {
-    setTitleText(de.firstChildElement("title").text());
+    // clear contents
+    while (!m_content.isEmpty())
+        deleteContent(m_content.first());
+    while (!m_configs.isEmpty())
+        deleteConfig(m_configs.first());
 
-    QDomElement domElement;
-    int r, g, b;
+    // title text
+    setTitleText(parentElement.firstChildElement("title").text());
 
-    domElement = de.firstChildElement("background-color").firstChildElement("top");
-    r = domElement.firstChildElement("red").text().toInt();
-    g = domElement.firstChildElement("green").text().toInt();
-    b = domElement.firstChildElement("blue").text().toInt();
-    m_grad1ColorPicker->setColor(QColor(r, g, b));
+    // colors
+    QDomElement domElement = parentElement.firstChildElement("background-color").firstChildElement("top");
+     int r = domElement.firstChildElement("red").text().toInt();
+     int g = domElement.firstChildElement("green").text().toInt();
+     int b = domElement.firstChildElement("blue").text().toInt();
+     m_grad1ColorPicker->setColor(QColor(r, g, b));
+    domElement = parentElement.firstChildElement("background-color").firstChildElement("bottom");
+     r = domElement.firstChildElement("red").text().toInt();
+     g = domElement.firstChildElement("green").text().toInt();
+     b = domElement.firstChildElement("blue").text().toInt();
+     m_grad2ColorPicker->setColor(QColor(r, g, b));
+    domElement = parentElement.firstChildElement("title-color");
+     r = domElement.firstChildElement("red").text().toInt();
+     g = domElement.firstChildElement("green").text().toInt();
+     b = domElement.firstChildElement("blue").text().toInt();
+     m_titleColorPicker->setColor(QColor(r, g, b));
+    domElement = parentElement.firstChildElement("foreground-color");
+     r = domElement.firstChildElement("red").text().toInt();
+     g = domElement.firstChildElement("green").text().toInt();
+     b = domElement.firstChildElement("blue").text().toInt();
+     m_foreColorPicker->setColor(QColor(r, g, b));
 
-    domElement = de.firstChildElement("background-color").firstChildElement("bottom");
-    r = domElement.firstChildElement("red").text().toInt();
-    g = domElement.firstChildElement("green").text().toInt();
-    b = domElement.firstChildElement("blue").text().toInt();
-    m_grad2ColorPicker->setColor(QColor(r, g, b));
-
-    domElement = de.firstChildElement("title-color");
-    r = domElement.firstChildElement("red").text().toInt();
-    g = domElement.firstChildElement("green").text().toInt();
-    b = domElement.firstChildElement("blue").text().toInt();
-    m_titleColorPicker->setColor(QColor(r, g, b));
-
-    domElement = de.firstChildElement("foreground-color");
-    r = domElement.firstChildElement("red").text().toInt();
-    g = domElement.firstChildElement("green").text().toInt();
-    b = domElement.firstChildElement("blue").text().toInt();
-    m_foreColorPicker->setColor(QColor(r, g, b));
-
-    domElement = de.firstChildElement("back-properties");
+    // ratio mode
+    domElement = parentElement.firstChildElement("back-properties");
     if (domElement.isElement())
         m_backContentRatio = (Qt::AspectRatioMode)domElement.attribute("ratio").toInt();
 
@@ -934,6 +937,27 @@ WordCloudContent * Canvas::createWordCloud(const QPoint & pos)
     return w;
 }
 
+void Canvas::deleteContent(AbstractContent * content)
+{
+    if (content) {
+        // unset background if deleting its content
+        if (m_backContent == content)
+            setBackContent(0);
+
+        // remove related property if deleting its content
+        foreach (AbstractConfig * config, m_configs) {
+            if (config->content() == content) {
+                deleteConfig(config);
+                break;
+            }
+        }
+
+        // unlink content from lists, myself(the Scene) and memory
+        m_content.removeAll(content);
+        content->dispose();
+    }
+}
+
 void Canvas::deleteConfig(AbstractConfig * config)
 {
     if (config) {
@@ -1105,24 +1129,8 @@ void Canvas::slotDeleteContent()
         if (QMessageBox::question(0, tr("Delete content"), tr("All the %1 selected content will be deleted, do you want to continue ?").arg(selectedContent.size()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
             return;
 
-    foreach (AbstractContent * content, selectedContent) {
-
-        // unset background if deleting its content
-        if (m_backContent == content)
-            setBackContent(0);
-
-        // remove related property if deleting its content
-        foreach (AbstractConfig * config, m_configs) {
-            if (config->content() == content) {
-                deleteConfig(config);
-                break;
-            }
-        }
-
-        // unlink content from lists, myself(the Scene) and memory
-        m_content.removeAll(content);
-        content->dispose();
-    }
+    foreach (AbstractContent * content, selectedContent)
+        deleteContent(content);
 }
 
 void Canvas::slotDeleteConfig()

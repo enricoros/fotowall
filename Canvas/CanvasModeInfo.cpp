@@ -92,3 +92,60 @@ CanvasModeInfo::Mode CanvasModeInfo::projectMode() const
 {
     return m_projectMode;
 }
+
+void CanvasModeInfo::toXml(QDomElement & parentElement) const
+{
+    QDomDocument doc = parentElement.ownerDocument();
+
+    // <mode><id>m_projectmode</id>...
+    QDomElement modeIdElement = doc.createElement("id");
+     parentElement.appendChild(modeIdElement);
+     modeIdElement.appendChild(doc.createTextNode(QString::number((int)m_projectMode)));
+
+    // additional saving if not ModeNormal
+    if (!m_realSizeInches.isEmpty()) {
+        QDomElement modeSizeElement = doc.createElement("size");
+         parentElement.appendChild(modeSizeElement);
+        QDomElement wElement = doc.createElement("w");
+         modeSizeElement.appendChild(wElement);
+         wElement.appendChild(doc.createTextNode(QString::number(m_realSizeInches.width())));
+        QDomElement hElement = doc.createElement("h");
+         modeSizeElement.appendChild(hElement);
+         hElement.appendChild(doc.createTextNode(QString::number(m_realSizeInches.height())));
+    }
+
+    // printing information
+    if (m_printDpi != 300 || m_landscape) {
+        QDomElement printElement = doc.createElement("print");
+         parentElement.appendChild(printElement);
+        QDomElement dpiElement = doc.createElement("dpi");
+         printElement.appendChild(dpiElement);
+         dpiElement.appendChild(doc.createTextNode(QString::number(m_printDpi)));
+        QDomElement landscapeElement = doc.createElement("landscape");
+         printElement.appendChild(landscapeElement);
+         landscapeElement.appendChild(doc.createTextNode(QString::number(m_landscape)));
+    }
+}
+
+void CanvasModeInfo::fromXml(QDomElement & parentElement)
+{
+    // eventual size and dpi
+    QDomElement sizeElement = parentElement.firstChildElement("size");
+    if (!sizeElement.isNull()) {
+        float w = sizeElement.firstChildElement("w").text().toFloat();
+        float h = sizeElement.firstChildElement("h").text().toFloat();
+        m_realSizeInches = QSizeF(w, h);
+    }
+
+    // printing information
+    QDomElement printElement = parentElement.firstChildElement("print");
+    if (!printElement.isNull()) {
+        m_printDpi = printElement.firstChildElement("dpi").text().toDouble();
+        m_landscape = printElement.firstChildElement("landscape").text().toInt();
+    }
+
+    // restore mode
+    int mode = parentElement.firstChildElement("id").text().toInt();
+    m_projectMode = (CanvasModeInfo::Mode)mode;
+    // ### notify the changes?
+}

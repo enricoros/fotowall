@@ -14,7 +14,6 @@
 
 #include "WordCloudContent.h"
 
-#include "App/XmlRead.h"
 #include "WordCloud/WordScanner.h"
 #include "Canvas.h"
 
