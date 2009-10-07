@@ -17,6 +17,7 @@
 
 #include "AbstractContent.h"
 #include <QPixmap>
+class QSvgRenderer;
 
 /**
     \brief Displays live video from a WebCam
@@ -47,6 +48,9 @@ class WebcamContent : public AbstractContent
         int m_input;
         bool m_still;
         QPixmap m_pixmap;
+        QPixmap m_dummyPixmap;
+        QSvgRenderer * m_dummyRenderer;
+        bool m_broken;
 
     private Q_SLOTS:
         void slotToggleStill();

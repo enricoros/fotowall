@@ -20,19 +20,19 @@
 #include "ButtonItem.h"
 
 #include <QPainter>
+#include <QSvgRenderer>
 #include <QTimer>
 
 WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
     , m_input(input)
     , m_still(false)
+    , m_dummyRenderer(0)
+    , m_broken(false)
 {
     // enable frame text
     setFrameTextEnabled(true);
     setFrameText(tr("This is a mirror ;-)"));
-
-    // initial pixmap
-    setPixmap(QPixmap(":/data/insert-camera.png"));
 
     // add swap button
     ButtonItem * bSwap = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-flip-horizontal.png"), this);
@@ -49,13 +49,14 @@ WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * 
     // start the video flow
     if (input >= 0 && input < VideoProvider::instance()->inputCount())
         VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
-    else {
-        // TODO: show a still picture about a "broken connection to the camera"
-    }
+    else
+        m_broken = true;
 }
 
 WebcamContent::~WebcamContent()
 {
+    delete m_dummyRenderer;
+
     // stop the video flow
     VideoProvider::instance()->disconnectReceiver(this);
 }
@@ -94,9 +95,29 @@ void WebcamContent::toXml(QDomElement & contentElement) const
 
 void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect)
 {
-    // skip if no photo
-    if (m_pixmap.isNull())
+#if 0 && QT_VERSION >= 0x040500
+    // delay rendering until the element has been fully shown
+    if (opacity() < 1.0)
         return;
+#endif
+
+    bool smoothOn = RenderOpts::HQRendering ? true : !beingTransformed();
+
+    // select the pixmap to draw
+    QPixmap * pixmap = &m_pixmap;
+    if (pixmap->isNull()) {
+        // regenerate the dummy pixmap if needed
+        if (m_dummyPixmap.isNull() || (m_dummyPixmap.size() != targetRect.size() && smoothOn)) {
+            m_dummyPixmap = QPixmap(targetRect.size());
+            m_dummyPixmap.fill(m_broken ? Qt::red : Qt::white);
+            QPainter dummyPainter(&m_dummyPixmap);
+            if (!m_dummyRenderer)
+                m_dummyRenderer = new QSvgRenderer(QString(":/data/webcam-loading.svg"));
+            m_dummyRenderer->render(&dummyPainter);
+        }
+        // draw the dummy pixmap
+        pixmap = &m_dummyPixmap;
+    }
 
     // blit if opaque picture
 #if QT_VERSION >= 0x040500
@@ -105,12 +126,11 @@ void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect)
 #endif
 
     // draw high-resolution photo when exporting png
-    bool smoothOn = RenderOpts::HQRendering ? true : !beingTransformed();
     painter->setRenderHint(QPainter::SmoothPixmapTransform, smoothOn);
-    painter->drawPixmap(targetRect, m_pixmap);
+    painter->drawPixmap(targetRect, *pixmap);
 
 #if QT_VERSION >= 0x040500
-//    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+    //painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
 }
 
@@ -118,7 +138,7 @@ QPixmap WebcamContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
 {
     if (!m_pixmap.isNull())
         return ratioScaledPixmap(&m_pixmap, size, ratio);
-    return QPixmap();
+    return AbstractContent::toPixmap(size, ratio);
 }
 
 int WebcamContent::contentHeightForWidth(int width) const

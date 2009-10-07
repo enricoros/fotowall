@@ -535,7 +535,7 @@
   <action name="aAddWebcam">
    <property name="icon">
     <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-camera.png</normaloff>:/data/insert-camera.png</iconset>
+     <normaloff>:/data/insert-webcam.png</normaloff>:/data/insert-webcam.png</iconset>
    </property>
    <property name="text">
     <string>Add Webcam</string>
