@@ -18,8 +18,12 @@
 
 #include "CanvasModeInfo.h"
 
+#define DEFAULT_SCREEN_DPI 96
+#define DEFAULT_PRINT_DPI 300
+
 CanvasModeInfo::CanvasModeInfo()
-  : m_printDpi(300)
+  : m_canvasDpi(DEFAULT_SCREEN_DPI, DEFAULT_SCREEN_DPI)
+  , m_printDpi(DEFAULT_PRINT_DPI)
   , m_landscape(false)
   , m_projectMode(ModeNormal)
 {
@@ -112,10 +116,16 @@ void CanvasModeInfo::toXml(QDomElement & canvasModeElement) const
         QDomElement hElement = doc.createElement("h");
          modeSizeElement.appendChild(hElement);
          hElement.appendChild(doc.createTextNode(QString::number(m_realSizeInches.height())));
+        QDomElement dpiXElement = doc.createElement("dpiX");
+         modeSizeElement.appendChild(dpiXElement);
+         dpiXElement.appendChild(doc.createTextNode(QString::number(m_canvasDpi.x())));
+        QDomElement dpiYElement = doc.createElement("dpiY");
+         modeSizeElement.appendChild(dpiYElement);
+         dpiYElement.appendChild(doc.createTextNode(QString::number(m_canvasDpi.y())));
     }
 
     // printing information
-    if (m_printDpi != 300 || m_landscape) {
+    if (m_printDpi != DEFAULT_PRINT_DPI || m_landscape) {
         QDomElement printElement = doc.createElement("print");
          canvasModeElement.appendChild(printElement);
         QDomElement dpiElement = doc.createElement("dpi");
@@ -135,6 +145,10 @@ void CanvasModeInfo::fromXml(QDomElement & canvasModeElement)
         float w = sizeElement.firstChildElement("w").text().toFloat();
         float h = sizeElement.firstChildElement("h").text().toFloat();
         m_realSizeInches = QSizeF(w, h);
+        float dpiX = sizeElement.firstChildElement("dpiX").text().toFloat();
+        float dpiY = sizeElement.firstChildElement("dpiY").text().toFloat();
+        if (dpiX > 1 && dpiY > 1)
+            m_canvasDpi = QPointF(dpiX, dpiY);
     }
 
     // printing information
