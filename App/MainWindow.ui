@@ -382,7 +382,10 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="borderFlags" stdset="0">
          <number>1</number>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="leftMargin">
           <number>6</number>
          </property>
@@ -395,39 +398,32 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="verticalSpacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QCheckBox" name="transpBox">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Transparent Window</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="accelBox">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="icon">
-              <iconset resource="../fotowall.qrc">
-               <normaloff>:/data/opengl-logo.png</normaloff>:/data/opengl-logo.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>32</width>
-               <height>16</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-          </layout>
+         <item>
+          <widget class="QCheckBox" name="transpBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Transparent Window</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="accelBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="icon">
+            <iconset resource="../fotowall.qrc">
+             <normaloff>:/data/opengl-logo.png</normaloff>:/data/opengl-logo.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>16</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
