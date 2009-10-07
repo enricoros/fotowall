@@ -79,6 +79,8 @@ class Canvas : public AbstractScene
         bool bottomBarEnabled() const;
         void setTitleText(const QString & text);
         QString titleText() const;
+        void setDVDMarkers();
+        void clearMarkers();
 
         // save, restore, load, help
         bool pendingChanges() const;
@@ -87,7 +89,7 @@ class Canvas : public AbstractScene
 
         // change size and project mode (CD cover, DVD,...).
         CanvasModeInfo * modeInfo() const;
-        void setModeInfo(CanvasModeInfo * modeInfo);
+        //void setModeInfo(CanvasModeInfo * modeInfo);
 
         void toXml(QDomElement & canvasElement) const;
         void fromXml(QDomElement & canvasElement);
@@ -122,8 +124,6 @@ class Canvas : public AbstractScene
         WordCloudContent * createWordCloud(const QPoint & pos);
         void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
-        void setDVDMarkers();
-        void clearMarkers();
 
         CanvasModeInfo * m_modeInfo;
         QNetworkAccessManager * m_networkAccessManager;

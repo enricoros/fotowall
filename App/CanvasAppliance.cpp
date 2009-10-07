@@ -274,12 +274,14 @@ void CanvasAppliance::setNormalProject()
 {
     m_extCanvas->modeInfo()->setFixedSizeInches();
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
+    m_extCanvas->clearMarkers();
     containerValueSet(App::CV_ExPrint, false);
     ui.projectType->setCurrentIndex(0);
 }
 
 void CanvasAppliance::setCDProject()
 {
+    m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
@@ -294,10 +296,12 @@ void CanvasAppliance::setDVDProject()
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
     containerValueSet(App::CV_ExPrint, true);
     ui.projectType->setCurrentIndex(2);
+    m_extCanvas->setDVDMarkers();
 }
 
 void CanvasAppliance::setExactSizeProject()
 {
+    m_extCanvas->clearMarkers();
     if (!m_extCanvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
         QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();

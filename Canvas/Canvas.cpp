@@ -49,19 +49,6 @@
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-/*void Canvas::setProjectMode(Mode mode)
-    if (m_projectMode != mode) {
-        m_projectMode = mode;
-        switch (mode) {
-        case ModeDVD:
-                setDVDMarkers();
-                break;
-        default:
-                clearMarkers();
-                break;
-        }
-    } */
-
 Canvas::Canvas(const QSize & initialSize, QObject * parent)
     : AbstractScene(parent)
     , m_modeInfo(new CanvasModeInfo)
@@ -381,12 +368,38 @@ QString Canvas::titleText() const
     return m_titleText;
 }
 
+void Canvas::setDVDMarkers()
+{
+    // Add informations items to show the back, front, and side position
+    QPointF screenDpi = m_modeInfo->screenDpi();
+    int faceW = 5.08 * screenDpi.x();
+    int sideW = 0.67 * screenDpi.y();
+    m_markerItems.push_back(addLine(faceW, 0, faceW, height()));
+    m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
+
+    QGraphicsTextItem *textBack = addText(tr("Back"), QFont("", 18, -1, true));
+    textBack->setPos( (faceW - textBack->document()->documentLayout()->documentSize().width())/2,
+                    (height() - textBack->document()->documentLayout()->documentSize().height())/2 );
+    m_markerItems.push_back(textBack);
+    QGraphicsTextItem *textFront = addText(tr("Front"), QFont("", 18, -1, true));
+    textFront->setPos( (faceW+sideW) + faceW/2 - textFront->document()->documentLayout()->documentSize().width()/2,
+                    (height() - textFront->document()->documentLayout()->documentSize().height())/2 );
+    m_markerItems.push_back(textFront);
+}
+
+void Canvas::clearMarkers()
+{
+    // Remove the information items
+    qDeleteAll(m_markerItems);
+    m_markerItems.clear();
+}
+
+/// Misc: save, restore, help...
 bool Canvas::pendingChanges() const
 {
     return !m_content.isEmpty();
 }
 
-/// Misc: save, restore, help...
 #define HIGHLIGHT(x, y, del) \
     { \
         HighlightItem * highlight = new HighlightItem(); \
@@ -433,7 +446,7 @@ CanvasModeInfo * Canvas::modeInfo() const
 {
     return m_modeInfo;
 }
-
+/*
 void Canvas::setModeInfo(CanvasModeInfo * modeInfo)
 {
     // set the new modeinfo
@@ -446,7 +459,7 @@ void Canvas::setModeInfo(CanvasModeInfo * modeInfo)
     // notify listeners (if any!) about the change
     emit refreshCanvas();
 }
-
+*/
 void Canvas::toXml(QDomElement & canvasElement) const
 {
     QDomDocument doc = canvasElement.ownerDocument();
@@ -1054,34 +1067,6 @@ void Canvas::deleteConfig(AbstractConfig * config)
         m_configs.removeAll(config);
         config->dispose();
     }
-}
-
-/// Markers
-void Canvas::setDVDMarkers()
-{
-    // Add informations items to show the back, front, and side position
-
-    QGraphicsView * view = views().first();
-    int faceW = 5.08 * view->physicalDpiX();
-    int sideW = 0.67 * view->physicalDpiY();
-    m_markerItems.push_back(addLine(faceW, 0, faceW, height()));
-    m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
-
-    QGraphicsTextItem *textBack = addText(tr("Back"), QFont("", 18, -1, true));
-    textBack->setPos( (faceW - textBack->document()->documentLayout()->documentSize().width())/2,
-                    (height() - textBack->document()->documentLayout()->documentSize().height())/2 );
-    m_markerItems.push_back(textBack);
-    QGraphicsTextItem *textFront = addText(tr("Front"), QFont("", 18, -1, true));
-    textFront->setPos( (faceW+sideW) + faceW/2 - textFront->document()->documentLayout()->documentSize().width()/2,
-                    (height() - textFront->document()->documentLayout()->documentSize().height())/2 );
-    m_markerItems.push_back(textFront);
-}
-
-void Canvas::clearMarkers()
-{
-    // Remove the information items
-    qDeleteAll(m_markerItems);
-    m_markerItems.clear();
 }
 
 /// Slots

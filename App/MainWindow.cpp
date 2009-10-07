@@ -131,7 +131,7 @@ MainWindow::~MainWindow()
 
     // this is an example of 'autosave-like function'
     //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-    //FotowallFile::saveV2(tempPath, m_canvas, m_canvas->modeInfo());
+    //FotowallFile::saveV2(tempPath, m_canvas);
 
     // delete everything
     // m_aHelpTutorial is deleted by its menu (that's parented to this)
