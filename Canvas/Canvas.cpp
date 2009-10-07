@@ -371,43 +371,71 @@ QString Canvas::titleText() const
 void Canvas::setCDMarkers()
 {
     clearMarkers();
+    QPen outerPen(Qt::black, 1, Qt::DashLine);
+    QPen innerPen(Qt::lightGray, 1, Qt::DashLine);
     QSize screenPixels = m_modeInfo->fixedScreenPixels();
     QPointF screenDpi = m_modeInfo->screenDpi();
+
     float xDiameter = 4.75 * screenDpi.x();
     float yDiameter = 4.75 * screenDpi.y();
-    m_markerItems.push_back(addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter));
+    QGraphicsEllipseItem * ellipse = addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter);
+    ellipse->setZValue(-1);
+    ellipse->setPen(outerPen);
+    m_markerItems.push_back(ellipse);
+
     xDiameter = 0.59 * screenDpi.x();
     yDiameter = 0.59 * screenDpi.y();
-    m_markerItems.push_back(addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter));
+    ellipse = addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter);
+    ellipse->setZValue(-1);
+    ellipse->setPen(innerPen);
+    m_markerItems.push_back(ellipse);
+
     xDiameter = 1.34 * screenDpi.x();
     yDiameter = 1.34 * screenDpi.y();
-    m_markerItems.push_back(addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter));
+    ellipse = addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter);
+    ellipse->setZValue(-1);
+    ellipse->setPen(innerPen);
+    m_markerItems.push_back(ellipse);
+
     xDiameter = 1.73 * screenDpi.x();
     yDiameter = 1.73 * screenDpi.y();
-    m_markerItems.push_back(addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter));
+    ellipse = addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter);
+    ellipse->setZValue(-1);
+    ellipse->setPen(innerPen);
+    m_markerItems.push_back(ellipse);
 }
 
 void Canvas::setDVDMarkers()
 {
     // Add informations items to show the back, front, and side position
     clearMarkers();
+    QPen linePen(Qt::black, 1, Qt::DashLine);
     QPointF screenDpi = m_modeInfo->screenDpi();
     int faceW = 5.08 * screenDpi.x();
     int sideW = 0.67 * screenDpi.y();
     int height = m_modeInfo->fixedScreenPixels().height();
-    m_markerItems.push_back(addLine(faceW, 0, faceW, height));
-    m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height));
+    QGraphicsLineItem * line = addLine((qreal)faceW + 0.5, 0, (qreal)faceW + 0.5, height);
+    line->setPen(linePen);
+    line->setZValue(-1);
+    m_markerItems.push_back(line);
+    line = addLine((qreal)(faceW + sideW) + 0.5, 0, (qreal)(faceW + sideW) + 0.5, height),
+    line->setPen(linePen);
+    line->setZValue(-1);
+    m_markerItems.push_back(line);
 
     QFont markerFont;
     markerFont.setPointSize(18);
     markerFont.setItalic(true);
     QGraphicsTextItem *textBack = addText(tr("Back"), markerFont);
-    textBack->setPos((faceW - textBack->document()->documentLayout()->documentSize().width()) / 2,
+    textBack->setTransform(QTransform(-1, 0, 0, 0, 1, 0, 0, 0, 1));
+    textBack->setPos((faceW + textBack->document()->documentLayout()->documentSize().width()) / 2,
                      (height - textBack->document()->documentLayout()->documentSize().height()) / 2);
+    textBack->setZValue(-1);
     m_markerItems.push_back(textBack);
     QGraphicsTextItem *textFront = addText(tr("Front"), markerFont);
     textFront->setPos((faceW+sideW) + faceW/2 - textFront->document()->documentLayout()->documentSize().width() / 2,
                       (height - textFront->document()->documentLayout()->documentSize().height()) / 2);
+    textFront->setZValue(-1);
     m_markerItems.push_back(textFront);
 }
 
