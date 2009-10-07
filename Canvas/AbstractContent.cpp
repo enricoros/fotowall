@@ -204,7 +204,7 @@ void AbstractContent::setFrame(Frame * frame)
 
 quint32 AbstractContent::frameClass() const
 {
-    return m_frame ? m_frame->frameClass() : Frame::NoFrame;
+    return m_frame ? m_frame->frameClass() : (quint32)Frame::NoFrame;
 }
 
 #include <QGraphicsTextItem>

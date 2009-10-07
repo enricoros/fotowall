@@ -45,14 +45,15 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     m_closeButton = new StyledButtonItem(tr(" x "), font(), this);//this, ":/data/button-close.png", ":/data/button-close-hovered.png", ":/data/button-close-pressed.png");
     connect(m_closeButton, SIGNAL(clicked()), this, SIGNAL(requestClose()));
 
-    // WIDGET setup
+    // WIDGET setup (populate contents and set base palette (only) to transparent)
     QWidget * widget = new QWidget();
-#if QT_VERSION < 0x040500
-    widget->setAttribute(Qt::WA_NoSystemBackground, true);
-#else
-    widget->setAttribute(Qt::WA_TranslucentBackground, true);
-#endif
     m_commonUi->setupUi(widget);
+    QPalette pal;
+     QColor oldColor = pal.window().color();
+     pal.setBrush(QPalette::Window, Qt::transparent);
+     widget->setPalette(pal);
+     pal.setBrush(QPalette::Window, oldColor);
+     m_commonUi->tab->setPalette(pal);
 
     populateFrameList();
 

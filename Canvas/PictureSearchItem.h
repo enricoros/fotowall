@@ -15,7 +15,7 @@
 #ifndef __PictureSearchItem_h__
 #define __PictureSearchItem_h__
 
-#include <QGraphicsWidget>
+#include <QGraphicsProxyWidget>
 class AbstractPictureService;
 class GSuggestCompletion;
 class QLabel;
@@ -26,7 +26,7 @@ class Ui_PictureSearchItem;
 // uncomment following to enable Ariya Hidayat's google suggestions code
 //#define ENABLE_GCOMPLETION
 
-class PictureSearchItem : public QGraphicsWidget
+class PictureSearchItem : public QGraphicsProxyWidget
 {
     Q_OBJECT
     public:

@@ -3,8 +3,8 @@ contains(QT_VERSION, ^4\.[0-3]\..*) {
     message("Cannot build Fotowall with Qt version $$QT_VERSION .")
     error("Use at least Qt 4.4.")
 }
-contains(QT_VERSION, ^4\.4\..*): message("Lots of features will be disabled with Qt $$QT_VERSION . Use Qt 4.5 or later.")
-contains(QT_VERSION, ^4\.6\..*): message("Qt $$QT_VERSION support is still experimental, but it already improves the experience!")
+contains(QT_VERSION, ^4\.4\..*): message("Lots of features will be disabled with Qt $$QT_VERSION . Use Qt 4.6 or later.")
+contains(QT_VERSION, ^4\.5\..*): message("Some features are not available with Qt $$QT_VERSION . Use Qt 4.6 or later.")
 
 # Project Options
 TEMPLATE = app

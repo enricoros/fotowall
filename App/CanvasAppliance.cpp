@@ -328,6 +328,9 @@ void CanvasAppliance::setExactSizeProject()
 
 void CanvasAppliance::slotAddCanvas()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
+
     // make up the default load path (stored as 'Fotowall/LoadProjectDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
@@ -341,6 +344,9 @@ void CanvasAppliance::slotAddCanvas()
 
 void CanvasAppliance::slotAddPicture()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
+
     // make up the default load path (stored as 'Fotowall/LoadImagesDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
@@ -354,16 +360,22 @@ void CanvasAppliance::slotAddPicture()
 
 void CanvasAppliance::slotAddText()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addTextContent();
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addWebcamContent(0);
 }
 
 void CanvasAppliance::slotAddWordCloud()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addWordCloudContent();
 }
 

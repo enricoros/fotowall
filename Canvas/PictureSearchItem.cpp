@@ -19,7 +19,6 @@
 #include "Shared/FlickrPictureService.h"
 #include "Shared/GoogleImagesPictureService.h"
 #include <QBasicTimer>
-#include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QGraphicsLinearLayout>
 #include <QLabel>
@@ -183,7 +182,7 @@ class MyLineEdit : public QLineEdit
 int PictureSearchItem::LastProvider = 0;
 
 PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent)
-    : QGraphicsWidget(parent)
+    : QGraphicsProxyWidget(parent)
     , m_extAccessManager(extAccessManager)
     , m_pictureService(0)
 #ifdef ENABLE_GCOMPLETION
@@ -218,13 +217,11 @@ PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, Q
     slotProviderChanged();
 
     // embed and layout widget
-    QGraphicsProxyWidget * proxy = new QGraphicsProxyWidget(this);
-    proxy->setWidget(widget);
-    QGraphicsLinearLayout * vLay = new QGraphicsLinearLayout(Qt::Vertical, this);
-    vLay->setContentsMargins(0, 0, 0, 0);
-    vLay->addItem(proxy);
+    setContentsMargins(0, 0, 0, 0);
+    setWidget(widget);
     setFlags(ItemIsSelectable | ItemIsFocusable);
     m_ui->lineEdit->setFocus();
+    adjustSize();
 
     // init texts
     slotSearchEnded(false);
@@ -258,7 +255,7 @@ AbstractPictureService * PictureSearchItem::pictureService() const
     return m_pictureService;
 }
 
-void PictureSearchItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+void PictureSearchItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     // draw background frame
     QLinearGradient lg(0, 0, 0, 50);
@@ -272,6 +269,10 @@ void PictureSearchItem::paint(QPainter * painter, const QStyleOptionGraphicsItem
     painter->setRenderHint(QPainter::Antialiasing, true);
     QRectF boundaries = boundingRect().adjusted(0.5 - FRAME_RADIUS, 0.5 - FRAME_RADIUS, 0.5, 0.5);
     painter->drawRoundedRect(boundaries, FRAME_RADIUS, FRAME_RADIUS, Qt::AbsoluteSize);
+
+    // speed up svg drawing and unbreak proxy widget
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, false);
+    QGraphicsProxyWidget::paint(painter, option, widget);
 }
 
 void PictureSearchItem::slotProviderChanged()
