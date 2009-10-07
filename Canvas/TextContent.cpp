@@ -145,16 +145,16 @@ QWidget * TextContent::createPropertyWidget()
     return p;
 }
 
-bool TextContent::fromXml(QDomElement & pe)
+bool TextContent::fromXml(QDomElement & contentElement)
 {
     // FIRST load text properties and shape
     // NOTE: order matters here, we don't want to override the size restored later
-    QString text = pe.firstChildElement("html-text").text();
+    QString text = contentElement.firstChildElement("html-text").text();
     setHtml(text);
 
     // load default font
     QDomElement domElement;
-    domElement = pe.firstChildElement("default-font");
+    domElement = contentElement.firstChildElement("default-font");
     if (domElement.isElement()) {
         QFont font;
         font.setFamily(domElement.attribute("font-family"));
@@ -163,7 +163,7 @@ bool TextContent::fromXml(QDomElement & pe)
     }
 
     // load shape
-    domElement = pe.firstChildElement("shape");
+    domElement = contentElement.firstChildElement("shape");
     if (domElement.isElement()) {
         bool shapeEnabled = domElement.attribute("enabled").toInt();
         domElement = domElement.firstChildElement("control-points");
@@ -183,24 +183,24 @@ bool TextContent::fromXml(QDomElement & pe)
     }
 
     // THEN restore the geometry
-    AbstractContent::fromXml(pe);
+    AbstractContent::fromXml(contentElement);
 
     return true;
 }
 
-void TextContent::toXml(QDomElement & pe) const
+void TextContent::toXml(QDomElement & contentElement) const
 {
-    AbstractContent::toXml(pe);
-    pe.setTagName("text");
+    AbstractContent::toXml(contentElement);
+    contentElement.setTagName("text");
 
     // save text properties
-    QDomDocument doc = pe.ownerDocument();
+    QDomDocument doc = contentElement.ownerDocument();
     QDomElement domElement;
     QDomText text;
 
     // save text (in html)
     domElement = doc.createElement("html-text");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     text = doc.createTextNode(m_text->toHtml());
     domElement.appendChild(text);
 
@@ -208,12 +208,12 @@ void TextContent::toXml(QDomElement & pe) const
     domElement = doc.createElement("default-font");
     domElement.setAttribute("font-family", m_text->defaultFont().family());
     domElement.setAttribute("font-size", m_text->defaultFont().pointSize());
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
 
     // save shape and control points
     QDomElement shapeElement = doc.createElement("shape");
     shapeElement.setAttribute("enabled", hasShape());
-    pe.appendChild(shapeElement);
+    contentElement.appendChild(shapeElement);
     if (hasShape()) {
         QList<QPointF> cp = m_shapeEditor->controlPoints();
         domElement = doc.createElement("control-points");

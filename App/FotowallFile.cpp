@@ -18,18 +18,13 @@
 
 #include "FotowallFile.h"
 
-#include "Canvas/AbstractContent.h"
-#include "Canvas/CanvasModeInfo.h"
 #include "Canvas/Canvas.h"
-#include "Canvas/PictureContent.h"
-#include "Canvas/TextContent.h"
-#include "Canvas/WebcamContent.h"
 #include "App.h"
 #include "Settings.h"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QMessageBox>
-#include <QStringList>
 #include <QString>
 #include <QTextStream>
 
@@ -61,7 +56,7 @@
 
 bool FotowallFile::read(const QString & filePath, Canvas * canvas)
 {
-    // load the file
+    // open the file for reading
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::critical(0, QObject::tr("Loading error"), QObject::tr("Unable to load the Fotowall file %1").arg(filePath));
@@ -77,145 +72,52 @@ bool FotowallFile::read(const QString & filePath, Canvas * canvas)
     }
     file.close();
 
-    // get the main nodes
+    // get the Canvas node
     QDomElement root = doc.documentElement();
-    QDomElement projectModeElement = root.firstChildElement("project").firstChildElement("mode");
-    QDomElement canvasElement = root.firstChildElement("desk");
-    QDomElement contentElement = root.firstChildElement("content");
+    QDomElement canvasElement = root.firstChildElement("canvas");
+    if (!canvasElement.isElement()) // 'Format 1'
+        canvasElement = root;
+    if (!canvasElement.isElement())
+        return false;
 
-    // 1. read canvas background properties
+    // restore the canvas
     canvas->fromXml(canvasElement);
-
-    // 2. read and set canvas modeInfo
-    CanvasModeInfo * modeInfo = new CanvasModeInfo();
-    modeInfo->fromXml(projectModeElement);
-    canvas->setModeInfo(modeInfo);
-
-    // 3. read and create contents
-    readContent(canvas, contentElement);
 
     // add to the recent history
     App::settings->addRecentFotowallUrl(QUrl(filePath));
     return true;
 }
 
-void FotowallFile::readContent(Canvas * canvas, QDomElement & parentElement)
+bool FotowallFile::saveV2(const QString & filePath, const Canvas * canvas)
 {
-    // for each child of 'content'
-    for (QDomElement element = parentElement.firstChildElement(); !element.isNull(); element = element.nextSiblingElement()) {
+    // create the document
+    QDomDocument doc;
+     doc.appendChild(doc.createProcessingInstruction("xml","version=\"1.0\" "));
 
-        // create the right kind of content
-        AbstractContent * content = 0;
-        if (element.tagName() == "picture")
-            content = canvas->createPicture(QPoint());
-        else if (element.tagName() == "text")
-            content = canvas->createText(QPoint());
-        else if (element.tagName() == "webcam")
-            content = canvas->createWebcam(element.attribute("input").toInt(), QPoint());
-        if (!content) {
-            qWarning("FotowallFile::readContent: unknown content type '%s'", qPrintable(element.tagName()));
-            continue;
-        }
+    QDomElement rootElement = doc.createElement("fotowall");
+     rootElement.setAttribute("format", 2);
+     rootElement.setAttribute("version", QCoreApplication::applicationVersion());
+     doc.appendChild(rootElement);
 
-        // restore the item, and delete it if something goes wrong
-        if (!content->fromXml(element)) {
-            canvas->deleteContent(content);
-            continue;
-        }
+    QDomElement canvasElement = doc.createElement("canvas");
+     rootElement.appendChild(canvasElement);
 
-        // restore the background element of the canvas
-        if (element.firstChildElement("set-as-background").isElement()) {
-            if (canvas->m_backContent) {
-                qWarning("FotowallFile::readContent: only 1 element with <set-as-background/> allowed");
-                continue;
-            }
-            canvas->setBackContent(content);
-        }
-    }
-}
+    // save current canvas
+    canvas->toXml(canvasElement);
 
-
-bool FotowallFile::save(const QString & filePath, const Canvas * canvas)
-{
-    FotowallFile file;
-    file.saveProject(canvas->modeInfo());
-    file.saveCanvas(canvas);
-    file.saveContent(canvas);
-
-    // save to disk
-    bool saveOk = file.writeFile(filePath);
-
-    // if saved, add to the recent history
-    if (saveOk)
-        App::settings->addRecentFotowallUrl(QUrl(filePath));
-
-    // tell about the exit status
-    return saveOk;
-}
-
-void FotowallFile::saveContent(const Canvas * canvas)
-{
-    foreach (AbstractContent * content, canvas->m_content) {
-        QDomElement element = doc.createElement("dummy-renamed-element");
-        m_contentElement.appendChild(element);
-        content->toXml(element);
-
-        // add a flag to the background element
-        if (canvas->m_backContent == content) {
-            QDomElement bgEl = doc.createElement("set-as-background");
-            element.appendChild(bgEl);
-        }
-    }
-}
-
-void FotowallFile::saveCanvas(const Canvas *canvas)
-{
-    canvas->toXml(m_canvasElement);
-}
-
-void FotowallFile::saveProject(const CanvasModeInfo * modeInfo)
-{
-    // ### MOVE OUTTA HERE
-
-    // This element contains all the others.
-    m_rootElement = doc.createElement("fotowall");
-    // This is general informations about the project (title...)
-    m_projectElement = doc.createElement("project");
-    QDomElement projectModeElement = doc.createElement("mode");
-    m_projectElement.appendChild(projectModeElement);
-    // All the contents will be saved in this element
-    m_contentElement = doc.createElement("content");
-    // Canvas informations (background, colors...)
-    m_canvasElement = doc.createElement("desk");
-
-    // Add elements to the root node (fotowall).
-    m_rootElement.appendChild(m_projectElement);
-    m_rootElement.appendChild(m_canvasElement);
-    m_rootElement.appendChild(m_contentElement);
-
-    // Add the root (and all the sub-nodes) to the document
-    doc.appendChild(m_rootElement);
-
-    // Mode element
-    modeInfo->toXml(projectModeElement);
-}
-
-bool FotowallFile::writeFile(const QString & filePath)
-{
-    // Open fotowall file
+    // open the file for writing
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
         QMessageBox::warning(0, QObject::tr("File Error"), QObject::tr("Error saving to the Fotowall file '%1'").arg(filePath));
         return false;
     }
 
-    // Add at the begining : <?xml version="1.0" ?>
-    QDomNode noeud = doc.createProcessingInstruction("xml","version=\"1.0\" ");
-    doc.insertBefore(noeud, doc.firstChild());
-
-    // save in the file (4 spaces indent)
-    QTextStream out(&file);
-    doc.save(out, 4);
+    // save in the file (2 indent spaces)
+    QTextStream outStream(&file);
+    doc.save(outStream, 2);
     file.close();
+
+    // store a reference to the just written file
+    App::settings->addRecentFotowallUrl(QUrl(filePath));
     return true;
 }

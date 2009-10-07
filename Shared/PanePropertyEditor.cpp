@@ -140,8 +140,8 @@ void PaneWidget::pressing(const QPointF & pos)
 #if QT_VERSION >= 0x040600
     // animate the change
     QPropertyAnimation * ani = new QPropertyAnimation(this, "value");
-    ani->setEasingCurve(QEasingCurve::OutQuad);
-    ani->setDuration(300);
+    ani->setEasingCurve(QEasingCurve::OutQuart);
+    ani->setDuration(500);
     ani->setEndValue(endValue);
     ani->start(QPropertyAnimation::DeleteWhenStopped);
 #else

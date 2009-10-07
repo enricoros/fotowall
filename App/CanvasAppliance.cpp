@@ -77,7 +77,9 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // set the startup project mode
-    slotProjectTypeActivated(0);
+    int projectModeIndex = extCanvas->modeInfo()->projectMode();
+    ui.projectType->setCurrentIndex(projectModeIndex);
+    slotProjectTypeActivated(projectModeIndex);
 }
 
 CanvasAppliance::~CanvasAppliance()
@@ -122,7 +124,7 @@ bool CanvasAppliance::applianceCommand(int command)
             App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
             if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
                 fileName += ".fotowall";
-            return FotowallFile::save(fileName, m_extCanvas);}
+            return FotowallFile::saveV2(fileName, m_extCanvas);}
 
         // No Background
         case App::AC_ClearBackground:
@@ -373,7 +375,7 @@ void CanvasAppliance::slotProjectTypeActivated(int index)
         case 0: setNormalProject();     break;
         case 1: setCDProject();         break;
         case 2: setDVDProject();        break;
-        case 3: m_extCanvas->modeInfo()->setFixedSizeInches();
+        case 3: m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF());
                 setExactSizeProject();  break;
     }
     containerValueSet(App::CV_RefreshScene, true);
@@ -442,12 +444,12 @@ void CanvasAppliance::slotDecoClearTitle()
 
 void CanvasAppliance::slotRefreshCanvas()
 {
-    int mode = m_extCanvas->modeInfo()->projectMode();
+    int modeIndex = m_extCanvas->modeInfo()->projectMode();
     // called here not to have the unneeded size dialog
-    if (mode == CanvasModeInfo::ModeExactSize)
+    if (modeIndex == CanvasModeInfo::ModeExactSize)
         setExactSizeProject();
     else
-        slotProjectTypeActivated(mode);
+        ui.projectType->setCurrentIndex(modeIndex);
 }
 
 void CanvasAppliance::slotBackModeChanged()

@@ -43,7 +43,6 @@ class Canvas : public AbstractScene
 {
     Q_OBJECT
     public:
-        friend class FotowallFile;
         Canvas(const QSize & initialSize, QObject * parent = 0);
         ~Canvas();
 
@@ -90,8 +89,8 @@ class Canvas : public AbstractScene
         CanvasModeInfo * modeInfo() const;
         void setModeInfo(CanvasModeInfo * modeInfo);
 
-        void toXml(QDomElement & parentElement) const;
-        void fromXml(QDomElement & parentElement);
+        void toXml(QDomElement & canvasElement) const;
+        void fromXml(QDomElement & canvasElement);
 
         // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);

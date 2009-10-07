@@ -371,13 +371,13 @@ QWidget * AbstractContent::createPropertyWidget()
     return 0;
 }
 
-bool AbstractContent::fromXml(QDomElement & pe)
+bool AbstractContent::fromXml(QDomElement & contentElement)
 {
     // restore content properties
     QDomElement domElement;
 
     // Load image size saved in the rect node
-    domElement = pe.firstChildElement("rect");
+    domElement = contentElement.firstChildElement("rect");
     qreal x, y, w, h;
     x = domElement.firstChildElement("x").text().toDouble();
     y = domElement.firstChildElement("y").text().toDouble();
@@ -386,29 +386,29 @@ bool AbstractContent::fromXml(QDomElement & pe)
     resizeContents(QRect(x, y, w, h));
 
     // Load position coordinates
-    domElement = pe.firstChildElement("pos");
+    domElement = contentElement.firstChildElement("pos");
     x = domElement.firstChildElement("x").text().toDouble();
     y = domElement.firstChildElement("y").text().toDouble();
     setPos(x, y);
 
-    int zvalue = pe.firstChildElement("zvalue").text().toDouble();
+    int zvalue = contentElement.firstChildElement("zvalue").text().toDouble();
     setZValue(zvalue);
 
-    bool visible = pe.firstChildElement("visible").text().toInt();
+    bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
 
-    bool hasText = pe.firstChildElement("frame-text-enabled").text().toInt();
+    bool hasText = contentElement.firstChildElement("frame-text-enabled").text().toInt();
     setFrameTextEnabled(hasText);
     if (hasText) {
-        QString text = pe.firstChildElement("frame-text").text();
+        QString text = contentElement.firstChildElement("frame-text").text();
         setFrameText(text);
     }
 
-    quint32 frameClass = pe.firstChildElement("frame-class").text().toInt();
+    quint32 frameClass = contentElement.firstChildElement("frame-class").text().toInt();
     setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
 
     // restore transformation
-    QDomElement te = pe.firstChildElement("transformation");
+    QDomElement te = contentElement.firstChildElement("transformation");
     if (!te.isNull()) {
         m_perspectiveAngles = QPointF(te.attribute("xRot").toDouble(), te.attribute("yRot").toDouble());
 #if QT_VERSION < 0x040600
@@ -418,17 +418,17 @@ bool AbstractContent::fromXml(QDomElement & pe)
 #endif
         applyTransforms();
     }
-    domElement = pe.firstChildElement("mirror");
+    domElement = contentElement.firstChildElement("mirror");
     setMirrored(domElement.attribute("state").toInt());
 
     return true;
 }
 
-void AbstractContent::toXml(QDomElement & pe) const
+void AbstractContent::toXml(QDomElement & contentElement) const
 {
     // Save general item properties
-    pe.setTagName("abstract");
-    QDomDocument doc = pe.ownerDocument();
+    contentElement.setTagName("abstract");
+    QDomDocument doc = contentElement.ownerDocument();
     QDomElement domElement;
     QDomText text;
     QString valueStr;
@@ -449,10 +449,10 @@ void AbstractContent::toXml(QDomElement & pe) const
     yElement.appendChild(doc.createTextNode(QString::number(rect.top())));
     wElement.appendChild(doc.createTextNode(QString::number(rect.width())));
     hElement.appendChild(doc.createTextNode(QString::number(rect.height())));
-    pe.appendChild(rectParent);
+    contentElement.appendChild(rectParent);
 
     // Save the position
-    domElement= doc.createElement("pos");
+    domElement = doc.createElement("pos");
     xElement = doc.createElement("x");
     yElement = doc.createElement("y");
     valueStr.setNum(pos().x());
@@ -461,18 +461,18 @@ void AbstractContent::toXml(QDomElement & pe) const
     yElement.appendChild(doc.createTextNode(valueStr));
     domElement.appendChild(xElement);
     domElement.appendChild(yElement);
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
 
     // Save the stacking position
     domElement= doc.createElement("zvalue");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     valueStr.setNum(zValue());
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
     // Save the visible state
     domElement= doc.createElement("visible");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     valueStr.setNum(isVisible());
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
@@ -480,30 +480,26 @@ void AbstractContent::toXml(QDomElement & pe) const
     // Save the frame class
     valueStr.setNum(frameClass());
     domElement= doc.createElement("frame-class");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
     domElement= doc.createElement("frame-text-enabled");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     valueStr.setNum(frameTextEnabled());
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
     if(frameTextEnabled()) {
         domElement= doc.createElement("frame-text");
-        pe.appendChild(domElement);
+        contentElement.appendChild(domElement);
         text = doc.createTextNode(frameText());
         domElement.appendChild(text);
     }
 
     // save transformation
     const QTransform t = transform();
-    if (!t.isIdentity()
-#if QT_VERSION >= 0x040600
-        || rotation() != 0
-#endif
-        ) {
+    if (!t.isIdentity() || rotation() != 0) {
         domElement = doc.createElement("transformation");
         domElement.setAttribute("xRot", m_perspectiveAngles.x());
         domElement.setAttribute("yRot", m_perspectiveAngles.y());
@@ -512,11 +508,11 @@ void AbstractContent::toXml(QDomElement & pe) const
 #else
         domElement.setAttribute("zRot", rotation());
 #endif
-        pe.appendChild(domElement);
+        contentElement.appendChild(domElement);
     }
     domElement = doc.createElement("mirror");
     domElement.setAttribute("state", mirrored());
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
 
 }
 

@@ -19,32 +19,16 @@
 #ifndef __FotowallFile_h__
 #define __FotowallFile_h__
 
-#include <QObject>
-#include <QDomDocument>
-#include <QDomElement>
-class CanvasModeInfo;
+#include <QtGlobal>
 class Canvas;
 
-class FotowallFile
+namespace FotowallFile
 {
-    public:
-        // Loading
-        static bool read(const QString & filePath, Canvas * canvas);
-        static void readContent(Canvas * canvas, QDomElement & parentElement);
+    // read a .fotowall file and setup the Canvas
+    bool read(const QString & filePath, Canvas * canvas);
 
-        // Saving
-        static bool save(const QString & filePath, const Canvas * canvas);
-        void saveContent(const Canvas *);
-        void saveCanvas(const Canvas *);
-        void saveProject(const CanvasModeInfo *);
-        bool writeFile(const QString & filePath);
-
-    private:
-        QDomDocument doc;               // write
-        QDomElement m_rootElement;      // write
-        QDomElement m_projectElement;   // shared
-        QDomElement m_canvasElement;    // shared
-        QDomElement m_contentElement;   // shared
+    // save the given Canvas to a .fotowall file
+    bool saveV2(const QString & filePath, const Canvas * canvas);
 };
 
 #endif

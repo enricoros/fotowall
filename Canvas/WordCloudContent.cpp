@@ -52,13 +52,20 @@ QWidget * WordCloudContent::createPropertyWidget()
     return 0;
 }
 
-bool WordCloudContent::fromXml(QDomElement & /*parentElement*/)
+bool WordCloudContent::fromXml(QDomElement & contentElement)
 {
+    AbstractContent::fromXml(contentElement);
+
+    // ### load wordcloud properties
     return false;
 }
 
-void WordCloudContent::toXml(QDomElement & /*parentElement*/) const
+void WordCloudContent::toXml(QDomElement & contentElement) const
 {
+    AbstractContent::toXml(contentElement);
+    contentElement.setTagName("wordcloud");
+
+    // ### save all wordclouds
 }
 
 void WordCloudContent::drawContent(QPainter * painter, const QRect & targetRect)

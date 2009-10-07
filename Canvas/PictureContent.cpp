@@ -187,6 +187,8 @@ void PictureContent::addEffect(const PictureEffect & effect)
 
 void PictureContent::crop()
 {
+    if (!m_photo)
+        return;
     CroppingDialog dial(m_photo);
     if (dial.exec() != QDialog::Accepted)
         return;
@@ -214,16 +216,16 @@ QWidget * PictureContent::createPropertyWidget()
     return p;
 }
 
-bool PictureContent::fromXml(QDomElement & pe)
+bool PictureContent::fromXml(QDomElement & contentElement)
 {
-    AbstractContent::fromXml(pe);
+    AbstractContent::fromXml(contentElement);
 
     // load picture properties
-    QString path = pe.firstChildElement("path").text();
+    QString path = contentElement.firstChildElement("path").text();
 
     // build the afterload effects list
     m_afterLoadEffects.clear();
-    QDomElement effectsE = pe.firstChildElement("effects");
+    QDomElement effectsE = contentElement.firstChildElement("effects");
     for (QDomElement effectE = effectsE.firstChildElement("effect"); effectE.isElement(); effectE = effectE.nextSiblingElement("effect")) {
         PictureEffect fx;
         fx.effect = (PictureEffect::Effect)effectE.attribute("type").toInt();
@@ -251,25 +253,25 @@ bool PictureContent::fromXml(QDomElement & pe)
     return loadPhoto(path);
 }
 
-void PictureContent::toXml(QDomElement & pe) const
+void PictureContent::toXml(QDomElement & contentElement) const
 {
-    AbstractContent::toXml(pe);
-    pe.setTagName("picture");
+    AbstractContent::toXml(contentElement);
+    contentElement.setTagName("picture");
 
     // save picture properties
-    QDomDocument doc = pe.ownerDocument();
+    QDomDocument doc = contentElement.ownerDocument();
     QDomElement domElement;
     QDomText text;
 
     // save image url (wether is a local path or remote url)
     domElement = doc.createElement("path");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     text = doc.createTextNode(m_fileUrl);
     domElement.appendChild(text);
 
     // save the effects
     domElement = doc.createElement("effects");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     QList<PictureEffect> effectsList = m_afterLoadEffects;
     if (m_photo)
 #if QT_VERSION >= 0x040500

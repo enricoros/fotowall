@@ -74,20 +74,20 @@ void WebcamContent::setPixmap(const QPixmap & pixmap)
     emit contentChanged();
 }
 
-bool WebcamContent::fromXml(QDomElement & pe)
+bool WebcamContent::fromXml(QDomElement & contentElement)
 {
-    AbstractContent::fromXml(pe);
+    AbstractContent::fromXml(contentElement);
 
     // load video properties
     // ... nothing to do here...
     return true;
 }
 
-void WebcamContent::toXml(QDomElement & pe) const
+void WebcamContent::toXml(QDomElement & contentElement) const
 {
-    AbstractContent::toXml(pe);
-    pe.setTagName("webcam");
-    pe.setAttribute("input", m_input);
+    AbstractContent::toXml(contentElement);
+    contentElement.setTagName("webcam");
+    contentElement.setAttribute("input", m_input);
 
     // nothing to save here... (maybe the still pic?)
 }

@@ -54,8 +54,8 @@ class CanvasModeInfo
         Mode projectMode() const;
 
         // storage
-        void toXml(QDomElement & parentElement) const;
-        void fromXml(QDomElement & parentElement);
+        void toXml(QDomElement & canvasModeElement) const;
+        void fromXml(QDomElement & canvasModeElement);
 
     private:
         QSizeF m_realSizeInches;
