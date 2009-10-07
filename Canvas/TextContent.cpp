@@ -473,7 +473,7 @@ void TextContent::updateCache()
     m_cachePixmap = QPixmap(contentRect().size());
     m_cachePixmap.fill(QColor(0, 0, 0, 0));
     QPainter painter(&m_cachePixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::TextAntialiasing, true);
 
     ...
     */

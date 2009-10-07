@@ -133,7 +133,7 @@ void GlowEffectWidget::drawRadiusBox(QPainter *p)
 {
     p->save();
     p->setWindow(0, 0, 800, 600);
-    p->setRenderHint(QPainter::Antialiasing);
+    p->setRenderHint(QPainter::Antialiasing, true);
     p->setPen(QPen(Qt::black));
     p->setBrush(QBrush(QColor(193, 193, 193, 127)));
     p->drawRoundRect(10, 540, 160, 50, 10, 20);

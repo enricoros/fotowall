@@ -317,7 +317,7 @@ void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
 
     // draw high-resolution photo when exporting png
     if (RenderOpts::HQRendering) {
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+        painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, true);
         painter->drawPixmap(targetRect, *m_photo);
         return;
     }

@@ -745,7 +745,7 @@ QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRati
     result.fill(0);
 
     QPainter painter(&result);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform, true);
 
     QSize targetSize = sceneSize();
     targetSize.scale(iSize, aspectRatioMode);

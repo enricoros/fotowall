@@ -117,26 +117,26 @@ void BcExpander::mousePressEvent(QMouseEvent * event)
 
 void BcExpander::paintEvent(QPaintEvent * /*event*/)
 {
-    QPainter painter(this);
-    painter.setRenderHints(QPainter::Antialiasing, true);
-    painter.setPen(QPen(Qt::lightGray, 2));
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing, true);
+    p.setPen(QPen(Qt::lightGray, 2));
     if (m_count > 1) {
         if (QApplication::isRightToLeft()) {
-            painter.drawLine(5, 1, 1, 5);
-            painter.drawLine(1, 5, 5, 9);
-            painter.drawLine(5, 9, 9, 5);
+            p.drawLine(5, 1, 1, 5);
+            p.drawLine(1, 5, 5, 9);
+            p.drawLine(5, 9, 9, 5);
         } else {
-            painter.drawLine(5, 1, 9, 5);
-            painter.drawLine(9, 5, 5, 9);
-            painter.drawLine(5, 9, 1, 5);
+            p.drawLine(5, 1, 9, 5);
+            p.drawLine(9, 5, 5, 9);
+            p.drawLine(5, 9, 1, 5);
         }
     } else {
         if (QApplication::isRightToLeft()) {
-            painter.drawLine(7, 1, 3, 5);
-            painter.drawLine(3, 5, 7, 9);
+            p.drawLine(7, 1, 3, 5);
+            p.drawLine(3, 5, 7, 9);
         } else {
-            painter.drawLine(3, 1, 7, 5);
-            painter.drawLine(7, 5, 3, 9);
+            p.drawLine(3, 1, 7, 5);
+            p.drawLine(7, 5, 3, 9);
         }
     }
 }

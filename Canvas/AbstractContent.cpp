@@ -218,7 +218,7 @@ class MyTextItem : public QGraphicsTextItem {
         void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 )
         {
             painter->save();
-            painter->setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform );
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, true);
             QGraphicsTextItem::paint(painter, option, widget);
             painter->restore();
         }
@@ -765,8 +765,7 @@ void AbstractContent::slotSaveAs()
 
     // draw the transformed item onto the pixmap
     QPainter p(&image);
-    p.setRenderHint(QPainter::Antialiasing, true);
-    p.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    p.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, true);
     p.setTransform(tItemToPixmap);
     paint(&p, 0, 0);
     if (m_mirrorItem) {
