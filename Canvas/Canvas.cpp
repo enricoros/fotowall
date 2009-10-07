@@ -368,22 +368,46 @@ QString Canvas::titleText() const
     return m_titleText;
 }
 
+void Canvas::setCDMarkers()
+{
+    clearMarkers();
+    QSize screenPixels = m_modeInfo->fixedScreenPixels();
+    QPointF screenDpi = m_modeInfo->screenDpi();
+    float xDiameter = 4.75 * screenDpi.x();
+    float yDiameter = 4.75 * screenDpi.y();
+    m_markerItems.push_back(addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter));
+    xDiameter = 0.59 * screenDpi.x();
+    yDiameter = 0.59 * screenDpi.y();
+    m_markerItems.push_back(addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter));
+    xDiameter = 1.34 * screenDpi.x();
+    yDiameter = 1.34 * screenDpi.y();
+    m_markerItems.push_back(addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter));
+    xDiameter = 1.73 * screenDpi.x();
+    yDiameter = 1.73 * screenDpi.y();
+    m_markerItems.push_back(addEllipse((screenPixels.width() - xDiameter) / 2.0, (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter));
+}
+
 void Canvas::setDVDMarkers()
 {
     // Add informations items to show the back, front, and side position
+    clearMarkers();
     QPointF screenDpi = m_modeInfo->screenDpi();
     int faceW = 5.08 * screenDpi.x();
     int sideW = 0.67 * screenDpi.y();
-    m_markerItems.push_back(addLine(faceW, 0, faceW, height()));
-    m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height()));
+    int height = m_modeInfo->fixedScreenPixels().height();
+    m_markerItems.push_back(addLine(faceW, 0, faceW, height));
+    m_markerItems.push_back(addLine(faceW+sideW, 0, faceW+sideW, height));
 
-    QGraphicsTextItem *textBack = addText(tr("Back"), QFont("", 18, -1, true));
-    textBack->setPos( (faceW - textBack->document()->documentLayout()->documentSize().width())/2,
-                    (height() - textBack->document()->documentLayout()->documentSize().height())/2 );
+    QFont markerFont;
+    markerFont.setPointSize(18);
+    markerFont.setItalic(true);
+    QGraphicsTextItem *textBack = addText(tr("Back"), markerFont);
+    textBack->setPos((faceW - textBack->document()->documentLayout()->documentSize().width()) / 2,
+                     (height - textBack->document()->documentLayout()->documentSize().height()) / 2);
     m_markerItems.push_back(textBack);
-    QGraphicsTextItem *textFront = addText(tr("Front"), QFont("", 18, -1, true));
-    textFront->setPos( (faceW+sideW) + faceW/2 - textFront->document()->documentLayout()->documentSize().width()/2,
-                    (height() - textFront->document()->documentLayout()->documentSize().height())/2 );
+    QGraphicsTextItem *textFront = addText(tr("Front"), markerFont);
+    textFront->setPos((faceW+sideW) + faceW/2 - textFront->document()->documentLayout()->documentSize().width() / 2,
+                      (height - textFront->document()->documentLayout()->documentSize().height()) / 2);
     m_markerItems.push_back(textFront);
 }
 

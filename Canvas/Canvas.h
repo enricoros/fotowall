@@ -79,6 +79,7 @@ class Canvas : public AbstractScene
         bool bottomBarEnabled() const;
         void setTitleText(const QString & text);
         QString titleText() const;
+        void setCDMarkers();
         void setDVDMarkers();
         void clearMarkers();
 

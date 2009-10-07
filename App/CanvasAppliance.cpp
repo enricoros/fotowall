@@ -281,12 +281,12 @@ void CanvasAppliance::setNormalProject()
 
 void CanvasAppliance::setCDProject()
 {
-    m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
     containerValueSet(App::CV_ExPrint, true);
     ui.projectType->setCurrentIndex(1);
+    m_extCanvas->setCDMarkers();
 }
 
 void CanvasAppliance::setDVDProject()
