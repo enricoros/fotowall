@@ -13,33 +13,29 @@
  ***************************************************************************/
 
 #include "FrameFactory.h"
+
 #include "HeartFrame.h"
 #include "PlasmaFrame.h"
 #include "StandardFrame.h"
-#include "EmptyFrame.h"
+
+#include <QDirIterator>
 #include <QFile>
 #include <QSettings>
 
-Q_GLOBAL_STATIC(FrameFactory, d)
-#define FRAME_DEF 0x0001
-#define FRAME_HEART 0x0002
-#define FRAME_NOFRAME 0x0003
-#define SVG_BASE_CLASS 0x1000
+Q_GLOBAL_STATIC(FrameFactory, factoryInstance)
 #define FRAME_SVG_1 ":/plasma-frames/1.svg"
 #define FRAME_SVG_2 ":/plasma-frames/2.svg"
 #define FRAME_SVG_3 ":/plasma-frames/3.svg"
 #define FRAME_SVG_4 ":/plasma-frames/4.svg"
-#define DEFAULT_PANEL_FRAME SVG_BASE_CLASS
-#define DEFAULT_PICTURE_FRAME FRAME_DEF
 
 
 // STATICS
 QList<quint32> FrameFactory::classes()
 {
-    QList<quint32> classes = d()->m_svgMap.keys();
-    classes.prepend(FRAME_DEF);
-    classes.append(FRAME_HEART);
-    classes.append(FRAME_NOFRAME);
+    QList<quint32> classes = factoryInstance()->m_svgMap.keys();
+    classes.prepend(Frame::HeartFrame);
+    classes.prepend(Frame::StandardFrame);
+    classes.prepend(Frame::NoFrame);
     return classes;
 }
 
@@ -47,65 +43,61 @@ Frame * FrameFactory::createFrame(quint32 frameClass)
 {
     if (frameClass == Frame::NoFrame)
         return 0;
-    else if (frameClass == FRAME_DEF)
+    else if (frameClass == Frame::StandardFrame)
         return new StandardFrame();
-    else if (frameClass == FRAME_HEART)
+    else if (frameClass == Frame::HeartFrame)
         return new HeartFrame();
-    else if (frameClass == FRAME_NOFRAME)
-        return new EmptyFrame();
-    else if (d()->m_svgMap.contains(frameClass))
-        return new PlasmaFrame(frameClass, d()->m_svgMap[ frameClass ]);
-    else
-        qWarning( "FrameFactory::createFrame: unknown frame for class %x, falling back to default", frameClass);
+    else if (factoryInstance()->m_svgMap.contains(frameClass))
+        return new PlasmaFrame(frameClass, factoryInstance()->m_svgMap[ frameClass ]);
+    qWarning( "FrameFactory::createFrame: unknown frame for class %x, falling back to default", frameClass);
     return 0;
 }
 
 Frame * FrameFactory::defaultPanelFrame()
 {
-    return createFrame(d()->m_defaultPanel);
+    return createFrame(factoryInstance()->m_defaultPanel);
 }
 
 Frame * FrameFactory::defaultPictureFrame()
 {
-    return createFrame(d()->m_defaultPicture);
+    return createFrame(factoryInstance()->m_defaultPicture);
 }
 
 void FrameFactory::addSvgFrame(const QString & fileName)
 {
-    d()->m_svgMap[ d()->m_svgClassIndex++ ] = fileName;
+    factoryInstance()->m_svgMap[ factoryInstance()->m_svgClassIndex++ ] = fileName;
 }
 
 quint32 FrameFactory::defaultPanelClass()
 {
-    return d()->m_defaultPanel;
+    return factoryInstance()->m_defaultPanel;
 }
 
 void FrameFactory::setDefaultPanelClass(quint32 frameClass)
 {
-    d()->m_defaultPanel = frameClass;
+    factoryInstance()->m_defaultPanel = frameClass;
 }
 
 quint32 FrameFactory::defaultPictureClass()
 {
-    return d()->m_defaultPicture;
+    return factoryInstance()->m_defaultPicture;
 }
 
 void FrameFactory::setDefaultPictureClass(quint32 frameClass)
 {
-    d()->m_defaultPicture = frameClass;
+    factoryInstance()->m_defaultPicture = frameClass;
 }
 
 // class impl
 FrameFactory::FrameFactory()
-    : m_defaultPanel(DEFAULT_PANEL_FRAME)
-    , m_defaultPicture(DEFAULT_PICTURE_FRAME)
+    : m_defaultPanel(Frame::BasePlasmaFrame)
+    , m_defaultPicture(Frame::StandardFrame)
 {
     // init default frames
-    m_svgClassIndex = SVG_BASE_CLASS;
-    m_svgMap[m_svgClassIndex++] = FRAME_SVG_1;
-    m_svgMap[m_svgClassIndex++] = FRAME_SVG_2;
-    m_svgMap[m_svgClassIndex++] = FRAME_SVG_3;
-    m_svgMap[m_svgClassIndex++] = FRAME_SVG_4;
+    m_svgClassIndex = Frame::BasePlasmaFrame;
+    QDirIterator dIt(":/plasma-frames", QDir::Files | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags);
+    while (dIt.hasNext())
+        m_svgMap[m_svgClassIndex++] = dIt.next();
 
     // add stored frames
     QSettings s;

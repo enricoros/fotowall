@@ -22,7 +22,7 @@ class HeartFrame : public StandardFrame
 {
     public:
         // ::Frame
-        quint32 frameClass() const;
+        quint32 frameClass() const { return Frame::HeartFrame; }
         QRect frameRect(const QRect & contentsRect) const;
         bool clipContents() const;
         QPainterPath contentsClipPath(const QRect & contentsRect) const;

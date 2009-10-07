@@ -59,8 +59,8 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     // select the frame
     quint32 frameClass = m_content->frameClass();
     if (frameClass != Frame::NoFrame) {
-        for (int i = 0; i < m_commonUi->listWidget->count(); ++i) {
-            QListWidgetItem * item = m_commonUi->listWidget->item(i);
+        for (int i = 0; i < m_commonUi->framesList->count(); ++i) {
+            QListWidgetItem * item = m_commonUi->framesList->item(i);
             if (item->data(Qt::UserRole).toUInt() == frameClass) {
                 item->setSelected(true);
                 break;
@@ -78,11 +78,10 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(backgroundMe()));
     connect(m_commonUi->save, SIGNAL(clicked()), m_content, SLOT(slotSaveAs()));
     connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(deleteItem()), Qt::QueuedConnection);
-    // autoconnection doesn't work because we don't do ->setupUi(this), so here we connect manually
-    connect(m_commonUi->applyLooks, SIGNAL(clicked()), this, SLOT(on_applyLooks_clicked()));
-    connect(m_commonUi->newFrame, SIGNAL(clicked()), this, SLOT(on_newFrame_clicked()));
-    connect(m_commonUi->listWidget, SIGNAL(itemSelectionChanged()), this, SLOT(on_listWidget_itemSelectionChanged()));
-    connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(on_reflection_toggled(bool)));
+    connect(m_commonUi->newFrame, SIGNAL(clicked()), this, SLOT(slotAddFrame()));
+    connect(m_commonUi->lookApplyAll, SIGNAL(clicked()), this, SLOT(slotLookApplyAll()));
+    connect(m_commonUi->framesList, SIGNAL(itemSelectionChanged()), this, SLOT(slotFrameSelectionChanged()));
+    connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(slotReflectionToggled(bool)));
 
     // ITEM setup
     setWidget(widget);
@@ -179,10 +178,19 @@ void AbstractConfig::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 
 void AbstractConfig::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
-    // draw custom background
-    painter->save();
-    m_frame->drawFrame(painter, boundingRect().toRect(), false, false);
-    painter->restore();
+    // speed up svg drawing and unbreak proxy widget
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, false);
+
+    // draw cached frame background
+    QRect rect = boundingRect().toRect();
+    if (m_backPixmap.isNull() || m_backPixmap.size() != rect.size()) {
+        m_backPixmap = QPixmap(rect.size());
+        m_backPixmap.fill(Qt::transparent);
+        QPainter backPainter(&m_backPixmap);
+        if (m_frame)
+            m_frame->drawFrame(&backPainter, m_backPixmap.rect(), false, false);
+    }
+    painter->drawPixmap(rect.topLeft(), m_backPixmap);
 
     // unbreak parent
     QGraphicsProxyWidget::paint(painter, option, widget);
@@ -196,16 +204,28 @@ void AbstractConfig::resizeEvent(QGraphicsSceneResizeEvent * event)
 
 void AbstractConfig::populateFrameList()
 {
-    m_commonUi->listWidget->clear();
+    m_commonUi->framesList->clear();
     // add frame items to the listview
     foreach (quint32 frameClass, FrameFactory::classes()) {
         // make icon from frame preview
+        QIcon icon;
         Frame * frame = FrameFactory::createFrame(frameClass);
-        QIcon icon(frame->preview(32, 32));
-        delete frame;
+        if (!frame) {
+            // generate the 'empty frame' preview
+            QPixmap emptyPixmap(32, 32);
+            emptyPixmap.fill(Qt::transparent);
+            QPainter pixPainter(&emptyPixmap);
+            pixPainter.drawLine(4, 4, 27, 27);
+            pixPainter.drawLine(4, 27, 27, 4);
+            pixPainter.end();
+            icon = emptyPixmap;
+        } else {
+            icon = frame->preview(32, 32);
+            delete frame;
+        }
 
         // add the item to the list (and attach it the class)
-        QListWidgetItem * item = new QListWidgetItem(icon, QString(), m_commonUi->listWidget);
+        QListWidgetItem * item = new QListWidgetItem(icon, QString(), m_commonUi->framesList);
         item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         item->setData(Qt::UserRole, frameClass);
     }
@@ -226,35 +246,33 @@ void AbstractConfig::layoutButtons()
     }
 }
 
-void AbstractConfig::on_newFrame_clicked()
+void AbstractConfig::slotAddFrame()
 {
     QStringList framesPath = QFileDialog::getOpenFileNames(0, tr("Choose frame images"), QString(), tr("Images (*.svg)"));
-    if (!framesPath.isEmpty())
-    foreach (QString frame, framesPath) {
-        FrameFactory::addSvgFrame(frame);
+    if (!framesPath.isEmpty()) {
+        foreach (QString frame, framesPath)
+            FrameFactory::addSvgFrame(frame);
+        populateFrameList();
     }
-    populateFrameList();
 }
 
-void AbstractConfig::on_applyLooks_clicked()
+void AbstractConfig::slotLookApplyAll()
 {
     emit applyLook(m_content->frameClass(), m_content->mirrored(), true);
 }
 
-void AbstractConfig::on_listWidget_itemSelectionChanged()
+void AbstractConfig::slotFrameSelectionChanged()
 {
     // get the frameClass
-    QList<QListWidgetItem *> items = m_commonUi->listWidget->selectedItems();
+    QList<QListWidgetItem *> items = m_commonUi->framesList->selectedItems();
     if (items.isEmpty())
         return;
     QListWidgetItem * item = items.first();
     quint32 frameClass = item->data(Qt::UserRole).toUInt();
-    if (!frameClass)
-        return;
     emit applyLook(frameClass, m_content->mirrored(), false);
 }
 
-void AbstractConfig::on_reflection_toggled(bool checked)
+void AbstractConfig::slotReflectionToggled(bool checked)
 {
     RenderOpts::LastMirrored = checked;
     emit applyLook(m_content->frameClass(), checked, false);

@@ -41,11 +41,6 @@ static QPainterPath heartPath(const QRect & r)
     return path;
 }
 
-quint32 HeartFrame::frameClass() const
-{
-    return 0x0002;
-}
-
 QRect HeartFrame::frameRect(const QRect & contentsRect) const
 {
     int xM = contentsRect.width() / 20;

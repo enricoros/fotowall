@@ -263,7 +263,7 @@ void PictureContent::toXml(QDomElement & contentElement) const
     QDomElement domElement;
     QDomText text;
 
-    // save image url (wether is a local path or remote url)
+    // save image url (whether is a local path or remote url)
     domElement = doc.createElement("path");
     contentElement.appendChild(domElement);
     text = doc.createTextNode(m_fileUrl);
@@ -298,10 +298,10 @@ void PictureContent::toXml(QDomElement & contentElement) const
 void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
 {
     // draw progress
-    if (m_progress > 0.0 && m_progress < 1.0) {
+    if (m_progress > 0.0 && m_progress < 1.0 && !RenderOpts::HQRendering) {
         painter->setPen(Qt::NoPen);
         painter->setBrush(Qt::blue);
-        painter->drawPie(QRect(-10, -10, 20, 20), 90 * 16, (int)(-5760.0 * m_progress));
+        painter->drawPie(QRect(targetRect.center(), QSize(20, 20)), 90 * 16, (int)(-5760.0 * m_progress));
     }
 
     // skip if no photo

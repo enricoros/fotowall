@@ -163,10 +163,7 @@ void AbstractContent::resizeContents(const QRect & rect, bool keepRatio)
         }
     }
 
-    if (m_frame)
-        m_frameRect = m_frame->frameRect(m_contentRect);
-    else
-        m_frameRect = m_contentRect;
+    m_frameRect = m_frame ? m_frame->frameRect(m_contentRect) : m_contentRect;
 
     layoutChildren();
     update();
@@ -196,8 +193,9 @@ void AbstractContent::setFrame(Frame * frame)
 {
     delete m_frame;
     m_frame = frame;
-    if (m_frame)
-        FrameFactory::setDefaultPictureClass(m_frame->frameClass());
+    FrameFactory::setDefaultPictureClass(frameClass());
+    if (!m_frame && m_frameTextItem)
+        m_frameTextItem->hide();
     resizeContents(m_contentRect);
     layoutChildren();
     update();
@@ -206,9 +204,7 @@ void AbstractContent::setFrame(Frame * frame)
 
 quint32 AbstractContent::frameClass() const
 {
-    if (!m_frame)
-        return Frame::NoFrame;
-    return m_frame->frameClass();
+    return m_frame ? m_frame->frameClass() : Frame::NoFrame;
 }
 
 #include <QGraphicsTextItem>
@@ -535,33 +531,35 @@ QRectF AbstractContent::boundingRect() const
 
 void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    const bool opaqueContent = contentOpaque();
+    // find out whether to draw the selection
     const bool drawSelection = RenderOpts::HQRendering ? false : isSelected();
-    const QRect frameRect = m_frameRect.toRect();
 
     if (m_frame) {
         // draw the Frame
-        m_frame->drawFrame(painter, frameRect, drawSelection && !RenderOpts::OpenGLWindow, opaqueContent);
+        m_frame->drawFrame(painter, m_frameRect.toRect(), drawSelection, contentOpaque());
 
         // use clip path for contents, if set
         if (m_frame->clipContents())
             painter->setClipPath(m_frame->contentsClipPath(m_contentRect));
     }
 
-    // paint the inner contents
-    if (drawSelection && RenderOpts::OpenGLWindow)
+#if 0
+    if (RenderOpts::OpenGLWindow && drawSelection)
         painter->setCompositionMode(QPainter::CompositionMode_Plus);
-    painter->translate(m_contentRect.topLeft());
-    drawContent(painter, QRect(0, 0, m_contentRect.width(), m_contentRect.height()));
+#endif
 
-    // draw the selection only as done in EmptyFrame.cpp
-    /*if (drawSelection) {
+    // paint the inner contents
+    const QRect tcRect = QRect(0, 0, m_contentRect.width(), m_contentRect.height());
+    painter->translate(m_contentRect.topLeft());
+    drawContent(painter, tcRect);
+
+    // overlay a selection
+    if (drawSelection && !m_frame) {
         painter->setRenderHint(QPainter::Antialiasing, true);
-        painter->setPen(QPen(RenderOpts::hiColor, 3.0));
+        painter->setPen(QPen(RenderOpts::hiColor, 2.0));
         painter->setBrush(Qt::NoBrush);
-        // FIXME: this draws OUTSIDE (but inside the safe 2px area)
-        painter->drawRect(m_contentRect);
-    }*/
+        painter->drawRect(tcRect);
+    }
 }
 
 void AbstractContent::selectionChanged(bool /*selected*/)
@@ -801,23 +799,39 @@ void AbstractContent::layoutChildren()
     foreach (CornerItem * corner, m_cornerItems)
         corner->relayout(m_contentRect);
 
-    // layout buttons even if no frame
-    if (!m_frame) {
-        int right = m_frameRect.right() - 12;
-        int bottom = m_frameRect.bottom() + 2; // if no frame, offset the buttons a little on bottom
+    // layout controls and text
+    if (m_frame) {
+        m_frame->layoutButtons(m_controlItems, m_frameRect.toRect());
+        if (m_frameTextItem)
+            m_frame->layoutText(m_frameTextItem, m_frameRect.toRect());
+    } else {
+        // layout controls
+        const int spacing = 4;
+        int left = m_frameRect.left();
+        int top = m_frameRect.top();
+        int right = m_frameRect.right();
+        int bottom = m_frameRect.bottom();
+        int offset = right;
         foreach (ButtonItem * button, m_controlItems) {
-            button->setPos(right - button->width() / 2, bottom - button->height() / 2);
-            right -= button->width() + 4;
+            switch (button->buttonType()) {
+                case ButtonItem::FlipH:
+                    button->setPos(right - button->width() / 2, (top + bottom) / 2);
+                    break;
+
+                case ButtonItem::FlipV:
+                    button->setPos((left + right) / 2, top + button->height() / 2);
+                    break;
+
+                default:
+                    button->setPos(offset - button->width() / 2, bottom - button->height() / 2);
+                    offset -= button->width() + spacing;
+                    break;
+            }
         }
-        return;
+        // hide text, if present
+        if (m_frameTextItem)
+            m_frameTextItem->hide();
     }
-
-    // layout all controls
-    m_frame->layoutButtons(m_controlItems, m_frameRect.toRect());
-
-    // layout text, if present
-    if (m_frameTextItem)
-        m_frame->layoutText(m_frameTextItem, m_frameRect.toRect());
 }
 
 void AbstractContent::applyTransforms()

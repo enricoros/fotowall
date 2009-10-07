@@ -29,6 +29,7 @@ Work in progress:
 
 Done:
 
+* CD/DVD markers
 * Perspective Property editor
 * Google Images search (by Marco Bavagnoli)
 * New Content: WordCloud
