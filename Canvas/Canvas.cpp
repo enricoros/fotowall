@@ -289,6 +289,47 @@ bool Canvas::forceFieldEnabled() const
     return m_forceFieldTimer;
 }
 
+#if QT_VERSION >= 0x040600
+#include <QPropertyAnimation>
+#define ANIMATE_PARAM(object, propName, duration, endValue) \
+    {QPropertyAnimation * ani = new QPropertyAnimation(object, propName, object); \
+    ani->setEasingCurve(QEasingCurve::InOutCubic); \
+    ani->setDuration(duration); \
+    ani->setEndValue(endValue); \
+    ani->start(QPropertyAnimation::DeleteWhenStopped);}
+#else
+#define ANIMATE_PARAM(instance, propName, duration, endValue) \
+    instance->setProperty(propName, endValue);
+#endif
+
+void Canvas::randomizeContents(bool position, bool rotation, bool opacity)
+{
+    QRectF r = sceneRect();
+    r.adjust(r.width()/6, r.height()/6, -r.width()/6, -r.height()/6);
+    foreach (AbstractContent * content, m_content) {
+
+        // randomize position
+        if (position) {
+            QPointF pos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
+            ANIMATE_PARAM(content, "pos", 200, pos);
+        }
+
+        // randomize rotation
+        if (rotation) {
+            int rot = -30 + (qrand() % 60);
+            ANIMATE_PARAM(content, "rotation", 1000, rot);
+        }
+
+        // randomize opacity
+        if (opacity) {
+#if QT_VERSION >= 0x040500
+            qreal opa = 0.5 + (qreal)(qrand() % 100) / 99.0;
+            ANIMATE_PARAM(content, "opacity", 2000, opa);
+#endif
+        }
+    }
+}
+
 /// Decorations
 void Canvas::setBackMode(int mode)
 {
@@ -498,20 +539,7 @@ CanvasModeInfo * Canvas::modeInfo() const
 {
     return m_modeInfo;
 }
-/*
-void Canvas::setModeInfo(CanvasModeInfo * modeInfo)
-{
-    // set the new modeinfo
-    delete m_modeInfo;
-    m_modeInfo = modeInfo;
 
-    // apply the fixed size (if defined)
-    resize(sceneSize());
-
-    // notify listeners (if any!) about the change
-    emit refreshCanvas();
-}
-*/
 void Canvas::toXml(QDomElement & canvasElement) const
 {
     QDomDocument doc = canvasElement.ownerDocument();
@@ -712,8 +740,7 @@ void Canvas::fromXml(QDomElement & canvasElement)
 
     // refresh all
     update();
-    resize(sceneSize());
-    emit refreshCanvas();
+    emit geometryChanged();
 }
 
 void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)

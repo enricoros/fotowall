@@ -67,6 +67,7 @@ class Canvas : public AbstractScene
         // arrangement
         void setForceFieldEnabled(bool enabled);
         bool forceFieldEnabled() const;
+        void randomizeContents(bool position, bool rotation, bool opacity);
 
         // decorations
         void setBackMode(int mode);
@@ -90,7 +91,6 @@ class Canvas : public AbstractScene
 
         // change size and project mode (CD cover, DVD,...).
         CanvasModeInfo * modeInfo() const;
-        //void setModeInfo(CanvasModeInfo * modeInfo);
 
         void toXml(QDomElement & canvasElement) const;
         void fromXml(QDomElement & canvasElement);
@@ -101,7 +101,6 @@ class Canvas : public AbstractScene
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 
     Q_SIGNALS:
-        void refreshCanvas();
         void backModeChanged();
         void showPropertiesWidget(QWidget * widget);
 

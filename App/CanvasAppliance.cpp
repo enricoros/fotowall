@@ -151,35 +151,27 @@ bool CanvasAppliance::applianceCommand(int command)
 QMenu * CanvasAppliance::createArrangeMenu()
 {
     QMenu * menu = new QMenu(m_dummyWidget);
-
+    QAction * aAU = new QAction(tr("Random Placement"), menu);
+     aAU->setShortcut(QKeySequence("CTRL+SHIFT+R"));
+     connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeRandom()));
+     menu->addAction(aAU);
+    QAction * aAS = new QAction(tr("Shaped Placement"), menu);
+     aAS->setShortcut(QKeySequence("CTRL+SHIFT+S"));
+     aAS->setEnabled(false);
+     connect(aAS, SIGNAL(triggered()), this, SLOT(slotArrangeShaped()));
+     menu->addAction(aAS);
+    QAction * aAC = new QAction(tr("Color Collage"), menu);
+     aAC->setShortcut(QKeySequence("CTRL+SHIFT+C"));
+     aAC->setEnabled(false);
+     connect(aAC, SIGNAL(triggered()), this, SLOT(slotArrangeColorCollage()));
+     menu->addAction(aAC);
+    menu->addSeparator();
     QAction * aForceField = new QAction(tr("Enable force field"), menu);
-    aForceField->setCheckable(true);
-    aForceField->setChecked(m_extCanvas->forceFieldEnabled());
-    connect(aForceField, SIGNAL(toggled(bool)), this, SLOT(slotArrangeForceField(bool)));
-    menu->addAction(aForceField);
-
-    QAction * aNP = new QAction(tr("Auto-arrange new pictures"), menu);
-    aNP->setCheckable(true);
-    aNP->setChecked(false);
-    //connect(aNP, SIGNAL(toggled(bool)), this, SLOT(slotArrangeNew(bool)));
-    menu->addAction(aNP);
-
-    menu->addSeparator()->setText(tr("Rearrange"));
-
-    QAction * aAU = new QAction(tr("Random"), menu);
-    connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeRandom()));
-    menu->addAction(aAU);
-
-    QAction * aAS = new QAction(tr("Shaped"), menu);
-    aAS->setEnabled(false);
-    //connect(aAS, SIGNAL(triggered()), this, SLOT(slotArrangeShape()));
-    menu->addAction(aAS);
-
-    QAction * aAC = new QAction(tr("Collage"), menu);
-    aAC->setEnabled(false);
-    //connect(aAC, SIGNAL(triggered()), this, SLOT(slotArrangeCollage()));
-    menu->addAction(aAC);
-
+     aForceField->setShortcut(QKeySequence("CTRL+SHIFT+F"));
+     aForceField->setCheckable(true);
+     aForceField->setChecked(m_extCanvas->forceFieldEnabled());
+     connect(aForceField, SIGNAL(toggled(bool)), this, SLOT(slotArrangeForceField(bool)));
+     menu->addAction(aForceField);
     return menu;
 }
 
@@ -188,52 +180,50 @@ QMenu * CanvasAppliance::createBackgroundMenu()
     QMenu * menu = new QMenu(m_dummyWidget);
     m_gBackActions = new QActionGroup(menu);
     connect(m_gBackActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackMode(QAction*)));
-
     QAction * aNone = new QAction(tr("None"), menu);
-    aNone->setToolTip(tr("Transparency can be saved to PNG images only."));
-    aNone->setProperty("id", 1);
-    aNone->setCheckable(true);
-    aNone->setActionGroup(m_gBackActions);
-    menu->addAction(aNone);
-
+     aNone->setToolTip(tr("Transparency can be saved to PNG images only."));
+     aNone->setShortcut(QKeySequence("CTRL+1"));
+     aNone->setProperty("id", 1);
+     aNone->setCheckable(true);
+     aNone->setActionGroup(m_gBackActions);
+     menu->addAction(aNone);
     QAction * aGradient = new QAction(tr("Gradient"), menu);
-    aGradient->setProperty("id", 2);
-    aGradient->setCheckable(true);
-    aGradient->setActionGroup(m_gBackActions);
-    menu->addAction(aGradient);
-
+     aGradient->setShortcut(QKeySequence("CTRL+2"));
+     aGradient->setProperty("id", 2);
+     aGradient->setCheckable(true);
+     aGradient->setActionGroup(m_gBackActions);
+     menu->addAction(aGradient);
     QAction * aContent = new QAction(tr("Content"), menu);
-    aContent->setToolTip(tr("Double click on any content to put it on background."));
-    aContent->setEnabled(false);
-    aContent->setProperty("id", 3);
-    aContent->setCheckable(true);
-    aContent->setActionGroup(m_gBackActions);
-    menu->addAction(aContent);
-
+     aContent->setToolTip(tr("Double click on any content to put it on background."));
+     aContent->setShortcut(QKeySequence("CTRL+3"));
+     aContent->setEnabled(false);
+     aContent->setProperty("id", 3);
+     aContent->setCheckable(true);
+     aContent->setActionGroup(m_gBackActions);
+     menu->addAction(aContent);
     menu->addSeparator();
-
     QMenu * mScaling = new QMenu(tr("Content Aspect Ratio"), menu);
-    m_gBackRatioActions = new QActionGroup(menu);
-    connect(m_gBackRatioActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackRatio(QAction*)));
-    menu->addMenu(mScaling);
-
+     m_gBackRatioActions = new QActionGroup(menu);
+     connect(m_gBackRatioActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackRatio(QAction*)));
+     menu->addMenu(mScaling);
     QAction * aRatioKeepEx = new QAction(tr("Keep proportions by expanding"), mScaling);
-    aRatioKeepEx->setProperty("mode", (int)Qt::KeepAspectRatioByExpanding);
-    aRatioKeepEx->setCheckable(true);
-    aRatioKeepEx->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioKeepEx);
-
+     aRatioKeepEx->setShortcut(QKeySequence("CTRL+4"));
+     aRatioKeepEx->setProperty("mode", (int)Qt::KeepAspectRatioByExpanding);
+     aRatioKeepEx->setCheckable(true);
+     aRatioKeepEx->setActionGroup(m_gBackRatioActions);
+     mScaling->addAction(aRatioKeepEx);
     QAction * aRatioKeep = new QAction(tr("Keep proportions"), mScaling);
-    aRatioKeep->setProperty("mode", (int)Qt::KeepAspectRatio);
-    aRatioKeep->setCheckable(true);
-    aRatioKeep->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioKeep);
-
+     aRatioKeep->setShortcut(QKeySequence("CTRL+5"));
+     aRatioKeep->setProperty("mode", (int)Qt::KeepAspectRatio);
+     aRatioKeep->setCheckable(true);
+     aRatioKeep->setActionGroup(m_gBackRatioActions);
+     mScaling->addAction(aRatioKeep);
     QAction * aRatioIgnore = new QAction(tr("Ignore proportions"), mScaling);
-    aRatioIgnore->setProperty("mode", (int)Qt::IgnoreAspectRatio);
-    aRatioIgnore->setCheckable(true);
-    aRatioIgnore->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioIgnore);
+     aRatioIgnore->setShortcut(QKeySequence("CTRL+6"));
+     aRatioIgnore->setProperty("mode", (int)Qt::IgnoreAspectRatio);
+     aRatioIgnore->setCheckable(true);
+     aRatioIgnore->setActionGroup(m_gBackRatioActions);
+     mScaling->addAction(aRatioIgnore);
 
     // initially check the action
     slotBackModeChanged();
@@ -244,63 +234,61 @@ QMenu * CanvasAppliance::createBackgroundMenu()
 QMenu * CanvasAppliance::createDecorationMenu()
 {
     QMenu * menu = new QMenu(m_dummyWidget);
-
     QAction * aTop = new QAction(tr("Top bar"), menu);
-    aTop->setCheckable(true);
-    aTop->setChecked(m_extCanvas->topBarEnabled());
-    connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
-    menu->addAction(aTop);
-
+     aTop->setCheckable(true);
+     aTop->setChecked(m_extCanvas->topBarEnabled());
+     connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
+     menu->addAction(aTop);
     QAction * aBottom = new QAction(tr("Bottom bar"), menu);
-    aBottom->setCheckable(true);
-    aBottom->setChecked(m_extCanvas->bottomBarEnabled());
-    connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
-    menu->addAction(aBottom);
-
+     aBottom->setCheckable(true);
+     aBottom->setChecked(m_extCanvas->bottomBarEnabled());
+     connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
+     menu->addAction(aBottom);
     menu->addSeparator();
-
     QAction * aSetTitle = new QAction(tr("Set title..."), menu);
-    connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
-    menu->addAction(aSetTitle);
-
+     connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
+     menu->addAction(aSetTitle);
     QAction * aClearTitle = new QAction(tr("Clear title"), menu);
-    connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotDecoClearTitle()));
-    menu->addAction(aClearTitle);
-
+     connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotDecoClearTitle()));
+     menu->addAction(aClearTitle);
     return menu;
 }
 
 void CanvasAppliance::setNormalProject()
 {
+    ui.projectType->setCurrentIndex(0);
+    m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches();
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
-    m_extCanvas->clearMarkers();
-    containerValueSet(App::CV_ExPrint, false);
-    ui.projectType->setCurrentIndex(0);
+    m_extCanvas->adjustSize();
+    containerValueSet(App::CV_ExportPrint, false);
 }
 
 void CanvasAppliance::setCDProject()
 {
+    ui.projectType->setCurrentIndex(1);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    containerValueSet(App::CV_ExPrint, true);
-    ui.projectType->setCurrentIndex(1);
+    m_extCanvas->adjustSize();
     m_extCanvas->setCDMarkers();
+    containerValueSet(App::CV_ExportPrint, true);
 }
 
 void CanvasAppliance::setDVDProject()
 {
+    ui.projectType->setCurrentIndex(2);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
     m_extCanvas->modeInfo()->setPrintLandscape(true);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
-    containerValueSet(App::CV_ExPrint, true);
-    ui.projectType->setCurrentIndex(2);
+    m_extCanvas->adjustSize();
     m_extCanvas->setDVDMarkers();
+    containerValueSet(App::CV_ExportPrint, true);
 }
 
 void CanvasAppliance::setExactSizeProject()
 {
+    ui.projectType->setCurrentIndex(3);
     m_extCanvas->clearMarkers();
     if (!m_extCanvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
@@ -321,8 +309,8 @@ void CanvasAppliance::setExactSizeProject()
         m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(cm?(double)w/2.54:w, cm?(double)h/2.54:h));
     }
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
-    containerValueSet(App::CV_ExPrint, true);
-    ui.projectType->setCurrentIndex(3);
+    m_extCanvas->adjustSize();
+    containerValueSet(App::CV_ExportPrint, true);
 }
 
 
@@ -394,7 +382,6 @@ void CanvasAppliance::slotProjectTypeActivated(int index)
         case 3: m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF());
                 setExactSizeProject();  break;
     }
-    containerValueSet(App::CV_RefreshScene, true);
 }
 
 void CanvasAppliance::slotSetBackMode(QAction* action)
@@ -414,20 +401,19 @@ void CanvasAppliance::slotArrangeForceField(bool checked)
     m_extCanvas->setForceFieldEnabled(checked);
 }
 
-#include "Canvas/AbstractContent.h"
+void CanvasAppliance::slotArrangeColorCollage()
+{
+    HERE
+}
+
 void CanvasAppliance::slotArrangeRandom()
 {
-    QRectF r = m_extCanvas->sceneRect();
-    foreach (QGraphicsItem * item, m_extCanvas->items()) {
-        AbstractContent * content = dynamic_cast<AbstractContent *>(item);
-        if (!content)
-            continue;
-        content->setPos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
-        content->setRotation(-30 + (qrand() % 60));
-#if QT_VERSION >= 0x040500
-        content->setOpacity((qreal)(qrand() % 100) / 99.0);
-#endif
-    }
+    m_extCanvas->randomizeContents(true, true, true);
+}
+
+void CanvasAppliance::slotArrangeShaped()
+{
+    HERE
 }
 
 void CanvasAppliance::slotDecoTopBar(bool checked)

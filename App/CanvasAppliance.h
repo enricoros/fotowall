@@ -69,7 +69,9 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         void slotSetBackMode(QAction* action);
         void slotSetBackRatio(QAction* action);
         void slotArrangeForceField(bool enabled);
+        void slotArrangeColorCollage();
         void slotArrangeRandom();
+        void slotArrangeShaped();
         void slotDecoTopBar(bool checked);
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();

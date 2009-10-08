@@ -31,14 +31,15 @@ class QPointF;
 class AbstractContent : public AbstractDisposeable
 {
     Q_OBJECT
-    Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
-    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
+#if QT_VERSION < 0x040600
+    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
+    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
+#endif
 #if QT_VERSION < 0x040600 && QT_VERSION >= 0x040500
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
 #endif
-#if QT_VERSION < 0x040600
-    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
-#endif
+    Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
+    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
         virtual ~AbstractContent();
