@@ -17,6 +17,7 @@
 #include "Shared/AbstractScene.h"
 #include "Shared/ButtonsDialog.h"
 
+#include <QApplication>
 #include <QCommonStyle>
 #include <QPainter>
 #include <QPixmap>
@@ -33,6 +34,8 @@ class RubberBandStyle : public QCommonStyle
             if (element != CE_RubberBand)
                 return QCommonStyle::drawControl(element, option, painter, widget);
             painter->save();
+            // ### Qt WORKAROUND this unbreaks the OpenGL rubberband drawing
+            painter->resetTransform();
             QColor color = option->palette.color(QPalette::Highlight);
             painter->setPen(color);
             color.setAlpha(80);
@@ -144,6 +147,16 @@ void SceneView::setOpenGL(bool enabled)
     newViewport->setStyle(m_style);
     setViewport(newViewport);
     setViewportUpdateMode(m_openGL ? QGraphicsView::FullViewportUpdate : QGraphicsView::MinimalViewportUpdate);
+
+    // transparent background for raster, standard Base on opengl
+    QPalette pal = qApp->palette();
+    if (m_openGL)
+        pal.setBrush(QPalette::Base, pal.window());
+    else
+        pal.setBrush(QPalette::Base, Qt::NoBrush);
+    setPalette(pal);
+
+    // issue an update, just in case..
     update();
 }
 #else

@@ -534,7 +534,9 @@ static bool dwmEnableBlurBehindWindow(QWidget * widget, bool enable)
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
 #if QT_VERSION >= 0x040500
+#ifdef Q_OS_WIN
     static Qt::WindowFlags initialWindowFlags = windowFlags();
+#endif
     if (transparent) {
         // one-time warning
         ButtonsDialog warning("GoTransparent", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"), QDialogButtonBox::Ok, true, true);
