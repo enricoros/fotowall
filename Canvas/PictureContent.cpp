@@ -329,7 +329,7 @@ void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
     } else {
         if (m_cachedPhoto.isNull() || m_cachedPhoto.size() != targetRect.size())
             m_cachedPhoto = m_photo->scaled(targetRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        painter->setRenderHints(QPainter::SmoothPixmapTransform);
+        painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
         painter->drawPixmap(targetRect.topLeft(), m_cachedPhoto);
     }
 

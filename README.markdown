@@ -144,6 +144,9 @@ improvement and the code is kept clean and small.
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
+bugs:
+ - check that opengl is *completely* disabled when Qt misses the opengl module
+ - check make uninstall
 * transform pictures with a 'magneto tool' (good on grids)
 * handle initial load-save after being shown. also evaluate normalized rescaling.
 * save/restore background transparency/ratio state (or check current bg code)
