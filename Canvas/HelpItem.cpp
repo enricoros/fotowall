@@ -89,7 +89,8 @@ QRectF HelpItem::boundingRect() const
 
 void HelpItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    m_frame->drawFrame(painter, boundingRect().toRect(), false, false);
+    if (m_frame)
+        m_frame->drawFrame(painter, boundingRect().toRect(), false, false);
 }
 
 void HelpItem::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)

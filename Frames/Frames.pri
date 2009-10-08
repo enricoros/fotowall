@@ -1,5 +1,4 @@
 HEADERS += \
-    Frames/EmptyFrame.h \
     Frames/FrameFactory.h \
     Frames/Frame.h \
     Frames/HeartFrame.h \
@@ -7,7 +6,6 @@ HEADERS += \
     Frames/StandardFrame.h
 
 SOURCES += \
-    Frames/EmptyFrame.cpp \
     Frames/FrameFactory.cpp \
     Frames/Frame.cpp \
     Frames/HeartFrame.cpp \

@@ -14,7 +14,6 @@
 
 #include "WordCloudContent.h"
 
-#include "App/XmlRead.h"
 #include "WordCloud/WordScanner.h"
 #include "Canvas.h"
 
@@ -53,23 +52,25 @@ QWidget * WordCloudContent::createPropertyWidget()
     return 0;
 }
 
-bool WordCloudContent::fromXml(QDomElement & /*parentElement*/)
+bool WordCloudContent::fromXml(QDomElement & contentElement)
 {
+    AbstractContent::fromXml(contentElement);
+
+    // ### load wordcloud properties
     return false;
 }
 
-void WordCloudContent::toXml(QDomElement & /*parentElement*/) const
+void WordCloudContent::toXml(QDomElement & contentElement) const
 {
+    AbstractContent::toXml(contentElement);
+    contentElement.setTagName("wordcloud");
+
+    // ### save all wordclouds
 }
 
 void WordCloudContent::drawContent(QPainter * painter, const QRect & targetRect)
 {
     m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
-}
-
-QPixmap WordCloudContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const
-{
-    return QPixmap(100, 100);
 }
 
 bool WordCloudContent::contentOpaque() const

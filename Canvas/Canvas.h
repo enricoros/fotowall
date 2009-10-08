@@ -32,19 +32,17 @@ class CanvasViewContent;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
+class PictureSearchItem;
 class QNetworkAccessManager;
 class QTimer;
 class TextContent;
 class WebcamContent;
-class WebContentSelectorItem;
 class WordCloudContent;
 
 class Canvas : public AbstractScene
 {
     Q_OBJECT
     public:
-        friend class XmlRead;
-        friend class XmlSave;
         Canvas(const QSize & initialSize, QObject * parent = 0);
         ~Canvas();
 
@@ -63,12 +61,13 @@ class Canvas : public AbstractScene
         void selectAllContent(bool selected = true);
 
         // selectors
-        void setWebContentSelectorVisible(bool visible);
-        bool webContentSelectorVisible() const;
+        void setSearchPicturesVisible(bool visible);
+        bool searchPicturesVisible() const;
 
         // arrangement
         void setForceFieldEnabled(bool enabled);
         bool forceFieldEnabled() const;
+        void randomizeContents(bool position, bool rotation, bool opacity);
 
         // decorations
         void setBackMode(int mode);
@@ -81,18 +80,20 @@ class Canvas : public AbstractScene
         bool bottomBarEnabled() const;
         void setTitleText(const QString & text);
         QString titleText() const;
+        void setCDMarkers();
+        void setDVDMarkers();
+        void clearMarkers();
 
         // save, restore, load, help
         bool pendingChanges() const;
         void showIntroduction();
         void blinkBackGradients();
 
-        // change size and project mode (CD cover, DVD,...).
+        // change size and project mode (CD, DVD, etc)
         CanvasModeInfo * modeInfo() const;
-        void setModeInfo(CanvasModeInfo * modeInfo);
 
-        void toXml(QDomElement &de) const;
-        void fromXml(QDomElement &de);
+        void toXml(QDomElement & canvasElement) const;
+        void fromXml(QDomElement & canvasElement);
 
         // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
@@ -100,7 +101,6 @@ class Canvas : public AbstractScene
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 
     Q_SIGNALS:
-        void refreshCanvas();
         void backModeChanged();
         void showPropertiesWidget(QWidget * widget);
 
@@ -122,9 +122,8 @@ class Canvas : public AbstractScene
         TextContent * createText(const QPoint & pos);
         WebcamContent * createWebcam(int input, const QPoint & pos);
         WordCloudContent * createWordCloud(const QPoint & pos);
+        void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
-        void setDVDMarkers();
-        void clearMarkers();
 
         CanvasModeInfo * m_modeInfo;
         QNetworkAccessManager * m_networkAccessManager;
@@ -145,7 +144,7 @@ class Canvas : public AbstractScene
         QPixmap m_backTile;
         QPixmap m_backCache;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
-        WebContentSelectorItem * m_webContentSelector;
+        PictureSearchItem * m_pictureSearch;
         QTimer * m_forceFieldTimer;
         QTime m_forceFieldTime;
 

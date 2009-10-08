@@ -18,8 +18,12 @@
 
 #include "CanvasModeInfo.h"
 
+#define DEFAULT_SCREEN_DPI 96
+#define DEFAULT_PRINT_DPI 300
+
 CanvasModeInfo::CanvasModeInfo()
-  : m_printDpi(300)
+  : m_canvasDpi(DEFAULT_SCREEN_DPI, DEFAULT_SCREEN_DPI)
+  , m_printDpi(DEFAULT_PRINT_DPI)
   , m_landscape(false)
   , m_projectMode(ModeNormal)
 {
@@ -91,4 +95,71 @@ void CanvasModeInfo::setProjectMode(Mode mode)
 CanvasModeInfo::Mode CanvasModeInfo::projectMode() const
 {
     return m_projectMode;
+}
+
+void CanvasModeInfo::toXml(QDomElement & canvasModeElement) const
+{
+    QDomDocument doc = canvasModeElement.ownerDocument();
+
+    // <mode><id>m_projectmode</id>...
+    QDomElement modeIdElement = doc.createElement("id");
+     canvasModeElement.appendChild(modeIdElement);
+     modeIdElement.appendChild(doc.createTextNode(QString::number((int)m_projectMode)));
+
+    // additional saving if not ModeNormal
+    if (!m_realSizeInches.isEmpty()) {
+        QDomElement modeSizeElement = doc.createElement("size");
+         canvasModeElement.appendChild(modeSizeElement);
+        QDomElement wElement = doc.createElement("w");
+         modeSizeElement.appendChild(wElement);
+         wElement.appendChild(doc.createTextNode(QString::number(m_realSizeInches.width())));
+        QDomElement hElement = doc.createElement("h");
+         modeSizeElement.appendChild(hElement);
+         hElement.appendChild(doc.createTextNode(QString::number(m_realSizeInches.height())));
+        QDomElement dpiXElement = doc.createElement("dpiX");
+         modeSizeElement.appendChild(dpiXElement);
+         dpiXElement.appendChild(doc.createTextNode(QString::number(m_canvasDpi.x())));
+        QDomElement dpiYElement = doc.createElement("dpiY");
+         modeSizeElement.appendChild(dpiYElement);
+         dpiYElement.appendChild(doc.createTextNode(QString::number(m_canvasDpi.y())));
+    }
+
+    // printing information
+    if (m_printDpi != DEFAULT_PRINT_DPI || m_landscape) {
+        QDomElement printElement = doc.createElement("print");
+         canvasModeElement.appendChild(printElement);
+        QDomElement dpiElement = doc.createElement("dpi");
+         printElement.appendChild(dpiElement);
+         dpiElement.appendChild(doc.createTextNode(QString::number(m_printDpi)));
+        QDomElement landscapeElement = doc.createElement("landscape");
+         printElement.appendChild(landscapeElement);
+         landscapeElement.appendChild(doc.createTextNode(QString::number(m_landscape)));
+    }
+}
+
+void CanvasModeInfo::fromXml(QDomElement & canvasModeElement)
+{
+    // eventual size and dpi
+    QDomElement sizeElement = canvasModeElement.firstChildElement("size");
+    if (!sizeElement.isNull()) {
+        float w = sizeElement.firstChildElement("w").text().toFloat();
+        float h = sizeElement.firstChildElement("h").text().toFloat();
+        m_realSizeInches = QSizeF(w, h);
+        float dpiX = sizeElement.firstChildElement("dpiX").text().toFloat();
+        float dpiY = sizeElement.firstChildElement("dpiY").text().toFloat();
+        if (dpiX > 1 && dpiY > 1)
+            m_canvasDpi = QPointF(dpiX, dpiY);
+    }
+
+    // printing information
+    QDomElement printElement = canvasModeElement.firstChildElement("print");
+    if (!printElement.isNull()) {
+        m_printDpi = printElement.firstChildElement("dpi").text().toDouble();
+        m_landscape = printElement.firstChildElement("landscape").text().toInt();
+    }
+
+    // restore mode
+    int mode = canvasModeElement.firstChildElement("id").text().toInt();
+    m_projectMode = (CanvasModeInfo::Mode)mode;
+    // ### notify the changes?
 }

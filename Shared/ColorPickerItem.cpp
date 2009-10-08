@@ -125,9 +125,9 @@ void ColorPickerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem *
         if (m_scale < 0.01)
             return;
 #endif
-        painter->setRenderHints(QPainter::Antialiasing, true);
+        painter->setRenderHint(QPainter::Antialiasing, true);
         if (m_scale > 0.9)
-            painter->setRenderHints(QPainter::SmoothPixmapTransform, true);
+            painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
     }
 
     // draw hue-sat pixmap
@@ -204,9 +204,9 @@ void ColorPickerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     indicatorPath.lineTo(valueX - 4.0, valueY + 3.5);
     indicatorPath.lineTo(valueX - 4.0, valueY - 3.5);
     painter->setBrush(Qt::black);
-    painter->setRenderHints(QPainter::Antialiasing, true);
+    painter->setRenderHint(QPainter::Antialiasing, true);
     painter->drawPath(indicatorPath);
-    painter->setRenderHints(QPainter::Antialiasing, false);
+    painter->setRenderHint(QPainter::Antialiasing, false);
 }
 
 void ColorPickerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)

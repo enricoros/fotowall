@@ -31,14 +31,15 @@ class QPointF;
 class AbstractContent : public AbstractDisposeable
 {
     Q_OBJECT
-    Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
-    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
+#if QT_VERSION < 0x040600
+    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
+    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
+#endif
 #if QT_VERSION < 0x040600 && QT_VERSION >= 0x040500
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
 #endif
-#if QT_VERSION < 0x040600
-    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
-#endif
+    Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
+    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
         virtual ~AbstractContent();
@@ -78,10 +79,10 @@ class AbstractContent : public AbstractDisposeable
         // to be reimplemented by subclasses
         virtual QString contentName() const = 0;
         virtual QWidget * createPropertyWidget();
-        virtual bool fromXml(QDomElement & parentElement);
-        virtual void toXml(QDomElement & parentElement) const;
+        virtual bool fromXml(QDomElement & contentElement);
+        virtual void toXml(QDomElement & contentElement) const;
         virtual void drawContent(QPainter * painter, const QRect & targetRect) = 0;
-        virtual QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const = 0;
+        virtual QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
 
         // ::QGraphicsItem
         QRectF boundingRect() const;

@@ -145,16 +145,16 @@ QWidget * TextContent::createPropertyWidget()
     return p;
 }
 
-bool TextContent::fromXml(QDomElement & pe)
+bool TextContent::fromXml(QDomElement & contentElement)
 {
     // FIRST load text properties and shape
     // NOTE: order matters here, we don't want to override the size restored later
-    QString text = pe.firstChildElement("html-text").text();
+    QString text = contentElement.firstChildElement("html-text").text();
     setHtml(text);
 
     // load default font
     QDomElement domElement;
-    domElement = pe.firstChildElement("default-font");
+    domElement = contentElement.firstChildElement("default-font");
     if (domElement.isElement()) {
         QFont font;
         font.setFamily(domElement.attribute("font-family"));
@@ -163,7 +163,7 @@ bool TextContent::fromXml(QDomElement & pe)
     }
 
     // load shape
-    domElement = pe.firstChildElement("shape");
+    domElement = contentElement.firstChildElement("shape");
     if (domElement.isElement()) {
         bool shapeEnabled = domElement.attribute("enabled").toInt();
         domElement = domElement.firstChildElement("control-points");
@@ -183,24 +183,24 @@ bool TextContent::fromXml(QDomElement & pe)
     }
 
     // THEN restore the geometry
-    AbstractContent::fromXml(pe);
+    AbstractContent::fromXml(contentElement);
 
     return true;
 }
 
-void TextContent::toXml(QDomElement & pe) const
+void TextContent::toXml(QDomElement & contentElement) const
 {
-    AbstractContent::toXml(pe);
-    pe.setTagName("text");
+    AbstractContent::toXml(contentElement);
+    contentElement.setTagName("text");
 
     // save text properties
-    QDomDocument doc = pe.ownerDocument();
+    QDomDocument doc = contentElement.ownerDocument();
     QDomElement domElement;
     QDomText text;
 
     // save text (in html)
     domElement = doc.createElement("html-text");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     text = doc.createTextNode(m_text->toHtml());
     domElement.appendChild(text);
 
@@ -208,12 +208,12 @@ void TextContent::toXml(QDomElement & pe) const
     domElement = doc.createElement("default-font");
     domElement.setAttribute("font-family", m_text->defaultFont().family());
     domElement.setAttribute("font-size", m_text->defaultFont().pointSize());
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
 
     // save shape and control points
     QDomElement shapeElement = doc.createElement("shape");
     shapeElement.setAttribute("enabled", hasShape());
-    pe.appendChild(shapeElement);
+    contentElement.appendChild(shapeElement);
     if (hasShape()) {
         QList<QPointF> cp = m_shapeEditor->controlPoints();
         domElement = doc.createElement("control-points");
@@ -316,29 +316,6 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
 #endif
 
     painter->restore();
-}
-
-QPixmap TextContent::renderContent(const QSize & size, Qt::AspectRatioMode /*ratio*/) const
-{
-    // get the base empty pixmap
-    QSize textSize = boundingRect().size().toSize();
-    const float w = size.width(),
-                h = size.height(),
-                tw = textSize.width(),
-                th = textSize.height();
-    if (w < 2 || h < 2 || tw < 2 || th < 2)
-        return QPixmap();
-
-    // draw text (centered, maximized keeping aspect ratio)
-    float scale = qMin(w / (tw + 16), h / (th + 16));
-    QPixmap pix(size);
-    pix.fill(Qt::transparent);
-    QPainter pixPainter(&pix);
-    pixPainter.translate((w - (int)((float)tw * scale)) / 2, (h - (int)((float)th * scale)) / 2);
-    pixPainter.scale(scale, scale);
-    m_text->drawContents(&pixPainter);
-    pixPainter.end();
-    return pix;
 }
 
 int TextContent::contentHeightForWidth(int width) const
@@ -496,7 +473,7 @@ void TextContent::updateCache()
     m_cachePixmap = QPixmap(contentRect().size());
     m_cachePixmap.fill(QColor(0, 0, 0, 0));
     QPainter painter(&m_cachePixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::TextAntialiasing, true);
 
     ...
     */

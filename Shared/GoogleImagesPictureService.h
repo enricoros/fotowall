@@ -31,7 +31,8 @@ class GoogleImagesPictureService : public AbstractPictureService
         GoogleImagesPictureService(QNetworkAccessManager * manager, QObject * parent = 0);
         ~GoogleImagesPictureService();
 
-        void configure();
+        // simple configuration interface. this should be queried and set dinammically
+        void configure(int contentType, int sizeType);
 
         // ::AbstractPictureService
         void searchPics(const QString & text);
@@ -44,6 +45,9 @@ class GoogleImagesPictureService : public AbstractPictureService
     private:
         bool parseGoogleSearchReply(const QByteArray &);
         bool startNextThumbnailJobs(int count = 1);
+
+        int m_contentType;
+        int m_sizeType;
 
         QRegExp m_rxHref;
         QRegExp m_rxData;

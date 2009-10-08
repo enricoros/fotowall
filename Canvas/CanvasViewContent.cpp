@@ -14,7 +14,8 @@
 
 #include "CanvasViewContent.h"
 
-#include "App/XmlRead.h"
+// ### FIXME! bad crossing!
+#include "App/FotowallFile.h"
 #include "Canvas.h"
 
 #include <QFileInfo>
@@ -38,7 +39,7 @@ bool CanvasViewContent::loadCanvas(const QString & filePath, bool /*keepRatio*/,
     // create a Canvas
     m_canvas = new Canvas(viewRect.size(), this);
     connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
-    bool ok = XmlRead::read(filePath, m_canvas);
+    bool ok = FotowallFile::read(filePath, m_canvas);
 
     // customize the item
     setFrameTextEnabled(setName);
@@ -67,11 +68,6 @@ void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect
         m_canvas->render(painter, targetRect, m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
     else
         painter->fillRect(targetRect, Qt::red);
-}
-
-QPixmap CanvasViewContent::renderContent(const QSize & /*size*/, Qt::AspectRatioMode /*ratio*/) const
-{
-    return QPixmap(100, 100);
 }
 
 bool CanvasViewContent::contentOpaque() const

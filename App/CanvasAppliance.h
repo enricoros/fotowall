@@ -45,7 +45,7 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         void setNormalProject();
         void setCDProject();
         void setDVDProject();
-        void setExactSizeProject();
+        void setExactSizeProject(bool usePrevious);
 
     private:
         Ui::CanvasApplianceElements ui;
@@ -58,25 +58,26 @@ class CanvasAppliance : public Appliance::AbstractAppliance
 
         // actions in the add contents box
         void slotAddCanvas();
-        void slotAddFlickrToggled(bool on);
         void slotAddPicture();
         void slotAddText();
         void slotAddWebcam();
         void slotAddWordCloud();
+        void slotSearchPicturesToggled(bool on);
 
         // actions in the canvas box
-        void slotProjectTypeActivated(int index);
+        void slotProjectComboActivated(int index);
         void slotSetBackMode(QAction* action);
         void slotSetBackRatio(QAction* action);
         void slotArrangeForceField(bool enabled);
+        void slotArrangeColorCollage();
         void slotArrangeRandom();
+        void slotArrangeShaped();
         void slotDecoTopBar(bool checked);
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
         void slotDecoClearTitle();
 
         // notifications from the canvas
-        void slotRefreshCanvas();
         void slotBackModeChanged();
         void slotBackRatioChanged();
 

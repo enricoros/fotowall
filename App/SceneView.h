@@ -38,9 +38,6 @@ class SceneView : public QGraphicsView
         bool openGL() const;
         void setOpenGL(bool enabled);
 
-        // layout scene and scrollbars
-        void layoutScene();
-
         // layout widgets inside this
         void addOverlayWidget(QWidget * widget, bool top = true);
 
@@ -55,6 +52,10 @@ class SceneView : public QGraphicsView
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
         QVBoxLayout * m_viewportLayout;
+
+    private Q_SLOTS:
+        // layout scene and scrollbars
+        void layoutScene();
 };
 
 #endif

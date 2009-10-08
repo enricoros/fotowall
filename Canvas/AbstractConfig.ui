@@ -235,7 +235,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="applyLooks">
+            <widget class="QToolButton" name="lookApplyAll">
              <property name="text">
               <string>apply to all</string>
              </property>
@@ -266,7 +266,7 @@
           </spacer>
          </item>
          <item row="1" column="1">
-          <widget class="QListWidget" name="listWidget">
+          <widget class="QListWidget" name="framesList">
            <property name="minimumSize">
             <size>
              <width>310</width>

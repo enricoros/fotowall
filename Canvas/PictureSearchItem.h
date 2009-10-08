@@ -12,26 +12,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WebContentSelectorItem_h__
-#define __WebContentSelectorItem_h__
+#ifndef __PictureSearchItem_h__
+#define __PictureSearchItem_h__
 
-#include <QGraphicsWidget>
+#include <QGraphicsProxyWidget>
 class AbstractPictureService;
-class Frame;
 class GSuggestCompletion;
 class QLabel;
 class QNetworkAccessManager;
 class SearchSymbol;
-class Ui_WebContentSelectorItem;
+class Ui_PictureSearchItem;
 
+// uncomment following to enable Ariya Hidayat's google suggestions code
 //#define ENABLE_GCOMPLETION
 
-class WebContentSelectorItem : public QGraphicsWidget
+class PictureSearchItem : public QGraphicsProxyWidget
 {
     Q_OBJECT
     public:
-        WebContentSelectorItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent = 0);
-        ~WebContentSelectorItem();
+        PictureSearchItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent = 0);
+        ~PictureSearchItem();
 
         // used to download pictures
         AbstractPictureService * pictureService() const;
@@ -39,17 +39,19 @@ class WebContentSelectorItem : public QGraphicsWidget
         // ::QGraphicsItem
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 
+        static int LastProvider;
+
     private:
         QNetworkAccessManager * m_extAccessManager;
-        Frame * m_frame;
         AbstractPictureService * m_pictureService;
 #ifdef ENABLE_GCOMPLETION
         GSuggestCompletion * m_completion;
 #endif
-        Ui_WebContentSelectorItem * m_ui;
+        Ui_PictureSearchItem * m_ui;
         SearchSymbol * m_searchSymbol;
 
     private Q_SLOTS:
+        void slotProviderChanged();
         void slotSearchClicked();
         void slotSearchBegun();
         void slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h);

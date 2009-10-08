@@ -21,8 +21,8 @@
 #include "App.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
+#include "FotowallFile.h"
 #include "Settings.h"
-#include "XmlSave.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -41,18 +41,18 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     ui.b1->setDefaultAction(ui.aAddPicture);
     ui.b2->setDefaultAction(ui.aAddText);
     ui.b3->setDefaultAction(ui.aAddWebcam);
-    ui.b4->setDefaultAction(ui.aAddFlickr);
+    ui.b4->setDefaultAction(ui.aAddWordCloud);
     ui.b5->setDefaultAction(ui.aAddCanvas);
-    ui.b6->setDefaultAction(ui.aAddWordCloud);
+    ui.b6->setDefaultAction(ui.aSearchPictures);
     connect(ui.aAddPicture, SIGNAL(triggered()), this, SLOT(slotAddPicture()));
     connect(ui.aAddText, SIGNAL(triggered()), this, SLOT(slotAddText()));
     connect(ui.aAddWebcam, SIGNAL(triggered()), this, SLOT(slotAddWebcam()));
-    connect(ui.aAddFlickr, SIGNAL(toggled(bool)), this, SLOT(slotAddFlickrToggled(bool)));
     connect(ui.aAddCanvas, SIGNAL(triggered()), this, SLOT(slotAddCanvas()));
     connect(ui.aAddWordCloud, SIGNAL(triggered()), this, SLOT(slotAddWordCloud()));
+    connect(ui.aSearchPictures, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
-    connect(ui.projectType, SIGNAL(activated(int)), this, SLOT(slotProjectTypeActivated(int)));
+    connect(ui.projectCombo, SIGNAL(activated(int)), this, SLOT(slotProjectComboActivated(int)));
 
     // configure the appliance
     sceneSet(m_extCanvas);
@@ -68,7 +68,6 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     // react to canvas
     m_extCanvas->modeInfo()->setScreenDpi(sDpiX, sDpiY);
     m_extCanvas->modeInfo()->setPrintDpi(300);
-    connect(m_extCanvas, SIGNAL(refreshCanvas()), this, SLOT(slotRefreshCanvas()));
     connect(m_extCanvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
 
@@ -77,7 +76,8 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // set the startup project mode
-    slotProjectTypeActivated(0);
+    int projectModeIndex = extCanvas->modeInfo()->projectMode();
+    slotProjectComboActivated(projectModeIndex);
 }
 
 CanvasAppliance::~CanvasAppliance()
@@ -122,7 +122,7 @@ bool CanvasAppliance::applianceCommand(int command)
             App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
             if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
                 fileName += ".fotowall";
-            return XmlSave::save(fileName, m_extCanvas);}
+            return FotowallFile::saveV2(fileName, m_extCanvas);}
 
         // No Background
         case App::AC_ClearBackground:
@@ -149,35 +149,27 @@ bool CanvasAppliance::applianceCommand(int command)
 QMenu * CanvasAppliance::createArrangeMenu()
 {
     QMenu * menu = new QMenu(m_dummyWidget);
-
+    QAction * aAU = new QAction(tr("Random Placement"), menu);
+     aAU->setShortcut(QKeySequence("CTRL+SHIFT+R"));
+     connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeRandom()));
+     menu->addAction(aAU);
+    QAction * aAS = new QAction(tr("Shaped Placement"), menu);
+     aAS->setShortcut(QKeySequence("CTRL+SHIFT+S"));
+     aAS->setEnabled(false);
+     connect(aAS, SIGNAL(triggered()), this, SLOT(slotArrangeShaped()));
+     menu->addAction(aAS);
+    QAction * aAC = new QAction(tr("Color Collage"), menu);
+     aAC->setShortcut(QKeySequence("CTRL+SHIFT+C"));
+     aAC->setEnabled(false);
+     connect(aAC, SIGNAL(triggered()), this, SLOT(slotArrangeColorCollage()));
+     menu->addAction(aAC);
+    menu->addSeparator();
     QAction * aForceField = new QAction(tr("Enable force field"), menu);
-    aForceField->setCheckable(true);
-    aForceField->setChecked(m_extCanvas->forceFieldEnabled());
-    connect(aForceField, SIGNAL(toggled(bool)), this, SLOT(slotArrangeForceField(bool)));
-    menu->addAction(aForceField);
-
-    QAction * aNP = new QAction(tr("Auto-arrange new pictures"), menu);
-    aNP->setCheckable(true);
-    aNP->setChecked(false);
-    //connect(aNP, SIGNAL(toggled(bool)), this, SLOT(slotArrangeNew(bool)));
-    menu->addAction(aNP);
-
-    menu->addSeparator()->setText(tr("Rearrange"));
-
-    QAction * aAU = new QAction(tr("Random"), menu);
-    connect(aAU, SIGNAL(triggered()), this, SLOT(slotArrangeRandom()));
-    menu->addAction(aAU);
-
-    QAction * aAS = new QAction(tr("Shaped"), menu);
-    aAS->setEnabled(false);
-    //connect(aAS, SIGNAL(triggered()), this, SLOT(slotArrangeShape()));
-    menu->addAction(aAS);
-
-    QAction * aAC = new QAction(tr("Collage"), menu);
-    aAC->setEnabled(false);
-    //connect(aAC, SIGNAL(triggered()), this, SLOT(slotArrangeCollage()));
-    menu->addAction(aAC);
-
+     aForceField->setShortcut(QKeySequence("CTRL+SHIFT+F"));
+     aForceField->setCheckable(true);
+     aForceField->setChecked(m_extCanvas->forceFieldEnabled());
+     connect(aForceField, SIGNAL(toggled(bool)), this, SLOT(slotArrangeForceField(bool)));
+     menu->addAction(aForceField);
     return menu;
 }
 
@@ -186,52 +178,50 @@ QMenu * CanvasAppliance::createBackgroundMenu()
     QMenu * menu = new QMenu(m_dummyWidget);
     m_gBackActions = new QActionGroup(menu);
     connect(m_gBackActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackMode(QAction*)));
-
     QAction * aNone = new QAction(tr("None"), menu);
-    aNone->setToolTip(tr("Transparency can be saved to PNG images only."));
-    aNone->setProperty("id", 1);
-    aNone->setCheckable(true);
-    aNone->setActionGroup(m_gBackActions);
-    menu->addAction(aNone);
-
+     aNone->setToolTip(tr("Transparency can be saved to PNG images only."));
+     aNone->setShortcut(QKeySequence("CTRL+1"));
+     aNone->setProperty("id", 1);
+     aNone->setCheckable(true);
+     aNone->setActionGroup(m_gBackActions);
+     menu->addAction(aNone);
     QAction * aGradient = new QAction(tr("Gradient"), menu);
-    aGradient->setProperty("id", 2);
-    aGradient->setCheckable(true);
-    aGradient->setActionGroup(m_gBackActions);
-    menu->addAction(aGradient);
-
+     aGradient->setShortcut(QKeySequence("CTRL+2"));
+     aGradient->setProperty("id", 2);
+     aGradient->setCheckable(true);
+     aGradient->setActionGroup(m_gBackActions);
+     menu->addAction(aGradient);
     QAction * aContent = new QAction(tr("Content"), menu);
-    aContent->setToolTip(tr("Double click on any content to put it on background."));
-    aContent->setEnabled(false);
-    aContent->setProperty("id", 3);
-    aContent->setCheckable(true);
-    aContent->setActionGroup(m_gBackActions);
-    menu->addAction(aContent);
-
+     aContent->setToolTip(tr("Double click on any content to put it on background."));
+     aContent->setShortcut(QKeySequence("CTRL+3"));
+     aContent->setEnabled(false);
+     aContent->setProperty("id", 3);
+     aContent->setCheckable(true);
+     aContent->setActionGroup(m_gBackActions);
+     menu->addAction(aContent);
     menu->addSeparator();
-
     QMenu * mScaling = new QMenu(tr("Content Aspect Ratio"), menu);
-    m_gBackRatioActions = new QActionGroup(menu);
-    connect(m_gBackRatioActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackRatio(QAction*)));
-    menu->addMenu(mScaling);
-
+     m_gBackRatioActions = new QActionGroup(menu);
+     connect(m_gBackRatioActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackRatio(QAction*)));
+     menu->addMenu(mScaling);
     QAction * aRatioKeepEx = new QAction(tr("Keep proportions by expanding"), mScaling);
-    aRatioKeepEx->setProperty("mode", (int)Qt::KeepAspectRatioByExpanding);
-    aRatioKeepEx->setCheckable(true);
-    aRatioKeepEx->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioKeepEx);
-
+     aRatioKeepEx->setShortcut(QKeySequence("CTRL+4"));
+     aRatioKeepEx->setProperty("mode", (int)Qt::KeepAspectRatioByExpanding);
+     aRatioKeepEx->setCheckable(true);
+     aRatioKeepEx->setActionGroup(m_gBackRatioActions);
+     mScaling->addAction(aRatioKeepEx);
     QAction * aRatioKeep = new QAction(tr("Keep proportions"), mScaling);
-    aRatioKeep->setProperty("mode", (int)Qt::KeepAspectRatio);
-    aRatioKeep->setCheckable(true);
-    aRatioKeep->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioKeep);
-
+     aRatioKeep->setShortcut(QKeySequence("CTRL+5"));
+     aRatioKeep->setProperty("mode", (int)Qt::KeepAspectRatio);
+     aRatioKeep->setCheckable(true);
+     aRatioKeep->setActionGroup(m_gBackRatioActions);
+     mScaling->addAction(aRatioKeep);
     QAction * aRatioIgnore = new QAction(tr("Ignore proportions"), mScaling);
-    aRatioIgnore->setProperty("mode", (int)Qt::IgnoreAspectRatio);
-    aRatioIgnore->setCheckable(true);
-    aRatioIgnore->setActionGroup(m_gBackRatioActions);
-    mScaling->addAction(aRatioIgnore);
+     aRatioIgnore->setShortcut(QKeySequence("CTRL+6"));
+     aRatioIgnore->setProperty("mode", (int)Qt::IgnoreAspectRatio);
+     aRatioIgnore->setCheckable(true);
+     aRatioIgnore->setActionGroup(m_gBackRatioActions);
+     mScaling->addAction(aRatioIgnore);
 
     // initially check the action
     slotBackModeChanged();
@@ -242,62 +232,70 @@ QMenu * CanvasAppliance::createBackgroundMenu()
 QMenu * CanvasAppliance::createDecorationMenu()
 {
     QMenu * menu = new QMenu(m_dummyWidget);
-
     QAction * aTop = new QAction(tr("Top bar"), menu);
-    aTop->setCheckable(true);
-    aTop->setChecked(m_extCanvas->topBarEnabled());
-    connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
-    menu->addAction(aTop);
-
+     aTop->setCheckable(true);
+     aTop->setChecked(m_extCanvas->topBarEnabled());
+     connect(aTop, SIGNAL(toggled(bool)), this, SLOT(slotDecoTopBar(bool)));
+     menu->addAction(aTop);
     QAction * aBottom = new QAction(tr("Bottom bar"), menu);
-    aBottom->setCheckable(true);
-    aBottom->setChecked(m_extCanvas->bottomBarEnabled());
-    connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
-    menu->addAction(aBottom);
-
+     aBottom->setCheckable(true);
+     aBottom->setChecked(m_extCanvas->bottomBarEnabled());
+     connect(aBottom, SIGNAL(toggled(bool)), this, SLOT(slotDecoBottomBar(bool)));
+     menu->addAction(aBottom);
     menu->addSeparator();
-
     QAction * aSetTitle = new QAction(tr("Set title..."), menu);
-    connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
-    menu->addAction(aSetTitle);
-
+     connect(aSetTitle, SIGNAL(triggered()), this, SLOT(slotDecoSetTitle()));
+     menu->addAction(aSetTitle);
     QAction * aClearTitle = new QAction(tr("Clear title"), menu);
-    connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotDecoClearTitle()));
-    menu->addAction(aClearTitle);
-
+     connect(aClearTitle, SIGNAL(triggered()), this, SLOT(slotDecoClearTitle()));
+     menu->addAction(aClearTitle);
     return menu;
 }
 
 void CanvasAppliance::setNormalProject()
 {
+    ui.projectCombo->setCurrentIndex(0);
+    m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches();
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
-    containerValueSet(App::CV_ExPrint, false);
-    ui.projectType->setCurrentIndex(0);
+    m_extCanvas->adjustSceneSize();
+    containerValueSet(App::CV_ExportPrint, false);
 }
 
 void CanvasAppliance::setCDProject()
 {
+    ui.projectCombo->setCurrentIndex(1);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    containerValueSet(App::CV_ExPrint, true);
-    ui.projectType->setCurrentIndex(1);
+    m_extCanvas->adjustSceneSize();
+    m_extCanvas->setCDMarkers();
+    containerValueSet(App::CV_ExportPrint, true);
 }
 
 void CanvasAppliance::setDVDProject()
 {
+    ui.projectCombo->setCurrentIndex(2);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
     m_extCanvas->modeInfo()->setPrintLandscape(true);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
-    containerValueSet(App::CV_ExPrint, true);
-    ui.projectType->setCurrentIndex(2);
+    m_extCanvas->adjustSceneSize();
+    m_extCanvas->setDVDMarkers();
+    containerValueSet(App::CV_ExportPrint, true);
 }
 
-void CanvasAppliance::setExactSizeProject()
+void CanvasAppliance::setExactSizeProject(bool usePrevious)
 {
-    if (!m_extCanvas->modeInfo()->fixedSize()) {
+    ui.projectCombo->setCurrentIndex(3);
+    m_extCanvas->clearMarkers();
+    if (!usePrevious || !m_extCanvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
+        QSizeF prevSizeInches = m_extCanvas->modeInfo()->fixedSizeInches();
+        if (!prevSizeInches.isEmpty()) {
+            bool cm = !sizeDialog.ui.unityComboBox->currentIndex();
+            sizeDialog.ui.widthSpinBox->setValue(cm?prevSizeInches.width()*2.54:prevSizeInches.width());
+            sizeDialog.ui.heightSpinBox->setValue(cm?prevSizeInches.height()*2.54:prevSizeInches.height());
+        }
         QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
         if (screenDpi.x() == screenDpi.y())
             sizeDialog.ui.screenDpi->setValue(screenDpi.x());
@@ -315,13 +313,16 @@ void CanvasAppliance::setExactSizeProject()
         m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(cm?(double)w/2.54:w, cm?(double)h/2.54:h));
     }
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
-    containerValueSet(App::CV_ExPrint, true);
-    ui.projectType->setCurrentIndex(3);
+    m_extCanvas->adjustSceneSize();
+    containerValueSet(App::CV_ExportPrint, true);
 }
 
 
 void CanvasAppliance::slotAddCanvas()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
+
     // make up the default load path (stored as 'Fotowall/LoadProjectDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
@@ -333,13 +334,11 @@ void CanvasAppliance::slotAddCanvas()
     m_extCanvas->addCanvasViewContent(fileNames);
 }
 
-void CanvasAppliance::slotAddFlickrToggled(bool on)
-{
-    m_extCanvas->setWebContentSelectorVisible(on);
-}
-
 void CanvasAppliance::slotAddPicture()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
+
     // make up the default load path (stored as 'Fotowall/LoadImagesDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
@@ -353,30 +352,39 @@ void CanvasAppliance::slotAddPicture()
 
 void CanvasAppliance::slotAddText()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addTextContent();
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addWebcamContent(0);
 }
 
 void CanvasAppliance::slotAddWordCloud()
 {
+    // disable any search box
+    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addWordCloudContent();
 }
 
+void CanvasAppliance::slotSearchPicturesToggled(bool visible)
+{
+    m_extCanvas->setSearchPicturesVisible(visible);
+}
 
-void CanvasAppliance::slotProjectTypeActivated(int index)
+
+void CanvasAppliance::slotProjectComboActivated(int index)
 {
     switch (index) {
-        case 0: setNormalProject();     break;
-        case 1: setCDProject();         break;
-        case 2: setDVDProject();        break;
-        case 3: m_extCanvas->modeInfo()->setFixedSizeInches();
-                setExactSizeProject();  break;
+        case 0: setNormalProject();             break;
+        case 1: setCDProject();                 break;
+        case 2: setDVDProject();                break;
+        case 3: setExactSizeProject(!sender()); break;
     }
-    containerValueSet(App::CV_RefreshScene, true);
 }
 
 void CanvasAppliance::slotSetBackMode(QAction* action)
@@ -396,20 +404,19 @@ void CanvasAppliance::slotArrangeForceField(bool checked)
     m_extCanvas->setForceFieldEnabled(checked);
 }
 
-#include "Canvas/AbstractContent.h"
+void CanvasAppliance::slotArrangeColorCollage()
+{
+    HERE
+}
+
 void CanvasAppliance::slotArrangeRandom()
 {
-    QRectF r = m_extCanvas->sceneRect();
-    foreach (QGraphicsItem * item, m_extCanvas->items()) {
-        AbstractContent * content = dynamic_cast<AbstractContent *>(item);
-        if (!content)
-            continue;
-        content->setPos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
-        content->setRotation(-30 + (qrand() % 60));
-#if QT_VERSION >= 0x040500
-        content->setOpacity((qreal)(qrand() % 100) / 99.0);
-#endif
-    }
+    m_extCanvas->randomizeContents(true, true, true);
+}
+
+void CanvasAppliance::slotArrangeShaped()
+{
+    HERE
 }
 
 void CanvasAppliance::slotDecoTopBar(bool checked)
@@ -438,16 +445,6 @@ void CanvasAppliance::slotDecoSetTitle()
 void CanvasAppliance::slotDecoClearTitle()
 {
     m_extCanvas->setTitleText(QString());
-}
-
-void CanvasAppliance::slotRefreshCanvas()
-{
-    int mode = m_extCanvas->modeInfo()->projectMode();
-    // called here not to have the unneeded size dialog
-    if (mode == CanvasModeInfo::ModeExactSize)
-        setExactSizeProject();
-    else
-        slotProjectTypeActivated(mode);
 }
 
 void CanvasAppliance::slotBackModeChanged()

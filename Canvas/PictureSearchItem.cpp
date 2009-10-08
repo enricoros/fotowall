@@ -12,23 +12,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "WebContentSelectorItem.h"
+#include "PictureSearchItem.h"
 #ifdef ENABLE_GCOMPLETION
 #include "3rdparty/gsuggest.h"
 #endif
-#include "Frames/FrameFactory.h"
-#include "Frames/Frame.h"
 #include "Shared/FlickrPictureService.h"
 #include "Shared/GoogleImagesPictureService.h"
 #include <QBasicTimer>
-#include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QGraphicsLinearLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QListWidget>
 #include <QPainter>
 #include <QTime>
 
+#define FRAME_RADIUS 6
 
 class SearchSymbol : public QWidget
 {
@@ -107,7 +106,7 @@ class MyListWidget : public QListWidget
             QDrag * drag = new QDrag(this);
             drag->setPixmap(dragPixmap);
             QMimeData * mimeData = new QMimeData();
-            mimeData->setData("webselector/idx",indices.join(",").toLatin1());
+            mimeData->setData("picturesearch/idx",indices.join(",").toLatin1());
             drag->setMimeData(mimeData);
             Qt::DropAction action = drag->exec(supportedDropActions, Qt::CopyAction);
 
@@ -121,17 +120,75 @@ class MyListWidget : public QListWidget
         AbstractPictureService * m_pictureService;
 };
 
-#include "ui_WebContentSelectorItem.h"
+class MyLineEdit : public QLineEdit
+{
+    public:
+        MyLineEdit(QWidget * parent = 0)
+          : QLineEdit(parent)
+          , m_welcome(true)
+        {
+            // use a transparent look
+            setFrame(false);
+            QPalette pal;
+            pal.setBrush(QPalette::Base, Qt::transparent);
+            setPalette(pal);
 
-WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent)
-    : QGraphicsWidget(parent)
+            // inital text
+            setText(tr("Type here..."));
+            selectAll();
+        }
+
+        // ::QWidget
+        void paintEvent(QPaintEvent * event)
+        {
+            // customize background
+            QPainter painter(this);
+            painter.setRenderHint(QPainter::Antialiasing, false);
+            //painter.setPen(Qt::NoPen);//QPen(Qt::lightGray, 1));
+            //painter.setBrush(Qt::white);
+            //painter.drawRect(QRectF(rect()).adjusted(0.5, 0.5, -1.5, -1.5));
+            painter.setPen(QPen(Qt::darkGray, 1, Qt::DotLine));
+            painter.drawLine(2, height() - 2, width() - 3, height() - 2);
+            painter.end();
+
+            // unbreak drawing
+            QLineEdit::paintEvent(event);
+        }
+        void keyPressEvent(QKeyEvent * event)
+        {
+            normalMode();
+            QLineEdit::keyPressEvent(event);
+        }
+        void mousePressEvent(QMouseEvent * event)
+        {
+            normalMode();
+            QLineEdit::mousePressEvent(event);
+        }
+
+    private:
+        void normalMode()
+        {
+            if (m_welcome) {
+                m_welcome = false;
+                clear();
+            }
+        }
+        bool m_welcome;
+};
+
+// included here because it needs the definitions above
+#include "ui_PictureSearchItem.h"
+
+int PictureSearchItem::LastProvider = 0;
+
+PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent)
+    : QGraphicsProxyWidget(parent)
     , m_extAccessManager(extAccessManager)
-    , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
     , m_pictureService(0)
 #ifdef ENABLE_GCOMPLETION
     , m_completion(0)
 #endif
-    , m_ui(new Ui_WebContentSelectorItem())
+    , m_ui(new Ui_PictureSearchItem())
     , m_searchSymbol(0)
 {
     // create & customize Selector widget
@@ -142,19 +199,29 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * extAccess
     widget->setAttribute(Qt::WA_NoSystemBackground, true);
 #endif
     m_ui->setupUi(widget);
+    m_ui->listWidget->hide();
     QPalette pal;
     pal.setBrush(QPalette::Base, Qt::transparent);
     m_ui->listWidget->setPalette(pal);
-    connect(m_ui->searchFlickr, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
-    connect(m_ui->searchGoogle, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
+    QFont font;
+    font.setPointSize(font.pointSize() - 1);
+    widget->setFont(font);
+    connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
+    connect(m_ui->lineEdit, SIGNAL(returnPressed()), m_ui->searchButton, SLOT(click()));
+    connect(m_ui->fRadio, SIGNAL(toggled(bool)), this, SLOT(slotProviderChanged()));
+    connect(m_ui->gRadio, SIGNAL(toggled(bool)), this, SLOT(slotProviderChanged()));
+    if (LastProvider == 0)
+        m_ui->fRadio->setChecked(true);
+    else if (LastProvider == 1)
+        m_ui->gRadio->setChecked(true);
+    slotProviderChanged();
 
     // embed and layout widget
-    QGraphicsProxyWidget * proxy = new QGraphicsProxyWidget(this);
-    proxy->setWidget(widget);
-    QGraphicsLinearLayout * vLay = new QGraphicsLinearLayout(Qt::Vertical, this);
-    vLay->addItem(proxy);
+    setContentsMargins(0, 0, 0, 0);
+    setWidget(widget);
     setFlags(ItemIsSelectable | ItemIsFocusable);
     m_ui->lineEdit->setFocus();
+    adjustSize();
 
     // init texts
     slotSearchEnded(false);
@@ -165,8 +232,12 @@ WebContentSelectorItem::WebContentSelectorItem(QNetworkAccessManager * extAccess
 #endif
 }
 
-WebContentSelectorItem::~WebContentSelectorItem()
+PictureSearchItem::~PictureSearchItem()
 {
+    if (m_ui->fRadio->isChecked())
+        LastProvider = 0;
+    else if (m_ui->gRadio->isChecked())
+        LastProvider = 1;
     m_extAccessManager = 0;
 #ifdef ENABLE_GCOMPLETION
     delete m_completion;
@@ -176,22 +247,42 @@ WebContentSelectorItem::~WebContentSelectorItem()
     if (m_pictureService)
         m_pictureService->disconnect(0, 0, 0);
     delete m_pictureService;
-    delete m_frame;
     delete m_ui;
 }
 
-AbstractPictureService * WebContentSelectorItem::pictureService() const
+AbstractPictureService * PictureSearchItem::pictureService() const
 {
     return m_pictureService;
 }
 
-void WebContentSelectorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+void PictureSearchItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
-    // draw frame
-    m_frame->drawFrame(painter, boundingRect().toRect(), false, false);
+    // draw background frame
+    QLinearGradient lg(0, 0, 0, 50);
+    if (m_ui->fRadio->isChecked())
+        lg.setColorAt(0.0, QColor(255, 200, 200, 200));
+    else if (m_ui->gRadio->isChecked())
+        lg.setColorAt(0.0, QColor(200, 220, 255, 200));
+    lg.setColorAt(1.0, QColor(200, 200, 200, 220));
+    painter->setBrush(lg);
+    painter->setPen(QPen(Qt::darkGray, 1));
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    QRectF boundaries = boundingRect().adjusted(0.5 - FRAME_RADIUS, 0.5 - FRAME_RADIUS, 0.5, 0.5);
+    painter->drawRoundedRect(boundaries, FRAME_RADIUS, FRAME_RADIUS, Qt::AbsoluteSize);
+
+    // speed up svg drawing and unbreak proxy widget
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, false);
+    QGraphicsProxyWidget::paint(painter, option, widget);
 }
 
-void WebContentSelectorItem::slotSearchClicked()
+void PictureSearchItem::slotProviderChanged()
+{
+    // no need to create the provider here, it will be created when searching
+    m_ui->googleOptions->setVisible(m_ui->gRadio->isChecked());
+    update();
+}
+
+void PictureSearchItem::slotSearchClicked()
 {
     // search...
     if (!m_searchSymbol) {
@@ -205,11 +296,19 @@ void WebContentSelectorItem::slotSearchClicked()
 
         // start a picture search
         if (!m_pictureService) {
-            int provider = sender()->property("provider").toInt();
-            if (provider == 1)
+            if (m_ui->fRadio->isChecked())
                 m_pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
-            else
-                m_pictureService = new GoogleImagesPictureService(m_extAccessManager, this);
+            else if (m_ui->gRadio->isChecked()) {
+                GoogleImagesPictureService * gis = new GoogleImagesPictureService(m_extAccessManager, this);
+                gis->configure(m_ui->contentCombo->currentIndex(), m_ui->sizeCombo->currentIndex());
+                m_pictureService = gis;
+            } else {
+                qWarning("PictureSearchItem::slotSearchClicked: unknown provider");
+                return;
+            }
+            m_ui->fRadio->setVisible(false);
+            m_ui->gRadio->setVisible(false);
+            m_ui->googleOptions->setVisible(false);
             connect(m_pictureService, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
             connect(m_pictureService, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
             connect(m_pictureService, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
@@ -226,18 +325,19 @@ void WebContentSelectorItem::slotSearchClicked()
     }
 }
 
-void WebContentSelectorItem::slotSearchBegun()
+void PictureSearchItem::slotSearchBegun()
 {
     m_ui->listWidget->clear();
+    m_ui->listWidget->show();
     if (!m_searchSymbol) {
         m_searchSymbol = new SearchSymbol(m_ui->listWidget->viewport());
         m_searchSymbol->move(2, 2);
         m_searchSymbol->show();
     }
-    m_ui->searchFlickr->setText(tr("cancel"));
+    m_ui->searchButton->setText(tr("Cancel"));
 }
 
-void WebContentSelectorItem::slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h)
+void PictureSearchItem::slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h)
 {
     // create the placeholder Icon
     QLinearGradient lg(0, 0, 0, thumb_h);
@@ -262,18 +362,18 @@ void WebContentSelectorItem::slotSearchResult(int idx, const QString & title, in
     m_ui->listWidget->insertItem(idx, item);
 }
 
-void WebContentSelectorItem::slotSearchThumbnail(int idx, const QPixmap & thumbnail)
+void PictureSearchItem::slotSearchThumbnail(int idx, const QPixmap & thumbnail)
 {
     // update the pixmap of the Item
     if (QListWidgetItem * item = m_ui->listWidget->item(idx))
         item->setIcon(thumbnail);
 }
 
-void WebContentSelectorItem::slotSearchEnded(bool)
+void PictureSearchItem::slotSearchEnded(bool)
 {
     if (m_searchSymbol) {
         delete m_searchSymbol;
         m_searchSymbol = 0;
     }
-    //m_ui->searchFlickr->setText(tr("search"));
+    m_ui->searchButton->setText(tr("Search"));
 }

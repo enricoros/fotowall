@@ -17,6 +17,7 @@
 
 #include "AbstractContent.h"
 #include <QPixmap>
+class QSvgRenderer;
 
 /**
     \brief Displays live video from a WebCam
@@ -30,10 +31,10 @@ class WebcamContent : public AbstractContent
 
         // ::AbstractContent
         QString contentName() const { return tr("Webcam"); }
-        bool fromXml(QDomElement & parentElement);
-        void toXml(QDomElement & parentElement) const;
+        bool fromXml(QDomElement & contentElement);
+        void toXml(QDomElement & contentElement) const;
         void drawContent(QPainter * painter, const QRect & targetRect);
-        QPixmap renderContent(const QSize & size, Qt::AspectRatioMode ratio) const;
+        QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
 
@@ -47,6 +48,9 @@ class WebcamContent : public AbstractContent
         int m_input;
         bool m_still;
         QPixmap m_pixmap;
+        QPixmap m_dummyPixmap;
+        QSvgRenderer * m_dummyRenderer;
+        bool m_broken;
 
     private Q_SLOTS:
         void slotToggleStill();

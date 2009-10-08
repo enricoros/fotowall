@@ -163,10 +163,7 @@ void AbstractContent::resizeContents(const QRect & rect, bool keepRatio)
         }
     }
 
-    if (m_frame)
-        m_frameRect = m_frame->frameRect(m_contentRect);
-    else
-        m_frameRect = m_contentRect;
+    m_frameRect = m_frame ? m_frame->frameRect(m_contentRect) : m_contentRect;
 
     layoutChildren();
     update();
@@ -196,8 +193,9 @@ void AbstractContent::setFrame(Frame * frame)
 {
     delete m_frame;
     m_frame = frame;
-    if (m_frame)
-        FrameFactory::setDefaultPictureClass(m_frame->frameClass());
+    FrameFactory::setDefaultPictureClass(frameClass());
+    if (!m_frame && m_frameTextItem)
+        m_frameTextItem->hide();
     resizeContents(m_contentRect);
     layoutChildren();
     update();
@@ -206,9 +204,7 @@ void AbstractContent::setFrame(Frame * frame)
 
 quint32 AbstractContent::frameClass() const
 {
-    if (!m_frame)
-        return Frame::NoFrame;
-    return m_frame->frameClass();
+    return m_frame ? m_frame->frameClass() : (quint32)Frame::NoFrame;
 }
 
 #include <QGraphicsTextItem>
@@ -222,7 +218,7 @@ class MyTextItem : public QGraphicsTextItem {
         void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 )
         {
             painter->save();
-            painter->setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform );
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, true);
             QGraphicsTextItem::paint(painter, option, widget);
             painter->restore();
         }
@@ -371,13 +367,13 @@ QWidget * AbstractContent::createPropertyWidget()
     return 0;
 }
 
-bool AbstractContent::fromXml(QDomElement & pe)
+bool AbstractContent::fromXml(QDomElement & contentElement)
 {
     // restore content properties
     QDomElement domElement;
 
     // Load image size saved in the rect node
-    domElement = pe.firstChildElement("rect");
+    domElement = contentElement.firstChildElement("rect");
     qreal x, y, w, h;
     x = domElement.firstChildElement("x").text().toDouble();
     y = domElement.firstChildElement("y").text().toDouble();
@@ -386,29 +382,29 @@ bool AbstractContent::fromXml(QDomElement & pe)
     resizeContents(QRect(x, y, w, h));
 
     // Load position coordinates
-    domElement = pe.firstChildElement("pos");
+    domElement = contentElement.firstChildElement("pos");
     x = domElement.firstChildElement("x").text().toDouble();
     y = domElement.firstChildElement("y").text().toDouble();
     setPos(x, y);
 
-    int zvalue = pe.firstChildElement("zvalue").text().toDouble();
+    int zvalue = contentElement.firstChildElement("zvalue").text().toDouble();
     setZValue(zvalue);
 
-    bool visible = pe.firstChildElement("visible").text().toInt();
+    bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
 
-    bool hasText = pe.firstChildElement("frame-text-enabled").text().toInt();
+    bool hasText = contentElement.firstChildElement("frame-text-enabled").text().toInt();
     setFrameTextEnabled(hasText);
     if (hasText) {
-        QString text = pe.firstChildElement("frame-text").text();
+        QString text = contentElement.firstChildElement("frame-text").text();
         setFrameText(text);
     }
 
-    quint32 frameClass = pe.firstChildElement("frame-class").text().toInt();
+    quint32 frameClass = contentElement.firstChildElement("frame-class").text().toInt();
     setFrame(frameClass ? FrameFactory::createFrame(frameClass) : 0);
 
     // restore transformation
-    QDomElement te = pe.firstChildElement("transformation");
+    QDomElement te = contentElement.firstChildElement("transformation");
     if (!te.isNull()) {
         m_perspectiveAngles = QPointF(te.attribute("xRot").toDouble(), te.attribute("yRot").toDouble());
 #if QT_VERSION < 0x040600
@@ -418,17 +414,17 @@ bool AbstractContent::fromXml(QDomElement & pe)
 #endif
         applyTransforms();
     }
-    domElement = pe.firstChildElement("mirror");
+    domElement = contentElement.firstChildElement("mirror");
     setMirrored(domElement.attribute("state").toInt());
 
     return true;
 }
 
-void AbstractContent::toXml(QDomElement & pe) const
+void AbstractContent::toXml(QDomElement & contentElement) const
 {
     // Save general item properties
-    pe.setTagName("abstract");
-    QDomDocument doc = pe.ownerDocument();
+    contentElement.setTagName("abstract");
+    QDomDocument doc = contentElement.ownerDocument();
     QDomElement domElement;
     QDomText text;
     QString valueStr;
@@ -449,10 +445,10 @@ void AbstractContent::toXml(QDomElement & pe) const
     yElement.appendChild(doc.createTextNode(QString::number(rect.top())));
     wElement.appendChild(doc.createTextNode(QString::number(rect.width())));
     hElement.appendChild(doc.createTextNode(QString::number(rect.height())));
-    pe.appendChild(rectParent);
+    contentElement.appendChild(rectParent);
 
     // Save the position
-    domElement= doc.createElement("pos");
+    domElement = doc.createElement("pos");
     xElement = doc.createElement("x");
     yElement = doc.createElement("y");
     valueStr.setNum(pos().x());
@@ -461,18 +457,18 @@ void AbstractContent::toXml(QDomElement & pe) const
     yElement.appendChild(doc.createTextNode(valueStr));
     domElement.appendChild(xElement);
     domElement.appendChild(yElement);
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
 
     // Save the stacking position
     domElement= doc.createElement("zvalue");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     valueStr.setNum(zValue());
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
     // Save the visible state
     domElement= doc.createElement("visible");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     valueStr.setNum(isVisible());
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
@@ -480,26 +476,26 @@ void AbstractContent::toXml(QDomElement & pe) const
     // Save the frame class
     valueStr.setNum(frameClass());
     domElement= doc.createElement("frame-class");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
     domElement= doc.createElement("frame-text-enabled");
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
     valueStr.setNum(frameTextEnabled());
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
     if(frameTextEnabled()) {
         domElement= doc.createElement("frame-text");
-        pe.appendChild(domElement);
+        contentElement.appendChild(domElement);
         text = doc.createTextNode(frameText());
         domElement.appendChild(text);
     }
 
     // save transformation
     const QTransform t = transform();
-    if (!t.isIdentity()) {
+    if (!t.isIdentity() || rotation() != 0) {
         domElement = doc.createElement("transformation");
         domElement.setAttribute("xRot", m_perspectiveAngles.x());
         domElement.setAttribute("yRot", m_perspectiveAngles.y());
@@ -508,27 +504,26 @@ void AbstractContent::toXml(QDomElement & pe) const
 #else
         domElement.setAttribute("zRot", rotation());
 #endif
-        pe.appendChild(domElement);
+        contentElement.appendChild(domElement);
     }
     domElement = doc.createElement("mirror");
     domElement.setAttribute("state", mirrored());
-    pe.appendChild(domElement);
+    contentElement.appendChild(domElement);
 
 }
-/*
-QPixmap AbstractContent::renderContent(const QSize & size, Qt::AspectRatioMode ratio) const
+
+QPixmap AbstractContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
 {
-    QSize realSize = size;
-    if (ratio == Qt::KeepAspectRatio) {
-        int hfw = contentHeightForWidth(size.width());
-        if (hfw > 1)
-            realSize.setHeight(hfw);
-    }
-    QPixmap pix(realSize);
-    pix.fill(Qt::transparent);
-    return pix;
+    Q_UNUSED(ratio)
+    // allocate a pixmap and draw the content over it (NOTE: aspect ratio is ignored)
+    QPixmap pixmap(size);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    drawContent(&painter, pixmap.rect());
+    painter.end();
+    return pixmap;
 }
-*/
+
 QRectF AbstractContent::boundingRect() const
 {
     return m_frameRect;
@@ -536,33 +531,35 @@ QRectF AbstractContent::boundingRect() const
 
 void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    const bool opaqueContent = contentOpaque();
+    // find out whether to draw the selection
     const bool drawSelection = RenderOpts::HQRendering ? false : isSelected();
-    const QRect frameRect = m_frameRect.toRect();
 
     if (m_frame) {
         // draw the Frame
-        m_frame->drawFrame(painter, frameRect, drawSelection && !RenderOpts::OpenGLWindow, opaqueContent);
+        m_frame->drawFrame(painter, m_frameRect.toRect(), drawSelection, contentOpaque());
 
         // use clip path for contents, if set
         if (m_frame->clipContents())
             painter->setClipPath(m_frame->contentsClipPath(m_contentRect));
     }
 
-    // paint the inner contents
-    if (drawSelection && RenderOpts::OpenGLWindow)
+#if 0
+    if (RenderOpts::OpenGLWindow && drawSelection)
         painter->setCompositionMode(QPainter::CompositionMode_Plus);
-    painter->translate(m_contentRect.topLeft());
-    drawContent(painter, QRect(0, 0, m_contentRect.width(), m_contentRect.height()));
+#endif
 
-    // draw the selection only as done in EmptyFrame.cpp
-    /*if (drawSelection) {
+    // paint the inner contents
+    const QRect tcRect = QRect(0, 0, m_contentRect.width(), m_contentRect.height());
+    painter->translate(m_contentRect.topLeft());
+    drawContent(painter, tcRect);
+
+    // overlay a selection
+    if (drawSelection && !m_frame) {
         painter->setRenderHint(QPainter::Antialiasing, true);
-        painter->setPen(QPen(RenderOpts::hiColor, 3.0));
+        painter->setPen(QPen(RenderOpts::hiColor, 2.0));
         painter->setBrush(Qt::NoBrush);
-        // FIXME: this draws OUTSIDE (but inside the safe 2px area)
-        painter->drawRect(m_contentRect);
-    }*/
+        painter->drawRect(tcRect);
+    }
 }
 
 void AbstractContent::selectionChanged(bool /*selected*/)
@@ -768,8 +765,7 @@ void AbstractContent::slotSaveAs()
 
     // draw the transformed item onto the pixmap
     QPainter p(&image);
-    p.setRenderHint(QPainter::Antialiasing, true);
-    p.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    p.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, true);
     p.setTransform(tItemToPixmap);
     paint(&p, 0, 0);
     if (m_mirrorItem) {
@@ -802,23 +798,39 @@ void AbstractContent::layoutChildren()
     foreach (CornerItem * corner, m_cornerItems)
         corner->relayout(m_contentRect);
 
-    // layout buttons even if no frame
-    if (!m_frame) {
-        int right = m_frameRect.right() - 12;
-        int bottom = m_frameRect.bottom() + 2; // if no frame, offset the buttons a little on bottom
+    // layout controls and text
+    if (m_frame) {
+        m_frame->layoutButtons(m_controlItems, m_frameRect.toRect());
+        if (m_frameTextItem)
+            m_frame->layoutText(m_frameTextItem, m_frameRect.toRect());
+    } else {
+        // layout controls
+        const int spacing = 4;
+        int left = m_frameRect.left();
+        int top = m_frameRect.top();
+        int right = m_frameRect.right();
+        int bottom = m_frameRect.bottom();
+        int offset = right;
         foreach (ButtonItem * button, m_controlItems) {
-            button->setPos(right - button->width() / 2, bottom - button->height() / 2);
-            right -= button->width() + 4;
+            switch (button->buttonType()) {
+                case ButtonItem::FlipH:
+                    button->setPos(right - button->width() / 2, (top + bottom) / 2);
+                    break;
+
+                case ButtonItem::FlipV:
+                    button->setPos((left + right) / 2, top + button->height() / 2);
+                    break;
+
+                default:
+                    button->setPos(offset - button->width() / 2, bottom - button->height() / 2);
+                    offset -= button->width() + spacing;
+                    break;
+            }
         }
-        return;
+        // hide text, if present
+        if (m_frameTextItem)
+            m_frameTextItem->hide();
     }
-
-    // layout all controls
-    m_frame->layoutButtons(m_controlItems, m_frameRect.toRect());
-
-    // layout text, if present
-    if (m_frameTextItem)
-        m_frame->layoutText(m_frameTextItem, m_frameRect.toRect());
 }
 
 void AbstractContent::applyTransforms()

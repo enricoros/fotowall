@@ -22,11 +22,11 @@
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "CanvasAppliance.h"
+#include "FotowallFile.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
 #include "WordcloudAppliance.h"
-#include "XmlRead.h"
 #include "ui_MainWindow.h"
 
 #include <QApplication>
@@ -96,7 +96,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     Canvas * canvas = new Canvas(ui->sceneView->size(), this);
         // open if single fotowall file
         if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
-            XmlRead::read(contentUrls.first(), canvas);
+            FotowallFile::read(contentUrls.first(), canvas);
 
         // add if many pictures
         else if (!contentUrls.isEmpty())
@@ -131,7 +131,7 @@ MainWindow::~MainWindow()
 
     // this is an example of 'autosave-like function'
     //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-    //XmlSave::save(tempPath, m_canvas, m_canvas->modeInfo());
+    //FotowallFile::saveV2(tempPath, m_canvas);
 
     // delete everything
     // m_aHelpTutorial is deleted by its menu (that's parented to this)
@@ -202,7 +202,7 @@ void MainWindow::applianceSetCentralwidget(QWidget * widget)
 void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
 {
     switch (id) {
-        case App::CV_ExPrint: {
+        case App::CV_ExportPrint: {
             bool valueSent = !value.isNull();
             ui->exportButton->setVisible(valueSent);
             ui->introButton->setEnabled(valueSent);
@@ -212,10 +212,6 @@ void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
                 ui->exportButton->setProperty("printing", value.toBool());
             }
             }break;
-
-         case App::CV_RefreshScene:
-            ui->sceneView->layoutScene();
-            break;
 
          default:
             qWarning("MainWindow::applianceSetValue: unknown id 0x%x", id);
@@ -352,7 +348,7 @@ bool MainWindow::on_loadButton_clicked()
 
     // try to load the canvas
     Canvas * canvas = new Canvas(ui->sceneView->size(), this);
-    if (!XmlRead::read(fileName, canvas)) {
+    if (!FotowallFile::read(fileName, canvas)) {
         delete canvas;
         return false;
     }
@@ -538,7 +534,9 @@ static bool dwmEnableBlurBehindWindow(QWidget * widget, bool enable)
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
 #if QT_VERSION >= 0x040500
+#ifdef Q_OS_WIN
     static Qt::WindowFlags initialWindowFlags = windowFlags();
+#endif
     if (transparent) {
         // one-time warning
         ButtonsDialog warning("GoTransparent", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"), QDialogButtonBox::Ok, true, true);

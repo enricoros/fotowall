@@ -22,12 +22,11 @@ class StandardFrame : public Frame
 {
     public:
         // ::Frame
-        quint32 frameClass() const;
+        quint32 frameClass() const { return Frame::StandardFrame; }
         QRect frameRect(const QRect & contentsRect) const;
         void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
         void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
         void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
-
 };
 
 #endif

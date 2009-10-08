@@ -61,6 +61,7 @@ class AbstractConfig : public QGraphicsProxyWidget {
     private:
         void populateFrameList();
         void layoutButtons();
+        QPixmap                 m_backPixmap;
         AbstractContent *       m_content;
         Ui::AbstractConfig *    m_commonUi;
         StyledButtonItem *      m_closeButton;
@@ -68,10 +69,10 @@ class AbstractConfig : public QGraphicsProxyWidget {
         Frame *                 m_frame;
 
     private Q_SLOTS:
-        void on_newFrame_clicked();
-        void on_applyLooks_clicked();
-        void on_listWidget_itemSelectionChanged();
-        void on_reflection_toggled(bool checked);
+        void slotAddFrame();
+        void slotLookApplyAll();
+        void slotFrameSelectionChanged();
+        void slotReflectionToggled(bool checked);
 };
 
 #endif
