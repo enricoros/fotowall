@@ -44,6 +44,7 @@ WordItem::WordItem(const Word & word, const QFont & font, double rotation,
 void WordItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     // draw the word
+    painter->save();
     painter->setPen(pen());
     painter->setBrush(brush());
     painter->drawPath(m_path);
@@ -54,6 +55,7 @@ void WordItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         painter->setBrush(Qt::NoBrush);
         painter->drawRect(QRectF(boundingRect().toRect()).adjusted(-0.5, -0.5, -0.5, -0.5));
     }
+    painter->restore();
 }
 
 QPainterPath WordItem::strokedPath() const
