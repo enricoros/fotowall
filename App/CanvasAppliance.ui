@@ -426,7 +426,7 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="QComboBox" name="projectType">
+     <widget class="QComboBox" name="projectCombo">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
         <horstretch>0</horstretch>

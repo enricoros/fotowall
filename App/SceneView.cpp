@@ -54,7 +54,7 @@ SceneView::SceneView(QWidget * parent)
   , m_openGL(false)
   , m_abstractScene(0)
   , m_style(new RubberBandStyle)
-  , m_viewportLayout(0)
+  , m_viewportLayout(new QVBoxLayout)
 {
     // customize widget
     setInteractive(true);
@@ -70,11 +70,11 @@ SceneView::SceneView(QWidget * parent)
     pal.setBrush(QPalette::Base, Qt::NoBrush);
     setPalette(pal);
 
-    // use own style for drawing the RubberBand (opened on the viewport)
-    viewport()->setStyle(m_style);
-    m_viewportLayout = new QVBoxLayout(viewport());
+    // use own style for drawing the RubberBand, and our layout
     m_viewportLayout->setContentsMargins(0, 4, 0, 4);
     m_viewportLayout->setSpacing(0);
+    viewport()->setLayout(m_viewportLayout);
+    viewport()->setStyle(m_style);
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
     //setCacheMode(CacheBackground);
@@ -87,9 +87,20 @@ SceneView::~SceneView()
 
 void SceneView::setScene(AbstractScene * scene)
 {
+    if (m_abstractScene == scene)
+        return;
+
+    // disconnect previous scene
+    if (m_abstractScene)
+        disconnect(m_abstractScene, SIGNAL(geometryChanged()), this, SLOT(layoutScene()));
+
+    // use scene
     m_abstractScene = scene;
     QGraphicsView::setScene(m_abstractScene);
-    layoutScene();
+    if (m_abstractScene) {
+        connect(m_abstractScene, SIGNAL(geometryChanged()), this, SLOT(layoutScene()));
+        layoutScene();
+    }
 }
 
 AbstractScene * SceneView::scene() const
@@ -99,9 +110,9 @@ AbstractScene * SceneView::scene() const
 
 AbstractScene * SceneView::takeScene()
 {
-    AbstractScene * m_backScene = m_abstractScene;
+    AbstractScene * m_scene = m_abstractScene;
     setScene(0);
-    return m_backScene;
+    return m_scene;
 }
 
 bool SceneView::supportsOpenGL() const
@@ -127,37 +138,17 @@ void SceneView::setOpenGL(bool enabled)
         return;
     m_openGL = enabled;
 
-    // change viewport widget and mode
-    QWidget * viewport = m_openGL ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget();
-    viewport->setStyle(m_style);
-    setViewport(viewport);
+    // change viewport widget and transfer style and layout
+    QWidget * newViewport = m_openGL ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget();
+    newViewport->setLayout(m_viewportLayout);
+    newViewport->setStyle(m_style);
+    setViewport(newViewport);
     setViewportUpdateMode(m_openGL ? QGraphicsView::FullViewportUpdate : QGraphicsView::MinimalViewportUpdate);
     update();
 }
 #else
 void SceneView::setOpenGL(bool) {};
 #endif
-
-void SceneView::layoutScene()
-{
-    if (!m_abstractScene)
-        return;
-
-    // change size
-    QSize viewportSize = viewport()->contentsRect().size();
-    m_abstractScene->resize(viewportSize);
-
-    // change the scrollbars policy
-    QSize sceneSize = m_abstractScene->sceneSize();
-    Qt::ScrollBarPolicy sPolicy = ((sceneSize.width() > viewportSize.width()) ||
-                                  (sceneSize.height() > viewportSize.height())) ?
-                                  Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
-    setVerticalScrollBarPolicy(sPolicy);
-    setHorizontalScrollBarPolicy(sPolicy);
-
-    // update screen
-    update();
-}
 
 void SceneView::addOverlayWidget(QWidget * widget, bool top)
 {
@@ -205,4 +196,25 @@ void SceneView::resizeEvent(QResizeEvent * event)
 {
     QGraphicsView::resizeEvent(event);
     layoutScene();
+}
+
+void SceneView::layoutScene()
+{
+    if (!m_abstractScene)
+        return;
+
+    // change size
+    QSize viewportSize = viewport()->contentsRect().size();
+    m_abstractScene->resize(viewportSize);
+
+    // change the scrollbars policy
+    QSize sceneSize = m_abstractScene->sceneSize();
+    Qt::ScrollBarPolicy sPolicy = ((sceneSize.width() > viewportSize.width()) ||
+                                  (sceneSize.height() > viewportSize.height())) ?
+                                  Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
+    setVerticalScrollBarPolicy(sPolicy);
+    setHorizontalScrollBarPolicy(sPolicy);
+
+    // update screen
+    update();
 }

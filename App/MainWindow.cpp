@@ -202,7 +202,7 @@ void MainWindow::applianceSetCentralwidget(QWidget * widget)
 void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
 {
     switch (id) {
-        case App::CV_ExPrint: {
+        case App::CV_ExportPrint: {
             bool valueSent = !value.isNull();
             ui->exportButton->setVisible(valueSent);
             ui->introButton->setEnabled(valueSent);
@@ -212,10 +212,6 @@ void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
                 ui->exportButton->setProperty("printing", value.toBool());
             }
             }break;
-
-         case App::CV_RefreshScene:
-            ui->sceneView->layoutScene();
-            break;
 
          default:
             qWarning("MainWindow::applianceSetValue: unknown id 0x%x", id);

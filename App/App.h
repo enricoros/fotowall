@@ -31,8 +31,7 @@ class App
 
         // commands understood by the container
         enum {
-            CV_ExPrint          = 0x0001,
-            CV_RefreshScene     = 0x0002
+            CV_ExportPrint      = 0x0001
         };
 
         // commands understood by appliances

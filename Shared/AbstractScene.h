@@ -26,6 +26,9 @@ class AbstractScene : public QGraphicsScene
     public:
         AbstractScene(QObject * parent = 0);
 
+        // ###
+        void adjustSceneSize();
+
         // scene size
         virtual void resize(const QSize & size);
         virtual void resizeEvent(QResizeEvent * event);
@@ -34,6 +37,9 @@ class AbstractScene : public QGraphicsScene
         inline QSize sceneSize() const { return m_size; }
         inline QRectF sceneRect() const { return m_rect; }
         inline QPointF sceneCenter() const { return m_rect.center(); }
+
+    Q_SIGNALS:
+        void geometryChanged();
 
     protected:
         AbstractScene();

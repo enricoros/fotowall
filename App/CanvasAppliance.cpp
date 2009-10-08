@@ -52,7 +52,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     connect(ui.aSearchPictures, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
-    connect(ui.projectType, SIGNAL(activated(int)), this, SLOT(slotProjectTypeActivated(int)));
+    connect(ui.projectCombo, SIGNAL(activated(int)), this, SLOT(slotProjectComboActivated(int)));
 
     // configure the appliance
     sceneSet(m_extCanvas);
@@ -68,7 +68,6 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     // react to canvas
     m_extCanvas->modeInfo()->setScreenDpi(sDpiX, sDpiY);
     m_extCanvas->modeInfo()->setPrintDpi(300);
-    connect(m_extCanvas, SIGNAL(refreshCanvas()), this, SLOT(slotRefreshCanvas()));
     connect(m_extCanvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
 
@@ -78,8 +77,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
 
     // set the startup project mode
     int projectModeIndex = extCanvas->modeInfo()->projectMode();
-    ui.projectType->setCurrentIndex(projectModeIndex);
-    slotProjectTypeActivated(projectModeIndex);
+    slotProjectComboActivated(projectModeIndex);
 }
 
 CanvasAppliance::~CanvasAppliance()
@@ -256,42 +254,48 @@ QMenu * CanvasAppliance::createDecorationMenu()
 
 void CanvasAppliance::setNormalProject()
 {
-    ui.projectType->setCurrentIndex(0);
+    ui.projectCombo->setCurrentIndex(0);
     m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches();
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
-    m_extCanvas->adjustSize();
+    m_extCanvas->adjustSceneSize();
     containerValueSet(App::CV_ExportPrint, false);
 }
 
 void CanvasAppliance::setCDProject()
 {
-    ui.projectType->setCurrentIndex(1);
+    ui.projectCombo->setCurrentIndex(1);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    m_extCanvas->adjustSize();
+    m_extCanvas->adjustSceneSize();
     m_extCanvas->setCDMarkers();
     containerValueSet(App::CV_ExportPrint, true);
 }
 
 void CanvasAppliance::setDVDProject()
 {
-    ui.projectType->setCurrentIndex(2);
+    ui.projectCombo->setCurrentIndex(2);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
     m_extCanvas->modeInfo()->setPrintLandscape(true);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
-    m_extCanvas->adjustSize();
+    m_extCanvas->adjustSceneSize();
     m_extCanvas->setDVDMarkers();
     containerValueSet(App::CV_ExportPrint, true);
 }
 
-void CanvasAppliance::setExactSizeProject()
+void CanvasAppliance::setExactSizeProject(bool usePrevious)
 {
-    ui.projectType->setCurrentIndex(3);
+    ui.projectCombo->setCurrentIndex(3);
     m_extCanvas->clearMarkers();
-    if (!m_extCanvas->modeInfo()->fixedSize()) {
+    if (!usePrevious || !m_extCanvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
+        QSizeF prevSizeInches = m_extCanvas->modeInfo()->fixedSizeInches();
+        if (!prevSizeInches.isEmpty()) {
+            bool cm = !sizeDialog.ui.unityComboBox->currentIndex();
+            sizeDialog.ui.widthSpinBox->setValue(cm?prevSizeInches.width()*2.54:prevSizeInches.width());
+            sizeDialog.ui.heightSpinBox->setValue(cm?prevSizeInches.height()*2.54:prevSizeInches.height());
+        }
         QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
         if (screenDpi.x() == screenDpi.y())
             sizeDialog.ui.screenDpi->setValue(screenDpi.x());
@@ -309,7 +313,7 @@ void CanvasAppliance::setExactSizeProject()
         m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(cm?(double)w/2.54:w, cm?(double)h/2.54:h));
     }
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
-    m_extCanvas->adjustSize();
+    m_extCanvas->adjustSceneSize();
     containerValueSet(App::CV_ExportPrint, true);
 }
 
@@ -373,14 +377,13 @@ void CanvasAppliance::slotSearchPicturesToggled(bool visible)
 }
 
 
-void CanvasAppliance::slotProjectTypeActivated(int index)
+void CanvasAppliance::slotProjectComboActivated(int index)
 {
     switch (index) {
-        case 0: setNormalProject();     break;
-        case 1: setCDProject();         break;
-        case 2: setDVDProject();        break;
-        case 3: m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF());
-                setExactSizeProject();  break;
+        case 0: setNormalProject();             break;
+        case 1: setCDProject();                 break;
+        case 2: setDVDProject();                break;
+        case 3: setExactSizeProject(!sender()); break;
     }
 }
 
@@ -442,16 +445,6 @@ void CanvasAppliance::slotDecoSetTitle()
 void CanvasAppliance::slotDecoClearTitle()
 {
     m_extCanvas->setTitleText(QString());
-}
-
-void CanvasAppliance::slotRefreshCanvas()
-{
-    int modeIndex = m_extCanvas->modeInfo()->projectMode();
-    // called here not to have the unneeded size dialog
-    if (modeIndex == CanvasModeInfo::ModeExactSize)
-        setExactSizeProject();
-    else
-        ui.projectType->setCurrentIndex(modeIndex);
 }
 
 void CanvasAppliance::slotBackModeChanged()

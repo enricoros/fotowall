@@ -19,6 +19,11 @@ AbstractScene::AbstractScene(QObject * parent)
 {
 }
 
+void AbstractScene::adjustSceneSize()
+{
+    emit geometryChanged();
+}
+
 void AbstractScene::resize(const QSize & size)
 {
     // skip if already ok

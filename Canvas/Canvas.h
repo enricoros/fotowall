@@ -89,7 +89,7 @@ class Canvas : public AbstractScene
         void showIntroduction();
         void blinkBackGradients();
 
-        // change size and project mode (CD cover, DVD,...).
+        // change size and project mode (CD, DVD, etc)
         CanvasModeInfo * modeInfo() const;
 
         void toXml(QDomElement & canvasElement) const;
