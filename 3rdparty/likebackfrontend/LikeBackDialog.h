@@ -39,7 +39,7 @@
 
 #include <QDialog>
 #include "LikeBack.h"
-#include "ui_likebackdialog.h"
+#include "ui_LikeBackDialog.h"
 class QButtonGroup;
 class QNetworkAccessManager;
 

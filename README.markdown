@@ -143,10 +143,8 @@ improvement and the code is kept clean and small.
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
-bugs:
- - check that opengl is *completely* disabled when Qt misses the opengl module (checked: seems so!)
- - check make uninstall
 * add the undo/redo support
+* make uninstall
 * transform pictures with a 'magneto tool' (good on grids)
 * collate pictures, like autocollage, but keeping user transformations
 * handle initial load-save after being shown. also evaluate normalized rescaling.
@@ -157,6 +155,7 @@ bugs:
 * both new and old resize&co
 * webcam: on win32
 * webcam: multiple webcams
+* webcam: configuration panel. should fix bad images.
 * templates
   * the template system could even be some auto-generated fotowall file with changing urls.
 * provide some default/example files, also loadable with a short path
