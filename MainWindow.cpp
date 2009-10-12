@@ -183,6 +183,7 @@ MainWindow::MainWindow(QWidget * parent)
     // check stuff on the net
     checkForTutorial();
     checkForSupport();
+    checkForUpdates();
 }
 
 MainWindow::~MainWindow()
@@ -432,6 +433,20 @@ void MainWindow::checkForSupport()
 
     // check the Open Collaboration Services knowledgebase for Fotowall
     QTimer::singleShot(2000, this, SLOT(slotVerifySupport()));
+}
+
+void MainWindow::checkForUpdates()
+{
+    // find out the time of the last update check
+    QDate lastCheck = QSettings().value("fotowall/LastUpdateCheck").toDate();
+    if (lastCheck.isNull()) {
+        QSettings().setValue("fotowall/LastUpdateCheck", QDate::currentDate());
+        return;
+    }
+
+    // check for updates 30 days after the last one
+    if (lastCheck.daysTo(QDate::currentDate()) > 30)
+        QTimer::singleShot(2000, this, SLOT(slotHelpUpdates()));
 }
 
 void MainWindow::setNormalProject()
@@ -732,11 +747,11 @@ void MainWindow::slotHelpTutorial()
         QDesktopServices::openUrl(TUTORIAL_URL);
 }
 
-
 void MainWindow::slotHelpUpdates()
 {
     VersionCheckDialog vcd;
     vcd.exec();
+    QSettings().setValue("fotowall/LastUpdateCheck", QDate::currentDate());
 }
 
 void MainWindow::slotSetBackMode(QAction* action)

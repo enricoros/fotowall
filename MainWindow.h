@@ -50,6 +50,7 @@ class MainWindow : public QWidget
         void createMiscActions();
         void checkForTutorial();
         void checkForSupport();
+        void checkForUpdates();
         void setNormalProject();
         void setCDProject();
         void setDVDProject();
