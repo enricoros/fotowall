@@ -143,6 +143,7 @@ improvement and the code is kept clean and small.
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
+* frame text: centered, stretto un pochino.. tipo 2 millimetrini
 * add the undo/redo support
 * make uninstall
 * transform pictures with a 'magneto tool' (good on grids)

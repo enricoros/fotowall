@@ -30,7 +30,10 @@ WordCloudContent::WordCloudContent(QGraphicsScene * scene, QGraphicsItem * paren
 
     // temporarily get words
     WordCloud::Scanner scanner;
-    //scanner.addFromFile("/alchimia");
+#if 0
+    scanner.addFromFile("/alchimia");
+    m_cloud->newCloud(scanner.takeWords());
+#else
     scanner.addFromString(tr("Welcome to WordCloud. Change options on the sidebar."));
     WordCloud::WordList list = scanner.takeWords();
     WordCloud::WordList::iterator wIt = list.begin();
@@ -40,6 +43,7 @@ WordCloudContent::WordCloudContent(QGraphicsScene * scene, QGraphicsItem * paren
         ++wIt;
     }
     m_cloud->newCloud(list);
+#endif
 }
 
 WordCloud::Cloud * WordCloudContent::cloud() const
