@@ -46,12 +46,14 @@ class Canvas : public AbstractScene
         Canvas(const QSize & initialSize, QObject * parent = 0);
         ~Canvas();
 
-        // add content
+        // add/remove content
         void addCanvasViewContent(const QStringList & fileNames);
         void addPictureContent(const QStringList & fileNames);
         void addTextContent();
         void addWebcamContent(int input);
         void addWordCloudContent();
+        void addManualContent(AbstractContent * content, const QPoint & pos);
+        void clearContent();
 
         // ::AbstractScene
         void resize(const QSize & size);

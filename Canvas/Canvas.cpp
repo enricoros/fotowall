@@ -135,9 +135,7 @@ Canvas::~Canvas()
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
     delete m_grad2ColorPicker;
-    qDeleteAll(m_content);
-    m_content.clear();
-    m_backContent = 0;
+    clearContent();
     delete m_networkAccessManager;
     delete m_modeInfo;
 }
@@ -200,6 +198,22 @@ void Canvas::addWordCloudContent()
 {
     WordCloudContent * wcc = createWordCloud(nearCenter(sceneRect()));
     App::mainWindow->editWordcloud(wcc->cloud());
+}
+
+void Canvas::addManualContent(AbstractContent * content, const QPoint & pos)
+{
+    initContent(content, pos);
+}
+
+void Canvas::clearContent()
+{
+    while (!m_content.isEmpty())
+        deleteContent(m_content.first());
+    while (!m_configs.isEmpty())
+        deleteConfig(m_configs.first());
+    // this is not needed, it's here only as extra-safety
+    // Q_ASSERT(!m_backContent)
+    m_backContent = 0;
 }
 
 void Canvas::resize(const QSize & size)
@@ -641,11 +655,8 @@ void Canvas::toXml(QDomElement & canvasElement) const
 
 void Canvas::fromXml(QDomElement & canvasElement)
 {
-    // clear contents
-    while (!m_content.isEmpty())
-        deleteContent(m_content.first());
-    while (!m_configs.isEmpty())
-        deleteConfig(m_configs.first());
+    // remove all content
+    clearContent();
 
     // MODEINFO
     {

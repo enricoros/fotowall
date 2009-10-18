@@ -35,7 +35,7 @@
 #include <math.h>
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noRescale)
-    : AbstractDisposeable(parent, true)
+    : AbstractDisposeable(parent, false /*needed for Hardware3DTest*/)
     , m_contentRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)
@@ -655,7 +655,7 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
         QRectF rect = scene()->sceneRect();
-        if (!rect.contains(newPos)) {
+        if (!rect.contains(newPos) /*&& rect.width() > 100 && rect.height() > 100*/) {
             newPos.setX(qBound(rect.left(), newPos.x(), rect.right()));
             newPos.setY(qBound(rect.top(), newPos.y(), rect.bottom()));
             return newPos;

@@ -4,6 +4,7 @@ HEADERS += \
     App/ExactSizeDialog.h \
     App/ExportWizard.h \
     App/FotowallFile.h \
+    App/Hardware3DTest.h \
     App/MainWindow.h \
     App/SceneView.h \
     App/Settings.h \
@@ -16,6 +17,7 @@ SOURCES += \
     App/ExactSizeDialog.cpp \
     App/ExportWizard.cpp \
     App/FotowallFile.cpp \
+    App/Hardware3DTest.cpp \
     App/MainWindow.cpp \
     App/SceneView.cpp \
     App/Settings.cpp \

@@ -156,6 +156,30 @@ bool PictureContent::loadFromNetwork(const QString & url, QNetworkReply * reply,
     return true;
 }
 
+bool PictureContent::loadPixmap(const QPixmap & pixmap, const QString & title)
+{
+    dropNetworkConnection();
+    delete m_photo;
+    m_cachedPhoto = QPixmap();
+    m_opaquePhoto = false;
+    m_photo = 0;
+    m_fileUrl = QString();
+    m_netWidth = 0;
+    m_netHeight = 0;
+
+    m_photo = new CPixmap(pixmap.toImage());
+    m_opaquePhoto = !pixmap.hasAlpha();
+    m_fileUrl = QString("data:/");
+    resetContentsRatio();
+    setFrameTextEnabled(!title.isEmpty());
+    setFrameText(title);
+    applyPostLoadEffects();
+
+    // notify image change
+    emit contentChanged();
+    return true;
+}
+
 void PictureContent::addEffect(const PictureEffect & effect)
 {
     if (!m_photo)

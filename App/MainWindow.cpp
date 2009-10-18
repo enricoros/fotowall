@@ -23,6 +23,7 @@
 #include "App.h"
 #include "CanvasAppliance.h"
 #include "FotowallFile.h"
+#include "Hardware3DTest.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
@@ -75,6 +76,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
+    ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
     createLikeBack();
 
@@ -453,6 +455,32 @@ void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
     QString htmlCode = reply->readAll();
     bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
     m_aHelpTutorial->setVisible(tutorialValid);
+}
+
+void MainWindow::on_accelTestButton_clicked()
+{
+    // ask for confirmation before testing
+    ButtonsDialog d("OpenGLTest", tr("Accelerated Rendering"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system.<br><b>Do you want to do an acceleration test?</b><br>"), QDialogButtonBox::Ok | QDialogButtonBox::Cancel, true, true);
+    d.setMemorizeEnabled(false);
+    d.setIcon(QStyle::SP_MessageBoxQuestion);
+    if (d.execute() == QDialogButtonBox::Cancel)
+        return;
+
+    // run the Hardware Test and apply the results
+    Hardware3DTest testDialog;
+    switch (testDialog.run()) {
+        case Hardware3DTest::Canceled:
+            break;
+
+        case Hardware3DTest::UseSoftware:
+            ui->accelBox->setChecked(false);
+            break;
+
+        case Hardware3DTest::UseOpenGL:
+            if (ui->sceneView->supportsOpenGL())
+                ui->accelBox->setChecked(true);
+            break;
+    }
 }
 
 void MainWindow::on_accelBox_toggled(bool enabled)

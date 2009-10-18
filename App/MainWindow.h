@@ -82,6 +82,7 @@ class MainWindow : public Appliance::Container
         void slotVerifyTutorial(QNetworkReply * reply);
 
         // setup box
+        void on_accelTestButton_clicked();
         void on_accelBox_toggled(bool checked);
         void on_transpBox_toggled(bool checked);
 };
