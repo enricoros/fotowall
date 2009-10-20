@@ -16,6 +16,7 @@
 #define __SceneView_h__
 
 #include <QGraphicsView>
+#include <QTime>
 class AbstractScene;
 class QVBoxLayout;
 class RubberBandStyle;
@@ -41,10 +42,14 @@ class SceneView : public QGraphicsView
         // layout widgets inside this
         void addOverlayWidget(QWidget * widget, bool top = true);
 
+    Q_SIGNALS:
+        void heavyRepaint();
+
     protected:
         // ::QGraphicsView
         void drawForeground(QPainter * painter, const QRectF & rect);
         // ::QWidget
+        void paintEvent(QPaintEvent * event);
         void resizeEvent(QResizeEvent * event);
 
     private:
@@ -52,6 +57,8 @@ class SceneView : public QGraphicsView
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
         QVBoxLayout * m_viewportLayout;
+        QTime m_paintTime;
+        int m_heavyCounter;
 
     private Q_SLOTS:
         // layout scene and scrollbars

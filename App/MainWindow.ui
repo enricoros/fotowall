@@ -426,7 +426,7 @@ stop:1 rgba(237, 237, 237, 255))
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QToolButton" name="accelTestButton">
+          <widget class="BlinkingToolButton" name="accelTestButton">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -638,6 +638,11 @@ stop:1 rgba(237, 237, 237, 255))
    <extends>QWidget</extends>
    <header>Shared/GroupBoxWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BlinkingToolButton</class>
+   <extends>QToolButton</extends>
+   <header>Shared/BlinkingToolButton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -78,6 +78,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
     ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
+    connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
     createLikeBack();
 
     // init the Appliance Manager
@@ -335,6 +336,18 @@ void MainWindow::slotApplianceStructureChanged()
 
     // repaint all
     update();
+}
+
+void MainWindow::slotRenderingSlow()
+{
+    // don't act anymore
+    disconnect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
+
+    // draw attenction to the testing button
+    if (ui->sceneView->supportsOpenGL()) {
+        ui->modeWidget->setChecked(true);
+        ui->accelTestButton->drawAttenction();
+    }
 }
 
 bool MainWindow::on_loadButton_clicked()

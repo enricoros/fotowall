@@ -4,6 +4,7 @@ HEADERS += \
     Shared/AbstractScene.h \
     Shared/ApplianceContainer.h \
     Shared/ApplianceManager.h \
+    Shared/BlinkingToolButton.h \
     Shared/BreadCrumbBar.h \
     Shared/ButtonsDialog.h \
     Shared/CPixmap.h \
@@ -28,6 +29,7 @@ SOURCES += \
     Shared/AbstractScene.cpp \
     Shared/ApplianceContainer.cpp \
     Shared/ApplianceManager.cpp \
+    Shared/BlinkingToolButton.cpp \
     Shared/BreadCrumbBar.cpp \
     Shared/ButtonsDialog.cpp \
     Shared/CPixmap.cpp \

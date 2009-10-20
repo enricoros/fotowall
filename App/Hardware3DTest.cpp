@@ -308,7 +308,7 @@ void TimedSceneView::paintEvent(QPaintEvent * event)
     }
 
     // do painting
-    SceneView::paintEvent(event);
+    QGraphicsView::paintEvent(event);
 
     // get measurement results
     if (time) {

@@ -58,6 +58,7 @@ SceneView::SceneView(QWidget * parent)
   , m_abstractScene(0)
   , m_style(new RubberBandStyle)
   , m_viewportLayout(new QVBoxLayout)
+  , m_heavyCounter(0)
 {
     // customize widget
     setInteractive(true);
@@ -203,6 +204,35 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
     // blend the shadow tile
     if (rect.top() < (y + 8))
         painter->drawTiledPixmap(rect.left(), y, rect.width(), 8, shadowTile);
+}
+
+void SceneView::paintEvent(QPaintEvent * event)
+{
+    // start the measuring time
+#if 0
+    const bool measureTime = event->rect().size() == viewport()->size();
+#else
+    const bool measureTime = true;
+#endif
+    if (measureTime)
+        m_paintTime.start();
+
+    // do painting
+    QGraphicsView::paintEvent(event);
+
+    // handle measurement
+    if (!measureTime)
+        return;
+    if (m_paintTime.elapsed() < 100) {
+        m_heavyCounter = 0;
+        return;
+    }
+
+    // handle slow painting
+    if (++m_heavyCounter > 6) {
+        m_heavyCounter = -100;
+        emit heavyRepaint();
+    }
 }
 
 void SceneView::resizeEvent(QResizeEvent * event)

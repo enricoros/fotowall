@@ -62,6 +62,7 @@ class MainWindow : public Appliance::Container
         // notifications
         void slotApplianceClicked(quint32);
         void slotApplianceStructureChanged();
+        void slotRenderingSlow();
 
         // file box
         bool on_loadButton_clicked();
