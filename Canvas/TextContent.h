@@ -70,11 +70,16 @@ class TextContent : public AbstractContent
         QList<QRect> m_blockRects;
         QRect m_textRect;
         int m_textMargin;
+        int m_shakeRadius;
 
         // shape related stuff
         BezierCubicItem * m_shapeEditor;
         QPainterPath m_shapePath;
         QRect m_shapeRect;
+
+    private Q_SLOTS:
+        void slotShakeLess();
+        void slotShakeMore();
 };
 
 #endif

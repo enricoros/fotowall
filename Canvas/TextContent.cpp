@@ -33,6 +33,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     , m_text(0)
     , m_textRect(0, 0, 0, 0)
     , m_textMargin(4)
+    , m_shakeRadius(0)
     , m_shapeEditor(0)
 {
     setFrame(0);
@@ -133,6 +134,8 @@ QWidget * TextContent::createPropertyWidget()
     connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
     connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
     connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
+    connect(p->bShakeLess, SIGNAL(clicked()), this, SLOT(slotShakeLess()));
+    connect(p->bShakeMore, SIGNAL(clicked()), this, SLOT(slotShakeMore()));
 
     // properties link
     p->bEditShape->setChecked(isShapeEditing());
@@ -297,6 +300,8 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
                     qreal t = m_shapePath.percentAtLength(curLen);
                     QPointF pt = m_shapePath.pointAtPercent(t);
                     qreal angle = -m_shapePath.angleAtPercent(t);
+                    if (m_shakeRadius > 0)
+                        pt += QPointF(1 + (qrand() % m_shakeRadius) - m_shakeRadius/2, 1 + (qrand() % m_shakeRadius) - m_shakeRadius/2);
 
                     // draw rotated letter
                     painter->save();
@@ -476,4 +481,18 @@ void TextContent::updateCache()
 
     ...
     */
+}
+
+void TextContent::slotShakeLess()
+{
+    if (m_shakeRadius > 0) {
+        m_shakeRadius--;
+        updateTextConstraints();
+    }
+}
+
+void TextContent::slotShakeMore()
+{
+    m_shakeRadius++;
+    updateTextConstraints();
 }

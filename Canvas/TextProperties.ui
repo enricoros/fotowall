@@ -153,6 +153,22 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="bShakeMore">
+       <property name="icon">
+        <iconset resource="../fotowall.qrc">
+         <normaloff>:/data/text-shake.png</normaloff>:/data/text-shake.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="bShakeLess">
+       <property name="icon">
+        <iconset resource="../fotowall.qrc">
+         <normaloff>:/data/text-deshake.png</normaloff>:/data/text-deshake.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

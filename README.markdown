@@ -23,6 +23,7 @@ Work in progress:
 * Breadcrumb bar navigation
 * modeinfo-per-scene, real resizing of scenes based on modeinfo, support for larger scenes
   * zooming?
+* Text shaking
 * Wordcloud editor
 
 Done:
