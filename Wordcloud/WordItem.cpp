@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the WordCloud project,                           *
+ *   This file is part of the Wordcloud project,                           *
  *       http://www.enricoros.com/opensource/wordcloud                     *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
@@ -19,7 +19,7 @@
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 
-using namespace WordCloud;
+using namespace Wordcloud;
 
 WordItem::WordItem(const Word & word, const QFont & font, double rotation,
                    int minCount, int maxCount, QGraphicsItem * parent)
@@ -29,7 +29,7 @@ WordItem::WordItem(const Word & word, const QFont & font, double rotation,
   , m_word(word)
 {
     // customize item
-    setFlags(ItemIsMovable | ItemIsSelectable | ItemIsFocusable);
+    setFlags(ItemIsMovable | ItemIsSelectable | ItemIsFocusable | ItemSendsGeometryChanges);
     setPen(Qt::NoPen);
 
     // adapt font to the relative count
@@ -39,6 +39,13 @@ WordItem::WordItem(const Word & word, const QFont & font, double rotation,
     m_font.setPointSize(fontSize);
 
     regeneratePath();
+}
+
+QVariant WordItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionHasChanged)
+        emit moved();
+    return QAbstractGraphicsShapeItem::itemChange(change, value);
 }
 
 void WordItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)

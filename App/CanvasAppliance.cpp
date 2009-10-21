@@ -41,14 +41,14 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     ui.b1->setDefaultAction(ui.aAddPicture);
     ui.b2->setDefaultAction(ui.aAddText);
     ui.b3->setDefaultAction(ui.aAddWebcam);
-    ui.b4->setDefaultAction(ui.aAddWordCloud);
+    ui.b4->setDefaultAction(ui.aAddWordcloud);
     ui.b5->setDefaultAction(ui.aAddCanvas);
     ui.b6->setDefaultAction(ui.aSearchPictures);
     connect(ui.aAddPicture, SIGNAL(triggered()), this, SLOT(slotAddPicture()));
     connect(ui.aAddText, SIGNAL(triggered()), this, SLOT(slotAddText()));
     connect(ui.aAddWebcam, SIGNAL(triggered()), this, SLOT(slotAddWebcam()));
     connect(ui.aAddCanvas, SIGNAL(triggered()), this, SLOT(slotAddCanvas()));
-    connect(ui.aAddWordCloud, SIGNAL(triggered()), this, SLOT(slotAddWordCloud()));
+    connect(ui.aAddWordcloud, SIGNAL(triggered()), this, SLOT(slotAddWordcloud()));
     connect(ui.aSearchPictures, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
@@ -364,11 +364,11 @@ void CanvasAppliance::slotAddWebcam()
     m_extCanvas->addWebcamContent(0);
 }
 
-void CanvasAppliance::slotAddWordCloud()
+void CanvasAppliance::slotAddWordcloud()
 {
     // disable any search box
     ui.aSearchPictures->setChecked(false);
-    m_extCanvas->addWordCloudContent();
+    m_extCanvas->addWordcloudContent();
 }
 
 void CanvasAppliance::slotSearchPicturesToggled(bool visible)

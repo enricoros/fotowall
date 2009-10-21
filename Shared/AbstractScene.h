@@ -16,7 +16,6 @@
 #define __AbstractScene_h__
 
 #include <QGraphicsScene>
-#include <QResizeEvent>
 #include <QRectF>
 #include <QSize>
 
@@ -31,7 +30,7 @@ class AbstractScene : public QGraphicsScene
 
         // scene size
         virtual void resize(const QSize & size);
-        virtual void resizeEvent(QResizeEvent * event);
+        virtual void resizeEvent();
         inline int sceneWidth() const { return m_size.width(); }
         inline int sceneHeight() const { return m_size.height(); }
         inline QSize sceneSize() const { return m_size; }
@@ -42,7 +41,6 @@ class AbstractScene : public QGraphicsScene
         void geometryChanged();
 
     protected:
-        AbstractScene();
         QSize m_size;
         QRectF m_rect;
 };

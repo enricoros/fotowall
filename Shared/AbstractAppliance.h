@@ -17,6 +17,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QVariant>
 #include "AbstractScene.h"
 #include "ApplianceContainer.h"
 

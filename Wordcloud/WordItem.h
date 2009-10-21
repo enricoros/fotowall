@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the WordCloud project,                           *
+ *   This file is part of the Wordcloud project,                           *
  *       http://www.enricoros.com/opensource/wordcloud                     *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
@@ -16,13 +16,14 @@
 #define __WordItem_h__
 
 #include <QAbstractGraphicsShapeItem>
-#include "WordDefs.h"
+#include "Bits.h"
 
-namespace WordCloud {
+namespace Wordcloud {
 
     /// \brief A word, displayable and containing path information
-    class WordItem : public QAbstractGraphicsShapeItem
+    class WordItem : public QObject, public QAbstractGraphicsShapeItem
     {
+        Q_OBJECT
         public:
             WordItem(const Word & word, const QFont & font, double rotation,
                      int minCount, int maxCount, QGraphicsItem * parent = 0);
@@ -35,7 +36,11 @@ namespace WordCloud {
 
             // ::QGraphicsItem
             inline QRectF boundingRect() const { return m_boudingRect; }
+            QVariant itemChange(GraphicsItemChange change, const QVariant &value);
             void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+
+        Q_SIGNALS:
+            void moved();
 
         private:
             WordItem();

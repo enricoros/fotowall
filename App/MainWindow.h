@@ -22,7 +22,7 @@ class LikeBack;
 class QMenu;
 class QNetworkReply;
 namespace Ui { class MainWindow; }
-namespace WordCloud { class Cloud; }
+namespace Wordcloud { class Cloud; }
 
 class MainWindow : public Appliance::Container
 {
@@ -33,7 +33,7 @@ class MainWindow : public Appliance::Container
 
         // content editing
         void editCanvas(Canvas * newCanvas);
-        void editWordcloud(WordCloud::Cloud * cloud);
+        void editWordcloud(Wordcloud::Cloud * cloud);
 
     protected:
         // ::Appliance::Container

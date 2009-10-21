@@ -150,7 +150,7 @@ void MainWindow::editCanvas(Canvas * canvas)
     m_appManager->stackAppliance(cApp);
 }
 
-void MainWindow::editWordcloud(WordCloud::Cloud * cloud)
+void MainWindow::editWordcloud(Wordcloud::Cloud * cloud)
 {
     WordcloudAppliance * wApp = new WordcloudAppliance(cloud, this);
     m_appManager->stackAppliance(wApp);

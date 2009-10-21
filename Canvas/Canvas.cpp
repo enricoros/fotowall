@@ -28,7 +28,7 @@
 #include "TextContent.h"
 #include "TextConfig.h"
 #include "WebcamContent.h"
-#include "WordCloudContent.h"
+#include "WordcloudContent.h"
 #include "Shared/RenderOpts.h"
 
 #include <QAbstractTextDocumentLayout>
@@ -194,9 +194,9 @@ void Canvas::addWebcamContent(int input)
 
 #include "App/App.h"
 #include "App/MainWindow.h"
-void Canvas::addWordCloudContent()
+void Canvas::addWordcloudContent()
 {
-    WordCloudContent * wcc = createWordCloud(nearCenter(sceneRect()));
+    WordcloudContent * wcc = createWordcloud(nearCenter(sceneRect()));
     App::mainWindow->editWordcloud(wcc->cloud());
 }
 
@@ -229,7 +229,7 @@ void Canvas::resize(const QSize & size)
     AbstractScene::resize(size);
 }
 
-void Canvas::resizeEvent(QResizeEvent * /*event*/)
+void Canvas::resizeEvent()
 {
     // relayout contents
     m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
@@ -1123,9 +1123,9 @@ WebcamContent * Canvas::createWebcam(int input, const QPoint & pos)
     return w;
 }
 
-WordCloudContent * Canvas::createWordCloud(const QPoint & pos)
+WordcloudContent * Canvas::createWordcloud(const QPoint & pos)
 {
-    WordCloudContent * w = new WordCloudContent(this);
+    WordcloudContent * w = new WordcloudContent(this);
     initContent(w, pos);
     return w;
 }

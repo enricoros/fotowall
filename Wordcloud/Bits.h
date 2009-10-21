@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the WordCloud project,                           *
+ *   This file is part of the Wordcloud project,                           *
  *       http://www.enricoros.com/opensource/wordcloud                     *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
@@ -12,8 +12,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WordDefs_h__
-#define __WordDefs_h__
+#ifndef __Bits_h__
+#define __Bits_h__
 
 #include <QColor>
 #include <QFont>
@@ -21,7 +21,7 @@
 #include <QMap>
 #include <QString>
 
-namespace WordCloud {
+namespace Wordcloud {
 
     /// Word statistical description
     struct Word {

@@ -23,7 +23,7 @@ Work in progress:
 * Breadcrumb bar navigation
 * modeinfo-per-scene, real resizing of scenes based on modeinfo, support for larger scenes
   * zooming?
-* WordCloud editor
+* Wordcloud editor
 
 Done:
 
@@ -32,7 +32,7 @@ Done:
 * Cleanups: Selection, Frames, Rendering, Backgrounding, 
 * Perspective Property editor
 * Google Images search (by Marco Bavagnoli, reqby. Rossana)
-* New Content: WordCloud
+* New Content: Wordcloud
 * New Content: Fotowall
 * Scrollable Canvas
   * perfectly handles the Exact Size mode

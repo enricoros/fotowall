@@ -61,7 +61,7 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         void slotAddPicture();
         void slotAddText();
         void slotAddWebcam();
-        void slotAddWordCloud();
+        void slotAddWordcloud();
         void slotSearchPicturesToggled(bool on);
 
         // actions in the canvas box

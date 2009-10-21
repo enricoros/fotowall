@@ -562,13 +562,13 @@
     <string>Add Fotowall File</string>
    </property>
   </action>
-  <action name="aAddWordCloud">
+  <action name="aAddWordcloud">
    <property name="icon">
     <iconset resource="../fotowall.qrc">
      <normaloff>:/data/textinsertimage.png</normaloff>:/data/textinsertimage.png</iconset>
    </property>
    <property name="text">
-    <string>Add Word Cloud</string>
+    <string>Add Wordcloud</string>
    </property>
   </action>
  </widget>

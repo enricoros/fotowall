@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <QLabel>
 #include <QGraphicsView>
+#include <QPaintEvent>
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>

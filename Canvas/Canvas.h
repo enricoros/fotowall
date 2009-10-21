@@ -37,7 +37,7 @@ class QNetworkAccessManager;
 class QTimer;
 class TextContent;
 class WebcamContent;
-class WordCloudContent;
+class WordcloudContent;
 
 class Canvas : public AbstractScene
 {
@@ -51,13 +51,13 @@ class Canvas : public AbstractScene
         void addPictureContent(const QStringList & fileNames);
         void addTextContent();
         void addWebcamContent(int input);
-        void addWordCloudContent();
+        void addWordcloudContent();
         void addManualContent(AbstractContent * content, const QPoint & pos);
         void clearContent();
 
         // ::AbstractScene
         void resize(const QSize & size);
-        void resizeEvent(QResizeEvent * event);
+        void resizeEvent();
 
         // item interaction
         void selectAllContent(bool selected = true);
@@ -123,7 +123,7 @@ class Canvas : public AbstractScene
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
         WebcamContent * createWebcam(int input, const QPoint & pos);
-        WordCloudContent * createWordCloud(const QPoint & pos);
+        WordcloudContent * createWordcloud(const QPoint & pos);
         void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
 

@@ -12,11 +12,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WordCloudContent_h__
-#define __WordCloudContent_h__
+#ifndef __WordcloudContent_h__
+#define __WordcloudContent_h__
 
 #include "AbstractContent.h"
-#include "WordCloud/WordCloud.h"
+#include "Wordcloud/Cloud.h"
 #include <QPixmap>
 class Canvas;
 class QGraphicsScene;
@@ -24,17 +24,17 @@ class QGraphicsScene;
 /**
     \brief Use another Canvas as content
 */
-class WordCloudContent : public AbstractContent
+class WordcloudContent : public AbstractContent
 {
     Q_OBJECT
     public:
-        WordCloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-//        ~WordCloudContent();
+        WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+//        ~WordcloudContent();
 
-        WordCloud::Cloud * cloud() const;
+        Wordcloud::Cloud * cloud() const;
 
         // ::AbstractContent
-        QString contentName() const { return tr("WordCloudXXX"); }
+        QString contentName() const { return tr("Wordcloud###"); }
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & contentElement);
         void toXml(QDomElement & contentElement) const;
@@ -48,7 +48,7 @@ class WordCloudContent : public AbstractContent
 
     private:
         QGraphicsScene * m_cloudScene;
-        WordCloud::Cloud * m_cloud;
+        Wordcloud::Cloud * m_cloud;
 
     private Q_SLOTS:
         void slotRepaintScene(const QList<QRectF> & exposed);

@@ -34,7 +34,7 @@ class CanvasViewContent : public AbstractContent
         //void setCanvas(Canvas * canvas);
 
         // ::AbstractContent
-        QString contentName() const { return tr("CanvasXXX"); }
+        QString contentName() const { return tr("Canvas###"); }
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
