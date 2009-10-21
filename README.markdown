@@ -27,6 +27,7 @@ Work in progress:
 
 Done:
 
+* Cursor key movement
 * OpenGL testing and performance auto-detection
 * CD/DVD markers redux
 * Cleanups: Selection, Frames, Rendering, Backgrounding, 

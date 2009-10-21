@@ -30,7 +30,7 @@ class CanvasViewContent : public AbstractContent
 //        ~CanvasViewContent();
 
         bool loadCanvas(const QString & filePath, bool keepRatio = false, bool setName = false);
-        //Canvas * takeCanvas();
+        Canvas * takeCanvas();
         //void setCanvas(Canvas * canvas);
 
         // ::AbstractContent
@@ -42,9 +42,6 @@ class CanvasViewContent : public AbstractContent
 
 //        int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
-
-        // ::QGraphicsItem
-        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
     private:
         Canvas * m_canvas;

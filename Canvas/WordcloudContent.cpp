@@ -82,13 +82,6 @@ bool WordcloudContent::contentOpaque() const
     return false;
 }
 
-#include "App/App.h"
-#include "App/MainWindow.h"
-void WordcloudContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * /*event*/)
-{
-    App::mainWindow->editWordcloud(m_cloud);
-}
-
 void WordcloudContent::slotRepaintScene(const QList<QRectF> & /*exposed*/)
 {
     update();

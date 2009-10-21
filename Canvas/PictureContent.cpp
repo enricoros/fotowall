@@ -405,10 +405,9 @@ void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 }
 
-void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
-    emit backgroundMe();
-    QGraphicsItem::mouseDoubleClickEvent(event);
+    emit requestBackgrounding();
 }
 
 void PictureContent::dropNetworkConnection()

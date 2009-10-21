@@ -154,8 +154,9 @@ class Canvas : public AbstractScene
         friend class AbstractConfig; // HACK here, only to call 1 method
         friend class PixmapButton; // HACK here, only to call 1 method
         void slotSelectionChanged();
-        void slotConfigureContent(const QPoint & scenePoint);
         void slotBackgroundContent();
+        void slotConfigureContent(const QPoint & scenePoint);
+        void slotEditContent();
         void slotStackContent(int);
         void slotDeleteContent();
         void slotDeleteConfig();

@@ -43,9 +43,6 @@ class WordcloudContent : public AbstractContent
 //        int contentHeightForWidth(int width) const;
         bool contentOpaque() const;
 
-        // ::QGraphicsItem
-        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-
     private:
         QGraphicsScene * m_cloudScene;
         Wordcloud::Cloud * m_cloud;

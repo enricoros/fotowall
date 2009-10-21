@@ -192,12 +192,9 @@ void Canvas::addWebcamContent(int input)
     createWebcam(input, nearCenter(sceneRect()));
 }
 
-#include "App/App.h"
-#include "App/MainWindow.h"
 void Canvas::addWordcloudContent()
 {
-    WordcloudContent * wcc = createWordcloud(nearCenter(sceneRect()));
-    App::mainWindow->editWordcloud(wcc->cloud());
+    createWordcloud(nearCenter(sceneRect()));
 }
 
 void Canvas::addManualContent(AbstractContent * content, const QPoint & pos)
@@ -1049,10 +1046,12 @@ void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect)
 
 void Canvas::initContent(AbstractContent * content, const QPoint & pos)
 {
-    connect(content, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(content, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
+    // listen to AbstractContent signals. dangerous ops (deletion, editing) have queued connections
     connect(content, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(content, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
+    connect(content, SIGNAL(requestBackgrounding()), this, SLOT(slotBackgroundContent()));
+    connect(content, SIGNAL(requestConfig(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
+    connect(content, SIGNAL(requestEditing()), this, SLOT(slotEditContent()), Qt::QueuedConnection);
+    connect(content, SIGNAL(requestRemoval()), this, SLOT(slotDeleteContent()), Qt::QueuedConnection);
 
     if (!pos.isNull())
         content->setPos(pos);
@@ -1179,13 +1178,18 @@ void Canvas::slotSelectionChanged()
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selection);
     if (!selectedContent.isEmpty()) {
         SelectionProperties * pWidget = new SelectionProperties(selectedContent);
-        connect(pWidget, SIGNAL(deleteSelection()), this, SLOT(slotDeleteContent()));
+        connect(pWidget, SIGNAL(deleteSelection()), this, SLOT(slotDeleteContent()), Qt::QueuedConnection);
         emit showPropertiesWidget(pWidget);
         return;
     }
 
     // or don't show anything
     emit showPropertiesWidget(0);
+}
+
+void Canvas::slotBackgroundContent()
+{
+    setBackContent(dynamic_cast<AbstractContent *>(sender()));
 }
 
 void Canvas::slotConfigureContent(const QPoint & scenePoint)
@@ -1225,9 +1229,26 @@ void Canvas::slotConfigureContent(const QPoint & scenePoint)
     p->setFocus();
 }
 
-void Canvas::slotBackgroundContent()
+// ###
+#include "App/App.h"
+#include "App/MainWindow.h"
+void Canvas::slotEditContent()
 {
-    setBackContent(dynamic_cast<AbstractContent *>(sender()));
+    // get content
+    AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
+    if (!content)
+        return;
+
+    // handle Canvas
+    if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
+        cvc->setSelected(false);
+        App::mainWindow->editCanvas(cvc->takeCanvas());
+    }
+
+    // handle Wordcloud
+    if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
+        App::mainWindow->editWordcloud(wc->cloud());
+    }
 }
 
 void Canvas::slotStackContent(int op)

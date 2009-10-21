@@ -153,10 +153,9 @@ bool WebcamContent::contentOpaque() const
     return true;
 }
 
-void WebcamContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void WebcamContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
-    emit backgroundMe();
-    QGraphicsItem::mouseDoubleClickEvent(event);
+    emit requestBackgrounding();
 }
 
 void WebcamContent::slotToggleStill()

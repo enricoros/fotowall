@@ -132,7 +132,7 @@ QWidget * TextContent::createPropertyWidget()
     connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
     connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
     connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
-    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(deleteItem()), Qt::QueuedConnection);
+    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
 
     // properties link
     p->bEditShape->setChecked(isShapeEditing());
@@ -333,10 +333,9 @@ void TextContent::selectionChanged(bool selected)
         setShapeEditing(false);
 }
 
-void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
-    emit backgroundMe();
-    QGraphicsItem::mouseDoubleClickEvent(event);
+    emit requestBackgrounding();
 }
 
 QPainterPath TextContent::shapePath() const
