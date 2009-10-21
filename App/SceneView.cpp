@@ -22,6 +22,7 @@
 #include <QPixmap>
 #include <QRectF>
 #include <QStyleOption>
+#include <QTimer>
 #include <QVBoxLayout>
 
 /// The style used by the SceneView's rubberband selection
@@ -57,6 +58,7 @@ SceneView::SceneView(QWidget * parent)
   , m_abstractScene(0)
   , m_style(new RubberBandStyle)
   , m_viewportLayout(new QVBoxLayout)
+  , m_heavyTimer(0)
   , m_heavyCounter(0)
 {
     // customize widget
@@ -233,8 +235,14 @@ void SceneView::paintEvent(QPaintEvent * event)
     // handle slow painting
     if (++m_heavyCounter > 6) {
         m_heavyCounter = -100;
-        emit heavyRepaint();
+        if (!m_heavyTimer) {
+            m_heavyTimer = new QTimer(this);
+            m_heavyTimer->setSingleShot(true);
+            connect(m_heavyTimer, SIGNAL(timeout()), this, SIGNAL(heavyRepaint()));
+        }
     }
+    if (m_heavyTimer)
+        m_heavyTimer->start(1000);
 }
 
 void SceneView::resizeEvent(QResizeEvent * event)

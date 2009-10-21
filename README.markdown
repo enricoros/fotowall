@@ -27,6 +27,7 @@ Work in progress:
 
 Done:
 
+* OpenGL testing and performance auto-detection
 * CD/DVD markers redux
 * Cleanups: Selection, Frames, Rendering, Backgrounding, 
 * Perspective Property editor

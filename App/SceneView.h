@@ -58,6 +58,7 @@ class SceneView : public QGraphicsView
         RubberBandStyle * m_style;
         QVBoxLayout * m_viewportLayout;
         QTime m_paintTime;
+        QTimer * m_heavyTimer;
         int m_heavyCounter;
 
     private Q_SLOTS:
