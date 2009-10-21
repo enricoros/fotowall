@@ -128,15 +128,15 @@ Canvas::Canvas(const QSize & initialSize, QObject * parent)
 
 Canvas::~Canvas()
 {
-    delete m_forceFieldTimer;
+    clearContent();
     qDeleteAll(m_highlightItems);
     delete m_helpItem;
     delete m_titleColorPicker;
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
     delete m_grad2ColorPicker;
-    clearContent();
     delete m_networkAccessManager;
+    delete m_forceFieldTimer;
     delete m_modeInfo;
 }
 

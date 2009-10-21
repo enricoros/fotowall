@@ -59,6 +59,7 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     , m_appManager(new Appliance::Manager)
     , m_likeBack(0)
     , m_aHelpTutorial(0)
+    , m_applyingAccelState(false)
 {
     // setup widget
 #if QT_VERSION >= 0x040500
@@ -470,49 +471,66 @@ void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
     m_aHelpTutorial->setVisible(tutorialValid);
 }
 
-void MainWindow::on_accelTestButton_clicked()
+bool MainWindow::on_accelTestButton_clicked()
 {
-    // ask for confirmation before testing
-    ButtonsDialog d("OpenGLTest", tr("Accelerated Rendering"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system.<br><b>Do you want to do an acceleration test?</b><br>"), QDialogButtonBox::Ok | QDialogButtonBox::Cancel, true, true);
-    d.setMemorizeEnabled(false);
-    d.setIcon(QStyle::SP_MessageBoxQuestion);
-    if (d.execute() == QDialogButtonBox::Cancel)
-        return;
-
-    // run the Hardware Test and apply the results
-    Hardware3DTest testDialog;
-    switch (testDialog.run()) {
-        case Hardware3DTest::Canceled:
-            break;
-
-        case Hardware3DTest::UseSoftware:
-            ui->accelBox->setChecked(false);
-            break;
-
-        case Hardware3DTest::UseOpenGL:
-            if (ui->sceneView->supportsOpenGL())
-                ui->accelBox->setChecked(true);
-            break;
+    // ask for confirmation
+    if (!m_applyingAccelState) {
+        ButtonsDialog d("TestOpenGL", tr("Accelerated Rendering"), tr("OpenGL accelerates graphics. However it's not supported by every system.<br><b>Do you want to do an acceleration test?</b>"), QDialogButtonBox::Ok | QDialogButtonBox::Cancel, true, false);
+        d.setIcon(QStyle::SP_MessageBoxQuestion);
+        if (d.execute() == QDialogButtonBox::Cancel)
+            return false;
     }
+
+    // run the Hardware Test
+    Hardware3DTest testDialog;
+    Hardware3DTest::ExitState choice = testDialog.run();
+    if (choice == Hardware3DTest::Canceled)
+        return false;
+
+    // apply the user choice
+    bool setGL = choice == Hardware3DTest::UseOpenGL;
+    App::settings->setValue("OpenGL/Tested", true);
+    App::settings->setValue("OpenGL/TestResult", setGL);
+    m_applyingAccelState = true;
+    ui->accelBox->setChecked(setGL);
+    m_applyingAccelState = false;
+    return setGL;
 }
 
-void MainWindow::on_accelBox_toggled(bool enabled)
+void MainWindow::on_accelBox_toggled(bool checked)
 {
-    // ask for confirmation when enabling opengl
-    if (enabled) {
-        ButtonsDialog warning("GoOpenGL", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system.<br>Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"), QDialogButtonBox::Ok | QDialogButtonBox::Cancel, true, true);
-        warning.setIcon(QStyle::SP_MessageBoxInformation);
-        if (warning.execute() == QDialogButtonBox::Cancel) {
+    // ask for confirmation/testing when enabling opengl
+    if (checked && !m_applyingAccelState) {
+        bool tested = App::settings->contains("OpenGL/Tested");
+
+        QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Ok | QDialogButtonBox::Cancel | (tested ? QDialogButtonBox::NoButton : QDialogButtonBox::Retry);
+        ButtonsDialog input("EnableOpenGL", tr("OpenGL"), tr("OpenGL accelerates graphics, but it doesn't work on some systems.<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, don't enable OpenGL next time"), buttons, true, tested);
+        input.setIcon(QStyle::SP_MessageBoxInformation);
+        if (!tested)
+            input.setButtonText(QDialogButtonBox::Retry, tr("Test OpenGL"));
+        QDialogButtonBox::StandardButton choice = input.execute();
+
+        // action canceled
+        if (choice == QDialogButtonBox::Cancel) {
             ui->accelBox->setChecked(false);
             return;
         }
 
-        // toggle transparency with opengl
-        ui->transpBox->setChecked(false);
+        // testing required
+        if (choice == QDialogButtonBox::Retry) {
+            m_applyingAccelState = true;
+            checked = on_accelTestButton_clicked();
+            m_applyingAccelState = false;
+        }
     }
 
+#if QT_VERSION < 0x040600
+    // WORKAROUND Qt <= 4.6-beta1: toggle transparency with opengl
+    ui->transpBox->setChecked(false);
+#endif
+
     // set opengl state
-    ui->sceneView->setOpenGL(enabled);
+    ui->sceneView->setOpenGL(checked);
 
     // save opengl state
     RenderOpts::OpenGLWindow = ui->sceneView->openGL();
@@ -579,13 +597,17 @@ void MainWindow::on_transpBox_toggled(bool transparent)
     static Qt::WindowFlags initialWindowFlags = windowFlags();
 #endif
     if (transparent) {
+#ifdef Q_OS_LINUX
         // one-time warning
-        ButtonsDialog warning("GoTransparent", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"), QDialogButtonBox::Ok, true, true);
+        ButtonsDialog warning("EnableTransparency", tr("Transparency"), tr("This feature requires compositing (compiz or kwin4) to work on Linux.<br>If you see a black background then transparency is not supported on your system."), QDialogButtonBox::Ok, true, true);
         warning.setIcon(QStyle::SP_MessageBoxInformation);
         warning.execute();
+#endif
 
-        // toggle opengl with transparency
+#if QT_VERSION < 0x040600
+        // WORKAROUND Qt <= 4.6-beta1: toggle opengl with transparency
         ui->accelBox->setChecked(false);
+#endif
 
         // go transparent
         setAttribute(Qt::WA_NoSystemBackground, true);

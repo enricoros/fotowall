@@ -15,7 +15,6 @@
 #include "SceneView.h"
 
 #include "Shared/AbstractScene.h"
-#include "Shared/ButtonsDialog.h"
 
 #include <QApplication>
 #include <QCommonStyle>
@@ -151,9 +150,12 @@ void SceneView::setOpenGL(bool enabled)
 
     // transparent background for raster, standard Base on opengl
     QPalette pal = qApp->palette();
+#if QT_VERSION < 0x040600
+    // WORKAROUND Qt <= 4.6-beta1
     if (m_openGL)
         pal.setBrush(QPalette::Base, pal.window());
     else
+#endif
         pal.setBrush(QPalette::Base, Qt::NoBrush);
     setPalette(pal);
 
