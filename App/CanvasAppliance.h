@@ -30,9 +30,6 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
         Canvas * takeCanvas();
 
-        // peek at the internal canvas
-        Canvas * canvas() const;
-
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
         int applianceElements() const { return Appliance::UseAllElements; }

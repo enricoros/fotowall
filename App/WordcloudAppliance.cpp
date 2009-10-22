@@ -38,8 +38,10 @@ void WordcloudScene::resize(const QSize & size)
     AbstractScene::resize(newSize);
 
     QPointF delta = sceneCenter() - itemsRect.center();
-    foreach (QGraphicsItem * item, items())
-        item->setPos(item->pos() + delta);
+    if (!delta.isNull()) {
+        foreach (QGraphicsItem * item, items())
+            item->setPos(item->pos() + delta);
+    }
 }
 
 void WordcloudScene::slotWordMoved()

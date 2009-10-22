@@ -294,14 +294,14 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
             // 1.2.2. draw each character
             QString text = frag.text();
             foreach (const QChar & textChar, text) {
+                const qreal charWidth = metrics.width(textChar);
                 if (shapedPaint) {
                     // find point on shape and angle
-                    qreal interval = metrics.width(textChar);
                     qreal t = m_shapePath.percentAtLength(curLen);
                     QPointF pt = m_shapePath.pointAtPercent(t);
                     qreal angle = -m_shapePath.angleAtPercent(t);
                     if (m_shakeRadius > 0)
-                        pt += QPointF(1 + (qrand() % m_shakeRadius) - m_shakeRadius/2, 1 + (qrand() % m_shakeRadius) - m_shakeRadius/2);
+                        pt += QPointF(1 + (qrand() % m_shakeRadius) - m_shakeRadius/2, 1 + (qrand() % (2*m_shakeRadius)) - m_shakeRadius);
 
                     // draw rotated letter
                     painter->save();
@@ -310,10 +310,10 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
                     painter->drawText(iPos, textChar);
                     painter->restore();
 
-                    curLen += interval;
+                    curLen += charWidth;
                 } else {
                     painter->drawText(iPos, textChar);
-                    iPos += QPointF(metrics.width(textChar), 0);
+                    iPos += QPointF(charWidth, 0);
                 }
             }
         }

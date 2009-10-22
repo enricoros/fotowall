@@ -94,11 +94,6 @@ Canvas * CanvasAppliance::takeCanvas()
     return canvas;
 }
 
-Canvas * CanvasAppliance::canvas() const
-{
-    return m_extCanvas;
-}
-
 bool CanvasAppliance::applianceCommand(int command)
 {
     switch (command) {
