@@ -1403,7 +1403,7 @@ void Canvas::slotApplyForce()
         return;
     const qreal W = sRect.width();
     const qreal H = sRect.height();
-    const qreal dT = 4.0 * qBound((qreal)0.001, (qreal)m_forceFieldTime.restart() / 1000.0, (qreal)0.10);
+    const qreal dT = 4.0 * qBound((qreal)0.001, (qreal)m_forceFieldTime.restart() / (qreal)1000.0, (qreal)0.10);
 
     // pass 0
     QList<AbstractContent *>::iterator it1, it2, end = m_content.end();
