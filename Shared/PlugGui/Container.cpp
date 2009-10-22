@@ -12,31 +12,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __ApplianceContainer_h__
-#define __ApplianceContainer_h__
+#include "Container.h"
 
-#include <QWidget>
-class AbstractScene;
+using namespace PlugGui;
 
-namespace Appliance {
-class AbstractAppliance;
-
-class Container : public QWidget
+Container::Container(QWidget * parent)
+  : QWidget(parent)
 {
-    Q_OBJECT
-    public:
-        Container(QWidget * parent = 0);
-
-    protected:
-        // called by appliances
-        friend class Appliance::AbstractAppliance;
-        virtual void applianceSetScene(AbstractScene * scene) = 0;
-        virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
-        virtual void applianceSetSidebar(QWidget * widget) = 0;
-        virtual void applianceSetCentralwidget(QWidget * widget) = 0;
-        virtual void applianceSetValue(quint32 id, const QVariant & value) = 0;
-};
-
 }
-
-#endif

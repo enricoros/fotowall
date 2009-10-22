@@ -15,12 +15,12 @@
 #ifndef __CanvasAppliance_h__
 #define __CanvasAppliance_h__
 
-#include "Shared/AbstractAppliance.h"
+#include "Shared/PlugGui/AbstractAppliance.h"
 #include "ui_CanvasAppliance.h"
 class QMenu;
 class Canvas;
 
-class CanvasAppliance : public Appliance::AbstractAppliance
+class CanvasAppliance : public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
@@ -32,7 +32,6 @@ class CanvasAppliance : public Appliance::AbstractAppliance
 
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
-        int applianceElements() const { return Appliance::UseAllElements; }
         bool applianceCommand(int command);
 
     private:

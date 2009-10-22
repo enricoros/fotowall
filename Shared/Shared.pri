@@ -1,9 +1,11 @@
 HEADERS += \
-    Shared/AbstractAppliance.h \
-    Shared/AbstractPictureService.h \
+    Shared/PlugGui/AbstractAppliance.h \
+    Shared/PlugGui/Container.h \
+    Shared/PlugGui/Stacker.h \
+    Shared/PictureServices/AbstractPictureService.h \
+    Shared/PictureServices/FlickrPictureService.h \
+    Shared/PictureServices/GoogleImagesPictureService.h \
     Shared/AbstractScene.h \
-    Shared/ApplianceContainer.h \
-    Shared/ApplianceManager.h \
     Shared/BlinkingToolButton.h \
     Shared/BreadCrumbBar.h \
     Shared/ButtonsDialog.h \
@@ -11,10 +13,8 @@ HEADERS += \
     Shared/ColorPickerItem.h \
     Shared/CroppingDialog.h \
     Shared/CroppingWidget.h \
-    Shared/FlickrPictureService.h \
     Shared/GlowEffectDialog.h \
     Shared/GlowEffectWidget.h \
-    Shared/GoogleImagesPictureService.h \
     Shared/GroupBoxWidget.h \
     Shared/MetaXmlReader.h \
     Shared/PanePropertyEditor.h \
@@ -24,11 +24,13 @@ HEADERS += \
     Shared/VideoProvider.h
 
 SOURCES += \
-    Shared/AbstractAppliance.cpp \
-    Shared/AbstractPictureService.cpp \
+    Shared/PlugGui/AbstractAppliance.cpp \
+    Shared/PlugGui/Container.cpp \
+    Shared/PlugGui/Stacker.cpp \
+    Shared/PictureServices/AbstractPictureService.cpp \
+    Shared/PictureServices/FlickrPictureService.cpp \
+    Shared/PictureServices/GoogleImagesPictureService.cpp \
     Shared/AbstractScene.cpp \
-    Shared/ApplianceContainer.cpp \
-    Shared/ApplianceManager.cpp \
     Shared/BlinkingToolButton.cpp \
     Shared/BreadCrumbBar.cpp \
     Shared/ButtonsDialog.cpp \
@@ -36,10 +38,8 @@ SOURCES += \
     Shared/ColorPickerItem.cpp \
     Shared/CroppingDialog.cpp \
     Shared/CroppingWidget.cpp \
-    Shared/FlickrPictureService.cpp \
     Shared/GlowEffectDialog.cpp \
     Shared/GlowEffectWidget.cpp \
-    Shared/GoogleImagesPictureService.cpp \
     Shared/GroupBoxWidget.cpp \
     Shared/PanePropertyEditor.cpp \
     Shared/PropertyEditors.cpp \

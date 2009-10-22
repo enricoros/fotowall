@@ -15,8 +15,8 @@
 #ifndef __MainWindow_h__
 #define __MainWindow_h__
 
-#include "Shared/ApplianceContainer.h"
-#include "Shared/ApplianceManager.h"
+#include "Shared/PlugGui/Container.h"
+#include "Shared/PlugGui/Stacker.h"
 class Canvas;
 class LikeBack;
 class QMenu;
@@ -24,7 +24,7 @@ class QNetworkReply;
 namespace Ui { class MainWindow; }
 namespace Wordcloud { class Cloud; }
 
-class MainWindow : public Appliance::Container
+class MainWindow : public PlugGui::Container
 {
     Q_OBJECT
     public:
@@ -53,7 +53,7 @@ class MainWindow : public Appliance::Container
         void createLikeBack();
 
         Ui::MainWindow *        ui;
-        Appliance::Manager *    m_appManager;
+        PlugGui::Stacker *      m_appStacker;
         LikeBack *              m_likeBack;
         QAction *               m_aHelpTutorial;
         QString                 m_website;

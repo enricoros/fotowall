@@ -14,8 +14,8 @@
 
 #include "Canvas.h"
 
+#include "Shared/PictureServices/AbstractPictureService.h"
 #include "Frames/FrameFactory.h"
-#include "Shared/AbstractPictureService.h"
 #include "Shared/ColorPickerItem.h"
 #include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"

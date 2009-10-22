@@ -30,7 +30,7 @@
 
 
 CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent)
-  : Appliance::AbstractAppliance(parent)
+  : PlugGui::AbstractAppliance(parent)
   , m_extCanvas(extCanvas)
   , m_dummyWidget(new QWidget)
   , m_gBackActions(0)

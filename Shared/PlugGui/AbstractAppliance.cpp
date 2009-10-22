@@ -14,26 +14,26 @@
 
 #include "AbstractAppliance.h"
 
-using namespace Appliance;
+using namespace PlugGui;
 
 AbstractAppliance::AbstractAppliance(QObject * parent)
   : QObject(parent)
 {
 }
 
-bool AbstractAppliance::addToContainer(Container * container)
+bool AbstractAppliance::addToApplianceContainer(Container * container)
 {
     // remove from previous, if exists
     if (m_containerPtr) {
         qWarning("AbstractAppliance::addToContainer: removing from previous container");
-        removeFromContainer();
+        removeFromApplianceContainer();
     }
 
     // add the appliance to the container
     m_containerPtr = container;
     if (m_containerPtr) {
         m_containerPtr->applianceSetScene(m_pScene.data());
-        setContainerTopbar();
+        updateContainerTopbar();
         m_containerPtr->applianceSetSidebar(m_pSidebar.data());
         m_containerPtr->applianceSetCentralwidget(m_pCentral.data());
         for (ValueMap::iterator it = m_values.begin(); it != m_values.end(); ++it)
@@ -42,7 +42,7 @@ bool AbstractAppliance::addToContainer(Container * container)
     return true;
 }
 
-void AbstractAppliance::removeFromContainer()
+void AbstractAppliance::removeFromApplianceContainer()
 {
     // sanity check
     if (!m_containerPtr) {
@@ -51,18 +51,8 @@ void AbstractAppliance::removeFromContainer()
     }
 
     // do the clearance
-    clearContainer();
+    clearCurrentContainer();
     m_containerPtr = 0;
-}
-
-Container * AbstractAppliance::container() const
-{
-    return m_containerPtr.data();
-}
-
-bool AbstractAppliance::isFloating() const
-{
-    return m_containerPtr.isNull();
 }
 
 void AbstractAppliance::sceneSet(AbstractScene * scene)
@@ -86,7 +76,7 @@ void AbstractAppliance::topbarAddWidget(QWidget * widget, int index)
         m_pTopbar.append(wPtr);
     else
         m_pTopbar.insert(index, wPtr);
-    setContainerTopbar();
+    updateContainerTopbar();
 }
 
 void AbstractAppliance::topbarRemoveWidget(QWidget * widget)
@@ -105,7 +95,7 @@ void AbstractAppliance::topbarRemoveWidget(QWidget * widget)
 
     // set bar only if something changed
     if (removed)
-        setContainerTopbar();
+        updateContainerTopbar();
 }
 
 void AbstractAppliance::sidebarSetWidget(QWidget * widget)
@@ -139,7 +129,7 @@ void AbstractAppliance::containerValueSet(quint32 id, const QVariant & value)
         m_containerPtr->applianceSetValue(id, value);
 }
 
-void AbstractAppliance::clearContainer()
+void AbstractAppliance::clearCurrentContainer()
 {
     if (m_containerPtr) {
         m_containerPtr->applianceSetScene(0);
@@ -151,7 +141,7 @@ void AbstractAppliance::clearContainer()
     }
 }
 
-void AbstractAppliance::setContainerTopbar()
+void AbstractAppliance::updateContainerTopbar()
 {
     if (!m_containerPtr)
         return;

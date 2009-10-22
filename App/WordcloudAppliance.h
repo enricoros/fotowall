@@ -15,13 +15,13 @@
 #ifndef __WordcloudAppliance_h__
 #define __WordcloudAppliance_h__
 
-#include "Shared/AbstractAppliance.h"
+#include "Shared/PlugGui/AbstractAppliance.h"
 #include "Wordcloud/Cloud.h"
 #include "ui_WordcloudAppliance.h"
 class AbstractScene;
 class QMenu;
 
-class WordcloudAppliance : public Appliance::AbstractAppliance
+class WordcloudAppliance : public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
@@ -36,7 +36,6 @@ class WordcloudAppliance : public Appliance::AbstractAppliance
 
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Word Cloud"); }
-        int applianceElements() const { return Appliance::UseAllElements; }
         bool applianceCommand(int /*command*/) { return false; }
 
     private:

@@ -54,9 +54,9 @@
 
 
 MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
-    : Appliance::Container(parent)
+    : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
-    , m_appManager(new Appliance::Manager)
+    , m_appStacker(new PlugGui::Stacker)
     , m_likeBack(0)
     , m_aHelpTutorial(0)
     , m_applyingAccelState(false)
@@ -83,8 +83,8 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     createLikeBack();
 
     // init the Appliance Manager
-    m_appManager->setContainer(this);
-    connect(m_appManager, SIGNAL(structureChanged()), this, SLOT(slotApplianceStructureChanged()));
+    m_appStacker->setContainer(this);
+    connect(m_appStacker, SIGNAL(structureChanged()), this, SLOT(slotApplianceStructureChanged()));
     connect(ui->applianceNavBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
     ui->applianceSidebar->hide();
 
@@ -139,7 +139,7 @@ MainWindow::~MainWindow()
 
     // delete everything
     // m_aHelpTutorial is deleted by its menu (that's parented to this)
-    delete m_appManager;
+    delete m_appStacker;
     delete m_likeBack;
     delete ui;
 }
@@ -147,13 +147,13 @@ MainWindow::~MainWindow()
 void MainWindow::editCanvas(Canvas * canvas)
 {
     CanvasAppliance * cApp = new CanvasAppliance(canvas, ui->sceneView->physicalDpiX(), ui->sceneView->physicalDpiY(), this);
-    m_appManager->stackAppliance(cApp);
+    m_appStacker->stackAppliance(cApp);
 }
 
 void MainWindow::editWordcloud(Wordcloud::Cloud * cloud)
 {
     WordcloudAppliance * wApp = new WordcloudAppliance(cloud, this);
-    m_appManager->stackAppliance(wApp);
+    m_appStacker->stackAppliance(wApp);
 }
 
 void MainWindow::applianceSetScene(AbstractScene * scene)
@@ -319,17 +319,17 @@ void MainWindow::createLikeBack()
 
 void MainWindow::slotApplianceClicked(quint32 id)
 {
-    m_appManager->dropStackAfter(id - 1);
+    m_appStacker->dropStackAfter(id - 1);
 }
 
 void MainWindow::slotApplianceStructureChanged()
 {
     // build the new breadcrumbbar's contents
     ui->applianceNavBar->clearNodes();
-    QList<Appliance::AbstractAppliance *> appliances = m_appManager->stackedAppliances();
+    QList<PlugGui::AbstractAppliance *> appliances = m_appStacker->stackedAppliances();
     if (appliances.size() >= 2) {
         quint32 index = 0;
-        foreach (Appliance::AbstractAppliance * app, appliances) {
+        foreach (PlugGui::AbstractAppliance * app, appliances) {
             ui->applianceNavBar->addNode(index + 1, app->applianceName(), index);
             index++;
         }
@@ -370,24 +370,24 @@ bool MainWindow::on_loadButton_clicked()
     }
 
     // close all and edit the loaded file
-    m_appManager->clearAppliances();
+    m_appStacker->clearAppliances();
     editCanvas(canvas);
     return true;
 }
 
 bool MainWindow::on_saveButton_clicked()
 {
-    return m_appManager->currentApplianceCommand(App::AC_Save);
+    return m_appStacker->currentApplianceCommand(App::AC_Save);
 }
 
 void MainWindow::on_exportButton_clicked()
 {
-    m_appManager->currentApplianceCommand(App::AC_Export);
+    m_appStacker->currentApplianceCommand(App::AC_Export);
 }
 
 void MainWindow::on_introButton_clicked()
 {
-    m_appManager->currentApplianceCommand(App::AC_ShowIntro);
+    m_appStacker->currentApplianceCommand(App::AC_ShowIntro);
 }
 
 void MainWindow::on_lbLike_clicked()
@@ -626,7 +626,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #endif
 
         // disable appliance background too
-        m_appManager->currentApplianceCommand(App::AC_ClearBackground);
+        m_appStacker->currentApplianceCommand(App::AC_ClearBackground);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
