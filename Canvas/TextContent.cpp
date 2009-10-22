@@ -245,7 +245,7 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
     if (sourceRect.width() > 0 && sourceRect.height() > 0) {
         qreal xScale = (qreal)targetRect.width() / (qreal)sourceRect.width();
         qreal yScale = (qreal)targetRect.height() / (qreal)sourceRect.height();
-        if (!qFuzzyCompare(xScale, 1.0) || !qFuzzyCompare(yScale, 1.0))
+        if (!qFuzzyCompare(xScale, (qreal)1.0) || !qFuzzyCompare(yScale, (qreal)1.0))
             painter->scale(xScale, yScale);
     }
 
