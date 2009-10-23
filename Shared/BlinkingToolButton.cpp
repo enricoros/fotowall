@@ -18,6 +18,7 @@
 #include <QPalette>
 #include <QPainter>
 #include <QStyle>
+#include <QVariant>
 
 #if QT_VERSION >= 0x040600
 #include <QPropertyAnimation>
