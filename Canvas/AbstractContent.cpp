@@ -869,7 +869,7 @@ void AbstractContent::slotSetPerspective(const QPointF & sceneRelPoint, Qt::Keyb
     if (modifiers & Qt::ControlModifier)
         return slotClearPerspective();
     qreal k = modifiers == Qt::NoModifier ? 0.2 : 0.5;
-    setPerspective(QPointF(qBound((qreal)-70.0, sceneRelPoint.x()*k, (qreal)70.0), qBound((qreal)-70.0, sceneRelPoint.y()*k, (qreal)70.0)));
+    setPerspective(QPointF(qBound((qreal)-70.0, (qreal)sceneRelPoint.x()*k, (qreal)70.0), qBound((qreal)-70.0, (qreal)sceneRelPoint.y()*k, (qreal)70.0)));
 }
 
 void AbstractContent::slotClearPerspective()
