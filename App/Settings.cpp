@@ -69,3 +69,13 @@ void Settings::addRecentFotowallUrl(const QUrl & fotowallUrl)
     // finally add the url
     m_recentFotowallUrls.prepend(fotowallUrl);
 }
+
+void Settings::addCommandlineUrl(const QString & url)
+{
+    m_commandlineUrls.append(url);
+}
+
+QStringList Settings::commandlineUrls() const
+{
+    return m_commandlineUrls;
+}

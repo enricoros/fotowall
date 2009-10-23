@@ -16,6 +16,7 @@
 #define __ApplianceContainer_h__
 
 #include <QWidget>
+#include <QSize>
 class AbstractScene;
 
 namespace PlugGui {
@@ -27,6 +28,9 @@ namespace PlugGui {
         Q_OBJECT
         public:
             Container(QWidget * parent = 0);
+
+            // const queries to the container
+            virtual QSize sceneViewSize() const = 0;
 
         protected:
             // called by appliances

@@ -44,7 +44,7 @@ class Hardware3DTest : public QDialog
         int m_resultIdx;
         ExitState m_retCode;
 
-        // state variables (### 1.0: replace with QStateMachine)
+        // state variables (TODO 1.0: replace with QStateMachine)
         enum State { Off, TestingSoftware, TestingOpenGL, Finished };
         State m_state;
         int m_statePhase;   // 0 .. TESTPOWER

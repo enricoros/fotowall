@@ -70,18 +70,17 @@ int main( int argc, char ** args )
     VideoProvider::Disable = app.arguments().contains("-novideo");
     App::settings->setValue("Fotowall/FirstTime", false);
 
-    QStringList urls;
     for (int i = 1; i < argc; i++)
         if (App::isContentUrl(args[i]))
-            urls.append(args[i]);
+            App::settings->addCommandlineUrl(args[i]);
 
-    App::mainWindow = new MainWindow(urls);
+    MainWindow * mainWindow = new MainWindow;
 
     int mainLoopResult = app.exec();
 
     App::settings->sync();
 
-    delete App::mainWindow;
+    delete mainWindow;
     delete App::settings;
     return mainLoopResult;
 }

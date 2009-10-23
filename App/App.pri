@@ -9,7 +9,8 @@ HEADERS += \
     App/SceneView.h \
     App/Settings.h \
     App/VersionCheckDialog.h \
-    App/WordcloudAppliance.h
+    App/WordcloudAppliance.h \
+    App/Workflow.h
 
 SOURCES += \
     App/App.cpp \
@@ -22,7 +23,8 @@ SOURCES += \
     App/SceneView.cpp \
     App/Settings.cpp \
     App/VersionCheckDialog.cpp \
-    App/WordcloudAppliance.cpp
+    App/WordcloudAppliance.cpp \
+    App/Workflow.cpp
 
 FORMS += \
     App/CanvasAppliance.ui \

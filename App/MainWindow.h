@@ -16,27 +16,22 @@
 #define __MainWindow_h__
 
 #include "Shared/PlugGui/Container.h"
-#include "Shared/PlugGui/Stacker.h"
-class Canvas;
+namespace Ui { class MainWindow; }
 class LikeBack;
 class QMenu;
 class QNetworkReply;
-namespace Ui { class MainWindow; }
-namespace Wordcloud { class Cloud; }
+class Workflow;
 
 class MainWindow : public PlugGui::Container
 {
     Q_OBJECT
     public:
-        MainWindow(const QStringList & loadUrls = QStringList(), QWidget * parent = 0);
+        MainWindow(QWidget * parent = 0);
         ~MainWindow();
-
-        // content editing
-        void editCanvas(Canvas * newCanvas);
-        void editWordcloud(Wordcloud::Cloud * cloud);
 
     protected:
         // ::Appliance::Container
+        QSize sceneViewSize() const;
         void applianceSetScene(AbstractScene * scene);
         void applianceSetTopbar(const QList<QWidget *> & widgets);
         void applianceSetSidebar(QWidget * widget);
@@ -53,7 +48,6 @@ class MainWindow : public PlugGui::Container
         void createLikeBack();
 
         Ui::MainWindow *        ui;
-        PlugGui::Stacker *      m_appStacker;
         LikeBack *              m_likeBack;
         QAction *               m_aHelpTutorial;
         QString                 m_website;
@@ -61,14 +55,12 @@ class MainWindow : public PlugGui::Container
 
     private Q_SLOTS:
         // notifications
-        void slotApplianceClicked(quint32);
-        void slotApplianceStructureChanged();
         void slotRenderingSlow();
 
         // file box
         bool on_loadButton_clicked();
         bool on_saveButton_clicked();
-        void on_exportButton_clicked();
+        bool on_exportButton_clicked();
 
         // help box
         void on_introButton_clicked();

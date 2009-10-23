@@ -22,7 +22,7 @@
 /// Global Instances
 
 Settings * App::settings = 0;
-MainWindow * App::mainWindow = 0;
+Workflow * App::workflow = 0;
 
 
 /// Functions

@@ -1229,25 +1229,16 @@ void Canvas::slotConfigureContent(const QPoint & scenePoint)
     p->setFocus();
 }
 
-// ###
-#include "App/App.h"
-#include "App/MainWindow.h"
 void Canvas::slotEditContent()
 {
     // get content
     AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
-    if (!content)
-        return;
+    if (content) {
+        // handle internally if possible
+        // ...
 
-    // handle Canvas
-    if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
-        cvc->setSelected(false);
-        App::mainWindow->editCanvas(cvc->takeCanvas());
-    }
-
-    // handle Wordcloud
-    if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-        App::mainWindow->editWordcloud(wc->cloud());
+        // or handle externally
+        emit requestContentEditing(content);
     }
 }
 

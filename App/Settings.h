@@ -17,6 +17,7 @@
 
 #include <QList>
 #include <QSettings>
+#include <QStringList>
 #include <QUrl>
 
 class Settings : public QSettings
@@ -32,9 +33,14 @@ class Settings : public QSettings
         QList<QUrl> recentFotowallUrls() const;
         void addRecentFotowallUrl(const QUrl & url);
 
+        // commandline files
+        void addCommandlineUrl(const QString & url);
+        QStringList commandlineUrls() const;
+
     private:
         bool m_firstTime;
         QList<QUrl> m_recentFotowallUrls;
+        QStringList m_commandlineUrls;
 };
 
 #endif

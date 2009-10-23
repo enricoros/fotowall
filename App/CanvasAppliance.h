@@ -18,6 +18,7 @@
 #include "Shared/PlugGui/AbstractAppliance.h"
 #include "ui_CanvasAppliance.h"
 class QMenu;
+class AbstractContent;
 class Canvas;
 
 class CanvasAppliance : public PlugGui::AbstractAppliance
@@ -73,12 +74,13 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
         void slotDecoSetTitle();
         void slotDecoClearTitle();
 
-        // notifications from the canvas
+        // signals from the canvas
+        void slotEditContent(AbstractContent * content);
         void slotBackModeChanged();
         void slotBackRatioChanged();
-
         void slotShowPropertiesWidget(QWidget *);
 
+        // other actions
         void slotVerifyVideoInputs(int count);
 };
 

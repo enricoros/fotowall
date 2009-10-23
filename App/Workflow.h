@@ -12,42 +12,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __CanvasViewContent_h__
-#define __CanvasViewContent_h__
+#ifndef __Workflow_h__
+#define __Workflow_h__
 
-#include "AbstractContent.h"
-#include <QPixmap>
+#include <QObject>
+namespace PlugGui { class Container; class Stacker; }
+namespace Wordcloud { class Cloud; }
+class BreadCrumbBar;
 class Canvas;
 
-/**
-    \brief Use another Canvas as content
-*/
-class CanvasViewContent : public AbstractContent
+class Workflow : public QObject
 {
     Q_OBJECT
     public:
-        CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-//        ~CanvasViewContent();
+        Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent = 0);
+        ~Workflow();
 
-        bool loadCanvas(const QString & filePath, bool keepRatio = false, bool setName = false);
-        Canvas * takeCanvas();
-        //void setCanvas(Canvas * canvas);
+        // ### BIG REFACTOR HERE ;-)
+        void clear();
+        bool saveCurrent();
+        bool exportCurrent();
+        void howtoCurrent();
+        void clearBackgroundCurrent();
 
-        // ::AbstractContent
-        QString contentName() const { return tr("Canvas View"); }
-        QWidget * createPropertyWidget();
-        bool fromXml(QDomElement & parentElement);
-        void toXml(QDomElement & parentElement) const;
-        void drawContent(QPainter * painter, const QRect & targetRect);
+        // content editing
+        void newCanvas();
+        bool loadCanvas(const QString & fileName);
+        void stackCanvasAppliance(Canvas * newCanvas);
+        void stackWordcloudAppliance(Wordcloud::Cloud * cloud);
 
-//        int contentHeightForWidth(int width) const;
-        bool contentOpaque() const;
+        bool requestExit();
 
     private:
-        Canvas * m_canvas;
+        void workflowChanged();
+
+        // external objects
+        PlugGui::Container * m_container;
+        BreadCrumbBar * m_bar;
+
+        // internals
+        PlugGui::Stacker * m_stacker;
 
     private Q_SLOTS:
-        void slotRepaintCanvas(const QList<QRectF> & exposed);
+        void slotStackChanged();
+        void slotApplianceClicked(quint32);
 };
 
 #endif

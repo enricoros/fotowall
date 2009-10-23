@@ -103,6 +103,7 @@ class Canvas : public AbstractScene
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 
     Q_SIGNALS:
+        void requestContentEditing(AbstractContent * content);
         void backModeChanged();
         void showPropertiesWidget(QWidget * widget);
 

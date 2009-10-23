@@ -15,19 +15,15 @@
 #include "App/MainWindow.h"
 
 #include "3rdparty/likebackfrontend/LikeBack.h"
-#include "Canvas/CanvasModeInfo.h"
-#include "Canvas/Canvas.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
 #include "App.h"
-#include "CanvasAppliance.h"
-#include "FotowallFile.h"
 #include "Hardware3DTest.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
-#include "WordcloudAppliance.h"
+#include "Workflow.h"
 #include "ui_MainWindow.h"
 
 #include <QApplication>
@@ -53,10 +49,9 @@
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
 
-MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
+MainWindow::MainWindow(QWidget * parent)
     : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
-    , m_appStacker(new PlugGui::Stacker)
     , m_likeBack(0)
     , m_aHelpTutorial(0)
     , m_applyingAccelState(false)
@@ -79,14 +74,9 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
     ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
+    ui->applianceSidebar->hide();
     connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
     createLikeBack();
-
-    // init the Appliance Manager
-    m_appStacker->setContainer(this);
-    connect(m_appStacker, SIGNAL(structureChanged()), this, SLOT(slotApplianceStructureChanged()));
-    connect(ui->applianceNavBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
-    ui->applianceSidebar->hide();
 
     // show (with last geometry)
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
@@ -96,25 +86,8 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     } else
         show();
 
-    // create a Canvas (and load/populate it)
-    Canvas * canvas = new Canvas(ui->sceneView->size(), this);
-        // open if single fotowall file
-        if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
-            FotowallFile::read(contentUrls.first(), canvas);
-
-        // add if many pictures
-        else if (!contentUrls.isEmpty())
-            canvas->addPictureContent(contentUrls);
-
-        // no url: display history
-#if 0
-        else {
-            foreach (const QUrl & url, App::settings->recentFotowallUrls())
-                canvas->addCanvasViewContent(QStringList() << url.toString());
-        }
-#endif
-    // use the editing appliance over it
-    editCanvas(canvas);
+    // start the workflow
+    new Workflow(this, ui->applianceNavBar);
 
     // check stuff on the net
     checkForTutorial();
@@ -133,27 +106,16 @@ MainWindow::~MainWindow()
     else
         App::settings->remove("Fotowall/Geometry");
 
-    // this is an example of 'autosave-like function'
-    //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-    //FotowallFile::saveV2(tempPath, m_canvas);
-
     // delete everything
-    // m_aHelpTutorial is deleted by its menu (that's parented to this)
-    delete m_appStacker;
+    delete App::workflow;
     delete m_likeBack;
     delete ui;
+    // m_aHelpTutorial is deleted by its menu (that's parented to this)
 }
 
-void MainWindow::editCanvas(Canvas * canvas)
+QSize MainWindow::sceneViewSize() const
 {
-    CanvasAppliance * cApp = new CanvasAppliance(canvas, ui->sceneView->physicalDpiX(), ui->sceneView->physicalDpiY(), this);
-    m_appStacker->stackAppliance(cApp);
-}
-
-void MainWindow::editWordcloud(Wordcloud::Cloud * cloud)
-{
-    WordcloudAppliance * wApp = new WordcloudAppliance(cloud, this);
-    m_appStacker->stackAppliance(wApp);
+    return ui->sceneView->viewport()->size();
 }
 
 void MainWindow::applianceSetScene(AbstractScene * scene)
@@ -223,46 +185,9 @@ void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
     }
 }
 
-// ###
 void MainWindow::closeEvent(QCloseEvent * event)
 {
-    // build the closure dialog
-    ButtonsDialog quitAsk("MainWindow-Exit", tr("Closing Fotowall..."));
-    quitAsk.setMinimumWidth(350);
-    quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
-#if 0
-    if (m_canvas && m_canvas->pendingChanges()) {
-        quitAsk.setMessage(tr("Are you sure you want to quit and lose your changes?"));
-        quitAsk.setButtonText(QDialogButtonBox::Save, tr("Save"));
-        quitAsk.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
-        quitAsk.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::Cancel);
-    } else {
-#endif
-        quitAsk.setMessage(tr("Are you sure you want to quit?"));
-        quitAsk.setButtonText(QDialogButtonBox::Close, tr("Quit"));
-        quitAsk.setButtons(QDialogButtonBox::Close | QDialogButtonBox::Cancel);
-#if 0
-    }
-#endif
-
-    // react to the dialog's answer
-    switch (quitAsk.execute()) {
-        case QDialogButtonBox::Cancel:
-            event->ignore();
-            break;
-#if 0
-        case QDialogButtonBox::Save:
-            // save file and return to Fotowall if canceled
-            if (!on_saveButton_clicked()) {
-                event->ignore();
-                break;
-            }
-            // fall through
-#endif
-        default:
-            event->accept();
-            break;
-    }
+    event->setAccepted(App::workflow->requestExit());
 }
 
 QMenu * MainWindow::createOnlineHelpMenu()
@@ -317,28 +242,6 @@ void MainWindow::createLikeBack()
     m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
 }
 
-void MainWindow::slotApplianceClicked(quint32 id)
-{
-    m_appStacker->dropStackAfter(id - 1);
-}
-
-void MainWindow::slotApplianceStructureChanged()
-{
-    // build the new breadcrumbbar's contents
-    ui->applianceNavBar->clearNodes();
-    QList<PlugGui::AbstractAppliance *> appliances = m_appStacker->stackedAppliances();
-    if (appliances.size() >= 2) {
-        quint32 index = 0;
-        foreach (PlugGui::AbstractAppliance * app, appliances) {
-            ui->applianceNavBar->addNode(index + 1, app->applianceName(), index);
-            index++;
-        }
-    }
-
-    // repaint all
-    update();
-}
-
 void MainWindow::slotRenderingSlow()
 {
     // don't act anymore
@@ -362,32 +265,23 @@ bool MainWindow::on_loadButton_clicked()
         return false;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
 
-    // try to load the canvas
-    Canvas * canvas = new Canvas(ui->sceneView->size(), this);
-    if (!FotowallFile::read(fileName, canvas)) {
-        delete canvas;
-        return false;
-    }
-
-    // close all and edit the loaded file
-    m_appStacker->clearAppliances();
-    editCanvas(canvas);
-    return true;
+    // load the file
+    return App::workflow->loadCanvas(fileName);
 }
 
 bool MainWindow::on_saveButton_clicked()
 {
-    return m_appStacker->currentApplianceCommand(App::AC_Save);
+    return App::workflow->saveCurrent();
 }
 
-void MainWindow::on_exportButton_clicked()
+bool MainWindow::on_exportButton_clicked()
 {
-    m_appStacker->currentApplianceCommand(App::AC_Export);
+    return App::workflow->exportCurrent();
 }
 
 void MainWindow::on_introButton_clicked()
 {
-    m_appStacker->currentApplianceCommand(App::AC_ShowIntro);
+    return App::workflow->howtoCurrent();
 }
 
 void MainWindow::on_lbLike_clicked()
@@ -626,7 +520,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #endif
 
         // disable appliance background too
-        m_appStacker->currentApplianceCommand(App::AC_ClearBackground);
+        App::workflow->clearBackgroundCurrent();
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);

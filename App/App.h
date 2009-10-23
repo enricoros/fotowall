@@ -17,8 +17,8 @@
 
 #include <QObject>
 #include <QUrl>
-class MainWindow;
 class Settings;
+class Workflow;
 
 #define HERE qWarning("> %s %d: %s", __FILE__, __LINE__, __FUNCTION__);
 
@@ -27,7 +27,7 @@ class App
     public:
         // uniquely instanced objects
         static Settings * settings;
-        static MainWindow * mainWindow;
+        static Workflow * workflow;
 
         // commands understood by the container
         enum {

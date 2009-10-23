@@ -15,7 +15,9 @@
 #include "CanvasAppliance.h"
 
 #include "Canvas/CanvasModeInfo.h"
+#include "Canvas/CanvasViewContent.h"
 #include "Canvas/Canvas.h"
+#include "Canvas/WordcloudContent.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/VideoProvider.h"
 #include "App.h"
@@ -23,6 +25,7 @@
 #include "ExportWizard.h"
 #include "FotowallFile.h"
 #include "Settings.h"
+#include "Workflow.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -68,6 +71,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     // react to canvas
     m_extCanvas->modeInfo()->setScreenDpi(sDpiX, sDpiY);
     m_extCanvas->modeInfo()->setPrintDpi(300);
+    connect(m_extCanvas, SIGNAL(requestContentEditing(AbstractContent*)), this, SLOT(slotEditContent(AbstractContent*)));
     connect(m_extCanvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
 
@@ -90,6 +94,7 @@ CanvasAppliance::~CanvasAppliance()
 Canvas * CanvasAppliance::takeCanvas()
 {
     Canvas * canvas = m_extCanvas;
+    disconnect(canvas, 0, this, 0);
     m_extCanvas = 0;
     return canvas;
 }
@@ -440,6 +445,20 @@ void CanvasAppliance::slotDecoSetTitle()
 void CanvasAppliance::slotDecoClearTitle()
 {
     m_extCanvas->setTitleText(QString());
+}
+
+void CanvasAppliance::slotEditContent(AbstractContent *content)
+{
+    // handle Canvas
+    if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
+        cvc->setSelected(false);
+        App::workflow->stackCanvasAppliance(cvc->takeCanvas());
+    }
+
+    // handle Wordcloud
+    if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
+        App::workflow->stackWordcloudAppliance(wc->cloud());
+    }
 }
 
 void CanvasAppliance::slotBackModeChanged()

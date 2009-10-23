@@ -34,7 +34,7 @@ class WordcloudContent : public AbstractContent
         Wordcloud::Cloud * cloud() const;
 
         // ::AbstractContent
-        QString contentName() const { return tr("Wordcloud###"); }
+        QString contentName() const { return tr("Wordcloud"); }
         QWidget * createPropertyWidget();
         bool fromXml(QDomElement & contentElement);
         void toXml(QDomElement & contentElement) const;
