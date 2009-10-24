@@ -12,31 +12,43 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __ApplianceContainer_h__
-#define __ApplianceContainer_h__
+#ifndef __WordcloudContent_h__
+#define __WordcloudContent_h__
 
-#include <QWidget>
-class AbstractScene;
+#include "AbstractContent.h"
+#include "Wordcloud/Cloud.h"
+#include <QPixmap>
+class Canvas;
+class QGraphicsScene;
 
-namespace Appliance {
-class AbstractAppliance;
-
-class Container : public QWidget
+/**
+    \brief Use another Canvas as content
+*/
+class WordcloudContent : public AbstractContent
 {
     Q_OBJECT
     public:
-        Container(QWidget * parent = 0);
+        WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+//        ~WordcloudContent();
 
-    protected:
-        // called by appliances
-        friend class Appliance::AbstractAppliance;
-        virtual void applianceSetScene(AbstractScene * scene) = 0;
-        virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
-        virtual void applianceSetSidebar(QWidget * widget) = 0;
-        virtual void applianceSetCentralwidget(QWidget * widget) = 0;
-        virtual void applianceSetValue(quint32 id, const QVariant & value) = 0;
+        Wordcloud::Cloud * cloud() const;
+
+        // ::AbstractContent
+        QString contentName() const { return tr("Wordcloud"); }
+        QWidget * createPropertyWidget();
+        bool fromXml(QDomElement & contentElement);
+        void toXml(QDomElement & contentElement) const;
+        void drawContent(QPainter * painter, const QRect & targetRect);
+
+//        int contentHeightForWidth(int width) const;
+        bool contentOpaque() const;
+
+    private:
+        QGraphicsScene * m_cloudScene;
+        Wordcloud::Cloud * m_cloud;
+
+    private Q_SLOTS:
+        void slotRepaintScene(const QList<QRectF> & exposed);
 };
-
-}
 
 #endif

@@ -12,46 +12,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WordCloudContent_h__
-#define __WordCloudContent_h__
+#ifndef __Workflow_h__
+#define __Workflow_h__
 
-#include "AbstractContent.h"
-#include "WordCloud/WordCloud.h"
-#include <QPixmap>
+#include <QObject>
+namespace PlugGui { class Container; class Stacker; }
+namespace Wordcloud { class Cloud; }
+class BreadCrumbBar;
 class Canvas;
-class QGraphicsScene;
 
-/**
-    \brief Use another Canvas as content
-*/
-class WordCloudContent : public AbstractContent
+class Workflow : public QObject
 {
     Q_OBJECT
     public:
-        WordCloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-//        ~WordCloudContent();
+        Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent = 0);
+        ~Workflow();
 
-        WordCloud::Cloud * cloud() const;
+        // ### BIG REFACTOR HERE ;-)
+        void clear();
+        bool saveCurrent();
+        bool exportCurrent();
+        void howtoCurrent();
+        void clearBackgroundCurrent();
 
-        // ::AbstractContent
-        QString contentName() const { return tr("WordCloudXXX"); }
-        QWidget * createPropertyWidget();
-        bool fromXml(QDomElement & contentElement);
-        void toXml(QDomElement & contentElement) const;
-        void drawContent(QPainter * painter, const QRect & targetRect);
+        // content editing
+        void newCanvas();
+        bool loadCanvas(const QString & fileName);
+        void stackCanvasAppliance(Canvas * newCanvas);
+        void stackWordcloudAppliance(Wordcloud::Cloud * cloud);
 
-//        int contentHeightForWidth(int width) const;
-        bool contentOpaque() const;
-
-        // ::QGraphicsItem
-        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+        bool requestExit();
 
     private:
-        QGraphicsScene * m_cloudScene;
-        WordCloud::Cloud * m_cloud;
+        void workflowChanged();
+
+        // external objects
+        PlugGui::Container * m_container;
+        BreadCrumbBar * m_bar;
+
+        // internals
+        PlugGui::Stacker * m_stacker;
 
     private Q_SLOTS:
-        void slotRepaintScene(const QList<QRectF> & exposed);
+        void slotStackChanged();
+        void slotApplianceClicked(quint32);
 };
 
 #endif

@@ -76,9 +76,9 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     connect(m_commonUi->raise, SIGNAL(clicked()), m_content, SLOT(slotStackRaise()));
     connect(m_commonUi->lower, SIGNAL(clicked()), m_content, SLOT(slotStackLower()));
     connect(m_commonUi->back, SIGNAL(clicked()), m_content, SLOT(slotStackBack()));
-    connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(backgroundMe()));
     connect(m_commonUi->save, SIGNAL(clicked()), m_content, SLOT(slotSaveAs()));
-    connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(deleteItem()), Qt::QueuedConnection);
+    connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(requestBackgrounding()));
+    connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(requestRemoval()));
     connect(m_commonUi->newFrame, SIGNAL(clicked()), this, SLOT(slotAddFrame()));
     connect(m_commonUi->lookApplyAll, SIGNAL(clicked()), this, SLOT(slotLookApplyAll()));
     connect(m_commonUi->framesList, SIGNAL(itemSelectionChanged()), this, SLOT(slotFrameSelectionChanged()));

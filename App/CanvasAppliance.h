@@ -15,12 +15,13 @@
 #ifndef __CanvasAppliance_h__
 #define __CanvasAppliance_h__
 
-#include "Shared/AbstractAppliance.h"
+#include "Shared/PlugGui/AbstractAppliance.h"
 #include "ui_CanvasAppliance.h"
 class QMenu;
+class AbstractContent;
 class Canvas;
 
-class CanvasAppliance : public Appliance::AbstractAppliance
+class CanvasAppliance : public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
@@ -30,12 +31,8 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
         Canvas * takeCanvas();
 
-        // peek at the internal canvas
-        Canvas * canvas() const;
-
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
-        int applianceElements() const { return Appliance::UseAllElements; }
         bool applianceCommand(int command);
 
     private:
@@ -61,7 +58,7 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         void slotAddPicture();
         void slotAddText();
         void slotAddWebcam();
-        void slotAddWordCloud();
+        void slotAddWordcloud();
         void slotSearchPicturesToggled(bool on);
 
         // actions in the canvas box
@@ -77,12 +74,13 @@ class CanvasAppliance : public Appliance::AbstractAppliance
         void slotDecoSetTitle();
         void slotDecoClearTitle();
 
-        // notifications from the canvas
+        // signals from the canvas
+        void slotEditContent(AbstractContent * content);
         void slotBackModeChanged();
         void slotBackRatioChanged();
-
         void slotShowPropertiesWidget(QWidget *);
 
+        // other actions
         void slotVerifyVideoInputs(int count);
 };
 

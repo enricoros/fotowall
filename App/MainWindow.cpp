@@ -15,18 +15,15 @@
 #include "App/MainWindow.h"
 
 #include "3rdparty/likebackfrontend/LikeBack.h"
-#include "Canvas/CanvasModeInfo.h"
-#include "Canvas/Canvas.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
 #include "App.h"
-#include "CanvasAppliance.h"
-#include "FotowallFile.h"
+#include "Hardware3DTest.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
-#include "WordcloudAppliance.h"
+#include "Workflow.h"
 #include "ui_MainWindow.h"
 
 #include <QApplication>
@@ -52,12 +49,12 @@
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
 
-MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
-    : Appliance::Container(parent)
+MainWindow::MainWindow(QWidget * parent)
+    : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
-    , m_appManager(new Appliance::Manager)
     , m_likeBack(0)
     , m_aHelpTutorial(0)
+    , m_applyingAccelState(false)
 {
     // setup widget
 #if QT_VERSION >= 0x040500
@@ -75,14 +72,11 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
+    ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
-    createLikeBack();
-
-    // init the Appliance Manager
-    m_appManager->setContainer(this);
-    connect(m_appManager, SIGNAL(structureChanged()), this, SLOT(slotApplianceStructureChanged()));
-    connect(ui->applianceNavBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
     ui->applianceSidebar->hide();
+    connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
+    createLikeBack();
 
     // show (with last geometry)
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
@@ -92,25 +86,8 @@ MainWindow::MainWindow(const QStringList & contentUrls, QWidget * parent)
     } else
         show();
 
-    // create a Canvas (and load/populate it)
-    Canvas * canvas = new Canvas(ui->sceneView->size(), this);
-        // open if single fotowall file
-        if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
-            FotowallFile::read(contentUrls.first(), canvas);
-
-        // add if many pictures
-        else if (!contentUrls.isEmpty())
-            canvas->addPictureContent(contentUrls);
-
-        // no url: display history
-#if 0
-        else {
-            foreach (const QUrl & url, App::settings->recentFotowallUrls())
-                canvas->addCanvasViewContent(QStringList() << url.toString());
-        }
-#endif
-    // use the editing appliance over it
-    editCanvas(canvas);
+    // start the workflow
+    new Workflow(this, ui->applianceNavBar);
 
     // check stuff on the net
     checkForTutorial();
@@ -129,27 +106,16 @@ MainWindow::~MainWindow()
     else
         App::settings->remove("Fotowall/Geometry");
 
-    // this is an example of 'autosave-like function'
-    //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-    //FotowallFile::saveV2(tempPath, m_canvas);
-
     // delete everything
-    // m_aHelpTutorial is deleted by its menu (that's parented to this)
-    delete m_appManager;
+    delete App::workflow;
     delete m_likeBack;
     delete ui;
+    // m_aHelpTutorial is deleted by its menu (that's parented to this)
 }
 
-void MainWindow::editCanvas(Canvas * canvas)
+QSize MainWindow::sceneViewSize() const
 {
-    CanvasAppliance * cApp = new CanvasAppliance(canvas, ui->sceneView->physicalDpiX(), ui->sceneView->physicalDpiY(), this);
-    m_appManager->stackAppliance(cApp);
-}
-
-void MainWindow::editWordcloud(WordCloud::Cloud * cloud)
-{
-    WordcloudAppliance * wApp = new WordcloudAppliance(cloud, this);
-    m_appManager->stackAppliance(wApp);
+    return ui->sceneView->viewport()->size();
 }
 
 void MainWindow::applianceSetScene(AbstractScene * scene)
@@ -219,46 +185,9 @@ void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
     }
 }
 
-// ###
 void MainWindow::closeEvent(QCloseEvent * event)
 {
-    // build the closure dialog
-    ButtonsDialog quitAsk("MainWindow-Exit", tr("Closing Fotowall..."));
-    quitAsk.setMinimumWidth(350);
-    quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
-#if 0
-    if (m_canvas && m_canvas->pendingChanges()) {
-        quitAsk.setMessage(tr("Are you sure you want to quit and lose your changes?"));
-        quitAsk.setButtonText(QDialogButtonBox::Save, tr("Save"));
-        quitAsk.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
-        quitAsk.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::Cancel);
-    } else {
-#endif
-        quitAsk.setMessage(tr("Are you sure you want to quit?"));
-        quitAsk.setButtonText(QDialogButtonBox::Close, tr("Quit"));
-        quitAsk.setButtons(QDialogButtonBox::Close | QDialogButtonBox::Cancel);
-#if 0
-    }
-#endif
-
-    // react to the dialog's answer
-    switch (quitAsk.execute()) {
-        case QDialogButtonBox::Cancel:
-            event->ignore();
-            break;
-#if 0
-        case QDialogButtonBox::Save:
-            // save file and return to Fotowall if canceled
-            if (!on_saveButton_clicked()) {
-                event->ignore();
-                break;
-            }
-            // fall through
-#endif
-        default:
-            event->accept();
-            break;
-    }
+    event->setAccepted(App::workflow->requestExit());
 }
 
 QMenu * MainWindow::createOnlineHelpMenu()
@@ -313,26 +242,16 @@ void MainWindow::createLikeBack()
     m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
 }
 
-void MainWindow::slotApplianceClicked(quint32 id)
+void MainWindow::slotRenderingSlow()
 {
-    m_appManager->dropStackAfter(id - 1);
-}
+    // don't act anymore
+    disconnect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
 
-void MainWindow::slotApplianceStructureChanged()
-{
-    // build the new breadcrumbbar's contents
-    ui->applianceNavBar->clearNodes();
-    QList<Appliance::AbstractAppliance *> appliances = m_appManager->stackedAppliances();
-    if (appliances.size() >= 2) {
-        quint32 index = 0;
-        foreach (Appliance::AbstractAppliance * app, appliances) {
-            ui->applianceNavBar->addNode(index + 1, app->applianceName(), index);
-            index++;
-        }
+    // draw attenction to the testing button
+    if (ui->sceneView->supportsOpenGL()) {
+        ui->modeWidget->setChecked(true);
+        ui->accelTestButton->drawAttenction();
     }
-
-    // repaint all
-    update();
 }
 
 bool MainWindow::on_loadButton_clicked()
@@ -346,32 +265,23 @@ bool MainWindow::on_loadButton_clicked()
         return false;
     App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
 
-    // try to load the canvas
-    Canvas * canvas = new Canvas(ui->sceneView->size(), this);
-    if (!FotowallFile::read(fileName, canvas)) {
-        delete canvas;
-        return false;
-    }
-
-    // close all and edit the loaded file
-    m_appManager->clearAppliances();
-    editCanvas(canvas);
-    return true;
+    // load the file
+    return App::workflow->loadCanvas(fileName);
 }
 
 bool MainWindow::on_saveButton_clicked()
 {
-    return m_appManager->currentApplianceCommand(App::AC_Save);
+    return App::workflow->saveCurrent();
 }
 
-void MainWindow::on_exportButton_clicked()
+bool MainWindow::on_exportButton_clicked()
 {
-    m_appManager->currentApplianceCommand(App::AC_Export);
+    return App::workflow->exportCurrent();
 }
 
 void MainWindow::on_introButton_clicked()
 {
-    m_appManager->currentApplianceCommand(App::AC_ShowIntro);
+    return App::workflow->howtoCurrent();
 }
 
 void MainWindow::on_lbLike_clicked()
@@ -455,23 +365,66 @@ void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
     m_aHelpTutorial->setVisible(tutorialValid);
 }
 
-void MainWindow::on_accelBox_toggled(bool enabled)
+bool MainWindow::on_accelTestButton_clicked()
 {
-    // ask for confirmation when enabling opengl
-    if (enabled) {
-        ButtonsDialog warning("GoOpenGL", tr("OpenGL"), tr("OpenGL accelerates graphics. However it's not guaranteed that it will work on your system.<br>Just try and see if it works for you ;-)<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, just don't use this feature next time<br><br>NOTE: OpenGL doesn't work with 'Transparent' mode.<br>"), QDialogButtonBox::Ok | QDialogButtonBox::Cancel, true, true);
-        warning.setIcon(QStyle::SP_MessageBoxInformation);
-        if (warning.execute() == QDialogButtonBox::Cancel) {
+    // ask for confirmation
+    if (!m_applyingAccelState) {
+        ButtonsDialog d("TestOpenGL", tr("Accelerated Rendering"), tr("OpenGL accelerates graphics. However it's not supported by every system.<br><b>Do you want to do an acceleration test?</b>"), QDialogButtonBox::Ok | QDialogButtonBox::Cancel, true, false);
+        d.setIcon(QStyle::SP_MessageBoxQuestion);
+        if (d.execute() == QDialogButtonBox::Cancel)
+            return false;
+    }
+
+    // run the Hardware Test
+    Hardware3DTest testDialog;
+    Hardware3DTest::ExitState choice = testDialog.run();
+    if (choice == Hardware3DTest::Canceled)
+        return false;
+
+    // apply the user choice
+    bool setGL = choice == Hardware3DTest::UseOpenGL;
+    App::settings->setValue("OpenGL/Tested", true);
+    App::settings->setValue("OpenGL/TestResult", setGL);
+    m_applyingAccelState = true;
+    ui->accelBox->setChecked(setGL);
+    m_applyingAccelState = false;
+    return setGL;
+}
+
+void MainWindow::on_accelBox_toggled(bool checked)
+{
+    // ask for confirmation/testing when enabling opengl
+    if (checked && !m_applyingAccelState) {
+        bool tested = App::settings->contains("OpenGL/Tested");
+
+        QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Ok | QDialogButtonBox::Cancel | (tested ? QDialogButtonBox::NoButton : QDialogButtonBox::Retry);
+        ButtonsDialog input("EnableOpenGL", tr("OpenGL"), tr("OpenGL accelerates graphics, but it doesn't work on some systems.<br> - if it feels slower, make sure that your driver accelerates OpenGL<br> - if Fotowall stops responding after switching to OpenGL, don't enable OpenGL next time"), buttons, true, tested);
+        input.setIcon(QStyle::SP_MessageBoxInformation);
+        if (!tested)
+            input.setButtonText(QDialogButtonBox::Retry, tr("Test OpenGL"));
+        QDialogButtonBox::StandardButton choice = input.execute();
+
+        // action canceled
+        if (choice == QDialogButtonBox::Cancel) {
             ui->accelBox->setChecked(false);
             return;
         }
 
-        // toggle transparency with opengl
-        ui->transpBox->setChecked(false);
+        // testing required
+        if (choice == QDialogButtonBox::Retry) {
+            m_applyingAccelState = true;
+            checked = on_accelTestButton_clicked();
+            m_applyingAccelState = false;
+        }
     }
 
+#if QT_VERSION < 0x040600
+    // WORKAROUND Qt <= 4.6-beta1: toggle transparency with opengl
+    ui->transpBox->setChecked(false);
+#endif
+
     // set opengl state
-    ui->sceneView->setOpenGL(enabled);
+    ui->sceneView->setOpenGL(checked);
 
     // save opengl state
     RenderOpts::OpenGLWindow = ui->sceneView->openGL();
@@ -538,13 +491,17 @@ void MainWindow::on_transpBox_toggled(bool transparent)
     static Qt::WindowFlags initialWindowFlags = windowFlags();
 #endif
     if (transparent) {
+#ifdef Q_OS_LINUX
         // one-time warning
-        ButtonsDialog warning("GoTransparent", tr("Transparency"), tr("This feature has not been widely tested yet.<br> - on linux it requires compositing (like compiz/beryl, kwin4)<br> - on windows and mac it seems to work<br>If you see a black background then transparency is not supported on your system.<br><br>NOTE: you should set the 'Transparent' Background to notice the the window transparency.<br>"), QDialogButtonBox::Ok, true, true);
+        ButtonsDialog warning("EnableTransparency", tr("Transparency"), tr("This feature requires compositing (compiz or kwin4) to work on Linux.<br>If you see a black background then transparency is not supported on your system."), QDialogButtonBox::Ok, true, true);
         warning.setIcon(QStyle::SP_MessageBoxInformation);
         warning.execute();
+#endif
 
-        // toggle opengl with transparency
+#if QT_VERSION < 0x040600
+        // WORKAROUND Qt <= 4.6-beta1: toggle opengl with transparency
         ui->accelBox->setChecked(false);
+#endif
 
         // go transparent
         setAttribute(Qt::WA_NoSystemBackground, true);
@@ -563,7 +520,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #endif
 
         // disable appliance background too
-        m_appManager->currentApplianceCommand(App::AC_ClearBackground);
+        App::workflow->clearBackgroundCurrent();
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);

@@ -14,8 +14,8 @@
 
 #include "Canvas.h"
 
+#include "Shared/PictureServices/AbstractPictureService.h"
 #include "Frames/FrameFactory.h"
-#include "Shared/AbstractPictureService.h"
 #include "Shared/ColorPickerItem.h"
 #include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"
@@ -28,7 +28,7 @@
 #include "TextContent.h"
 #include "TextConfig.h"
 #include "WebcamContent.h"
-#include "WordCloudContent.h"
+#include "WordcloudContent.h"
 #include "Shared/RenderOpts.h"
 
 #include <QAbstractTextDocumentLayout>
@@ -128,17 +128,15 @@ Canvas::Canvas(const QSize & initialSize, QObject * parent)
 
 Canvas::~Canvas()
 {
-    delete m_forceFieldTimer;
+    clearContent();
     qDeleteAll(m_highlightItems);
     delete m_helpItem;
     delete m_titleColorPicker;
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
     delete m_grad2ColorPicker;
-    qDeleteAll(m_content);
-    m_content.clear();
-    m_backContent = 0;
     delete m_networkAccessManager;
+    delete m_forceFieldTimer;
     delete m_modeInfo;
 }
 
@@ -194,12 +192,25 @@ void Canvas::addWebcamContent(int input)
     createWebcam(input, nearCenter(sceneRect()));
 }
 
-#include "App/App.h"
-#include "App/MainWindow.h"
-void Canvas::addWordCloudContent()
+void Canvas::addWordcloudContent()
 {
-    WordCloudContent * wcc = createWordCloud(nearCenter(sceneRect()));
-    App::mainWindow->editWordcloud(wcc->cloud());
+    createWordcloud(nearCenter(sceneRect()));
+}
+
+void Canvas::addManualContent(AbstractContent * content, const QPoint & pos)
+{
+    initContent(content, pos);
+}
+
+void Canvas::clearContent()
+{
+    while (!m_content.isEmpty())
+        deleteContent(m_content.first());
+    while (!m_configs.isEmpty())
+        deleteConfig(m_configs.first());
+    // this is not needed, it's here only as extra-safety
+    // Q_ASSERT(!m_backContent)
+    m_backContent = 0;
 }
 
 void Canvas::resize(const QSize & size)
@@ -215,7 +226,7 @@ void Canvas::resize(const QSize & size)
     AbstractScene::resize(size);
 }
 
-void Canvas::resizeEvent(QResizeEvent * /*event*/)
+void Canvas::resizeEvent()
 {
     // relayout contents
     m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
@@ -641,11 +652,8 @@ void Canvas::toXml(QDomElement & canvasElement) const
 
 void Canvas::fromXml(QDomElement & canvasElement)
 {
-    // clear contents
-    while (!m_content.isEmpty())
-        deleteContent(m_content.first());
-    while (!m_configs.isEmpty())
-        deleteConfig(m_configs.first());
+    // remove all content
+    clearContent();
 
     // MODEINFO
     {
@@ -1038,10 +1046,12 @@ void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect)
 
 void Canvas::initContent(AbstractContent * content, const QPoint & pos)
 {
-    connect(content, SIGNAL(configureMe(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
-    connect(content, SIGNAL(backgroundMe()), this, SLOT(slotBackgroundContent()));
+    // listen to AbstractContent signals. dangerous ops (deletion, editing) have queued connections
     connect(content, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
-    connect(content, SIGNAL(deleteItem()), this, SLOT(slotDeleteContent()));
+    connect(content, SIGNAL(requestBackgrounding()), this, SLOT(slotBackgroundContent()));
+    connect(content, SIGNAL(requestConfig(const QPoint &)), this, SLOT(slotConfigureContent(const QPoint &)));
+    connect(content, SIGNAL(requestEditing()), this, SLOT(slotEditContent()), Qt::QueuedConnection);
+    connect(content, SIGNAL(requestRemoval()), this, SLOT(slotDeleteContent()), Qt::QueuedConnection);
 
     if (!pos.isNull())
         content->setPos(pos);
@@ -1112,9 +1122,9 @@ WebcamContent * Canvas::createWebcam(int input, const QPoint & pos)
     return w;
 }
 
-WordCloudContent * Canvas::createWordCloud(const QPoint & pos)
+WordcloudContent * Canvas::createWordcloud(const QPoint & pos)
 {
-    WordCloudContent * w = new WordCloudContent(this);
+    WordcloudContent * w = new WordcloudContent(this);
     initContent(w, pos);
     return w;
 }
@@ -1168,13 +1178,18 @@ void Canvas::slotSelectionChanged()
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selection);
     if (!selectedContent.isEmpty()) {
         SelectionProperties * pWidget = new SelectionProperties(selectedContent);
-        connect(pWidget, SIGNAL(deleteSelection()), this, SLOT(slotDeleteContent()));
+        connect(pWidget, SIGNAL(deleteSelection()), this, SLOT(slotDeleteContent()), Qt::QueuedConnection);
         emit showPropertiesWidget(pWidget);
         return;
     }
 
     // or don't show anything
     emit showPropertiesWidget(0);
+}
+
+void Canvas::slotBackgroundContent()
+{
+    setBackContent(dynamic_cast<AbstractContent *>(sender()));
 }
 
 void Canvas::slotConfigureContent(const QPoint & scenePoint)
@@ -1214,9 +1229,17 @@ void Canvas::slotConfigureContent(const QPoint & scenePoint)
     p->setFocus();
 }
 
-void Canvas::slotBackgroundContent()
+void Canvas::slotEditContent()
 {
-    setBackContent(dynamic_cast<AbstractContent *>(sender()));
+    // get content
+    AbstractContent * content = dynamic_cast<AbstractContent *>(sender());
+    if (content) {
+        // handle internally if possible
+        // ...
+
+        // or handle externally
+        emit requestContentEditing(content);
+    }
 }
 
 void Canvas::slotStackContent(int op)
@@ -1371,7 +1394,7 @@ void Canvas::slotApplyForce()
         return;
     const qreal W = sRect.width();
     const qreal H = sRect.height();
-    const qreal dT = 4.0 * qBound((qreal)0.001, (qreal)m_forceFieldTime.restart() / 1000.0, (qreal)0.10);
+    const qreal dT = 4.0 * qBound((qreal)0.001, (qreal)m_forceFieldTime.restart() / (qreal)1000.0, (qreal)0.10);
 
     // pass 0
     QList<AbstractContent *>::iterator it1, it2, end = m_content.end();

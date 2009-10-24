@@ -16,8 +16,8 @@
 #ifdef ENABLE_GCOMPLETION
 #include "3rdparty/gsuggest.h"
 #endif
-#include "Shared/FlickrPictureService.h"
-#include "Shared/GoogleImagesPictureService.h"
+#include "Shared/PictureServices/FlickrPictureService.h"
+#include "Shared/PictureServices/GoogleImagesPictureService.h"
 #include <QBasicTimer>
 #include <QGraphicsScene>
 #include <QGraphicsLinearLayout>

@@ -12,9 +12,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "ApplianceContainer.h"
+#include "Container.h"
 
-using namespace Appliance;
+using namespace PlugGui;
 
 Container::Container(QWidget * parent)
   : QWidget(parent)

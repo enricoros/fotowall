@@ -15,7 +15,6 @@
 #include "SceneView.h"
 
 #include "Shared/AbstractScene.h"
-#include "Shared/ButtonsDialog.h"
 
 #include <QApplication>
 #include <QCommonStyle>
@@ -23,6 +22,7 @@
 #include <QPixmap>
 #include <QRectF>
 #include <QStyleOption>
+#include <QTimer>
 #include <QVBoxLayout>
 
 /// The style used by the SceneView's rubberband selection
@@ -58,6 +58,8 @@ SceneView::SceneView(QWidget * parent)
   , m_abstractScene(0)
   , m_style(new RubberBandStyle)
   , m_viewportLayout(new QVBoxLayout)
+  , m_heavyTimer(0)
+  , m_heavyCounter(0)
 {
     // customize widget
     setInteractive(true);
@@ -150,9 +152,12 @@ void SceneView::setOpenGL(bool enabled)
 
     // transparent background for raster, standard Base on opengl
     QPalette pal = qApp->palette();
+#if QT_VERSION < 0x040600
+    // WORKAROUND Qt <= 4.6-beta1
     if (m_openGL)
         pal.setBrush(QPalette::Base, pal.window());
     else
+#endif
         pal.setBrush(QPalette::Base, Qt::NoBrush);
     setPalette(pal);
 
@@ -203,6 +208,41 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
     // blend the shadow tile
     if (rect.top() < (y + 8))
         painter->drawTiledPixmap(rect.left(), y, rect.width(), 8, shadowTile);
+}
+
+void SceneView::paintEvent(QPaintEvent * event)
+{
+    // start the measuring time
+#if 0
+    const bool measureTime = event->rect().size() == viewport()->size();
+#else
+    const bool measureTime = true;
+#endif
+    if (measureTime)
+        m_paintTime.start();
+
+    // do painting
+    QGraphicsView::paintEvent(event);
+
+    // handle measurement
+    if (!measureTime)
+        return;
+    if (m_paintTime.elapsed() < 100) {
+        m_heavyCounter = 0;
+        return;
+    }
+
+    // handle slow painting
+    if (++m_heavyCounter > 6) {
+        m_heavyCounter = -100;
+        if (!m_heavyTimer) {
+            m_heavyTimer = new QTimer(this);
+            m_heavyTimer->setSingleShot(true);
+            connect(m_heavyTimer, SIGNAL(timeout()), this, SIGNAL(heavyRepaint()));
+        }
+    }
+    if (m_heavyTimer)
+        m_heavyTimer->start(1000);
 }
 
 void SceneView::resizeEvent(QResizeEvent * event)

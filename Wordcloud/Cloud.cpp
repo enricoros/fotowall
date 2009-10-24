@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the WordCloud project,                           *
+ *   This file is part of the Wordcloud project,                           *
  *       http://www.enricoros.com/opensource/wordcloud                     *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "WordCloud.h"
+#include "Cloud.h"
 
 #include "WordItem.h"
 
@@ -21,7 +21,7 @@
 #include <QProgressDialog>
 #include "math.h"
 
-using namespace WordCloud;
+using namespace Wordcloud;
 
 Appearance::Appearance()
   : textGradient(false)
@@ -125,7 +125,7 @@ void Cloud::removeFromScene()
 }
 
 
-void Cloud::setPlacement(WordCloud::Placement placement)
+void Cloud::setPlacement(Wordcloud::Placement placement)
 {
     if (m_placement != placement) {
         m_placement = placement;
@@ -133,7 +133,7 @@ void Cloud::setPlacement(WordCloud::Placement placement)
     }
 }
 
-WordCloud::Placement Cloud::placement() const
+Wordcloud::Placement Cloud::placement() const
 {
     return m_placement;
 }
@@ -151,23 +151,23 @@ bool Cloud::accurate() const
     return m_accurate;
 }
 
-void Cloud::setAppearance(const WordCloud::Appearance & appearance)
+void Cloud::setAppearance(const Wordcloud::Appearance & appearance)
 {
     m_appearance = appearance;
     m_dirty = true;
 }
 
-WordCloud::Appearance Cloud::appearance() const
+Wordcloud::Appearance Cloud::appearance() const
 {
     return m_appearance;
 }
 
-void Cloud::setBusyMode(WordCloud::BusyMode mode)
+void Cloud::setBusyMode(Wordcloud::BusyMode mode)
 {
     m_busyMode = mode;
 }
 
-WordCloud::BusyMode Cloud::busyMode() const
+Wordcloud::BusyMode Cloud::busyMode() const
 {
     return m_busyMode;
 }

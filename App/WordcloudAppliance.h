@@ -15,32 +15,31 @@
 #ifndef __WordcloudAppliance_h__
 #define __WordcloudAppliance_h__
 
-#include "Shared/AbstractAppliance.h"
-#include "WordCloud/WordCloud.h"
+#include "Shared/PlugGui/AbstractAppliance.h"
+#include "Wordcloud/Cloud.h"
 #include "ui_WordcloudAppliance.h"
 class AbstractScene;
 class QMenu;
 
-class WordcloudAppliance : public Appliance::AbstractAppliance
+class WordcloudAppliance : public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
-        WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * parent = 0);
+        WordcloudAppliance(Wordcloud::Cloud * extCloud, QObject * parent = 0);
         ~WordcloudAppliance();
 
         // take the cloud (NOTE: DELETE THE OBJECT RIGHT AFTER THIS!)
-        WordCloud::Cloud * takeCloud();
+        Wordcloud::Cloud * takeCloud();
 
         // peek into the cloud
-        WordCloud::Cloud * cloud() const;
+        Wordcloud::Cloud * cloud() const;
 
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Word Cloud"); }
-        int applianceElements() const { return Appliance::UseAllElements; }
         bool applianceCommand(int /*command*/) { return false; }
 
     private:
-        WordCloud::Cloud * m_extCloud;
+        Wordcloud::Cloud * m_extCloud;
         AbstractScene * m_scene;
         Ui::WordcloudApplianceElements * ui;
         QWidget * m_dummyWidget;
@@ -48,6 +47,23 @@ class WordcloudAppliance : public Appliance::AbstractAppliance
     private Q_SLOTS:
         void slotRegenCloud();
         void slotRandomizeCloud();
+};
+
+#include "Shared/AbstractScene.h"
+class WordcloudScene : public AbstractScene
+{
+    Q_OBJECT
+    public:
+        WordcloudScene(Wordcloud::Cloud * cloud, QObject * parent = 0);
+
+        // ::AbstractScene
+        void resize(const QSize & size);
+
+    private:
+        Wordcloud::Cloud * m_cloud;
+
+    private Q_SLOTS:
+        void slotWordMoved();
 };
 
 #endif

@@ -15,7 +15,9 @@
 #include "CanvasAppliance.h"
 
 #include "Canvas/CanvasModeInfo.h"
+#include "Canvas/CanvasViewContent.h"
 #include "Canvas/Canvas.h"
+#include "Canvas/WordcloudContent.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/VideoProvider.h"
 #include "App.h"
@@ -23,6 +25,7 @@
 #include "ExportWizard.h"
 #include "FotowallFile.h"
 #include "Settings.h"
+#include "Workflow.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -30,7 +33,7 @@
 
 
 CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent)
-  : Appliance::AbstractAppliance(parent)
+  : PlugGui::AbstractAppliance(parent)
   , m_extCanvas(extCanvas)
   , m_dummyWidget(new QWidget)
   , m_gBackActions(0)
@@ -41,14 +44,14 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     ui.b1->setDefaultAction(ui.aAddPicture);
     ui.b2->setDefaultAction(ui.aAddText);
     ui.b3->setDefaultAction(ui.aAddWebcam);
-    ui.b4->setDefaultAction(ui.aAddWordCloud);
+    ui.b4->setDefaultAction(ui.aAddWordcloud);
     ui.b5->setDefaultAction(ui.aAddCanvas);
     ui.b6->setDefaultAction(ui.aSearchPictures);
     connect(ui.aAddPicture, SIGNAL(triggered()), this, SLOT(slotAddPicture()));
     connect(ui.aAddText, SIGNAL(triggered()), this, SLOT(slotAddText()));
     connect(ui.aAddWebcam, SIGNAL(triggered()), this, SLOT(slotAddWebcam()));
     connect(ui.aAddCanvas, SIGNAL(triggered()), this, SLOT(slotAddCanvas()));
-    connect(ui.aAddWordCloud, SIGNAL(triggered()), this, SLOT(slotAddWordCloud()));
+    connect(ui.aAddWordcloud, SIGNAL(triggered()), this, SLOT(slotAddWordcloud()));
     connect(ui.aSearchPictures, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
@@ -68,6 +71,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     // react to canvas
     m_extCanvas->modeInfo()->setScreenDpi(sDpiX, sDpiY);
     m_extCanvas->modeInfo()->setPrintDpi(300);
+    connect(m_extCanvas, SIGNAL(requestContentEditing(AbstractContent*)), this, SLOT(slotEditContent(AbstractContent*)));
     connect(m_extCanvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
 
@@ -90,13 +94,9 @@ CanvasAppliance::~CanvasAppliance()
 Canvas * CanvasAppliance::takeCanvas()
 {
     Canvas * canvas = m_extCanvas;
+    disconnect(canvas, 0, this, 0);
     m_extCanvas = 0;
     return canvas;
-}
-
-Canvas * CanvasAppliance::canvas() const
-{
-    return m_extCanvas;
 }
 
 bool CanvasAppliance::applianceCommand(int command)
@@ -126,8 +126,8 @@ bool CanvasAppliance::applianceCommand(int command)
 
         // No Background
         case App::AC_ClearBackground:
-            if (m_extCanvas->backMode() != 1) {
-                ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("Now Fotowall's window is transparent.<br>Do you want me to set a transparent Canvas background too?"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
+            if (m_extCanvas->backMode() == 2) {
+                ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("You won't see through the Canvas unless you remove the background gradient.<br><b>Do you want me to clear the background?</b>"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
                 query.setButtonText(QDialogButtonBox::Yes, tr("Yes, thanks"));
                 query.setIcon(QStyle::SP_MessageBoxQuestion);
                 if (query.execute() == QDialogButtonBox::Yes)
@@ -364,11 +364,11 @@ void CanvasAppliance::slotAddWebcam()
     m_extCanvas->addWebcamContent(0);
 }
 
-void CanvasAppliance::slotAddWordCloud()
+void CanvasAppliance::slotAddWordcloud()
 {
     // disable any search box
     ui.aSearchPictures->setChecked(false);
-    m_extCanvas->addWordCloudContent();
+    m_extCanvas->addWordcloudContent();
 }
 
 void CanvasAppliance::slotSearchPicturesToggled(bool visible)
@@ -445,6 +445,20 @@ void CanvasAppliance::slotDecoSetTitle()
 void CanvasAppliance::slotDecoClearTitle()
 {
     m_extCanvas->setTitleText(QString());
+}
+
+void CanvasAppliance::slotEditContent(AbstractContent *content)
+{
+    // handle Canvas
+    if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
+        cvc->setSelected(false);
+        App::workflow->stackCanvasAppliance(cvc->takeCanvas());
+    }
+
+    // handle Wordcloud
+    if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
+        App::workflow->stackWordcloudAppliance(wc->cloud());
+    }
 }
 
 void CanvasAppliance::slotBackModeChanged()

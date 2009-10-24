@@ -23,15 +23,18 @@ Work in progress:
 * Breadcrumb bar navigation
 * modeinfo-per-scene, real resizing of scenes based on modeinfo, support for larger scenes
   * zooming?
-* WordCloud editor
+* Text shaking
+* Wordcloud editor
 
 Done:
 
+* Cursor key movement
+* OpenGL testing and performance auto-detection
 * CD/DVD markers redux
 * Cleanups: Selection, Frames, Rendering, Backgrounding, 
 * Perspective Property editor
 * Google Images search (by Marco Bavagnoli, reqby. Rossana)
-* New Content: WordCloud
+* New Content: Wordcloud
 * New Content: Fotowall
 * Scrollable Canvas
   * perfectly handles the Exact Size mode
@@ -143,10 +146,9 @@ improvement and the code is kept clean and small.
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
 ### Current Wishlist
-bugs:
- - check that opengl is *completely* disabled when Qt misses the opengl module (checked: seems so!)
- - check make uninstall
+* frame text: centered, stretto un pochino.. tipo 2 millimetrini
 * add the undo/redo support
+* make uninstall
 * transform pictures with a 'magneto tool' (good on grids)
 * collate pictures, like autocollage, but keeping user transformations
 * handle initial load-save after being shown. also evaluate normalized rescaling.
@@ -157,6 +159,7 @@ bugs:
 * both new and old resize&co
 * webcam: on win32
 * webcam: multiple webcams
+* webcam: configuration panel. should fix bad images.
 * templates
   * the template system could even be some auto-generated fotowall file with changing urls.
 * provide some default/example files, also loadable with a short path

@@ -14,14 +14,45 @@
 
 #include "WordcloudAppliance.h"
 
-#include "Shared/AbstractScene.h"
+#include "Wordcloud/WordItem.h"
 
 #include <QPushButton>
 
-WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * parent)
-  : Appliance::AbstractAppliance(parent)
+WordcloudScene::WordcloudScene(Wordcloud::Cloud * cloud, QObject * parent)
+  : AbstractScene(parent)
+  , m_cloud(cloud)
+{
+    m_cloud->setScene(this);
+    foreach (QGraphicsItem * item, items()) {
+        Wordcloud::WordItem * word = dynamic_cast<Wordcloud::WordItem *>(item);
+        if (word)
+            connect(word, SIGNAL(moved()), this, SLOT(slotWordMoved()), Qt::QueuedConnection);
+    }
+}
+
+void WordcloudScene::resize(const QSize & size)
+{
+    QRectF itemsRect = itemsBoundingRect();
+    QSize newSize = itemsRect.size().toSize().expandedTo(size);
+
+    AbstractScene::resize(newSize);
+
+    QPointF delta = sceneCenter() - itemsRect.center();
+    if (!delta.isNull()) {
+        foreach (QGraphicsItem * item, items())
+            item->setPos(item->pos() + delta);
+    }
+}
+
+void WordcloudScene::slotWordMoved()
+{
+    adjustSceneSize();
+}
+
+WordcloudAppliance::WordcloudAppliance(Wordcloud::Cloud * extCloud, QObject * parent)
+  : PlugGui::AbstractAppliance(parent)
   , m_extCloud(extCloud)
-  , m_scene(new AbstractScene(0))
+  , m_scene(new WordcloudScene(extCloud))
   , ui(new Ui::WordcloudApplianceElements)
   , m_dummyWidget(new QWidget)
 {
@@ -29,8 +60,6 @@ WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * pa
     ui->setupUi(m_dummyWidget);
 
     // set the target scene of the cloud to this
-    m_extCloud->setScene(m_scene);
-
     QWidget * sideBar = new QWidget();
     sideBar->setAutoFillBackground(true);
     QPalette pal;
@@ -51,10 +80,6 @@ WordcloudAppliance::WordcloudAppliance(WordCloud::Cloud * extCloud, QObject * pa
     // configure the appliance
     sceneSet(m_scene);
     sidebarSetWidget(sideBar);
-
-    // #temp
-    foreach (QGraphicsItem * item, m_scene->items())
-        item->setPos(item->pos() + QPointF(500,200));
 }
 
 WordcloudAppliance::~WordcloudAppliance()
@@ -68,15 +93,15 @@ WordcloudAppliance::~WordcloudAppliance()
     delete ui;
 }
 
-WordCloud::Cloud * WordcloudAppliance::takeCloud()
+Wordcloud::Cloud * WordcloudAppliance::takeCloud()
 {
-    WordCloud::Cloud * cloud = m_extCloud;
+    Wordcloud::Cloud * cloud = m_extCloud;
     m_extCloud = 0;
     cloud->setScene(0);
     return cloud;
 }
 
-WordCloud::Cloud * WordcloudAppliance::cloud() const
+Wordcloud::Cloud * WordcloudAppliance::cloud() const
 {
     return m_extCloud;
 }

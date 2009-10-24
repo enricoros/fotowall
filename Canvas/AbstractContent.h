@@ -86,6 +86,7 @@ class AbstractContent : public AbstractDisposeable
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
         // may be reimplemented by subclasses
@@ -94,10 +95,11 @@ class AbstractContent : public AbstractDisposeable
 
     Q_SIGNALS:
         // to canvas
-        void configureMe(const QPoint & scenePoint);
         void changeStack(int opcode);
-        void backgroundMe();
-        void deleteItem();
+        void requestBackgrounding();
+        void requestConfig(const QPoint & scenePoint);
+        void requestEditing();
+        void requestRemoval();
         void contentChanged();
 
         // properties

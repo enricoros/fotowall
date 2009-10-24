@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the WordCloud project,                           *
+ *   This file is part of the Wordcloud project,                           *
  *       http://www.enricoros.com/opensource/wordcloud                     *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
@@ -12,14 +12,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WordCloud_h__
-#define __WordCloud_h__
+#ifndef __Cloud_h__
+#define __Cloud_h__
 
 #include <QObject>
-#include "WordDefs.h"
+#include "Bits.h"
 #include "WordItem.h"
 
-namespace WordCloud {
+namespace Wordcloud {
 
     class Cloud : public QObject
     {
@@ -37,17 +37,17 @@ namespace WordCloud {
             QGraphicsScene * scene() const;
             void removeFromScene();
 
-            void setPlacement(WordCloud::Placement);
-            WordCloud::Placement placement() const;
+            void setPlacement(Wordcloud::Placement);
+            Wordcloud::Placement placement() const;
 
             void setAccurate(bool accurate);
             bool accurate() const;
 
-            void setAppearance(const WordCloud::Appearance &);
-            WordCloud::Appearance appearance() const;
+            void setAppearance(const Wordcloud::Appearance &);
+            Wordcloud::Appearance appearance() const;
 
-            void setBusyMode(WordCloud::BusyMode mode);
-            WordCloud::BusyMode busyMode() const;
+            void setBusyMode(Wordcloud::BusyMode mode);
+            Wordcloud::BusyMode busyMode() const;
 
         private:
             void process();

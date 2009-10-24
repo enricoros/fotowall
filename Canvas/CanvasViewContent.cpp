@@ -47,6 +47,13 @@ bool CanvasViewContent::loadCanvas(const QString & filePath, bool /*keepRatio*/,
     return ok;
 }
 
+Canvas * CanvasViewContent::takeCanvas()
+{
+    Canvas * canvas = m_canvas;
+    m_canvas = 0;
+    return canvas;
+}
+
 QWidget * CanvasViewContent::createPropertyWidget()
 {
     return 0;
@@ -73,15 +80,6 @@ void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect
 bool CanvasViewContent::contentOpaque() const
 {
     return false;
-}
-
-#include "App/App.h"
-#include "App/MainWindow.h"
-void CanvasViewContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
-{
-    event->accept();
-    setSelected(false);
-    App::mainWindow->editCanvas(m_canvas);
 }
 
 void CanvasViewContent::slotRepaintCanvas(const QList<QRectF> & /*exposed*/)

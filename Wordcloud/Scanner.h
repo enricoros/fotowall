@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the WordCloud project,                           *
+ *   This file is part of the Wordcloud project,                           *
  *       http://www.enricoros.com/opensource/wordcloud                     *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
@@ -12,16 +12,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WordScanner_h__
-#define __WordScanner_h__
+#ifndef __Scanner_h__
+#define __Scanner_h__
 
 #include <QObject>
 #include <QLocale>
 #include <QUrl>
-#include "WordCloud.h"
+#include "Cloud.h"
 class QTableWidget;
 
-namespace WordCloud {
+namespace Wordcloud {
 
     class Scanner : public QObject
     {

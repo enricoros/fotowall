@@ -33,6 +33,7 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     , m_text(0)
     , m_textRect(0, 0, 0, 0)
     , m_textMargin(4)
+    , m_shakeRadius(0)
     , m_shapeEditor(0)
 {
     setFrame(0);
@@ -132,7 +133,9 @@ QWidget * TextContent::createPropertyWidget()
     connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
     connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
     connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
-    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(deleteItem()), Qt::QueuedConnection);
+    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
+    connect(p->bShakeLess, SIGNAL(clicked()), this, SLOT(slotShakeLess()));
+    connect(p->bShakeMore, SIGNAL(clicked()), this, SLOT(slotShakeMore()));
 
     // properties link
     p->bEditShape->setChecked(isShapeEditing());
@@ -242,7 +245,7 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
     if (sourceRect.width() > 0 && sourceRect.height() > 0) {
         qreal xScale = (qreal)targetRect.width() / (qreal)sourceRect.width();
         qreal yScale = (qreal)targetRect.height() / (qreal)sourceRect.height();
-        if (!qFuzzyCompare(xScale, 1.0) || !qFuzzyCompare(yScale, 1.0))
+        if (!qFuzzyCompare(xScale, (qreal)1.0) || !qFuzzyCompare(yScale, (qreal)1.0))
             painter->scale(xScale, yScale);
     }
 
@@ -291,12 +294,14 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
             // 1.2.2. draw each character
             QString text = frag.text();
             foreach (const QChar & textChar, text) {
+                const qreal charWidth = metrics.width(textChar);
                 if (shapedPaint) {
                     // find point on shape and angle
-                    qreal interval = metrics.width(textChar);
                     qreal t = m_shapePath.percentAtLength(curLen);
                     QPointF pt = m_shapePath.pointAtPercent(t);
                     qreal angle = -m_shapePath.angleAtPercent(t);
+                    if (m_shakeRadius > 0)
+                        pt += QPointF(1 + (qrand() % m_shakeRadius) - m_shakeRadius/2, 1 + (qrand() % (2*m_shakeRadius)) - m_shakeRadius);
 
                     // draw rotated letter
                     painter->save();
@@ -305,10 +310,10 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
                     painter->drawText(iPos, textChar);
                     painter->restore();
 
-                    curLen += interval;
+                    curLen += charWidth;
                 } else {
                     painter->drawText(iPos, textChar);
-                    iPos += QPointF(metrics.width(textChar), 0);
+                    iPos += QPointF(charWidth, 0);
                 }
             }
         }
@@ -333,10 +338,9 @@ void TextContent::selectionChanged(bool selected)
         setShapeEditing(false);
 }
 
-void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
-    emit backgroundMe();
-    QGraphicsItem::mouseDoubleClickEvent(event);
+    emit requestBackgrounding();
 }
 
 QPainterPath TextContent::shapePath() const
@@ -477,4 +481,18 @@ void TextContent::updateCache()
 
     ...
     */
+}
+
+void TextContent::slotShakeLess()
+{
+    if (m_shakeRadius > 0) {
+        m_shakeRadius--;
+        updateTextConstraints();
+    }
+}
+
+void TextContent::slotShakeMore()
+{
+    m_shakeRadius++;
+    updateTextConstraints();
 }

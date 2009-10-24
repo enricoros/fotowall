@@ -382,10 +382,7 @@ stop:1 rgba(237, 237, 237, 255))
         <property name="borderFlags" stdset="0">
          <number>1</number>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
+        <layout class="QGridLayout" name="gridLayout_2">
          <property name="leftMargin">
           <number>6</number>
          </property>
@@ -398,7 +395,10 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item row="0" column="0" colspan="2">
           <widget class="QCheckBox" name="transpBox">
            <property name="enabled">
             <bool>false</bool>
@@ -408,7 +408,7 @@ stop:1 rgba(237, 237, 237, 255))
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="0">
           <widget class="QCheckBox" name="accelBox">
            <property name="enabled">
             <bool>false</bool>
@@ -422,6 +422,16 @@ stop:1 rgba(237, 237, 237, 255))
              <width>32</width>
              <height>16</height>
             </size>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="BlinkingToolButton" name="accelTestButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Test OpenGL</string>
            </property>
           </widget>
          </item>
@@ -628,6 +638,11 @@ stop:1 rgba(237, 237, 237, 255))
    <extends>QWidget</extends>
    <header>Shared/GroupBoxWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BlinkingToolButton</class>
+   <extends>QToolButton</extends>
+   <header>Shared/BlinkingToolButton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

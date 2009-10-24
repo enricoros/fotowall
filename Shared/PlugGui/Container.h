@@ -12,45 +12,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __ApplianceManager_h__
-#define __ApplianceManager_h__
+#ifndef __ApplianceContainer_h__
+#define __ApplianceContainer_h__
 
-#include <QObject>
-#include <QList>
+#include <QWidget>
+#include <QSize>
+class AbstractScene;
 
-namespace Appliance {
-class Container;
-class AbstractAppliance;
+namespace PlugGui {
 
-class Manager : public QObject
-{
-    Q_OBJECT
-    public:
-        Manager();
-        ~Manager();
+    class AbstractAppliance;
 
-        // set container
-        void setContainer(Container * container);
-        Container * container() const;
+    class Container : public QWidget
+    {
+        Q_OBJECT
+        public:
+            Container(QWidget * parent = 0);
 
-        // stacking operations
-        void stackAppliance(AbstractAppliance * appliance);
-        QList<AbstractAppliance *> stackedAppliances() const;
-        AbstractAppliance * currentAppliance() const;
-        bool currentApplianceCommand(int command);
-        void popAppliance();
-        void dropStackAfter(int index);
-        void clearAppliances();
+            // const queries to the container
+            virtual QSize sceneViewSize() const = 0;
 
-    Q_SIGNALS:
-        // notify (ex. on a push/pop operation)
-        void structureChanged();
-
-    private:
-        Container * m_container;
-        QList<AbstractAppliance *> m_appliances;
-        bool m_disableNotify;
-};
+        protected:
+            // called by appliances
+            friend class PlugGui::AbstractAppliance;
+            virtual void applianceSetScene(AbstractScene * scene) = 0;
+            virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
+            virtual void applianceSetSidebar(QWidget * widget) = 0;
+            virtual void applianceSetCentralwidget(QWidget * widget) = 0;
+            virtual void applianceSetValue(quint32 id, const QVariant & value) = 0;
+    };
 
 }
 

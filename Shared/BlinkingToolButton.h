@@ -12,35 +12,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __Settings_h__
-#define __Settings_h__
+#ifndef __BlinkingToolButton_h__
+#define __BlinkingToolButton_h__
 
-#include <QList>
-#include <QSettings>
-#include <QStringList>
-#include <QUrl>
+#include <QToolButton>
+#include <QPalette>
 
-class Settings : public QSettings
+class BlinkingToolButton : public QToolButton
 {
+    Q_OBJECT
+    Q_PROPERTY(QColor backColor READ backColor WRITE setBackColor)
+    Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor)
     public:
-        Settings();
-        ~Settings();
+        BlinkingToolButton(QWidget * parent = 0);
 
-        // is this the first time Fotowall is executed
-        bool firstTime() const;
+    public Q_SLOTS:
+        void drawAttenction();
+        void clearAttenction();
 
-        // the recent load/save history
-        QList<QUrl> recentFotowallUrls() const;
-        void addRecentFotowallUrl(const QUrl & url);
-
-        // commandline files
-        void addCommandlineUrl(const QString & url);
-        QStringList commandlineUrls() const;
+    protected:
+        // ::QWidget
+        void paintEvent(QPaintEvent * event);
+        QSize sizeHint() const;
 
     private:
-        bool m_firstTime;
-        QList<QUrl> m_recentFotowallUrls;
-        QStringList m_commandlineUrls;
+        QColor backColor() const;
+        void setBackColor(const QColor & color);
+        QColor textColor() const;
+        void setTextColor(const QColor & color);
+        qreal markOpacity() const;
+        void setMarkOpacity(qreal);
+
+        QPalette m_palette;
+        QPixmap m_markPixmap;
+        qreal m_markOpacity;
 };
 
 #endif

@@ -36,14 +36,14 @@ void AbstractScene::resize(const QSize & size)
     m_rect = QRectF(0, 0, m_size.width(), m_size.height());
 
     // call handlers
-    QResizeEvent re(m_size, oldSize);
-    resizeEvent(&re);
+    //QResizeEvent re(m_size, oldSize);
+    resizeEvent(/*&re*/);
 
     // change my rect
     setSceneRect(m_rect);
 }
 
-void AbstractScene::resizeEvent(QResizeEvent * /*event*/)
+void AbstractScene::resizeEvent()
 {
     // nothing to do here
 }

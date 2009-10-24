@@ -35,7 +35,7 @@
 #include <math.h>
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noRescale)
-    : AbstractDisposeable(parent, true)
+    : AbstractDisposeable(parent, false /*needed for Hardware3DTest*/)
     , m_contentRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)
@@ -89,7 +89,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bDelete->setSelectsParent(false);
     bDelete->setToolTip(tr("Remove"));
-    connect(bDelete, SIGNAL(clicked()), this, SIGNAL(deleteItem()));
+    connect(bDelete, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
     addButtonItem(bDelete);
 
     // create default frame
@@ -529,6 +529,12 @@ QRectF AbstractContent::boundingRect() const
     return m_frameRect;
 }
 
+void AbstractContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
+{
+    // emitting the edit request by default. some subclasses request backgrounding
+    emit requestEditing();
+}
+
 void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // find out whether to draw the selection
@@ -638,15 +644,30 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
     QGraphicsItem::mousePressEvent(event);
     if (event->button() == Qt::RightButton) {
         setSelected(true);
-        emit configureMe(event->scenePos().toPoint());
+        emit requestConfig(event->scenePos().toPoint());
     }
 }
 
 void AbstractContent::keyPressEvent(QKeyEvent * event)
 {
     event->accept();
-    if (event->key() == Qt::Key_Delete)
-        emit deleteItem();
+    int step = (event->modifiers() & Qt::ShiftModifier) ? 50 : (event->modifiers() & Qt::ControlModifier ? 1 : 10);
+    switch (event->key()) {
+        // cursor keys: 10px, 50 if Shift pressed, 1 if Control pressed
+        case Qt::Key_Left:      setPos(pos() - QPointF(step, 0));   break;
+        case Qt::Key_Up:        setPos(pos() - QPointF(0, step));   break;
+        case Qt::Key_Right:     setPos(pos() + QPointF(step, 0));   break;
+        case Qt::Key_Down:      setPos(pos() + QPointF(0, step));   break;
+
+        // deletion
+        case Qt::Key_Delete: emit requestRemoval(); break;
+
+        // editing
+        case Qt::Key_Return: emit requestEditing(); break;
+
+        // ignore unhandled key
+        default: event->ignore();
+    }
 }
 
 QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant & value)
@@ -655,7 +676,7 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
         QRectF rect = scene()->sceneRect();
-        if (!rect.contains(newPos)) {
+        if (!rect.contains(newPos) /*&& rect.width() > 100 && rect.height() > 100*/) {
             newPos.setX(qBound(rect.left(), newPos.x(), rect.right()));
             newPos.setY(qBound(rect.top(), newPos.y(), rect.bottom()));
             return newPos;
@@ -707,7 +728,7 @@ void AbstractContent::slotConfigure()
     ButtonItem * item = dynamic_cast<ButtonItem *>(sender());
     if (!item)
         return;
-    emit configureMe(item->scenePos().toPoint());
+    emit requestConfig(item->scenePos().toPoint());
 }
 
 void AbstractContent::slotStackFront()
@@ -848,7 +869,7 @@ void AbstractContent::slotSetPerspective(const QPointF & sceneRelPoint, Qt::Keyb
     if (modifiers & Qt::ControlModifier)
         return slotClearPerspective();
     qreal k = modifiers == Qt::NoModifier ? 0.2 : 0.5;
-    setPerspective(QPointF(qBound(-70.0, sceneRelPoint.x()*k, 70.0), qBound(-70.0, sceneRelPoint.y()*k, 70.0)));
+    setPerspective(QPointF(qBound((qreal)-70.0, (qreal)sceneRelPoint.x()*k, (qreal)70.0), qBound((qreal)-70.0, (qreal)sceneRelPoint.y()*k, (qreal)70.0)));
 }
 
 void AbstractContent::slotClearPerspective()

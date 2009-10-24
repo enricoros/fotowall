@@ -1,6 +1,6 @@
 /***************************************************************************
  *                                                                         *
- *   This file is part of the WordCloud project,                           *
+ *   This file is part of the Wordcloud project,                           *
  *       http://www.enricoros.com/opensource/wordcloud                     *
  *                                                                         *
  *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "WordScanner.h"
+#include "Scanner.h"
 
 #include <QDebug>
 #include <QFile>
@@ -22,7 +22,7 @@
 #include <QTableWidget>
 #include <QTextStream>
 
-using namespace WordCloud;
+using namespace Wordcloud;
 
 bool Scanner::addFromFile(const QString & fileName)
 {

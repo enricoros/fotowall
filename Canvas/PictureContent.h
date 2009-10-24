@@ -32,6 +32,7 @@ class PictureContent : public AbstractContent
 
         bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
         bool loadFromNetwork(const QString & url, QNetworkReply * reply = 0, const QString & title = QString(), int width = -1, int height = -1);
+        bool loadPixmap(const QPixmap & pixmap, const QString & title = QString());
         void addEffect(const PictureEffect & effect);
         void crop();
 
