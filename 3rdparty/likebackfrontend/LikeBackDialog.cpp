@@ -37,6 +37,7 @@
 #include "LikeBackDialog.h"
 
 #include <QApplication>
+#include <QLocale>
 #include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
