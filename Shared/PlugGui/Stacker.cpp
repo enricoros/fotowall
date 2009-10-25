@@ -20,7 +20,6 @@ using namespace PlugGui;
 
 Stacker::Stacker()
   : m_container(0)
-  , m_disableNotify(false)
 {
 }
 
@@ -62,8 +61,8 @@ void Stacker::stackAppliance(AbstractAppliance * appliance)
     if (m_container)
         appliance->addToApplianceContainer(m_container);
 
-    if (!m_disableNotify)
-        emit structureChanged();
+    // notify about the change
+    emit structureChanged();
 }
 
 QList<AbstractAppliance *> Stacker::stackedAppliances() const
@@ -74,6 +73,11 @@ QList<AbstractAppliance *> Stacker::stackedAppliances() const
 AbstractAppliance * Stacker::currentAppliance() const
 {
     return m_appliances.isEmpty() ? 0 : m_appliances.last();
+}
+
+int Stacker::applianceCount() const
+{
+    return m_appliances.size();
 }
 
 bool Stacker::currentApplianceCommand(int command)
@@ -101,33 +105,17 @@ void Stacker::popAppliance()
         m_appliances.last()->addToApplianceContainer(m_container);
 
     // notify about the change
-    if (removed && !m_disableNotify)
-        emit structureChanged();
-}
-
-void Stacker::dropStackAfter(int index)
-{
-    int count = m_appliances.size();
-
-    // remove appliances up to the index+1'th
-    m_disableNotify = true;
-    while (!m_appliances.isEmpty() && m_appliances.size() > (index + 1))
-        popAppliance();
-    m_disableNotify = false;
-
-    // notify about the change
-    if (m_appliances.size() != count)
-        emit structureChanged();
+     emit structureChanged();
 }
 
 void Stacker::clearAppliances()
 {
     // remove appliances
-    m_disableNotify = true;
     while (!m_appliances.isEmpty())
         popAppliance();
-    m_disableNotify = false;
+}
 
-    // notify about the change
-    emit structureChanged();
+void Stacker::structureChanged()
+{
+    // nothing to do here...
 }

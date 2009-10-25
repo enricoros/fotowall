@@ -16,45 +16,68 @@
 #define __Workflow_h__
 
 #include <QObject>
-namespace PlugGui { class Container; class Stacker; }
+#include "Shared/PlugGui/Stacker.h"
+#include <QVariant>
 namespace Wordcloud { class Cloud; }
 class BreadCrumbBar;
 class Canvas;
 
-class Workflow : public QObject
+class WorkflowRequest {
+    public:
+        // type of request and parameter
+        enum Type {
+            NewCanvas,          // param is empty or filename or canvas star
+            StackCanvas,        // param is canvas star
+            StackWordcloud      // param is wordcloud star
+        }               type;
+        QVariant        param;
+
+        // notification
+        QObject *       listener;
+        const char *    listenerEntrySlot;
+        const char *    listenerExitSlot;
+
+        // convenience initializer
+        WorkflowRequest(Type type, const QVariant & param = QVariant(),
+                        QObject * listener = 0, const char * listenerEntry = 0,
+                        const char * listenerExit = 0);
+    private:
+        WorkflowRequest();
+};
+
+class Workflow : public QObject, public PlugGui::Stacker
 {
     Q_OBJECT
     public:
         Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent = 0);
         ~Workflow();
 
+        bool request(const WorkflowRequest & request);
+
         // ### BIG REFACTOR HERE ;-)
-        void clear();
         bool saveCurrent();
         bool exportCurrent();
         void howtoCurrent();
         void clearBackgroundCurrent();
+        bool requestExit();
 
         // content editing
-        void newCanvas();
         bool loadCanvas(const QString & fileName);
         void stackCanvasAppliance(Canvas * newCanvas);
         void stackWordcloudAppliance(Wordcloud::Cloud * cloud);
 
-        bool requestExit();
+    protected:
+        // ::PlugGui::Stacker
+        void structureChanged();
 
     private:
-        void workflowChanged();
+        void newCanvas();
 
         // external objects
         PlugGui::Container * m_container;
         BreadCrumbBar * m_bar;
 
-        // internals
-        PlugGui::Stacker * m_stacker;
-
     private Q_SLOTS:
-        void slotStackChanged();
         void slotApplianceClicked(quint32);
 };
 
