@@ -48,9 +48,9 @@ class Canvas : public AbstractScene
 
         // add/remove content
         void addCanvasViewContent(const QStringList & fileNames);
-        void addPictureContent(const QStringList & fileNames);
-        void addTextContent();
-        void addWebcamContent(int input);
+        QList<PictureContent*> addPictureContent(const QStringList & fileNames);
+        TextContent* addTextContent();
+        WebcamContent* addWebcamContent(int input);
         void addWordcloudContent();
         void addManualContent(AbstractContent * content, const QPoint & pos);
         void clearContent();
@@ -72,6 +72,7 @@ class Canvas : public AbstractScene
         void randomizeContents(bool position, bool rotation, bool opacity);
 
         // decorations
+        void setBackContent(AbstractContent * content);
         void setBackMode(int mode);
         int backMode() const;
         void setBackContentRatio(Qt::AspectRatioMode mode);
@@ -119,7 +120,6 @@ class Canvas : public AbstractScene
 
     private:
         void initContent(AbstractContent * content, const QPoint & pos);
-        void setBackContent(AbstractContent * content);
         CanvasViewContent * createCanvasView(const QPoint & pos);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);

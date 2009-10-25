@@ -21,7 +21,11 @@ HEADERS += \
     Shared/PictureEffect.h \
     Shared/PropertyEditors.h \
     Shared/RenderOpts.h \
-    Shared/VideoProvider.h
+    Shared/VideoProvider.h \
+    Shared/AbstractCommand.h \
+    Shared/Commands.h \
+    Shared/CommandStack.h
+
 
 SOURCES += \
     Shared/PlugGui/AbstractAppliance.cpp \
@@ -44,7 +48,8 @@ SOURCES += \
     Shared/PanePropertyEditor.cpp \
     Shared/PropertyEditors.cpp \
     Shared/MetaXmlReader.cpp \
-    Shared/VideoProvider.cpp
+    Shared/VideoProvider.cpp \
+    Shared/CommandStack.cpp
 
 FORMS += \
     Shared/CroppingDialog.ui \

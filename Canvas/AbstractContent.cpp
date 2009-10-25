@@ -14,6 +14,9 @@
 
 #include "AbstractContent.h"
 
+#include "Shared/CommandStack.h"
+#include "Shared/Commands.h"
+
 #include "Frames/FrameFactory.h"
 #include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
@@ -82,6 +85,8 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag around to change the perspective.\nHold SHIFT to move faster.\nUse CTRL to cancel the transformations."));
     connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotSetPerspective(const QPointF&,Qt::KeyboardModifiers)));
+    connect(bPersp, SIGNAL(pressed()), this, SLOT(slotPressPerspective()));
+    connect(bPersp, SIGNAL(releaseEvent(QGraphicsSceneMouseEvent *)), this, SLOT(slotReleasePerspective(QGraphicsSceneMouseEvent *)));
     connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slotClearPerspective()));
     addButtonItem(bPersp);
 #endif
@@ -854,14 +859,27 @@ void AbstractContent::layoutChildren()
     }
 }
 
+void AbstractContent::slotPressPerspective()
+{
+    qDebug() << "press persp";
+    m_previousTransform = transform();
+}
+void AbstractContent::slotReleasePerspective(QGraphicsSceneMouseEvent* /* event */) {
+    qDebug() << "release persp";
+    QTransform newTransform = transform();
+    TransformCommand *tc = new TransformCommand(this, m_previousTransform, newTransform);
+    CommandStack::instance().doCommand(tc);
+}
+
 void AbstractContent::applyTransforms()
 {
-    setTransform(QTransform().rotate(m_perspectiveAngles.y(), Qt::XAxis)
-                 .rotate(m_perspectiveAngles.x(), Qt::YAxis)
+    setTransform(QTransform().rotate(m_perspectiveAngles.y(), Qt::XAxis).rotate(m_perspectiveAngles.x(), Qt::YAxis)
 #if QT_VERSION < 0x040600
-                 .rotate(m_rotationAngle, Qt::ZAxis)
+            .rotate(m_rotationAngle, Qt::ZAxis)
 #endif
-                 , false);
+            , false);
+
+
 }
 
 void AbstractContent::slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers)

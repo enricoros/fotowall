@@ -45,6 +45,7 @@ class ButtonItem : public QObject, public QGraphicsItem
         void pressed();
         void clicked();
         void doubleClicked();
+        void releaseEvent(QGraphicsSceneMouseEvent * event);
 
     private:
         Type        m_type;

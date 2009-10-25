@@ -209,6 +209,11 @@ void PictureContent::addEffect(const PictureEffect & effect)
     emit contentChanged();
 }
 
+QList<PictureEffect> PictureContent::effects() const
+{
+    return m_photo->effects();
+}
+
 void PictureContent::crop()
 {
     if (!m_photo)

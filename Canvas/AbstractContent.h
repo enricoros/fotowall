@@ -134,11 +134,14 @@ class AbstractContent : public AbstractDisposeable
         void slotStackLower();
         void slotStackBack();
         void slotSaveAs();
+        void slotPressPerspective();
+        void slotReleasePerspective(QGraphicsSceneMouseEvent *);
 
     private:
         void createCorner(Qt::Corner corner, bool noRescale);
         void layoutChildren();
         void applyTransforms();
+        QTransform          m_previousTransform;
         QRect               m_contentRect;
         QRectF              m_frameRect;
         Frame *             m_frame;

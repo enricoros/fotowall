@@ -14,6 +14,9 @@
 
 #include "Canvas.h"
 
+#include "Shared/CommandStack.h"
+#include "Shared/Commands.h"
+
 #include "Shared/PictureServices/AbstractPictureService.h"
 #include "Frames/FrameFactory.h"
 #include "Shared/ColorPickerItem.h"
@@ -164,8 +167,9 @@ void Canvas::addCanvasViewContent(const QStringList & fileNames)
     }
 }
 
-void Canvas::addPictureContent(const QStringList & fileNames)
+QList<PictureContent*> Canvas::addPictureContent(const QStringList & fileNames)
 {
+    QList<PictureContent*> addedPictures;
     int offset = -30 * fileNames.size() / 2;
     QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
     foreach (const QString & localFile, fileNames) {
@@ -177,19 +181,22 @@ void Canvas::addPictureContent(const QStringList & fileNames)
         if (!p->loadPhoto(localFile, true, true)) {
             m_content.removeAll(p);
             delete p;
-        } else
+        } else {
             pos += QPoint(30, 30);
+            addedPictures << p;
+        }
     }
+    return addedPictures;
 }
 
-void Canvas::addTextContent()
+TextContent* Canvas::addTextContent()
 {
-    createText(nearCenter(sceneRect()));
+    return createText(nearCenter(sceneRect()));
 }
 
-void Canvas::addWebcamContent(int input)
+WebcamContent* Canvas::addWebcamContent(int input)
 {
-    createWebcam(input, nearCenter(sceneRect()));
+    return createWebcam(input, nearCenter(sceneRect()));
 }
 
 void Canvas::addWordcloudContent()
@@ -1189,7 +1196,10 @@ void Canvas::slotSelectionChanged()
 
 void Canvas::slotBackgroundContent()
 {
-    setBackContent(dynamic_cast<AbstractContent *>(sender()));
+    AbstractContent *back = dynamic_cast<AbstractContent *>(sender());
+    BackgroundContentCommand * command = new BackgroundContentCommand(this, m_backContent, back);
+    CommandStack &stack = CommandStack::instance();
+    stack.doCommand(command);
 }
 
 void Canvas::slotConfigureContent(const QPoint & scenePoint)
@@ -1306,8 +1316,26 @@ void Canvas::slotDeleteContent()
         if (QMessageBox::question(0, tr("Delete content"), tr("All the %1 selected content will be deleted, do you want to continue ?").arg(selectedContent.size()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
             return;
 
-    foreach (AbstractContent * content, selectedContent)
-        deleteContent(content);
+    foreach (AbstractContent * content, selectedContent) {
+        //deleteContent(content);
+        if (content) {
+            // unset background if deleting its content
+            if (m_backContent == content)
+                setBackContent(0);
+
+            DeleteContentCommand *command = new DeleteContentCommand(content);
+            CommandStack::instance().doCommand(command);
+            foreach (AbstractConfig * config, m_configs) {
+                if (config->content() == content) {
+                    config->hide();
+                    break;
+                }
+            }
+            //if (config) {
+                //config->hide();
+            //}
+        }
+    }
 }
 
 void Canvas::slotDeleteConfig()
@@ -1317,11 +1345,13 @@ void Canvas::slotDeleteConfig()
 
 void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 {
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     foreach (AbstractContent * content, m_content) {
         if (all || content->isSelected()) {
-            if (content->frameClass() != frameClass)
-                content->setFrame(FrameFactory::createFrame(frameClass));
-            content->setMirrored(mirrored);
+            if (content->frameClass() != frameClass) {
+                FrameCommand *command = new FrameCommand(content, frameClass, mirrored);
+                CommandStack::instance().doCommand(command);
+            }
         }
     }
 }
@@ -1330,8 +1360,10 @@ void Canvas::slotApplyEffect(const PictureEffect & effect, bool all)
 {
     QList<PictureContent *> pictures = projectList<AbstractContent, PictureContent>(m_content);
     foreach (PictureContent * picture, pictures)
-        if (all || picture->isSelected())
-            picture->addEffect(effect);
+        if (all || picture->isSelected()) {
+            EffectCommand *command = new EffectCommand(picture, effect);
+            CommandStack::instance().doCommand(command);
+        }
 }
 
 void Canvas::slotCrop()

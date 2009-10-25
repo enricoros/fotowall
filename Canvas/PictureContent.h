@@ -34,6 +34,7 @@ class PictureContent : public AbstractContent
         bool loadFromNetwork(const QString & url, QNetworkReply * reply = 0, const QString & title = QString(), int width = -1, int height = -1);
         bool loadPixmap(const QPixmap & pixmap, const QString & title = QString());
         void addEffect(const PictureEffect & effect);
+        QList<PictureEffect> effects() const;
         void crop();
 
         // ::AbstractContent

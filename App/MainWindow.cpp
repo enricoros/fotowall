@@ -14,6 +14,9 @@
 
 #include "App/MainWindow.h"
 
+#include "Shared/CommandStack.h"
+#include "Shared/Commands.h"
+
 #include "3rdparty/likebackfrontend/LikeBack.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
@@ -96,6 +99,17 @@ MainWindow::MainWindow(QWidget * parent)
     // the first time, show the introduction
     if (App::settings->firstTime())
         on_introButton_clicked();
+
+
+    QAction * undo = new QAction(tr("Undo"), this);
+    undo->setShortcut(tr("CTRL+Z"));
+    connect(undo, SIGNAL(triggered()), this, SLOT(slotUndo()));
+    addAction(undo);
+
+    QAction * redo = new QAction(tr("Redo"), this);
+    redo->setShortcut(tr("CTRL+Y"));
+    connect(redo, SIGNAL(triggered()), this, SLOT(slotRedo()));
+    addAction(redo);
 }
 
 MainWindow::~MainWindow()
@@ -540,4 +554,17 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #else
     Q_UNUSED(transparent)
 #endif
+}
+
+
+void MainWindow::slotUndo()
+{
+    CommandStack &commandStack = CommandStack::instance();
+    commandStack.undoLast();
+}
+
+void MainWindow::slotRedo()
+{
+    CommandStack &commandStack = CommandStack::instance();
+    commandStack.redoLast();
 }
