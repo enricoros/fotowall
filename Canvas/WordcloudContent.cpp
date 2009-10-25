@@ -18,6 +18,7 @@
 #include "Canvas.h"
 
 #include <QGraphicsScene>
+#include <QFileDialog>
 #include <QPainter>
 
 WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent)
@@ -30,20 +31,21 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
 
     // temporarily get words
     Wordcloud::Scanner scanner;
-#if 1
-    scanner.addFromFile("/alchimia");
-    m_cloud->newCloud(scanner.takeWords());
-#else
-    scanner.addFromString(tr("Welcome to Wordcloud. Change options on the sidebar."));
-    Wordcloud::WordList list = scanner.takeWords();
-    Wordcloud::WordList::iterator wIt = list.begin();
-    int ccc = list.size() + 1;
-    while (wIt != list.end()) {
-        wIt->count = ccc--;
-        ++wIt;
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Select a text file"));
+    if (fileName.isEmpty()) {
+        scanner.addFromString(tr("Welcome to Wordcloud. Change options on the sidebar."));
+        Wordcloud::WordList list = scanner.takeWords();
+        Wordcloud::WordList::iterator wIt = list.begin();
+        int ccc = list.size() + 1;
+        while (wIt != list.end()) {
+            wIt->count = ccc--;
+            ++wIt;
+        }
+        m_cloud->newCloud(list);
+    } else {
+        scanner.addFromFile(fileName);
+        m_cloud->newCloud(scanner.takeWords());
     }
-    m_cloud->newCloud(list);
-#endif
 }
 
 Wordcloud::Cloud * WordcloudContent::cloud() const
