@@ -12,39 +12,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "AbstractScene.h"
+#ifndef __UrlHistoryBox_h__
+#define __UrlHistoryBox_h__
 
-AbstractScene::AbstractScene(QObject * parent)
-  : QGraphicsScene(parent)
+#include "Shared/GroupBoxWidget.h"
+#include <QList>
+#include <QUrl>
+class PixmapButton;
+
+/// \brief Shows Preview of Fotowall files and emit clicks
+class UrlHistoryBox : public GroupBoxWidget
 {
-}
+    Q_OBJECT
+    public:
+        UrlHistoryBox(const QList<QUrl> & urls, QWidget * parent = 0);
+        ~UrlHistoryBox();
 
-void AbstractScene::adjustSceneSize()
-{
-    emit geometryChanged();
-}
+    Q_SIGNALS:
+        void urlClicked(const QUrl & url);
 
-void AbstractScene::resize(const QSize & size)
-{
-    // skip if already ok
-    if (size == m_size)
-        return;
+    private:
+        QList<PixmapButton *> m_entries;
+        int m_previewIndex;
 
-    // save size and the related rect
-    //QSize oldSize = m_size;
-    m_size = size;
-    m_rect = QRectF(0, 0, m_size.width(), m_size.height());
+    private Q_SLOTS:
+        void slotClicked();
+        void slotNextPreview();
+};
 
-    // change my rect
-    setSceneRect(m_rect);
-
-    // call handlers
-    //QResizeEvent re(m_size, oldSize);
-    resizeEvent(/*&re*/);
-}
-
-void AbstractScene::resizeEvent()
-{
-    // nothing to do here
-}
-
+#endif

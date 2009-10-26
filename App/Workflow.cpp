@@ -22,6 +22,7 @@
 #include "Canvas/Canvas.h"
 #include "CanvasAppliance.h"
 #include "FotowallFile.h"
+#include "HomeAppliance.h"
 #include "Settings.h"
 #include "WordcloudAppliance.h"
 
@@ -46,8 +47,8 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
     setContainer(container);
     connect(m_bar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
 
-    // ###
-    newCanvas();
+    // show the home screen by default
+    showHome();
 }
 
 Workflow::~Workflow()
@@ -108,10 +109,10 @@ bool Workflow::applianceCommand(int command)
 
 bool Workflow::loadCanvas(const QString & fileName)
 {
-    qWarning("CALLED FROM CANVASAPPLIANCE: FIX THIS!!");
+    qWarning("CALLED FROM CANVASAPPLIANCE OR HOMEAPPLIANCE: FIX THIS!!");
     // load the canvas from file
     Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-    if (!FotowallFile::read(fileName, canvas)) {
+    if (!FotowallFile::read(fileName, canvas, true)) {
         delete canvas;
         return false;
     }
@@ -132,6 +133,14 @@ void Workflow::stackWordcloudAppliance(Wordcloud::Cloud * cloud)
 {
     WordcloudAppliance * wApp = new WordcloudAppliance(cloud);
     stackAppliance(wApp);
+}
+
+void Workflow::showHome()
+{
+    // ### too tight? can the second part be canceled in between?
+    clearAppliances();
+    HomeAppliance * app = new HomeAppliance;
+    stackAppliance(app);
 }
 
 void Workflow::newCanvas()

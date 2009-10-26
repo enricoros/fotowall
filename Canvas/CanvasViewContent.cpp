@@ -39,7 +39,7 @@ bool CanvasViewContent::loadCanvas(const QString & filePath, bool /*keepRatio*/,
     // create a Canvas
     m_canvas = new Canvas(viewRect.size(), this);
     connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
-    bool ok = FotowallFile::read(filePath, m_canvas);
+    bool ok = FotowallFile::read(filePath, m_canvas, false);
 
     // customize the item
     setFrameTextEnabled(setName);

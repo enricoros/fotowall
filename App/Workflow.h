@@ -52,7 +52,8 @@ class Workflow : public QObject, public PlugGui::Stacker
         Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent = 0);
         ~Workflow();
 
-        bool request(const WorkflowRequest & request);
+        // some requests will be performed asynchronously
+        void request(const WorkflowRequest & request);
 
         // ### BIG REFACTOR HERE ;-)
         bool requestExit();
@@ -68,6 +69,7 @@ class Workflow : public QObject, public PlugGui::Stacker
         void structureChanged();
 
     private:
+        void showHome();
         void newCanvas();
 
         // external objects

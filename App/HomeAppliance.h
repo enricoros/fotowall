@@ -12,39 +12,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "AbstractScene.h"
+#ifndef __HomeAppliance_h__
+#define __HomeAppliance_h__
 
-AbstractScene::AbstractScene(QObject * parent)
-  : QGraphicsScene(parent)
+#include "Shared/PlugGui/AbstractAppliance.h"
+class HomeScene;
+class UrlHistoryBox;
+
+class HomeAppliance : public PlugGui::AbstractAppliance
 {
-}
+    Q_OBJECT
+    public:
+        HomeAppliance(QObject * parent = 0);
+        ~HomeAppliance();
 
-void AbstractScene::adjustSceneSize()
-{
-    emit geometryChanged();
-}
+        // ::Appliance::AbstractAppliance
+        QString applianceName() const { return tr("Home"); }
 
-void AbstractScene::resize(const QSize & size)
-{
-    // skip if already ok
-    if (size == m_size)
-        return;
+    private:
+        HomeScene * m_scene;
+        UrlHistoryBox * m_historyBox;
 
-    // save size and the related rect
-    //QSize oldSize = m_size;
-    m_size = size;
-    m_rect = QRectF(0, 0, m_size.width(), m_size.height());
+    private Q_SLOTS:
+        void slotLoadUrl(const QUrl & url);
+};
 
-    // change my rect
-    setSceneRect(m_rect);
 
-    // call handlers
-    //QResizeEvent re(m_size, oldSize);
-    resizeEvent(/*&re*/);
-}
-
-void AbstractScene::resizeEvent()
-{
-    // nothing to do here
-}
-
+#endif
