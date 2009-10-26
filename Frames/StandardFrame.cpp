@@ -69,9 +69,12 @@ void StandardFrame::drawFrame(QPainter * painter, const QRect & frameRect, bool 
 
 void StandardFrame2::drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
 {
+    if (frameRect.height() < 1)
+        return;
     QLinearGradient lg(0, frameRect.top(), 0, frameRect.height() / 2);
-    lg.setColorAt(0.0, selected ? RenderOpts::hiColor.darker() : QColor(220,220,220));
-    lg.setColorAt(1.0, selected ? RenderOpts::hiColor.lighter() : QColor(240,240,240));
+    lg.setColorAt(0.0, selected ? RenderOpts::hiColor.lighter() : QColor(240,240,240));
+    lg.setColorAt(1.0 - ((qreal)FW_LABH / (qreal)frameRect.height()), selected ? RenderOpts::hiColor.darker() : QColor(200,200,200));
+    lg.setColorAt(1.0, selected ? RenderOpts::hiColor.lighter() : QColor(230,230,230));
     painter->setPen(Qt::NoPen);
     painter->setBrush(lg);
     painter->drawRoundedRect(frameRect, 9, 9, Qt::AbsoluteSize);
