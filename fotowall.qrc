@@ -15,7 +15,9 @@
         <file>data/action-save.png</file>
         <file>data/action-scale.png</file>
         <file>data/action-snapshot.png</file>
-        <file>data/home-newcanvas.svg</file>
+        <file>data/home-newcanvas.png</file>
+        <file>data/home-newwordcloud.png</file>
+        <file>data/home-wizard.png</file>
         <file>data/insert-download.png</file>
         <file>data/insert-image.png</file>
         <file>data/insert-text.png</file>

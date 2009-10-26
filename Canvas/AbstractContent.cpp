@@ -560,6 +560,7 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     drawContent(painter, tcRect);
 
     // overlay a selection
+    return;
     if (drawSelection && !m_frame) {
         painter->setRenderHint(QPainter::Antialiasing, true);
         painter->setPen(QPen(RenderOpts::hiColor, 2.0));

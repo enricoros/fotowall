@@ -34,6 +34,7 @@ QList<quint32> FrameFactory::classes()
 {
     QList<quint32> classes = factoryInstance()->m_svgMap.keys();
     classes.prepend(Frame::HeartFrame);
+    classes.prepend(Frame::StandardFrame2);
     classes.prepend(Frame::StandardFrame);
     classes.prepend(Frame::NoFrame);
     return classes;
@@ -43,6 +44,8 @@ Frame * FrameFactory::createFrame(quint32 frameClass)
 {
     if (frameClass == Frame::NoFrame)
         return 0;
+    else if (frameClass == Frame::StandardFrame2)
+        return new StandardFrame2();
     else if (frameClass == Frame::StandardFrame)
         return new StandardFrame();
     else if (frameClass == Frame::HeartFrame)

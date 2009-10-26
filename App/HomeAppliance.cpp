@@ -15,6 +15,7 @@
 #include "HomeAppliance.h"
 
 #include "Canvas/PictureContent.h"
+#include "Frames/StandardFrame.h"
 #include "Shared/AbstractScene.h"
 #include "Shared/RenderOpts.h"
 #include "App.h"
@@ -22,32 +23,45 @@
 #include "UrlHistoryBox.h"
 #include "Workflow.h"
 
-#include <QGraphicsGridLayout>
 #include <QPainter>
-#include <QSvgRenderer>
+#include <QPixmap>
 
 //BEGIN Home Scene
 class HomeContent : public AbstractContent
 {
     public:
-        HomeContent(const QString & svgFileName, QGraphicsScene * scene)
+        HomeContent(const QString & title, const QPixmap & pixmap, QGraphicsScene * scene)
           : AbstractContent(scene, 0, true)
-          , m_renderer(new QSvgRenderer)
+          , m_pixmap(pixmap)
         {
-            m_renderer->load(svgFileName);
+            // create the standard frame and set title
+            setFrame(new StandardFrame2);
+            setFrameTextEnabled(true);
+            setFrameText(title);
+
+            // change appearance for the home screen
+            int pixW = pixmap.width();
+            int pixH = pixmap.height();
+            setFlags(ItemClipsChildrenToShape);
+            setAcceptsHoverEvents(false);
+            resizeContents(QRect(-pixW/2, -pixH/2, pixW, pixH), false);
+            //rotate(-5);
         }
 
-        // ::AbstractContent
-        QString contentName() const { return QString(); }
+        QString contentName() const
+        {
+            return QString();
+        }
+
         void drawContent(QPainter * painter, const QRect & targetRect)
         {
-            //painter->fillRect(targetRect.adjusted(10, 10, -10, -10), Qt::blue);
-            //m_renderer->render(painter);
+            //painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
+            painter->drawPixmap(targetRect, m_pixmap);
+            //painter->setRenderHint(QPainter::SmoothPixmapTransform, false);
         }
 
     private:
-        QSvgRenderer * m_renderer;
-
+        QPixmap m_pixmap;
 };
 
 class HomeScene : public AbstractScene
@@ -63,29 +77,35 @@ class HomeScene : public AbstractScene
         void resizeEvent();
 
     private:
-        QGraphicsGridLayout * m_lay;
-        QList<HomeContent *> m_content;
+        QList<QGraphicsItem *> m_buttons;
 };
 
 HomeScene::HomeScene(QObject *parent)
   : AbstractScene(parent)
-  , m_lay(new QGraphicsGridLayout)
 {
-    // button: new Canvas
-    HomeContent * c = new HomeContent(":/data/home-newcanvas.svg", this);
-    m_content.append(c);
-    m_content.append(new HomeContent(":/data/home-newcanvas.svg", this));
-    m_content.append(new HomeContent(":/data/home-newcanvas.svg", this));
+    // create buttons
+    QFont font;
+    font.setPointSize(font.pointSize() + 10);
+    m_buttons.append(new HomeContent(tr("New Fotowall"), QPixmap(":/data/home-newcanvas.png"), this));
+    m_buttons.append(new HomeContent(tr("New Wordcloud"), QPixmap(":/data/home-newwordcloud.png"), this));
+    m_buttons.append(new HomeContent(tr("Wizard"), QPixmap(":/data/home-wizard.png"), this));
 }
 
 void HomeScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    // draw a gray shade as background
     painter->setCompositionMode(QPainter::CompositionMode_Source);
-    QLinearGradient lg(0, 0, 0, sceneHeight());
+    QLinearGradient lg(0, 0, sceneWidth() / 2, sceneHeight());
     lg.setColorAt(0.0, QColor(192, 192, 192, RenderOpts::ARGBWindow ? 128 : 255));
     lg.setColorAt(1.0, QColor(128, 128, 128, RenderOpts::ARGBWindow ? 128 : 255));
     painter->fillRect(rect, lg);
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+#if 0
+    QRadialGradient rg(sceneWidth() / 2, 0, 200, sceneWidth() / 2, -100);
+    rg.setColorAt(0.0, Qt::white);
+    rg.setColorAt(1.0, Qt::transparent);
+    painter->fillRect(rect, rg);
+#endif
 }
 
 void HomeScene::resize(const QSize & size)
@@ -95,7 +115,9 @@ void HomeScene::resize(const QSize & size)
 
 void HomeScene::resizeEvent()
 {
-    const int count = m_content.size();
+#if 1
+    // grid placement
+    const int count = m_buttons.size();
     const int width = sceneWidth();
     const int height = sceneHeight();
     const int rows = (int)sqrt((qreal)count);
@@ -104,12 +126,13 @@ void HomeScene::resizeEvent()
     for (int i = 0; i < count; i++) {
         double xPos = (int)(((qreal)cIdx + 0.5) * (qreal)width / (qreal)cols);
         double yPos = (int)(((qreal)rIdx + 0.5) * (qreal)height / (qreal)rows);
-        m_content[i]->setPos(xPos, yPos);
+        m_buttons[i]->setPos(QPointF(xPos, yPos) - m_buttons[i]->boundingRect().center());
         if (++cIdx >= cols) {
             cIdx = 0;
             ++rIdx;
         }
     }
+#endif
 }
 //END Home Scene
 

@@ -33,7 +33,7 @@ class Frame {
     public:
         // class identification
         virtual quint32 frameClass() const = 0;
-        enum { NoFrame = 0, StandardFrame = 1, HeartFrame = 2, BasePlasmaFrame = 0x1000 };
+        enum { NoFrame = 0, StandardFrame = 1, HeartFrame = 2, /*skip 3, removed!*/ StandardFrame2 = 4, BasePlasmaFrame = 0x1000 };
 
         // G: frame geometry
         virtual QRect frameRect(const QRect & contentsRect) const;
