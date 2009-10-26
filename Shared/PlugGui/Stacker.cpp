@@ -80,13 +80,6 @@ int Stacker::applianceCount() const
     return m_appliances.size();
 }
 
-bool Stacker::currentApplianceCommand(int command)
-{
-    if (m_appliances.isEmpty())
-        return false;
-    return m_appliances.last()->applianceCommand(command);
-}
-
 void Stacker::popAppliance()
 {
     // delete last

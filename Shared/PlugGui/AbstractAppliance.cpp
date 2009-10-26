@@ -14,6 +14,8 @@
 
 #include "AbstractAppliance.h"
 
+#include <QVariant>
+
 using namespace PlugGui;
 
 AbstractAppliance::AbstractAppliance(QObject * parent)
@@ -51,8 +53,14 @@ void AbstractAppliance::removeFromApplianceContainer()
     }
 
     // do the clearance
-    clearCurrentContainer();
+    detachFromContainer();
     m_containerPtr = 0;
+}
+
+bool AbstractAppliance::applianceCommand(int command)
+{
+    qWarning("AbstractAppliance::applianceCommand: current appliance '%s' doesn't handle command %d", qPrintable(applianceName()), command);
+    return false;
 }
 
 void AbstractAppliance::sceneSet(AbstractScene * scene)
@@ -67,11 +75,12 @@ void AbstractAppliance::sceneClear()
     sceneSet(0);
 }
 
-void AbstractAppliance::topbarAddWidget(QWidget * widget, int index)
+void AbstractAppliance::topbarAddWidget(QWidget * widget, bool rightBar, int index)
 {
     if (!widget)
         return;
     WidgetPointer wPtr(widget);
+    widget->setProperty("@rightBar", rightBar);
     if (index < 0 || index >= m_pTopbar.size())
         m_pTopbar.append(wPtr);
     else
@@ -122,23 +131,14 @@ void AbstractAppliance::centralwidgetClear()
     centralwidgetSet(0);
 }
 
-void AbstractAppliance::containerValueSet(quint32 id, const QVariant & value)
+void AbstractAppliance::containerValueSet(quint32 key, const QVariant & value)
 {
-    m_values[id] = value;
+    if (value.isValid())
+        m_values[key] = value;
+    else
+        m_values.remove(key);
     if (m_containerPtr)
-        m_containerPtr->applianceSetValue(id, value);
-}
-
-void AbstractAppliance::clearCurrentContainer()
-{
-    if (m_containerPtr) {
-        m_containerPtr->applianceSetScene(0);
-        m_containerPtr->applianceSetTopbar(QList<QWidget *>());
-        m_containerPtr->applianceSetSidebar(0);
-        m_containerPtr->applianceSetCentralwidget(0);
-        for (ValueMap::iterator it = m_values.begin(); it != m_values.end(); ++it)
-            m_containerPtr->applianceSetValue(it.key(), QVariant());
-    }
+        m_containerPtr->applianceSetValue(key, value);
 }
 
 void AbstractAppliance::updateContainerTopbar()
@@ -150,4 +150,16 @@ void AbstractAppliance::updateContainerTopbar()
         if (wpointer)
             widgets.append(wpointer.data());
     m_containerPtr->applianceSetTopbar(widgets);
+}
+
+void AbstractAppliance::detachFromContainer()
+{
+    if (m_containerPtr) {
+        m_containerPtr->applianceSetScene(0);
+        m_containerPtr->applianceSetTopbar(QList<QWidget *>());
+        m_containerPtr->applianceSetSidebar(0);
+        m_containerPtr->applianceSetCentralwidget(0);
+        for (ValueMap::iterator it = m_values.begin(); it != m_values.end(); ++it)
+            m_containerPtr->applianceSetValue(it.key(), QVariant());
+    }
 }

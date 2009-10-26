@@ -55,11 +55,8 @@ class Workflow : public QObject, public PlugGui::Stacker
         bool request(const WorkflowRequest & request);
 
         // ### BIG REFACTOR HERE ;-)
-        bool saveCurrent();
-        bool exportCurrent();
-        void howtoCurrent();
-        void clearBackgroundCurrent();
         bool requestExit();
+        bool applianceCommand(int command);
 
         // content editing
         bool loadCanvas(const QString & fileName);

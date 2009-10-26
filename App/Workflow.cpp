@@ -62,26 +62,6 @@ Workflow::~Workflow()
     // bar and container are external: don't delete
 }
 
-bool Workflow::saveCurrent()
-{
-    return currentApplianceCommand(App::AC_Save);
-}
-
-bool Workflow::exportCurrent()
-{
-    return currentApplianceCommand(App::AC_Export);
-}
-
-void Workflow::howtoCurrent()
-{
-    currentApplianceCommand(App::AC_ShowIntro);
-}
-
-void Workflow::clearBackgroundCurrent()
-{
-    currentApplianceCommand(App::AC_ClearBackground);
-}
-
 bool Workflow::requestExit()
 {
     // build the closure dialog
@@ -119,8 +99,16 @@ bool Workflow::requestExit()
     }
 }
 
+bool Workflow::applianceCommand(int command)
+{
+    if (!currentAppliance())
+        return false;
+    return currentAppliance()->applianceCommand(command);
+}
+
 bool Workflow::loadCanvas(const QString & fileName)
 {
+    qWarning("CALLED FROM CANVASAPPLIANCE: FIX THIS!!");
     // load the canvas from file
     Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
     if (!FotowallFile::read(fileName, canvas)) {

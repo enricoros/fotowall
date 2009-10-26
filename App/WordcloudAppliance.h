@@ -36,7 +36,6 @@ class WordcloudAppliance : public PlugGui::AbstractAppliance
 
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Word Cloud"); }
-        bool applianceCommand(int /*command*/) { return false; }
 
     private:
         Wordcloud::Cloud * m_extCloud;

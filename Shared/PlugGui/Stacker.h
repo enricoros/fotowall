@@ -38,7 +38,6 @@ namespace PlugGui {
             virtual QList<AbstractAppliance *> stackedAppliances() const;
             virtual AbstractAppliance * currentAppliance() const;
             virtual int applianceCount() const;
-            virtual bool currentApplianceCommand(int command);
             virtual void popAppliance();
             virtual void clearAppliances();
 

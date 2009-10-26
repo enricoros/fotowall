@@ -39,6 +39,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QTimer>
+#include <QVariant>
 
 // current location and 'check string' for the tutorial
 #define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
@@ -123,7 +124,7 @@ void MainWindow::applianceSetScene(AbstractScene * scene)
     ui->sceneView->setScene(scene);
 }
 
-static void hideInLayout(QLayout * layout)
+static void hideLayoutChildWidges(QLayout * layout)
 {
     while (QLayoutItem * item = layout->takeAt(0)) {
         if (QWidget * oldWidget = item->widget())
@@ -135,11 +136,15 @@ static void hideInLayout(QLayout * layout)
 void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
     // clear the topbar layout hiding all widgets
-    hideInLayout(ui->applianceTopbarLayout);
+    hideLayoutChildWidges(ui->applianceLeftBarLayout);
+    hideLayoutChildWidges(ui->applianceRightBarLayout);
 
     // add the widgets to the topbar and show them
     foreach (QWidget * widget, widgets) {
-        ui->applianceTopbarLayout->addWidget(widget);
+        if (widget->property("@rightBar").toBool())
+            ui->applianceRightBarLayout->addWidget(widget);
+        else
+            ui->applianceLeftBarLayout->addWidget(widget);
         widget->setVisible(true);
     }
 }
@@ -147,7 +152,7 @@ void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 void MainWindow::applianceSetSidebar(QWidget * widget)
 {
     // clear the sidebar layout hiding any widget
-    hideInLayout(ui->applianceSidebarLayout);
+    hideLayoutChildWidges(ui->applianceSidebarLayout);
 
     // completely hide the sidebar if no widget
     ui->applianceSidebar->setVisible(widget);
@@ -165,24 +170,9 @@ void MainWindow::applianceSetCentralwidget(QWidget * widget)
         qWarning("MainWindow::applianceSetCentralwidget: unsupported");
 }
 
-void MainWindow::applianceSetValue(quint32 id, const QVariant & value)
+void MainWindow::applianceSetValue(quint32 key, const QVariant & /*value*/)
 {
-    switch (id) {
-        case App::CV_ExportPrint: {
-            bool valueSent = !value.isNull();
-            ui->exportButton->setVisible(valueSent);
-            ui->introButton->setEnabled(valueSent);
-            ui->saveButton->setEnabled(valueSent);
-            if (!value.isNull()) {
-                ui->exportButton->setText(value.toBool() ? tr("Print") : tr("Export"));
-                ui->exportButton->setProperty("printing", value.toBool());
-            }
-            }break;
-
-         default:
-            qWarning("MainWindow::applianceSetValue: unknown id 0x%x", id);
-            break;
-    }
+    qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -254,34 +244,9 @@ void MainWindow::slotRenderingSlow()
     }
 }
 
-bool MainWindow::on_loadButton_clicked()
-{
-    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
-    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
-
-    // ask the file name, validate it, store back to settings and load the file
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
-    if (fileName.isNull())
-        return false;
-    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-
-    // load the file
-    return App::workflow->loadCanvas(fileName);
-}
-
-bool MainWindow::on_saveButton_clicked()
-{
-    return App::workflow->saveCurrent();
-}
-
-bool MainWindow::on_exportButton_clicked()
-{
-    return App::workflow->exportCurrent();
-}
-
 void MainWindow::on_introButton_clicked()
 {
-    return App::workflow->howtoCurrent();
+    App::workflow->applianceCommand(App::AC_ShowIntro);
 }
 
 void MainWindow::on_lbLike_clicked()
@@ -520,7 +485,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #endif
 
         // disable appliance background too
-        App::workflow->clearBackgroundCurrent();
+        App::workflow->applianceCommand(App::AC_ClearBackground);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
