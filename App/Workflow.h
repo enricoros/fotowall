@@ -58,6 +58,7 @@ class Workflow : public QObject, public PlugGui::Stacker
         // ### BIG REFACTOR HERE ;-)
         bool requestExit();
         bool applianceCommand(int command);
+        void newCanvas();
 
         // content editing
         bool loadCanvas(const QString & fileName);
@@ -70,7 +71,6 @@ class Workflow : public QObject, public PlugGui::Stacker
 
     private:
         void showHome();
-        void newCanvas();
 
         // external objects
         PlugGui::Container * m_container;

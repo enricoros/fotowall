@@ -16,6 +16,7 @@
 #define __HomeAppliance_h__
 
 #include "Shared/PlugGui/AbstractAppliance.h"
+#include "Shared/AbstractScene.h"
 class HomeScene;
 class UrlHistoryBox;
 
@@ -37,5 +38,27 @@ class HomeAppliance : public PlugGui::AbstractAppliance
         void slotLoadUrl(const QUrl & url);
 };
 
+
+class HomeScene : public AbstractScene
+{
+    Q_OBJECT
+    public:
+        HomeScene(QObject * parent = 0);
+        ~HomeScene();
+
+        // ::QGraphicsScene
+        void drawBackground(QPainter *painter, const QRectF &rect);
+
+        // ::AbstractScene
+        void resize(const QSize & size);
+
+    private:
+        QList<QGraphicsItem *> m_labels;
+
+    private Q_SLOTS:
+        void slotNewCanvas();
+        void slotNewWordcloud();
+        void slotWizard();
+};
 
 #endif

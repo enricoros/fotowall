@@ -47,6 +47,21 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
     setContainer(container);
     connect(m_bar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
 
+    // load a fotowall file if asked from the command line
+    QStringList contentUrls = App::settings->commandlineUrls();
+    if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first())) {
+        if (loadCanvas(contentUrls.first()))
+            return;
+    }
+
+    // load pictures in a canvas
+    if (!contentUrls.isEmpty()) {
+        Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
+        canvas->addPictureContent(contentUrls);
+        stackCanvasAppliance(canvas);
+        return;
+    }
+
     // show the home screen by default
     showHome();
 }
@@ -146,26 +161,7 @@ void Workflow::showHome()
 void Workflow::newCanvas()
 {
     clearAppliances();
-
-    QStringList contentUrls = App::settings->commandlineUrls();
-
-    // open if single fotowall file
-    if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first())) {
-        if (loadCanvas(contentUrls.first()))
-            return;
-    }
-
     Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-        // if many pictures, add them to a new cavas
-        if (!contentUrls.isEmpty())
-            canvas->addPictureContent(contentUrls);
-        // no url: display last opened files
-        else {
-#if 0
-            foreach (const QUrl & url, App::settings->recentFotowallUrls())
-                canvas->addCanvasViewContent(QStringList() << url.toString());
-#endif
-        }
     stackCanvasAppliance(canvas);
 }
 
