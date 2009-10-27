@@ -58,7 +58,7 @@ HomeAppliance::HomeAppliance(QObject *parent)
         m_historyBox->setBorderFlags(0x0000);
         m_historyBox->setCheckable(false);
         QPalette pal;
-        pal.setBrush(QPalette::Window, QColor(0, 0, 0, 16));
+        pal.setBrush(QPalette::Window, QColor(255, 255, 255, 128));
         m_historyBox->setPalette(pal);
         m_historyBox->setAutoFillBackground(true);
         connect(m_historyBox, SIGNAL(urlClicked(QUrl)), this, SLOT(slotLoadCanvas(const QUrl &)));
@@ -149,6 +149,7 @@ class HomeLabel : public AbstractContent
 
 HomeScene::HomeScene(QObject * parent)
   : AbstractScene(parent)
+  , m_logoPixmap(":/data/home-logo.png")
 {
     HomeLabel * newWordcloud = new HomeLabel(tr("New Wordcloud"), QPixmap(":/data/home-newwordcloud.png"), this);
      connect(newWordcloud, SIGNAL(requestEditing()), this, SLOT(slotNewWordcloud()));
@@ -170,9 +171,9 @@ void HomeScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     // draw a gray shade as background
     painter->setCompositionMode(QPainter::CompositionMode_Source);
-    QLinearGradient lg(0, 0, sceneWidth() / 2, sceneHeight());
-    lg.setColorAt(0.0, QColor(192, 192, 192, RenderOpts::ARGBWindow ? 128 : 255));
-    lg.setColorAt(1.0, QColor(128, 128, 128, RenderOpts::ARGBWindow ? 128 : 255));
+    QLinearGradient lg(0, 0, 0, sceneHeight());
+    lg.setColorAt(0.0, QColor(192, 192, 192, RenderOpts::ARGBWindow ? 200 : 255));
+    lg.setColorAt(1.0, QColor(128, 128, 128, RenderOpts::ARGBWindow ? 200 : 255));
     painter->fillRect(rect, lg);
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #if 0
@@ -181,6 +182,13 @@ void HomeScene::drawBackground(QPainter *painter, const QRectF &rect)
     rg.setColorAt(1.0, Qt::transparent);
     painter->fillRect(rect, rg);
 #endif
+}
+
+void HomeScene::drawForeground(QPainter *painter, const QRectF &rect)
+{
+    // draw top-center logo
+    if (m_logoRect.isValid() && m_logoRect.intersects(rect.toRect()))
+        painter->drawPixmap(m_logoRect.topLeft(), m_logoPixmap);
 }
 
 void HomeScene::resize(const QSize & size)
@@ -192,20 +200,30 @@ void HomeScene::resize(const QSize & size)
     const int margin = 20;
     const int count = m_labels.size();
     const int width = sceneWidth() - margin * 2;
-    const int height = sceneHeight();
+    const int height = sceneHeight() - margin;
     const int rows = (int)sqrt((qreal)count);
     const int cols = (int)ceil((qreal)count / (qreal)rows);
     int rIdx = 0, cIdx = 0;
     for (int i = 0; i < count; i++) {
         double xPos = margin + (int)(((qreal)cIdx + 0.5) * (qreal)width / (qreal)cols);
-        double yPos = (int)(((qreal)rIdx + 0.5) * (qreal)height / (qreal)rows);
-        if (cols == 3 && cIdx == 1)
-            yPos -= 10;
+        double yPos = margin + (int)(((qreal)rIdx + 0.5) * (qreal)height / (qreal)rows);
+        if (cols == 3 && cIdx != 1)
+            yPos += 10;
         m_labels[i]->setPos(QPointF(xPos, yPos) - m_labels[i]->boundingRect().center());
         if (++cIdx >= cols) {
             cIdx = 0;
             ++rIdx;
         }
+    }
+
+    // logo rectangle
+    if (!m_logoPixmap.isNull()) {
+        int top = 0;
+        if (m_labels.size() < 2)
+            top = (height - rows * 200) / 10;
+        else
+            top = qMax((qreal)0, (m_labels[1]->sceneBoundingRect().top() - m_logoPixmap.height()) / 2);
+        m_logoRect = QRect((width - m_logoPixmap.width()) / 2, top, m_logoPixmap.width(), m_logoPixmap.height());
     }
 }
 

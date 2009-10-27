@@ -49,6 +49,7 @@ class HomeScene : public AbstractScene
 
         // ::QGraphicsScene
         void drawBackground(QPainter *painter, const QRectF &rect);
+        void drawForeground(QPainter *painter, const QRectF &rect);
 
         // ::AbstractScene
         void resize(const QSize & size);
@@ -56,6 +57,8 @@ class HomeScene : public AbstractScene
 
     private:
         QList<QGraphicsItem *> m_labels;
+        QPixmap m_logoPixmap;
+        QRect m_logoRect;
 
     private Q_SLOTS:
         void slotNewCanvas();
