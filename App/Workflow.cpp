@@ -80,6 +80,9 @@ Workflow::~Workflow()
 
 bool Workflow::requestExit()
 {
+    if (dynamic_cast<HomeAppliance *>(currentAppliance()))
+        return true;
+
     // build the closure dialog
     ButtonsDialog quitAsk("Workflow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
@@ -153,14 +156,14 @@ bool Workflow::loadCanvas(const QString & fileName)
     }
 
     // close all and edit it
-    clearAppliances();
+    /// ### clearAppliances();
     stackCanvasAppliance(canvas);
     return true;
 }
 
 void Workflow::startCanvas()
 {
-    clearAppliances();
+    //clearAppliances();
     Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
     stackCanvasAppliance(canvas);
 }

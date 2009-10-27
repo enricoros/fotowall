@@ -86,6 +86,9 @@ void UrlHistoryBox::slotNextPreview()
         const QImage rotated = image.transformed(rot, Qt::SmoothTransformation);
         const QImage preview = GlowEffectWidget::dropShadow(rotated, Qt::darkGray, 6, 1, 1);
         m_entries[currentIndex]->setPixmap(QPixmap::fromImage(preview));
+
+        // save preview to cache ;-)
+        // TODO ###
     }
     delete canvas;
 
