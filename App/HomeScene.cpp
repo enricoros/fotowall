@@ -80,8 +80,15 @@ class HomeLabel : public AbstractContent
         void mousePressEvent(QGraphicsSceneMouseEvent * event)
         {
             // use an already existing signal.. FIXME!
-            if (event->button() == Qt::LeftButton)
-                emit requestEditing();
+            if (event->button() == Qt::LeftButton) {
+#if 0
+                ANIMATE_PARAM(this, "rotation", 400, 300);
+                ANIMATE_PARAM(this, "opacity", 500, 0.0);
+                QTimer::singleShot(300, this, SIGNAL(requestEditing()));
+#else
+                requestEditing();
+#endif
+            }
         }
 
         void drawContent(QPainter * painter, const QRect & targetRect)

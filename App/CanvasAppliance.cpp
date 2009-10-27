@@ -478,12 +478,16 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
     // handle Canvas
     if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
         cvc->setSelected(false);
-        App::workflow->stackCanvasAppliance(cvc->takeCanvas());
+        Canvas * editCanvas = cvc->takeCanvas();
+        App::workflow->stackCanvasAppliance(editCanvas);
+        return;
     }
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-        App::workflow->stackWordcloudAppliance(wc->cloud());
+        Wordcloud::Cloud * editCloud = wc->takeCloud();
+        App::workflow->stackWordcloudAppliance(editCloud);
+        return;
     }
 }
 

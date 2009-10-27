@@ -375,11 +375,6 @@ bool AbstractContent::beingTransformed() const
     return m_dirtyTransforming;
 }
 
-QWidget * AbstractContent::createPropertyWidget()
-{
-    return 0;
-}
-
 bool AbstractContent::fromXml(QDomElement & contentElement)
 {
     // restore content properties
@@ -537,6 +532,21 @@ QPixmap AbstractContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
     return pixmap;
 }
 
+int AbstractContent::contentHeightForWidth(int width) const
+{
+    return width;
+}
+
+bool AbstractContent::contentOpaque() const
+{
+    return false;
+}
+
+QWidget * AbstractContent::createPropertyWidget()
+{
+    return 0;
+}
+
 QRectF AbstractContent::boundingRect() const
 {
     return m_frameRect;
@@ -620,16 +630,6 @@ QPixmap AbstractContent::ratioScaledPixmap(const QPixmap * source, const QSize &
         }
     }
     return scaledPixmap;
-}
-
-int AbstractContent::contentHeightForWidth(int width) const
-{
-    return width;
-}
-
-bool AbstractContent::contentOpaque() const
-{
-    return false;
 }
 
 void AbstractContent::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)

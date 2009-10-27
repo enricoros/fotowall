@@ -64,8 +64,6 @@ class Workflow : public QObject, public PlugGui::Stacker
         void startCanvas();
         void startWordcloud();
         void startWizard();
-
-        // content editing
         void stackCanvasAppliance(Canvas * newCanvas);
         void stackWordcloudAppliance(Wordcloud::Cloud * cloud);
 
@@ -76,12 +74,21 @@ class Workflow : public QObject, public PlugGui::Stacker
     private:
         void showHome();
 
+/*        Container * m_container;
+        QList<AbstractAppliance *> m_appliances;
+
+        struct Token {
+            AbstractAppliance * appliance;
+            QObject * listener;
+        };*/
+
         // external objects
         PlugGui::Container * m_container;
         BreadCrumbBar * m_bar;
 
     private Q_SLOTS:
         void slotApplianceClicked(quint32);
+        //void slotNextStep
 };
 
 #endif

@@ -28,15 +28,13 @@ class SelectionProperties : public QWidget {
         ~SelectionProperties();
 
     Q_SIGNALS:
+        void collateSelection();
         void deleteSelection();
 
     private:
         QList<AbstractContent *> m_content;
         QList<PictureContent *> m_pictures;
         QList<TextContent *> m_texts;
-
-    private Q_SLOTS:
-        void slotCollatePictures();
 };
 
 #endif

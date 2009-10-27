@@ -54,10 +54,10 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
             return;
     }
 
-    // load pictures in a canvas
+    // load content in a canvas
     if (!contentUrls.isEmpty()) {
         Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-        canvas->addPictureContent(contentUrls);
+        canvas->addAutoContent(contentUrls);
         stackCanvasAppliance(canvas);
         return;
     }

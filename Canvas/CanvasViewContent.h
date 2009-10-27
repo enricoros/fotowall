@@ -27,24 +27,25 @@ class CanvasViewContent : public AbstractContent
     Q_OBJECT
     public:
         CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-//        ~CanvasViewContent();
+        ~CanvasViewContent();
 
-        bool loadCanvas(const QString & filePath, bool keepRatio = false, bool setName = false);
+        bool loadFromFile(const QString & filePath, bool keepRatio = false, bool setName = false);
+
+        // take or put canvas (for external editing)
         Canvas * takeCanvas();
-        //void setCanvas(Canvas * canvas);
+        void returnCanvas(Canvas * canvas);
 
         // ::AbstractContent
         QString contentName() const { return tr("Canvas View"); }
-        QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         void drawContent(QPainter * painter, const QRect & targetRect);
-
-//        int contentHeightForWidth(int width) const;
-        bool contentOpaque() const;
+        int contentHeightForWidth(int width) const;
 
     private:
         Canvas * m_canvas;
+        QSize m_canvasCachedSize;
+        bool m_canvasTaken;
 
     private Q_SLOTS:
         void slotRepaintCanvas(const QList<QRectF> & exposed);

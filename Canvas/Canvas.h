@@ -47,6 +47,7 @@ class Canvas : public AbstractScene
         ~Canvas();
 
         // add/remove content
+        void addAutoContent(const QStringList & fileNames);
         void addCanvasViewContent(const QStringList & fileNames);
         void addPictureContent(const QStringList & fileNames);
         void addTextContent();
@@ -159,6 +160,7 @@ class Canvas : public AbstractScene
         void slotConfigureContent(const QPoint & scenePoint);
         void slotEditContent();
         void slotStackContent(int);
+        void slotCollateContent();
         void slotDeleteContent();
         void slotDeleteConfig();
         void slotApplyLook(quint32 frameClass, bool mirrored, bool allContent);

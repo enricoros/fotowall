@@ -33,7 +33,7 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
 
     // add buttons
     QHBoxLayout * lay = new QHBoxLayout(this);
-    lay->setMargin(0);
+    lay->setContentsMargins(2, 0, 0, 0);
     lay->setSpacing(0);
     for (int i = 0; i < qMin(5, urls.size()); i++) {
         const QUrl & url = urls[i];
