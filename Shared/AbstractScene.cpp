@@ -48,3 +48,7 @@ void AbstractScene::resizeEvent()
     // nothing to do here
 }
 
+bool AbstractScene::sceneSelectable() const
+{
+    return true;
+}

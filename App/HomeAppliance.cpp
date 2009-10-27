@@ -61,7 +61,7 @@ HomeAppliance::HomeAppliance(QObject *parent)
         pal.setBrush(QPalette::Window, QColor(0, 0, 0, 16));
         m_historyBox->setPalette(pal);
         m_historyBox->setAutoFillBackground(true);
-        connect(m_historyBox, SIGNAL(urlClicked(QUrl)), this, SLOT(slotLoadUrl(const QUrl &)));
+        connect(m_historyBox, SIGNAL(urlClicked(QUrl)), this, SLOT(slotLoadCanvas(const QUrl &)));
         topbarAddWidget(m_historyBox);
     }
 }
@@ -72,16 +72,16 @@ HomeAppliance::~HomeAppliance()
     delete m_scene;
 }
 
-void HomeAppliance::slotLoadUrl(const QUrl & url)
+void HomeAppliance::slotLoadCanvas(const QUrl & url)
 {
-    // handle non-fotowall files
-    if (!App::isFotowallFile(url.toString())) {
-        qWarning("HomeAppliance::slotLoadUrl: don't know how to load URL '%s'", qPrintable(url.toString()));
+    // handle fotowall files
+    if (App::isFotowallFile(url.toString())) {
+        App::workflow->loadCanvas(url.toString());
         return;
     }
 
-    // load Fotowall file
-    App::workflow->loadCanvas(url.toString());
+    // handle other files
+    qWarning("HomeAppliance::slotLoadCanvas: don't know how to load URL '%s'", qPrintable(url.toString()));
 }
 
 
@@ -97,13 +97,15 @@ class HomeLabel : public AbstractContent
             // create the standard frame and set title
             setFrame(new StandardFrame2);
             setFrameTextEnabled(true);
+            setFrameTextReadonly(true);
             setFrameText(title);
 
-            // change appearance for the home screen
-            int pixW = pixmap.width();
-            int pixH = pixmap.height();
-            setFlags(ItemClipsChildrenToShape);
-            setAcceptsHoverEvents(true);
+            // incremental change over AbstractContent
+            setFlag(QGraphicsItem::ItemIsMovable, false);
+            setFlag(QGraphicsItem::ItemIsSelectable, false);
+            setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
+            const int pixW = pixmap.width();
+            const int pixH = pixmap.height();
             resizeContents(QRect(-pixW/2, -pixH/2, pixW, pixH), false);
         }
 
@@ -115,11 +117,13 @@ class HomeLabel : public AbstractContent
         void hoverEnterEvent(QGraphicsSceneHoverEvent *)
         {
             ANIMATE_PARAM(this, "scale", 300, 1.2);
+            //ANIMATE_PARAM(this, "rotation", 300, (-20 + (qrand() % 41)));
         }
 
         void hoverLeaveEvent(QGraphicsSceneHoverEvent *)
         {
             ANIMATE_PARAM(this, "scale", 300, 1.0);
+            //ANIMATE_PARAM(this, "rotation", 300, 0.0);
         }
 
         void mousePressEvent(QGraphicsSceneMouseEvent * event)
@@ -131,11 +135,9 @@ class HomeLabel : public AbstractContent
 
         void drawContent(QPainter * painter, const QRect & targetRect)
         {
-            qreal scale = property("scale").toDouble();
-            painter->setRenderHint(QPainter::SmoothPixmapTransform, scale == 1.2);
-            painter->setCompositionMode(QPainter::CompositionMode_Source);
+            painter->setRenderHint(QPainter::SmoothPixmapTransform, property("scale").toDouble() == 1.2);
             painter->drawPixmap(targetRect, m_pixmap);
-            painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+            painter->setRenderHint(QPainter::SmoothPixmapTransform, false);
         }
 
     private:
@@ -205,6 +207,11 @@ void HomeScene::resize(const QSize & size)
             ++rIdx;
         }
     }
+}
+
+bool HomeScene::sceneSelectable() const
+{
+    return false;
 }
 
 void HomeScene::slotNewCanvas()

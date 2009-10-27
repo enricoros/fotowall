@@ -60,11 +60,12 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
 
 #if 0
+    // add cropping button (TODO: enable this?)
     ButtonItem * bCrop = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-scale.png"), this);
     bCrop->setToolTip(tr(""));
     bCrop->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     addButtonItem(bCrop);
-    connect(bCrop, SIGNAL(clicked()), this, SIGNAL(toggleCropMode()));
+    connect(bCrop, SIGNAL(clicked()), this, SIGNAL(requestCrop()));
 #endif
 }
 
@@ -333,8 +334,8 @@ void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
         return;
 
     // blit if opaque picture
-#if QT_VERSION >= 0x040500
-    //disabled for 4.5 too, since it relies on raster.
+#if QT_VERSION >= 0x040600
+    //disabled for 4.6 too, since it relies on raster.
     //if (m_opaquePhoto)
     //    painter->setCompositionMode(QPainter::CompositionMode_Source);
 #endif
@@ -357,7 +358,7 @@ void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
         painter->drawPixmap(targetRect.topLeft(), m_cachedPhoto);
     }
 
-#if QT_VERSION >= 0x040500
+#if QT_VERSION >= 0x040600
 //    if (m_opaquePhoto)
 //        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif

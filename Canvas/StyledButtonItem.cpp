@@ -27,7 +27,7 @@ StyledButtonItem::StyledButtonItem(const QString & text, const QFont & font, QGr
     // init defaults
     //m_font.setBold(true);
     setText(text);
-    setFlags(ItemIsFocusable);
+    setFlag(QGraphicsItem::ItemIsFocusable, true);
 
     // track mouse events
     setAcceptHoverEvents(true);

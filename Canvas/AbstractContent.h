@@ -58,6 +58,8 @@ class AbstractContent : public AbstractDisposeable
         quint32 frameClass() const;
         void setFrameTextEnabled(bool enabled);
         bool frameTextEnabled() const;
+        void setFrameTextReadonly(bool);
+        bool frameTextReadonly() const;
         void setFrameText(const QString & text);
         QString frameText() const;
         void addButtonItem(ButtonItem * buttonItem);

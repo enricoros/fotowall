@@ -37,6 +37,9 @@ class AbstractScene : public QGraphicsScene
         inline QRectF sceneRect() const { return m_rect; }
         inline QPointF sceneCenter() const { return m_rect.center(); }
 
+        // how to view the scene (defaults to true)
+        virtual bool sceneSelectable() const;
+
     Q_SIGNALS:
         void geometryChanged();
 

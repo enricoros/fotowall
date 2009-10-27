@@ -20,6 +20,7 @@
 class HomeScene;
 class UrlHistoryBox;
 
+
 class HomeAppliance : public PlugGui::AbstractAppliance
 {
     Q_OBJECT
@@ -35,7 +36,7 @@ class HomeAppliance : public PlugGui::AbstractAppliance
         UrlHistoryBox * m_historyBox;
 
     private Q_SLOTS:
-        void slotLoadUrl(const QUrl & url);
+        void slotLoadCanvas(const QUrl & url);
 };
 
 
@@ -51,6 +52,7 @@ class HomeScene : public AbstractScene
 
         // ::AbstractScene
         void resize(const QSize & size);
+        bool sceneSelectable() const;
 
     private:
         QList<QGraphicsItem *> m_labels;

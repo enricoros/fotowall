@@ -104,7 +104,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 
     // display mirror
 #if QT_VERSION >= 0x040600
-    // with Qt 4.6-tp1 there are crashes activating a mirror before setting the scene
+    // WORKAROUND with Qt 4.6-tp1 there are crashes activating a mirror before setting the scene
     // need to rethink this anyway
     setMirrored(false);
 #else
@@ -218,7 +218,7 @@ class MyTextItem : public QGraphicsTextItem {
         void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 )
         {
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, true);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::HighQualityAntialiasing, true);
             QGraphicsTextItem::paint(painter, option, widget);
             painter->restore();
         }
@@ -272,6 +272,19 @@ void AbstractContent::setFrameTextEnabled(bool enabled)
 bool AbstractContent::frameTextEnabled() const
 {
     return m_frameTextItem;
+}
+
+void AbstractContent::setFrameTextReadonly(bool read)
+{
+    if (m_frameTextItem)
+        m_frameTextItem->setTextInteractionFlags(read ? Qt::NoTextInteraction : Qt::TextEditorInteraction);
+}
+
+bool AbstractContent::frameTextReadonly() const
+{
+    if (!m_frameTextItem)
+        return false;
+    return m_frameTextItem->textInteractionFlags() == Qt::NoTextInteraction;
 }
 
 void AbstractContent::setFrameText(const QString & text)
@@ -650,6 +663,11 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 
 void AbstractContent::keyPressEvent(QKeyEvent * event)
 {
+    // discard key events for unselectable items
+    if (!(flags() & ItemIsSelectable)) {
+        event->ignore();
+        return;
+    }
     event->accept();
     int step = (event->modifiers() & Qt::ShiftModifier) ? 50 : (event->modifiers() & Qt::ControlModifier ? 1 : 10);
     switch (event->key()) {
@@ -675,10 +693,10 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
     // keep the AbstractContent's center inside the scene rect..
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
-        QRectF rect = scene()->sceneRect();
-        if (!rect.contains(newPos) /*&& rect.width() > 100 && rect.height() > 100*/) {
-            newPos.setX(qBound(rect.left(), newPos.x(), rect.right()));
-            newPos.setY(qBound(rect.top(), newPos.y(), rect.bottom()));
+        QRectF sceneRect = scene()->sceneRect();
+        if (!sceneRect.contains(newPos) /*&& rect.width() > 100 && rect.height() > 100*/) {
+            newPos.setX(qBound(sceneRect.left(), newPos.x(), sceneRect.right()));
+            newPos.setY(qBound(sceneRect.top(), newPos.y(), sceneRect.bottom()));
             return newPos;
         }
     }
@@ -696,6 +714,8 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
                 break;
 
             // notify about graphics changes
+            //case ItemMatrixChange:
+            //case ItemTransformChange:
             case ItemTransformHasChanged:
             case ItemEnabledHasChanged:
             case ItemSelectedHasChanged:
