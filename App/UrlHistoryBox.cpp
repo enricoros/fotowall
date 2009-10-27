@@ -15,6 +15,7 @@
 #include "UrlHistoryBox.h"
 
 #include "Canvas/Canvas.h"
+#include "Shared/GlowEffectWidget.h"
 #include "Shared/PixmapButton.h"
 #include "FotowallFile.h"
 
@@ -39,6 +40,7 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
         PixmapButton * button = new PixmapButton(QSize(80, 60));
         connect(button, SIGNAL(clicked()), this, SLOT(slotClicked()));
         button->setProperty("url", url);
+        button->setHoverText(QString::number(i+1));
         lay->addWidget(button);
         m_entries.append(button);
     }
@@ -51,6 +53,13 @@ UrlHistoryBox::~UrlHistoryBox()
 {
     qDeleteAll(m_entries);
     m_entries.clear();
+}
+
+QUrl UrlHistoryBox::urlForEntry(int index) const
+{
+    if (index < 0 || index >= m_entries.size())
+        return QUrl();
+    return m_entries[index]->property("url").toUrl();
 }
 
 void UrlHistoryBox::slotClicked()
@@ -68,12 +77,15 @@ void UrlHistoryBox::slotNextPreview()
     // generate preview (HARDCODED ###)
     Canvas * canvas = new Canvas(QSize(800, 600));
     if (FotowallFile::read(currentUrl.toString(), canvas, false)) {
-        // render canvas
-        QImage image = canvas->renderedImage(QSize(64, 48), Qt::KeepAspectRatio, true);
-        // rotate a little
-        image = image.transformed(QTransform().rotate(-10 + (qrand() % 21)), Qt::SmoothTransformation);
-        // set as preview
-        m_entries[currentIndex]->setPixmap(QPixmap::fromImage(image));
+        // render canvas, rotate, drop shadow and set
+        const QImage image = canvas->renderedImage(QSize(60, 45), Qt::KeepAspectRatio, true);
+        QTransform rot;
+         int mag = (qrand() % 7) + (qrand() % 7);
+         static bool dir = true; dir = !dir;
+         rot.rotate(dir ? mag : -mag);
+        const QImage rotated = image.transformed(rot, Qt::SmoothTransformation);
+        const QImage preview = GlowEffectWidget::dropShadow(rotated, Qt::darkGray, 6, 1, 1);
+        m_entries[currentIndex]->setPixmap(QPixmap::fromImage(preview));
     }
     delete canvas;
 

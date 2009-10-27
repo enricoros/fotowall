@@ -30,6 +30,7 @@ HomeAppliance::HomeAppliance(QObject *parent)
 {
     // create and set the scene
     m_scene = new HomeScene;
+    connect(m_scene, SIGNAL(keyPressed(int)), this, SLOT(slotSceneKeyPressed(int)));
     connect(m_scene, SIGNAL(startCanvas()), this, SLOT(slotStartCanvas()));
     connect(m_scene, SIGNAL(startWordcloud()), this, SLOT(slotStartWordcloud()));
     connect(m_scene, SIGNAL(startWizard()), this, SLOT(slotStartWizard()));
@@ -55,6 +56,16 @@ HomeAppliance::~HomeAppliance()
 {
     delete m_historyBox;
     delete m_scene;
+}
+
+void HomeAppliance::slotSceneKeyPressed(int qtKey)
+{
+    // pressed a number, activate relative Url
+    if (qtKey >= Qt::Key_1 && qtKey <= Qt::Key_9) {
+        QUrl url = m_historyBox->urlForEntry(qtKey - Qt::Key_0 - 1);
+        if (!url.isEmpty())
+            slotLoadCanvas(url);
+    }
 }
 
 void HomeAppliance::slotLoadCanvas(const QUrl & url)

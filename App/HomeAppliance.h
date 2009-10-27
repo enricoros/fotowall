@@ -34,6 +34,7 @@ class HomeAppliance : public PlugGui::AbstractAppliance
         UrlHistoryBox * m_historyBox;
 
     private Q_SLOTS:
+        void slotSceneKeyPressed(int qtKey);
         void slotLoadCanvas(const QUrl & url);
         void slotStartCanvas();
         void slotStartWordcloud();

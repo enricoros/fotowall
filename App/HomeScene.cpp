@@ -19,6 +19,7 @@
 #include "Shared/RenderOpts.h"
 
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 #include <QPainter>
 
 #if QT_VERSION >= 0x040600
@@ -145,6 +146,12 @@ void HomeScene::drawForeground(QPainter *painter, const QRectF &rect)
         painter->drawPixmap(m_logoRect.topLeft(), m_logoPixmap);
 }
 
+void HomeScene::keyPressEvent(QKeyEvent *event)
+{
+    event->accept();
+    emit keyPressed(event->key());
+}
+
 void HomeScene::resize(const QSize & size)
 {
     // resize but ensure a minimum size
@@ -177,7 +184,7 @@ void HomeScene::resize(const QSize & size)
             top = (height - rows * 200) / 10;
         else
             top = qMax((qreal)0, (m_labels[1]->sceneBoundingRect().top() - m_logoPixmap.height()) / 2);
-        m_logoRect = QRect((width - m_logoPixmap.width()) / 2, top, m_logoPixmap.width(), m_logoPixmap.height());
+        m_logoRect = QRect((sceneWidth() - m_logoPixmap.width()) / 2, top, m_logoPixmap.width(), m_logoPixmap.height());
     }
 }
 

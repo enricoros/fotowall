@@ -17,6 +17,7 @@
 
 #include <QAbstractButton>
 #include <QPixmap>
+#include <QFont>
 
 class PixmapButton : public QAbstractButton
 {
@@ -26,6 +27,10 @@ class PixmapButton : public QAbstractButton
         // change pixmap
         void setPixmap(const QPixmap & pixmap);
         QPixmap pixmap() const;
+
+        // hover text (accelerator like)
+        void setHoverText(const QString & text);
+        QString hoverText() const;
 
         // enforce the fixed size notion
         void setFixedSize(const QSize & size);
@@ -41,6 +46,8 @@ class PixmapButton : public QAbstractButton
     private:
         QSize m_fixedSize;
         QPixmap m_fixedPixmap;
+        QFont m_hoverFont;
+        QString m_hoverText;
         bool m_hovering;
 };
 

@@ -54,7 +54,7 @@ int GlowEffectWidget::glowRadius() const
 template<int aprec,int zprec>
 void expblur( QImage &img, int radius );
 
-QImage GlowEffectWidget::glow(const QImage &image, int radius)
+QImage GlowEffectWidget::glown(const QImage &image, int radius)
 {
     QImage glownImage(image.size(), QImage::Format_ARGB32_Premultiplied);
     glownImage.fill(0x00);
@@ -77,6 +77,32 @@ QImage GlowEffectWidget::glow(const QImage &image, int radius)
     imagePainter.end();
 
     return glownImage;
+}
+
+QImage GlowEffectWidget::dropShadow(const QImage & orig, const QColor & shadowColor, int radius, int xOffset, int yOffset)
+{
+    // create a black copy of the original image
+    QImage shadow = orig;
+    QPainter shadowPainter(&shadow);
+    shadowPainter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+    shadowPainter.fillRect(shadow.rect(), shadowColor);
+    shadowPainter.end();
+
+    // create an enlarged destination image
+    QImage final(orig.width() + radius * 2, orig.height() + radius * 2, QImage::Format_ARGB32_Premultiplied);
+    final.fill(0);
+    QPainter p(&final);
+    p.drawImage(radius, radius, shadow);
+    p.end();
+
+    // inline blur destination image
+    expblur<16,7>(final, radius/2);
+
+    // copy the offseted original image over it
+    p.begin(&final);
+    p.drawImage(radius - xOffset, radius - yOffset, orig);
+    p.end();
+    return final;
 }
 
 void GlowEffectWidget::mousePressEvent(QMouseEvent *)
