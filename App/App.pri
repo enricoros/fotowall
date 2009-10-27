@@ -6,6 +6,7 @@ HEADERS += \
     App/FotowallFile.h \
     App/Hardware3DTest.h \
     App/HomeAppliance.h \
+    App/HomeScene.h \
     App/MainWindow.h \
     App/SceneView.h \
     App/Settings.h \
@@ -22,6 +23,7 @@ SOURCES += \
     App/FotowallFile.cpp \
     App/Hardware3DTest.cpp \
     App/HomeAppliance.cpp \
+    App/HomeScene.cpp \
     App/MainWindow.cpp \
     App/SceneView.cpp \
     App/Settings.cpp \

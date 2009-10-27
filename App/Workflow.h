@@ -58,10 +58,14 @@ class Workflow : public QObject, public PlugGui::Stacker
         // ### BIG REFACTOR HERE ;-)
         bool requestExit();
         bool applianceCommand(int command);
-        void newCanvas();
+
+        // ### BIG REFACTOR HERE ;-)
+        bool loadCanvas(const QString & fileName);
+        void startCanvas();
+        void startWordcloud();
+        void startWizard();
 
         // content editing
-        bool loadCanvas(const QString & fileName);
         void stackCanvasAppliance(Canvas * newCanvas);
         void stackWordcloudAppliance(Wordcloud::Cloud * cloud);
 

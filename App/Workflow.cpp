@@ -122,22 +122,6 @@ bool Workflow::applianceCommand(int command)
     return currentAppliance()->applianceCommand(command);
 }
 
-bool Workflow::loadCanvas(const QString & fileName)
-{
-    qWarning("CALLED FROM CANVASAPPLIANCE OR HOMEAPPLIANCE: FIX THIS!!");
-    // load the canvas from file
-    Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-    if (!FotowallFile::read(fileName, canvas, true)) {
-        delete canvas;
-        return false;
-    }
-
-    // close all and edit it
-    clearAppliances();
-    stackCanvasAppliance(canvas);
-    return true;
-}
-
 void Workflow::stackCanvasAppliance(Canvas * canvas)
 {
     CanvasAppliance * cApp = new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY());
@@ -158,11 +142,37 @@ void Workflow::showHome()
     stackAppliance(app);
 }
 
-void Workflow::newCanvas()
+bool Workflow::loadCanvas(const QString & fileName)
+{
+    qWarning("CALLED FROM CANVASAPPLIANCE OR HOMEAPPLIANCE: FIX THIS!!");
+    // load the canvas from file
+    Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
+    if (!FotowallFile::read(fileName, canvas, true)) {
+        delete canvas;
+        return false;
+    }
+
+    // close all and edit it
+    clearAppliances();
+    stackCanvasAppliance(canvas);
+    return true;
+}
+
+void Workflow::startCanvas()
 {
     clearAppliances();
     Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
     stackCanvasAppliance(canvas);
+}
+
+void Workflow::startWordcloud()
+{
+    HERE
+}
+
+void Workflow::startWizard()
+{
+    HERE
 }
 
 void Workflow::structureChanged()

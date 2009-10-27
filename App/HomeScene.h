@@ -12,32 +12,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HomeAppliance_h__
-#define __HomeAppliance_h__
+#ifndef __HomeScene_h__
+#define __HomeScene_h__
 
-#include "Shared/PlugGui/AbstractAppliance.h"
-class HomeScene;
-class UrlHistoryBox;
+#include "Shared/AbstractScene.h"
+#include <QList>
+#include <QPixmap>
+#include <QRect>
 
-class HomeAppliance : public PlugGui::AbstractAppliance
+/**
+    \brief The Scene showing the {New Canvas, New Wordcloud, etc..} items.
+*/
+class HomeScene : public AbstractScene
 {
     Q_OBJECT
     public:
-        HomeAppliance(QObject * parent = 0);
-        ~HomeAppliance();
+        HomeScene(QObject * parent = 0);
+        ~HomeScene();
 
-        // ::Appliance::AbstractAppliance
-        QString applianceName() const { return tr("Home"); }
+        // ::QGraphicsScene
+        void drawBackground(QPainter *painter, const QRectF &rect);
+        void drawForeground(QPainter *painter, const QRectF &rect);
+
+        // ::AbstractScene
+        void resize(const QSize & size);
+        bool sceneSelectable() const;
+
+    Q_SIGNALS:
+        void startCanvas();
+        void startWordcloud();
+        void startWizard();
 
     private:
-        HomeScene * m_scene;
-        UrlHistoryBox * m_historyBox;
-
-    private Q_SLOTS:
-        void slotLoadCanvas(const QUrl & url);
-        void slotStartCanvas();
-        void slotStartWordcloud();
-        void slotStartWizard();
+        QList<QGraphicsItem *> m_labels;
+        QPixmap m_logoPixmap;
+        QRect m_logoRect;
 };
 
 #endif
