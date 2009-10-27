@@ -12,44 +12,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __Stacker_h__
-#define __Stacker_h__
+#ifndef __UrlHistoryBox_h__
+#define __UrlHistoryBox_h__
 
-#include <QObject>
+#include "Shared/GroupBoxWidget.h"
 #include <QList>
+#include <QUrl>
+class PixmapButton;
 
-namespace PlugGui {
+/// \brief Shows Preview of Fotowall files and emit clicks
+class UrlHistoryBox : public GroupBoxWidget
+{
+    Q_OBJECT
+    public:
+        UrlHistoryBox(const QList<QUrl> & urls, QWidget * parent = 0);
+        ~UrlHistoryBox();
 
-    class Container;
-    class AbstractAppliance;
+    Q_SIGNALS:
+        void urlClicked(const QUrl & url);
 
-    class Stacker
-    {
-        public:
-            Stacker();
-            virtual ~Stacker();
+    private:
+        QList<PixmapButton *> m_entries;
+        int m_previewIndex;
 
-            // set container (runtime changeable)
-            void setContainer(Container * container);
-            Container * container() const;
-
-            // appliance stacking operations
-            virtual void stackAppliance(AbstractAppliance * appliance);
-            virtual QList<AbstractAppliance *> stackedAppliances() const;
-            virtual AbstractAppliance * currentAppliance() const;
-            virtual int applianceCount() const;
-            virtual void popAppliance();
-            virtual void clearAppliances();
-
-        protected:
-            // notify (ex. on a push/pop operation)
-            virtual void structureChanged();
-
-        private:
-            Container * m_container;
-            QList<AbstractAppliance *> m_appliances;
-    };
-
-}
+    private Q_SLOTS:
+        void slotClicked();
+        void slotNextPreview();
+};
 
 #endif

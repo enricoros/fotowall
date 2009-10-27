@@ -54,10 +54,6 @@ class BezierCubicPath : public QGraphicsPathItem
 BezierCubicItem::BezierCubicItem(QGraphicsItem * parent)
     : QGraphicsItem(parent)
 {
-    // customize item
-    setFlag(ItemIsFocusable, false);
-    setFlag(ItemClipsChildrenToShape, false);
-
     // children items (4 controlpoints, 2 dashed lines, 1 strong line)
     m_path = new BezierCubicPath(this);
     m_l1 = new BezierControlLine(this);
@@ -137,7 +133,7 @@ BezierControlPoint::BezierControlPoint(BezierCubicItem * parent, int index)
     , m_parent(parent)
     , m_index(index)
 {
-    setFlags(ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
     setZValue(2.1);
 }
 

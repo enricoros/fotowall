@@ -136,7 +136,7 @@ void PaneWidget::pressing(const QPointF & pos)
         return;
     double px = m_range.left() + m_range.width() * pos.x() / (double)(width() - 1);
     double py = m_range.top() + m_range.height() * pos.y() / (double)(height() - 1);
-    QPointF endValue = QPointF(qBound(m_range.left(), px, m_range.right()), qBound(m_range.top(), py, m_range.bottom()));
+    QPointF endValue = QPointF(qBound(m_range.left(), (qreal)px, m_range.right()), qBound(m_range.top(), (qreal)py, m_range.bottom()));
 #if QT_VERSION >= 0x040600
     // animate the change
     QPropertyAnimation * ani = new QPropertyAnimation(this, "value");

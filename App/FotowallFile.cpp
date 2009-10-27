@@ -50,7 +50,7 @@
 
 **/
 
-bool FotowallFile::read(const QString & filePath, Canvas * canvas)
+bool FotowallFile::read(const QString & filePath, Canvas * canvas, bool inHistory)
 {
     // open the file for reading
     QFile file(filePath);
@@ -80,7 +80,8 @@ bool FotowallFile::read(const QString & filePath, Canvas * canvas)
     canvas->fromXml(canvasElement);
 
     // add to the recent history
-    App::settings->addRecentFotowallUrl(QUrl(filePath));
+    if (inHistory)
+        App::settings->addRecentFotowallUrl(QUrl(filePath));
     return true;
 }
 

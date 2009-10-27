@@ -21,7 +21,7 @@ class Canvas;
 namespace FotowallFile
 {
     // read a .fotowall file and setup the Canvas
-    bool read(const QString & filePath, Canvas * canvas);
+    bool read(const QString & filePath, Canvas * canvas, bool inHistory);
 
     // save the given Canvas to a .fotowall file
     bool saveV2(const QString & filePath, const Canvas * canvas);

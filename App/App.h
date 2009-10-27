@@ -29,17 +29,10 @@ class App
         static Settings * settings;
         static Workflow * workflow;
 
-        // commands understood by the container
-        enum {
-            CV_ExportPrint      = 0x0001
-        };
-
         // commands understood by appliances
         enum {
-            AC_Export           = 0x0001,
-            AC_Save             = 0x0002,
-            AC_ClearBackground  = 0x0003,
-            AC_ShowIntro        = 0x0004
+            AC_ClearBackground  = 0x0001,
+            AC_ShowIntro        = 0x0002
         };
 
         // utility functions

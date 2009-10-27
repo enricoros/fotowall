@@ -22,25 +22,48 @@
 #include "Canvas/Canvas.h"
 #include "CanvasAppliance.h"
 #include "FotowallFile.h"
+#include "HomeAppliance.h"
 #include "Settings.h"
 #include "WordcloudAppliance.h"
+
+WorkflowRequest::WorkflowRequest(Type type, const QVariant &param, QObject *listener, const char *listenerEntry, const char *listenerExit)
+    : type(type)
+    , param(param)
+    , listener(listener)
+    , listenerEntrySlot(listenerEntry)
+    , listenerExitSlot(listenerExit)
+{
+}
 
 Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent)
   : QObject(parent)
   , m_container(container)
   , m_bar(bar)
-  , m_stacker(new PlugGui::Stacker)
 {
     // set the global reference
     App::workflow = this;
 
     // wire up the stacker and the bar
-    m_stacker->setContainer(container);
-    connect(m_stacker, SIGNAL(structureChanged()), this, SLOT(slotStackChanged()));
+    setContainer(container);
     connect(m_bar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
 
-    // ###
-    newCanvas();
+    // load a fotowall file if asked from the command line
+    QStringList contentUrls = App::settings->commandlineUrls();
+    if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first())) {
+        if (loadCanvas(contentUrls.first()))
+            return;
+    }
+
+    // load pictures in a canvas
+    if (!contentUrls.isEmpty()) {
+        Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
+        canvas->addPictureContent(contentUrls);
+        stackCanvasAppliance(canvas);
+        return;
+    }
+
+    // show the home screen by default
+    showHome();
 }
 
 Workflow::~Workflow()
@@ -52,87 +75,7 @@ Workflow::~Workflow()
     //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
     //FotowallFile::saveV2(tempPath, m_canvas);
 
-    // bar and container are external
-    delete m_stacker;
-}
-
-void Workflow::clear()
-{
-    m_stacker->clearAppliances();
-}
-
-bool Workflow::saveCurrent()
-{
-    return m_stacker->currentApplianceCommand(App::AC_Save);
-}
-
-bool Workflow::exportCurrent()
-{
-    return m_stacker->currentApplianceCommand(App::AC_Export);
-}
-
-void Workflow::howtoCurrent()
-{
-    m_stacker->currentApplianceCommand(App::AC_ShowIntro);
-}
-
-void Workflow::clearBackgroundCurrent()
-{
-    m_stacker->currentApplianceCommand(App::AC_ClearBackground);
-}
-
-void Workflow::newCanvas()
-{
-    clear();
-
-    QStringList contentUrls = App::settings->commandlineUrls();
-    Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-
-    // open if single fotowall file
-    if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first()))
-        FotowallFile::read(contentUrls.first(), canvas);
-
-    // add if many pictures
-    else if (!contentUrls.isEmpty())
-        canvas->addPictureContent(contentUrls);
-
-    // no url: display history
-#if 0
-    else {
-        foreach (const QUrl & url, App::settings->recentFotowallUrls())
-            canvas->addCanvasViewContent(QStringList() << url.toString());
-    }
-#endif
-
-    stackCanvasAppliance(canvas);
-}
-
-bool Workflow::loadCanvas(const QString & fileName)
-{
-    // load the canvas from file
-    Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-    if (!FotowallFile::read(fileName, canvas)) {
-        delete canvas;
-        return false;
-    }
-
-    // close all and edit it
-    clear();
-    stackCanvasAppliance(canvas);
-    return true;
-}
-
-
-void Workflow::stackCanvasAppliance(Canvas * canvas)
-{
-    CanvasAppliance * cApp = new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY(), this);
-    m_stacker->stackAppliance(cApp);
-}
-
-void Workflow::stackWordcloudAppliance(Wordcloud::Cloud * cloud)
-{
-    WordcloudAppliance * wApp = new WordcloudAppliance(cloud, this);
-    m_stacker->stackAppliance(wApp);
+    // bar and container are external: don't delete
 }
 
 bool Workflow::requestExit()
@@ -172,11 +115,71 @@ bool Workflow::requestExit()
     }
 }
 
-void Workflow::slotStackChanged()
+bool Workflow::applianceCommand(int command)
+{
+    if (!currentAppliance())
+        return false;
+    return currentAppliance()->applianceCommand(command);
+}
+
+void Workflow::stackCanvasAppliance(Canvas * canvas)
+{
+    CanvasAppliance * cApp = new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY());
+    stackAppliance(cApp);
+}
+
+void Workflow::stackWordcloudAppliance(Wordcloud::Cloud * cloud)
+{
+    WordcloudAppliance * wApp = new WordcloudAppliance(cloud);
+    stackAppliance(wApp);
+}
+
+void Workflow::showHome()
+{
+    // ### too tight? can the second part be canceled in between?
+    clearAppliances();
+    HomeAppliance * app = new HomeAppliance;
+    stackAppliance(app);
+}
+
+bool Workflow::loadCanvas(const QString & fileName)
+{
+    qWarning("CALLED FROM CANVASAPPLIANCE OR HOMEAPPLIANCE: FIX THIS!!");
+    // load the canvas from file
+    Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
+    if (!FotowallFile::read(fileName, canvas, true)) {
+        delete canvas;
+        return false;
+    }
+
+    // close all and edit it
+    clearAppliances();
+    stackCanvasAppliance(canvas);
+    return true;
+}
+
+void Workflow::startCanvas()
+{
+    clearAppliances();
+    Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
+    stackCanvasAppliance(canvas);
+}
+
+void Workflow::startWordcloud()
+{
+    HERE
+}
+
+void Workflow::startWizard()
+{
+    HERE
+}
+
+void Workflow::structureChanged()
 {
     // build the new breadcrumbbar's contents
     m_bar->clearNodes();
-    QList<PlugGui::AbstractAppliance *> appliances = m_stacker->stackedAppliances();
+    QList<PlugGui::AbstractAppliance *> appliances = stackedAppliances();
     if (appliances.size() >= 2) {
         quint32 index = 0;
         foreach (PlugGui::AbstractAppliance * app, appliances) {
@@ -191,5 +194,7 @@ void Workflow::slotStackChanged()
 
 void Workflow::slotApplianceClicked(quint32 id)
 {
-    m_stacker->dropStackAfter(id - 1);
+    // remove appliances exceeding the id'th
+    while (applianceCount() > qMax(0, (int)id))
+        popAppliance();
 }

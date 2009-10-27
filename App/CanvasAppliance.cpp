@@ -56,12 +56,16 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
     connect(ui.projectCombo, SIGNAL(activated(int)), this, SLOT(slotProjectComboActivated(int)));
+    connect(ui.loadButton, SIGNAL(clicked()), this, SLOT(slotFileLoad()));
+    connect(ui.saveButton, SIGNAL(clicked()), this, SLOT(slotFileSave()));
+    connect(ui.exportButton, SIGNAL(clicked()), this, SLOT(slotFileExport()));
 
     // configure the appliance
     sceneSet(m_extCanvas);
     topbarAddWidget(ui.addContentBox);
     topbarAddWidget(ui.propertiesBox);
     topbarAddWidget(ui.canvasPropertiesBox);
+    topbarAddWidget(ui.fileWidget, true);
 
     // populate menus
     ui.arrangeButton->setMenu(createArrangeMenu());
@@ -102,28 +106,6 @@ Canvas * CanvasAppliance::takeCanvas()
 bool CanvasAppliance::applianceCommand(int command)
 {
     switch (command) {
-        // Export/Print
-        case App::AC_Export:
-            if (m_extCanvas->modeInfo()->projectMode() == CanvasModeInfo::ModeNormal)
-                return ExportWizard(m_extCanvas).exec();
-            return m_extCanvas->printAsImage(m_extCanvas->modeInfo()->printDpi(), m_extCanvas->modeInfo()->fixedPrinterPixels(), m_extCanvas->modeInfo()->printLandscape());
-
-        // Save
-        case App::AC_Save: {
-            // make up the default save path (stored as 'Fotowall/SaveProjectDir')
-            QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-            if (App::settings->contains("Fotowall/SaveProjectDir"))
-                defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
-
-            // ask the file name, validate it, store back to settings and save over it
-            QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
-            if (fileName.isNull())
-                return false;
-            App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
-            if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
-                fileName += ".fotowall";
-            return FotowallFile::saveV2(fileName, m_extCanvas);}
-
         // No Background
         case App::AC_ClearBackground:
             if (m_extCanvas->backMode() == 2) {
@@ -259,7 +241,7 @@ void CanvasAppliance::setNormalProject()
     m_extCanvas->modeInfo()->setFixedSizeInches();
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
     m_extCanvas->adjustSceneSize();
-    containerValueSet(App::CV_ExportPrint, false);
+    configurePrint(false);
 }
 
 void CanvasAppliance::setCDProject()
@@ -270,7 +252,7 @@ void CanvasAppliance::setCDProject()
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
     m_extCanvas->adjustSceneSize();
     m_extCanvas->setCDMarkers();
-    containerValueSet(App::CV_ExportPrint, true);
+    configurePrint(true);
 }
 
 void CanvasAppliance::setDVDProject()
@@ -281,7 +263,7 @@ void CanvasAppliance::setDVDProject()
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
     m_extCanvas->adjustSceneSize();
     m_extCanvas->setDVDMarkers();
-    containerValueSet(App::CV_ExportPrint, true);
+    configurePrint(true);
 }
 
 void CanvasAppliance::setExactSizeProject(bool usePrevious)
@@ -314,9 +296,14 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
     }
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
     m_extCanvas->adjustSceneSize();
-    containerValueSet(App::CV_ExportPrint, true);
+    configurePrint(true);
 }
 
+void CanvasAppliance::configurePrint(bool enabled)
+{
+    ui.exportButton->setText(enabled ? tr("Print") : tr("Export"));
+    ui.exportButton->setProperty("printing", enabled);
+}
 
 void CanvasAppliance::slotAddCanvas()
 {
@@ -445,6 +432,45 @@ void CanvasAppliance::slotDecoSetTitle()
 void CanvasAppliance::slotDecoClearTitle()
 {
     m_extCanvas->setTitleText(QString());
+}
+
+bool CanvasAppliance::slotFileLoad()
+{
+    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
+    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
+
+    // ask the file name, validate it, store back to settings and load the file
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
+    if (fileName.isNull())
+        return false;
+    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
+
+    // load the file
+    return App::workflow->loadCanvas(fileName);
+}
+
+bool CanvasAppliance::slotFileSave()
+{
+    // make up the default save path (stored as 'Fotowall/SaveProjectDir')
+    QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
+    if (App::settings->contains("Fotowall/SaveProjectDir"))
+        defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
+
+    // ask the file name, validate it, store back to settings and save over it
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
+    if (fileName.isNull())
+        return false;
+    App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
+    if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
+        fileName += ".fotowall";
+    return FotowallFile::saveV2(fileName, m_extCanvas);
+}
+
+bool CanvasAppliance::slotFileExport()
+{
+    if (m_extCanvas->modeInfo()->projectMode() == CanvasModeInfo::ModeNormal)
+        return ExportWizard(m_extCanvas).exec();
+    return m_extCanvas->printAsImage(m_extCanvas->modeInfo()->printDpi(), m_extCanvas->modeInfo()->fixedPrinterPixels(), m_extCanvas->modeInfo()->printLandscape());
 }
 
 void CanvasAppliance::slotEditContent(AbstractContent *content)

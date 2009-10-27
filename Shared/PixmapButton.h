@@ -12,43 +12,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "AbstractScene.h"
+#ifndef __PixmapButton_h__
+#define __PixmapButton_h__
 
-AbstractScene::AbstractScene(QObject * parent)
-  : QGraphicsScene(parent)
+#include <QAbstractButton>
+#include <QPixmap>
+
+class PixmapButton : public QAbstractButton
 {
-}
+    public:
+        PixmapButton(const QSize & fixedSize = QSize(32, 32), QWidget * parent = 0);
 
-void AbstractScene::adjustSceneSize()
-{
-    emit geometryChanged();
-}
+        // change pixmap
+        void setPixmap(const QPixmap & pixmap);
+        QPixmap pixmap() const;
 
-void AbstractScene::resize(const QSize & size)
-{
-    // skip if already ok
-    if (size == m_size)
-        return;
+        // enforce the fixed size notion
+        void setFixedSize(const QSize & size);
+        void setFixedSize(int w, int h);
+        QSize fixedSize() const;
 
-    // save size and the related rect
-    //QSize oldSize = m_size;
-    m_size = size;
-    m_rect = QRectF(0, 0, m_size.width(), m_size.height());
+    protected:
+        // ::QAbstractButton
+        void enterEvent(QEvent *);
+        void leaveEvent(QEvent *);
+        void paintEvent(QPaintEvent *);
 
-    // change my rect
-    setSceneRect(m_rect);
+    private:
+        QSize m_fixedSize;
+        QPixmap m_fixedPixmap;
+        bool m_hovering;
+};
 
-    // call handlers
-    //QResizeEvent re(m_size, oldSize);
-    resizeEvent(/*&re*/);
-}
-
-void AbstractScene::resizeEvent()
-{
-    // nothing to do here
-}
-
-bool AbstractScene::sceneSelectable() const
-{
-    return true;
-}
+#endif

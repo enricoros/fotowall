@@ -12,44 +12,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __Stacker_h__
-#define __Stacker_h__
+#ifndef __HomeScene_h__
+#define __HomeScene_h__
 
-#include <QObject>
+#include "Shared/AbstractScene.h"
 #include <QList>
+#include <QPixmap>
+#include <QRect>
 
-namespace PlugGui {
+/**
+    \brief The Scene showing the {New Canvas, New Wordcloud, etc..} items.
+*/
+class HomeScene : public AbstractScene
+{
+    Q_OBJECT
+    public:
+        HomeScene(QObject * parent = 0);
+        ~HomeScene();
 
-    class Container;
-    class AbstractAppliance;
+        // ::QGraphicsScene
+        void drawBackground(QPainter *painter, const QRectF &rect);
+        void drawForeground(QPainter *painter, const QRectF &rect);
 
-    class Stacker
-    {
-        public:
-            Stacker();
-            virtual ~Stacker();
+        // ::AbstractScene
+        void resize(const QSize & size);
+        bool sceneSelectable() const;
 
-            // set container (runtime changeable)
-            void setContainer(Container * container);
-            Container * container() const;
+    Q_SIGNALS:
+        void startCanvas();
+        void startWordcloud();
+        void startWizard();
 
-            // appliance stacking operations
-            virtual void stackAppliance(AbstractAppliance * appliance);
-            virtual QList<AbstractAppliance *> stackedAppliances() const;
-            virtual AbstractAppliance * currentAppliance() const;
-            virtual int applianceCount() const;
-            virtual void popAppliance();
-            virtual void clearAppliances();
-
-        protected:
-            // notify (ex. on a push/pop operation)
-            virtual void structureChanged();
-
-        private:
-            Container * m_container;
-            QList<AbstractAppliance *> m_appliances;
-    };
-
-}
+    private:
+        QList<QGraphicsItem *> m_labels;
+        QPixmap m_logoPixmap;
+        QRect m_logoRect;
+};
 
 #endif

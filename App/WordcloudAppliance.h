@@ -18,7 +18,6 @@
 #include "Shared/PlugGui/AbstractAppliance.h"
 #include "Wordcloud/Cloud.h"
 #include "ui_WordcloudAppliance.h"
-class AbstractScene;
 class QMenu;
 
 class WordcloudAppliance : public PlugGui::AbstractAppliance
@@ -36,7 +35,6 @@ class WordcloudAppliance : public PlugGui::AbstractAppliance
 
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Word Cloud"); }
-        bool applianceCommand(int /*command*/) { return false; }
 
     private:
         Wordcloud::Cloud * m_extCloud;

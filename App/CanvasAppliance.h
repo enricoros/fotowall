@@ -43,6 +43,7 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
         void setCDProject();
         void setDVDProject();
         void setExactSizeProject(bool usePrevious);
+        void configurePrint(bool enabled);
 
     private:
         Ui::CanvasApplianceElements ui;
@@ -53,7 +54,7 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
 
     private Q_SLOTS:
 
-        // actions in the add contents box
+        // actions in the Add contents box
         void slotAddCanvas();
         void slotAddPicture();
         void slotAddText();
@@ -61,7 +62,7 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
         void slotAddWordcloud();
         void slotSearchPicturesToggled(bool on);
 
-        // actions in the canvas box
+        // actions in the Canvas box
         void slotProjectComboActivated(int index);
         void slotSetBackMode(QAction* action);
         void slotSetBackRatio(QAction* action);
@@ -73,6 +74,11 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
         void slotDecoBottomBar(bool checked);
         void slotDecoSetTitle();
         void slotDecoClearTitle();
+
+        // actions in the File box
+        bool slotFileLoad();
+        bool slotFileSave();
+        bool slotFileExport();
 
         // signals from the canvas
         void slotEditContent(AbstractContent * content);

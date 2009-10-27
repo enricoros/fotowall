@@ -219,7 +219,7 @@ PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, Q
     // embed and layout widget
     setContentsMargins(0, 0, 0, 0);
     setWidget(widget);
-    setFlags(ItemIsSelectable | ItemIsFocusable);
+    setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable);
     m_ui->lineEdit->setFocus();
     adjustSize();
 

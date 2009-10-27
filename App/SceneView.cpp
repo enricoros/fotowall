@@ -65,8 +65,8 @@ SceneView::SceneView(QWidget * parent)
     setInteractive(true);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing /*| QPainter::SmoothPixmapTransform */);
-    setDragMode(QGraphicsView::RubberBandDrag);
+    setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+    setDragMode(RubberBandDrag);
     setAcceptDrops(true);
     setFrameStyle(QFrame::NoFrame);
 
@@ -148,7 +148,7 @@ void SceneView::setOpenGL(bool enabled)
     newViewport->setLayout(m_viewportLayout);
     newViewport->setStyle(m_style);
     setViewport(newViewport);
-    setViewportUpdateMode(m_openGL ? QGraphicsView::FullViewportUpdate : QGraphicsView::MinimalViewportUpdate);
+    setViewportUpdateMode(m_openGL ? FullViewportUpdate : MinimalViewportUpdate);
 
     // transparent background for raster, standard Base on opengl
     QPalette pal = qApp->palette();
@@ -262,11 +262,16 @@ void SceneView::layoutScene()
 
     // change the scrollbars policy
     QSize sceneSize = m_abstractScene->sceneSize();
-    Qt::ScrollBarPolicy sPolicy = ((sceneSize.width() > viewportSize.width()) ||
-                                  (sceneSize.height() > viewportSize.height())) ?
-                                  Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
+    bool scrollbarsNeeded = (sceneSize.width() > viewportSize.width()) || (sceneSize.height() > viewportSize.height());
+    Qt::ScrollBarPolicy sPolicy = scrollbarsNeeded ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
     setVerticalScrollBarPolicy(sPolicy);
     setHorizontalScrollBarPolicy(sPolicy);
+
+    // change the selection/scrolling policy
+    if (m_abstractScene->sceneSelectable())
+        setDragMode(RubberBandDrag);
+    else
+        setDragMode(scrollbarsNeeded ? ScrollHandDrag : NoDrag);
 
     // update screen
     update();
