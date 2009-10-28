@@ -50,7 +50,7 @@ void WordcloudScene::slotWordMoved()
 }
 
 WordcloudAppliance::WordcloudAppliance(Wordcloud::Cloud * extCloud, QObject * parent)
-  : PlugGui::AbstractAppliance(parent)
+  : QObject(parent)
   , m_extCloud(extCloud)
   , m_scene(new WordcloudScene(extCloud))
   , ui(new Ui::WordcloudApplianceElements)

@@ -22,6 +22,12 @@ namespace Wordcloud { class Cloud; }
 class BreadCrumbBar;
 class Canvas;
 
+class Resource : public QObject {
+    Q_SIGNALS:
+
+};
+
+/*
 class WorkflowRequest {
     public:
         // type of request and parameter
@@ -44,7 +50,7 @@ class WorkflowRequest {
     private:
         WorkflowRequest();
 };
-
+*/
 class Workflow : public QObject, public PlugGui::Stacker
 {
     Q_OBJECT
@@ -53,7 +59,7 @@ class Workflow : public QObject, public PlugGui::Stacker
         ~Workflow();
 
         // some requests will be performed asynchronously
-        void request(const WorkflowRequest & request);
+        //void request(const WorkflowRequest & request);
 
         // ### BIG REFACTOR HERE ;-)
         bool requestExit();
@@ -74,17 +80,16 @@ class Workflow : public QObject, public PlugGui::Stacker
     private:
         void showHome();
 
-/*        Container * m_container;
-        QList<AbstractAppliance *> m_appliances;
-
-        struct Token {
-            AbstractAppliance * appliance;
-            QObject * listener;
-        };*/
-
         // external objects
         PlugGui::Container * m_container;
         BreadCrumbBar * m_bar;
+
+        // internal structure
+        struct Node {
+            AbstractAppliance * appliance;
+            QMap<int, AbstractAppliance *> externalResources;
+        };
+        QList<Node *> m_structure;
 
     private Q_SLOTS:
         void slotApplianceClicked(quint32);

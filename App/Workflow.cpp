@@ -26,14 +26,14 @@
 #include "Settings.h"
 #include "WordcloudAppliance.h"
 
-WorkflowRequest::WorkflowRequest(Type type, const QVariant &param, QObject *listener, const char *listenerEntry, const char *listenerExit)
+/*WorkflowRequest::WorkflowRequest(Type type, const QVariant &param, QObject *listener, const char *listenerEntry, const char *listenerExit)
     : type(type)
     , param(param)
     , listener(listener)
     , listenerEntrySlot(listenerEntry)
     , listenerExitSlot(listenerExit)
 {
-}
+}*/
 
 Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent)
   : QObject(parent)

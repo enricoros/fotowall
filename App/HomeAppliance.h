@@ -19,7 +19,7 @@
 class HomeScene;
 class UrlHistoryBox;
 
-class HomeAppliance : public PlugGui::AbstractAppliance
+class HomeAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:

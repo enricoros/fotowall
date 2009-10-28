@@ -24,7 +24,7 @@
 /** Home Appliance **/
 
 HomeAppliance::HomeAppliance(QObject *parent)
-    : PlugGui::AbstractAppliance(parent)
+    : QObject(parent)
     , m_scene(0)
     , m_historyBox(0)
 {
