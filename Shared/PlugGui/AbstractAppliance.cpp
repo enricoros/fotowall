@@ -18,9 +18,20 @@
 
 using namespace PlugGui;
 
-AbstractAppliance::AbstractAppliance(QObject * parent)
-  : QObject(parent)
+AbstractAppliance::~AbstractAppliance()
 {
+#if 1
+    // development check: ensure stuff has been deleted (minus the scene)
+    QList<WidgetPointer> list = m_pTopbar;
+    list.append(m_pSidebar);
+    list.append(m_pCentral);
+    int notKilled = 0;
+    foreach (const WidgetPointer & pointer, list)
+        if (pointer)
+            notKilled++;
+    if (notKilled)
+        qWarning("AbstractAppliance::~AbstractAppliance: some pointers (%d) not destroyed", notKilled);
+#endif
 }
 
 bool AbstractAppliance::addToApplianceContainer(Container * container)

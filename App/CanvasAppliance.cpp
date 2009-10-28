@@ -33,7 +33,7 @@
 
 
 CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent)
-  : PlugGui::AbstractAppliance(parent)
+  : QObject(parent)
   , m_extCanvas(extCanvas)
   , m_dummyWidget(new QWidget)
   , m_gBackActions(0)
@@ -92,6 +92,10 @@ CanvasAppliance::~CanvasAppliance()
 {
     if (m_extCanvas)
         qWarning("CanvasAppliance::~CanvasAppliance: we still have a Canvas. take it before deleting this");
+    delete ui.addContentBox;
+    delete ui.propertiesBox;
+    delete ui.canvasPropertiesBox;
+    delete ui.fileWidget;
     delete m_dummyWidget;
 }
 
@@ -478,12 +482,16 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
     // handle Canvas
     if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
         cvc->setSelected(false);
-        App::workflow->stackCanvasAppliance(cvc->takeCanvas());
+        Canvas * editCanvas = cvc->takeCanvas();
+        App::workflow->stackCanvasAppliance(editCanvas);
+        return;
     }
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-        App::workflow->stackWordcloudAppliance(wc->cloud());
+        Wordcloud::Cloud * editCloud = wc->takeCloud();
+        App::workflow->stackWordcloudAppliance(editCloud);
+        return;
     }
 }
 

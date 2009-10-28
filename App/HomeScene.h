@@ -33,12 +33,14 @@ class HomeScene : public AbstractScene
         // ::QGraphicsScene
         void drawBackground(QPainter *painter, const QRectF &rect);
         void drawForeground(QPainter *painter, const QRectF &rect);
+        void keyPressEvent(QKeyEvent *event);
 
         // ::AbstractScene
         void resize(const QSize & size);
         bool sceneSelectable() const;
 
     Q_SIGNALS:
+        void keyPressed(int qtKey);
         void startCanvas();
         void startWordcloud();
         void startWizard();

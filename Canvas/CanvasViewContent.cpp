@@ -26,10 +26,18 @@
 CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
     , m_canvas(0)
+    , m_canvasTaken(false)
 {
 }
 
-bool CanvasViewContent::loadCanvas(const QString & filePath, bool /*keepRatio*/, bool setName)
+CanvasViewContent::~CanvasViewContent()
+{
+    if (m_canvasTaken)
+        qWarning("CanvasViewContent::~CanvasViewContent: canvas still exported");
+    delete m_canvas;
+}
+
+bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*/, bool setName)
 {
     // ### HACK ahead
     if (!scene() || scene()->views().isEmpty())
@@ -37,9 +45,10 @@ bool CanvasViewContent::loadCanvas(const QString & filePath, bool /*keepRatio*/,
     QRect viewRect = scene()->views().first()->contentsRect();
 
     // create a Canvas
-    m_canvas = new Canvas(viewRect.size(), this);
-    connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
-    bool ok = FotowallFile::read(filePath, m_canvas, false);
+    Canvas * canvas = new Canvas(viewRect.size(), this);
+    connect(canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
+    bool ok = FotowallFile::read(filePath, canvas, false);
+    returnCanvas(canvas);
 
     // customize the item
     setFrameTextEnabled(setName);
@@ -49,14 +58,36 @@ bool CanvasViewContent::loadCanvas(const QString & filePath, bool /*keepRatio*/,
 
 Canvas * CanvasViewContent::takeCanvas()
 {
+    // sanity check
+    if (m_canvasTaken) {
+        qWarning("CanvasViewContent::takeCanvas: already taken");
+        return 0;
+    }
+
+    // discard reference
+    m_canvasTaken = true;
     Canvas * canvas = m_canvas;
     m_canvas = 0;
+    update();
     return canvas;
 }
 
-QWidget * CanvasViewContent::createPropertyWidget()
+void CanvasViewContent::returnCanvas(Canvas * canvas)
 {
-    return 0;
+    // sanity checks
+    if (!m_canvasTaken)
+        qWarning("CanvasViewContent::returnCanvas: not taken");
+    if (m_canvas) {
+        qWarning("CanvasViewContent::returnCanvas: we already have one canvas, shouldn't return one");
+        delete m_canvas;
+    }
+
+    // store reference
+    m_canvas = canvas;
+    m_canvasCachedSize = m_canvas->sceneSize();
+    m_canvasTaken = false;
+    resizeContents(contentRect(), true);
+    update();
 }
 
 bool CanvasViewContent::fromXml(QDomElement & /*parentElement*/)
@@ -70,19 +101,28 @@ void CanvasViewContent::toXml(QDomElement & /*parentElement*/) const
 
 void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect)
 {
-    // TODO: see if it paints when the scene is not displayed...
+    // shouldn't paint if canvas is taken.. use a scary red
+    if (m_canvasTaken) {
+        painter->fillRect(targetRect, Qt::red);
+        return;
+    }
+
+    // render canvas
     if (m_canvas)
         m_canvas->render(painter, targetRect, m_canvas->sceneRect(), Qt::IgnoreAspectRatio);
-    else
-        painter->fillRect(targetRect, Qt::red);
 }
 
-bool CanvasViewContent::contentOpaque() const
+int CanvasViewContent::contentHeightForWidth(int width) const
 {
-    return false;
+    // keep aspect ratio of the canvas
+    if (m_canvas && m_canvas->width() > 0)
+        return (m_canvas->height() * width) / m_canvas->width();
+    if (m_canvasCachedSize.width() > 0)
+        return (m_canvasCachedSize.height() * width) / m_canvasCachedSize.width();
+    return width;
 }
 
-void CanvasViewContent::slotRepaintCanvas(const QList<QRectF> & /*exposed*/)
+void CanvasViewContent::slotRepaintCanvas(const QList<QRectF> &)
 {
     update();
 }

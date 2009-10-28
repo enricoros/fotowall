@@ -80,20 +80,18 @@ class AbstractContent : public AbstractDisposeable
 
         // to be reimplemented by subclasses
         virtual QString contentName() const = 0;
-        virtual QWidget * createPropertyWidget();
         virtual bool fromXml(QDomElement & contentElement);
         virtual void toXml(QDomElement & contentElement) const;
         virtual void drawContent(QPainter * painter, const QRect & targetRect) = 0;
         virtual QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
+        virtual int contentHeightForWidth(int width) const;
+        virtual bool contentOpaque() const;
+        virtual QWidget * createPropertyWidget();
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-
-        // may be reimplemented by subclasses
-        virtual int contentHeightForWidth(int width) const;
-        virtual bool contentOpaque() const;
 
     Q_SIGNALS:
         // to canvas

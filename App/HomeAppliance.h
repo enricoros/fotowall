@@ -19,7 +19,7 @@
 class HomeScene;
 class UrlHistoryBox;
 
-class HomeAppliance : public PlugGui::AbstractAppliance
+class HomeAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
@@ -34,6 +34,7 @@ class HomeAppliance : public PlugGui::AbstractAppliance
         UrlHistoryBox * m_historyBox;
 
     private Q_SLOTS:
+        void slotSceneKeyPressed(int qtKey);
         void slotLoadCanvas(const QUrl & url);
         void slotStartCanvas();
         void slotStartWordcloud();

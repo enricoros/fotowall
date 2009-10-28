@@ -19,6 +19,7 @@
 #include "Shared/RenderOpts.h"
 
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 #include <QPainter>
 
 #if QT_VERSION >= 0x040600
@@ -79,8 +80,15 @@ class HomeLabel : public AbstractContent
         void mousePressEvent(QGraphicsSceneMouseEvent * event)
         {
             // use an already existing signal.. FIXME!
-            if (event->button() == Qt::LeftButton)
-                emit requestEditing();
+            if (event->button() == Qt::LeftButton) {
+#if 0
+                ANIMATE_PARAM(this, "rotation", 400, 300);
+                ANIMATE_PARAM(this, "opacity", 500, 0.0);
+                QTimer::singleShot(300, this, SIGNAL(requestEditing()));
+#else
+                requestEditing();
+#endif
+            }
         }
 
         void drawContent(QPainter * painter, const QRect & targetRect)
@@ -145,6 +153,12 @@ void HomeScene::drawForeground(QPainter *painter, const QRectF &rect)
         painter->drawPixmap(m_logoRect.topLeft(), m_logoPixmap);
 }
 
+void HomeScene::keyPressEvent(QKeyEvent *event)
+{
+    event->accept();
+    emit keyPressed(event->key());
+}
+
 void HomeScene::resize(const QSize & size)
 {
     // resize but ensure a minimum size
@@ -177,7 +191,7 @@ void HomeScene::resize(const QSize & size)
             top = (height - rows * 200) / 10;
         else
             top = qMax((qreal)0, (m_labels[1]->sceneBoundingRect().top() - m_logoPixmap.height()) / 2);
-        m_logoRect = QRect((width - m_logoPixmap.width()) / 2, top, m_logoPixmap.width(), m_logoPixmap.height());
+        m_logoRect = QRect((sceneWidth() - m_logoPixmap.width()) / 2, top, m_logoPixmap.width(), m_logoPixmap.height());
     }
 }
 

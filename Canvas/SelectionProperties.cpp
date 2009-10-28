@@ -53,16 +53,13 @@ SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWi
 
     // pure pictures
     if (allPictures) {
-        ADD_BUTTON(button, tr("Collate Pictures"), SLOT(slotCollatePictures()));
+        // TODO emit some signal or call the Collation manager?
+        ADD_BUTTON(button, tr("Collate"), SIGNAL(collateSelection()));
+        button->setEnabled(false);
         lay->addWidget(button, 0, 1);
     }
 }
 
 SelectionProperties::~SelectionProperties()
 {
-}
-
-void SelectionProperties::slotCollatePictures()
-{
-    // TODO emit some signal or call the Collation manager?
 }

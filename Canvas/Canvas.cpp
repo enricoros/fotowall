@@ -146,6 +146,19 @@ static QPoint nearCenter(const QRectF & rect)
     return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
 }
 
+void Canvas::addAutoContent(const QStringList & fileNames)
+{
+    // simple auto-detection of the content type
+    foreach (const QString & localFile, fileNames) {
+        if (QFile::exists(localFile)) {
+            if (localFile.endsWith(".fotowall", Qt::CaseInsensitive))
+                addCanvasViewContent(QStringList() << localFile);
+            else
+                addPictureContent(QStringList() << localFile);
+        }
+    }
+}
+
 void Canvas::addCanvasViewContent(const QStringList & fileNames)
 {
     int offset = -30 * fileNames.size() / 2;
@@ -156,7 +169,7 @@ void Canvas::addCanvasViewContent(const QStringList & fileNames)
 
         // create picture and load the file
         CanvasViewContent * d = createCanvasView(pos);
-        if (!d->loadCanvas(localFile, true, true)) {
+        if (!d->loadFromFile(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
         } else
@@ -1178,6 +1191,7 @@ void Canvas::slotSelectionChanged()
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selection);
     if (!selectedContent.isEmpty()) {
         SelectionProperties * pWidget = new SelectionProperties(selectedContent);
+        connect(pWidget, SIGNAL(collateSelection()), this, SLOT(slotCollateContent()));
         connect(pWidget, SIGNAL(deleteSelection()), this, SLOT(slotDeleteContent()), Qt::QueuedConnection);
         emit showPropertiesWidget(pWidget);
         return;
@@ -1292,6 +1306,22 @@ void Canvas::slotStackContent(int op)
     int z = 1;
     foreach (AbstractContent * content, m_content)
         content->setZValue(z++);
+}
+
+void Canvas::slotCollateContent()
+{
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
+    if (selectedContent.isEmpty())
+        return;
+
+    // TODO implement collation
+#if 0
+    QGraphicsItemGroup * group = new QGraphicsItemGroup;
+    foreach (AbstractContent * content, selectedContent)
+        group->addToGroup(content);
+    group->setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable);
+    addItem(group);
+#endif
 }
 
 void Canvas::slotDeleteContent()

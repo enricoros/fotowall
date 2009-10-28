@@ -15,6 +15,11 @@ Unreleased 0.9.x:
 
 Work in progress:
 
+* fix: canvas 'dummy' mode for taking snapshots only (shuts off video, for example)
+* fix: workflow!
+* when modifying the title of a canvasViewContent, the canvas 'name' must be synced
+  * add the canvas name property
+
 * (Work In Progress) Arrange Contents
 * (Work In Progress) More properties in the top bar
 * FotowallFile

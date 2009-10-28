@@ -20,7 +20,7 @@
 #include "ui_WordcloudAppliance.h"
 class QMenu;
 
-class WordcloudAppliance : public PlugGui::AbstractAppliance
+class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:

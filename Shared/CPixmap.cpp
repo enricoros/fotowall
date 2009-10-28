@@ -136,7 +136,7 @@ void CPixmap::toBlackAndWhite() {
 
 void CPixmap::toGlow(int radius) {
     m_effects.push_back(PictureEffect(PictureEffect::Glow, (qreal)radius));
-    QImage dest = GlowEffectWidget::glow(this->toImage(), radius);
+    QImage dest = GlowEffectWidget::glown(this->toImage(), radius);
     updateImage(dest);
 }
 

@@ -21,7 +21,7 @@ class QMenu;
 class AbstractContent;
 class Canvas;
 
-class CanvasAppliance : public PlugGui::AbstractAppliance
+class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:

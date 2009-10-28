@@ -48,7 +48,7 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
     }
 }
 
-Wordcloud::Cloud * WordcloudContent::cloud() const
+Wordcloud::Cloud * WordcloudContent::takeCloud() const
 {
     return m_cloud;
 }

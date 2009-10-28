@@ -29,5 +29,5 @@ int GlowEffectDialog::currentRadius() const
 
 QImage GlowEffectDialog::glow(const QImage &image, int radius) const
 {
-    return ui.glowEffectWidget->glow(image, radius);
+    return ui.glowEffectWidget->glown(image, radius);
 }

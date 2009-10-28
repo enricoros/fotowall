@@ -28,6 +28,9 @@ class UrlHistoryBox : public GroupBoxWidget
         UrlHistoryBox(const QList<QUrl> & urls, QWidget * parent = 0);
         ~UrlHistoryBox();
 
+        // get the url for an entry (zero based)
+        QUrl urlForEntry(int index) const;
+
     Q_SIGNALS:
         void urlClicked(const QUrl & url);
 

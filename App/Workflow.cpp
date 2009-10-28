@@ -26,14 +26,14 @@
 #include "Settings.h"
 #include "WordcloudAppliance.h"
 
-WorkflowRequest::WorkflowRequest(Type type, const QVariant &param, QObject *listener, const char *listenerEntry, const char *listenerExit)
+/*WorkflowRequest::WorkflowRequest(Type type, const QVariant &param, QObject *listener, const char *listenerEntry, const char *listenerExit)
     : type(type)
     , param(param)
     , listener(listener)
     , listenerEntrySlot(listenerEntry)
     , listenerExitSlot(listenerExit)
 {
-}
+}*/
 
 Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent)
   : QObject(parent)
@@ -54,10 +54,10 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
             return;
     }
 
-    // load pictures in a canvas
+    // load content in a canvas
     if (!contentUrls.isEmpty()) {
         Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-        canvas->addPictureContent(contentUrls);
+        canvas->addAutoContent(contentUrls);
         stackCanvasAppliance(canvas);
         return;
     }
@@ -80,6 +80,9 @@ Workflow::~Workflow()
 
 bool Workflow::requestExit()
 {
+    if (dynamic_cast<HomeAppliance *>(currentAppliance()))
+        return true;
+
     // build the closure dialog
     ButtonsDialog quitAsk("Workflow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
@@ -153,14 +156,14 @@ bool Workflow::loadCanvas(const QString & fileName)
     }
 
     // close all and edit it
-    clearAppliances();
+    /// ### clearAppliances();
     stackCanvasAppliance(canvas);
     return true;
 }
 
 void Workflow::startCanvas()
 {
-    clearAppliances();
+    //clearAppliances();
     Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
     stackCanvasAppliance(canvas);
 }
