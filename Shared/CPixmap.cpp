@@ -214,13 +214,18 @@ void CPixmap::toAutoBlend(qreal strength)
     QImage dest(img.size(), QImage::Format_ARGB32);
     const int w = img.width();
     const int h = img.height();
+    // create a fast lookup-table for the 256 possible alpha levels {a = i^5^(2*strength - 1)}
+    int gammaValue[256];
+    qreal expIdx = pow((qreal)5, (strength * 2) - 1);
+    for (int i = 0; i < 256; i++) {
+        qreal unif = (qreal)i / 255.f;
+        gammaValue[i] = (int)(255.f * pow(unif, expIdx));
+    }
     for (int y=0; y<h; y++) {
         for (int x=0; x<w; x++) {
             QRgb pixel = img.pixel(x, y);
             const int gray = qGray(pixel);
-            const qreal alphaLin = (qreal)gray / 255.f;
-            const qreal alphaS = 1 / (1 + exp(-((qreal)gray - 128) / 21.f));
-            const int alpha = (int)(255.f * (strength * alphaS + (1-strength) * alphaLin));
+            const int alpha = gammaValue[gray];
             pixel = qRgba(qRed(pixel), qGreen(pixel), qBlue(pixel), alpha);
             dest.setPixel(x, y, pixel);
         }
