@@ -34,6 +34,9 @@ PictureConfig::PictureConfig(PictureContent * pictureContent, QGraphicsItem * pa
     // add effects items to the listview
     QListWidgetItem *no_effect = new QListWidgetItem(QIcon(":/data/effects-icons/no-effect.png"), tr("No effects"), m_pictureUi->effectsList);
     no_effect->setData(Qt::UserRole, PictureEffect::ClearEffects);
+    QListWidgetItem *autoBlend = new QListWidgetItem(QIcon(":/data/effects-icons/autoblend-effect.png"), tr("Auto Blend"), m_pictureUi->effectsList);
+    autoBlend->setToolTip(tr("Change dark pixels to transparent, leaving bright ones only"));
+    autoBlend->setData(Qt::UserRole, PictureEffect::AutoBlend);
     QListWidgetItem *item_invert = new QListWidgetItem(QIcon(":/data/effects-icons/invert-effect.png"), tr("Invert colors"), m_pictureUi->effectsList);
     item_invert->setToolTip(tr("Invert the colors of the picture"));
     item_invert->setData(Qt::UserRole, PictureEffect::InvertColors);
@@ -91,11 +94,15 @@ void PictureConfig::on_effectsList_itemActivated(QListWidgetItem * item)
     //show opacity dialog
 #if QT_VERSION >= 0x040500
     else if (effect == PictureEffect::Opacity) {
-        int opacity = QInputDialog::getInteger(0, tr("Opacity"),
-                     tr("Opacity value.\n\n0: transparent\n100: opaque"), m_pictureContent->opacity()*100, 0, 100);
+        int opacity = QInputDialog::getInteger(0, tr("Opacity"), tr("Opacity value.\n\n0: transparent\n100: opaque"), m_pictureContent->opacity()*100, 0, 100);
         param = (float)opacity/100.f;
     }
 #endif
+    // show autoblend dialog
+    else if (effect == PictureEffect::AutoBlend) {
+        int strongness = QInputDialog::getInteger(0, tr("Auto Blending"), tr("Strength value.\n\n0: weak\n100: strong"), 50, 0, 100);
+        param = (float)strongness/100.f;
+    }
 
     // apply the effect
     m_currentEffect = PictureEffect((PictureEffect::Effect)effect, param);

@@ -15,6 +15,7 @@
 #include "CPixmap.h"
 #include "Shared/GlowEffectWidget.h"
 #include <QImage>
+#include <cmath>
 
 CPixmap::CPixmap() {
 }
@@ -60,6 +61,9 @@ void CPixmap::addEffect(const PictureEffect & effect) {
         case PictureEffect::Crop:
             toCropped(effect.rect);
             break;
+        case PictureEffect::AutoBlend:
+            toAutoBlend(effect.param);
+            break;
     }
 }
 
@@ -79,26 +83,35 @@ void CPixmap::clearEffects()
 void CPixmap::toNVG() {
     m_effects.push_back(PictureEffect::NVG);
     QImage img = this->toImage();
-    QImage dest(img.size(), img.format());
-    QColor pixel;
-    for(int x=0; x<img.width();x++) {
-        for (int y=0; y<img.height(); y++) {
-            pixel = img.pixel(x, y);
-            unsigned int average = (pixel.green()+ pixel.red() + pixel.blue()) / 3;
-            pixel.setGreen(average);
-            pixel.setBlue(average);
-            pixel.setRed(average);
-            dest.setPixel(x,y,pixel.rgb());
+    QImage dest(img.size(), QImage::Format_ARGB32);
+    const int w = img.width();
+    const int h = img.height();
+    for (int y=0; y<h; y++) {
+        for (int x=0; x<w; x++) {
+            const QRgb pixel = img.pixel(x, y);
+            unsigned int average = (qGreen(pixel) + qRed(pixel) + qBlue(pixel)) / 3;
+            dest.setPixel(x, y, qRgba(average, average, average, qAlpha(pixel)));
         }
     }
     updateImage(dest);
 }
 
-void CPixmap::toInvertedColors() {
+void CPixmap::toInvertedColors()
+{
+    // can't use invertPixels, because it gives artifacts
     m_effects.push_back(PictureEffect::InvertColors);
-    QImage img = this->toImage();
-    img.invertPixels();
-    updateImage(img);
+    const QImage img = this->toImage();
+    QImage inverted(img.size(), QImage::Format_ARGB32);
+    const int w = img.width();
+    const int h = img.height();
+    for (int y=0; y<h; y++) {
+        for (int x=0; x<w; x++) {
+            QRgb pixel = img.pixel(x, y);
+            pixel = qRgba(255 - qRed(pixel), 255 - qGreen(pixel), 255 - qBlue(pixel), qAlpha(pixel));
+            inverted.setPixel(x,y,pixel);
+        }
+    }
+    updateImage(inverted);
 }
 
 void CPixmap::toHFlip() {
@@ -106,29 +119,29 @@ void CPixmap::toHFlip() {
     QImage img = this->toImage().mirrored(true, false);
     updateImage(img);
 }
+
 void CPixmap::toVFlip() {
     m_effects.push_back(PictureEffect::FlipV);
     QImage img = this->toImage().mirrored(false, true);
     updateImage(img);
 }
 
-void CPixmap::toBlackAndWhite() {
+void CPixmap::toBlackAndWhite()
+{
     m_effects.push_back(PictureEffect::BlackAndWhite);
-    QImage img = this->toImage();
-    QImage dest(img.size(), img.format());
-    QColor pixel;
-    for(int x=0; x<img.width();x++) {
-        for (int y=0; y<img.height(); y++) {
-            pixel = img.pixel(x, y);
-            unsigned int average = (pixel.green()+ pixel.red() + pixel.blue()) / 3;
-            if(average > 127)
+    const QImage img = this->toImage();
+    QImage dest(img.size(), QImage::Format_ARGB32);
+    const int w = img.width();
+    const int h = img.height();
+    for (int y=0; y<h; y++) {
+        for (int x=0; x<w; x++) {
+            const QRgb pixel = img.pixel(x, y);
+            unsigned int average = (qGreen(pixel)+ qRed(pixel) + qBlue(pixel)) / 3;
+            if (average > 127)
                 average = 255;
             else
                 average = 0;
-            pixel.setGreen(average);
-            pixel.setBlue(average);
-            pixel.setRed(average);
-            dest.setPixel(x,y,pixel.rgb());
+            dest.setPixel(x,y, qRgba(average, average, average, qAlpha(pixel)));
         }
     }
     updateImage(dest);
@@ -140,20 +153,20 @@ void CPixmap::toGlow(int radius) {
     updateImage(dest);
 }
 
-void CPixmap::toSepia() {
+void CPixmap::toSepia()
+{
     m_effects.push_back(PictureEffect::Sepia);
-    QImage img = this->toImage();
-    QImage dest(img.size(), img.format());
-    QColor pixel;
-    for(int x=0; x<img.width();x++) {
-        for (int y=0; y<img.height(); y++) {
-            pixel = img.pixel(x, y);
-            unsigned int average = (pixel.green()+ pixel.red() + pixel.blue()) / 3;
-            int red = average*1.176, green = average*0.837, blue = average*0.558;
-            pixel.setRed((red <= 255) ? red : 255 );
-            pixel.setGreen((green <= 255) ? green : 255 );
-            pixel.setBlue((blue <= 255) ? blue : 255 );
-            dest.setPixel(x,y,pixel.rgb());
+    const QImage img = this->toImage();
+    QImage dest(img.size(), QImage::Format_ARGB32);
+    const int w = img.width();
+    const int h = img.height();
+    for (int y=0; y<h; y++) {
+        for (int x=0; x<w; x++) {
+            QRgb pixel = img.pixel(x, y);
+            const unsigned int average = (qGreen(pixel) + qRed(pixel) + qBlue(pixel)) / 3;
+            const int red = average*1.176, green = average*0.837, blue = average*0.558;
+            pixel = qRgba((red <= 255) ? red : 255, (green <= 255) ? green : 255, (blue <= 255) ? blue : 255, qAlpha(pixel));
+            dest.setPixel(x,y,pixel);
         }
     }
     updateImage(dest);
@@ -188,13 +201,34 @@ void CPixmap::toLuminosity(int value) {
 */
 void CPixmap::toCropped(const QRect &cropRect)
 {
-    if(cropRect.isNull()) return;
+    if (cropRect.isNull()) return;
     m_effects.push_back(PictureEffect(PictureEffect::Crop, PictureEffect::Crop, cropRect));
-    QImage img = this->toImage().copy(cropRect);
+    const QImage img = this->toImage().copy(cropRect);
     updateImage(img);
 }
 
-void CPixmap::updateImage(QImage &newImage)
+void CPixmap::toAutoBlend(qreal strength)
+{
+    m_effects.push_back(PictureEffect(PictureEffect::AutoBlend, strength));
+    const QImage img = this->toImage();
+    QImage dest(img.size(), QImage::Format_ARGB32);
+    const int w = img.width();
+    const int h = img.height();
+    for (int y=0; y<h; y++) {
+        for (int x=0; x<w; x++) {
+            QRgb pixel = img.pixel(x, y);
+            const int gray = qGray(pixel);
+            const qreal alphaLin = (qreal)gray / 255.f;
+            const qreal alphaS = 1 / (1 + exp(-((qreal)gray - 128) / 21.f));
+            const int alpha = (int)(255.f * (strength * alphaS + (1-strength) * alphaLin));
+            pixel = qRgba(qRed(pixel), qGreen(pixel), qBlue(pixel), alpha);
+            dest.setPixel(x, y, pixel);
+        }
+    }
+    updateImage(dest);
+}
+
+void CPixmap::updateImage(const QImage & newImage)
 {
     QImage copyImage = m_image;
     QString copyFilePath = m_filePath;
