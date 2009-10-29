@@ -15,7 +15,6 @@
 #include "Workflow.h"
 
 #include "Shared/PlugGui/Container.h"
-#include "Shared/PlugGui/Stacker.h"
 #include "Shared/BreadCrumbBar.h"
 #include "Shared/ButtonsDialog.h"
 #include "App.h"
@@ -26,26 +25,22 @@
 #include "Settings.h"
 #include "WordcloudAppliance.h"
 
-/*WorkflowRequest::WorkflowRequest(Type type, const QVariant &param, QObject *listener, const char *listenerEntry, const char *listenerExit)
-    : type(type)
-    , param(param)
-    , listener(listener)
-    , listenerEntrySlot(listenerEntry)
-    , listenerExitSlot(listenerExit)
-{
-}*/
+#include <QFileDialog>
+#include <QTimer>
+
 
 Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent)
   : QObject(parent)
   , m_container(container)
   , m_bar(bar)
+  , m_commandTimer(0)
+  , m_processingQueue(false)
 {
     // set the global reference
     App::workflow = this;
 
     // wire up the stacker and the bar
-    setContainer(container);
-    connect(m_bar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotApplianceClicked(quint32)));
+    connect(m_bar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotNodeClicked(quint32)));
 
     // load a fotowall file if asked from the command line
     QStringList contentUrls = App::settings->commandlineUrls();
@@ -58,12 +53,12 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
     if (!contentUrls.isEmpty()) {
         Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
         canvas->addAutoContent(contentUrls);
-        stackCanvasAppliance(canvas);
+        pushNode(new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY()));
         return;
     }
 
-    // show the home screen by default
-    showHome();
+    // show the home screen (if no valid commandline args)
+    pushNode(new HomeAppliance);
 }
 
 Workflow::~Workflow()
@@ -71,16 +66,86 @@ Workflow::~Workflow()
     // unset the global reference
     App::workflow = 0;
 
+    if (!m_stack.isEmpty()) {
+        qWarning("Workflow::~Workflow: not empty!");
+        clearNodes();
+    }
+    m_container = 0;
+
     // this is an example of 'autosave-like function'
     //QString tempPath = QDir::tempPath() + QDir::separator() + "autosave.fotowall";
-    //FotowallFile::saveV2(tempPath, m_canvas);
+    //m_canvas->saveToFile(tempPath);
 
     // bar and container are external: don't delete
 }
 
+bool Workflow::loadCanvas(const QString & __fileName)
+{
+    // ask for file name, if not provided - can CANCEL
+    QString fileName = __fileName;
+    if (fileName.isEmpty()) {
+        QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
+        fileName = QFileDialog::getOpenFileName(0, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
+        if (fileName.isNull())
+            return false;
+        App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
+    }
+
+    // schedule canvas loading
+    scheduleCommand(Command::ResetToLevel);
+    scheduleCommand(Command(Command::MasterCanvas, fileName));
+    return true;
+}
+
+void Workflow::startCanvas()
+{
+    // schedule canvas creation
+    scheduleCommand(Command::ResetToLevel);
+    scheduleCommand(Command::MasterCanvas);
+}\
+
+void Workflow::startWordcloud()
+{
+    // schedule wordcloud creation
+    scheduleCommand(Command::ResetToLevel);
+    scheduleCommand(Command::MasterWordcloud);
+}
+
+void Workflow::startWizard()
+{
+    // TODO
+    HERE
+}
+
+void Workflow::stackCanvasAppliance(const Resource & resource)
+{
+    // schedule slave canvas
+    Command csc(Command::SlaveCanvas);
+    csc.res.append(resource);
+    scheduleCommand(csc);
+}
+
+void Workflow::stackWordcloudAppliance(const Resource &)
+{
+    // schedule slave canvas
+//    Command csc(Command::SlaveWordcloud);
+//    csc.res.append(resource);
+//    scheduleCommand(csc);
+    HERE
+}
+
+// OK
+bool Workflow::applianceCommand(int command)
+{
+    if (!m_stack.isEmpty())
+        m_stack.last().appliance->applianceCommand(command);
+    return false;
+}
+
 bool Workflow::requestExit()
 {
-    if (dynamic_cast<HomeAppliance *>(currentAppliance()))
+    // exit if no structure or on home screen
+    if (m_stack.isEmpty() || dynamic_cast<HomeAppliance *>(m_stack.first().appliance))
         return true;
 
     // build the closure dialog
@@ -118,75 +183,134 @@ bool Workflow::requestExit()
     }
 }
 
-bool Workflow::applianceCommand(int command)
+
+void Workflow::scheduleCommand(const Command &command)
 {
-    if (!currentAppliance())
-        return false;
-    return currentAppliance()->applianceCommand(command);
+    if (!m_commandTimer) {
+        m_commandTimer = new QTimer(this);
+        m_commandTimer->setInterval(0);
+        m_commandTimer->setSingleShot(true);
+        connect(m_commandTimer, SIGNAL(timeout()), this, SLOT(slotProcessQueue()));
+    }
+    m_commands.append(command);
+    m_commandTimer->start();
 }
 
-void Workflow::stackCanvasAppliance(Canvas * canvas)
+bool Workflow::processCommand(const Workflow::Command & command)
 {
-    CanvasAppliance * cApp = new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY());
-    stackAppliance(cApp);
-}
+    switch (command.type) {
+        case Command::ResetToLevel: {
+            int level = qMax(1, command.param.toInt());
+            while (!dynamic_cast<HomeAppliance *>(m_stack.last().appliance) && m_stack.size() > level)
+                popNode();
+            }return true;
 
-void Workflow::stackWordcloudAppliance(Wordcloud::Cloud * cloud)
-{
-    WordcloudAppliance * wApp = new WordcloudAppliance(cloud);
-    stackAppliance(wApp);
-}
+        case Command::MasterCanvas: {
+            Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
 
-void Workflow::showHome()
-{
-    // ### too tight? can the second part be canceled in between?
-    clearAppliances();
-    HomeAppliance * app = new HomeAppliance;
-    stackAppliance(app);
-}
+            // load a file, if in params
+            if (command.param.type() == QVariant::String) {
+                QString fileName = command.param.toString();
+                if (!FotowallFile::read(fileName, canvas, true))
+                    qWarning("Workflow::processCommand: MasterCanvas: can't load canvas. Display error?");
+            }
 
-bool Workflow::loadCanvas(const QString & fileName)
-{
-    qWarning("CALLED FROM CANVASAPPLIANCE OR HOMEAPPLIANCE: FIX THIS!!");
-    // load the canvas from file
-    Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-    if (!FotowallFile::read(fileName, canvas, true)) {
-        delete canvas;
-        return false;
+            // create the canvas appliance
+            CanvasAppliance * canvasApp = new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY());
+            pushNode(canvasApp);
+            } return true;
+
+        case Command::MasterWordcloud: {
+            Wordcloud::Cloud * cloud = new Wordcloud::Cloud(this);
+
+            // TODO: load from file
+            if (command.param.type() == QVariant::String)
+                HERE;
+
+            // create the wordcloud appliance
+            WordcloudAppliance * wcApp = new WordcloudAppliance(cloud, this);
+            pushNode(wcApp);
+            } return true;
+
+        case Command::SlaveCanvas: {
+            // get the canvas out of the first resource
+            const Resource & resource = command.res.first();
+            Canvas * canvas = static_cast<CanvasAppliance *>(resource.first)->borrowCanvas(resource.second);
+
+            // create the
+            CanvasAppliance * canvasApp = new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY());
+            Node node(canvasApp);
+            node.res = command.res;
+            pushNode(node);
+            } return true;
+
     }
 
-    // close all and edit it
-    /// ### clearAppliances();
-    stackCanvasAppliance(canvas);
-    return true;
+    // catch errors
+    return false;
 }
 
-void Workflow::startCanvas()
+
+// OK
+void Workflow::pushNode(const Node & node)
 {
-    //clearAppliances();
-    Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
-    stackCanvasAppliance(canvas);
+    // remove previous Appliance from container
+    if (!m_stack.isEmpty() && m_container)
+        m_stack.last().appliance->removeFromApplianceContainer();
+    m_stack.append(node);
+    // show this Appliance on container
+    if (m_container)
+        node.appliance->addToApplianceContainer(m_container);
+    updateBreadcrumb();
 }
 
-void Workflow::startWordcloud()
+void Workflow::popNode()
 {
-    HERE
+    // delete last
+    if (!m_stack.isEmpty()) {
+        const Node node = m_stack.takeLast();
+        PlugGui::AbstractAppliance * app = node.appliance;
+
+        // restore external references
+        ResourceList::const_iterator rIt = node.res.begin();
+        for (; rIt != node.res.end(); ++rIt) {
+            const Resource & res = *rIt;
+            PlugGui::AbstractAppliance * reqAppliance = res.first;
+            QVariant reqKey = res.second;
+            if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(reqAppliance))
+                cApp->returnCanvas(reqKey, static_cast<CanvasAppliance *>(app)->takeCanvas());
+            else
+                qWarning("Workflow::popNode: releasing to appliance '%s' not handled", qPrintable(reqAppliance->applianceName()));
+        }
+
+        // TODO - SAVE/SERIALIZE/OTHER LINK HERE
+
+        if (m_container)
+            app->removeFromApplianceContainer();
+        delete app;
+    }
+
+    // show the last-1
+    if (m_container && !m_stack.isEmpty())
+        m_stack.last().appliance->addToApplianceContainer(m_container);
+
+    updateBreadcrumb();
 }
 
-void Workflow::startWizard()
+void Workflow::clearNodes()
 {
-    HERE
+    while (!m_stack.isEmpty())
+        popNode();
 }
 
-void Workflow::structureChanged()
+void Workflow::updateBreadcrumb()
 {
     // build the new breadcrumbbar's contents
     m_bar->clearNodes();
-    QList<PlugGui::AbstractAppliance *> appliances = stackedAppliances();
-    if (appliances.size() >= 2) {
+    if (m_stack.size() > 1) {
         quint32 index = 0;
-        foreach (PlugGui::AbstractAppliance * app, appliances) {
-            m_bar->addNode(index + 1, app->applianceName(), index);
+        foreach (const Node & node, m_stack) {
+            m_bar->addNode(index + 1, node.appliance->applianceName(), index);
             index++;
         }
     }
@@ -195,9 +319,20 @@ void Workflow::structureChanged()
     m_container->update();
 }
 
-void Workflow::slotApplianceClicked(quint32 id)
+
+void Workflow::slotNodeClicked(quint32 level)
 {
-    // remove appliances exceeding the id'th
-    while (applianceCount() > qMax(0, (int)id))
-        popAppliance();
+    scheduleCommand(Command(Command::ResetToLevel, level));
+}
+
+void Workflow::slotProcessQueue()
+{
+    if (m_processingQueue) {
+        qWarning("Workflow::slotProcessQueue: nesting detected -FIXME-");
+        return;
+    }
+    m_processingQueue = true;
+    while (!m_commands.isEmpty())
+        processCommand(m_commands.takeFirst());
+    m_processingQueue = false;
 }

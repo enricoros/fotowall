@@ -48,6 +48,7 @@ bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*
     Canvas * canvas = new Canvas(viewRect.size(), this);
     connect(canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
     bool ok = FotowallFile::read(filePath, canvas, false);
+    m_canvasTaken = true;
     returnCanvas(canvas);
 
     // customize the item

@@ -31,7 +31,8 @@ class WordcloudContent : public AbstractContent
         WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
 //        ~WordcloudContent();
 
-        Wordcloud::Cloud * takeCloud() const;
+        Wordcloud::Cloud * takeCloud();
+        void returnCloud(Wordcloud::Cloud * cloud);
 
         // ::AbstractContent
         QString contentName() const { return tr("Wordcloud"); }

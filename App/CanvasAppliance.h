@@ -31,6 +31,11 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
         Canvas * takeCanvas();
 
+        bool saveToFile(const QString & fileName = QString());
+
+        Canvas * borrowCanvas(const QVariant & key);
+        void returnCanvas(const QVariant & key, Canvas * canvas);
+
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
         bool applianceCommand(int command);

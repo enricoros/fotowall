@@ -107,6 +107,40 @@ Canvas * CanvasAppliance::takeCanvas()
     return canvas;
 }
 
+bool CanvasAppliance::saveToFile(const QString & __fileName)
+{
+    // ask for file name if not given
+    if (__fileName.isEmpty()) {
+        // make up the default save path (stored as 'Fotowall/SaveProjectDir')
+        QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
+        if (App::settings->contains("Fotowall/SaveProjectDir"))
+            defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
+
+        // ask the file name, validate it, store back to settings and save over it
+        QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
+        if (fileName.isNull())
+            return false;
+        App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
+        if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
+            fileName += ".fotowall";
+        return FotowallFile::saveV2(fileName, m_extCanvas);
+    }
+
+    return FotowallFile::saveV2(__fileName, m_extCanvas);
+}
+
+Canvas * CanvasAppliance::borrowCanvas(const QVariant & key)
+{
+    CanvasViewContent * cvc = static_cast<CanvasViewContent *>(qVariantValue<void *>(key));
+    return cvc->takeCanvas();
+}
+
+void CanvasAppliance::returnCanvas(const QVariant & key, Canvas * canvas)
+{
+    CanvasViewContent * cvc = static_cast<CanvasViewContent *>(qVariantValue<void *>(key));
+    cvc->returnCanvas(canvas);
+}
+
 bool CanvasAppliance::applianceCommand(int command)
 {
     switch (command) {
@@ -440,34 +474,12 @@ void CanvasAppliance::slotDecoClearTitle()
 
 bool CanvasAppliance::slotFileLoad()
 {
-    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
-    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
-
-    // ask the file name, validate it, store back to settings and load the file
-    QString fileName = QFileDialog::getOpenFileName(0, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
-    if (fileName.isNull())
-        return false;
-    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-
-    // load the file
-    return App::workflow->loadCanvas(fileName);
+    return App::workflow->loadCanvas();
 }
 
 bool CanvasAppliance::slotFileSave()
 {
-    // make up the default save path (stored as 'Fotowall/SaveProjectDir')
-    QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-    if (App::settings->contains("Fotowall/SaveProjectDir"))
-        defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
-
-    // ask the file name, validate it, store back to settings and save over it
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
-    if (fileName.isNull())
-        return false;
-    App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
-    if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
-        fileName += ".fotowall";
-    return FotowallFile::saveV2(fileName, m_extCanvas);
+    return saveToFile();
 }
 
 bool CanvasAppliance::slotFileExport()
@@ -481,16 +493,15 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
 {
     // handle Canvas
     if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
-        cvc->setSelected(false);
-        Canvas * editCanvas = cvc->takeCanvas();
-        App::workflow->stackCanvasAppliance(editCanvas);
+        Workflow::Resource resource(this, qVariantFromValue((void *)cvc));
+        App::workflow->stackCanvasAppliance(resource);
         return;
     }
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-        Wordcloud::Cloud * editCloud = wc->takeCloud();
-        App::workflow->stackWordcloudAppliance(editCloud);
+        Workflow::Resource resource(this, qVariantFromValue((void *)wc));
+        App::workflow->stackWordcloudAppliance(resource);
         return;
     }
 }

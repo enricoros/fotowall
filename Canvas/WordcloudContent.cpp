@@ -48,9 +48,20 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
     }
 }
 
-Wordcloud::Cloud * WordcloudContent::takeCloud() const
+Wordcloud::Cloud * WordcloudContent::takeCloud()
 {
-    return m_cloud;
+    // ###
+    Wordcloud::Cloud * cloud = m_cloud;
+    m_cloud = 0;
+    return cloud;
+}
+
+void WordcloudContent::returnCloud(Wordcloud::Cloud * cloud)
+{
+    // ###
+    m_cloud = cloud;
+    if (m_cloud)
+        m_cloud->setScene(m_cloudScene);
 }
 
 QWidget * WordcloudContent::createPropertyWidget()
