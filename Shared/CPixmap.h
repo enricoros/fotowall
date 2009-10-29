@@ -40,11 +40,12 @@ public:
    void toGlow(int radius);
    void toSepia();  // Old photo style
    void toCropped(const QRect &cropRect);
+   void toAutoBlend(qreal strength);
    //void toLuminosity(int value);
 
 private:
     CPixmap(const QPixmap &pixmap);
-    void updateImage(QImage &newImage);
+    void updateImage(const QImage & newImage);
 
     QImage m_image;
     QString m_filePath;
