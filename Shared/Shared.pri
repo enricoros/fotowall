@@ -6,6 +6,7 @@ HEADERS += \
     Shared/PictureServices/FlickrPictureService.h \
     Shared/PictureServices/GoogleImagesPictureService.h \
     Shared/AbstractScene.h \
+    Shared/AbstractResourceProvider.h \
     Shared/BlinkingToolButton.h \
     Shared/BreadCrumbBar.h \
     Shared/ButtonsDialog.h \

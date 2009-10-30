@@ -3,7 +3,7 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2009 by TANGUY Arnaud <arn.tanguy@gmail.com>            *
+ *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,25 +12,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __FotowallFile_h__
-#define __FotowallFile_h__
+#ifndef __AbstractResourceProvider_h__
+#define __AbstractResourceProvider_h__
 
-#include <QtGlobal>
-#include <QStringList>
-class Canvas;
+#include <QVariant>
 
-namespace FotowallFile
+class SingleResourceLoaner
 {
-    // read a .fotowall file and setup the Canvas
-    bool read(const QString & filePath, Canvas * canvas, bool inHistory);
-
-    // save the given Canvas to a .fotowall file
-    bool saveV2(const QString & filePath, const Canvas * canvas);
-
-    // file selector dialogs
-    QString getLoadFotowallFile();
-    QStringList getLoadFotowallFiles();
-    QString getSaveFotowallFile();
+    public:
+        virtual QVariant takeResource() = 0;
+        virtual void returnResource(const QVariant &) = 0;
 };
 
 #endif

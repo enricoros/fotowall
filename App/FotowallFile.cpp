@@ -20,6 +20,7 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QString>
 #include <QTextStream>
@@ -117,4 +118,55 @@ bool FotowallFile::saveV2(const QString & filePath, const Canvas * canvas)
     // store a reference to the just written file
     App::settings->addRecentFotowallUrl(QUrl(filePath));
     return true;
+}
+
+QString FotowallFile::getLoadFotowallFile()
+{
+    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
+    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
+
+    // ask the 'load' file name
+    QString fileName = QFileDialog::getOpenFileName(0, QObject::tr("Select the Fotowall file"), defaultLoadPath, QObject::tr("Fotowall (*.fotowall)"));
+    if (fileName.isNull())
+        return QString();
+
+    // store the load path to settings
+    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
+    return fileName;
+}
+
+QStringList FotowallFile::getLoadFotowallFiles()
+{
+    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
+    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
+
+    // ask the 'load' file name
+    QStringList fileNames = QFileDialog::getOpenFileNames(0, QObject::tr("Select one or more Fotowall files to add"), defaultLoadPath, QObject::tr("Fotowall (*.fotowall)"));
+    if (fileNames.isEmpty())
+        return QStringList();
+
+    // store the load path to settings
+    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileNames[0]).absolutePath());
+    return fileNames;
+}
+
+QString FotowallFile::getSaveFotowallFile()
+{
+    // make up the default save path
+    QString defaultSavePath = QObject::tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
+    if (App::settings->contains("Fotowall/SaveProjectDir"))
+        defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
+
+    // ask the 'save' file name
+    QString fileName = QFileDialog::getSaveFileName(0, QObject::tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
+    if (fileName.isNull())
+        return QString();
+
+    // store the save path to settings
+    App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
+
+    // add extension, if missing
+    if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
+        fileName += ".fotowall";
+    return fileName;
 }

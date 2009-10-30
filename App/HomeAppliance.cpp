@@ -72,7 +72,7 @@ void HomeAppliance::slotLoadCanvas(const QUrl & url)
 {
     // handle fotowall files
     if (App::isFotowallFile(url.toString())) {
-        App::workflow->loadCanvas(url.toString());
+        App::workflow->loadCanvas_A(url.toString());
         return;
     }
 
@@ -82,15 +82,15 @@ void HomeAppliance::slotLoadCanvas(const QUrl & url)
 
 void HomeAppliance::slotStartCanvas()
 {
-    App::workflow->startCanvas();
+    App::workflow->startCanvas_A();
 }
 
 void HomeAppliance::slotStartWordcloud()
 {
-    App::workflow->startWordcloud();
+    App::workflow->startWordcloud_A();
 }
 
 void HomeAppliance::slotStartWizard()
 {
-    App::workflow->startWizard();
+    HERE
 }

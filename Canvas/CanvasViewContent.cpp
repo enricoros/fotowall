@@ -48,46 +48,17 @@ bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*
     Canvas * canvas = new Canvas(viewRect.size(), this);
     connect(canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
     bool ok = FotowallFile::read(filePath, canvas, false);
-    returnCanvas(canvas);
+
+    // set the canvas
+    m_canvas = canvas;
+    m_canvasCachedSize = m_canvas->sceneSize();
+    resizeContents(contentRect(), true);
+    update();
 
     // customize the item
     setFrameTextEnabled(setName);
     setFrameText(QFileInfo(filePath).baseName());
     return ok;
-}
-
-Canvas * CanvasViewContent::takeCanvas()
-{
-    // sanity check
-    if (m_canvasTaken) {
-        qWarning("CanvasViewContent::takeCanvas: already taken");
-        return 0;
-    }
-
-    // discard reference
-    m_canvasTaken = true;
-    Canvas * canvas = m_canvas;
-    m_canvas = 0;
-    update();
-    return canvas;
-}
-
-void CanvasViewContent::returnCanvas(Canvas * canvas)
-{
-    // sanity checks
-    if (!m_canvasTaken)
-        qWarning("CanvasViewContent::returnCanvas: not taken");
-    if (m_canvas) {
-        qWarning("CanvasViewContent::returnCanvas: we already have one canvas, shouldn't return one");
-        delete m_canvas;
-    }
-
-    // store reference
-    m_canvas = canvas;
-    m_canvasCachedSize = m_canvas->sceneSize();
-    m_canvasTaken = false;
-    resizeContents(contentRect(), true);
-    update();
 }
 
 bool CanvasViewContent::fromXml(QDomElement & /*parentElement*/)
@@ -120,6 +91,40 @@ int CanvasViewContent::contentHeightForWidth(int width) const
     if (m_canvasCachedSize.width() > 0)
         return (m_canvasCachedSize.height() * width) / m_canvasCachedSize.width();
     return width;
+}
+
+QVariant CanvasViewContent::takeResource()
+{
+    // sanity check
+    if (m_canvasTaken) {
+        qWarning("CanvasViewContent::takeResource: already taken");
+        return QVariant();
+    }
+
+    // discard reference
+    m_canvasTaken = true;
+    Canvas * canvas = m_canvas;
+    m_canvas = 0;
+    update();
+    return qVariantFromValue((void *)canvas);
+}
+
+void CanvasViewContent::returnResource(const QVariant & resource)
+{
+    // sanity checks
+    if (!m_canvasTaken)
+        qWarning("CanvasViewContent::returnCanvas: not taken");
+    if (m_canvas) {
+        qWarning("CanvasViewContent::returnCanvas: we already have one canvas, shouldn't return one");
+        delete m_canvas;
+    }
+
+    // store reference
+    m_canvas = static_cast<Canvas *>(qVariantValue<void *>(resource));
+    m_canvasCachedSize = m_canvas->sceneSize();
+    m_canvasTaken = false;
+    resizeContents(contentRect(), true);
+    update();
 }
 
 void CanvasViewContent::slotRepaintCanvas(const QList<QRectF> &)

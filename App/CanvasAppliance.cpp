@@ -107,6 +107,19 @@ Canvas * CanvasAppliance::takeCanvas()
     return canvas;
 }
 
+bool CanvasAppliance::saveToFile(const QString & __fileName)
+{
+    // ask for file name if not given
+    if (__fileName.isEmpty()) {
+        QString fileName = FotowallFile::getSaveFotowallFile();
+        if (fileName.isNull())
+            return false;
+        return FotowallFile::saveV2(fileName, m_extCanvas);
+    }
+
+    return FotowallFile::saveV2(__fileName, m_extCanvas);
+}
+
 bool CanvasAppliance::applianceCommand(int command)
 {
     switch (command) {
@@ -314,14 +327,9 @@ void CanvasAppliance::slotAddCanvas()
     // disable any search box
     ui.aSearchPictures->setChecked(false);
 
-    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
-    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
-
-    // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(0, tr("Select one or more Fotowall files to add"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
+    QStringList fileNames = FotowallFile::getLoadFotowallFiles();
     if (fileNames.isEmpty())
         return;
-    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileNames[0]).absolutePath());
     m_extCanvas->addCanvasViewContent(fileNames);
 }
 
@@ -440,34 +448,12 @@ void CanvasAppliance::slotDecoClearTitle()
 
 bool CanvasAppliance::slotFileLoad()
 {
-    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
-    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
-
-    // ask the file name, validate it, store back to settings and load the file
-    QString fileName = QFileDialog::getOpenFileName(0, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
-    if (fileName.isNull())
-        return false;
-    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-
-    // load the file
-    return App::workflow->loadCanvas(fileName);
+    return App::workflow->loadCanvas_A();
 }
 
 bool CanvasAppliance::slotFileSave()
 {
-    // make up the default save path (stored as 'Fotowall/SaveProjectDir')
-    QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-    if (App::settings->contains("Fotowall/SaveProjectDir"))
-        defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
-
-    // ask the file name, validate it, store back to settings and save over it
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
-    if (fileName.isNull())
-        return false;
-    App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
-    if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
-        fileName += ".fotowall";
-    return FotowallFile::saveV2(fileName, m_extCanvas);
+    return saveToFile();
 }
 
 bool CanvasAppliance::slotFileExport()
@@ -481,16 +467,13 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
 {
     // handle Canvas
     if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
-        cvc->setSelected(false);
-        Canvas * editCanvas = cvc->takeCanvas();
-        App::workflow->stackCanvasAppliance(editCanvas);
+        App::workflow->stackSlaveCanvas_A(cvc);
         return;
     }
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-        Wordcloud::Cloud * editCloud = wc->takeCloud();
-        App::workflow->stackWordcloudAppliance(editCloud);
+        App::workflow->stackSlaveWordcloud_A(wc);
         return;
     }
 }

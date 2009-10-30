@@ -16,13 +16,14 @@
 #define __CanvasViewContent_h__
 
 #include "AbstractContent.h"
+#include "Shared/AbstractResourceProvider.h"
 #include <QPixmap>
 class Canvas;
 
 /**
     \brief Use another Canvas as content
 */
-class CanvasViewContent : public AbstractContent
+class CanvasViewContent : public AbstractContent, public SingleResourceLoaner
 {
     Q_OBJECT
     public:
@@ -31,16 +32,16 @@ class CanvasViewContent : public AbstractContent
 
         bool loadFromFile(const QString & filePath, bool keepRatio = false, bool setName = false);
 
-        // take or put canvas (for external editing)
-        Canvas * takeCanvas();
-        void returnCanvas(Canvas * canvas);
-
         // ::AbstractContent
         QString contentName() const { return tr("Canvas View"); }
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
         void drawContent(QPainter * painter, const QRect & targetRect);
         int contentHeightForWidth(int width) const;
+
+        // ::SingleResourceProvider
+        QVariant takeResource();
+        void returnResource(const QVariant &);
 
     private:
         Canvas * m_canvas;

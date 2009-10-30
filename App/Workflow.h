@@ -16,84 +16,72 @@
 #define __Workflow_h__
 
 #include <QObject>
-#include "Shared/PlugGui/Stacker.h"
 #include <QVariant>
+#include "Shared/PlugGui/AbstractAppliance.h"
+#include "Shared/AbstractResourceProvider.h"
 namespace Wordcloud { class Cloud; }
 class BreadCrumbBar;
 class Canvas;
 
-class Resource : public QObject {
-    Q_SIGNALS:
+// TODO: add checkes to avoid enqueueing while processing a command, or a list
 
-};
-
-/*
-class WorkflowRequest {
-    public:
-        // type of request and parameter
-        enum Type {
-            NewCanvas,          // param is empty or filename or canvas star
-            StackCanvas,        // param is canvas star
-            StackWordcloud      // param is wordcloud star
-        }               type;
-        QVariant        param;
-
-        // notification
-        QObject *       listener;
-        const char *    listenerEntrySlot;
-        const char *    listenerExitSlot;
-
-        // convenience initializer
-        WorkflowRequest(Type type, const QVariant & param = QVariant(),
-                        QObject * listener = 0, const char * listenerEntry = 0,
-                        const char * listenerExit = 0);
-    private:
-        WorkflowRequest();
-};
-*/
-class Workflow : public QObject, public PlugGui::Stacker
+class Workflow : public QObject
 {
     Q_OBJECT
     public:
         Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent = 0);
         ~Workflow();
 
-        // some requests will be performed asynchronously
-        //void request(const WorkflowRequest & request);
+        // change workflow
+        bool loadCanvas_A(const QString & fileName = QString());
+        void startCanvas_A();
+        void startWordcloud_A();
+        void stackSlaveCanvas_A(SingleResourceLoaner *);
+        void stackSlaveWordcloud_A(SingleResourceLoaner *);
 
-        // ### BIG REFACTOR HERE ;-)
-        bool requestExit();
+        //
         bool applianceCommand(int command);
-
-        // ### BIG REFACTOR HERE ;-)
-        bool loadCanvas(const QString & fileName);
-        void startCanvas();
-        void startWordcloud();
-        void startWizard();
-        void stackCanvasAppliance(Canvas * newCanvas);
-        void stackWordcloudAppliance(Wordcloud::Cloud * cloud);
-
-    protected:
-        // ::PlugGui::Stacker
-        void structureChanged();
+        bool requestExit();
 
     private:
-        void showHome();
+        struct Command {
+            enum Type { ResetToLevel, MasterCanvas, MasterWordcloud, SlaveCanvas, SlaveWordcloud };
+
+            Type type;
+            QVariant param;
+            SingleResourceLoaner * res;
+
+            Command(Type type, const QVariant & param = QVariant(), SingleResourceLoaner * res = 0) : type(type), param(param), res(res) {}
+        };
+        void scheduleCommand(const Command & command);
+        bool processCommand(const Command & command);
+
+        struct Node {
+            PlugGui::AbstractAppliance * appliance;
+            SingleResourceLoaner * res;
+
+            Node(PlugGui::AbstractAppliance * app, SingleResourceLoaner * res = 0) : appliance(app), res(res) {}
+        };
+
+        void pushNode(const Node & node);
+        void popNode();
+        void updateBreadcrumb();
 
         // external objects
         PlugGui::Container * m_container;
         BreadCrumbBar * m_bar;
 
-        // internal structure
-        struct Node {
-            AbstractAppliance * appliance;
-            QMap<int, AbstractAppliance *> externalResources;
-        };
-        QList<Node *> m_structure;
+        // commands
+        QTimer * m_commandTimer;
+        QList<Command> m_commands;
+        bool m_processingQueue;
+
+        // nodes structure
+        QList<Node> m_stack;
 
     private Q_SLOTS:
-        void slotApplianceClicked(quint32);
-        //void slotNextStep
+        void slotNodeClicked(quint32);
+        void slotProcessQueue();
 };
 
 #endif

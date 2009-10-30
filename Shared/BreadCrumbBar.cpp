@@ -1,7 +1,9 @@
 /***************************************************************************
  *                                                                         *
- *   Copyright (C) 2009-2009 by Enrico Ros <enrico.ros@gmail.com>        *
- *   Started on 23 Sep 2009 by root.
+ *   This file is part of the Fotowall project,                            *
+ *       http://www.enricoros.com/opensource/fotowall                      *
+ *                                                                         *
+ *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
