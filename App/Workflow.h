@@ -18,6 +18,7 @@
 #include <QObject>
 #include <QVariant>
 #include "Shared/PlugGui/AbstractAppliance.h"
+#include "Shared/AbstractResourceProvider.h"
 namespace Wordcloud { class Cloud; }
 class BreadCrumbBar;
 class Canvas;
@@ -31,44 +32,39 @@ class Workflow : public QObject
         Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent = 0);
         ~Workflow();
 
-        typedef QPair<PlugGui::AbstractAppliance *, QVariant> Resource;
-        typedef QList<Resource> ResourceList;
-
         // change workflow
-        bool loadCanvas(const QString & fileName = QString());
-        void startCanvas();
-        void startWordcloud();
-        void startWizard();
-        void stackCanvasAppliance(const Resource & resource);
-        void stackWordcloudAppliance(const Resource & resource);
+        bool loadCanvas_A(const QString & fileName = QString());
+        void startCanvas_A();
+        void startWordcloud_A();
+        void stackSlaveCanvas_A(SingleResourceLoaner *);
+        void stackSlaveWordcloud_A(SingleResourceLoaner *);
 
+        //
         bool applianceCommand(int command);
         bool requestExit();
 
     private:
-        // TEMP
         struct Command {
-            enum Type { ResetToLevel, MasterCanvas, MasterWordcloud, SlaveCanvas };
+            enum Type { ResetToLevel, MasterCanvas, MasterWordcloud, SlaveCanvas, SlaveWordcloud };
 
             Type type;
             QVariant param;
-            ResourceList res;
+            SingleResourceLoaner * res;
 
-            Command(Type type, const QVariant & param = QVariant()) : type(type), param(param) {}
+            Command(Type type, const QVariant & param = QVariant(), SingleResourceLoaner * res = 0) : type(type), param(param), res(res) {}
         };
         void scheduleCommand(const Command & command);
         bool processCommand(const Command & command);
 
         struct Node {
             PlugGui::AbstractAppliance * appliance;
-            ResourceList res;
+            SingleResourceLoaner * res;
 
-            Node(PlugGui::AbstractAppliance * appliance) : appliance(appliance) {}
+            Node(PlugGui::AbstractAppliance * app, SingleResourceLoaner * res = 0) : appliance(app), res(res) {}
         };
 
         void pushNode(const Node & node);
         void popNode();
-        void clearNodes();
         void updateBreadcrumb();
 
         // external objects

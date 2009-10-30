@@ -97,12 +97,13 @@ void SceneView::setScene(AbstractScene * scene)
 
     // disconnect previous scene
     if (m_abstractScene)
-        disconnect(m_abstractScene, SIGNAL(geometryChanged()), this, SLOT(layoutScene()));
+        disconnect(m_abstractScene, 0, this, 0);
 
     // use scene
     m_abstractScene = scene;
     QGraphicsView::setScene(m_abstractScene);
     if (m_abstractScene) {
+        connect(m_abstractScene, SIGNAL(destroyed(QObject*)), this, SLOT(slotSceneDestroyed(QObject *)));
         connect(m_abstractScene, SIGNAL(geometryChanged()), this, SLOT(layoutScene()));
         layoutScene();
     }
@@ -275,4 +276,11 @@ void SceneView::layoutScene()
 
     // update screen
     update();
+}
+
+void SceneView::slotSceneDestroyed(QObject * object)
+{
+    // if there is a scene and it's being deleted, don't reference to it anymore
+    if (m_abstractScene && static_cast<AbstractScene *>(object) == m_abstractScene)
+        m_abstractScene = 0;
 }

@@ -64,6 +64,8 @@ class SceneView : public QGraphicsView
     private Q_SLOTS:
         // layout scene and scrollbars
         void layoutScene();
+        // dereference deleted AbstractScenes
+        void slotSceneDestroyed(QObject *);
 };
 
 #endif

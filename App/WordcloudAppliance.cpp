@@ -106,6 +106,15 @@ Wordcloud::Cloud * WordcloudAppliance::cloud() const
     return m_extCloud;
 }
 
+void WordcloudAppliance::saveToFile(const QString &__fileName)
+{
+    if (__fileName.isEmpty()) {
+        // ###
+        qWarning("WordcloudAppliance::saveToFile: not implemented");
+    }
+    qWarning("WordcloudAppliance::saveToFile: not implemented");
+}
+
 void WordcloudAppliance::slotRegenCloud()
 {
     m_extCloud->regenCloud();

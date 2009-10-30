@@ -48,27 +48,6 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
     }
 }
 
-Wordcloud::Cloud * WordcloudContent::takeCloud()
-{
-    // ###
-    Wordcloud::Cloud * cloud = m_cloud;
-    m_cloud = 0;
-    return cloud;
-}
-
-void WordcloudContent::returnCloud(Wordcloud::Cloud * cloud)
-{
-    // ###
-    m_cloud = cloud;
-    if (m_cloud)
-        m_cloud->setScene(m_cloudScene);
-}
-
-QWidget * WordcloudContent::createPropertyWidget()
-{
-    return 0;
-}
-
 bool WordcloudContent::fromXml(QDomElement & contentElement)
 {
     AbstractContent::fromXml(contentElement);
@@ -90,9 +69,18 @@ void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect)
     m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
 }
 
-bool WordcloudContent::contentOpaque() const
+QVariant WordcloudContent::takeResource()
 {
-    return false;
+    Wordcloud::Cloud * cloud = m_cloud;
+    m_cloud = 0;
+    return qVariantFromValue((void *)cloud);
+}
+
+void WordcloudContent::returnResource(const QVariant & resource)
+{
+    m_cloud = static_cast<Wordcloud::Cloud *>(qVariantValue<void *>(resource));
+    if (m_cloud)
+        m_cloud->setScene(m_cloudScene);
 }
 
 void WordcloudContent::slotRepaintScene(const QList<QRectF> & /*exposed*/)

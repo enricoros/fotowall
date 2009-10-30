@@ -111,12 +111,9 @@ bool CanvasAppliance::saveToFile(const QString & __fileName)
 {
     // ask for file name if not given
     if (__fileName.isEmpty()) {
-        // make up the default save path (stored as 'Fotowall/SaveProjectDir')
         QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
         if (App::settings->contains("Fotowall/SaveProjectDir"))
             defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
-
-        // ask the file name, validate it, store back to settings and save over it
         QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
         if (fileName.isNull())
             return false;
@@ -127,18 +124,6 @@ bool CanvasAppliance::saveToFile(const QString & __fileName)
     }
 
     return FotowallFile::saveV2(__fileName, m_extCanvas);
-}
-
-Canvas * CanvasAppliance::borrowCanvas(const QVariant & key)
-{
-    CanvasViewContent * cvc = static_cast<CanvasViewContent *>(qVariantValue<void *>(key));
-    return cvc->takeCanvas();
-}
-
-void CanvasAppliance::returnCanvas(const QVariant & key, Canvas * canvas)
-{
-    CanvasViewContent * cvc = static_cast<CanvasViewContent *>(qVariantValue<void *>(key));
-    cvc->returnCanvas(canvas);
 }
 
 bool CanvasAppliance::applianceCommand(int command)
@@ -474,7 +459,7 @@ void CanvasAppliance::slotDecoClearTitle()
 
 bool CanvasAppliance::slotFileLoad()
 {
-    return App::workflow->loadCanvas();
+    return App::workflow->loadCanvas_A();
 }
 
 bool CanvasAppliance::slotFileSave()
@@ -493,15 +478,13 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
 {
     // handle Canvas
     if (CanvasViewContent * cvc = dynamic_cast<CanvasViewContent *>(content)) {
-        Workflow::Resource resource(this, qVariantFromValue((void *)cvc));
-        App::workflow->stackCanvasAppliance(resource);
+        App::workflow->stackSlaveCanvas_A(cvc);
         return;
     }
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-        Workflow::Resource resource(this, qVariantFromValue((void *)wc));
-        App::workflow->stackWordcloudAppliance(resource);
+        App::workflow->stackSlaveWordcloud_A(wc);
         return;
     }
 }

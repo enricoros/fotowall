@@ -45,7 +45,7 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
     // load a fotowall file if asked from the command line
     QStringList contentUrls = App::settings->commandlineUrls();
     if (contentUrls.size() == 1 && App::isFotowallFile(contentUrls.first())) {
-        if (loadCanvas(contentUrls.first()))
+        if (loadCanvas_A(contentUrls.first()))
             return;
     }
 
@@ -66,9 +66,13 @@ Workflow::~Workflow()
     // unset the global reference
     App::workflow = 0;
 
-    if (!m_stack.isEmpty()) {
-        qWarning("Workflow::~Workflow: not empty!");
-        clearNodes();
+    // delete the home appliance, and complain if others are present
+    while (!m_stack.isEmpty()) {
+        const Node & node = m_stack.takeLast();
+        if (dynamic_cast<HomeAppliance *>(node.appliance))
+            delete node.appliance;
+        else
+            qWarning("Workflow::~Workflow: not empty!");
     }
     m_container = 0;
 
@@ -79,7 +83,7 @@ Workflow::~Workflow()
     // bar and container are external: don't delete
 }
 
-bool Workflow::loadCanvas(const QString & __fileName)
+bool Workflow::loadCanvas_A(const QString & __fileName)
 {
     // ask for file name, if not provided - can CANCEL
     QString fileName = __fileName;
@@ -97,44 +101,32 @@ bool Workflow::loadCanvas(const QString & __fileName)
     return true;
 }
 
-void Workflow::startCanvas()
+void Workflow::startCanvas_A()
 {
     // schedule canvas creation
     scheduleCommand(Command::ResetToLevel);
     scheduleCommand(Command::MasterCanvas);
-}\
+}
 
-void Workflow::startWordcloud()
+void Workflow::startWordcloud_A()
 {
     // schedule wordcloud creation
     scheduleCommand(Command::ResetToLevel);
     scheduleCommand(Command::MasterWordcloud);
 }
 
-void Workflow::startWizard()
-{
-    // TODO
-    HERE
-}
-
-void Workflow::stackCanvasAppliance(const Resource & resource)
+void Workflow::stackSlaveCanvas_A(SingleResourceLoaner * resource)
 {
     // schedule slave canvas
-    Command csc(Command::SlaveCanvas);
-    csc.res.append(resource);
-    scheduleCommand(csc);
+    scheduleCommand(Command(Command::SlaveCanvas, QVariant(), resource));
 }
 
-void Workflow::stackWordcloudAppliance(const Resource &)
+void Workflow::stackSlaveWordcloud_A(SingleResourceLoaner * resource)
 {
-    // schedule slave canvas
-//    Command csc(Command::SlaveWordcloud);
-//    csc.res.append(resource);
-//    scheduleCommand(csc);
-    HERE
+    // schedule slave wordcloud
+    scheduleCommand(Command(Command::SlaveWordcloud, QVariant(), resource));
 }
 
-// OK
 bool Workflow::applianceCommand(int command)
 {
     if (!m_stack.isEmpty())
@@ -171,29 +163,27 @@ bool Workflow::requestExit()
     switch (quitAsk.execute()) {
         case QDialogButtonBox::Cancel:
             return false;
-#if 0
+
         case QDialogButtonBox::Save:
             // save file and return to Fotowall if canceled
-            if (!saveCurrent())
-                return false;
+            //if (!saveCurrent())
+            //    return false;
             // fall through
-#endif
+
         default:
             return true;
     }
 }
 
-
 void Workflow::scheduleCommand(const Command &command)
 {
     if (!m_commandTimer) {
         m_commandTimer = new QTimer(this);
-        m_commandTimer->setInterval(0);
         m_commandTimer->setSingleShot(true);
         connect(m_commandTimer, SIGNAL(timeout()), this, SLOT(slotProcessQueue()));
     }
     m_commands.append(command);
-    m_commandTimer->start();
+    m_commandTimer->start(0);
 }
 
 bool Workflow::processCommand(const Workflow::Command & command)
@@ -233,25 +223,28 @@ bool Workflow::processCommand(const Workflow::Command & command)
             } return true;
 
         case Command::SlaveCanvas: {
-            // get the canvas out of the first resource
-            const Resource & resource = command.res.first();
-            Canvas * canvas = static_cast<CanvasAppliance *>(resource.first)->borrowCanvas(resource.second);
+            // get the Canvas out of the resource
+            Canvas * canvas = static_cast<Canvas *>(qVariantValue<void *>(command.res->takeResource()));
 
-            // create the
+            // create the canvas appliance
             CanvasAppliance * canvasApp = new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY());
-            Node node(canvasApp);
-            node.res = command.res;
-            pushNode(node);
+            pushNode(Node(canvasApp, command.res));
             } return true;
 
+        case Command::SlaveWordcloud: {
+            // get the Cloud out of the resource
+            Wordcloud::Cloud * cloud = static_cast<Wordcloud::Cloud *>(qVariantValue<void *>(command.res->takeResource()));
+
+            // create the wordcloud appliance
+            WordcloudAppliance * wcApp = new WordcloudAppliance(cloud, this);
+            pushNode(Node(wcApp, command.res));
+            } return true;
     }
 
     // catch errors
     return false;
 }
 
-
-// OK
 void Workflow::pushNode(const Node & node)
 {
     // remove previous Appliance from container
@@ -271,19 +264,31 @@ void Workflow::popNode()
         const Node node = m_stack.takeLast();
         PlugGui::AbstractAppliance * app = node.appliance;
 
-        // restore external references
-        ResourceList::const_iterator rIt = node.res.begin();
-        for (; rIt != node.res.end(); ++rIt) {
-            const Resource & res = *rIt;
-            PlugGui::AbstractAppliance * reqAppliance = res.first;
-            QVariant reqKey = res.second;
-            if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(reqAppliance))
-                cApp->returnCanvas(reqKey, static_cast<CanvasAppliance *>(app)->takeCanvas());
-            else
-                qWarning("Workflow::popNode: releasing to appliance '%s' not handled", qPrintable(reqAppliance->applianceName()));
+        // master: save content
+        if (!node.res) {
+            if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(app)) {
+                cApp->saveToFile();
+                delete cApp->takeCanvas();
+            } else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(app)) {
+                wApp->saveToFile();
+                delete wApp->takeCloud();
+            } else if (dynamic_cast<HomeAppliance *>(app)) {
+                // no data to delete here
+            } else
+                qWarning("Workflow::popNode: saving of appliance '%s' not handled", qPrintable(app->applianceName()));
         }
 
-        // TODO - SAVE/SERIALIZE/OTHER LINK HERE
+        // slaves: store external references
+        else {
+            if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(app)) {
+                Canvas * modifiedCanvas = cApp->takeCanvas();
+                node.res->returnResource(qVariantFromValue((void *)modifiedCanvas));
+            } else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(app)) {
+                Wordcloud::Cloud * modifiedCloud = wApp->takeCloud();
+                node.res->returnResource(qVariantFromValue((void *)modifiedCloud));
+            } else
+                qWarning("Workflow::popNode: releasing of appliance '%s' not handled", qPrintable(app->applianceName()));
+        }
 
         if (m_container)
             app->removeFromApplianceContainer();
@@ -295,12 +300,6 @@ void Workflow::popNode()
         m_stack.last().appliance->addToApplianceContainer(m_container);
 
     updateBreadcrumb();
-}
-
-void Workflow::clearNodes()
-{
-    while (!m_stack.isEmpty())
-        popNode();
 }
 
 void Workflow::updateBreadcrumb()

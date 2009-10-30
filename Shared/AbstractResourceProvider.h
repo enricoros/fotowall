@@ -12,42 +12,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __WordcloudContent_h__
-#define __WordcloudContent_h__
+#ifndef __AbstractResourceProvider_h__
+#define __AbstractResourceProvider_h__
 
-#include "AbstractContent.h"
-#include "Shared/AbstractResourceProvider.h"
-#include "Wordcloud/Cloud.h"
-#include <QPixmap>
-class Canvas;
-class QGraphicsScene;
+#include <QVariant>
 
-/**
-    \brief Use another Canvas as content
-*/
-class WordcloudContent : public AbstractContent, public SingleResourceLoaner
+class SingleResourceLoaner
 {
-    Q_OBJECT
     public:
-        WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-//        ~WordcloudContent();
-
-        // ::AbstractContent
-        QString contentName() const { return tr("Wordcloud"); }
-        bool fromXml(QDomElement & contentElement);
-        void toXml(QDomElement & contentElement) const;
-        void drawContent(QPainter * painter, const QRect & targetRect);
-
-        // ::SingleResourceLoaner
-        QVariant takeResource();
-        void returnResource(const QVariant &);
-
-    private:
-        QGraphicsScene * m_cloudScene;
-        Wordcloud::Cloud * m_cloud;
-
-    private Q_SLOTS:
-        void slotRepaintScene(const QList<QRectF> & exposed);
+        virtual QVariant takeResource() = 0;
+        virtual void returnResource(const QVariant &) = 0;
 };
 
 #endif
