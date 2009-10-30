@@ -33,6 +33,7 @@ Work in progress:
 
 Done:
 
+* Stacked editing
 * Cursor key movement
 * OpenGL testing and performance auto-detection
 * CD/DVD markers redux

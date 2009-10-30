@@ -83,17 +83,12 @@ Workflow::~Workflow()
     // bar and container are external: don't delete
 }
 
-bool Workflow::loadCanvas_A(const QString & __fileName)
+bool Workflow::loadCanvas_A(const QString & givenName)
 {
     // ask for file name, if not provided - can CANCEL
-    QString fileName = __fileName;
-    if (fileName.isEmpty()) {
-        QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
-        fileName = QFileDialog::getOpenFileName(0, tr("Select the Fotowall file"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
-        if (fileName.isNull())
-            return false;
-        App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileName).absolutePath());
-    }
+    QString fileName = givenName.isEmpty() ? FotowallFile::getLoadFotowallFile() : givenName;
+    if (fileName.isEmpty())
+        return false;
 
     // schedule canvas loading
     scheduleCommand(Command::ResetToLevel);

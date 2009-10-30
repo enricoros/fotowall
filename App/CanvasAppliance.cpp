@@ -111,15 +111,9 @@ bool CanvasAppliance::saveToFile(const QString & __fileName)
 {
     // ask for file name if not given
     if (__fileName.isEmpty()) {
-        QString defaultSavePath = tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-        if (App::settings->contains("Fotowall/SaveProjectDir"))
-            defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
-        QString fileName = QFileDialog::getSaveFileName(0, tr("Select the Fotowall file"), defaultSavePath, "Fotowall (*.fotowall)");
+        QString fileName = FotowallFile::getSaveFotowallFile();
         if (fileName.isNull())
             return false;
-        App::settings->setValue("Fotowall/SaveProjectDir", QFileInfo(fileName).absolutePath());
-        if (!fileName.endsWith(".fotowall", Qt::CaseInsensitive))
-            fileName += ".fotowall";
         return FotowallFile::saveV2(fileName, m_extCanvas);
     }
 
@@ -333,14 +327,9 @@ void CanvasAppliance::slotAddCanvas()
     // disable any search box
     ui.aSearchPictures->setChecked(false);
 
-    // make up the default load path (stored as 'Fotowall/LoadProjectDir')
-    QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
-
-    // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(0, tr("Select one or more Fotowall files to add"), defaultLoadPath, tr("Fotowall (*.fotowall)"));
+    QStringList fileNames = FotowallFile::getLoadFotowallFiles();
     if (fileNames.isEmpty())
         return;
-    App::settings->setValue("Fotowall/LoadProjectDir", QFileInfo(fileNames[0]).absolutePath());
     m_extCanvas->addCanvasViewContent(fileNames);
 }
 

@@ -16,6 +16,7 @@
 #define __FotowallFile_h__
 
 #include <QtGlobal>
+#include <QStringList>
 class Canvas;
 
 namespace FotowallFile
@@ -25,6 +26,11 @@ namespace FotowallFile
 
     // save the given Canvas to a .fotowall file
     bool saveV2(const QString & filePath, const Canvas * canvas);
+
+    // file selector dialogs
+    QString getLoadFotowallFile();
+    QStringList getLoadFotowallFiles();
+    QString getSaveFotowallFile();
 };
 
 #endif
