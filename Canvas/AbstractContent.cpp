@@ -601,9 +601,11 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     // overlay a selection
     if (drawSelection && !m_frame) {
         painter->setRenderHint(QPainter::Antialiasing, true);
-        painter->setPen(QPen(RenderOpts::hiColor, 2.0));
+        QPen selPen(RenderOpts::hiColor, 2.0);
+        selPen.setJoinStyle(Qt::MiterJoin);
+        painter->setPen(selPen);
         painter->setBrush(Qt::NoBrush);
-        painter->drawRect(tcRect);
+        painter->drawRect(tcRect.adjusted(1, 1, -1, -1));
     }
 }
 
