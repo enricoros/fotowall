@@ -18,6 +18,7 @@
 #include "AbstractContent.h"
 #include "Shared/PictureEffect.h"
 class CPixmap;
+class QFileSystemWatcher;
 class QNetworkReply;
 
 /**
@@ -67,8 +68,13 @@ class PictureContent : public AbstractContent
         int         m_netHeight;
         QNetworkReply * m_netReply;
         QList<PictureEffect> m_afterLoadEffects;
+        QFileSystemWatcher * m_watcher;
+        QTimer *    m_watcherTimer;
 
     private Q_SLOTS:
+        void slotGimpEdit();
+        void slotGimpCompressNotifies();
+        void slotGimpFinished();
         bool slotLoadNetworkData();
         void slotNetworkError();
         void slotNetworkProgress(qint64, qint64);

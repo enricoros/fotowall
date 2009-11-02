@@ -166,6 +166,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="gimpButton">
+       <property name="text">
+        <string>Gimp</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

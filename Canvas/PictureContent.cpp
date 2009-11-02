@@ -21,13 +21,17 @@
 #include "ButtonItem.h"
 #include "PictureProperties.h"
 
+#include <QDir>
 #include <QFileInfo>
+#include <QFileSystemWatcher>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QPainter>
+#include <QProcess>
+#include <QTimer>
 #include <QUrl>
 
 PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
@@ -38,6 +42,8 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     , m_netWidth(0)
     , m_netHeight(0)
     , m_netReply(0)
+    , m_watcher(0)
+    , m_watcherTimer(0)
 {
     // enable frame text
     setFrameTextEnabled(true);
@@ -234,6 +240,7 @@ QWidget * PictureContent::createPropertyWidget()
     new PE_PaneWidget(p->perspWidget, this, "perspective", p);
 
     // properties link
+    connect(p->gimpButton, SIGNAL(clicked()), this, SLOT(slotGimpEdit()));
     //p->bEditShape->setChecked(isShapeEditing());
     //connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
     //connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));
@@ -432,6 +439,69 @@ void PictureContent::applyPostLoadEffects()
     m_afterLoadEffects.clear();
     update();
     GFX_CHANGED();
+}
+
+void PictureContent::slotGimpEdit()
+{
+    if (!m_photo)
+        return;
+
+    // save the pic to a file
+    QString fileName = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(qrand() % 999999) + ".png";
+    if (!m_photo->save(fileName, "PNG")) {
+        qWarning("PictureContent::slotGimpEdit: can't save the image");
+        return;
+    }
+
+    // open it with the gimp
+    if (!QProcess::startDetached("gimp", QStringList() << fileName)) {
+        qWarning("PictureContent::slotGimpEdit: can't start The Gimp");
+        return;
+    }
+
+    // start a watcher over it
+    delete m_watcher;
+    m_watcher = new QFileSystemWatcher(this);
+    m_watcher->setProperty("fullName", fileName);
+    m_watcher->addPath(fileName);
+    connect(m_watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(slotGimpCompressNotifies()));
+}
+
+void PictureContent::slotGimpCompressNotifies()
+{
+    if (!m_watcherTimer) {
+        m_watcherTimer = new QTimer(this);
+        m_watcherTimer->setSingleShot(true);
+        connect(m_watcherTimer, SIGNAL(timeout()), this, SLOT(slotGimpFinished()));
+    }
+    m_watcherTimer->start(500);
+}
+
+void PictureContent::slotGimpFinished()
+{
+    // get the file name and dispose the watcher
+    if (!m_watcher)
+        return;
+    QString fileName = m_watcher->property("fullName").toString();
+    delete m_watcher;
+    m_watcher = 0;
+
+    // reload the file
+    CPixmap * newPhoto = new CPixmap(fileName);
+    if (newPhoto->isNull()) {
+        qWarning("PictureContent::slotGimpFinished: can't load the modified picture");
+        delete newPhoto;
+        return;
+    }
+    delete m_photo;
+    m_photo = newPhoto;
+    m_cachedPhoto = QPixmap();
+    m_opaquePhoto = !m_photo->hasAlpha();
+    m_fileUrl = QString();
+    update();
+
+    // notify image change
+    emit contentChanged();
 }
 
 bool PictureContent::slotLoadNetworkData()
