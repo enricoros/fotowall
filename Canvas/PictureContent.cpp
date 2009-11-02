@@ -327,7 +327,7 @@ void PictureContent::toXml(QDomElement & contentElement) const
     }
 }
 
-void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
+void PictureContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
     // draw progress
     if (m_progress > 0.0 && m_progress < 1.0 && !RenderOpts::HQRendering) {
@@ -348,9 +348,13 @@ void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
 #endif
 
     // draw high-resolution photo when exporting png
-    if (RenderOpts::HQRendering) {
+    if (RenderOpts::HQRendering || ratio != Qt::IgnoreAspectRatio) {
+        QSize scaledSize = m_photo->size();
+        scaledSize.scale(targetRect.size(), ratio);
+        int offX = targetRect.left() + (targetRect.width() - scaledSize.width()) / 2;
+        int offY = targetRect.top() + (targetRect.height() - scaledSize.height()) / 2;
         painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, true);
-        painter->drawPixmap(targetRect, *m_photo);
+        painter->drawPixmap(offX, offY, scaledSize.width(), scaledSize.height(), *m_photo);
         return;
     }
 

@@ -33,7 +33,7 @@ class WebcamContent : public AbstractContent
         QString contentName() const { return tr("Webcam"); }
         bool fromXml(QDomElement & contentElement);
         void toXml(QDomElement & contentElement) const;
-        void drawContent(QPainter * painter, const QRect & targetRect);
+        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
         QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;
         bool contentOpaque() const;

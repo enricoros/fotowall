@@ -538,12 +538,11 @@ void AbstractContent::toXml(QDomElement & contentElement) const
 
 QPixmap AbstractContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
 {
-    Q_UNUSED(ratio)
-    // allocate a pixmap and draw the content over it (NOTE: aspect ratio is ignored)
+    // allocate a fixed size pixmap and draw the content over it
     QPixmap pixmap(size);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawContent(&painter, pixmap.rect());
+    drawContent(&painter, pixmap.rect(), ratio);
     painter.end();
     return pixmap;
 }
@@ -596,7 +595,7 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     // paint the inner contents
     const QRect tcRect = QRect(0, 0, m_contentRect.width(), m_contentRect.height());
     painter->translate(m_contentRect.topLeft());
-    drawContent(painter, tcRect);
+    drawContent(painter, tcRect, Qt::IgnoreAspectRatio);
 
     // overlay a selection
     if (drawSelection && !m_frame) {

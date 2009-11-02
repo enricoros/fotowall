@@ -64,8 +64,10 @@ void WordcloudContent::toXml(QDomElement & contentElement) const
     // ### save all wordclouds
 }
 
-void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect)
+void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
+    Q_UNUSED(ratio)
+
     m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
 }
 

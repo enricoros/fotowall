@@ -36,7 +36,7 @@ class WordcloudContent : public AbstractContent, public SingleResourceLoaner
         QString contentName() const { return tr("Wordcloud"); }
         bool fromXml(QDomElement & contentElement);
         void toXml(QDomElement & contentElement) const;
-        void drawContent(QPainter * painter, const QRect & targetRect);
+        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
 
         // ::SingleResourceLoaner
         QVariant takeResource();

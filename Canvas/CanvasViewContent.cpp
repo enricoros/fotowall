@@ -70,8 +70,10 @@ void CanvasViewContent::toXml(QDomElement & /*parentElement*/) const
 {
 }
 
-void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect)
+void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
+    Q_UNUSED(ratio)
+
     // shouldn't paint if canvas is taken.. use a scary red
     if (m_canvasTaken) {
         painter->fillRect(targetRect, Qt::red);

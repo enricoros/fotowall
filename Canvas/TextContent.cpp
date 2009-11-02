@@ -232,8 +232,10 @@ void TextContent::toXml(QDomElement & contentElement) const
     }
 }
 
-void TextContent::drawContent(QPainter * painter, const QRect & targetRect)
+void TextContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
+    Q_UNUSED(ratio)
+
     // check whether we're drawing shaped
     const bool shapedPaint = hasShape() && !m_shapeRect.isEmpty();
     QPointF shapeOffset = m_shapeRect.topLeft();

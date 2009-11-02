@@ -93,8 +93,10 @@ void WebcamContent::toXml(QDomElement & contentElement) const
     // nothing to save here... (maybe the still pic?)
 }
 
-void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect)
+void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
+    Q_UNUSED(ratio)
+
 #if 0 && QT_VERSION >= 0x040500
     // delay rendering until the element has been fully shown
     if (opacity() < 1.0)

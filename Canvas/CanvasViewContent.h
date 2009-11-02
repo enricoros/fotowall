@@ -36,7 +36,7 @@ class CanvasViewContent : public AbstractContent, public SingleResourceLoaner
         QString contentName() const { return tr("Canvas View"); }
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
-        void drawContent(QPainter * painter, const QRect & targetRect);
+        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;
 
         // ::SingleResourceProvider

@@ -995,20 +995,26 @@ void Canvas::contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
 void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
 {
     // clip exposedRect to the scene
-    QRect targetRect = sceneRect().toAlignedRect().intersect(exposedRect.toAlignedRect());
+    QRect sceneRect = this->sceneRect().toAlignedRect();
+    QRect expRect = sceneRect.intersect(exposedRect.toAlignedRect());
 
     // draw content if set
     if (m_backContent) {
+        // do the HQ painting by hand, to improve quality on scaled views
+        if (RenderOpts::HQRendering) {
+            m_backContent->drawContent(painter, sceneRect, m_backContentRatio);
+            return;
+        }
+
         // regenerate cache if needed
         if (m_backCache.isNull() || m_backCache.size() != sceneSize())
             m_backCache = m_backContent->toPixmap(sceneSize(), m_backContentRatio);
 
         // paint cached background
-        if (m_backContent->contentOpaque())
+        if (m_backContent->contentOpaque() && m_backContentRatio == Qt::IgnoreAspectRatio)
             painter->setCompositionMode(QPainter::CompositionMode_Source);
-        painter->drawPixmap(targetRect, m_backCache, targetRect);
-        if (m_backContent->contentOpaque())
-            painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+        painter->drawPixmap(expRect, m_backCache, expRect);
+        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
         return;
     }
 
@@ -1018,14 +1024,14 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
         lg.setColorAt(0.0, m_grad1ColorPicker->color());
         lg.setColorAt(1.0, m_grad2ColorPicker->color());
         painter->setCompositionMode(QPainter::CompositionMode_Source);
-        painter->fillRect(targetRect, lg);
+        painter->fillRect(expRect, lg);
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
         return;
     }
 
     // draw checkboard to simulate a transparent background
     if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering)
-        painter->drawTiledPixmap(targetRect, m_backTile, QPointF(targetRect.left() % 100, targetRect.top() % 100));
+        painter->drawTiledPixmap(expRect, m_backTile, QPointF(expRect.left() % 100, expRect.top() % 100));
 }
 
 void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect)
