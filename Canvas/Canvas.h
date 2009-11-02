@@ -43,7 +43,7 @@ class Canvas : public AbstractScene
 {
     Q_OBJECT
     public:
-        Canvas(const QSize & initialSize, QObject * parent = 0);
+        Canvas(QObject * parent = 0);
         ~Canvas();
 
         // add/remove content

@@ -24,6 +24,12 @@ void AbstractScene::adjustSceneSize()
     emit geometryChanged();
 }
 
+void AbstractScene::resizeAutoFit()
+{
+    QPointF bottomRight = itemsBoundingRect().bottomRight();
+    resize(QSize(qMax(10, (int)bottomRight.x()), qMax(10, (int)bottomRight.y())));
+}
+
 void AbstractScene::resize(const QSize & size)
 {
     // skip if already ok

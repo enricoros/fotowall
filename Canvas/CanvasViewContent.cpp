@@ -42,12 +42,12 @@ bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*
     // ### HACK ahead
     if (!scene() || scene()->views().isEmpty())
         return false;
-    QRect viewRect = scene()->views().first()->contentsRect();
 
     // create a Canvas
-    Canvas * canvas = new Canvas(viewRect.size(), this);
+    Canvas * canvas = new Canvas(this);
     connect(canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
     bool ok = FotowallFile::read(filePath, canvas, false);
+    canvas->resizeAutoFit();
 
     // set the canvas
     m_canvas = canvas;

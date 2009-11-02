@@ -710,7 +710,7 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
         QRectF sceneRect = scene()->sceneRect();
-        if (!sceneRect.contains(newPos) /*&& rect.width() > 100 && rect.height() > 100*/) {
+        if (!sceneRect.contains(newPos) && sceneRect.width() > 100 && sceneRect.height() > 100) {
             newPos.setX(qBound(sceneRect.left(), newPos.x(), sceneRect.right()));
             newPos.setY(qBound(sceneRect.top(), newPos.y(), sceneRect.bottom()));
             return newPos;

@@ -51,7 +51,8 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
 
     // load content in a canvas
     if (!contentUrls.isEmpty()) {
-        Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
+        Canvas * canvas = new Canvas(this);
+        canvas->resize(m_container->sceneViewSize());
         canvas->addAutoContent(contentUrls);
         pushNode(new CanvasAppliance(canvas, m_container->physicalDpiX(), m_container->physicalDpiY()));
         return;
@@ -191,7 +192,7 @@ bool Workflow::processCommand(const Workflow::Command & command)
             }return true;
 
         case Command::MasterCanvas: {
-            Canvas * canvas = new Canvas(m_container->sceneViewSize(), this);
+            Canvas * canvas = new Canvas(this);
 
             // load a file, if in params
             if (command.param.type() == QVariant::String) {

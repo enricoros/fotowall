@@ -74,10 +74,11 @@ void UrlHistoryBox::slotNextPreview()
     int currentIndex = m_previewIndex++;
     QUrl currentUrl = m_entries[currentIndex]->property("url").toUrl();
 
-    // generate preview (HARDCODED ###)
-    Canvas * canvas = new Canvas(QSize(800, 600));
+    // generate preview (### preview size???)
+    Canvas * canvas = new Canvas(this);
     if (FotowallFile::read(currentUrl.toString(), canvas, false)) {
         // render canvas, rotate, drop shadow and set
+        canvas->resizeAutoFit();
         const QImage image = canvas->renderedImage(QSize(60, 45), Qt::KeepAspectRatio, true);
         QTransform rot;
          int mag = (qrand() % 7) + (qrand() % 7);

@@ -49,7 +49,7 @@
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-Canvas::Canvas(const QSize & initialSize, QObject * parent)
+Canvas::Canvas(QObject * parent)
     : AbstractScene(parent)
     , m_modeInfo(new CanvasModeInfo)
     , m_networkAccessManager(0)
@@ -108,8 +108,8 @@ Canvas::Canvas(const QSize & initialSize, QObject * parent)
     tilePainter.fillRect(50, 50, 50, 50, Qt::darkGray);
     tilePainter.end();
 
-    // set the initial size of the canvas, don't let it grow automatically
-    resize(initialSize);
+    // set a placeholder size, the real one will be set on resize
+    resize(QSize(1, 1));
 
     // crazy background stuff
 #if 0
