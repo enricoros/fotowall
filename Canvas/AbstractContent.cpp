@@ -395,11 +395,17 @@ bool AbstractContent::fromXml(QDomElement & contentElement)
     y = domElement.firstChildElement("y").text().toDouble();
     setPos(x, y);
 
-    int zvalue = contentElement.firstChildElement("zvalue").text().toDouble();
+    qreal zvalue = contentElement.firstChildElement("zvalue").text().toDouble();
     setZValue(zvalue);
 
     bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
+
+#if QT_VERSION >= 0x040500
+    qreal opacity = contentElement.firstChildElement("opacity").text().toDouble();
+    if (opacity > 0.0 && opacity < 1.0)
+        setOpacity(opacity);
+#endif
 
     bool hasText = contentElement.firstChildElement("frame-text-enabled").text().toInt();
     setFrameTextEnabled(hasText);
@@ -480,6 +486,16 @@ void AbstractContent::toXml(QDomElement & contentElement) const
     valueStr.setNum(isVisible());
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
+
+    // Save the opacity
+#if QT_VERSION >= 0x040500
+    if (opacity() < 1.0) {
+        domElement= doc.createElement("opacity");
+        contentElement.appendChild(domElement);
+        text = doc.createTextNode(QString::number(opacity()));
+        domElement.appendChild(text);
+    }
+#endif
 
     // Save the frame class
     valueStr.setNum(frameClass());
