@@ -22,7 +22,7 @@ namespace Ui { class ExportWizard; }
 class ExportWizard : public QWizard {
     Q_OBJECT
     public:
-        ExportWizard(Canvas * canvas);
+        ExportWizard(Canvas * canvas, bool printPreferred);
         ~ExportWizard();
 
         // the main functions
@@ -32,6 +32,7 @@ class ExportWizard : public QWizard {
         void print();
         void saveSvg();
 
+    protected:
         // manually sets a page
         void setPage(int pageId);
 
@@ -42,16 +43,18 @@ class ExportWizard : public QWizard {
         enum PageCode { PageMode = 0, PageWallpaper = 1, PageImage = 2, PagePosteRazor = 3, PagePrint = 4, PageSvg = 5 };
         Ui::ExportWizard * m_ui;
         Canvas * m_canvas;
+        bool m_printPreferred;
         int m_nextId;
-        QSizeF m_printSize; // the print size in inches
+        QSizeF m_printSizeInches;
 
     private slots:
         // contents related
         void slotChoosePath();
         void slotChooseSvgPath();
+        void slotImageFromCanvas();
+        void slotImageFromDpi();
         void slotPrintUnityChanged(int);
-        void slotPrintWidthChanged(double);
-        void slotPrintHeightChanged(double);
+        void slotPrintSizeChanged();
 
         // wizard related
         void slotFinished(int);

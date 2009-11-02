@@ -31,22 +31,6 @@
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_4">
     <item>
-     <widget class="QCommandLinkButton" name="clWallpaper">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>40</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Wallpaper</string>
-      </property>
-      <property name="nextPageId" stdset="0">
-       <number>1</number>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QCommandLinkButton" name="clImage">
       <property name="minimumSize">
        <size>
@@ -59,6 +43,22 @@
       </property>
       <property name="nextPageId" stdset="0">
        <number>2</number>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCommandLinkButton" name="clWallpaper">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Wallpaper</string>
+      </property>
+      <property name="nextPageId" stdset="0">
+       <number>1</number>
       </property>
      </widget>
     </item>
@@ -224,8 +224,14 @@
        </item>
        <item row="0" column="2" rowspan="2">
         <widget class="QLabel" name="label_10">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
-          <string>Pixels</string>
+          <string>Pixel</string>
          </property>
         </widget>
        </item>
@@ -244,6 +250,50 @@
         </widget>
        </item>
        <item row="2" column="0" colspan="3">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QToolButton" name="imgFromCanvas">
+           <property name="text">
+            <string>Reset to Canvas</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="imgFromDpi">
+           <property name="text">
+            <string>From Printing Dpi</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0" colspan="3">
         <widget class="QCheckBox" name="saveLandscape">
          <property name="text">
           <string>Landscape</string>
@@ -447,11 +497,11 @@
        </item>
        <item row="2" column="1">
         <widget class="QSpinBox" name="printDpi">
+         <property name="minimum">
+          <number>10</number>
+         </property>
          <property name="maximum">
           <number>1000</number>
-         </property>
-         <property name="value">
-          <number>300</number>
          </property>
         </widget>
        </item>

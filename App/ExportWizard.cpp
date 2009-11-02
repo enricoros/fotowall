@@ -15,6 +15,7 @@
 #include "ExportWizard.h"
 
 #include "Canvas/Canvas.h"
+#include "Canvas/CanvasModeInfo.h"
 #include "App.h"
 #include "Settings.h"
 #include "ui_ExportWizard.h"
@@ -29,12 +30,14 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QLocale>
 #include <QMessageBox>
 #include <QProcess>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QSettings>
 #include <QSvgGenerator>
+#include <QTimer>
 #include <QUrl>
 #include <math.h>
 
@@ -45,10 +48,11 @@
 #define POSTERAZOR_WEBSITE_LINK "http://posterazor.sourceforge.net/"
 #define POSTERAZOR_TUTORIAL_LINK "http://www.youtube.com/watch?v=p7XsFZ4Leo8"
 
-ExportWizard::ExportWizard(Canvas * canvas)
+ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     : QWizard()
     , m_ui(new Ui::ExportWizard)
     , m_canvas(canvas)
+    , m_printPreferred(printPreferred)
     , m_nextId(0)
 {
     // create and init UI
@@ -71,22 +75,41 @@ ExportWizard::ExportWizard(Canvas * canvas)
     // set default sizes
     m_ui->saveHeight->setValue(m_canvas->height());
     m_ui->saveWidth->setValue(m_canvas->width());
-    m_ui->printWidth->setValue(m_canvas->width());
-    m_ui->printHeight->setValue(m_canvas->height());
-    m_printSize.setWidth(m_canvas->width()/m_ui->printDpi->value());
-    m_printSize.setHeight(m_canvas->height()/m_ui->printDpi->value());
+    m_ui->imgFromDpi->setEnabled(m_printPreferred);
+    m_ui->printDpi->setValue(m_canvas->modeInfo()->printDpi());
+    m_ui->printLandscape->setChecked(m_canvas->modeInfo()->printLandscape());
+    m_printSizeInches = m_canvas->modeInfo()->fixedSizeInches();
 
     // connect buttons
     connect(m_ui->chooseFilePath, SIGNAL(clicked()), this, SLOT(slotChoosePath()));
+    connect(m_ui->imgFromCanvas, SIGNAL(clicked()), this, SLOT(slotImageFromCanvas()));
+    connect(m_ui->imgFromDpi, SIGNAL(clicked()), this, SLOT(slotImageFromDpi()));
     connect(m_ui->printUnity, SIGNAL(currentIndexChanged(int)), this, SLOT(slotPrintUnityChanged(int)));
-    connect(m_ui->printWidth, SIGNAL(valueChanged(double)), this, SLOT(slotPrintWidthChanged(double)));
-    connect(m_ui->printHeight, SIGNAL(valueChanged(double)), this, SLOT(slotPrintHeightChanged(double)));
+    connect(m_ui->printWidth, SIGNAL(valueChanged(double)), this, SLOT(slotPrintSizeChanged()));
+    connect(m_ui->printHeight, SIGNAL(valueChanged(double)), this, SLOT(slotPrintSizeChanged()));
+    connect(m_ui->printDpi, SIGNAL(valueChanged(int)), this, SLOT(slotPrintSizeChanged()));
     connect(m_ui->svgChooseFilePath, SIGNAL(clicked()), this, SLOT(slotChooseSvgPath()));
+    bool imperial = QLocale::system().measurementSystem() == QLocale::ImperialSystem;
+    m_ui->printUnity->setCurrentIndex(imperial ? 2 : 1);
 
     // configure Wizard
     setOptions(NoDefaultButton | NoBackButtonOnStartPage | IndependentPages);
     setPage(PageMode);
     setMinimumWidth(400);
+    if (m_printPreferred) {
+        // clear the boldness of non-print buttons
+        QFont font;
+        font.setBold(false);
+        m_ui->clImage->setFont(font);
+        m_ui->clWallpaper->setFont(font);
+        m_ui->clPosteRazor->setFont(font);
+        m_ui->clSvg->setFont(font);
+
+        // set the focus to the print button
+        show();
+        m_ui->clPrint->setFocus();
+        //QTimer::singleShot(800, m_ui->clPrint, SLOT(animateClick()));
+    }
 
     // react to 'finish'
     connect(this, SIGNAL(finished(int)), this, SLOT(slotFinished(int)));
@@ -232,23 +255,29 @@ void ExportWizard::startPosterazor()
 
 void ExportWizard::print()
 {
-    int dpi = m_ui->printDpi->value();
-    float w = m_ui->printWidth->value(), h=m_ui->printHeight->value();
-    if (m_ui->printUnity->currentIndex() == 0) { // If pixels
-        m_printSize.setWidth(w/dpi);
-        m_printSize.setHeight(h/dpi);
-    } else if (m_ui->printUnity->currentIndex() == 1) { // If cm
-        m_printSize.setWidth(w/2.54); //Convert in inches
-        m_printSize.setHeight(h/2.54);
-    } else if (m_ui->printUnity->currentIndex() == 2) { //If inches
-        m_printSize.setWidth(w);
-        m_printSize.setHeight(h);
+    // update the realsizeinches, just in case..
+    slotPrintSizeChanged();
+
+    // get dpi, compute printed size
+    int printDpi = m_ui->printDpi->value();
+    int printWidth = (int)(m_printSizeInches.width() * (float)printDpi);
+    int printHeight = (int)(m_printSizeInches.height() * (float)printDpi);
+    QSize printSize(printWidth, printHeight);
+    Qt::AspectRatioMode printRatio = m_ui->printKeepRatio->isChecked() ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio;
+
+    // check if print params differ from the 'Exact Size' stuff
+    if (m_printPreferred) {
+        if (printDpi != m_canvas->modeInfo()->printDpi()) {
+            qWarning("ExportWizard::print: dpi changed to %d from the default %d", printDpi, (int)m_canvas->modeInfo()->printDpi());
+        } else {
+            QSize exactPrintSize = m_canvas->modeInfo()->fixedPrinterPixels();
+            if (printSize != exactPrintSize)
+                qWarning("ExportWizard::print: size changed to %dx%d from the default %dx%d", printWidth, printHeight, exactPrintSize.width(), exactPrintSize.height());
+        }
     }
 
-    int width = (int)(m_printSize.width() * (float)dpi);
-    int height = (int)(m_printSize.height() * (float)dpi);
-    Qt::AspectRatioMode ratioMode = m_ui->printKeepRatio->isChecked() ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio;
-    m_canvas->printAsImage(dpi, QSize(width, height), m_ui->printLandscape->isChecked(), ratioMode);
+    // do the printing
+    m_canvas->printAsImage(printDpi, printSize, m_ui->printLandscape->isChecked(), printRatio);
 }
 
 void ExportWizard::saveSvg()
@@ -363,47 +392,51 @@ void ExportWizard::slotChooseSvgPath()
         m_ui->svgFilePath->setText(savePath);
 }
 
+void ExportWizard::slotImageFromCanvas()
+{
+    m_ui->saveWidth->setValue(m_canvas->width());
+    m_ui->saveHeight->setValue(m_canvas->height());
+}
+
+void ExportWizard::slotImageFromDpi()
+{
+    QSize printSize = m_canvas->modeInfo()->fixedPrinterPixels();
+    m_ui->saveWidth->setValue(printSize.width());
+    m_ui->saveHeight->setValue(printSize.height());
+}
+
 void ExportWizard::slotPrintUnityChanged(int index)
 {
-    if(index == 0) {
-        m_ui->printWidth->setValue(m_printSize.width() * m_ui->printDpi->value());
-        m_ui->printHeight->setValue(m_printSize.height() * m_ui->printDpi->value());
-    }
-    if(index == 1) { //convert to cm
-         m_ui->printWidth->setValue(m_printSize.width() * 2.54);
-         m_ui->printHeight->setValue(m_printSize.height() * 2.54);
+    m_ui->printWidth->blockSignals(true);
+    m_ui->printHeight->blockSignals(true);
+    if (index == 0) {
+        m_ui->printWidth->setValue(m_printSizeInches.width() * (qreal)m_ui->printDpi->value());
+        m_ui->printHeight->setValue(m_printSizeInches.height() * (qreal)m_ui->printDpi->value());
+    } else if (index == 1) {
+        m_ui->printWidth->setValue(m_printSizeInches.width() * 2.54);
+        m_ui->printHeight->setValue(m_printSizeInches.height() * 2.54);
     } else if (index == 2) {
-         m_ui->printWidth->setValue(m_printSize.width());
-         m_ui->printHeight->setValue(m_printSize.height());
+        m_ui->printWidth->setValue(m_printSizeInches.width());
+        m_ui->printHeight->setValue(m_printSizeInches.height());
     }
+    m_ui->printWidth->blockSignals(false);
+    m_ui->printHeight->blockSignals(false);
 }
 
-void ExportWizard::slotPrintWidthChanged(double newWidth)
+void ExportWizard::slotPrintSizeChanged()
 {
+    qreal newWidth = m_ui->printWidth->value();
+    qreal newHeight = m_ui->printHeight->value();
+    qreal newDpi = (qreal)m_ui->printDpi->value();
     switch(m_ui->printUnity->currentIndex()) {
-        case 0: // Convert pixels to inches
-            m_printSize.setWidth(newWidth/m_ui->printDpi->value());
+        case 0: // pixels/dpi -> inches
+            m_printSizeInches = QSizeF(newWidth / newDpi, newHeight / newDpi);
             break;
-        case 1: //Convert cm to inches
-            m_printSize.setWidth(newWidth/2.54);
+        case 1: // cm/2.54 -> inches
+            m_printSizeInches = QSizeF(newWidth / 2.54, newHeight / 2.54);
             break;
-        case 2:
-            m_printSize.setWidth(m_ui->printWidth->value());
-            break;
-    }
-}
-
-void ExportWizard::slotPrintHeightChanged(double newHeight)
-{
-    switch(m_ui->printUnity->currentIndex()) {
-        case 0: // Convert pixels to inches
-            m_printSize.setHeight(newHeight/m_ui->printDpi->value());
-            break;
-        case 1: //Convert cm to inches
-            m_printSize.setHeight(newHeight/2.54);
-            break;
-        case 2:
-            m_printSize.setHeight(m_ui->printHeight->value());
+        case 2: // inches -> inches
+            m_printSizeInches = QSizeF(newWidth, newHeight);
             break;
     }
 }

@@ -33,6 +33,7 @@ Work in progress:
 
 Done:
 
+* Print/Export polishing
 * Stacked editing
 * Cursor key movement
 * OpenGL testing and performance auto-detection

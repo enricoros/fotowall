@@ -319,7 +319,6 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
 void CanvasAppliance::configurePrint(bool enabled)
 {
     ui.exportButton->setText(enabled ? tr("Print") : tr("Export"));
-    ui.exportButton->setProperty("printing", enabled);
 }
 
 void CanvasAppliance::slotAddCanvas()
@@ -458,9 +457,7 @@ bool CanvasAppliance::slotFileSave()
 
 bool CanvasAppliance::slotFileExport()
 {
-    if (m_extCanvas->modeInfo()->projectMode() == CanvasModeInfo::ModeNormal)
-        return ExportWizard(m_extCanvas).exec();
-    return m_extCanvas->printAsImage(m_extCanvas->modeInfo()->printDpi(), m_extCanvas->modeInfo()->fixedPrinterPixels(), m_extCanvas->modeInfo()->printLandscape());
+    return ExportWizard(m_extCanvas, m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeNormal).exec();
 }
 
 void CanvasAppliance::slotEditContent(AbstractContent *content)
