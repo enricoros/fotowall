@@ -65,7 +65,8 @@ QPointF CanvasModeInfo::screenDpi() const
 
 void CanvasModeInfo::setPrintDpi(float dpi)
 {
-    m_printDpi = dpi;
+    if (dpi > 0)
+        m_printDpi = dpi;
 }
 
 float CanvasModeInfo::printDpi() const
