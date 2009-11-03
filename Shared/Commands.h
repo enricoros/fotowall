@@ -354,21 +354,42 @@ class BackgroundContentCommand : public AbstractCommand {
 class BackgroundRatioCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
-        const Qt::AspectRatioMode m_previousMode, m_newMode;
+        const Qt::AspectRatioMode m_previousRatio, m_newRatio;
     public:
-        BackgroundRatioCommand(Canvas *desk, const Qt::AspectRatioMode& previousMode, const Qt::AspectRatioMode& newMode)
+        BackgroundRatioCommand(Canvas *desk, const Qt::AspectRatioMode& previousRatio, const Qt::AspectRatioMode& newRatio)
+            : m_canvas(desk)
+            , m_previousRatio(previousRatio)
+            , m_newRatio(newRatio)
+        {}
+        void exec() {
+            m_canvas->setBackContentRatio(m_newRatio);
+        }
+        void unexec() {
+            m_canvas->setBackContentRatio(m_previousRatio);
+        }
+        QString name() {
+            return tr("New background ratio");
+        }
+};
+
+class BackgroundModeCommand : public AbstractCommand {
+    private:
+        Canvas *m_canvas;
+        const Canvas::BackMode m_previousMode, m_newMode;
+    public:
+        BackgroundModeCommand(Canvas *desk, const Canvas::BackMode& previousMode, const Canvas::BackMode& newMode)
             : m_canvas(desk)
             , m_previousMode(previousMode)
             , m_newMode(newMode)
         {}
         void exec() {
-            m_canvas->setBackContentRatio(m_newMode);
+            m_canvas->setBackMode(m_newMode);
         }
         void unexec() {
-            m_canvas->setBackContentRatio(m_previousMode);
+            m_canvas->setBackMode(m_previousMode);
         }
         QString name() {
-            return tr("New background ratio");
+            return tr("New background mode");
         }
 };
 

@@ -14,6 +14,9 @@
 
 #include "CanvasAppliance.h"
 
+#include "Shared/CommandStack.h"
+#include "Shared/Commands.h"
+
 #include "Canvas/CanvasModeInfo.h"
 #include "Canvas/CanvasViewContent.h"
 #include "Canvas/Canvas.h"
@@ -405,13 +408,15 @@ void CanvasAppliance::slotProjectComboActivated(int index)
 void CanvasAppliance::slotSetBackMode(QAction* action)
 {
     Canvas::BackMode mode = (Canvas::BackMode)action->property("modeId").toInt();
-    m_extCanvas->setBackMode(mode);
+    BackgroundModeCommand *command = new BackgroundModeCommand(m_extCanvas, m_extCanvas->backMode(), mode);
+    CommandStack::instance().doCommand(command);
 }
 
 void CanvasAppliance::slotSetBackRatio(QAction* action)
 {
     Qt::AspectRatioMode ratio = (Qt::AspectRatioMode)action->property("ratioId").toInt();
-    m_extCanvas->setBackContentRatio(ratio);
+    BackgroundRatioCommand *command = new BackgroundRatioCommand(m_extCanvas, m_extCanvas->backContentRatio(), ratio);
+    CommandStack::instance().doCommand(command);
 }
 
 void CanvasAppliance::slotArrangeForceField(bool checked)
