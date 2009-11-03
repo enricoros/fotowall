@@ -167,8 +167,12 @@
      </item>
      <item>
       <widget class="QToolButton" name="gimpButton">
-       <property name="text">
-        <string>Gimp</string>
+       <property name="icon">
+        <iconset resource="../fotowall.qrc">
+         <normaloff>:/data/picture-gimp.png</normaloff>:/data/picture-gimp.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

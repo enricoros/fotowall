@@ -113,14 +113,14 @@ PE_AbstractButton::PE_AbstractButton(QAbstractButton * _button, QObject * _targe
 void PE_AbstractButton::slotButtonChecked(bool boolValue)
 {
     // set the property to the current state of the button
-    if (m_control && m_target && m_property.type() == QVariant::Int)
+    if (m_control && m_target && (m_property.type() == QVariant::Int || m_property.type() == QVariant::Bool))
         m_property.write(m_target.data(), boolValue);
 }
 
 void PE_AbstractButton::slotPropertyChanged()
 {
     // set the button check state as the bool property
-    if (m_control && m_target && m_property.type() == QVariant::Bool) {
+    if (m_control && m_target && (m_property.type() == QVariant::Int || m_property.type() == QVariant::Bool)) {
         bool boolValue = m_property.read(m_target.data()).toBool();
         m_control->setChecked(boolValue);
     }

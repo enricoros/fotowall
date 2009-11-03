@@ -91,7 +91,7 @@ class HomeLabel : public AbstractContent
             }
         }
 
-        void drawContent(QPainter * painter, const QRect & targetRect)
+        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode /*ratio*/)
         {
             painter->setRenderHint(QPainter::SmoothPixmapTransform, property("scale").toDouble() == 1.2);
             painter->drawPixmap(targetRect, m_pixmap);

@@ -51,8 +51,9 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         Ui::CanvasApplianceElements ui;
         Canvas *                    m_extCanvas;
         QWidget *                   m_dummyWidget;
-        QActionGroup *              m_gBackActions;
-        QActionGroup *              m_gBackRatioActions;
+        QActionGroup *              m_gBackModeGroup;
+        QActionGroup *              m_gBackRatioGroup;
+        QAction *                   m_gBackContentAction;
 
     private Q_SLOTS:
 
@@ -65,6 +66,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         void slotSearchPicturesToggled(bool on);
 
         // actions in the Canvas box
+        void slotBackContentRemove(bool checked);
         void slotProjectComboActivated(int index);
         void slotSetBackMode(QAction* action);
         void slotSetBackRatio(QAction* action);
@@ -84,8 +86,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 
         // signals from the canvas
         void slotEditContent(AbstractContent * content);
-        void slotBackModeChanged();
-        void slotBackRatioChanged();
+        void slotBackConfigChanged();
         void slotShowPropertiesWidget(QWidget *);
 
         // other actions

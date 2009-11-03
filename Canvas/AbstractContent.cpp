@@ -395,11 +395,17 @@ bool AbstractContent::fromXml(QDomElement & contentElement)
     y = domElement.firstChildElement("y").text().toDouble();
     setPos(x, y);
 
-    int zvalue = contentElement.firstChildElement("zvalue").text().toDouble();
+    qreal zvalue = contentElement.firstChildElement("zvalue").text().toDouble();
     setZValue(zvalue);
 
     bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
+
+#if QT_VERSION >= 0x040500
+    qreal opacity = contentElement.firstChildElement("opacity").text().toDouble();
+    if (opacity > 0.0 && opacity < 1.0)
+        setOpacity(opacity);
+#endif
 
     bool hasText = contentElement.firstChildElement("frame-text-enabled").text().toInt();
     setFrameTextEnabled(hasText);
@@ -481,6 +487,16 @@ void AbstractContent::toXml(QDomElement & contentElement) const
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
+    // Save the opacity
+#if QT_VERSION >= 0x040500
+    if (opacity() < 1.0) {
+        domElement= doc.createElement("opacity");
+        contentElement.appendChild(domElement);
+        text = doc.createTextNode(QString::number(opacity()));
+        domElement.appendChild(text);
+    }
+#endif
+
     // Save the frame class
     valueStr.setNum(frameClass());
     domElement= doc.createElement("frame-class");
@@ -522,12 +538,11 @@ void AbstractContent::toXml(QDomElement & contentElement) const
 
 QPixmap AbstractContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
 {
-    Q_UNUSED(ratio)
-    // allocate a pixmap and draw the content over it (NOTE: aspect ratio is ignored)
+    // allocate a fixed size pixmap and draw the content over it
     QPixmap pixmap(size);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawContent(&painter, pixmap.rect());
+    drawContent(&painter, pixmap.rect(), ratio);
     painter.end();
     return pixmap;
 }
@@ -580,14 +595,16 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     // paint the inner contents
     const QRect tcRect = QRect(0, 0, m_contentRect.width(), m_contentRect.height());
     painter->translate(m_contentRect.topLeft());
-    drawContent(painter, tcRect);
+    drawContent(painter, tcRect, Qt::IgnoreAspectRatio);
 
     // overlay a selection
     if (drawSelection && !m_frame) {
         painter->setRenderHint(QPainter::Antialiasing, true);
-        painter->setPen(QPen(RenderOpts::hiColor, 2.0));
+        QPen selPen(RenderOpts::hiColor, 2.0);
+        selPen.setJoinStyle(Qt::MiterJoin);
+        painter->setPen(selPen);
         painter->setBrush(Qt::NoBrush);
-        painter->drawRect(tcRect);
+        painter->drawRect(tcRect.adjusted(1, 1, -1, -1));
     }
 }
 
@@ -694,7 +711,7 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
         QRectF sceneRect = scene()->sceneRect();
-        if (!sceneRect.contains(newPos) /*&& rect.width() > 100 && rect.height() > 100*/) {
+        if (!sceneRect.contains(newPos) && sceneRect.width() > 100 && sceneRect.height() > 100) {
             newPos.setX(qBound(sceneRect.left(), newPos.x(), sceneRect.right()));
             newPos.setY(qBound(sceneRect.top(), newPos.y(), sceneRect.bottom()));
             return newPos;

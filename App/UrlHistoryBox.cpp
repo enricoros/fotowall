@@ -41,6 +41,7 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
         connect(button, SIGNAL(clicked()), this, SLOT(slotClicked()));
         button->setProperty("url", url);
         button->setHoverText(QString::number(i+1));
+        button->setToolTip(url.toString());
         lay->addWidget(button);
         m_entries.append(button);
     }
@@ -74,10 +75,11 @@ void UrlHistoryBox::slotNextPreview()
     int currentIndex = m_previewIndex++;
     QUrl currentUrl = m_entries[currentIndex]->property("url").toUrl();
 
-    // generate preview (HARDCODED ###)
-    Canvas * canvas = new Canvas(QSize(800, 600));
+    // generate preview (### preview size???)
+    Canvas * canvas = new Canvas(this);
     if (FotowallFile::read(currentUrl.toString(), canvas, false)) {
         // render canvas, rotate, drop shadow and set
+        canvas->resizeAutoFit();
         const QImage image = canvas->renderedImage(QSize(60, 45), Qt::KeepAspectRatio, true);
         QTransform rot;
          int mag = (qrand() % 7) + (qrand() % 7);

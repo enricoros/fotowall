@@ -29,6 +29,7 @@ class AbstractScene : public QGraphicsScene
         void adjustSceneSize();
 
         // scene size
+        void resizeAutoFit();
         virtual void resize(const QSize & size);
         virtual void resizeEvent();
         inline int sceneWidth() const { return m_size.width(); }

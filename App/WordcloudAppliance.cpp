@@ -55,23 +55,24 @@ WordcloudAppliance::WordcloudAppliance(Wordcloud::Cloud * extCloud, QObject * pa
   , m_scene(new WordcloudScene(extCloud))
   , ui(new Ui::WordcloudApplianceElements)
   , m_dummyWidget(new QWidget)
+  , m_sidebar(0)
 {
     // init UI
     ui->setupUi(m_dummyWidget);
 
     // set the target scene of the cloud to this
-    QWidget * sideBar = new QWidget();
-    sideBar->setAutoFillBackground(true);
+    m_sidebar = new QWidget();
+    m_sidebar->setAutoFillBackground(true);
     QPalette pal;
     pal.setBrush(QPalette::Window, Qt::lightGray);
-    sideBar->setPalette(pal);
-    QVBoxLayout * lay = new QVBoxLayout(sideBar);
+    m_sidebar->setPalette(pal);
+    QVBoxLayout * lay = new QVBoxLayout(m_sidebar);
 
-    QPushButton * btn1 = new QPushButton(tr("Regen"), sideBar);
+    QPushButton * btn1 = new QPushButton(tr("Regen"), m_sidebar);
     connect(btn1, SIGNAL(clicked()), this, SLOT(slotRegenCloud()));
     lay->addWidget(btn1);
 
-    QPushButton * btn2 = new QPushButton(tr("Randomize"), sideBar);
+    QPushButton * btn2 = new QPushButton(tr("Randomize"), m_sidebar);
     connect(btn2, SIGNAL(clicked()), this, SLOT(slotRandomizeCloud()));
     lay->addWidget(btn2);
 
@@ -79,7 +80,7 @@ WordcloudAppliance::WordcloudAppliance(Wordcloud::Cloud * extCloud, QObject * pa
 
     // configure the appliance
     sceneSet(m_scene);
-    sidebarSetWidget(sideBar);
+    sidebarSetWidget(m_sidebar);
 }
 
 WordcloudAppliance::~WordcloudAppliance()
@@ -88,6 +89,7 @@ WordcloudAppliance::~WordcloudAppliance()
         qWarning("WordcloudAppliance::~WordcloudAppliance: cloud's still here.. take it!");
         m_extCloud->setScene(0);
     }
+    delete m_sidebar;
     delete m_scene;
     delete m_dummyWidget;
     delete ui;
@@ -98,6 +100,7 @@ Wordcloud::Cloud * WordcloudAppliance::takeCloud()
     Wordcloud::Cloud * cloud = m_extCloud;
     m_extCloud = 0;
     cloud->setScene(0);
+    sceneClear();
     return cloud;
 }
 

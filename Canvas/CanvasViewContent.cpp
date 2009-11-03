@@ -42,12 +42,12 @@ bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*
     // ### HACK ahead
     if (!scene() || scene()->views().isEmpty())
         return false;
-    QRect viewRect = scene()->views().first()->contentsRect();
 
     // create a Canvas
-    Canvas * canvas = new Canvas(viewRect.size(), this);
+    Canvas * canvas = new Canvas(this);
     connect(canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
     bool ok = FotowallFile::read(filePath, canvas, false);
+    canvas->resizeAutoFit();
 
     // set the canvas
     m_canvas = canvas;
@@ -70,8 +70,10 @@ void CanvasViewContent::toXml(QDomElement & /*parentElement*/) const
 {
 }
 
-void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect)
+void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
+    Q_UNUSED(ratio)
+
     // shouldn't paint if canvas is taken.. use a scary red
     if (m_canvasTaken) {
         painter->fillRect(targetRect, Qt::red);
@@ -113,9 +115,9 @@ void CanvasViewContent::returnResource(const QVariant & resource)
 {
     // sanity checks
     if (!m_canvasTaken)
-        qWarning("CanvasViewContent::returnCanvas: not taken");
+        qWarning("CanvasViewContent::returnResource: not taken");
     if (m_canvas) {
-        qWarning("CanvasViewContent::returnCanvas: we already have one canvas, shouldn't return one");
+        qWarning("CanvasViewContent::returnResource: we already have one canvas, shouldn't return one");
         delete m_canvas;
     }
 

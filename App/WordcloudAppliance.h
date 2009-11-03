@@ -43,6 +43,7 @@ class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
         AbstractScene * m_scene;
         Ui::WordcloudApplianceElements * ui;
         QWidget * m_dummyWidget;
+        QWidget * m_sidebar;
 
     private Q_SLOTS:
         void slotRegenCloud();

@@ -34,7 +34,7 @@
 
 Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
   : QDialog(parent, flags)
-  , m_canvas(new Canvas(FIXEDSIZE))
+  , m_canvas(new Canvas(this))
   , m_view(0)
   , m_resultIdx(0)
   , m_retCode(Canceled)
@@ -64,6 +64,7 @@ Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
     pixPainter.end();
 
     // populate scene with PictureContents
+    m_canvas->resize(FIXEDSIZE);
     m_pictures.resize(TESTSIZE);
     m_results.resize((TESTPOWER + 1) * 2);
     for (int i = 0; i < TESTSIZE; i++) {
