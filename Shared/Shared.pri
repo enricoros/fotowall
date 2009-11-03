@@ -26,6 +26,7 @@ HEADERS += \
     Shared/VideoProvider.h \
     Shared/AbstractCommand.h \
     Shared/Commands.h \
+    Shared/GroupedCommands.h \
     Shared/CommandStack.h
 
 
@@ -52,7 +53,8 @@ SOURCES += \
     Shared/PropertyEditors.cpp \
     Shared/MetaXmlReader.cpp \
     Shared/VideoProvider.cpp \
-    Shared/CommandStack.cpp
+    Shared/CommandStack.cpp \
+    Shared/GroupedCommands.cpp
 
 FORMS += \
     Shared/CroppingDialog.ui \

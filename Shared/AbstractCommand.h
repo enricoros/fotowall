@@ -24,7 +24,9 @@ class AbstractCommand : public QObject {
     public:
         virtual void exec() = 0;
         virtual void unexec() = 0;
-        virtual QString name() = 0;
+        virtual QString name() {
+            return QString();
+        }
         virtual QString description() {
            return QString();
         }

@@ -16,6 +16,7 @@
 
 #include "Shared/CommandStack.h"
 #include "Shared/Commands.h"
+#include "Shared/GroupedCommands.h"
 
 #include "Shared/PictureServices/AbstractPictureService.h"
 #include "Frames/FrameFactory.h"
@@ -1256,8 +1257,7 @@ void Canvas::slotBackgroundContent()
 {
     AbstractContent *back = dynamic_cast<AbstractContent *>(sender());
     BackgroundContentCommand * command = new BackgroundContentCommand(this, m_backContent, back);
-    CommandStack &stack = CommandStack::instance();
-    stack.doCommand(command);
+    CommandStack::instance().doCommand(command);
 }
 
 void Canvas::slotConfigureContent(const QPoint & scenePoint)
@@ -1433,11 +1433,13 @@ void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
 void Canvas::slotApplyEffect(const PictureEffect & effect, bool all)
 {
     QList<PictureContent *> pictures = projectList<AbstractContent, PictureContent>(m_content);
-    foreach (PictureContent * picture, pictures)
+    GroupedCommands *gc = new GroupedCommands();
+    foreach (PictureContent * picture, pictures) {
         if (all || picture->isSelected()) {
-            EffectCommand *command = new EffectCommand(picture, effect);
-            CommandStack::instance().doCommand(command);
+            gc->addCommand(new EffectCommand(picture, effect));
         }
+    }
+    CommandStack::instance().doCommand(gc);
 }
 
 void Canvas::slotCrop()
@@ -1450,19 +1452,21 @@ void Canvas::slotCrop()
 void Canvas::slotFlipHorizontally()
 {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
+    GroupedCommands *gc = new GroupedCommands();
     foreach (PictureContent * picture, pictures) {
-        EffectCommand * command = new EffectCommand(picture, PictureEffect::FlipH);
-        CommandStack::instance().doCommand(command);
+        gc->addCommand(new EffectCommand(picture, PictureEffect::FlipH));
     }
+    CommandStack::instance().doCommand(gc);
 }
 
 void Canvas::slotFlipVertically()
 {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
+    GroupedCommands *gc = new GroupedCommands();
     foreach (PictureContent * picture, pictures) {
-        EffectCommand * command = new EffectCommand(picture, PictureEffect::FlipV);
-        CommandStack::instance().doCommand(command);
+        gc->addCommand(new EffectCommand(picture, PictureEffect::FlipV));
     }
+    CommandStack::instance().doCommand(gc);
 }
 
 void Canvas::slotTitleColorChanged()
@@ -1544,5 +1548,5 @@ void Canvas::slotApplyForce()
         t->vVel += t->vForce * dT;
         t->vPos += (vStart + t->vVel) * dT / 2.0;
         t->setPos(t->vPos.x(), t->vPos.y());
-    }
+   }
 }
