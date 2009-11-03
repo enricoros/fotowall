@@ -78,6 +78,8 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
 PictureContent::~PictureContent()
 {
     dropNetworkConnection();
+    delete m_watcherTimer;
+    delete m_watcher;
     delete m_photo;
 }
 
@@ -235,15 +237,12 @@ QWidget * PictureContent::createPropertyWidget()
     PictureProperties * p = new PictureProperties();
 
     // connect actions
+    new PE_AbstractButton(p->gimpButton, this, "externalEdit", p);
     new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
     p->perspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
     new PE_PaneWidget(p->perspWidget, this, "perspective", p);
 
     // properties link
-    connect(p->gimpButton, SIGNAL(clicked()), this, SLOT(slotGimpEdit()));
-    //p->bEditShape->setChecked(isShapeEditing());
-    //connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
-    //connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));
 
     return p;
 }
@@ -422,6 +421,49 @@ void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
     emit requestBackgrounding();
 }
 
+void PictureContent::setExternalEdit(bool enabled)
+{
+    if (!m_photo)
+        return;
+
+    // start gimp if requested
+    if (enabled && !m_watcher) {
+        // save the pic to a file
+        QString fileName = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(qrand() % 999999) + ".png";
+        if (!m_photo->save(fileName, "PNG")) {
+            qWarning("PictureContent::slotGimpEdit: can't save the image");
+            return;
+        }
+
+        // open it with the gimp
+        if (!QProcess::startDetached("gimp", QStringList() << fileName)) {
+            qWarning("PictureContent::slotGimpEdit: can't start The Gimp");
+            return;
+        }
+
+        // start a watcher over it
+        delete m_watcher;
+        m_watcher = new QFileSystemWatcher(this);
+        m_watcher->setProperty("fullName", fileName);
+        m_watcher->addPath(fileName);
+        connect(m_watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(slotGimpCompressNotifies()));
+        return;
+    }
+
+    // delete if requested
+    if (m_watcher && !enabled) {
+        delete m_watcherTimer;
+        m_watcherTimer = 0;
+        delete m_watcher;
+        m_watcher = 0;
+    }
+}
+
+bool PictureContent::externalEdit() const
+{
+    return m_watcher;
+}
+
 void PictureContent::dropNetworkConnection()
 {
     if (m_netReply) {
@@ -445,32 +487,6 @@ void PictureContent::applyPostLoadEffects()
     GFX_CHANGED();
 }
 
-void PictureContent::slotGimpEdit()
-{
-    if (!m_photo)
-        return;
-
-    // save the pic to a file
-    QString fileName = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(qrand() % 999999) + ".png";
-    if (!m_photo->save(fileName, "PNG")) {
-        qWarning("PictureContent::slotGimpEdit: can't save the image");
-        return;
-    }
-
-    // open it with the gimp
-    if (!QProcess::startDetached("gimp", QStringList() << fileName)) {
-        qWarning("PictureContent::slotGimpEdit: can't start The Gimp");
-        return;
-    }
-
-    // start a watcher over it
-    delete m_watcher;
-    m_watcher = new QFileSystemWatcher(this);
-    m_watcher->setProperty("fullName", fileName);
-    m_watcher->addPath(fileName);
-    connect(m_watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(slotGimpCompressNotifies()));
-}
-
 void PictureContent::slotGimpCompressNotifies()
 {
     if (!m_watcherTimer) {
@@ -487,8 +503,6 @@ void PictureContent::slotGimpFinished()
     if (!m_watcher)
         return;
     QString fileName = m_watcher->property("fullName").toString();
-    delete m_watcher;
-    m_watcher = 0;
 
     // reload the file
     CPixmap * newPhoto = new CPixmap(fileName);

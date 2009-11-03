@@ -27,6 +27,7 @@ class QNetworkReply;
 class PictureContent : public AbstractContent
 {
     Q_OBJECT
+    Q_PROPERTY(bool externalEdit READ externalEdit WRITE setExternalEdit)
     public:
         PictureContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~PictureContent();
@@ -56,6 +57,11 @@ class PictureContent : public AbstractContent
         void flipVertically();
         void requestCrop();
 
+    protected:
+        // properties
+        void setExternalEdit(bool);
+        bool externalEdit() const;
+
     private:
         void dropNetworkConnection();
         void applyPostLoadEffects();
@@ -72,7 +78,6 @@ class PictureContent : public AbstractContent
         QTimer *    m_watcherTimer;
 
     private Q_SLOTS:
-        void slotGimpEdit();
         void slotGimpCompressNotifies();
         void slotGimpFinished();
         bool slotLoadNetworkData();
