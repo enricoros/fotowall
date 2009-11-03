@@ -36,8 +36,9 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
   : QObject(parent)
   , m_extCanvas(extCanvas)
   , m_dummyWidget(new QWidget)
-  , m_gBackActions(0)
-  , m_gBackRatioActions(0)
+  , m_gBackModeGroup(0)
+  , m_gBackRatioGroup(0)
+  , m_gBackContentAction(0)
 {
     // init UI
     ui.setupUi(m_dummyWidget);
@@ -75,8 +76,8 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     // react to canvas
     m_extCanvas->modeInfo()->setScreenDpi(sDpiX, sDpiY);
     m_extCanvas->modeInfo()->setPrintDpi(300);
+    connect(m_extCanvas, SIGNAL(backConfigChanged()), this, SLOT(slotBackConfigChanged()));
     connect(m_extCanvas, SIGNAL(requestContentEditing(AbstractContent*)), this, SLOT(slotEditContent(AbstractContent*)));
-    connect(m_extCanvas, SIGNAL(backModeChanged()), this, SLOT(slotBackModeChanged()));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
 
     // react to VideoProvider
@@ -125,12 +126,12 @@ bool CanvasAppliance::applianceCommand(int command)
     switch (command) {
         // No Background
         case App::AC_ClearBackground:
-            if (m_extCanvas->backMode() == 2) {
+            if (m_extCanvas->backMode() != Canvas::BackNone) {
                 ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("You won't see through the Canvas unless you remove the background gradient.<br><b>Do you want me to clear the background?</b>"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
                 query.setButtonText(QDialogButtonBox::Yes, tr("Yes, thanks"));
                 query.setIcon(QStyle::SP_MessageBoxQuestion);
                 if (query.execute() == QDialogButtonBox::Yes)
-                    m_extCanvas->setBackMode(1);
+                    m_extCanvas->setBackMode(Canvas::BackNone);
             }
             return true;
 
@@ -175,56 +176,65 @@ QMenu * CanvasAppliance::createArrangeMenu()
 QMenu * CanvasAppliance::createBackgroundMenu()
 {
     QMenu * menu = new QMenu(m_dummyWidget);
-    m_gBackActions = new QActionGroup(menu);
-    connect(m_gBackActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackMode(QAction*)));
+    m_gBackModeGroup = new QActionGroup(menu);
+    connect(m_gBackModeGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackMode(QAction*)));
     QAction * aNone = new QAction(tr("None"), menu);
      aNone->setToolTip(tr("Transparency can be saved to PNG images only."));
      aNone->setShortcut(QKeySequence("CTRL+1"));
-     aNone->setProperty("id", 1);
+     aNone->setProperty("modeId", (int)Canvas::BackNone);
      aNone->setCheckable(true);
-     aNone->setActionGroup(m_gBackActions);
+     aNone->setActionGroup(m_gBackModeGroup);
      menu->addAction(aNone);
+    QAction * aBlack = new QAction(tr("Black"), menu);
+     aBlack->setShortcut(QKeySequence("CTRL+2"));
+     aBlack->setProperty("modeId", (int)Canvas::BackBlack);
+     aBlack->setCheckable(true);
+     aBlack->setActionGroup(m_gBackModeGroup);
+     menu->addAction(aBlack);
+    QAction * aWhite = new QAction(tr("White"), menu);
+     aWhite->setShortcut(QKeySequence("CTRL+3"));
+     aWhite->setProperty("modeId", (int)Canvas::BackWhite);
+     aWhite->setCheckable(true);
+     aWhite->setActionGroup(m_gBackModeGroup);
+     menu->addAction(aWhite);
     QAction * aGradient = new QAction(tr("Gradient"), menu);
-     aGradient->setShortcut(QKeySequence("CTRL+2"));
-     aGradient->setProperty("id", 2);
+     aGradient->setShortcut(QKeySequence("CTRL+4"));
+     aGradient->setProperty("modeId", (int)Canvas::BackGradient);
      aGradient->setCheckable(true);
-     aGradient->setActionGroup(m_gBackActions);
+     aGradient->setActionGroup(m_gBackModeGroup);
      menu->addAction(aGradient);
-    QAction * aContent = new QAction(tr("Content"), menu);
-     aContent->setToolTip(tr("Double click on any content to put it on background."));
-     aContent->setShortcut(QKeySequence("CTRL+3"));
-     aContent->setEnabled(false);
-     aContent->setProperty("id", 3);
-     aContent->setCheckable(true);
-     aContent->setActionGroup(m_gBackActions);
-     menu->addAction(aContent);
     menu->addSeparator();
+    m_gBackContentAction = new QAction(tr("Content"), menu);
+     connect(m_gBackContentAction, SIGNAL(toggled(bool)), this, SLOT(slotBackContentRemove(bool)));
+     m_gBackContentAction->setToolTip(tr("Double click on any content to put it on background."));
+     m_gBackContentAction->setEnabled(false);
+     m_gBackContentAction->setCheckable(true);
+     menu->addAction(m_gBackContentAction);
     QMenu * mScaling = new QMenu(tr("Content Aspect Ratio"), menu);
-     m_gBackRatioActions = new QActionGroup(menu);
-     connect(m_gBackRatioActions, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackRatio(QAction*)));
+     m_gBackRatioGroup = new QActionGroup(menu);
+     connect(m_gBackRatioGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotSetBackRatio(QAction*)));
      menu->addMenu(mScaling);
     QAction * aRatioKeepEx = new QAction(tr("Keep proportions by expanding"), mScaling);
-     aRatioKeepEx->setShortcut(QKeySequence("CTRL+4"));
-     aRatioKeepEx->setProperty("mode", (int)Qt::KeepAspectRatioByExpanding);
+     aRatioKeepEx->setShortcut(QKeySequence("CTRL+5"));
+     aRatioKeepEx->setProperty("ratioId", (int)Qt::KeepAspectRatioByExpanding);
      aRatioKeepEx->setCheckable(true);
-     aRatioKeepEx->setActionGroup(m_gBackRatioActions);
+     aRatioKeepEx->setActionGroup(m_gBackRatioGroup);
      mScaling->addAction(aRatioKeepEx);
     QAction * aRatioKeep = new QAction(tr("Keep proportions"), mScaling);
-     aRatioKeep->setShortcut(QKeySequence("CTRL+5"));
-     aRatioKeep->setProperty("mode", (int)Qt::KeepAspectRatio);
+     aRatioKeep->setShortcut(QKeySequence("CTRL+6"));
+     aRatioKeep->setProperty("ratioId", (int)Qt::KeepAspectRatio);
      aRatioKeep->setCheckable(true);
-     aRatioKeep->setActionGroup(m_gBackRatioActions);
+     aRatioKeep->setActionGroup(m_gBackRatioGroup);
      mScaling->addAction(aRatioKeep);
     QAction * aRatioIgnore = new QAction(tr("Ignore proportions"), mScaling);
-     aRatioIgnore->setShortcut(QKeySequence("CTRL+6"));
-     aRatioIgnore->setProperty("mode", (int)Qt::IgnoreAspectRatio);
+     aRatioIgnore->setShortcut(QKeySequence("CTRL+7"));
+     aRatioIgnore->setProperty("ratioId", (int)Qt::IgnoreAspectRatio);
      aRatioIgnore->setCheckable(true);
-     aRatioIgnore->setActionGroup(m_gBackRatioActions);
+     aRatioIgnore->setActionGroup(m_gBackRatioGroup);
      mScaling->addAction(aRatioIgnore);
 
     // initially check the action
-    slotBackModeChanged();
-    slotBackRatioChanged();
+    slotBackConfigChanged();
     return menu;
 }
 
@@ -375,6 +385,12 @@ void CanvasAppliance::slotSearchPicturesToggled(bool visible)
 }
 
 
+void CanvasAppliance::slotBackContentRemove(bool checked)
+{
+    if (!checked)
+        m_extCanvas->clearBackContent();
+}
+
 void CanvasAppliance::slotProjectComboActivated(int index)
 {
     switch (index) {
@@ -387,14 +403,14 @@ void CanvasAppliance::slotProjectComboActivated(int index)
 
 void CanvasAppliance::slotSetBackMode(QAction* action)
 {
-    int choice = action->property("id").toUInt();
-    m_extCanvas->setBackMode(choice);
+    Canvas::BackMode mode = (Canvas::BackMode)action->property("modeId").toInt();
+    m_extCanvas->setBackMode(mode);
 }
 
 void CanvasAppliance::slotSetBackRatio(QAction* action)
 {
-    Qt::AspectRatioMode mode = (Qt::AspectRatioMode)action->property("mode").toInt();
-    m_extCanvas->setBackContentRatio(mode);
+    Qt::AspectRatioMode ratio = (Qt::AspectRatioMode)action->property("ratioId").toInt();
+    m_extCanvas->setBackContentRatio(ratio);
 }
 
 void CanvasAppliance::slotArrangeForceField(bool checked)
@@ -475,24 +491,30 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
     }
 }
 
-void CanvasAppliance::slotBackModeChanged()
+void CanvasAppliance::slotBackConfigChanged()
 {
-    int mode = m_extCanvas->backMode();
-    m_gBackActions->actions()[mode - 1]->setChecked(true);
-    m_gBackActions->actions()[2]->setEnabled(mode == 3);
-}
+    // update ratios to reflect background mode
+    m_gBackModeGroup->blockSignals(true);
+    int mode = (int)m_extCanvas->backMode();
+    m_gBackModeGroup->actions()[qMax(0, mode)]->setChecked(true);
+    m_gBackModeGroup->blockSignals(false);
 
-void CanvasAppliance::slotBackRatioChanged()
-{
-    Qt::AspectRatioMode mode = m_extCanvas->backContentRatio();
-    if (mode == Qt::KeepAspectRatioByExpanding)
-        m_gBackRatioActions->actions()[0]->setChecked(true);
-    else if (mode == Qt::KeepAspectRatio)
-        m_gBackRatioActions->actions()[1]->setChecked(true);
-    else if (mode == Qt::IgnoreAspectRatio)
-        m_gBackRatioActions->actions()[2]->setChecked(true);
-}
+    // update check to reflect background content presence
+    m_gBackContentAction->blockSignals(true);
+    bool hasBackContent = m_extCanvas->backContent();
+    m_gBackContentAction->setChecked(hasBackContent);
+    m_gBackContentAction->setEnabled(hasBackContent);
+    m_gBackContentAction->blockSignals(false);
 
+    // update ratios to reflect content ratio
+    Qt::AspectRatioMode cRatio = m_extCanvas->backContentRatio();
+    if (cRatio == Qt::KeepAspectRatioByExpanding)
+        m_gBackRatioGroup->actions()[0]->setChecked(true);
+    else if (cRatio == Qt::KeepAspectRatio)
+        m_gBackRatioGroup->actions()[1]->setChecked(true);
+    else if (cRatio == Qt::IgnoreAspectRatio)
+        m_gBackRatioGroup->actions()[2]->setChecked(true);
+}
 
 void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
 {

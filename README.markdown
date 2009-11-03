@@ -33,6 +33,7 @@ Work in progress:
 
 Done:
 
+* Background polishing
 * Print/Export polishing
 * Stacked editing
 * Cursor key movement
@@ -160,7 +161,6 @@ improvement and the code is kept clean and small.
 * collate pictures, like autocollage, but keeping user transformations
 * handle initial load-save after being shown. also evaluate normalized rescaling.
 * frame: add bordercolor-propagating frame
-* save/restore background transparency/ratio state (or check current bg code)
 * svg drawings [balloons, signs, etc..]
 * masked pic
 * both new and old resize&co

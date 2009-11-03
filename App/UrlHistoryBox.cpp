@@ -41,6 +41,7 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
         connect(button, SIGNAL(clicked()), this, SLOT(slotClicked()));
         button->setProperty("url", url);
         button->setHoverText(QString::number(i+1));
+        button->setToolTip(url.toString());
         lay->addWidget(button);
         m_entries.append(button);
     }
