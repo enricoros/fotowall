@@ -908,11 +908,9 @@ void AbstractContent::layoutChildren()
 
 void AbstractContent::slotPressPerspective()
 {
-    qDebug() << "press persp";
     m_previousTransform = transform();
 }
 void AbstractContent::slotReleasePerspective(QGraphicsSceneMouseEvent* /* event */) {
-    qDebug() << "release persp";
     QTransform newTransform = transform();
     TransformCommand *tc = new TransformCommand(this, m_previousTransform, newTransform);
     CommandStack::instance().doCommand(tc);

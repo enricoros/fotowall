@@ -101,6 +101,27 @@ class TransformCommand : public AbstractCommand {
         }
 };
 
+class RotateAndResizeCommand : public AbstractCommand {
+    private:
+        /* Private vars */
+        AbstractContent *m_content;
+        const qreal m_pAngle, m_nAngle;
+    public:
+        RotateAndResizeCommand(AbstractContent *content, const qreal pAngle, const qreal nAngle) : m_content(content)
+                                                                      , m_pAngle(pAngle)
+                                                                      , m_nAngle(nAngle)
+       {}
+        void exec() {
+            m_content->setRotation(m_nAngle);
+        }
+        void unexec() {
+            m_content->setRotation(m_pAngle);
+        }
+        QString name() {
+            return tr("Rotation and Resize");
+        }
+};
+
 /* This command manges movements of the content */
 class MotionCommand : public AbstractCommand {
     private:

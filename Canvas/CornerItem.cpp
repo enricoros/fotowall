@@ -17,6 +17,9 @@
 #include "Shared/RenderOpts.h"
 #include "AbstractContent.h"
 
+#include "Shared/Commands.h"
+#include "Shared/CommandStack.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -29,6 +32,7 @@ CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * par
     , m_opMask(rotateOnly ? Rotate | FixRotate : AllowAll)
     , m_side(8)
     , m_operation(Off)
+    , m_startRotation(parent->rotation())
 {
     setAcceptsHoverEvents(true);
 }
@@ -162,6 +166,11 @@ void CornerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     bool accepted = m_operation != Off;
     m_operation = Off;
     update();
+
+    RotateAndResizeCommand *command = new RotateAndResizeCommand(m_content, m_startRotation, m_content->rotation());
+    CommandStack::instance().addCommand(command);
+    m_startRotation = m_content->rotation();
+
 
     // clicked
     if (accepted) {

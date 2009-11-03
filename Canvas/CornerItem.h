@@ -49,6 +49,7 @@ class CornerItem : public QGraphicsItem
         int m_side;
         int m_operation;
         double m_startRatio;
+        qreal m_startRotation;
 };
 
 #endif
