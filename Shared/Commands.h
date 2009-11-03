@@ -498,4 +498,20 @@ class ColorPickerCommand : public AbstractCommand {
     }
 };
 
+class StackCommand : public AbstractCommand {
+    AbstractContent * m_content;
+    int m_pZ, m_nZ;
+    public:
+    StackCommand(AbstractContent *c, int pZ, int nZ) : m_content(c)
+                                                       , m_pZ(pZ), m_nZ(nZ)
+    {}
+
+    void exec() {
+        m_content->setZValue(m_nZ);
+    }
+    void unexec() {
+        m_content->setZValue(m_pZ);
+    }
+};
+
 #endif

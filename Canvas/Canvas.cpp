@@ -1358,8 +1358,10 @@ void Canvas::slotStackContent(int op)
 
     // reassign z-levels
     int z = 1;
+    GroupedCommands *gc = new GroupedCommands();
     foreach (AbstractContent * content, m_content)
-        content->setZValue(z++);
+        gc->addCommand(new StackCommand(content, content->zValue(), z++));
+    CommandStack::instance().doCommand(gc);
 }
 
 void Canvas::slotCollateContent()
