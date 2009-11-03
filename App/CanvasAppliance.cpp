@@ -441,30 +441,36 @@ void CanvasAppliance::slotArrangeShaped()
 
 void CanvasAppliance::slotDecoTopBar(bool checked)
 {
-    m_extCanvas->setTopBarEnabled(checked);
+    DecoTopBarCommand *c = new DecoTopBarCommand(m_extCanvas, checked);
+    CommandStack::instance().doCommand(c);
 }
 
 void CanvasAppliance::slotDecoBottomBar(bool checked)
 {
-    m_extCanvas->setBottomBarEnabled(checked);
+    DecoBottomBarCommand *c = new DecoBottomBarCommand(m_extCanvas, checked);
+    CommandStack::instance().doCommand(c);
 }
 
 void CanvasAppliance::slotDecoSetTitle()
 {
+    // change title dialog
+    bool ok = false;
+    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_extCanvas->titleText(), &ok);
+    if (ok) {
+        DecoTitleCommand *c = new DecoTitleCommand(m_extCanvas, title);
+        CommandStack::instance().doCommand(c);
+    }
+
     // set a dummy title, if none
     if (m_extCanvas->titleText().isEmpty())
         m_extCanvas->setTitleText("...");
 
-    // change title dialog
-    bool ok = false;
-    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_extCanvas->titleText(), &ok);
-    if (ok)
-        m_extCanvas->setTitleText(title);
 }
 
 void CanvasAppliance::slotDecoClearTitle()
 {
-    m_extCanvas->setTitleText(QString());
+    DecoTitleCommand *c = new DecoTitleCommand(m_extCanvas, QString());
+    CommandStack::instance().doCommand(c);
 }
 
 bool CanvasAppliance::slotFileLoad()

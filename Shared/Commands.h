@@ -419,4 +419,62 @@ class BackgroundModeCommand : public AbstractCommand {
         }
 };
 
+class DecoTopBarCommand : public AbstractCommand {
+    Canvas *m_canvas;
+    bool m_state;
+
+    public:
+    DecoTopBarCommand(Canvas *canvas, bool state) : m_canvas(canvas)
+                                                  , m_state(state)
+    {}
+    void exec() {
+        m_canvas->setTopBarEnabled(m_state);
+    }
+    void unexec() {
+        m_canvas->setTopBarEnabled(!m_state);
+    }
+    QString name() {
+        return tr("Top bar enabled/disabled");
+    }
+};
+class DecoBottomBarCommand : public AbstractCommand {
+    Canvas *m_canvas;
+    bool m_state;
+
+    public:
+    DecoBottomBarCommand(Canvas *canvas, bool state) : m_canvas(canvas)
+                                                  , m_state(state)
+    {}
+    void exec() {
+        m_canvas->setBottomBarEnabled(m_state);
+    }
+    void unexec() {
+        m_canvas->setBottomBarEnabled(!m_state);
+    }
+    QString name() {
+        return tr("Bottom bar enabled/disabled");
+    }
+};
+
+class DecoTitleCommand : public AbstractCommand {
+    private:
+        /* Private vars */
+        Canvas *m_canvas;
+        QString m_previousText, m_newText;
+    public:
+        DecoTitleCommand(Canvas *canvas, QString newText) : m_canvas(canvas), m_newText (newText)
+        {
+            m_previousText = m_canvas->titleText();
+        }
+        void exec() {
+            m_canvas->setTitleText(m_newText);
+        }
+        void unexec() {
+            m_canvas->setTitleText(m_previousText);
+        }
+        QString name() {
+            return tr("Text changed");
+        }
+};
+
 #endif
