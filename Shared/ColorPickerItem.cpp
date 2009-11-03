@@ -15,6 +15,10 @@
  ***************************************************************************/
 
 #include "ColorPickerItem.h"
+
+#include "Shared/Commands.h"
+#include "Shared/CommandStack.h"
+
 #include <QtCore/QtGlobal>
 #include <QtCore/QDebug>
 #include <QtCore/QTimer>
@@ -60,6 +64,8 @@ void ColorPickerItem::setColor(const QColor & color)
     regenHueSatPixmap();
     regenValPixmap();
     update();
+    m_previousColor = this->color();
+    emit colorChanged(this->color());
 }
 
 QColor ColorPickerItem::color() const
@@ -215,12 +221,19 @@ void ColorPickerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
         pickColor(event->pos().toPoint());
 }
 
+void ColorPickerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event )
+{
+    ColorPickerCommand *c = new ColorPickerCommand(this, m_previousColor, color());
+    CommandStack::instance().addCommand(c);
+    m_previousColor = color();
+    pickColor(event->pos().toPoint());
+}
+
 void ColorPickerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->buttons() & Qt::LeftButton)
         pickColor(event->pos().toPoint());
 }
-
 
 void ColorPickerItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {

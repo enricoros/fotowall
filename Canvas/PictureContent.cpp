@@ -14,6 +14,9 @@
 
 #include "PictureContent.h"
 
+#include "Shared/Commands.h"
+#include "Shared/CommandStack.h"
+
 #include "Frames/Frame.h"
 #include "Shared/CPixmap.h"
 #include "Shared/CroppingDialog.h"
@@ -231,8 +234,11 @@ void PictureContent::crop()
     if (dial.exec() != QDialog::Accepted)
         return;
     QRect cropRect = dial.getCroppingRect();
-    if (!cropRect.isNull())
-        addEffect(PictureEffect(PictureEffect::Crop, 0, cropRect));
+    if (!cropRect.isNull()) {
+        EffectCommand * command = new EffectCommand(this, PictureEffect(PictureEffect::Crop, 0, cropRect));
+        CommandStack &stack = CommandStack::instance();
+        stack.doCommand(command);
+    }
 }
 
 #include "Shared/PropertyEditors.h"

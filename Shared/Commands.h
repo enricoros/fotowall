@@ -17,6 +17,7 @@
 
 #include "Shared/AbstractCommand.h"
 #include "Shared/PictureEffect.h"
+#include "Shared/ColorPickerItem.h"
 
 #include "Canvas/Canvas.h"
 #include "Canvas/AbstractContent.h"
@@ -475,6 +476,26 @@ class DecoTitleCommand : public AbstractCommand {
         QString name() {
             return tr("Text changed");
         }
+};
+
+class ColorPickerCommand : public AbstractCommand {
+    ColorPickerItem *m_cItem;
+    const QColor m_pColor, m_nColor;
+
+    public:
+    ColorPickerCommand( ColorPickerItem *item, const QColor pCol, const QColor nCol)
+        : m_cItem(item), m_pColor(pCol), m_nColor(nCol)
+    {}
+
+    void exec() {
+        m_cItem->setColor(m_nColor);
+    }
+    void unexec() {
+        m_cItem->setColor(m_pColor);
+    }
+    QString name() {
+        return tr("Color changed");
+    }
 };
 
 #endif

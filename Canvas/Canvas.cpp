@@ -1450,15 +1450,19 @@ void Canvas::slotCrop()
 void Canvas::slotFlipHorizontally()
 {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
-    foreach (PictureContent * picture, pictures)
-        picture->addEffect(PictureEffect::FlipH);
+    foreach (PictureContent * picture, pictures) {
+        EffectCommand * command = new EffectCommand(picture, PictureEffect::FlipH);
+        CommandStack::instance().doCommand(command);
+    }
 }
 
 void Canvas::slotFlipVertically()
 {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
-    foreach (PictureContent * picture, pictures)
-        picture->addEffect(PictureEffect::FlipV);
+    foreach (PictureContent * picture, pictures) {
+        EffectCommand * command = new EffectCommand(picture, PictureEffect::FlipV);
+        CommandStack::instance().doCommand(command);
+    }
 }
 
 void Canvas::slotTitleColorChanged()

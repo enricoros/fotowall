@@ -38,6 +38,7 @@ class ColorPickerItem : public QObject, public QGraphicsItem {
         // colors
         void setColor(const QColor & color);
         QColor color() const;
+        QColor previousColor() const;
         void setAnimated(bool animated);
         bool animated() const;
         void setAnchor(Anchor anchor);
@@ -52,6 +53,7 @@ class ColorPickerItem : public QObject, public QGraphicsItem {
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
         void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
         void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
@@ -74,6 +76,8 @@ class ColorPickerItem : public QObject, public QGraphicsItem {
         class QTimeLine * m_timeLine;
         qreal m_scale;
         Anchor m_anchor;
+
+        QColor m_previousColor; //for undo/redo
 
     private slots:
         void slotAnimateScale(int step);
