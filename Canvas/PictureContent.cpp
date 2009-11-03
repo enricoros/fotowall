@@ -291,6 +291,7 @@ bool PictureContent::fromXml(QDomElement & contentElement)
 
 void PictureContent::toXml(QDomElement & contentElement) const
 {
+    // save AbstractContent properties and rename to 'picture'
     AbstractContent::toXml(contentElement);
     contentElement.setTagName("picture");
 

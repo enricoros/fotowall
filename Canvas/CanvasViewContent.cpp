@@ -61,13 +61,56 @@ bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*
     return ok;
 }
 
-bool CanvasViewContent::fromXml(QDomElement & /*parentElement*/)
+bool CanvasViewContent::fromXml(QDomElement & contentElement)
 {
-    return false;
+    AbstractContent::fromXml(contentElement);
+
+    // sanity check
+    if (m_canvas) {
+        qWarning("CanvasViewContent::fromXml: canvas already set. skipping.");
+        return false;
+    }
+
+    // get the canvas element
+    QDomElement canvasElement = contentElement.firstChildElement("canvas");
+    if (!canvasElement.isElement()) {
+        qWarning("CanvasViewContent::fromXml: no embedded canvas element in here");
+        return false;
+    }
+
+    // restore canvas from the element
+    m_canvas = new Canvas(this);
+    connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
+    m_canvas->fromXml(canvasElement);
+    m_canvas->resizeAutoFit();
+
+    // set the canvas
+    m_canvasCachedSize = m_canvas->sceneSize();
+    update();
+
+    // TODO: use the canvas name as text for the text frame
+    //setFrameTextEnabled(setName);
+    //setFrameText(QFileInfo(filePath).baseName());
+    return true;
 }
 
-void CanvasViewContent::toXml(QDomElement & /*parentElement*/) const
+void CanvasViewContent::toXml(QDomElement & contentElement) const
 {
+    // save AbstractContent properties and rename to 'embedded-canvas'
+    AbstractContent::toXml(contentElement);
+    contentElement.setTagName("embedded-canvas");
+
+    // sanity check
+    if (!m_canvas) {
+        qWarning("CanvasViewContent::toXml: can't save canvas to xml, taken or not present");
+        return;
+    }
+
+    // save embedded canvas
+    QDomDocument doc = contentElement.ownerDocument();
+    QDomElement canvasElement = doc.createElement("canvas");
+    contentElement.appendChild(canvasElement);
+    m_canvas->toXml(canvasElement);
 }
 
 void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
