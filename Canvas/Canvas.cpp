@@ -756,6 +756,10 @@ void Canvas::fromXml(QDomElement & canvasElement)
                 content = createText(QPoint());
             else if (ce.tagName() == "webcam")
                 content = createWebcam(ce.attribute("input").toInt(), QPoint());
+            else if (ce.tagName() == "embedded-canvas")
+                content = createCanvasView(QPoint());
+            else if (ce.tagName() == "wordcloud")
+                content = createWordcloud(QPoint());
             if (!content) {
                 qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(ce.tagName()));
                 continue;
