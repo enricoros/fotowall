@@ -121,6 +121,7 @@ class AbstractContent : public AbstractDisposeable
         // ::QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
         void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
@@ -157,6 +158,8 @@ class AbstractContent : public AbstractDisposeable
 #if QT_VERSION < 0x040600
         double              m_rotationAngle;
 #endif
+
+        QPointF             m_previousPos;
 
     private Q_SLOTS:
         void slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);

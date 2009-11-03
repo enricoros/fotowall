@@ -664,6 +664,15 @@ void AbstractContent::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
     setControlsVisible(false);
 }
 
+void AbstractContent::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+    MotionCommand *command = new MotionCommand(this, m_previousPos, event->lastScenePos());
+    CommandStack &stack = CommandStack::instance();
+    stack.addCommand(command);
+    QGraphicsItem::mouseReleaseEvent(event);
+
+}
+
 void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     event->accept();
@@ -681,6 +690,7 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
         setSelected(true);
         emit requestConfig(event->scenePos().toPoint());
     }
+    m_previousPos = scenePos();
 }
 
 void AbstractContent::keyPressEvent(QKeyEvent * event)
