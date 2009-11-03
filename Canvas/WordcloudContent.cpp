@@ -15,7 +15,6 @@
 #include "WordcloudContent.h"
 
 #include "Wordcloud/Scanner.h"
-#include "Canvas.h"
 
 #include <QGraphicsScene>
 #include <QFileDialog>
@@ -25,6 +24,7 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
   : AbstractContent(scene, parent, false)
   , m_cloudScene(new QGraphicsScene)
   , m_cloud(new Wordcloud::Cloud)
+  , m_cloudTaken(false)
 {
     connect(m_cloudScene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintScene(const QList<QRectF> &)));
     m_cloud->setScene(m_cloudScene);
@@ -48,9 +48,21 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
     }
 }
 
+WordcloudContent::~WordcloudContent()
+{
+    if (m_cloudTaken)
+        qWarning("WordcloudContent::~WordcloudContent: Wordcloud still exported");
+    // this deletes even all the items of the cloud
+    delete m_cloudScene;
+    // this deletes only the container (BAD DONE, IMPROVE)
+    delete m_cloud;
+}
+
 bool WordcloudContent::fromXml(QDomElement & contentElement)
 {
     AbstractContent::fromXml(contentElement);
+
+    qWarning("WordcloudContent::fromXml: not implemented");
 
     // ### load wordcloud properties
     return false;
@@ -61,18 +73,28 @@ void WordcloudContent::toXml(QDomElement & contentElement) const
     AbstractContent::toXml(contentElement);
     contentElement.setTagName("wordcloud");
 
+    qWarning("WordcloudContent::toXml: not implemented");
+
     // ### save all wordclouds
 }
 
 void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
     Q_UNUSED(ratio)
-
-    m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
+    if (m_cloud)
+        m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
 }
 
 QVariant WordcloudContent::takeResource()
 {
+    // sanity check
+    if (m_cloudTaken) {
+        qWarning("WordcloudContent::takeResource: resource already taken");
+        return QVariant();
+    }
+
+    // discard reference
+    m_cloudTaken = true;
     Wordcloud::Cloud * cloud = m_cloud;
     m_cloud = 0;
     return qVariantFromValue((void *)cloud);
@@ -80,9 +102,20 @@ QVariant WordcloudContent::takeResource()
 
 void WordcloudContent::returnResource(const QVariant & resource)
 {
+    // sanity checks
+    if (!m_cloudTaken)
+        qWarning("WordcloudContent::returnResource: not taken");
+    if (m_cloud) {
+        qWarning("WordcloudContent::returnResource: we already have a cloud, shouldn't return one");
+        delete m_cloud;
+    }
+
+    // store reference back
+    m_cloudTaken = false;
     m_cloud = static_cast<Wordcloud::Cloud *>(qVariantValue<void *>(resource));
     if (m_cloud)
         m_cloud->setScene(m_cloudScene);
+    update();
 }
 
 void WordcloudContent::slotRepaintScene(const QList<QRectF> & /*exposed*/)

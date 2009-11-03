@@ -30,7 +30,7 @@ class WordcloudContent : public AbstractContent, public SingleResourceLoaner
     Q_OBJECT
     public:
         WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-//        ~WordcloudContent();
+        ~WordcloudContent();
 
         // ::AbstractContent
         QString contentName() const { return tr("Wordcloud"); }
@@ -45,6 +45,7 @@ class WordcloudContent : public AbstractContent, public SingleResourceLoaner
     private:
         QGraphicsScene * m_cloudScene;
         Wordcloud::Cloud * m_cloud;
+        bool m_cloudTaken;
 
     private Q_SLOTS:
         void slotRepaintScene(const QList<QRectF> & exposed);

@@ -115,9 +115,9 @@ void CanvasViewContent::returnResource(const QVariant & resource)
 {
     // sanity checks
     if (!m_canvasTaken)
-        qWarning("CanvasViewContent::returnCanvas: not taken");
+        qWarning("CanvasViewContent::returnResource: not taken");
     if (m_canvas) {
-        qWarning("CanvasViewContent::returnCanvas: we already have one canvas, shouldn't return one");
+        qWarning("CanvasViewContent::returnResource: we already have one canvas, shouldn't return one");
         delete m_canvas;
     }
 
