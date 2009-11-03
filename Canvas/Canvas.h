@@ -43,10 +43,11 @@ class Canvas : public AbstractScene
 {
     Q_OBJECT
     public:
-        Canvas(const QSize & initialSize, QObject * parent = 0);
+        Canvas(QObject * parent = 0);
         ~Canvas();
 
         // add/remove content
+        void addAutoContent(const QStringList & fileNames);
         void addCanvasViewContent(const QStringList & fileNames);
         QList<PictureContent*> addPictureContent(const QStringList & fileNames);
         TextContent* addTextContent();
@@ -73,8 +74,13 @@ class Canvas : public AbstractScene
 
         // decorations
         void setBackContent(AbstractContent * content);
-        void setBackMode(int mode);
-        int backMode() const;
+
+        enum BackMode { BackNone = 0, BackBlack = 1, BackWhite = 2, BackGradient = 3 };
+        void setBackMode(BackMode mode);
+        BackMode backMode() const;
+        void clearBackContent();
+        bool backContent() const;
+
         void setBackContentRatio(Qt::AspectRatioMode mode);
         Qt::AspectRatioMode backContentRatio() const;
         void setTopBarEnabled(bool enabled);
@@ -104,8 +110,8 @@ class Canvas : public AbstractScene
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 
     Q_SIGNALS:
+        void backConfigChanged();
         void requestContentEditing(AbstractContent * content);
-        void backModeChanged();
         void showPropertiesWidget(QWidget * widget);
 
     protected:
@@ -134,15 +140,15 @@ class Canvas : public AbstractScene
         QList<AbstractConfig *> m_configs;
         QList<HighlightItem *> m_highlightItems;
         HelpItem * m_helpItem;
-        AbstractContent * m_backContent;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;
         ColorPickerItem * m_grad2ColorPicker;
+        BackMode m_backMode;
+        AbstractContent * m_backContent;
+        Qt::AspectRatioMode m_backContentRatio;
         bool m_topBarEnabled;
         bool m_bottomBarEnabled;
-        bool m_backGradientEnabled;
-        Qt::AspectRatioMode m_backContentRatio;
         QString m_titleText;
         QPixmap m_backTile;
         QPixmap m_backCache;
@@ -159,6 +165,7 @@ class Canvas : public AbstractScene
         void slotConfigureContent(const QPoint & scenePoint);
         void slotEditContent();
         void slotStackContent(int);
+        void slotCollateContent();
         void slotDeleteContent();
         void slotDeleteConfig();
         void slotApplyLook(quint32 frameClass, bool mirrored, bool allContent);

@@ -16,10 +16,14 @@
 #define __Workflow_h__
 
 #include <QObject>
-namespace PlugGui { class Container; class Stacker; }
+#include <QVariant>
+#include "Shared/PlugGui/AbstractAppliance.h"
+#include "Shared/AbstractResourceProvider.h"
 namespace Wordcloud { class Cloud; }
 class BreadCrumbBar;
 class Canvas;
+
+// TODO: add checkes to avoid enqueueing while processing a command, or a list
 
 class Workflow : public QObject
 {
@@ -28,34 +32,56 @@ class Workflow : public QObject
         Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject * parent = 0);
         ~Workflow();
 
-        // ### BIG REFACTOR HERE ;-)
-        void clear();
-        bool saveCurrent();
-        bool exportCurrent();
-        void howtoCurrent();
-        void clearBackgroundCurrent();
+        // change workflow
+        bool loadCanvas_A(const QString & fileName = QString());
+        void startCanvas_A();
+        void startWordcloud_A();
+        void stackSlaveCanvas_A(SingleResourceLoaner *);
+        void stackSlaveWordcloud_A(SingleResourceLoaner *);
 
-        // content editing
-        void newCanvas();
-        bool loadCanvas(const QString & fileName);
-        void stackCanvasAppliance(Canvas * newCanvas);
-        void stackWordcloudAppliance(Wordcloud::Cloud * cloud);
-
+        //
+        bool applianceCommand(int command);
         bool requestExit();
 
     private:
-        void workflowChanged();
+        struct Command {
+            enum Type { ResetToLevel, MasterCanvas, MasterWordcloud, SlaveCanvas, SlaveWordcloud };
+
+            Type type;
+            QVariant param;
+            SingleResourceLoaner * res;
+
+            Command(Type type, const QVariant & param = QVariant(), SingleResourceLoaner * res = 0) : type(type), param(param), res(res) {}
+        };
+        void scheduleCommand(const Command & command);
+        bool processCommand(const Command & command);
+
+        struct Node {
+            PlugGui::AbstractAppliance * appliance;
+            SingleResourceLoaner * res;
+
+            Node(PlugGui::AbstractAppliance * app, SingleResourceLoaner * res = 0) : appliance(app), res(res) {}
+        };
+
+        void pushNode(const Node & node);
+        void popNode();
+        void updateBreadcrumb();
 
         // external objects
         PlugGui::Container * m_container;
         BreadCrumbBar * m_bar;
 
-        // internals
-        PlugGui::Stacker * m_stacker;
+        // commands
+        QTimer * m_commandTimer;
+        QList<Command> m_commands;
+        bool m_processingQueue;
+
+        // nodes structure
+        QList<Node> m_stack;
 
     private Q_SLOTS:
-        void slotStackChanged();
-        void slotApplianceClicked(quint32);
+        void slotNodeClicked(quint32);
+        void slotProcessQueue();
 };
 
 #endif

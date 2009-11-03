@@ -56,7 +56,7 @@ void StandardFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & fra
 void StandardFrame::layoutText(QGraphicsItem * textItem, const QRect & frameRect) const
 {
     textItem->show();
-    textItem->setPos(frameRect.left() + FW_MARGIN, frameRect.bottom() - FW_MARGIN - FW_LABH + FW_MARGIN);
+    textItem->setPos(frameRect.left() + FW_MARGIN, frameRect.bottom() - FW_MARGIN/3 - FW_LABH);
 }
 
 void StandardFrame::drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
@@ -65,4 +65,17 @@ void StandardFrame::drawFrame(QPainter * painter, const QRect & frameRect, bool 
     lg.setColorAt(0.0, selected ? RenderOpts::hiColor.darker() : QColor(128,128,128, 200));
     lg.setColorAt(1.0, selected ? RenderOpts::hiColor.lighter() : QColor(255,255,255, 200));
     painter->fillRect(frameRect, lg);
+}
+
+void StandardFrame2::drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool /*opaqueContents*/)
+{
+    if (frameRect.height() < 1)
+        return;
+    QLinearGradient lg(0, frameRect.top(), 0, frameRect.height() / 2);
+    lg.setColorAt(0.0, selected ? RenderOpts::hiColor.lighter() : QColor(240,240,240));
+    lg.setColorAt(1.0 - ((qreal)FW_LABH / (qreal)frameRect.height()), selected ? RenderOpts::hiColor.darker() : QColor(200,200,200));
+    lg.setColorAt(1.0, selected ? RenderOpts::hiColor.lighter() : QColor(230,230,230));
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(lg);
+    painter->drawRoundedRect(frameRect, 9, 9, Qt::AbsoluteSize);
 }

@@ -29,11 +29,10 @@ WordItem::WordItem(const Word & word, const QFont & font, double rotation,
   , m_word(word)
 {
     // customize item
-    setFlags(ItemIsMovable | ItemIsSelectable | ItemIsFocusable
+    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable);
 #if QT_VERSION >= 0x040600
-             | ItemSendsGeometryChanges
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 #endif
-            );
     setPen(Qt::NoPen);
 
     // adapt font to the relative count

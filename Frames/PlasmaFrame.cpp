@@ -70,6 +70,19 @@ struct PlasmaFramePrivate {
         svg->render(painter, "bottomleft",  QRect(l,        t+h1+hx,w1, h3));
         svg->render(painter, "bottom",      QRect(l+w1,     t+h1+hx,wx, h3));
         svg->render(painter, "bottomright", QRect(l+w1+wx,  t+h1+hx,w3, h3));
+#if 0
+        // export sgv elements as png. don't use!
+        const char * names[9] = { "topleft", "top", "topright", "left", "center", "right", "bottomleft", "bottom", "bottomright" };
+        for (int i = 0; i < 9; i++) {
+            QRect r = svg->boundsOnElement(QString(names[i])).toRect();
+            QPixmap pix(r.size());
+            pix.fill(Qt::transparent);
+            QPainter pixPainter(&pix);
+            svg->render(&pixPainter, QString(names[i]));
+            pixPainter.end();
+            pix.save(QString("%1.png").arg(i));
+        }
+#endif
     }
 };
 

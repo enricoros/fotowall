@@ -15,50 +15,54 @@
 #include "WordcloudContent.h"
 
 #include "Wordcloud/Scanner.h"
-#include "Canvas.h"
 
 #include <QGraphicsScene>
+#include <QFileDialog>
 #include <QPainter>
 
 WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent)
   : AbstractContent(scene, parent, false)
   , m_cloudScene(new QGraphicsScene)
   , m_cloud(new Wordcloud::Cloud)
+  , m_cloudTaken(false)
 {
     connect(m_cloudScene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintScene(const QList<QRectF> &)));
     m_cloud->setScene(m_cloudScene);
 
     // temporarily get words
     Wordcloud::Scanner scanner;
-#if 1
-    scanner.addFromFile("/alchimia");
-    m_cloud->newCloud(scanner.takeWords());
-#else
-    scanner.addFromString(tr("Welcome to Wordcloud. Change options on the sidebar."));
-    Wordcloud::WordList list = scanner.takeWords();
-    Wordcloud::WordList::iterator wIt = list.begin();
-    int ccc = list.size() + 1;
-    while (wIt != list.end()) {
-        wIt->count = ccc--;
-        ++wIt;
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Select a text file"));
+    if (fileName.isEmpty()) {
+        scanner.addFromString(tr("Welcome to Wordcloud. Change options on the sidebar."));
+        Wordcloud::WordList list = scanner.takeWords();
+        Wordcloud::WordList::iterator wIt = list.begin();
+        int ccc = list.size() + 1;
+        while (wIt != list.end()) {
+            wIt->count = ccc--;
+            ++wIt;
+        }
+        m_cloud->newCloud(list);
+    } else {
+        scanner.addFromFile(fileName);
+        m_cloud->newCloud(scanner.takeWords());
     }
-    m_cloud->newCloud(list);
-#endif
 }
 
-Wordcloud::Cloud * WordcloudContent::cloud() const
+WordcloudContent::~WordcloudContent()
 {
-    return m_cloud;
-}
-
-QWidget * WordcloudContent::createPropertyWidget()
-{
-    return 0;
+    if (m_cloudTaken)
+        qWarning("WordcloudContent::~WordcloudContent: Wordcloud still exported");
+    // this deletes even all the items of the cloud
+    delete m_cloudScene;
+    // this deletes only the container (BAD DONE, IMPROVE)
+    delete m_cloud;
 }
 
 bool WordcloudContent::fromXml(QDomElement & contentElement)
 {
     AbstractContent::fromXml(contentElement);
+
+    qWarning("WordcloudContent::fromXml: not implemented");
 
     // ### load wordcloud properties
     return false;
@@ -69,17 +73,49 @@ void WordcloudContent::toXml(QDomElement & contentElement) const
     AbstractContent::toXml(contentElement);
     contentElement.setTagName("wordcloud");
 
+    qWarning("WordcloudContent::toXml: not implemented");
+
     // ### save all wordclouds
 }
 
-void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect)
+void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
-    m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
+    Q_UNUSED(ratio)
+    if (m_cloud)
+        m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
 }
 
-bool WordcloudContent::contentOpaque() const
+QVariant WordcloudContent::takeResource()
 {
-    return false;
+    // sanity check
+    if (m_cloudTaken) {
+        qWarning("WordcloudContent::takeResource: resource already taken");
+        return QVariant();
+    }
+
+    // discard reference
+    m_cloudTaken = true;
+    Wordcloud::Cloud * cloud = m_cloud;
+    m_cloud = 0;
+    return qVariantFromValue((void *)cloud);
+}
+
+void WordcloudContent::returnResource(const QVariant & resource)
+{
+    // sanity checks
+    if (!m_cloudTaken)
+        qWarning("WordcloudContent::returnResource: not taken");
+    if (m_cloud) {
+        qWarning("WordcloudContent::returnResource: we already have a cloud, shouldn't return one");
+        delete m_cloud;
+    }
+
+    // store reference back
+    m_cloudTaken = false;
+    m_cloud = static_cast<Wordcloud::Cloud *>(qVariantValue<void *>(resource));
+    if (m_cloud)
+        m_cloud->setScene(m_cloudScene);
+    update();
 }
 
 void WordcloudContent::slotRepaintScene(const QList<QRectF> & /*exposed*/)

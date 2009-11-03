@@ -23,34 +23,31 @@ namespace PlugGui {
     class Container;
     class AbstractAppliance;
 
-    class Stacker : public QObject
+    class Stacker
     {
-        Q_OBJECT
         public:
             Stacker();
-            ~Stacker();
+            virtual ~Stacker();
 
             // set container (runtime changeable)
             void setContainer(Container * container);
             Container * container() const;
 
             // appliance stacking operations
-            void stackAppliance(AbstractAppliance * appliance);
-            QList<AbstractAppliance *> stackedAppliances() const;
-            AbstractAppliance * currentAppliance() const;
-            bool currentApplianceCommand(int command);
-            void popAppliance();
-            void dropStackAfter(int index);
-            void clearAppliances();
+            virtual void stackAppliance(AbstractAppliance * appliance);
+            virtual QList<AbstractAppliance *> stackedAppliances() const;
+            virtual AbstractAppliance * currentAppliance() const;
+            virtual int applianceCount() const;
+            virtual void popAppliance();
+            virtual void clearAppliances();
 
-        Q_SIGNALS:
+        protected:
             // notify (ex. on a push/pop operation)
-            void structureChanged();
+            virtual void structureChanged();
 
         private:
             Container * m_container;
             QList<AbstractAppliance *> m_appliances;
-            bool m_disableNotify;
     };
 
 }

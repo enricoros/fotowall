@@ -15,6 +15,11 @@ Unreleased 0.9.x:
 
 Work in progress:
 
+* fix: canvas 'dummy' mode for taking snapshots only (shuts off video, for example)
+* fix: workflow!
+* when modifying the title of a canvasViewContent, the canvas 'name' must be synced
+  * add the canvas name property
+
 * (Work In Progress) Arrange Contents
 * (Work In Progress) More properties in the top bar
 * FotowallFile
@@ -28,6 +33,9 @@ Work in progress:
 
 Done:
 
+* Background polishing
+* Print/Export polishing
+* Stacked editing
 * Cursor key movement
 * OpenGL testing and performance auto-detection
 * CD/DVD markers redux
@@ -153,7 +161,6 @@ improvement and the code is kept clean and small.
 * collate pictures, like autocollage, but keeping user transformations
 * handle initial load-save after being shown. also evaluate normalized rescaling.
 * frame: add bordercolor-propagating frame
-* save/restore background transparency/ratio state (or check current bg code)
 * svg drawings [balloons, signs, etc..]
 * masked pic
 * both new and old resize&co

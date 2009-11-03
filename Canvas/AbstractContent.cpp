@@ -109,7 +109,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 
     // display mirror
 #if QT_VERSION >= 0x040600
-    // with Qt 4.6-tp1 there are crashes activating a mirror before setting the scene
+    // WORKAROUND with Qt 4.6-tp1 there are crashes activating a mirror before setting the scene
     // need to rethink this anyway
     setMirrored(false);
 #else
@@ -223,7 +223,7 @@ class MyTextItem : public QGraphicsTextItem {
         void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 )
         {
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, true);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::HighQualityAntialiasing, true);
             QGraphicsTextItem::paint(painter, option, widget);
             painter->restore();
         }
@@ -277,6 +277,19 @@ void AbstractContent::setFrameTextEnabled(bool enabled)
 bool AbstractContent::frameTextEnabled() const
 {
     return m_frameTextItem;
+}
+
+void AbstractContent::setFrameTextReadonly(bool read)
+{
+    if (m_frameTextItem)
+        m_frameTextItem->setTextInteractionFlags(read ? Qt::NoTextInteraction : Qt::TextEditorInteraction);
+}
+
+bool AbstractContent::frameTextReadonly() const
+{
+    if (!m_frameTextItem)
+        return false;
+    return m_frameTextItem->textInteractionFlags() == Qt::NoTextInteraction;
 }
 
 void AbstractContent::setFrameText(const QString & text)
@@ -367,11 +380,6 @@ bool AbstractContent::beingTransformed() const
     return m_dirtyTransforming;
 }
 
-QWidget * AbstractContent::createPropertyWidget()
-{
-    return 0;
-}
-
 bool AbstractContent::fromXml(QDomElement & contentElement)
 {
     // restore content properties
@@ -392,11 +400,17 @@ bool AbstractContent::fromXml(QDomElement & contentElement)
     y = domElement.firstChildElement("y").text().toDouble();
     setPos(x, y);
 
-    int zvalue = contentElement.firstChildElement("zvalue").text().toDouble();
+    qreal zvalue = contentElement.firstChildElement("zvalue").text().toDouble();
     setZValue(zvalue);
 
     bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
+
+#if QT_VERSION >= 0x040500
+    qreal opacity = contentElement.firstChildElement("opacity").text().toDouble();
+    if (opacity > 0.0 && opacity < 1.0)
+        setOpacity(opacity);
+#endif
 
     bool hasText = contentElement.firstChildElement("frame-text-enabled").text().toInt();
     setFrameTextEnabled(hasText);
@@ -478,6 +492,16 @@ void AbstractContent::toXml(QDomElement & contentElement) const
     text = doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
+    // Save the opacity
+#if QT_VERSION >= 0x040500
+    if (opacity() < 1.0) {
+        domElement= doc.createElement("opacity");
+        contentElement.appendChild(domElement);
+        text = doc.createTextNode(QString::number(opacity()));
+        domElement.appendChild(text);
+    }
+#endif
+
     // Save the frame class
     valueStr.setNum(frameClass());
     domElement= doc.createElement("frame-class");
@@ -519,14 +543,28 @@ void AbstractContent::toXml(QDomElement & contentElement) const
 
 QPixmap AbstractContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
 {
-    Q_UNUSED(ratio)
-    // allocate a pixmap and draw the content over it (NOTE: aspect ratio is ignored)
+    // allocate a fixed size pixmap and draw the content over it
     QPixmap pixmap(size);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    drawContent(&painter, pixmap.rect());
+    drawContent(&painter, pixmap.rect(), ratio);
     painter.end();
     return pixmap;
+}
+
+int AbstractContent::contentHeightForWidth(int width) const
+{
+    return width;
+}
+
+bool AbstractContent::contentOpaque() const
+{
+    return false;
+}
+
+QWidget * AbstractContent::createPropertyWidget()
+{
+    return 0;
 }
 
 QRectF AbstractContent::boundingRect() const
@@ -562,14 +600,16 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     // paint the inner contents
     const QRect tcRect = QRect(0, 0, m_contentRect.width(), m_contentRect.height());
     painter->translate(m_contentRect.topLeft());
-    drawContent(painter, tcRect);
+    drawContent(painter, tcRect, Qt::IgnoreAspectRatio);
 
     // overlay a selection
     if (drawSelection && !m_frame) {
         painter->setRenderHint(QPainter::Antialiasing, true);
-        painter->setPen(QPen(RenderOpts::hiColor, 2.0));
+        QPen selPen(RenderOpts::hiColor, 2.0);
+        selPen.setJoinStyle(Qt::MiterJoin);
+        painter->setPen(selPen);
         painter->setBrush(Qt::NoBrush);
-        painter->drawRect(tcRect);
+        painter->drawRect(tcRect.adjusted(1, 1, -1, -1));
     }
 }
 
@@ -614,16 +654,6 @@ QPixmap AbstractContent::ratioScaledPixmap(const QPixmap * source, const QSize &
     return scaledPixmap;
 }
 
-int AbstractContent::contentHeightForWidth(int width) const
-{
-    return width;
-}
-
-bool AbstractContent::contentOpaque() const
-{
-    return false;
-}
-
 void AbstractContent::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     setControlsVisible(true);
@@ -655,6 +685,11 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 
 void AbstractContent::keyPressEvent(QKeyEvent * event)
 {
+    // discard key events for unselectable items
+    if (!(flags() & ItemIsSelectable)) {
+        event->ignore();
+        return;
+    }
     event->accept();
     int step = (event->modifiers() & Qt::ShiftModifier) ? 50 : (event->modifiers() & Qt::ControlModifier ? 1 : 10);
     switch (event->key()) {
@@ -680,10 +715,10 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
     // keep the AbstractContent's center inside the scene rect..
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
-        QRectF rect = scene()->sceneRect();
-        if (!rect.contains(newPos) /*&& rect.width() > 100 && rect.height() > 100*/) {
-            newPos.setX(qBound(rect.left(), newPos.x(), rect.right()));
-            newPos.setY(qBound(rect.top(), newPos.y(), rect.bottom()));
+        QRectF sceneRect = scene()->sceneRect();
+        if (!sceneRect.contains(newPos) && sceneRect.width() > 100 && sceneRect.height() > 100) {
+            newPos.setX(qBound(sceneRect.left(), newPos.x(), sceneRect.right()));
+            newPos.setY(qBound(sceneRect.top(), newPos.y(), sceneRect.bottom()));
             return newPos;
         }
     }
@@ -701,6 +736,8 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
                 break;
 
             // notify about graphics changes
+            //case ItemMatrixChange:
+            //case ItemTransformChange:
             case ItemTransformHasChanged:
             case ItemEnabledHasChanged:
             case ItemSelectedHasChanged:

@@ -24,6 +24,12 @@ void AbstractScene::adjustSceneSize()
     emit geometryChanged();
 }
 
+void AbstractScene::resizeAutoFit()
+{
+    QPointF bottomRight = itemsBoundingRect().bottomRight();
+    resize(QSize(qMax(10, (int)bottomRight.x()), qMax(10, (int)bottomRight.y())));
+}
+
 void AbstractScene::resize(const QSize & size)
 {
     // skip if already ok
@@ -31,16 +37,16 @@ void AbstractScene::resize(const QSize & size)
         return;
 
     // save size and the related rect
-    QSize oldSize = m_size;
+    //QSize oldSize = m_size;
     m_size = size;
     m_rect = QRectF(0, 0, m_size.width(), m_size.height());
+
+    // change my rect
+    setSceneRect(m_rect);
 
     // call handlers
     //QResizeEvent re(m_size, oldSize);
     resizeEvent(/*&re*/);
-
-    // change my rect
-    setSceneRect(m_rect);
 }
 
 void AbstractScene::resizeEvent()
@@ -48,3 +54,7 @@ void AbstractScene::resizeEvent()
     // nothing to do here
 }
 
+bool AbstractScene::sceneSelectable() const
+{
+    return true;
+}

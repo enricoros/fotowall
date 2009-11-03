@@ -26,24 +26,25 @@ namespace PlugGui {
     /**
         \brief A collection of widgets that can be plugged into a Container
     */
-    class AbstractAppliance : public QObject
+    class AbstractAppliance
     {
         public:
-            AbstractAppliance(QObject * parent = 0);
-
             // plugging into a container
             bool addToApplianceContainer(Container * container);
             void removeFromApplianceContainer();
 
             // appliance description and external control
             virtual QString applianceName() const = 0;
-            virtual bool applianceCommand(int command) = 0;
+            virtual bool applianceCommand(int command);
+
+            // this checks that the appliance contents have been destroyed
+            virtual ~AbstractAppliance();
 
         protected:
             // used by reimpls to access the container
             void sceneSet(AbstractScene *);
             void sceneClear();
-            void topbarAddWidget(QWidget *, int index = -1);
+            void topbarAddWidget(QWidget *, bool rightBar = false, int index = -1);
             void topbarRemoveWidget(QWidget *);
             void sidebarSetWidget(QWidget *);
             void sidebarClearWidget();
@@ -52,8 +53,8 @@ namespace PlugGui {
             void containerValueSet(quint32 key, const QVariant & value);
 
         private:
-            void clearCurrentContainer();
             void updateContainerTopbar();
+            void detachFromContainer();
 
             typedef QPointer<QWidget> WidgetPointer;
             typedef QPointer<AbstractScene> ScenePointer;

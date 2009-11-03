@@ -36,7 +36,7 @@ class MainWindow : public PlugGui::Container
         void applianceSetTopbar(const QList<QWidget *> & widgets);
         void applianceSetSidebar(QWidget * widget);
         void applianceSetCentralwidget(QWidget * widget);
-        void applianceSetValue(quint32 id, const QVariant & value);
+        void applianceSetValue(quint32 key, const QVariant & value);
 
         // ::QWidget
         void closeEvent(QCloseEvent * event);
@@ -56,11 +56,6 @@ class MainWindow : public PlugGui::Container
     private Q_SLOTS:
         // notifications
         void slotRenderingSlow();
-
-        // file box
-        bool on_loadButton_clicked();
-        bool on_saveButton_clicked();
-        bool on_exportButton_clicked();
 
         // help box
         void on_introButton_clicked();

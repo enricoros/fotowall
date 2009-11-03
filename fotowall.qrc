@@ -15,10 +15,15 @@
         <file>data/action-save.png</file>
         <file>data/action-scale.png</file>
         <file>data/action-snapshot.png</file>
+        <file>data/home-logo.png</file>
+        <file>data/home-newcanvas.png</file>
+        <file>data/home-newwordcloud.png</file>
+        <file>data/home-wizard.png</file>
         <file>data/insert-download.png</file>
         <file>data/insert-image.png</file>
         <file>data/insert-text.png</file>
         <file>data/insert-webcam.png</file>
+        <file>data/effects-icons/autoblend-effect.png</file>
         <file>data/effects-icons/black-and-white-effect.png</file>
         <file>data/effects-icons/glow-effect.png</file>
         <file>data/effects-icons/invert-effect.png</file>
@@ -28,6 +33,7 @@
         <file>data/effects-icons/nvg-effect.png</file>
         <file>data/fotowall.png</file>
         <file>data/opengl-logo.png</file>
+        <file>data/picture-gimp.png</file>
         <file>data/text-deshake.png</file>
         <file>data/text-shake.png</file>
         <file>data/textbold.png</file>

@@ -29,6 +29,7 @@ class AbstractScene : public QGraphicsScene
         void adjustSceneSize();
 
         // scene size
+        void resizeAutoFit();
         virtual void resize(const QSize & size);
         virtual void resizeEvent();
         inline int sceneWidth() const { return m_size.width(); }
@@ -36,6 +37,9 @@ class AbstractScene : public QGraphicsScene
         inline QSize sceneSize() const { return m_size; }
         inline QRectF sceneRect() const { return m_rect; }
         inline QPointF sceneCenter() const { return m_rect.center(); }
+
+        // how to view the scene (defaults to true)
+        virtual bool sceneSelectable() const;
 
     Q_SIGNALS:
         void geometryChanged();

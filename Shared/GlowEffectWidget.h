@@ -32,7 +32,8 @@ class GlowEffectWidget : public QWidget
         void setGlowRadius(int radius);
         int glowRadius() const;
 
-        static QImage glow(const QImage &image, int radius);
+        static QImage glown(const QImage &image, int radius);
+        static QImage dropShadow(const QImage &image, const QColor & shadowColor, int radius, int xOffset = 0, int yOffset = 0);
 
     protected:
         // ::QWidget

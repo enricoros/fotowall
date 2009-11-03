@@ -52,16 +52,16 @@
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-Canvas::Canvas(const QSize & initialSize, QObject * parent)
+Canvas::Canvas(QObject * parent)
     : AbstractScene(parent)
     , m_modeInfo(new CanvasModeInfo)
     , m_networkAccessManager(0)
     , m_helpItem(0)
+    , m_backMode(BackGradient)
     , m_backContent(0)
+    , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
     , m_topBarEnabled(false)
     , m_bottomBarEnabled(false)
-    , m_backGradientEnabled(true)
-    , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
     , m_pictureSearch(0)
     , m_forceFieldTimer(0)
 {
@@ -111,8 +111,8 @@ Canvas::Canvas(const QSize & initialSize, QObject * parent)
     tilePainter.fillRect(50, 50, 50, 50, Qt::darkGray);
     tilePainter.end();
 
-    // set the initial size of the canvas, don't let it grow automatically
-    resize(initialSize);
+    // set a placeholder size, the real one will be set on resize
+    resize(QSize(1, 1));
 
     // crazy background stuff
 #if 0
@@ -149,6 +149,19 @@ static QPoint nearCenter(const QRectF & rect)
     return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
 }
 
+void Canvas::addAutoContent(const QStringList & fileNames)
+{
+    // simple auto-detection of the content type
+    foreach (const QString & localFile, fileNames) {
+        if (QFile::exists(localFile)) {
+            if (localFile.endsWith(".fotowall", Qt::CaseInsensitive))
+                addCanvasViewContent(QStringList() << localFile);
+            else
+                addPictureContent(QStringList() << localFile);
+        }
+    }
+}
+
 void Canvas::addCanvasViewContent(const QStringList & fileNames)
 {
     int offset = -30 * fileNames.size() / 2;
@@ -159,7 +172,7 @@ void Canvas::addCanvasViewContent(const QStringList & fileNames)
 
         // create picture and load the file
         CanvasViewContent * d = createCanvasView(pos);
-        if (!d->loadCanvas(localFile, true, true)) {
+        if (!d->loadFromFile(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
         } else
@@ -349,28 +362,37 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity)
 }
 
 /// Decorations
-void Canvas::setBackMode(int mode)
+void Canvas::setBackMode(BackMode mode)
 {
-    // 1: none / 2: background gradient
-    bool enableGradient = mode == 2;
-    m_backGradientEnabled = enableGradient;
-    m_grad1ColorPicker->setVisible(enableGradient);
-    m_grad2ColorPicker->setVisible(enableGradient);
-    if (enableGradient)
+    if (m_backMode == mode)
+        return;
+
+    // apply the change to the background
+    m_backMode = mode;
+    bool isGradient = m_backMode == BackGradient;
+    m_grad1ColorPicker->setVisible(isGradient);
+    m_grad2ColorPicker->setVisible(isGradient);
+    if (isGradient)
         blinkBackGradients();
     update();
 
-    // 3: restore picture if changing from mode 3
-    if (mode != 3 && m_backContent)
-        setBackContent(0);
-
     // notify the change
-    emit backModeChanged();
+    emit backConfigChanged();
 }
 
-int Canvas::backMode() const
+Canvas::BackMode Canvas::backMode() const
 {
-    return m_backContent ? 3 : m_backGradientEnabled ? 2 : 1;
+    return m_backMode;
+}
+
+void Canvas::clearBackContent()
+{
+    setBackContent(0);
+}
+
+bool Canvas::backContent() const
+{
+    return m_backContent;
 }
 
 void Canvas::setBackContentRatio(Qt::AspectRatioMode mode)
@@ -540,7 +562,7 @@ void Canvas::showIntroduction()
         HIGHLIGHT(0.0, 0.0, false);
     if (!m_titleText.isEmpty())
         HIGHLIGHT(0.5, 0.0, false);
-    if (m_backGradientEnabled) {
+    if (m_backMode == BackGradient) {
         HIGHLIGHT(1.0, 0.0, false);
         HIGHLIGHT(1.0, 1.0, false);
     }
@@ -575,6 +597,16 @@ void Canvas::toXml(QDomElement & canvasElement) const
     {
         QDomElement backgroundElement = doc.createElement("background");
          canvasElement.appendChild(backgroundElement);
+
+        // save back Mode
+        QDomElement backModeElement = doc.createElement("mode");
+         backgroundElement.appendChild(backModeElement);
+         backModeElement.appendChild(doc.createTextNode(QString::number((int)m_backMode)));
+
+        // save back Content Ratio
+        QDomElement backRatioElement = doc.createElement("back-properties");
+         backRatioElement.setAttribute("ratio", (int)m_backContentRatio);
+         backgroundElement.appendChild(backRatioElement);
 
         // save Title
         QDomElement titleElement = doc.createElement("title");
@@ -629,11 +661,6 @@ void Canvas::toXml(QDomElement & canvasElement) const
          bElement2.appendChild(doc.createTextNode(QString::number(color.blue())));
          foreColor.appendChild(rElement2); foreColor.appendChild(gElement2); foreColor.appendChild(bElement2);
          backgroundElement.appendChild(foreColor);
-
-        // save back content aspect
-        QDomElement backRatioElement = doc.createElement("back-properties");
-         backRatioElement.setAttribute("ratio", (int)m_backContentRatio);
-         backgroundElement.appendChild(backRatioElement);
     }
 
     // CONTENT
@@ -683,11 +710,21 @@ void Canvas::fromXml(QDomElement & canvasElement)
 
         // read and apply properties
         if (backgroundElement.isElement()) {
+            // back Mode
+            QDomElement domElement = backgroundElement.firstChildElement("mode");
+            if (domElement.isElement())
+                setBackMode((Canvas::BackMode)domElement.text().toInt());
+
+            // back ratio mode
+            domElement = backgroundElement.firstChildElement("back-properties");
+            if (domElement.isElement())
+                m_backContentRatio = (Qt::AspectRatioMode)domElement.attribute("ratio").toInt();
+
             // title text
             setTitleText(backgroundElement.firstChildElement("title").text());
 
             // colors
-            QDomElement domElement = backgroundElement.firstChildElement("background-color").firstChildElement("top");
+            domElement = backgroundElement.firstChildElement("background-color").firstChildElement("top");
              int r = domElement.firstChildElement("red").text().toInt();
              int g = domElement.firstChildElement("green").text().toInt();
              int b = domElement.firstChildElement("blue").text().toInt();
@@ -707,11 +744,6 @@ void Canvas::fromXml(QDomElement & canvasElement)
              g = domElement.firstChildElement("green").text().toInt();
              b = domElement.firstChildElement("blue").text().toInt();
              m_foreColorPicker->setColor(QColor(r, g, b));
-
-            // ratio mode
-            domElement = backgroundElement.firstChildElement("back-properties");
-            if (domElement.isElement())
-                m_backContentRatio = (Qt::AspectRatioMode)domElement.attribute("ratio").toInt();
         }
     }
 
@@ -973,7 +1005,7 @@ void Canvas::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent)
         return;
 
     // unset the background picture, if present
-    setBackMode(m_backGradientEnabled ? 2 : 1);
+    clearBackContent();
 }
 
 void Canvas::contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
@@ -989,37 +1021,58 @@ void Canvas::contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
 void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
 {
     // clip exposedRect to the scene
-    QRect targetRect = sceneRect().toAlignedRect().intersect(exposedRect.toAlignedRect());
+    QRect sceneRect = this->sceneRect().toAlignedRect();
+    QRect expRect = sceneRect.intersect(exposedRect.toAlignedRect());
+
+    // draw background if have any uncovered area
+    bool contentOnly = m_backContent && m_backContent->contentOpaque() && m_backContentRatio == Qt::IgnoreAspectRatio;
+    if (!contentOnly) {
+        switch (m_backMode) {
+            case BackNone:
+                // draw checkboard to simulate a transparent background
+                if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering)
+                    painter->drawTiledPixmap(expRect, m_backTile, QPointF(expRect.left() % 100, expRect.top() % 100));
+                break;
+
+            case BackBlack:
+                painter->fillRect(expRect, Qt::black);
+                break;
+
+            case BackWhite:
+                painter->fillRect(expRect, Qt::white);
+                break;
+
+            case BackGradient: {
+                // draw background gradient
+                QLinearGradient lg(0, 0, 0, sceneHeight());
+                lg.setColorAt(0.0, m_grad1ColorPicker->color());
+                lg.setColorAt(1.0, m_grad2ColorPicker->color());
+                painter->setCompositionMode(QPainter::CompositionMode_Source);
+                painter->fillRect(expRect, lg);
+                painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                } break;
+        }
+    }
 
     // draw content if set
     if (m_backContent) {
-        // regenerate cache if needed
-        if (m_backCache.isNull() || m_backCache.size() != sceneSize())
-            m_backCache = m_backContent->toPixmap(sceneSize(), m_backContentRatio);
+        // do the HQ painting by hand, to improve quality on scaled views
+        if (RenderOpts::HQRendering)
+            m_backContent->drawContent(painter, sceneRect, m_backContentRatio);
 
-        // paint cached background
-        if (m_backContent->contentOpaque())
-            painter->setCompositionMode(QPainter::CompositionMode_Source);
-        painter->drawPixmap(targetRect, m_backCache, targetRect);
-        if (m_backContent->contentOpaque())
+        // use the lower quality cached (but faster) rendering
+        else {
+            // regenerate full-size cache if needed
+            if (m_backCache.isNull() || m_backCache.size() != sceneSize())
+                m_backCache = m_backContent->toPixmap(sceneSize(), m_backContentRatio);
+
+            // paint cached background
+            if (m_backContent->contentOpaque() && m_backContentRatio == Qt::IgnoreAspectRatio)
+                painter->setCompositionMode(QPainter::CompositionMode_Source);
+            painter->drawPixmap(expRect, m_backCache, expRect);
             painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-        return;
+        }
     }
-
-    // draw background gradient, if enabled
-    if (m_backGradientEnabled) {
-        QLinearGradient lg(0, 0, 0, sceneHeight());
-        lg.setColorAt(0.0, m_grad1ColorPicker->color());
-        lg.setColorAt(1.0, m_grad2ColorPicker->color());
-        painter->setCompositionMode(QPainter::CompositionMode_Source);
-        painter->fillRect(targetRect, lg);
-        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-        return;
-    }
-
-    // draw checkboard to simulate a transparent background
-    if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering)
-        painter->drawTiledPixmap(targetRect, m_backTile, QPointF(targetRect.left() % 100, targetRect.top() % 100));
 }
 
 void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect)
@@ -1095,7 +1148,7 @@ void Canvas::setBackContent(AbstractContent * content)
     // update GUI
     m_backCache = QPixmap();
     update();
-    emit backModeChanged();
+    emit backConfigChanged();
 }
 
 CanvasViewContent * Canvas::createCanvasView(const QPoint & pos)
@@ -1185,6 +1238,7 @@ void Canvas::slotSelectionChanged()
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selection);
     if (!selectedContent.isEmpty()) {
         SelectionProperties * pWidget = new SelectionProperties(selectedContent);
+        connect(pWidget, SIGNAL(collateSelection()), this, SLOT(slotCollateContent()));
         connect(pWidget, SIGNAL(deleteSelection()), this, SLOT(slotDeleteContent()), Qt::QueuedConnection);
         emit showPropertiesWidget(pWidget);
         return;
@@ -1302,6 +1356,22 @@ void Canvas::slotStackContent(int op)
     int z = 1;
     foreach (AbstractContent * content, m_content)
         content->setZValue(z++);
+}
+
+void Canvas::slotCollateContent()
+{
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
+    if (selectedContent.isEmpty())
+        return;
+
+    // TODO implement collation
+#if 0
+    QGraphicsItemGroup * group = new QGraphicsItemGroup;
+    foreach (AbstractContent * content, selectedContent)
+        group->addToGroup(content);
+    group->setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable);
+    addItem(group);
+#endif
 }
 
 void Canvas::slotDeleteContent()

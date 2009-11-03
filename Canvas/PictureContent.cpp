@@ -21,13 +21,17 @@
 #include "ButtonItem.h"
 #include "PictureProperties.h"
 
+#include <QDir>
 #include <QFileInfo>
+#include <QFileSystemWatcher>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QPainter>
+#include <QProcess>
+#include <QTimer>
 #include <QUrl>
 
 PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
@@ -38,6 +42,8 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     , m_netWidth(0)
     , m_netHeight(0)
     , m_netReply(0)
+    , m_watcher(0)
+    , m_watcherTimer(0)
 {
     // enable frame text
     setFrameTextEnabled(true);
@@ -60,17 +66,20 @@ PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
     connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
 
 #if 0
+    // add cropping button (TODO: enable this?)
     ButtonItem * bCrop = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-scale.png"), this);
     bCrop->setToolTip(tr(""));
     bCrop->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     addButtonItem(bCrop);
-    connect(bCrop, SIGNAL(clicked()), this, SIGNAL(toggleCropMode()));
+    connect(bCrop, SIGNAL(clicked()), this, SIGNAL(requestCrop()));
 #endif
 }
 
 PictureContent::~PictureContent()
 {
     dropNetworkConnection();
+    delete m_watcherTimer;
+    delete m_watcher;
     delete m_photo;
 }
 
@@ -233,14 +242,12 @@ QWidget * PictureContent::createPropertyWidget()
     PictureProperties * p = new PictureProperties();
 
     // connect actions
+    new PE_AbstractButton(p->gimpButton, this, "externalEdit", p);
     new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
     p->perspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
     new PE_PaneWidget(p->perspWidget, this, "perspective", p);
 
     // properties link
-    //p->bEditShape->setChecked(isShapeEditing());
-    //connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
-    //connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));
 
     return p;
 }
@@ -324,7 +331,7 @@ void PictureContent::toXml(QDomElement & contentElement) const
     }
 }
 
-void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
+void PictureContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
     // draw progress
     if (m_progress > 0.0 && m_progress < 1.0 && !RenderOpts::HQRendering) {
@@ -338,16 +345,20 @@ void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
         return;
 
     // blit if opaque picture
-#if QT_VERSION >= 0x040500
-    //disabled for 4.5 too, since it relies on raster.
+#if QT_VERSION >= 0x040600
+    //disabled for 4.6 too, since it relies on raster.
     //if (m_opaquePhoto)
     //    painter->setCompositionMode(QPainter::CompositionMode_Source);
 #endif
 
     // draw high-resolution photo when exporting png
-    if (RenderOpts::HQRendering) {
+    if (RenderOpts::HQRendering || ratio != Qt::IgnoreAspectRatio) {
+        QSize scaledSize = m_photo->size();
+        scaledSize.scale(targetRect.size(), ratio);
+        int offX = targetRect.left() + (targetRect.width() - scaledSize.width()) / 2;
+        int offY = targetRect.top() + (targetRect.height() - scaledSize.height()) / 2;
         painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, true);
-        painter->drawPixmap(targetRect, *m_photo);
+        painter->drawPixmap(offX, offY, scaledSize.width(), scaledSize.height(), *m_photo);
         return;
     }
 
@@ -362,7 +373,7 @@ void PictureContent::drawContent(QPainter * painter, const QRect & targetRect)
         painter->drawPixmap(targetRect.topLeft(), m_cachedPhoto);
     }
 
-#if QT_VERSION >= 0x040500
+#if QT_VERSION >= 0x040600
 //    if (m_opaquePhoto)
 //        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 #endif
@@ -415,6 +426,49 @@ void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
     emit requestBackgrounding();
 }
 
+void PictureContent::setExternalEdit(bool enabled)
+{
+    if (!m_photo)
+        return;
+
+    // start gimp if requested
+    if (enabled && !m_watcher) {
+        // save the pic to a file
+        QString fileName = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(qrand() % 999999) + ".png";
+        if (!m_photo->save(fileName, "PNG")) {
+            qWarning("PictureContent::slotGimpEdit: can't save the image");
+            return;
+        }
+
+        // open it with the gimp
+        if (!QProcess::startDetached("gimp", QStringList() << fileName)) {
+            qWarning("PictureContent::slotGimpEdit: can't start The Gimp");
+            return;
+        }
+
+        // start a watcher over it
+        delete m_watcher;
+        m_watcher = new QFileSystemWatcher(this);
+        m_watcher->setProperty("fullName", fileName);
+        m_watcher->addPath(fileName);
+        connect(m_watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(slotGimpCompressNotifies()));
+        return;
+    }
+
+    // delete if requested
+    if (m_watcher && !enabled) {
+        delete m_watcherTimer;
+        m_watcherTimer = 0;
+        delete m_watcher;
+        m_watcher = 0;
+    }
+}
+
+bool PictureContent::externalEdit() const
+{
+    return m_watcher;
+}
+
 void PictureContent::dropNetworkConnection()
 {
     if (m_netReply) {
@@ -436,6 +490,41 @@ void PictureContent::applyPostLoadEffects()
     m_afterLoadEffects.clear();
     update();
     GFX_CHANGED();
+}
+
+void PictureContent::slotGimpCompressNotifies()
+{
+    if (!m_watcherTimer) {
+        m_watcherTimer = new QTimer(this);
+        m_watcherTimer->setSingleShot(true);
+        connect(m_watcherTimer, SIGNAL(timeout()), this, SLOT(slotGimpFinished()));
+    }
+    m_watcherTimer->start(500);
+}
+
+void PictureContent::slotGimpFinished()
+{
+    // get the file name and dispose the watcher
+    if (!m_watcher)
+        return;
+    QString fileName = m_watcher->property("fullName").toString();
+
+    // reload the file
+    CPixmap * newPhoto = new CPixmap(fileName);
+    if (newPhoto->isNull()) {
+        qWarning("PictureContent::slotGimpFinished: can't load the modified picture");
+        delete newPhoto;
+        return;
+    }
+    delete m_photo;
+    m_photo = newPhoto;
+    m_cachedPhoto = QPixmap();
+    m_opaquePhoto = !m_photo->hasAlpha();
+    m_fileUrl = QString();
+    update();
+
+    // notify image change
+    emit contentChanged();
 }
 
 bool PictureContent::slotLoadNetworkData()

@@ -29,7 +29,8 @@ struct PictureEffect {
         Glow            =  6,
         Sepia           =  7,
         Opacity         =  8,
-        Crop            =  9
+        Crop            =  9,
+        AutoBlend       = 10,
     } effect;
     qreal param;
     QRect rect;

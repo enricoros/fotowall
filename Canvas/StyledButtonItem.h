@@ -22,7 +22,7 @@ class StyledButtonItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     public:
-        StyledButtonItem(const QString & text, const QFont & font, QGraphicsItem * parent);
+        StyledButtonItem(const QString & text, const QFont & font, QGraphicsItem * parent = 0);
 
         QString text() const;
         void setText(const QString & text);

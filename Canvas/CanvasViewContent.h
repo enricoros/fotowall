@@ -16,35 +16,37 @@
 #define __CanvasViewContent_h__
 
 #include "AbstractContent.h"
+#include "Shared/AbstractResourceProvider.h"
 #include <QPixmap>
 class Canvas;
 
 /**
     \brief Use another Canvas as content
 */
-class CanvasViewContent : public AbstractContent
+class CanvasViewContent : public AbstractContent, public SingleResourceLoaner
 {
     Q_OBJECT
     public:
         CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
-//        ~CanvasViewContent();
+        ~CanvasViewContent();
 
-        bool loadCanvas(const QString & filePath, bool keepRatio = false, bool setName = false);
-        Canvas * takeCanvas();
-        //void setCanvas(Canvas * canvas);
+        bool loadFromFile(const QString & filePath, bool keepRatio = false, bool setName = false);
 
         // ::AbstractContent
         QString contentName() const { return tr("Canvas View"); }
-        QWidget * createPropertyWidget();
         bool fromXml(QDomElement & parentElement);
         void toXml(QDomElement & parentElement) const;
-        void drawContent(QPainter * painter, const QRect & targetRect);
+        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
+        int contentHeightForWidth(int width) const;
 
-//        int contentHeightForWidth(int width) const;
-        bool contentOpaque() const;
+        // ::SingleResourceProvider
+        QVariant takeResource();
+        void returnResource(const QVariant &);
 
     private:
         Canvas * m_canvas;
+        QSize m_canvasCachedSize;
+        bool m_canvasTaken;
 
     private Q_SLOTS:
         void slotRepaintCanvas(const QList<QRectF> & exposed);

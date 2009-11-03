@@ -166,6 +166,17 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="gimpButton">
+       <property name="icon">
+        <iconset resource="../fotowall.qrc">
+         <normaloff>:/data/picture-gimp.png</normaloff>:/data/picture-gimp.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

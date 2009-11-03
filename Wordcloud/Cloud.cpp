@@ -40,7 +40,7 @@ Cloud::Cloud(QObject * parent)
   , m_busyMode(ShowProgress)
 {
     // default appearance
-    m_appearance.textColors << Qt::lightGray << Qt::darkGray << Qt::darkRed << Qt::black;
+    m_appearance.textColors << Qt::lightGray << Qt::darkGray << Qt::darkRed << Qt::black /*### Qt::white */;
     m_appearance.backColor = Qt::transparent;
     m_appearance.font.setFamily("Teen"); // Berylium
 }

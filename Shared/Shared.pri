@@ -6,6 +6,7 @@ HEADERS += \
     Shared/PictureServices/FlickrPictureService.h \
     Shared/PictureServices/GoogleImagesPictureService.h \
     Shared/AbstractScene.h \
+    Shared/AbstractResourceProvider.h \
     Shared/BlinkingToolButton.h \
     Shared/BreadCrumbBar.h \
     Shared/ButtonsDialog.h \
@@ -19,6 +20,7 @@ HEADERS += \
     Shared/MetaXmlReader.h \
     Shared/PanePropertyEditor.h \
     Shared/PictureEffect.h \
+    Shared/PixmapButton.h \
     Shared/PropertyEditors.h \
     Shared/RenderOpts.h \
     Shared/VideoProvider.h \
@@ -46,6 +48,7 @@ SOURCES += \
     Shared/GlowEffectWidget.cpp \
     Shared/GroupBoxWidget.cpp \
     Shared/PanePropertyEditor.cpp \
+    Shared/PixmapButton.cpp \
     Shared/PropertyEditors.cpp \
     Shared/MetaXmlReader.cpp \
     Shared/VideoProvider.cpp \

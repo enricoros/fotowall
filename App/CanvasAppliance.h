@@ -21,7 +21,7 @@ class QMenu;
 class AbstractContent;
 class Canvas;
 
-class CanvasAppliance : public PlugGui::AbstractAppliance
+class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
@@ -30,6 +30,8 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
 
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
         Canvas * takeCanvas();
+
+        bool saveToFile(const QString & fileName = QString());
 
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
@@ -43,17 +45,19 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
         void setCDProject();
         void setDVDProject();
         void setExactSizeProject(bool usePrevious);
+        void configurePrint(bool enabled);
 
     private:
         Ui::CanvasApplianceElements ui;
         Canvas *                    m_extCanvas;
         QWidget *                   m_dummyWidget;
-        QActionGroup *              m_gBackActions;
-        QActionGroup *              m_gBackRatioActions;
+        QActionGroup *              m_gBackModeGroup;
+        QActionGroup *              m_gBackRatioGroup;
+        QAction *                   m_gBackContentAction;
 
     private Q_SLOTS:
 
-        // actions in the add contents box
+        // actions in the Add contents box
         void slotAddCanvas();
         void slotAddPicture();
         void slotAddText();
@@ -61,7 +65,8 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
         void slotAddWordcloud();
         void slotSearchPicturesToggled(bool on);
 
-        // actions in the canvas box
+        // actions in the Canvas box
+        void slotBackContentRemove(bool checked);
         void slotProjectComboActivated(int index);
         void slotSetBackMode(QAction* action);
         void slotSetBackRatio(QAction* action);
@@ -74,10 +79,14 @@ class CanvasAppliance : public PlugGui::AbstractAppliance
         void slotDecoSetTitle();
         void slotDecoClearTitle();
 
+        // actions in the File box
+        bool slotFileLoad();
+        bool slotFileSave();
+        bool slotFileExport();
+
         // signals from the canvas
         void slotEditContent(AbstractContent * content);
-        void slotBackModeChanged();
-        void slotBackRatioChanged();
+        void slotBackConfigChanged();
         void slotShowPropertiesWidget(QWidget *);
 
         // other actions

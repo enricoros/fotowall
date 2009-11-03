@@ -29,4 +29,12 @@ class StandardFrame : public Frame
         void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
 };
 
+class StandardFrame2 : public StandardFrame
+{
+    public:
+        // ::Frame
+        quint32 frameClass() const { return Frame::StandardFrame2; }
+        void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
+};
+
 #endif
