@@ -514,4 +514,20 @@ class StackCommand : public AbstractCommand {
     }
 };
 
+class ShapeCommand : public AbstractCommand {
+    TextContent* m_content;
+    QList<QPointF >  m_pCps, m_nCps;
+    public:
+    ShapeCommand(TextContent *c, const QList<QPointF >& pCps, const QList<QPointF>& nCps) : m_content(c)
+                                                       , m_pCps(pCps), m_nCps(nCps)
+    { }
+
+    void exec() {
+        m_content->setControlPoints(m_nCps);
+    }
+    void unexec() {
+        m_content->setControlPoints(m_pCps);
+    }
+};
+
 #endif

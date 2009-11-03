@@ -14,6 +14,9 @@
 
 #include "TextContent.h"
 
+#include "Shared/Commands.h"
+#include "Shared/CommandStack.h"
+
 #include "Frames/Frame.h"
 #include "Shared/RenderOpts.h"
 #include "BezierCubicItem.h"
@@ -61,6 +64,8 @@ TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
     m_shapeEditor->setVisible(false);
     m_shapeEditor->setControlPoints(QList<QPointF>() << QPointF(-100, -50) << QPointF(-10, 40) << QPointF(100, -50) << QPointF(100, 50));
     connect(m_shapeEditor, SIGNAL(shapeChanged(const QPainterPath &)), this, SLOT(setShapePath(const QPainterPath &)));
+    connect(m_shapeEditor, SIGNAL(shapeControlPointChanged(const QList<QPointF> & )),
+                this, SLOT(slotControlPointChanged(const QList<QPointF> &)));
 }
 
 TextContent::~TextContent()
@@ -113,6 +118,7 @@ void TextContent::setShapeEditing(bool enabled)
 
             // use new shape
             setShapePath(m_shapeEditor->shape());
+            m_previousCps = m_shapeEditor->controlPoints();
             emit notifyHasShape(true);
         }
     } else {
@@ -340,6 +346,10 @@ void TextContent::selectionChanged(bool selected)
         setShapeEditing(false);
 }
 
+void TextContent::setControlPoints(const QList<QPointF> & cps) {
+    m_shapeEditor->setControlPoints(cps);
+}
+
 void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
     emit requestBackgrounding();
@@ -364,6 +374,13 @@ void TextContent::setShapePath(const QPainterPath & path)
 
     // regenerate text layouting
     updateTextConstraints();
+}
+
+void TextContent::slotControlPointChanged(const QList<QPointF >& m_ncps)
+{
+    ShapeCommand *c = new ShapeCommand(this, m_previousCps, m_ncps);
+    CommandStack::instance().addCommand(c);
+    m_previousCps = m_shapeEditor->controlPoints();
 }
 
 void TextContent::updateTextConstraints()
