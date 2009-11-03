@@ -106,16 +106,21 @@ class RotateAndResizeCommand : public AbstractCommand {
         /* Private vars */
         AbstractContent *m_content;
         const qreal m_pAngle, m_nAngle;
+        const QRect m_pRect, m_nRect;
     public:
-        RotateAndResizeCommand(AbstractContent *content, const qreal pAngle, const qreal nAngle) : m_content(content)
-                                                                      , m_pAngle(pAngle)
-                                                                      , m_nAngle(nAngle)
+        RotateAndResizeCommand(AbstractContent *content,
+                                const qreal pAngle, const qreal nAngle,
+                                const QRect pRect, const QRect nRect) : m_content(content)
+                                                          , m_pAngle(pAngle) , m_nAngle(nAngle)
+                                                          , m_pRect(pRect), m_nRect(nRect)
        {}
         void exec() {
             m_content->setRotation(m_nAngle);
+            m_content->resizeContents(m_nRect);
         }
         void unexec() {
             m_content->setRotation(m_pAngle);
+            m_content->resizeContents(m_pRect);
         }
         QString name() {
             return tr("Rotation and Resize");

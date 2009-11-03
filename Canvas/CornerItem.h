@@ -50,6 +50,7 @@ class CornerItem : public QGraphicsItem
         int m_operation;
         double m_startRatio;
         qreal m_startRotation;
+        QRect m_startContentRect;
 };
 
 #endif

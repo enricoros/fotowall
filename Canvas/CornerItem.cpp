@@ -88,8 +88,10 @@ void CornerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
     m_operation &= m_opMask;
 
     // intial parameters
-    QRect cRect = m_content->contentRect();
-    m_startRatio = (double)cRect.width() / (double)cRect.height();
+    m_startContentRect = m_content->contentRect();
+    m_startRatio = (double)m_startContentRect.width() / (double)m_startContentRect.height();
+
+    m_startRotation = m_content->rotation();
 
     update();
 }
@@ -167,10 +169,9 @@ void CornerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     m_operation = Off;
     update();
 
-    RotateAndResizeCommand *command = new RotateAndResizeCommand(m_content, m_startRotation, m_content->rotation());
+    RotateAndResizeCommand *command = new RotateAndResizeCommand(m_content, m_startRotation, m_content->rotation(),
+                                                                m_startContentRect, m_content->contentRect());
     CommandStack::instance().addCommand(command);
-    m_startRotation = m_content->rotation();
-
 
     // clicked
     if (accepted) {
