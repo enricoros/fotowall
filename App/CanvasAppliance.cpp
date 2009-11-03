@@ -105,6 +105,7 @@ Canvas * CanvasAppliance::takeCanvas()
     Canvas * canvas = m_extCanvas;
     disconnect(canvas, 0, this, 0);
     m_extCanvas = 0;
+    sceneClear();
     return canvas;
 }
 

@@ -20,8 +20,7 @@ using namespace PlugGui;
 
 AbstractAppliance::~AbstractAppliance()
 {
-#if 1
-    // development check: ensure stuff has been deleted (minus the scene)
+    // development checks: ensure stuff has been deleted
     QList<WidgetPointer> list = m_pTopbar;
     list.append(m_pSidebar);
     list.append(m_pCentral);
@@ -31,7 +30,8 @@ AbstractAppliance::~AbstractAppliance()
             notKilled++;
     if (notKilled)
         qWarning("AbstractAppliance::~AbstractAppliance: some pointers (%d) not destroyed", notKilled);
-#endif
+    if (m_pScene)
+        qWarning("AbstractAppliance::~AbstractAppliance: scene not taken before destroying");
 }
 
 bool AbstractAppliance::addToApplianceContainer(Container * container)
