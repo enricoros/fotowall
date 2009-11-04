@@ -162,7 +162,7 @@ class NewImageCommand : public AbstractCommand {
         const QStringList m_imagesPath;
         QList<PictureContent *> m_images;
     public:
-        NewImageCommand(Canvas *desk, const QStringList& paths) : m_canvas(desk), m_imagesPath(paths)
+        NewImageCommand(Canvas *canvas, const QStringList& paths) : m_canvas(canvas), m_imagesPath(paths)
         {}
         void exec() {
             if(m_images.isEmpty()) {
@@ -261,7 +261,7 @@ class NewTextCommand : public AbstractCommand {
         Canvas *m_canvas;
         TextContent *m_content;
     public:
-        NewTextCommand(Canvas *desk) : m_canvas(desk), m_content(0)
+        NewTextCommand(Canvas *canvas) : m_canvas(canvas), m_content(0)
         {}
         void exec() {
             if(m_content == 0)
@@ -285,7 +285,7 @@ class NewWebcamCommand : public AbstractCommand {
         Canvas *m_canvas;
         WebcamContent *m_content;
     public:
-        NewWebcamCommand(Canvas *desk) : m_canvas(desk), m_content(0)
+        NewWebcamCommand(Canvas *canvas) : m_canvas(canvas), m_content(0)
         {}
         void exec() {
             if(m_content == 0)

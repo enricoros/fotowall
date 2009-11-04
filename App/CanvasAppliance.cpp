@@ -359,21 +359,24 @@ void CanvasAppliance::slotAddPicture()
     if (fileNames.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
-    m_extCanvas->addPictureContent(fileNames);
+    NewImageCommand *c = new NewImageCommand(m_extCanvas, fileNames);
+    CommandStack::instance().doCommand(c);
 }
 
 void CanvasAppliance::slotAddText()
 {
     // disable any search box
     ui.aSearchPictures->setChecked(false);
-    m_extCanvas->addTextContent();
+    NewTextCommand *c = new NewTextCommand(m_extCanvas);
+    CommandStack::instance().doCommand(c);
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
     // disable any search box
     ui.aSearchPictures->setChecked(false);
-    m_extCanvas->addWebcamContent(0);
+    NewWebcamCommand *c = new NewWebcamCommand(m_extCanvas);
+    CommandStack::instance().doCommand(c);
 }
 
 void CanvasAppliance::slotAddWordcloud()
