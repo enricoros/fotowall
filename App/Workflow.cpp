@@ -64,10 +64,11 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
 
 Workflow::~Workflow()
 {
-    // delete all the appliances, discarding changes
-    // saving should have been done at the exit request. here we drop the rest
-    while (!m_stack.isEmpty())
+    // warn if we have any appliance left, shouldn't be
+    while (!m_stack.isEmpty()) {
+        qWarning("Workflow::~Workflow: not empty stack. dropping all");
         popNode(true);
+    }
 
     // unset the global reference
     App::workflow = 0;
@@ -174,7 +175,9 @@ bool Workflow::requestExit()
         return true;
     }
 
-    // handle Quit (the distructor will pop apps without saving changes)
+    // handle Quit without saving
+    while (!m_stack.isEmpty())
+        popNode(true);
     return true;
 }
 
