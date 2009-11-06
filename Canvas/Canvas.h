@@ -154,6 +154,7 @@ class Canvas : public AbstractScene
         PictureSearchItem * m_pictureSearch;
         QTimer * m_forceFieldTimer;
         QTime m_forceFieldTime;
+        bool m_pendingChanges;
 
     private Q_SLOTS:
         friend class AbstractConfig; // HACK here, only to call 1 method
@@ -177,6 +178,8 @@ class Canvas : public AbstractScene
         void slotGradColorChanged();
         void slotBackContentChanged();
 
+        void slotMarkChanges();
+        void slotResetChanges();
         void slotCloseIntroduction();
         void slotApplyForce();
 };

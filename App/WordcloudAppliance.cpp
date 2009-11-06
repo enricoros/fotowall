@@ -109,6 +109,12 @@ Wordcloud::Cloud * WordcloudAppliance::cloud() const
     return m_extCloud;
 }
 
+bool WordcloudAppliance::pendingChanges() const
+{
+    // ###
+    return true;
+}
+
 void WordcloudAppliance::saveToFile(const QString &__fileName)
 {
     if (__fileName.isEmpty()) {
