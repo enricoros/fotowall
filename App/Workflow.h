@@ -64,7 +64,7 @@ class Workflow : public QObject
         };
 
         void pushNode(const Node & node);
-        void popNode();
+        void popNode(bool discardChanges);
         void updateBreadcrumb();
 
         // external objects

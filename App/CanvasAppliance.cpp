@@ -112,6 +112,11 @@ Canvas * CanvasAppliance::takeCanvas()
     return canvas;
 }
 
+bool CanvasAppliance::pendingChanges() const
+{
+    return m_extCanvas ? m_extCanvas->pendingChanges() : false;
+}
+
 bool CanvasAppliance::saveToFile(const QString & __fileName)
 {
     // ask for file name if not given

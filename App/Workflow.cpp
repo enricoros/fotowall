@@ -64,17 +64,14 @@ Workflow::Workflow(PlugGui::Container * container, BreadCrumbBar * bar, QObject 
 
 Workflow::~Workflow()
 {
+    // warn if we have any appliance left, shouldn't be
+    while (!m_stack.isEmpty()) {
+        qWarning("Workflow::~Workflow: not empty stack. dropping all");
+        popNode(true);
+    }
+
     // unset the global reference
     App::workflow = 0;
-
-    // delete the home appliance, and complain if others are present
-    while (!m_stack.isEmpty()) {
-        const Node & node = m_stack.takeLast();
-        if (dynamic_cast<HomeAppliance *>(node.appliance))
-            delete node.appliance;
-        else
-            qWarning("Workflow::~Workflow: not empty!");
-    }
     m_container = 0;
 
     // this is an example of 'autosave-like function'
@@ -132,43 +129,56 @@ bool Workflow::applianceCommand(int command)
 
 bool Workflow::requestExit()
 {
-    // exit if no structure or on home screen
-    if (m_stack.isEmpty() || dynamic_cast<HomeAppliance *>(m_stack.first().appliance))
-        return true;
+    // count master appliances that can be saved
+    int requiringSave = 0;
+    foreach (const Node & node, m_stack) {
+        // skip slaves
+        if (node.res)
+            continue;
+
+        // count modified appliances
+        if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(node.appliance)) {
+            if (cApp->pendingChanges())
+                ++requiringSave;
+        } else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(node.appliance)) {
+            if (wApp->pendingChanges())
+                ++requiringSave;
+        }
+    }
 
     // build the closure dialog
     ButtonsDialog quitAsk("Workflow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
     quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
-#if 0
-    if (m_canvas && m_canvas->pendingChanges()) {
+    if (requiringSave) {
         quitAsk.setMessage(tr("Are you sure you want to quit and lose your changes?"));
         quitAsk.setButtonText(QDialogButtonBox::Save, tr("Save"));
         quitAsk.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
         quitAsk.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::Cancel);
     } else {
-#endif
         quitAsk.setMessage(tr("Are you sure you want to quit?"));
         quitAsk.setButtonText(QDialogButtonBox::Close, tr("Quit"));
         quitAsk.setButtons(QDialogButtonBox::Close | QDialogButtonBox::Cancel);
-#if 0
     }
-#endif
 
     // react to the dialog's answer
-    switch (quitAsk.execute()) {
-        case QDialogButtonBox::Cancel:
-            return false;
+    QDialogButtonBox::StandardButton button = quitAsk.execute();
 
-        case QDialogButtonBox::Save:
-            // save file and return to Fotowall if canceled
-            //if (!saveCurrent())
-            //    return false;
-            // fall through
+    // handle Cancel
+    if (button == QDialogButtonBox::Cancel)
+        return false;
 
-        default:
-            return true;
+    // handle Save
+    if (button == QDialogButtonBox::Save) {
+        while (!m_stack.isEmpty())
+            popNode(false);
+        return true;
     }
+
+    // handle Quit without saving
+    while (!m_stack.isEmpty())
+        popNode(true);
+    return true;
 }
 
 void Workflow::scheduleCommand(const Command &command)
@@ -188,7 +198,7 @@ bool Workflow::processCommand(const Workflow::Command & command)
         case Command::ResetToLevel: {
             int level = qMax(1, command.param.toInt());
             while (!dynamic_cast<HomeAppliance *>(m_stack.last().appliance) && m_stack.size() > level)
-                popNode();
+                popNode(false);
             }return true;
 
         case Command::MasterCanvas: {
@@ -253,7 +263,7 @@ void Workflow::pushNode(const Node & node)
     updateBreadcrumb();
 }
 
-void Workflow::popNode()
+void Workflow::popNode(bool discardChanges)
 {
     // delete last
     if (!m_stack.isEmpty()) {
@@ -263,10 +273,12 @@ void Workflow::popNode()
         // master: save content
         if (!node.res) {
             if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(app)) {
-                cApp->saveToFile();
+                if (!discardChanges && cApp->pendingChanges())
+                    cApp->saveToFile();
                 delete cApp->takeCanvas();
             } else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(app)) {
-                wApp->saveToFile();
+                if (!discardChanges)
+                    wApp->saveToFile();
                 delete wApp->takeCloud();
             } else if (dynamic_cast<HomeAppliance *>(app)) {
                 // no data to delete here

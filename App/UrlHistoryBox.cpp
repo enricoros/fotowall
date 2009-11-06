@@ -20,6 +20,8 @@
 #include "FotowallFile.h"
 
 #include <QHBoxLayout>
+#include <QFile>
+#include <QMenu>
 #include <QTimer>
 #include <QVariant>
 
@@ -39,6 +41,8 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
         const QUrl & url = urls[i];
         PixmapButton * button = new PixmapButton(QSize(80, 60));
         connect(button, SIGNAL(clicked()), this, SLOT(slotClicked()));
+        connect(button, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotContextMenu(const QPoint &)));
+        button->setContextMenuPolicy(Qt::CustomContextMenu);
         button->setProperty("url", url);
         button->setHoverText(QString::number(i+1));
         button->setToolTip(url.toString());
@@ -66,6 +70,36 @@ QUrl UrlHistoryBox::urlForEntry(int index) const
 void UrlHistoryBox::slotClicked()
 {
     emit urlClicked(sender()->property("url").toUrl());
+}
+
+void UrlHistoryBox::slotContextMenu(const QPoint & widgetPos)
+{
+    // get data from the sender button
+    PixmapButton * button = static_cast<PixmapButton *>(sender());
+    QPoint screenPos = button->mapToGlobal(widgetPos);
+    QUrl fileUrl = button->property("url").toUrl();
+    QString fileString = fileUrl.toLocalFile();
+    if (!QFile::exists(fileString))
+        return;
+
+    // build menu
+    QMenu menu;
+    QAction * openAction = menu.addAction(tr("Open"));
+    menu.addSeparator();
+    QMenu * fileSubMenu = menu.addMenu(tr("File Actions"));
+    QAction * deleteAction = fileSubMenu->addAction(QIcon(":/data/action-delete.png"), tr("Delete File"));
+
+    // popup menu and handle actions
+    QAction * action = menu.exec(screenPos);
+    if (action == openAction)
+        emit urlClicked(fileUrl);
+    else if (action == deleteAction) {
+        if (QFile::remove(fileString)) {
+            button->deleteLater();
+            m_entries.removeAll(button);
+        } else
+            qWarning("UrlHistoryBox::slotContextMenu: cannot remove file");
+    }
 }
 
 void UrlHistoryBox::slotNextPreview()

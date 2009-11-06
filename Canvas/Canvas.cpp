@@ -65,6 +65,7 @@ Canvas::Canvas(QObject * parent)
     , m_bottomBarEnabled(false)
     , m_pictureSearch(0)
     , m_forceFieldTimer(0)
+    , m_pendingChanges(false)
 {
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
@@ -531,7 +532,7 @@ void Canvas::clearMarkers()
 /// Misc: save, restore, help...
 bool Canvas::pendingChanges() const
 {
-    return !m_content.isEmpty();
+    return !m_content.isEmpty() && m_pendingChanges;
 }
 
 #define HIGHLIGHT(x, y, del) \
@@ -683,6 +684,10 @@ void Canvas::toXml(QDomElement & canvasElement) const
             }
         }
     }
+
+    // reset the 'needs saving' flag
+    Canvas * rwCanvas = (Canvas *)this;
+    rwCanvas->slotResetChanges();
 }
 
 void Canvas::fromXml(QDomElement & canvasElement)
@@ -791,6 +796,7 @@ void Canvas::fromXml(QDomElement & canvasElement)
     }
 
     // refresh all
+    slotResetChanges();
     update();
     emit geometryChanged();
 }
@@ -1125,6 +1131,9 @@ void Canvas::initContent(AbstractContent * content, const QPoint & pos)
     content->show();
 
     m_content.append(content);
+
+    // mark the change
+    slotMarkChanges();
 }
 
 void Canvas::setBackContent(AbstractContent * content)
@@ -1151,6 +1160,7 @@ void Canvas::setBackContent(AbstractContent * content)
     m_grad2ColorPicker->hide();
 
     // update GUI
+    slotMarkChanges();
     m_backCache = QPixmap();
     update();
     emit backConfigChanged();
@@ -1392,6 +1402,7 @@ void Canvas::slotDeleteContent()
         if (QMessageBox::question(0, tr("Delete content"), tr("All the %1 selected content will be deleted, do you want to continue ?").arg(selectedContent.size()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
             return;
 
+// Undo/redo delete code
     foreach (AbstractContent * content, selectedContent) {
         //deleteContent(content);
         if (content) {
@@ -1412,6 +1423,12 @@ void Canvas::slotDeleteContent()
             //}
         }
     }
+//======= Previous delete code
+    //foreach (AbstractContent * content, selectedContent)
+        //deleteContent(content);
+
+    //slotMarkChanges();
+//>>>>>>>
 }
 
 void Canvas::slotDeleteConfig()
@@ -1491,6 +1508,16 @@ void Canvas::slotBackContentChanged()
 {
     m_backCache = QPixmap();
     update();
+}
+
+void Canvas::slotMarkChanges()
+{
+    m_pendingChanges = true;
+}
+
+void Canvas::slotResetChanges()
+{
+    m_pendingChanges = false;
 }
 
 void Canvas::slotCloseIntroduction()
