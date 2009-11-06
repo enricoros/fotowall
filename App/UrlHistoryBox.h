@@ -40,6 +40,7 @@ class UrlHistoryBox : public GroupBoxWidget
 
     private Q_SLOTS:
         void slotClicked();
+        void slotContextMenu(const QPoint &);
         void slotNextPreview();
 };
 
