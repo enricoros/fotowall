@@ -64,7 +64,7 @@ namespace PlugGui {
             typedef QPointer<Container> ContainerPointer;
             typedef QMap<int, QVariant> ValueMap;
 
-            QString m_title;
+            QString m_windowTitle;
             ScenePointer m_pScene;
             QList<WidgetPointer> m_pTopbar;
             WidgetPointer m_pSidebar;

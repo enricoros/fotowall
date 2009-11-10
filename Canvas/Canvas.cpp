@@ -33,7 +33,9 @@
 
 #include <QAbstractTextDocumentLayout>
 #include <QBuffer>
+#include <QDate>
 #include <QFile>
+#include <QFileInfo>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
 #include <QImageReader>
@@ -61,6 +63,9 @@ Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent)
     , m_forceFieldTimer(0)
     , m_pendingChanges(false)
 {
+    // init title
+    m_filePath = tr("Unnamed %1").arg(QDate::currentDate().toString()) + ".fotowall";
+
     // init modeinfo
     m_modeInfo->setScreenDpi(sDpiX, sDpiY);
 
@@ -257,6 +262,25 @@ void Canvas::resizeEvent()
     foreach (AbstractConfig * config, m_configs)
         config->keepInBoundaries(sceneRect());
 }
+
+QString Canvas::filePath() const
+{
+    return m_filePath;
+}
+
+void Canvas::setFilePath(const QString & filePath)
+{
+    if (filePath != m_filePath) {
+        m_filePath = filePath;
+        emit filePathChanged();
+    }
+}
+
+QString Canvas::prettyBaseName() const
+{
+    return QFileInfo(m_filePath).baseName();
+}
+
 
 /// Item Interaction
 void Canvas::selectAllContent(bool selected)
@@ -550,6 +574,16 @@ void Canvas::toXml(QDomElement & canvasElement) const
 {
     QDomDocument doc = canvasElement.ownerDocument();
 
+    // META
+    {
+        QDomElement metaElement = doc.createElement("meta");
+        canvasElement.appendChild(metaElement);
+
+        //QDomElement ... = doc.createElement("...");
+        //metaElement.appendChild(...);
+        //....appendChild(doc.createTextNode( ..text.. ));
+    }
+
     // MODEINFO
     {
         QDomElement modeElement = doc.createElement("mode");
@@ -677,6 +711,16 @@ void Canvas::fromXml(QDomElement & canvasElement)
 {
     // remove all content
     clearContent();
+
+    // META
+    {
+        // find the 'meta' element
+        QDomElement metaElement = canvasElement.firstChildElement("meta");
+        if (metaElement.isElement()) {
+            //QDomElement ... = metaElement.firstChildElement("...");
+            //...
+        }
+    }
 
     // MODEINFO
     {

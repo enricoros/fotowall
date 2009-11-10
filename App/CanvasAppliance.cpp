@@ -62,6 +62,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     connect(ui.exportButton, SIGNAL(clicked()), this, SLOT(slotFileExport()));
 
     // configure the appliance
+    windowTitleSet(m_extCanvas->prettyBaseName());
     sceneSet(m_extCanvas);
     topbarAddWidget(ui.addContentBox);
     topbarAddWidget(ui.propertiesBox);
@@ -77,6 +78,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     connect(m_extCanvas, SIGNAL(backConfigChanged()), this, SLOT(slotBackConfigChanged()));
     connect(m_extCanvas, SIGNAL(requestContentEditing(AbstractContent*)), this, SLOT(slotEditContent(AbstractContent*)));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
+    connect(m_extCanvas, SIGNAL(filePathChanged()), this, SLOT(slotFilePathChanged()));
 
     // react to VideoProvider
     ui.aAddWebcam->setVisible(VideoProvider::instance()->inputCount() > 0);
@@ -116,7 +118,7 @@ bool CanvasAppliance::saveToFile(const QString & __fileName)
 {
     // ask for file name if not given
     if (__fileName.isEmpty()) {
-        QString fileName = FotowallFile::getSaveFotowallFile();
+        QString fileName = FotowallFile::getSaveFotowallFile(m_extCanvas->filePath());
         if (fileName.isNull())
             return false;
         return FotowallFile::saveV2(fileName, m_extCanvas);
@@ -530,6 +532,11 @@ void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
         ui.propertiesBox->collapse();
         ui.canvasPropertiesBox->expand();
     }
+}
+
+void CanvasAppliance::slotFilePathChanged()
+{
+    windowTitleSet(m_extCanvas->prettyBaseName());
 }
 
 void CanvasAppliance::slotVerifyVideoInputs(int count)

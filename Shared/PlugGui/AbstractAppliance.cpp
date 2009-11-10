@@ -45,7 +45,7 @@ bool AbstractAppliance::addToApplianceContainer(Container * container)
     // add the appliance to the container
     m_containerPtr = container;
     if (m_containerPtr) {
-        m_containerPtr->applianceSetTitle(m_title);
+        m_containerPtr->applianceSetTitle(m_windowTitle);
         m_containerPtr->applianceSetScene(m_pScene.data());
         updateContainerTopbar();
         m_containerPtr->applianceSetSidebar(m_pSidebar.data());
@@ -77,9 +77,9 @@ bool AbstractAppliance::applianceCommand(int command)
 
 void AbstractAppliance::windowTitleSet(const QString &title)
 {
-    m_title = title;
+    m_windowTitle = title;
     if (m_containerPtr)
-        m_containerPtr->applianceSetTitle(m_title);
+        m_containerPtr->applianceSetTitle(m_windowTitle);
 }
 
 void AbstractAppliance::windowTitleClear()

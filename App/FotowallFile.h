@@ -32,7 +32,7 @@ namespace FotowallFile
     // file selector dialogs
     QString getLoadFotowallFile();
     QStringList getLoadFotowallFiles();
-    QString getSaveFotowallFile();
+    QString getSaveFotowallFile(const QString & defaultFilePath);
 };
 
 #endif

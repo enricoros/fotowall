@@ -40,6 +40,7 @@ class WordcloudContent;
 class Canvas : public AbstractScene
 {
     Q_OBJECT
+    Q_PROPERTY(QString filePath READ filePath WRITE setFilePath NOTIFY filePathChanged)
     public:
         Canvas(int sDpiX, int sDpiY, QObject * parent = 0);
         ~Canvas();
@@ -57,6 +58,11 @@ class Canvas : public AbstractScene
         // ::AbstractScene
         void resize(const QSize & size);
         void resizeEvent();
+
+        // properties
+        QString filePath() const;
+        void setFilePath(const QString & filePath);
+        QString prettyBaseName() const;
 
         // item interaction
         void selectAllContent(bool selected = true);
@@ -104,6 +110,7 @@ class Canvas : public AbstractScene
         void backConfigChanged();
         void requestContentEditing(AbstractContent * content);
         void showPropertiesWidget(QWidget * widget);
+        void filePathChanged();
 
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
@@ -126,6 +133,7 @@ class Canvas : public AbstractScene
         void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
 
+        QString m_filePath;
         CanvasModeInfo * m_modeInfo;
         QList<AbstractContent *> m_content;
         QList<AbstractConfig *> m_configs;

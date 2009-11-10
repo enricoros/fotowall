@@ -89,6 +89,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         void slotEditContent(AbstractContent * content);
         void slotBackConfigChanged();
         void slotShowPropertiesWidget(QWidget *);
+        void slotFilePathChanged();
 
         // other actions
         void slotVerifyVideoInputs(int count);

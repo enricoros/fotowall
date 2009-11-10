@@ -79,6 +79,7 @@ bool FotowallFile::read(const QString & filePath, Canvas * canvas, bool inHistor
 
     // restore the canvas
     canvas->fromXml(canvasElement);
+    canvas->setFilePath(filePath);
 
     // add to the recent history
     if (inHistory)
@@ -174,10 +175,10 @@ QStringList FotowallFile::getLoadFotowallFiles()
     return fileNames;
 }
 
-QString FotowallFile::getSaveFotowallFile()
+QString FotowallFile::getSaveFotowallFile(const QString & defaultFilePath)
 {
     // make up the default save path
-    QString defaultSavePath = QObject::tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
+    QString defaultSavePath = defaultFilePath;
     if (App::settings->contains("Fotowall/SaveProjectDir"))
         defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
 

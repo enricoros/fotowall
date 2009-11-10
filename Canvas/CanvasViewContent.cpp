@@ -78,6 +78,7 @@ bool CanvasViewContent::fromXml(QDomElement & contentElement)
     m_canvas = new Canvas(96, 96, this);
     connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
     m_canvas->fromXml(canvasElement);
+    m_canvas->setFilePath(QString());
     m_canvas->resizeAutoFit();
 
     // set the canvas
