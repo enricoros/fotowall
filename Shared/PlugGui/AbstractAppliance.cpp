@@ -45,6 +45,7 @@ bool AbstractAppliance::addToApplianceContainer(Container * container)
     // add the appliance to the container
     m_containerPtr = container;
     if (m_containerPtr) {
+        m_containerPtr->applianceSetTitle(m_title);
         m_containerPtr->applianceSetScene(m_pScene.data());
         updateContainerTopbar();
         m_containerPtr->applianceSetSidebar(m_pSidebar.data());
@@ -72,6 +73,18 @@ bool AbstractAppliance::applianceCommand(int command)
 {
     qWarning("AbstractAppliance::applianceCommand: current appliance '%s' doesn't handle command %d", qPrintable(applianceName()), command);
     return false;
+}
+
+void AbstractAppliance::windowTitleSet(const QString &title)
+{
+    m_title = title;
+    if (m_containerPtr)
+        m_containerPtr->applianceSetTitle(m_title);
+}
+
+void AbstractAppliance::windowTitleClear()
+{
+    windowTitleSet(QString());
 }
 
 void AbstractAppliance::sceneSet(AbstractScene * scene)
@@ -166,6 +179,7 @@ void AbstractAppliance::updateContainerTopbar()
 void AbstractAppliance::detachFromContainer()
 {
     if (m_containerPtr) {
+        m_containerPtr->applianceSetTitle(QString());
         m_containerPtr->applianceSetScene(0);
         m_containerPtr->applianceSetTopbar(QList<QWidget *>());
         m_containerPtr->applianceSetSidebar(0);

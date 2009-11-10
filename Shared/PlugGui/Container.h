@@ -35,6 +35,7 @@ namespace PlugGui {
         protected:
             // called by appliances
             friend class PlugGui::AbstractAppliance;
+            virtual void applianceSetTitle(const QString & title) = 0;
             virtual void applianceSetScene(AbstractScene * scene) = 0;
             virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
             virtual void applianceSetSidebar(QWidget * widget) = 0;

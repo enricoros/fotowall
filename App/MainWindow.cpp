@@ -61,11 +61,7 @@ MainWindow::MainWindow(QWidget * parent)
     , m_applyingAccelState(false)
 {
     // setup widget
-#if QT_VERSION >= 0x040500
-    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
-#else
-    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() + "   -Limited Edition (Qt 4.4)-");
-#endif
+    applianceSetTitle(QString());
     setWindowIcon(QIcon(":/data/fotowall.png"));
 
     // init ui
@@ -121,6 +117,16 @@ MainWindow::~MainWindow()
 QSize MainWindow::sceneViewSize() const
 {
     return ui->sceneView->viewport()->size();
+}
+
+void MainWindow::applianceSetTitle(const QString & title)
+{
+    QString tString = title.isEmpty() ? QString() : title + " - ";
+    tString += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
+#if QT_VERSION < 0x040500
+    tString += "   -Limited Edition (Qt 4.4)-";
+#endif
+    setWindowTitle(tString);
 }
 
 void MainWindow::applianceSetScene(AbstractScene * scene)

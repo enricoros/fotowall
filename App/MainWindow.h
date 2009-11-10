@@ -34,6 +34,7 @@ class MainWindow : public PlugGui::Container
     protected:
         // ::Appliance::Container
         QSize sceneViewSize() const;
+        void applianceSetTitle(const QString & title);
         void applianceSetScene(AbstractScene * scene);
         void applianceSetTopbar(const QList<QWidget *> & widgets);
         void applianceSetSidebar(QWidget * widget);
