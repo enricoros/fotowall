@@ -41,7 +41,7 @@ class Canvas : public AbstractScene
 {
     Q_OBJECT
     public:
-        Canvas(QObject * parent = 0);
+        Canvas(int sDpiX, int sDpiY, QObject * parent = 0);
         ~Canvas();
 
         // add/remove content

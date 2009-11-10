@@ -25,7 +25,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
-        CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent = 0);
+        CanvasAppliance(Canvas * extCanvas, QObject * parent = 0);
         ~CanvasAppliance();
 
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)

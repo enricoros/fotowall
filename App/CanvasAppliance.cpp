@@ -32,7 +32,7 @@
 #include <QMenu>
 
 
-CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent)
+CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
   : QObject(parent)
   , m_extCanvas(extCanvas)
   , m_dummyWidget(new QWidget)
@@ -74,8 +74,6 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     ui.decoButton->setMenu(createDecorationMenu());
 
     // react to canvas
-    m_extCanvas->modeInfo()->setScreenDpi(sDpiX, sDpiY);
-    m_extCanvas->modeInfo()->setPrintDpi(300);
     connect(m_extCanvas, SIGNAL(backConfigChanged()), this, SLOT(slotBackConfigChanged()));
     connect(m_extCanvas, SIGNAL(requestContentEditing(AbstractContent*)), this, SLOT(slotEditContent(AbstractContent*)));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));

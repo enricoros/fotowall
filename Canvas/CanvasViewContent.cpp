@@ -39,12 +39,8 @@ CanvasViewContent::~CanvasViewContent()
 
 bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*/, bool setName)
 {
-    // ### HACK ahead
-    if (!scene() || scene()->views().isEmpty())
-        return false;
-
     // create a Canvas
-    Canvas * canvas = new Canvas(this);
+    Canvas * canvas = new Canvas(96, 96, this);
     connect(canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
     bool ok = FotowallFile::read(filePath, canvas, false);
     canvas->resizeAutoFit();
@@ -79,7 +75,7 @@ bool CanvasViewContent::fromXml(QDomElement & contentElement)
     }
 
     // restore canvas from the element
-    m_canvas = new Canvas(this);
+    m_canvas = new Canvas(96, 96, this);
     connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
     m_canvas->fromXml(canvasElement);
     m_canvas->resizeAutoFit();

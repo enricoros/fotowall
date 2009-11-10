@@ -115,7 +115,7 @@ void UrlHistoryBox::slotNextPreview()
 
     // generate preview
     if (previewImage.isNull()) {
-        Canvas * canvas = new Canvas(this);
+        Canvas * canvas = new Canvas(physicalDpiX(), physicalDpiY(), this);
         if (FotowallFile::read(fileName, canvas, false)) {
             // render canvas, rotate, drop shadow and set
             canvas->resizeAutoFit();

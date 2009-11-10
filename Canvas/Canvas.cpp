@@ -49,7 +49,7 @@
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-Canvas::Canvas(QObject * parent)
+Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent)
     : AbstractScene(parent)
     , m_modeInfo(new CanvasModeInfo)
     , m_helpItem(0)
@@ -61,6 +61,9 @@ Canvas::Canvas(QObject * parent)
     , m_forceFieldTimer(0)
     , m_pendingChanges(false)
 {
+    // init modeinfo
+    m_modeInfo->setScreenDpi(sDpiX, sDpiY);
+
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
     m_titleColorPicker->setColor(Qt::red);
