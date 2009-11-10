@@ -8,6 +8,7 @@ HEADERS += \
     App/HomeAppliance.h \
     App/HomeScene.h \
     App/MainWindow.h \
+    App/PictureSearchWidget.h \
     App/SceneView.h \
     App/Settings.h \
     App/UrlHistoryBox.h \
@@ -25,6 +26,7 @@ SOURCES += \
     App/HomeAppliance.cpp \
     App/HomeScene.cpp \
     App/MainWindow.cpp \
+    App/PictureSearchWidget.cpp \
     App/SceneView.cpp \
     App/Settings.cpp \
     App/UrlHistoryBox.cpp \
@@ -37,5 +39,6 @@ FORMS += \
     App/ExactSizeDialog.ui \
     App/ExportWizard.ui \
     App/MainWindow.ui \
+    App/PictureSearchWidget.ui \
     App/VersionCheckDialog.ui \
     App/WordcloudAppliance.ui

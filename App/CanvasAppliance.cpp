@@ -339,9 +339,6 @@ void CanvasAppliance::configurePrint(bool enabled)
 
 void CanvasAppliance::slotAddCanvas()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
-
     QStringList fileNames = FotowallFile::getLoadFotowallFiles();
     if (fileNames.isEmpty())
         return;
@@ -350,9 +347,6 @@ void CanvasAppliance::slotAddCanvas()
 
 void CanvasAppliance::slotAddPicture()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
-
     // make up the default load path (stored as 'Fotowall/LoadImagesDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
@@ -366,28 +360,22 @@ void CanvasAppliance::slotAddPicture()
 
 void CanvasAppliance::slotAddText()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addTextContent();
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addWebcamContent(0);
 }
 
 void CanvasAppliance::slotAddWordcloud()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addWordcloudContent();
 }
 
 void CanvasAppliance::slotSearchPicturesToggled(bool visible)
 {
-    m_extCanvas->setSearchPicturesVisible(visible);
+    containerValueSet(App::CC_ShowPictureSearch, visible);
 }
 
 

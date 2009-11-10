@@ -20,6 +20,8 @@ namespace Ui { class MainWindow; }
 class LikeBack;
 class QMenu;
 class QNetworkReply;
+class QNetworkAccessManager;
+class PictureSearchWidget;
 class Workflow;
 
 class MainWindow : public PlugGui::Container
@@ -48,6 +50,8 @@ class MainWindow : public PlugGui::Container
         void createLikeBack();
 
         Ui::MainWindow *        ui;
+        QNetworkAccessManager * m_networkAccessManager;
+        PictureSearchWidget *   m_pictureSearch;
         LikeBack *              m_likeBack;
         QAction *               m_aHelpTutorial;
         QString                 m_website;
@@ -68,7 +72,7 @@ class MainWindow : public PlugGui::Container
         void slotHelpWebsiteFetchError();
         void slotHelpTutorial();
         void slotHelpUpdates();
-        void slotVerifyTutorial(QNetworkReply * reply);
+        void slotVerifyTutorialReply();
 
         // setup box
         bool on_accelTestButton_clicked();

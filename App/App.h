@@ -17,6 +17,7 @@
 
 #include <QObject>
 #include <QUrl>
+class AbstractPictureService;
 class Settings;
 class Workflow;
 
@@ -28,11 +29,17 @@ class App
         // uniquely instanced objects
         static Settings * settings;
         static Workflow * workflow;
+        static AbstractPictureService * pictureService;
+
+        // commands understood by container
+        enum {
+            CC_ShowPictureSearch    = 0x0001
+        };
 
         // commands understood by appliances
         enum {
-            AC_ClearBackground  = 0x0001,
-            AC_ShowIntro        = 0x0002
+            AC_ClearBackground      = 0x0001,
+            AC_ShowIntro            = 0x0002
         };
 
         // utility functions

@@ -32,8 +32,6 @@ class CanvasViewContent;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
-class PictureSearchItem;
-class QNetworkAccessManager;
 class QTimer;
 class TextContent;
 class WebcamContent;
@@ -62,10 +60,6 @@ class Canvas : public AbstractScene
 
         // item interaction
         void selectAllContent(bool selected = true);
-
-        // selectors
-        void setSearchPicturesVisible(bool visible);
-        bool searchPicturesVisible() const;
 
         // arrangement
         void setForceFieldEnabled(bool enabled);
@@ -133,7 +127,6 @@ class Canvas : public AbstractScene
         void deleteConfig(AbstractConfig * config);
 
         CanvasModeInfo * m_modeInfo;
-        QNetworkAccessManager * m_networkAccessManager;
         QList<AbstractContent *> m_content;
         QList<AbstractConfig *> m_configs;
         QList<HighlightItem *> m_highlightItems;
@@ -151,7 +144,6 @@ class Canvas : public AbstractScene
         QPixmap m_backTile;
         QPixmap m_backCache;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
-        PictureSearchItem * m_pictureSearch;
         QTimer * m_forceFieldTimer;
         QTime m_forceFieldTime;
         bool m_pendingChanges;

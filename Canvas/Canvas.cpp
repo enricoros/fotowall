@@ -14,22 +14,22 @@
 
 #include "Canvas.h"
 
-#include "Shared/PictureServices/AbstractPictureService.h"
+#include "App/App.h"    // this violates insulation (only for the pic service)
 #include "Frames/FrameFactory.h"
+#include "Shared/PictureServices/AbstractPictureService.h"
 #include "Shared/ColorPickerItem.h"
+#include "Shared/RenderOpts.h"
 #include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"
 #include "HelpItem.h"
 #include "HighlightItem.h"
 #include "PictureContent.h"
 #include "PictureConfig.h"
-#include "PictureSearchItem.h"
 #include "SelectionProperties.h"
 #include "TextContent.h"
 #include "TextConfig.h"
 #include "WebcamContent.h"
 #include "WordcloudContent.h"
-#include "Shared/RenderOpts.h"
 
 #include <QAbstractTextDocumentLayout>
 #include <QFile>
@@ -39,7 +39,6 @@
 #include <QList>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QNetworkAccessManager>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QTextDocument>
@@ -52,14 +51,12 @@
 Canvas::Canvas(QObject * parent)
     : AbstractScene(parent)
     , m_modeInfo(new CanvasModeInfo)
-    , m_networkAccessManager(0)
     , m_helpItem(0)
     , m_backMode(BackGradient)
     , m_backContent(0)
     , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
     , m_topBarEnabled(false)
     , m_bottomBarEnabled(false)
-    , m_pictureSearch(0)
     , m_forceFieldTimer(0)
     , m_pendingChanges(false)
 {
@@ -136,7 +133,6 @@ Canvas::~Canvas()
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
     delete m_grad2ColorPicker;
-    delete m_networkAccessManager;
     delete m_forceFieldTimer;
     delete m_modeInfo;
 }
@@ -263,34 +259,6 @@ void Canvas::selectAllContent(bool selected)
 {
     foreach (AbstractContent * content, m_content)
         content->setSelected(selected);
-}
-
-/// Picture Search
-void Canvas::setSearchPicturesVisible(bool visible)
-{
-    // destroy if needed
-    if (!visible && m_pictureSearch) {
-        removeItem(m_pictureSearch);
-        m_pictureSearch->deleteLater();
-        m_pictureSearch = 0;
-        return;
-    }
-
-    // create if needed
-    if (visible && !m_pictureSearch) {
-        if (!m_networkAccessManager)
-            m_networkAccessManager = new QNetworkAccessManager(this);
-        m_pictureSearch = new PictureSearchItem(m_networkAccessManager);
-        m_pictureSearch->setZValue(999999);
-        //m_pictureSearch->setPos(20, 0);
-        addItem(m_pictureSearch);
-        return;
-    }
-}
-
-bool Canvas::searchPicturesVisible() const
-{
-    return m_pictureSearch;
 }
 
 /// Arrangement
@@ -797,7 +765,6 @@ void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRec
 {
     if (hideTools) {
         clearSelection();
-        setSearchPicturesVisible(false);
         foreach(QGraphicsItem *item, m_markerItems)
             item->hide();
         foreach(AbstractConfig *conf, m_configs)
@@ -954,12 +921,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 
     // handle as an own content drop event
-    if (event->mimeData()->hasFormat("picturesearch/idx") && m_pictureSearch) {
-
-        // get the picture service
-        AbstractPictureService * pictureService = m_pictureSearch->pictureService();
-        if (!pictureService)
-            return;
+    if (event->mimeData()->hasFormat("picturesearch/idx") && App::pictureService) {
 
         // download each picture
         QPoint insertPos = event->scenePos().toPoint();
@@ -972,11 +934,11 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             QString title;
             int width = 0;
             int height = 0;
-            if (!pictureService->imageInfo(index, &url, &title, &width, &height))
+            if (!App::pictureService->imageInfo(index, &url, &title, &width, &height))
                 continue;
 
             // get the download
-            QNetworkReply * reply = pictureService->download(index);
+            QNetworkReply * reply = App::pictureService->download(index);
             if (!reply)
                 continue;
 

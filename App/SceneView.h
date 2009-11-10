@@ -41,6 +41,7 @@ class SceneView : public QGraphicsView
 
         // layout widgets inside this
         void addOverlayWidget(QWidget * widget, bool top = true);
+        void removeOverlayWidget(QWidget * widget);
 
     Q_SIGNALS:
         void heavyRepaint();
@@ -56,7 +57,7 @@ class SceneView : public QGraphicsView
         bool m_openGL;
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
-        QVBoxLayout * m_viewportLayout;
+        QVBoxLayout * m_overLayout;
         QTime m_paintTime;
         QTimer * m_heavyTimer;
         int m_heavyCounter;

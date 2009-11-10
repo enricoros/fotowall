@@ -12,12 +12,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PictureSearchItem.h"
+#include "PictureSearchWidget.h"
 #ifdef ENABLE_GCOMPLETION
 #include "3rdparty/gsuggest.h"
 #endif
 #include "Shared/PictureServices/FlickrPictureService.h"
 #include "Shared/PictureServices/GoogleImagesPictureService.h"
+#include "App.h"
 #include <QBasicTimer>
 #include <QGraphicsScene>
 #include <QGraphicsLinearLayout>
@@ -71,20 +72,14 @@ class MyListWidget : public QListWidget
     public:
         MyListWidget(QWidget * parent)
           : QListWidget(parent)
-          , m_pictureService(0)
         {
-        }
-
-        void setPictureService(AbstractPictureService * service)
-        {
-            m_pictureService = service;
         }
 
         void startDrag(Qt::DropActions supportedDropActions)
         {
             QList<QListWidgetItem *> items = selectedItems();
             int count = items.size();
-            if (count < 1 || !m_pictureService)
+            if (count < 1 || !App::pictureService)
                 return;
 
             // make the drag pixmap and the indices data
@@ -95,7 +90,7 @@ class MyListWidget : public QListWidget
             int i = 0;
             foreach (QListWidgetItem * item, items) {
                 int idx = row(item);
-                m_pictureService->startPrefetch(idx);
+                App::pictureService->startPrefetch(idx);
                 dragPainter.drawPixmap(i * 10, i * 10, item->icon().pixmap(50, 50));
                 indices.append(QString::number(idx));
                 i++;
@@ -113,11 +108,8 @@ class MyListWidget : public QListWidget
             // abort prefetches if action was not accepted
             if (action != Qt::CopyAction)
                 foreach (QListWidgetItem * item, items)
-                    m_pictureService->stopPrefetch(row(item));
+                    App::pictureService->stopPrefetch(row(item));
         }
-
-    private:
-        AbstractPictureService * m_pictureService;
 };
 
 class MyLineEdit : public QLineEdit
@@ -177,35 +169,31 @@ class MyLineEdit : public QLineEdit
 };
 
 // included here because it needs the definitions above
-#include "ui_PictureSearchItem.h"
+#include "ui_PictureSearchWidget.h"
 
-int PictureSearchItem::LastProvider = 0;
+int PictureSearchWidget::LastProvider = 0;
 
-PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent)
-    : QGraphicsProxyWidget(parent)
-    , m_extAccessManager(extAccessManager)
-    , m_pictureService(0)
+PictureSearchWidget::PictureSearchWidget(QNetworkAccessManager * extAccessManager, QWidget * parent)
+    : QWidget(parent)
 #ifdef ENABLE_GCOMPLETION
     , m_completion(0)
 #endif
-    , m_ui(new Ui_PictureSearchItem())
+    , m_extAccessManager(extAccessManager)
+    , m_ui(new Ui_PictureSearchWidget())
     , m_searchSymbol(0)
 {
-    // create & customize Selector widget
-    QWidget * widget = new QWidget();
-#if QT_VERSION >= 0x040500
-    widget->setAttribute(Qt::WA_TranslucentBackground);
-#else
-    widget->setAttribute(Qt::WA_NoSystemBackground, true);
-#endif
-    m_ui->setupUi(widget);
-    m_ui->listWidget->hide();
-    QPalette pal;
-    pal.setBrush(QPalette::Base, Qt::transparent);
-    m_ui->listWidget->setPalette(pal);
+    // customize Ui
     QFont font;
     font.setPointSize(font.pointSize() - 1);
-    widget->setFont(font);
+    setFont(font);
+    QPalette whitePal;
+    whitePal.setBrush(QPalette::Base, QApplication::palette().color(QPalette::Base));
+    setContentsMargins(0, 0, 0, 0);
+
+    m_ui->setupUi(this);
+    m_ui->fRadio->setPalette(whitePal);
+    m_ui->gRadio->setPalette(whitePal);
+    m_ui->listWidget->hide();
     connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
     connect(m_ui->lineEdit, SIGNAL(returnPressed()), m_ui->searchButton, SLOT(click()));
     connect(m_ui->fRadio, SIGNAL(toggled(bool)), this, SLOT(slotProviderChanged()));
@@ -214,16 +202,11 @@ PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, Q
         m_ui->fRadio->setChecked(true);
     else if (LastProvider == 1)
         m_ui->gRadio->setChecked(true);
-    slotProviderChanged();
-
-    // embed and layout widget
-    setContentsMargins(0, 0, 0, 0);
-    setWidget(widget);
-    setFlags(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable);
     m_ui->lineEdit->setFocus();
     adjustSize();
 
-    // init texts
+    // init
+    slotProviderChanged();
     slotSearchEnded(false);
 
 #ifdef ENABLE_GCOMPLETION
@@ -232,7 +215,7 @@ PictureSearchItem::PictureSearchItem(QNetworkAccessManager * extAccessManager, Q
 #endif
 }
 
-PictureSearchItem::~PictureSearchItem()
+PictureSearchWidget::~PictureSearchWidget()
 {
     if (m_ui->fRadio->isChecked())
         LastProvider = 0;
@@ -244,45 +227,40 @@ PictureSearchItem::~PictureSearchItem()
 #endif
     delete m_searchSymbol;
     m_searchSymbol = 0;
-    if (m_pictureService)
-        m_pictureService->disconnect(0, 0, 0);
-    delete m_pictureService;
+    if (App::pictureService) {
+        App::pictureService->disconnect(0, 0, 0);
+        delete App::pictureService;
+        App::pictureService = 0;
+    }
     delete m_ui;
 }
 
-AbstractPictureService * PictureSearchItem::pictureService() const
+void PictureSearchWidget::paintEvent(QPaintEvent *)
 {
-    return m_pictureService;
-}
-
-void PictureSearchItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
-{
-    // draw background frame
     QLinearGradient lg(0, 0, 0, 50);
     if (m_ui->fRadio->isChecked())
         lg.setColorAt(0.0, QColor(255, 200, 200, 200));
     else if (m_ui->gRadio->isChecked())
         lg.setColorAt(0.0, QColor(200, 220, 255, 200));
     lg.setColorAt(1.0, QColor(200, 200, 200, 220));
-    painter->setBrush(lg);
-    painter->setPen(QPen(Qt::darkGray, 1));
-    painter->setRenderHint(QPainter::Antialiasing, true);
-    QRectF boundaries = boundingRect().adjusted(0.5 - FRAME_RADIUS, 0.5 - FRAME_RADIUS, 0.5, 0.5);
-    painter->drawRoundedRect(boundaries, FRAME_RADIUS, FRAME_RADIUS, Qt::AbsoluteSize);
 
-    // speed up svg drawing and unbreak proxy widget
-    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, false);
-    QGraphicsProxyWidget::paint(painter, option, widget);
+    // draw background frame
+    QPainter p(this);
+    p.setBrush(lg);
+    p.setPen(QPen(Qt::darkGray, 1));
+    p.setRenderHint(QPainter::Antialiasing, true);
+    QRectF boundaries = QRectF(rect()).adjusted(0.5 - FRAME_RADIUS, 0.5, -0.5, -0.5);
+    p.drawRoundedRect(boundaries, FRAME_RADIUS, FRAME_RADIUS, Qt::AbsoluteSize);
 }
 
-void PictureSearchItem::slotProviderChanged()
+void PictureSearchWidget::slotProviderChanged()
 {
     // no need to create the provider here, it will be created when searching
     m_ui->googleOptions->setVisible(m_ui->gRadio->isChecked());
     update();
 }
 
-void PictureSearchItem::slotSearchClicked()
+void PictureSearchWidget::slotSearchClicked()
 {
     // search...
     if (!m_searchSymbol) {
@@ -295,37 +273,36 @@ void PictureSearchItem::slotSearchClicked()
             return;
 
         // start a picture search
-        if (!m_pictureService) {
+        if (!App::pictureService) {
             if (m_ui->fRadio->isChecked())
-                m_pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
+                App::pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
             else if (m_ui->gRadio->isChecked()) {
                 GoogleImagesPictureService * gis = new GoogleImagesPictureService(m_extAccessManager, this);
                 gis->configure(m_ui->contentCombo->currentIndex(), m_ui->sizeCombo->currentIndex());
-                m_pictureService = gis;
+                App::pictureService = gis;
             } else {
-                qWarning("PictureSearchItem::slotSearchClicked: unknown provider");
+                qWarning("PictureSearchWidget::slotSearchClicked: unknown provider");
                 return;
             }
             m_ui->fRadio->setVisible(false);
             m_ui->gRadio->setVisible(false);
             m_ui->googleOptions->setVisible(false);
-            connect(m_pictureService, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
-            connect(m_pictureService, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
-            connect(m_pictureService, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
-            connect(m_pictureService, SIGNAL(searchEnded(bool)), this, SLOT(slotSearchEnded(bool)));
-            m_ui->listWidget->setPictureService(m_pictureService);
+            connect(App::pictureService, SIGNAL(searchStarted()), this, SLOT(slotSearchBegun()));
+            connect(App::pictureService, SIGNAL(searchResult(int,QString,int,int)), this, SLOT(slotSearchResult(int,QString,int,int)));
+            connect(App::pictureService, SIGNAL(searchThumbnail(int,QPixmap)), this, SLOT(slotSearchThumbnail(int,QPixmap)));
+            connect(App::pictureService, SIGNAL(searchEnded(bool)), this, SLOT(slotSearchEnded(bool)));
         }
-        m_pictureService->searchPics(searchName);
+        App::pictureService->searchPics(searchName);
     }
 
     // or cancel...
-    else if (m_pictureService) {
-        m_pictureService->dropSearch();
+    else if (App::pictureService) {
+        App::pictureService->dropSearch();
         m_ui->listWidget->clear();
     }
 }
 
-void PictureSearchItem::slotSearchBegun()
+void PictureSearchWidget::slotSearchBegun()
 {
     m_ui->listWidget->clear();
     m_ui->listWidget->show();
@@ -337,7 +314,7 @@ void PictureSearchItem::slotSearchBegun()
     m_ui->searchButton->setText(tr("Cancel"));
 }
 
-void PictureSearchItem::slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h)
+void PictureSearchWidget::slotSearchResult(int idx, const QString & title, int thumb_w, int thumb_h)
 {
     // create the placeholder Icon
     QLinearGradient lg(0, 0, 0, thumb_h);
@@ -362,14 +339,14 @@ void PictureSearchItem::slotSearchResult(int idx, const QString & title, int thu
     m_ui->listWidget->insertItem(idx, item);
 }
 
-void PictureSearchItem::slotSearchThumbnail(int idx, const QPixmap & thumbnail)
+void PictureSearchWidget::slotSearchThumbnail(int idx, const QPixmap & thumbnail)
 {
     // update the pixmap of the Item
     if (QListWidgetItem * item = m_ui->listWidget->item(idx))
         item->setIcon(thumbnail);
 }
 
-void PictureSearchItem::slotSearchEnded(bool)
+void PictureSearchWidget::slotSearchEnded(bool)
 {
     if (m_searchSymbol) {
         delete m_searchSymbol;

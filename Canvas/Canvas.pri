@@ -20,7 +20,6 @@ HEADERS += \
     Canvas/PictureConfig.h \
     Canvas/PictureContent.h \
     Canvas/PictureProperties.h \
-    Canvas/PictureSearchItem.h \
     Canvas/SelectionProperties.h \
     Canvas/StyledButtonItem.h \
     Canvas/TextConfig.h \
@@ -45,7 +44,6 @@ SOURCES += \
     Canvas/PictureConfig.cpp \
     Canvas/PictureContent.cpp \
     Canvas/PictureProperties.cpp \
-    Canvas/PictureSearchItem.cpp \
     Canvas/SelectionProperties.cpp \
     Canvas/StyledButtonItem.cpp \
     Canvas/TextConfig.cpp \
@@ -58,5 +56,4 @@ FORMS += \
     Canvas/AbstractConfig.ui \
     Canvas/PictureConfig.ui \
     Canvas/PictureProperties.ui \
-    Canvas/PictureSearchItem.ui \
     Canvas/TextProperties.ui

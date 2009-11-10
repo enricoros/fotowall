@@ -20,6 +20,7 @@
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "Hardware3DTest.h"
+#include "PictureSearchWidget.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
@@ -53,6 +54,8 @@
 MainWindow::MainWindow(QWidget * parent)
     : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
+    , m_networkAccessManager(0)
+    , m_pictureSearch(0)
     , m_likeBack(0)
     , m_aHelpTutorial(0)
     , m_applyingAccelState(false)
@@ -109,6 +112,7 @@ MainWindow::~MainWindow()
 
     // delete everything
     delete App::workflow;
+    delete m_networkAccessManager;
     delete m_likeBack;
     delete ui;
     // m_aHelpTutorial is deleted by its menu (that's parented to this)
@@ -170,9 +174,30 @@ void MainWindow::applianceSetCentralwidget(QWidget * widget)
         qWarning("MainWindow::applianceSetCentralwidget: unsupported");
 }
 
-void MainWindow::applianceSetValue(quint32 key, const QVariant & /*value*/)
+void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
 {
-    qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
+    if (key == App::CC_ShowPictureSearch) {
+
+        // destroy if needed
+        bool visible = value.toBool();
+        if (!visible && m_pictureSearch) {
+            m_pictureSearch->deleteLater();
+            m_pictureSearch = 0;
+            return;
+        }
+
+        // create if needed
+        if (visible && !m_pictureSearch) {
+            if (!m_networkAccessManager)
+                m_networkAccessManager = new QNetworkAccessManager(this);
+            m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
+            ui->sceneView->addOverlayWidget(m_pictureSearch, false);
+            m_pictureSearch->setFocus();
+            return;
+        }
+
+    } else
+        qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -206,9 +231,10 @@ void MainWindow::checkForTutorial()
     m_aHelpTutorial->setVisible(false);
 
     // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
-    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(slotVerifyTutorial(QNetworkReply*)));
-    manager->get(QNetworkRequest(TUTORIAL_URL));
+    if (!m_networkAccessManager)
+        m_networkAccessManager = new QNetworkAccessManager(this);
+    QNetworkReply * reply = m_networkAccessManager->get(QNetworkRequest(TUTORIAL_URL));
+    connect(reply, SIGNAL(finished()), this, SLOT(slotVerifyTutorialReply()));
 }
 
 void MainWindow::checkForUpdates()
@@ -320,8 +346,9 @@ void MainWindow::slotHelpUpdates()
     App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
 }
 
-void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
+void MainWindow::slotVerifyTutorialReply()
 {
+    QNetworkReply * reply = static_cast<QNetworkReply *>(sender());
     if (reply->error() != QNetworkReply::NoError)
         return;
 

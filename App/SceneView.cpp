@@ -56,8 +56,8 @@ SceneView::SceneView(QWidget * parent)
   : QGraphicsView(parent)
   , m_openGL(false)
   , m_abstractScene(0)
-  , m_style(new RubberBandStyle)
-  , m_viewportLayout(new QVBoxLayout)
+  , m_style(0)
+  , m_overLayout(0)
   , m_heavyTimer(0)
   , m_heavyCounter(0)
 {
@@ -75,11 +75,16 @@ SceneView::SceneView(QWidget * parent)
     pal.setBrush(QPalette::Base, Qt::NoBrush);
     setPalette(pal);
 
-    // use own style for drawing the RubberBand, and our layout
-    m_viewportLayout->setContentsMargins(0, 4, 0, 4);
-    m_viewportLayout->setSpacing(0);
-    viewport()->setLayout(m_viewportLayout);
+    // use own style for drawing the RubberBand
+    m_style = new RubberBandStyle;
     viewport()->setStyle(m_style);
+
+    // create the layout for the overlay widgets
+    m_overLayout = new QVBoxLayout();
+    m_overLayout->setContentsMargins(0, 4, 0, 4);
+    m_overLayout->setSpacing(4);
+    m_overLayout->addStretch(100);
+    setLayout(m_overLayout);
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
     //setCacheMode(CacheBackground);
@@ -144,9 +149,8 @@ void SceneView::setOpenGL(bool enabled)
         return;
     m_openGL = enabled;
 
-    // change viewport widget and transfer style and layout
+    // change viewport widget and transfer style
     QWidget * newViewport = m_openGL ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget();
-    newViewport->setLayout(m_viewportLayout);
     newViewport->setStyle(m_style);
     setViewport(newViewport);
     setViewportUpdateMode(m_openGL ? FullViewportUpdate : MinimalViewportUpdate);
@@ -176,7 +180,15 @@ void SceneView::addOverlayWidget(QWidget * widget, bool top)
         align |= Qt::AlignTop;
     else
         align |= Qt::AlignBottom;
-    m_viewportLayout->insertWidget(0, widget, 0, align);
+    m_overLayout->insertWidget(m_overLayout->count() - 1, widget, 0, align);
+    widget->show();
+}
+
+void SceneView::removeOverlayWidget(QWidget *widget)
+{
+    widget->hide();
+    m_overLayout->removeWidget(widget);
+    widget->setParent(0);
 }
 
 static void drawVerticalShadow(QPainter * painter, int width, int height)
@@ -215,7 +227,7 @@ void SceneView::paintEvent(QPaintEvent * event)
 {
     // start the measuring time
 #if 0
-    const bool measureTime = event->rect().size() == viewport()->size();
+    const bool measureTime = event->rect().size() == viewport()->contentsRect().size();
 #else
     const bool measureTime = true;
 #endif
