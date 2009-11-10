@@ -82,7 +82,7 @@ SceneView::SceneView(QWidget * parent)
     // create the layout for the overlay widgets
     m_overLayout = new QVBoxLayout();
     m_overLayout->setContentsMargins(0, 4, 0, 4);
-    m_overLayout->setSpacing(4);
+    m_overLayout->setSpacing(3);
     m_overLayout->addStretch(100);
     setLayout(m_overLayout);
 

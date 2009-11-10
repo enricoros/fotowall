@@ -32,6 +32,7 @@
 #include "WordcloudContent.h"
 
 #include <QAbstractTextDocumentLayout>
+#include <QBuffer>
 #include <QFile>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
@@ -642,6 +643,25 @@ void Canvas::toXml(QDomElement & canvasElement) const
                 QDomElement bgEl = doc.createElement("set-as-background");
                 cEl.appendChild(bgEl);
             }
+        }
+    }
+
+    // PREVIEW
+    {
+        // make up the PNG image
+        Canvas * rwCanvas = (Canvas *)this;
+        QImage previewImage = rwCanvas->renderedImage(QSize(60, 45), Qt::KeepAspectRatio, true);
+        if (!previewImage.isNull()) {
+            QBuffer saveData;
+            saveData.open(QIODevice::ReadWrite);
+            previewImage.save(&saveData, "PNG");
+            saveData.close();
+
+            // create a canvas.preview[cdata] element
+            QByteArray encodedData = saveData.buffer().toBase64();
+            QDomElement previewEl = doc.createElement("preview");
+            canvasElement.appendChild(previewEl);
+            previewEl.appendChild(doc.createCDATASection(encodedData));
         }
     }
 

@@ -238,11 +238,16 @@ PictureSearchWidget::~PictureSearchWidget()
 void PictureSearchWidget::paintEvent(QPaintEvent *)
 {
     QLinearGradient lg(0, 0, 0, 50);
-    if (m_ui->fRadio->isChecked())
-        lg.setColorAt(0.0, QColor(255, 200, 200, 200));
-    else if (m_ui->gRadio->isChecked())
-        lg.setColorAt(0.0, QColor(200, 220, 255, 200));
-    lg.setColorAt(1.0, QColor(200, 200, 200, 220));
+    if (App::pictureService) {
+        if (m_ui->fRadio->isChecked())
+            lg.setColorAt(0.0, QColor(255, 200, 200, 200));
+        else if (m_ui->gRadio->isChecked())
+            lg.setColorAt(0.0, QColor(200, 220, 255, 200));
+        lg.setColorAt(1.0, QColor(200, 200, 200, 220));
+    } else {
+        lg.setColorAt(0.0, QColor(255, 255, 255));
+        lg.setColorAt(1.0, QColor(200, 200, 200));
+    }
 
     // draw background frame
     QPainter p(this);
@@ -250,7 +255,7 @@ void PictureSearchWidget::paintEvent(QPaintEvent *)
     p.setPen(QPen(Qt::darkGray, 1));
     p.setRenderHint(QPainter::Antialiasing, true);
     QRectF boundaries = QRectF(rect()).adjusted(0.5 - FRAME_RADIUS, 0.5, -0.5, -0.5);
-    p.drawRoundedRect(boundaries, FRAME_RADIUS, FRAME_RADIUS, Qt::AbsoluteSize);
+    p.drawRoundedRect(boundaries, FRAME_RADIUS, FRAME_RADIUS, Qt::AbsoluteSize);    
 }
 
 void PictureSearchWidget::slotProviderChanged()

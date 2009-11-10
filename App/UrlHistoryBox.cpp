@@ -108,25 +108,32 @@ void UrlHistoryBox::slotNextPreview()
         return;
     int currentIndex = m_previewIndex++;
     QUrl currentUrl = m_entries[currentIndex]->property("url").toUrl();
+    QString fileName = currentUrl.toLocalFile();
 
-    // generate preview (### preview size???)
-    Canvas * canvas = new Canvas(this);
-    if (FotowallFile::read(currentUrl.toString(), canvas, false)) {
-        // render canvas, rotate, drop shadow and set
-        canvas->resizeAutoFit();
-        const QImage image = canvas->renderedImage(QSize(60, 45), Qt::KeepAspectRatio, true);
+    // get the embedded preview
+    QImage previewImage = FotowallFile::embeddedPreview(fileName);
+
+    // generate preview
+    if (previewImage.isNull()) {
+        Canvas * canvas = new Canvas(this);
+        if (FotowallFile::read(fileName, canvas, false)) {
+            // render canvas, rotate, drop shadow and set
+            canvas->resizeAutoFit();
+            previewImage = canvas->renderedImage(QSize(60, 45), Qt::KeepAspectRatio, true);
+        }
+        delete canvas;
+    }
+
+    // make a pretty preview (rotated and shadowed)
+    if (!previewImage.isNull()) {
         QTransform rot;
          int mag = (qrand() % 7) + (qrand() % 7);
          static bool dir = true; dir = !dir;
          rot.rotate(dir ? mag : -mag);
-        const QImage rotated = image.transformed(rot, Qt::SmoothTransformation);
-        const QImage preview = GlowEffectWidget::dropShadow(rotated, Qt::darkGray, 6, 1, 1);
-        m_entries[currentIndex]->setPixmap(QPixmap::fromImage(preview));
-
-        // save preview to cache ;-)
-        // TODO ###
+        const QImage rotated = previewImage.transformed(rot, Qt::SmoothTransformation);
+        const QImage shadowed = GlowEffectWidget::dropShadow(rotated, Qt::darkGray, 6, 1, 1);
+        m_entries[currentIndex]->setPixmap(QPixmap::fromImage(shadowed));
     }
-    delete canvas;
 
     // start next job right after
     if (m_previewIndex < m_entries.size())

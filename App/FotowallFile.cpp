@@ -86,6 +86,30 @@ bool FotowallFile::read(const QString & filePath, Canvas * canvas, bool inHistor
     return true;
 }
 
+QImage FotowallFile::embeddedPreview(const QString &filePath)
+{
+    // open the file for reading
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly))
+        return QImage();
+
+    // load the DOM
+    QDomDocument doc;
+    if (!doc.setContent(&file, false))
+        return QImage();
+    file.close();
+
+    // get the Canvas/Preview element
+    QDomElement previewElement = doc.documentElement().firstChildElement("canvas").firstChildElement("preview");
+    if (previewElement.isElement()) {
+        QString imageTextData = previewElement.text();
+        QByteArray imageData = QByteArray::fromBase64(imageTextData.toLatin1());
+        return QImage::fromData(imageData, "PNG");
+    }
+
+    return QImage();
+}
+
 bool FotowallFile::saveV2(const QString & filePath, const Canvas * canvas)
 {
     // create the document
