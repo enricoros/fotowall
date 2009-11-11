@@ -22,6 +22,7 @@
 #include <QHBoxLayout>
 #include <QFile>
 #include <QMenu>
+#include <QToolButton>
 #include <QTimer>
 #include <QVariant>
 
@@ -39,7 +40,7 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
     lay->setSpacing(0);
     for (int i = 0; i < qMin(5, urls.size()); i++) {
         const QUrl & url = urls[i];
-        PixmapButton * button = new PixmapButton(QSize(80, 60));
+        PixmapButton * button = new PixmapButton(QSize(64, 60), this);
         connect(button, SIGNAL(clicked()), this, SLOT(slotClicked()));
         connect(button, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotContextMenu(const QPoint &)));
         button->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -50,8 +51,15 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
         m_entries.append(button);
     }
 
+    // add load button
+    PixmapButton * loadButton = new PixmapButton(QSize(64, 60), this);
+    connect(loadButton, SIGNAL(clicked()), this, SIGNAL(openFile()));
+    loadButton->setToolTip(tr("Load"));
+    loadButton->setPixmap(QPixmap(":/data/action-open.png"));
+    lay->addWidget(loadButton);
+
     // start preview jobs
-    QTimer::singleShot(500, this, SLOT(slotNextPreview()));
+    QTimer::singleShot(100, this, SLOT(slotNextPreview()));
 }
 
 UrlHistoryBox::~UrlHistoryBox()
@@ -86,17 +94,21 @@ void UrlHistoryBox::slotContextMenu(const QPoint & widgetPos)
     QMenu menu;
     QAction * openAction = menu.addAction(tr("Open"));
     menu.addSeparator();
-    QMenu * fileSubMenu = menu.addMenu(tr("File Actions"));
+    QAction * removeAction = menu.addAction(tr("Remove From History"));
+    QMenu * fileSubMenu = menu.addMenu(tr("File"));
     QAction * deleteAction = fileSubMenu->addAction(QIcon(":/data/action-delete.png"), tr("Delete File"));
 
     // popup menu and handle actions
     QAction * action = menu.exec(screenPos);
-    if (action == openAction)
+    if (action == openAction) {
         emit urlClicked(fileUrl);
-    else if (action == deleteAction) {
+    } else if (action == removeAction) {
+        m_entries.removeAll(button);
+        button->deleteLater();
+    } else if (action == deleteAction) {
         if (QFile::remove(fileString)) {
-            button->deleteLater();
             m_entries.removeAll(button);
+            button->deleteLater();
         } else
             qWarning("UrlHistoryBox::slotContextMenu: cannot remove file");
     }
@@ -119,7 +131,7 @@ void UrlHistoryBox::slotNextPreview()
         if (FotowallFile::read(fileName, canvas, false)) {
             // render canvas, rotate, drop shadow and set
             canvas->resizeAutoFit();
-            previewImage = canvas->renderedImage(QSize(60, 45), Qt::KeepAspectRatio, true);
+            previewImage = canvas->renderedImage(QSize(48, 48), Qt::KeepAspectRatio, true);
         }
         delete canvas;
     }
@@ -131,11 +143,11 @@ void UrlHistoryBox::slotNextPreview()
          static bool dir = true; dir = !dir;
          rot.rotate(dir ? mag : -mag);
         const QImage rotated = previewImage.transformed(rot, Qt::SmoothTransformation);
-        const QImage shadowed = GlowEffectWidget::dropShadow(rotated, Qt::darkGray, 6, 1, 1);
+        const QImage shadowed = GlowEffectWidget::dropShadow(rotated, QColor(64, 64, 64), 6, 1, 1);
         m_entries[currentIndex]->setPixmap(QPixmap::fromImage(shadowed));
     }
 
     // start next job right after
     if (m_previewIndex < m_entries.size())
-        QTimer::singleShot(50, this, SLOT(slotNextPreview()));
+        QTimer::singleShot(10, this, SLOT(slotNextPreview()));
 }

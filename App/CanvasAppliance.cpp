@@ -57,7 +57,6 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
     connect(ui.projectCombo, SIGNAL(activated(int)), this, SLOT(slotProjectComboActivated(int)));
-    connect(ui.loadButton, SIGNAL(clicked()), this, SLOT(slotFileLoad()));
     connect(ui.saveButton, SIGNAL(clicked()), this, SLOT(slotFileSave()));
     connect(ui.exportButton, SIGNAL(clicked()), this, SLOT(slotFileExport()));
 

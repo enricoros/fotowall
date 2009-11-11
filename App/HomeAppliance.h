@@ -36,6 +36,7 @@ class HomeAppliance : public QObject, public PlugGui::AbstractAppliance
     private Q_SLOTS:
         void slotSceneKeyPressed(int qtKey);
         void slotLoadCanvas(const QUrl & url);
+        void slotOpenFile();
         void slotStartCanvas();
         void slotStartWordcloud();
         void slotStartWizard();

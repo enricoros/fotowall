@@ -47,7 +47,8 @@ HomeAppliance::HomeAppliance(QObject *parent)
         pal.setBrush(QPalette::Window, QColor(255, 255, 255, 128));
         m_historyBox->setPalette(pal);
         m_historyBox->setAutoFillBackground(true);
-        connect(m_historyBox, SIGNAL(urlClicked(QUrl)), this, SLOT(slotLoadCanvas(const QUrl &)));
+        connect(m_historyBox, SIGNAL(urlClicked(const QUrl &)), this, SLOT(slotLoadCanvas(const QUrl &)));
+        connect(m_historyBox, SIGNAL(openFile()), this, SLOT(slotOpenFile()));
         topbarAddWidget(m_historyBox);
     }
 }
@@ -78,6 +79,11 @@ void HomeAppliance::slotLoadCanvas(const QUrl & url)
 
     // handle other files
     qWarning("HomeAppliance::slotLoadCanvas: don't know how to load URL '%s'", qPrintable(url.toString()));
+}
+
+void HomeAppliance::slotOpenFile()
+{
+    App::workflow->loadCanvas_A();
 }
 
 void HomeAppliance::slotStartCanvas()

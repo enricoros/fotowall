@@ -519,8 +519,8 @@
     <rect>
      <x>20</x>
      <y>280</y>
-     <width>108</width>
-     <height>50</height>
+     <width>60</width>
+     <height>49</height>
     </rect>
    </property>
    <property name="palette">
@@ -594,12 +594,15 @@
     <string>FILE</string>
    </property>
    <property name="checkable" stdset="0">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="borderFlags" stdset="0">
     <number>1</number>
    </property>
-   <layout class="QGridLayout" name="gridLayout_4">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <property name="leftMargin">
      <number>6</number>
     </property>
@@ -612,39 +615,7 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <property name="verticalSpacing">
-     <number>0</number>
-    </property>
-    <item row="0" column="2">
-     <widget class="QToolButton" name="loadButton">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Load</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QToolButton" name="saveButton">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Save</string>
-      </property>
-      <property name="toolButtonStyle">
-       <enum>Qt::ToolButtonTextBesideIcon</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" rowspan="2">
+    <item>
      <widget class="QToolButton" name="exportButton">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -659,14 +630,30 @@
        <iconset resource="../fotowall.qrc">
         <normaloff>:/data/fotowall.png</normaloff>:/data/fotowall.png</iconset>
       </property>
-      <property name="iconSize">
-       <size>
-        <width>32</width>
-        <height>32</height>
-       </size>
+      <property name="toolButtonStyle">
+       <enum>Qt::ToolButtonTextBesideIcon</enum>
+      </property>
+      <property name="autoRaise">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QToolButton" name="saveButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Save</string>
       </property>
       <property name="toolButtonStyle">
        <enum>Qt::ToolButtonTextBesideIcon</enum>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
       </property>
      </widget>
     </item>

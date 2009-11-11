@@ -687,7 +687,7 @@ void Canvas::saveToXml(QDomElement & canvasElement) const
     {
         // make up the PNG image
         Canvas * rwCanvas = (Canvas *)this;
-        QImage previewImage = rwCanvas->renderedImage(QSize(60, 45), Qt::KeepAspectRatio, true);
+        QImage previewImage = rwCanvas->renderedImage(QSize(48, 48), Qt::KeepAspectRatio, true);
         if (!previewImage.isNull()) {
             QBuffer saveData;
             saveData.open(QIODevice::ReadWrite);

@@ -146,6 +146,13 @@ bool Workflow::requestExit()
         }
     }
 
+    // fast-quit
+    if (!requiringSave) {
+        while (!m_stack.isEmpty())
+            popNode(true);
+        return true;
+    }
+
     // build the closure dialog
     ButtonsDialog quitAsk("Workflow-Exit", tr("Closing Fotowall..."));
     quitAsk.setMinimumWidth(350);
