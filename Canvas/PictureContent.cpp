@@ -243,7 +243,7 @@ QWidget * PictureContent::createPropertyWidget()
     new PE_PaneWidget(p->perspWidget, this, "perspective", p);
 
     // properties link
-
+    new PE_Combo(p->fxCombo, this, "fxIndex", p);
     return p;
 }
 

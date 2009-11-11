@@ -26,6 +26,7 @@ Work in progress:
 
 Done:
 
+* Basic GraphicsEffects support (shadows and blur)
 * Home screen with intuitive workflow and breadcrumb navigation
 * Background polishing
 * Print/Export polishing

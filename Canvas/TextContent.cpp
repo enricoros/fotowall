@@ -15,6 +15,7 @@
 #include "TextContent.h"
 
 #include "Frames/Frame.h"
+#include "Shared/PropertyEditors.h"
 #include "Shared/RenderOpts.h"
 #include "BezierCubicItem.h"
 #include "TextProperties.h"
@@ -138,6 +139,7 @@ QWidget * TextContent::createPropertyWidget()
     connect(p->bShakeMore, SIGNAL(clicked()), this, SLOT(slotShakeMore()));
 
     // properties link
+    new PE_Combo(p->fxCombo, this, "fxIndex", p);
     p->bEditShape->setChecked(isShapeEditing());
     connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
     connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));

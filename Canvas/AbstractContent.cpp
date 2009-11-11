@@ -33,6 +33,11 @@
 #include <QTimer>
 #include <QUrl>
 #include <math.h>
+#if QT_VERSION >= 0x040600
+#include <QGraphicsBlurEffect>
+#include <QGraphicsDropShadowEffect>
+#endif
+
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noRescale)
     : AbstractDisposeable(parent, false /*needed for Hardware3DTest*/)
@@ -47,6 +52,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 #if QT_VERSION < 0x040600
     , m_rotationAngle(0)
 #endif
+    , m_fxIndex(0)
 {
     // the buffered graphics changes timer
     m_gfxChangeTimer = new QTimer(this);
@@ -359,6 +365,53 @@ qreal AbstractContent::rotation() const
 }
 #endif
 
+void AbstractContent::setFxIndex(int index)
+{
+    if (m_fxIndex == index)
+        return;
+    m_fxIndex = index;
+    // apply graphics effect
+#if QT_VERSION >= 0x040600
+    switch (m_fxIndex) {
+        default:
+            setGraphicsEffect(0);
+            break;
+        case 1: {
+            QGraphicsDropShadowEffect * ds = new QGraphicsDropShadowEffect(this);
+            ds->setColor(Qt::black);
+            ds->setBlurRadius(7);
+            ds->setOffset(1, 1);
+            setGraphicsEffect(ds);
+            } break;
+        case 2: {
+            QGraphicsDropShadowEffect * ds = new QGraphicsDropShadowEffect(this);
+            ds->setColor(Qt::white);
+            ds->setBlurRadius(7);
+            ds->setOffset(1, 1);
+            setGraphicsEffect(ds);
+            } break;
+        case 3: {
+            QGraphicsBlurEffect * b = new QGraphicsBlurEffect(this);
+            b->setBlurRadius(5);
+            b->setBlurHint(QGraphicsBlurEffect::QualityHint);
+            setGraphicsEffect(b);
+            } break;
+        case 4: {
+            QGraphicsBlurEffect * b = new QGraphicsBlurEffect(this);
+            b->setBlurRadius(16);
+            b->setBlurHint(QGraphicsBlurEffect::QualityHint);
+            setGraphicsEffect(b);
+            } break;
+    }
+#endif
+    emit fxIndexChanged();
+}
+
+int AbstractContent::fxIndex() const
+{
+    return m_fxIndex;
+}
+
 void AbstractContent::ensureVisible(const QRectF & rect)
 {
     // keep the center inside the scene rect
@@ -406,6 +459,10 @@ bool AbstractContent::fromXml(QDomElement & contentElement)
     if (opacity > 0.0 && opacity < 1.0)
         setOpacity(opacity);
 #endif
+
+    int fxIdx = contentElement.firstChildElement("fxindex").text().toInt();
+    if (fxIdx > 0)
+        setFxIndex(fxIdx);
 
     bool hasText = contentElement.firstChildElement("frame-text-enabled").text().toInt();
     setFrameTextEnabled(hasText);
@@ -492,10 +549,16 @@ void AbstractContent::toXml(QDomElement & contentElement) const
     if (opacity() < 1.0) {
         domElement= doc.createElement("opacity");
         contentElement.appendChild(domElement);
-        text = doc.createTextNode(QString::number(opacity()));
-        domElement.appendChild(text);
+        domElement.appendChild(doc.createTextNode(QString::number(opacity())));
     }
 #endif
+
+    // Save the Fx Index
+    if (fxIndex() > 0) {
+        domElement = doc.createElement("fxindex");
+        contentElement.appendChild(domElement);
+        domElement.appendChild(doc.createTextNode(QString::number(fxIndex())));
+    }
 
     // Save the frame class
     valueStr.setNum(frameClass());
@@ -533,7 +596,6 @@ void AbstractContent::toXml(QDomElement & contentElement) const
     domElement = doc.createElement("mirror");
     domElement.setAttribute("state", mirrored());
     contentElement.appendChild(domElement);
-
 }
 
 QPixmap AbstractContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)

@@ -40,6 +40,7 @@ class AbstractContent : public AbstractDisposeable
 #endif
     Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
     Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
+    Q_PROPERTY(int fxIndex READ fxIndex WRITE setFxIndex NOTIFY fxIndexChanged)
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
         virtual ~AbstractContent();
@@ -73,6 +74,8 @@ class AbstractContent : public AbstractDisposeable
         void setRotation(qreal angle);
         qreal rotation() const;
 #endif
+        void setFxIndex(int index);
+        int fxIndex() const;
 
         // misc
         void ensureVisible(const QRectF & viewportRect);
@@ -108,6 +111,7 @@ class AbstractContent : public AbstractDisposeable
 #if QT_VERSION < 0x040600
         void rotationChanged();
 #endif
+        void fxIndexChanged();
 
     protected:
         // may be reimplemented by subclasses
@@ -154,6 +158,7 @@ class AbstractContent : public AbstractDisposeable
 #if QT_VERSION < 0x040600
         double              m_rotationAngle;
 #endif
+        int                 m_fxIndex;
 
     private Q_SLOTS:
         void slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>257</width>
+    <width>288</width>
     <height>61</height>
    </rect>
   </property>
@@ -112,7 +112,7 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>0</width>
-         <height>20</height>
+         <height>10</height>
         </size>
        </property>
       </spacer>
@@ -140,14 +140,23 @@
     <widget class="PaneWidget" name="perspWidget" native="true">
      <property name="minimumSize">
       <size>
-       <width>61</width>
-       <height>61</height>
+       <width>51</width>
+       <height>51</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>51</width>
+       <height>51</height>
       </size>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
@@ -160,6 +169,12 @@
      </item>
      <item>
       <widget class="QSlider" name="sOpacity">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="value">
         <number>99</number>
        </property>
@@ -177,6 +192,41 @@
        <property name="checkable">
         <bool>true</bool>
        </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="fxCombo">
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>No Fx</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Black Shadow</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>White Shadow</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Soft Blur</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Strong Blur</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
