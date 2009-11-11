@@ -14,11 +14,38 @@
 
 #include "HomeAppliance.h"
 
+#include "Shared/PixmapButton.h"
 #include "App.h"
 #include "HomeScene.h"
 #include "Settings.h"
 #include "UrlHistoryBox.h"
 #include "Workflow.h"
+
+#include <QHBoxLayout>
+
+
+/** File (Open) groupbox **/
+
+class FileBoxWidget : public GroupBoxWidget
+{
+    public:
+        PixmapButton * openButton;
+
+        FileBoxWidget()
+          : openButton(0)
+        {
+            // our layout
+            QHBoxLayout * lay = new QHBoxLayout(this);
+            lay->setContentsMargins(0, 0, 0, 0);
+            lay->setSpacing(0);
+
+            // add open button
+            openButton = new PixmapButton(QSize(64, 60), this);
+            openButton->setToolTip(tr("Open"));
+            openButton->setPixmap(QPixmap(":/data/action-open.png"));
+            lay->addWidget(openButton);
+        }
+};
 
 
 /** Home Appliance **/
@@ -26,6 +53,7 @@
 HomeAppliance::HomeAppliance(QObject *parent)
     : QObject(parent)
     , m_scene(0)
+    , m_fileBox(0)
     , m_historyBox(0)
 {
     // create and set the scene
@@ -38,23 +66,33 @@ HomeAppliance::HomeAppliance(QObject *parent)
 
     // create the History Box, if enough history
     QList<QUrl> recentUrls = App::settings->recentFotowallUrls();
+    QPalette brightPal;
+    brightPal.setBrush(QPalette::Window, QColor(255, 255, 255, 128));
     if (!recentUrls.isEmpty()) {
         m_historyBox = new UrlHistoryBox(recentUrls);
         m_historyBox->setTitle(tr("RECENT FILES"));
         m_historyBox->setBorderFlags(0x0000);
         m_historyBox->setCheckable(false);
-        QPalette pal;
-        pal.setBrush(QPalette::Window, QColor(255, 255, 255, 128));
-        m_historyBox->setPalette(pal);
+        m_historyBox->setPalette(brightPal);
         m_historyBox->setAutoFillBackground(true);
         connect(m_historyBox, SIGNAL(urlClicked(const QUrl &)), this, SLOT(slotLoadCanvas(const QUrl &)));
-        connect(m_historyBox, SIGNAL(openFile()), this, SLOT(slotOpenFile()));
         topbarAddWidget(m_historyBox);
     }
+
+    // create the File Box
+    m_fileBox = new FileBoxWidget;
+    m_fileBox->setTitle(tr("OPEN"));
+    m_fileBox->setBorderFlags(0x0000);
+    m_fileBox->setCheckable(false);
+    m_fileBox->setPalette(brightPal);
+    m_fileBox->setAutoFillBackground(true);
+    connect(m_fileBox->openButton, SIGNAL(clicked()), this, SLOT(slotOpenFile()));
+    topbarAddWidget(m_fileBox);
 }
 
 HomeAppliance::~HomeAppliance()
 {
+    delete m_fileBox;
     delete m_historyBox;
     delete m_scene;
 }

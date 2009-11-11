@@ -33,7 +33,6 @@ class UrlHistoryBox : public GroupBoxWidget
 
     Q_SIGNALS:
         void urlClicked(const QUrl & url);
-        void openFile();
 
     private:
         QList<PixmapButton *> m_entries;

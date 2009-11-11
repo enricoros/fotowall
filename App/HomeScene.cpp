@@ -107,9 +107,10 @@ HomeScene::HomeScene(QObject * parent)
   : AbstractScene(parent)
   , m_logoPixmap(":/data/home-logo.png")
 {
-    HomeLabel * newWordcloud = new HomeLabel(tr("Wordcloud (coming soon)"), QPixmap(":/data/home-newwordcloud.png"), this);
+    HomeLabel * newWordcloud = new HomeLabel(tr("Wordcloud"), QPixmap(":/data/home-newwordcloud.png"), this);
      connect(newWordcloud, SIGNAL(requestEditing()), this, SIGNAL(startWordcloud()));
-     newWordcloud->setOpacity(0.5);
+     newWordcloud->setEnabled(false);
+     newWordcloud->setOpacity(0.2);
      m_labels.append(newWordcloud);
 
     HomeLabel * newCanvas = new HomeLabel(tr("Create"), QPixmap(":/data/home-newcanvas.png"), this);

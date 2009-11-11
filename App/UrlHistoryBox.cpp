@@ -22,7 +22,6 @@
 #include <QHBoxLayout>
 #include <QFile>
 #include <QMenu>
-#include <QToolButton>
 #include <QTimer>
 #include <QVariant>
 
@@ -50,13 +49,6 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
         lay->addWidget(button);
         m_entries.append(button);
     }
-
-    // add load button
-    PixmapButton * loadButton = new PixmapButton(QSize(64, 60), this);
-    connect(loadButton, SIGNAL(clicked()), this, SIGNAL(openFile()));
-    loadButton->setToolTip(tr("Load"));
-    loadButton->setPixmap(QPixmap(":/data/action-open.png"));
-    lay->addWidget(loadButton);
 
     // start preview jobs
     QTimer::singleShot(100, this, SLOT(slotNextPreview()));

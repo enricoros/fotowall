@@ -16,6 +16,7 @@
 #define __HomeAppliance_h__
 
 #include "Shared/PlugGui/AbstractAppliance.h"
+class FileBoxWidget;
 class HomeScene;
 class UrlHistoryBox;
 
@@ -31,6 +32,7 @@ class HomeAppliance : public QObject, public PlugGui::AbstractAppliance
 
     private:
         HomeScene * m_scene;
+        FileBoxWidget * m_fileBox;
         UrlHistoryBox * m_historyBox;
 
     private Q_SLOTS:
