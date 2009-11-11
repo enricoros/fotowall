@@ -570,7 +570,7 @@ CanvasModeInfo * Canvas::modeInfo() const
     return m_modeInfo;
 }
 
-void Canvas::toXml(QDomElement & canvasElement) const
+void Canvas::saveToXml(QDomElement & canvasElement) const
 {
     QDomDocument doc = canvasElement.ownerDocument();
 
@@ -579,9 +579,9 @@ void Canvas::toXml(QDomElement & canvasElement) const
         QDomElement metaElement = doc.createElement("meta");
         canvasElement.appendChild(metaElement);
 
-        //QDomElement ... = doc.createElement("...");
-        //metaElement.appendChild(...);
-        //....appendChild(doc.createTextNode( ..text.. ));
+        QDomElement fpElement = doc.createElement("filepath");
+        metaElement.appendChild(fpElement);
+        fpElement.appendChild(doc.createTextNode(m_filePath));
     }
 
     // MODEINFO
@@ -707,7 +707,7 @@ void Canvas::toXml(QDomElement & canvasElement) const
     rwCanvas->slotResetChanges();
 }
 
-void Canvas::fromXml(QDomElement & canvasElement)
+void Canvas::loadFromXml(QDomElement & canvasElement)
 {
     // remove all content
     clearContent();
@@ -717,8 +717,8 @@ void Canvas::fromXml(QDomElement & canvasElement)
         // find the 'meta' element
         QDomElement metaElement = canvasElement.firstChildElement("meta");
         if (metaElement.isElement()) {
-            //QDomElement ... = metaElement.firstChildElement("...");
-            //...
+            QDomElement fpElement = metaElement.firstChildElement("filepath");
+            setFilePath(fpElement.text());
         }
     }
 

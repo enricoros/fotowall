@@ -98,8 +98,8 @@ class Canvas : public AbstractScene
         // change size and project mode (CD, DVD, etc)
         CanvasModeInfo * modeInfo() const;
 
-        void toXml(QDomElement & canvasElement) const;
-        void fromXml(QDomElement & canvasElement);
+        void saveToXml(QDomElement & canvasElement) const;
+        void loadFromXml(QDomElement & canvasElement);
 
         // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);

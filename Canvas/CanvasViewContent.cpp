@@ -77,8 +77,7 @@ bool CanvasViewContent::fromXml(QDomElement & contentElement)
     // restore canvas from the element
     m_canvas = new Canvas(96, 96, this);
     connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
-    m_canvas->fromXml(canvasElement);
-    m_canvas->setFilePath(QString());
+    m_canvas->loadFromXml(canvasElement);
     m_canvas->resizeAutoFit();
 
     // set the canvas
@@ -107,7 +106,7 @@ void CanvasViewContent::toXml(QDomElement & contentElement) const
     QDomDocument doc = contentElement.ownerDocument();
     QDomElement canvasElement = doc.createElement("canvas");
     contentElement.appendChild(canvasElement);
-    m_canvas->toXml(canvasElement);
+    m_canvas->saveToXml(canvasElement);
 }
 
 void CanvasViewContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)

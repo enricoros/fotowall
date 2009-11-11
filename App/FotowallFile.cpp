@@ -78,7 +78,7 @@ bool FotowallFile::read(const QString & filePath, Canvas * canvas, bool inHistor
         return false;
 
     // restore the canvas
-    canvas->fromXml(canvasElement);
+    canvas->loadFromXml(canvasElement);
     canvas->setFilePath(filePath);
 
     // add to the recent history
@@ -126,7 +126,9 @@ bool FotowallFile::saveV2(const QString & filePath, const Canvas * canvas)
      rootElement.appendChild(canvasElement);
 
     // save current canvas
-    canvas->toXml(canvasElement);
+    Canvas * rwCanvas = (Canvas *)canvas;
+    rwCanvas->setFilePath(filePath);
+    canvas->saveToXml(canvasElement);
 
     // open the file for writing
     QFile file(filePath);

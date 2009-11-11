@@ -233,8 +233,10 @@ bool Workflow::processCommand(const Workflow::Command & command)
             Canvas * canvas = static_cast<Canvas *>(qVariantValue<void *>(command.res->takeResource()));
 
             // create the canvas appliance
-            CanvasAppliance * canvasApp = new CanvasAppliance(canvas);
-            pushNode(Node(canvasApp, command.res));
+            if (canvas) {
+                CanvasAppliance * canvasApp = new CanvasAppliance(canvas);
+                pushNode(Node(canvasApp, command.res));
+            }
             } return true;
 
         case Command::SlaveWordcloud: {
