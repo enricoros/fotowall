@@ -14,19 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="horizontalSpacing">
-    <number>2</number>
-   </property>
-   <property name="verticalSpacing">
+   <property name="margin">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="spacing">
     <number>0</number>
    </property>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="spacing">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QFrame" name="stackFrame">

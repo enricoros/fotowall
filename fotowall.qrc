@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/" >
         <file>data/action-add.png</file>
+        <file>data/action-clear-r.png</file>
         <file>data/action-configure.png</file>
         <file>data/action-delete.png</file>
         <file>data/action-flip-horizontal.png</file>

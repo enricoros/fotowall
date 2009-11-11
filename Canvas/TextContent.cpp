@@ -128,6 +128,8 @@ void TextContent::setShapeEditing(bool enabled)
 QWidget * TextContent::createPropertyWidget()
 {
     TextProperties * p = new TextProperties();
+    delete p->bShakeLess;
+    delete p->bShakeMore;
 
     // connect actions
     connect(p->bFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
@@ -135,15 +137,13 @@ QWidget * TextContent::createPropertyWidget()
     connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
     connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
     connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
-    connect(p->bShakeLess, SIGNAL(clicked()), this, SLOT(slotShakeLess()));
-    connect(p->bShakeMore, SIGNAL(clicked()), this, SLOT(slotShakeMore()));
+    //connect(p->bShakeLess, SIGNAL(clicked()), this, SLOT(slotShakeLess()));
+    //connect(p->bShakeMore, SIGNAL(clicked()), this, SLOT(slotShakeMore()));
 
     // properties link
     new PE_Combo(p->fxCombo, this, "fxIndex", p);
-    p->bEditShape->setChecked(isShapeEditing());
-    connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
-    connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));
-    p->bClearShape->setVisible(hasShape());
+    new PE_AbstractButton(p->bEditShape, this, "shapeEditing", p);
+    p->bClearShape->setVisible(hasShape()); // link "hasShape" in a custom way
     connect(this, SIGNAL(notifyHasShape(bool)), p->bClearShape, SLOT(setVisible(bool)));
     connect(p->bClearShape, SIGNAL(clicked()), this, SLOT(clearShape()));
 

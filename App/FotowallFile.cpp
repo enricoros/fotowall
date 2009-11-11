@@ -181,7 +181,7 @@ QString FotowallFile::getSaveFotowallFile(const QString & defaultFilePath)
 {
     // make up the default save path
     QString defaultSavePath = defaultFilePath;
-    if (App::settings->contains("Fotowall/SaveProjectDir"))
+    if (App::settings->contains("Fotowall/SaveProjectDir") && !defaultFilePath.contains(QDir::separator()))
         defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
 
     // ask the 'save' file name
