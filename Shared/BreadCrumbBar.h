@@ -66,6 +66,7 @@ class BcLabel : public QLabel
         // ::QWidget
         void enterEvent(QEvent * event);
         void leaveEvent(QEvent * event);
+        void keyPressEvent(QKeyEvent * event);
         void mousePressEvent(QMouseEvent * event);
         void paintEvent(QPaintEvent * event);
 

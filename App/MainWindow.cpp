@@ -15,6 +15,7 @@
 #include "App/MainWindow.h"
 
 #include "3rdparty/likebackfrontend/LikeBack.h"
+#include "Shared/BreadCrumbBar.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
@@ -67,8 +68,7 @@ MainWindow::MainWindow(QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->sceneView->setFocus();
-    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
-    ui->sceneView->addOverlayWidget(ui->applianceNavBar);
+    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());    
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
@@ -86,8 +86,14 @@ MainWindow::MainWindow(QWidget * parent)
     } else
         show();
 
+    // create the Appliance navigation bar
+    BreadCrumbBar * applianceNavBar = new BreadCrumbBar(ui->sceneView);
+    applianceNavBar->setObjectName(QString::fromUtf8("applianceNavBar"));
+    applianceNavBar->setTranslucent(true);
+    ui->sceneView->addOverlayWidget(applianceNavBar);
+
     // start the workflow
-    new Workflow(this, ui->applianceNavBar);
+    new Workflow(this, applianceNavBar);
 
     // check stuff on the net
     checkForTutorial();
@@ -134,7 +140,7 @@ void MainWindow::applianceSetScene(AbstractScene * scene)
     ui->sceneView->setScene(scene);
 }
 
-static void hideLayoutChildWidges(QLayout * layout)
+static void removeLayoutChildWidges(QLayout * layout)
 {
     while (QLayoutItem * item = layout->takeAt(0)) {
         if (QWidget * oldWidget = item->widget())
@@ -146,8 +152,8 @@ static void hideLayoutChildWidges(QLayout * layout)
 void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
     // clear the topbar layout hiding all widgets
-    hideLayoutChildWidges(ui->applianceLeftBarLayout);
-    hideLayoutChildWidges(ui->applianceRightBarLayout);
+    removeLayoutChildWidges(ui->applianceLeftBarLayout);
+    removeLayoutChildWidges(ui->applianceRightBarLayout);
 
     // add the widgets to the topbar and show them
     foreach (QWidget * widget, widgets) {
@@ -162,7 +168,7 @@ void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 void MainWindow::applianceSetSidebar(QWidget * widget)
 {
     // clear the sidebar layout hiding any widget
-    hideLayoutChildWidges(ui->applianceSidebarLayout);
+    removeLayoutChildWidges(ui->applianceSidebarLayout);
 
     // completely hide the sidebar if no widget
     ui->applianceSidebar->setVisible(widget);

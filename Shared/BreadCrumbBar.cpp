@@ -47,6 +47,7 @@ void BcLabel::setLast(bool last)
     pal.setBrush(QPalette::Text, m_last ? Qt::darkRed : Qt::darkGray);
     setPalette(pal);
     setCursor(m_last ? Qt::ArrowCursor : Qt::PointingHandCursor);
+    setFocusPolicy(m_last ? Qt::NoFocus : Qt::StrongFocus);
     update();
 }
 
@@ -55,20 +56,32 @@ bool BcLabel::last() const
     return m_last;
 }
 
-void BcLabel::enterEvent(QEvent * /*event*/)
+void BcLabel::enterEvent(QEvent * event)
 {
+    QLabel::enterEvent(event);
     m_hover = true;
     update();
 }
 
-void BcLabel::leaveEvent(QEvent * /*event*/)
+void BcLabel::leaveEvent(QEvent * event)
 {
+    QLabel::leaveEvent(event);
     m_hover = false;
     update();
 }
 
+void BcLabel::keyPressEvent(QKeyEvent * event)
+{
+    QLabel::keyPressEvent(event);
+    if (!m_last && (event->key() == Qt::Key_Space || event->key() == Qt::Key_Enter)) {
+        event->accept();
+        emit labelClicked(m_labId);
+    }
+}
+
 void BcLabel::mousePressEvent(QMouseEvent * event)
 {
+    QLabel::mousePressEvent(event);
     if (!m_last && event->button() == Qt::LeftButton) {
         event->accept();
         emit labelClicked(m_labId);
@@ -86,6 +99,15 @@ void BcLabel::paintEvent(QPaintEvent * event)
 
     // unbreak painting
     QLabel::paintEvent(event);
+
+    // focus handling
+    if (hasFocus()) {
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing, false);
+        p.setPen(QPen(Qt::darkGray, 1, Qt::DashLine));
+        p.setBrush(Qt::NoBrush);
+        p.drawRect(rect().adjusted(0, 0, -1, -1));
+    }
 }
 
 
@@ -103,6 +125,7 @@ void BcExpander::setCount(int count)
 {
     m_count = count;
     setCursor(count > 1 ? Qt::PointingHandCursor : Qt::ArrowCursor);
+    setFocusPolicy(count > 1 ? Qt::StrongFocus : Qt::NoFocus);
     update();
 }
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>255</width>
+    <width>257</width>
     <height>61</height>
    </rect>
   </property>
@@ -14,10 +14,13 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="horizontalSpacing">
+    <number>2</number>
+   </property>
+   <property name="verticalSpacing">
     <number>0</number>
    </property>
-   <property name="spacing">
+   <property name="margin">
     <number>0</number>
    </property>
    <item row="0" column="0">
