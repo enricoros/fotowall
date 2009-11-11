@@ -15,6 +15,8 @@
 #ifndef __Command__
 #define __Command__
 
+#include "Shared/CommandStack.h"
+#include <QDebug>
 #include "Shared/AbstractCommand.h"
 #include "Shared/PictureEffect.h"
 #include "Shared/ColorPickerItem.h"
@@ -41,6 +43,20 @@ class EffectCommand : public AbstractCommand {
             m_previousEffects = content->effects();
             m_previousSize = content->contentRect();
         }
+
+        bool setContent(AbstractContent *content) {
+            PictureContent *c = dynamic_cast<PictureContent *>(content);
+            if(c) {
+                m_content = c;
+                return true;
+            } else
+                return false;
+        }
+
+        AbstractContent *content() const {
+            return m_content;
+        }
+
         void exec() {
             m_content->addEffect(m_newEffect);
         }
@@ -69,6 +85,20 @@ class TextCommand : public AbstractCommand {
         {
             m_previousText = content->toHtml();
         }
+
+        bool setContent(AbstractContent *content) {
+            TextContent *c = dynamic_cast<TextContent *>(content);
+            if(c) {
+                m_content = c;
+                return true;
+            } else
+                return false;
+        }
+
+        AbstractContent *content() const {
+            return m_content;
+        }
+
         void exec() {
             m_content->setHtml(m_newText);
         }
@@ -91,6 +121,20 @@ class TransformCommand : public AbstractCommand {
                                                               , m_previous(previous_matrix)
                                                               , m_new(new_matrix)
         {}
+
+        bool setContent(AbstractContent *content) {
+            if(content) {
+                m_content = content;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        AbstractContent *content() const {
+            return m_content;
+        }
+
         void exec() {
             m_content->setTransform(m_new);
         }
@@ -115,6 +159,19 @@ class RotateAndResizeCommand : public AbstractCommand {
                                                           , m_pAngle(pAngle) , m_nAngle(nAngle)
                                                           , m_pRect(pRect), m_nRect(nRect)
        {}
+
+        bool setContent(AbstractContent *content) {
+            if(content) {
+                m_content = content;
+                return true;
+            } else
+                return false;
+        }
+
+        AbstractContent *content() const {
+            return m_content;
+        }
+
         void exec() {
             m_content->setRotation(m_nAngle);
             m_content->resizeContents(m_nRect);
@@ -139,6 +196,18 @@ class MotionCommand : public AbstractCommand {
                                                                                    ,m_previous(previous)
                                                                                    ,m_newMotion(newMotion)
         {}
+
+        bool setContent(AbstractContent *content) {
+            if(content) {
+                m_content = content;
+                return true;
+            } else
+                return false;
+        }
+
+        AbstractContent *content() const {
+            return m_content;
+        }
         void exec() {
             m_content->setPos(m_newMotion);
         }
@@ -164,6 +233,7 @@ class NewImageCommand : public AbstractCommand {
     public:
         NewImageCommand(Canvas *canvas, const QStringList& paths) : m_canvas(canvas), m_imagesPath(paths)
         {}
+
         void exec() {
             if(m_images.isEmpty()) {
                 m_images = m_canvas->addPictureContent(m_imagesPath);
@@ -263,6 +333,19 @@ class NewTextCommand : public AbstractCommand {
     public:
         NewTextCommand(Canvas *canvas) : m_canvas(canvas), m_content(0)
         {}
+
+        bool setContent(AbstractContent *content) {
+            TextContent *c = dynamic_cast<TextContent *>(content);
+            if(c) {
+                m_content = c;
+                return true;
+            } else
+                return false;
+        }
+        AbstractContent *content() const {
+            return m_content;
+        }
+
         void exec() {
             if(m_content == 0)
                 m_content = m_canvas->addTextContent();
@@ -287,6 +370,19 @@ class NewWebcamCommand : public AbstractCommand {
     public:
         NewWebcamCommand(Canvas *canvas) : m_canvas(canvas), m_content(0)
         {}
+
+        bool setContent(AbstractContent *content) {
+            WebcamContent *c = dynamic_cast<WebcamContent *>(content);
+            if(c) {
+                m_content = c;
+                return true;
+            } else
+                return false;
+        }
+        AbstractContent *content() const {
+            return m_content;
+        }
+
         void exec() {
             if(m_content == 0)
                 m_content = m_canvas->addWebcamContent(0);
@@ -305,18 +401,29 @@ class NewWebcamCommand : public AbstractCommand {
 };
 
 /* Hide the content instead of deleting */
+// XXX : Check for possible bugs
 class DeleteContentCommand : public AbstractCommand {
     private:
         AbstractContent *m_content;
+        Canvas *m_canvas;
+            QDomDocument doc;
+        QDomElement m_pConfig;
     public:
-        DeleteContentCommand(AbstractContent *content) : m_content(content)
-        {}
+        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_content(content)
+                                                                       , m_canvas(canvas)
+        { }
         void exec() {
-            m_content->hide();
+            m_pConfig = doc.createElement("picture");
+            m_content->toXml(m_pConfig);
+            m_canvas->deleteContent(m_content);
         }
         void unexec() {
-            m_content->show();
+            qDebug() << "content  " << m_pConfig.tagName() << " << " << m_pConfig.text();
+            AbstractContent * ncontent = m_canvas->contentFromXml(m_pConfig);
+            CommandStack::instance().changeContent(m_content, ncontent);
+            m_content = ncontent;
         }
+
         QString name() {
             return tr("Delete content");
         }
@@ -338,6 +445,18 @@ class FrameCommand : public AbstractCommand {
             m_previousClass = content->frameClass();
             m_previousMirror = content->mirrored();
         }
+
+        bool setContent(AbstractContent *content) {
+            if(content) {
+                m_content = content;
+                return true;
+            } else
+                return false;
+        }
+        AbstractContent *content() const {
+            return m_content;
+        }
+
         void exec() {
             if (!m_newClass)
                 return;
@@ -366,6 +485,18 @@ class BackgroundContentCommand : public AbstractCommand {
             , m_previousContent(previousContent)
             , m_newContent(newContent)
         {}
+
+        bool setContent(AbstractContent *content) {
+            if(content) {
+                m_newContent = content;
+                return true;
+            } else
+                return false;
+        }
+        AbstractContent *content() const {
+            return m_newContent;
+        }
+
         void exec() {
             m_canvas->setBackContent(m_newContent);
         }
@@ -388,6 +519,8 @@ class BackgroundRatioCommand : public AbstractCommand {
             , m_previousRatio(previousRatio)
             , m_newRatio(newRatio)
         {}
+
+
         void exec() {
             m_canvas->setBackContentRatio(m_newRatio);
         }
@@ -409,6 +542,7 @@ class BackgroundModeCommand : public AbstractCommand {
             , m_previousMode(previousMode)
             , m_newMode(newMode)
         {}
+
         void exec() {
             m_canvas->setBackMode(m_newMode);
         }
@@ -506,6 +640,17 @@ class StackCommand : public AbstractCommand {
                                                        , m_pZ(pZ), m_nZ(nZ)
     {}
 
+    bool setContent(AbstractContent *content) {
+        if(content) {
+            m_content = content;
+            return true;
+        } else
+            return false;
+    }
+        AbstractContent *content() const {
+            return m_content;
+        }
+
     void exec() {
         m_content->setZValue(m_nZ);
     }
@@ -519,9 +664,20 @@ class ShapeCommand : public AbstractCommand {
     QList<QPointF >  m_pCps, m_nCps;
     public:
     ShapeCommand(TextContent *c, const QList<QPointF >& pCps, const QList<QPointF>& nCps) : m_content(c)
-                                                       , m_pCps(pCps), m_nCps(nCps)
+                                                                                            , m_pCps(pCps), m_nCps(nCps)
     { }
 
+    bool setContent(AbstractContent *content) {
+        TextContent *c = dynamic_cast<TextContent *>(content);
+        if(c) {
+            m_content = c;
+            return true;
+        } else
+            return false;
+    }
+        AbstractContent *content() const {
+            return m_content;
+        }
     void exec() {
         m_content->setControlPoints(m_nCps);
     }

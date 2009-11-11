@@ -19,3 +19,17 @@ CommandStack & CommandStack::instance()
     static CommandStack instance; // instance unique cachée dans la fonction. Ne pas oublier le static !
     return instance;
 }
+
+void CommandStack::changeContent(AbstractContent *pC, AbstractContent *nC)
+{
+    foreach (AbstractCommand *c, m_undoStack) {
+        if(c->content() == pC) {
+            qDebug() << "set content : " << nC << " instead of " << c->content();
+            c->setContent(nC);
+        }
+    }
+    foreach (AbstractCommand *c, m_redoStack) {
+        if(c->content() == pC)
+            c->setContent(nC);
+    }
+}

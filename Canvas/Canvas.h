@@ -54,6 +54,7 @@ class Canvas : public AbstractScene
         WebcamContent* addWebcamContent(int input);
         void addWordcloudContent();
         void addManualContent(AbstractContent * content, const QPoint & pos);
+        void deleteContent(AbstractContent * content);
         void clearContent();
 
         // ::AbstractScene
@@ -103,6 +104,7 @@ class Canvas : public AbstractScene
 
         void toXml(QDomElement & canvasElement) const;
         void fromXml(QDomElement & canvasElement);
+        AbstractContent * contentFromXml(QDomElement &contentElement);
 
         // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
@@ -131,7 +133,6 @@ class Canvas : public AbstractScene
         TextContent * createText(const QPoint & pos);
         WebcamContent * createWebcam(int input, const QPoint & pos);
         WordcloudContent * createWordcloud(const QPoint & pos);
-        void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
 
         CanvasModeInfo * m_modeInfo;

@@ -18,10 +18,18 @@
 #include <QObject>
 #include <QString>
 
+class AbstractContent;
+
 /* This class is used to implement the command pattern.
  * It provides pure virtual function to do/undo an action. */
 class AbstractCommand : public QObject {
     public:
+        virtual bool setContent(AbstractContent *) {
+            return true;
+        }
+        virtual AbstractContent *content() const {
+            return 0;
+        }
         virtual void exec() = 0;
         virtual void unexec() = 0;
         virtual QString name() {

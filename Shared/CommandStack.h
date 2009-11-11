@@ -58,6 +58,8 @@ class CommandStack
             m_undoStack.push_back(command);
         }
 
+        void changeContent(AbstractContent *pC, AbstractContent *nC);
+
     private :
         // Private constructor, so it is impossible to create an instant without using instance()
         CommandStack() {}

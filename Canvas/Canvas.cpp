@@ -757,41 +757,8 @@ void Canvas::fromXml(QDomElement & canvasElement)
     {
         // find the 'content' element
         QDomElement contentElement = canvasElement.firstChildElement("content");
-
-        // create all content
         for (QDomElement ce = contentElement.firstChildElement(); !ce.isNull(); ce = ce.nextSiblingElement()) {
-
-            // create the right kind of content
-            AbstractContent * content = 0;
-            if (ce.tagName() == "picture")
-                content = createPicture(QPoint());
-            else if (ce.tagName() == "text")
-                content = createText(QPoint());
-            else if (ce.tagName() == "webcam")
-                content = createWebcam(ce.attribute("input").toInt(), QPoint());
-            else if (ce.tagName() == "embedded-canvas")
-                content = createCanvasView(QPoint());
-            else if (ce.tagName() == "wordcloud")
-                content = createWordcloud(QPoint());
-            if (!content) {
-                qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(ce.tagName()));
-                continue;
-            }
-
-            // load item properties, and delete it if something goes wrong
-            if (!content->fromXml(ce)) {
-                m_content.removeAll(content);
-                delete content;
-                continue;
-            }
-
-            // restore the background element of the canvas
-            if (ce.firstChildElement("set-as-background").isElement()) {
-                if (m_backContent)
-                    qWarning("Canvas::fromXml: only 1 element with <set-as-background/> allowed");
-                else
-                    setBackContent(content);
-            }
+        contentFromXml(contentElement);
         }
     }
 
@@ -799,6 +766,44 @@ void Canvas::fromXml(QDomElement & canvasElement)
     slotResetChanges();
     update();
     emit geometryChanged();
+}
+
+AbstractContent * Canvas::contentFromXml(QDomElement &contentElement)
+{
+        // create all content
+            qDebug() << contentElement.tagName();
+            // create the right kind of content
+            AbstractContent * content = 0;
+            if (contentElement.tagName() == "picture")
+                content = createPicture(QPoint());
+            else if (contentElement.tagName() == "text")
+                content = createText(QPoint());
+            else if (contentElement.tagName() == "webcam")
+                content = createWebcam(contentElement.attribute("input").toInt(), QPoint());
+            else if (contentElement.tagName() == "embedded-canvas")
+                content = createCanvasView(QPoint());
+            else if (contentElement.tagName() == "wordcloud")
+                content = createWordcloud(QPoint());
+            if (!content) {
+                qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(contentElement.tagName()));
+                return 0;
+            }
+
+            // load item properties, and delete it if something goes wrong
+            if (!content->fromXml(contentElement)) {
+                m_content.removeAll(content);
+                delete content;
+                return 0;
+            }
+
+            // restore the background element of the canvas
+            if (contentElement.firstChildElement("set-as-background").isElement()) {
+                if (m_backContent)
+                    qWarning("Canvas::fromXml: only 1 element with <set-as-background/> allowed");
+                else
+                    setBackContent(content);
+            }
+            return content;
 }
 
 void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
@@ -1410,7 +1415,7 @@ void Canvas::slotDeleteContent()
             if (m_backContent == content)
                 setBackContent(0);
 
-            DeleteContentCommand *command = new DeleteContentCommand(content);
+            DeleteContentCommand *command = new DeleteContentCommand(content, this);
             CommandStack::instance().doCommand(command);
             foreach (AbstractConfig * config, m_configs) {
                 if (config->content() == content) {
