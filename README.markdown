@@ -150,6 +150,7 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist
 
+* pop-art: pointel-ize, like krita brushes, using circles of different size
 * add the undo/redo support
 * canvas 'dummy' mode for taking snapshots only (shuts off video, for example)
 * frame text: centered
