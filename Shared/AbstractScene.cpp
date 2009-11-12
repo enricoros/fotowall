@@ -21,7 +21,7 @@ AbstractScene::AbstractScene(QObject * parent)
 
 void AbstractScene::adjustSceneSize()
 {
-    emit geometryChanged();
+    emit sceneSizeChanged();
 }
 
 void AbstractScene::resizeAutoFit()

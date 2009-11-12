@@ -825,7 +825,7 @@ void Canvas::loadFromXml(QDomElement & canvasElement)
     // refresh all
     slotResetChanges();
     update();
-    emit geometryChanged();
+    adjustSceneSize();
 }
 
 void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)

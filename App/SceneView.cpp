@@ -24,6 +24,7 @@
 #include <QStyleOption>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <QWheelEvent>
 
 /// The style used by the SceneView's rubberband selection
 class RubberBandStyle : public QCommonStyle
@@ -54,6 +55,7 @@ class RubberBandStyle : public QCommonStyle
 
 SceneView::SceneView(QWidget * parent)
   : QGraphicsView(parent)
+  , m_viewScale(1.0)
   , m_openGL(false)
   , m_abstractScene(0)
   , m_style(0)
@@ -109,7 +111,8 @@ void SceneView::setScene(AbstractScene * scene)
     QGraphicsView::setScene(m_abstractScene);
     if (m_abstractScene) {
         connect(m_abstractScene, SIGNAL(destroyed(QObject*)), this, SLOT(slotSceneDestroyed(QObject *)));
-        connect(m_abstractScene, SIGNAL(geometryChanged()), this, SLOT(layoutScene()));
+        connect(m_abstractScene, SIGNAL(sceneSizeChanged()), this, SLOT(layoutScene()));
+        setViewScale(1.0);
         layoutScene();
     }
 }
@@ -191,6 +194,28 @@ void SceneView::removeOverlayWidget(QWidget *widget)
     widget->setParent(0);
 }
 
+qreal SceneView::viewScale() const
+{
+    return m_viewScale;
+}
+
+void SceneView::setViewScale(qreal scale)
+{
+    if (m_viewScale != scale) {
+        m_viewScale = scale;
+        if (m_viewScale > 0.99 && m_viewScale < 1.01) {
+            m_viewScale = 1.0;
+            setTransform(QTransform());
+        } else {
+            QTransform scaleTransform;
+            scaleTransform.scale(m_viewScale, m_viewScale);
+            setTransform(scaleTransform);
+        }
+        layoutScene();
+        emit viewScaleChanged();
+    }
+}
+
 static void drawVerticalShadow(QPainter * painter, int width, int height)
 {
     QLinearGradient lg( 0, 0, 0, height );
@@ -215,6 +240,26 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
         drawVerticalShadow(&shadowPainter, 64, 8);
     }
 
+    // if scaled, draw untransformed (full shadow tile + zoom)
+    if (m_viewScale != 1.0) {
+        // draw untransformed (we're drawing to the viewport())
+        painter->resetTransform();
+
+        // draw shadow
+        QRect viewporRect = viewport()->contentsRect();
+        viewporRect.setHeight(8);
+        painter->drawTiledPixmap(viewporRect, shadowTile);
+
+        // draw text
+        QString text = tr("%1%").arg(m_viewScale * 100);
+        QRect textRect = QFontMetrics(painter->font()).boundingRect(text).adjusted(-2, -1, 2, 1);
+        textRect.moveTopRight(QPoint(viewporRect.width() - 5, 5));
+        painter->fillRect(textRect, palette().color(QPalette::Highlight));
+        painter->setPen(palette().color(QPalette::HighlightedText));
+        painter->drawText(textRect, Qt::AlignCenter, text);
+        return;
+    }
+
     // find out if we have a drawing offset (we draw in Scene coords, and scene may be translated)
     int y = mapToScene(0, 0).y();
 
@@ -226,11 +271,7 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
 void SceneView::paintEvent(QPaintEvent * event)
 {
     // start the measuring time
-#if 0
-    const bool measureTime = event->rect().size() == viewport()->contentsRect().size();
-#else
     const bool measureTime = true;
-#endif
     if (measureTime)
         m_paintTime.start();
 
@@ -264,6 +305,19 @@ void SceneView::resizeEvent(QResizeEvent * event)
     layoutScene();
 }
 
+void SceneView::wheelEvent(QWheelEvent * event)
+{
+    if (event->modifiers() == Qt::ControlModifier && m_abstractScene && m_abstractScene->sceneSelectable()) {
+        if (event->delta() < 0 && m_viewScale > 0.2)
+            setViewScale(m_viewScale * 0.5);
+        else if (event->delta() > 0 && m_viewScale < 10)
+            setViewScale(m_viewScale * 2.0);
+        event->accept();
+        return;
+    }
+    QGraphicsView::wheelEvent(event);
+}
+
 void SceneView::layoutScene()
 {
     if (!m_abstractScene)
@@ -273,8 +327,10 @@ void SceneView::layoutScene()
     QSize viewportSize = viewport()->contentsRect().size();
     m_abstractScene->resize(viewportSize);
 
-    // change the scrollbars policy
+    // use scrollbars if scene screen size is bigger than viewport's
     QSize sceneSize = m_abstractScene->sceneSize();
+    if (m_viewScale != 1.0)
+        sceneSize *= m_viewScale;
     bool scrollbarsNeeded = (sceneSize.width() > viewportSize.width()) || (sceneSize.height() > viewportSize.height());
     Qt::ScrollBarPolicy sPolicy = scrollbarsNeeded ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
     setVerticalScrollBarPolicy(sPolicy);

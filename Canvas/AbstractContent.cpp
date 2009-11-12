@@ -393,13 +393,13 @@ void AbstractContent::setFxIndex(int index)
         case 3: {
             QGraphicsBlurEffect * b = new QGraphicsBlurEffect(this);
             b->setBlurRadius(5);
-            b->setBlurHint(QGraphicsBlurEffect::QualityHint);
+            b->setBlurHints(QGraphicsBlurEffect::QualityHint);
             setGraphicsEffect(b);
             } break;
         case 4: {
             QGraphicsBlurEffect * b = new QGraphicsBlurEffect(this);
             b->setBlurRadius(16);
-            b->setBlurHint(QGraphicsBlurEffect::QualityHint);
+            b->setBlurHints(QGraphicsBlurEffect::QualityHint);
             setGraphicsEffect(b);
             } break;
     }

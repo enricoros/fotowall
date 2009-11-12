@@ -19,9 +19,6 @@ Work in progress:
 * (Work In Progress) More properties in the top bar
 * FotowallFile
 * Arnaud's Undo/Redo system
-* modeinfo-per-scene, real resizing of scenes based on modeinfo, support for larger scenes
-  * zooming?
-* Text shaking
 * Wordcloud editor
 
 Done:
@@ -39,7 +36,7 @@ Done:
 * Google Images search (by Marco Bavagnoli, reqby. Rossana)
 * New Content: Wordcloud
 * New Content: Fotowall
-* Scrollable Canvas
+* Scrollable/Zoomable Canvas
   * perfectly handles the Exact Size mode
 * Save on exit
 * Fixed licensing
@@ -150,6 +147,7 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist
 
+* Text shaking
 * pop-art: pointel-ize, like krita brushes, using circles of different size
 * add the undo/redo support
 * canvas 'dummy' mode for taking snapshots only (shuts off video, for example)
