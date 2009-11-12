@@ -15,6 +15,7 @@
 #include "WordcloudAppliance.h"
 
 #include "Wordcloud/WordItem.h"
+#include "WordcloudSidebar.h"
 
 #include <QPushButton>
 
@@ -60,23 +61,10 @@ WordcloudAppliance::WordcloudAppliance(Wordcloud::Cloud * extCloud, QObject * pa
     // init UI
     ui->setupUi(m_dummyWidget);
 
-    // set the target scene of the cloud to this
-    m_sidebar = new QWidget();
-    m_sidebar->setAutoFillBackground(true);
-    QPalette pal;
-    pal.setBrush(QPalette::Window, Qt::lightGray);
-    m_sidebar->setPalette(pal);
-    QVBoxLayout * lay = new QVBoxLayout(m_sidebar);
-
-    QPushButton * btn1 = new QPushButton(tr("Regen"), m_sidebar);
-    connect(btn1, SIGNAL(clicked()), this, SLOT(slotRegenCloud()));
-    lay->addWidget(btn1);
-
-    QPushButton * btn2 = new QPushButton(tr("Randomize"), m_sidebar);
-    connect(btn2, SIGNAL(clicked()), this, SLOT(slotRandomizeCloud()));
-    lay->addWidget(btn2);
-
-    lay->addStretch(10);
+    // create and connect the sidebar
+    m_sidebar = new WordcloudSidebar;
+    connect(m_sidebar->regenButton, SIGNAL(clicked()), this, SLOT(slotRegenCloud()));
+    connect(m_sidebar->randomButton, SIGNAL(clicked()), this, SLOT(slotRandomizeCloud()));
 
     // configure the appliance
     sceneSet(m_scene);
