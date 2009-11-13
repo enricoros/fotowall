@@ -122,6 +122,9 @@
       <property name="pixmap" stdset="0">
        <pixmap resource="../fotowall.qrc">:/data/insert-image.png</pixmap>
       </property>
+      <property name="hoverPixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-overlay-plus.png</pixmap>
+      </property>
      </widget>
     </item>
     <item row="0" column="1">
@@ -137,6 +140,9 @@
       </property>
       <property name="pixmap" stdset="0">
        <pixmap resource="../fotowall.qrc">:/data/insert-text.png</pixmap>
+      </property>
+      <property name="hoverPixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-overlay-plus.png</pixmap>
       </property>
      </widget>
     </item>
@@ -154,6 +160,9 @@
       <property name="pixmap" stdset="0">
        <pixmap resource="../fotowall.qrc">:/data/insert-webcam.png</pixmap>
       </property>
+      <property name="hoverPixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-overlay-plus.png</pixmap>
+      </property>
      </widget>
     </item>
     <item row="0" column="3">
@@ -168,7 +177,10 @@
        </size>
       </property>
       <property name="pixmap" stdset="0">
-       <pixmap resource="../fotowall.qrc">:/data/textbold.png</pixmap>
+       <pixmap resource="../fotowall.qrc">:/data/insert-wordcloud.png</pixmap>
+      </property>
+      <property name="hoverPixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-overlay-plus.png</pixmap>
       </property>
      </widget>
     </item>
@@ -184,7 +196,10 @@
        </size>
       </property>
       <property name="pixmap" stdset="0">
-       <pixmap resource="../fotowall.qrc">:/data/textbold.png</pixmap>
+       <pixmap resource="../fotowall.qrc">:/data/insert-fotowall.png</pixmap>
+      </property>
+      <property name="hoverPixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-overlay-plus.png</pixmap>
       </property>
      </widget>
     </item>

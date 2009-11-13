@@ -51,6 +51,17 @@ QString PixmapButton::hoverText() const
     return m_hoverText;
 }
 
+void PixmapButton::setHoverPixmap(const QPixmap & pixmap)
+{
+    m_hoverPixmap = pixmap;
+    update();
+}
+
+QPixmap PixmapButton::hoverPixmap() const
+{
+    return m_hoverPixmap;
+}
+
 void PixmapButton::setFixedSize(const QSize & size)
 {
     m_fixedSize = size;
@@ -128,6 +139,10 @@ void PixmapButton::paintEvent(QPaintEvent *)
         p.drawText(rect.toRect(), Qt::AlignCenter, m_hoverText);
 #endif
     }
+
+    // draw hover pixmap, if hovering
+    if (m_hovering && !m_hoverPixmap.isNull())
+        p.drawPixmap(width() - m_hoverPixmap.width(), height() - m_hoverPixmap.height(), m_hoverPixmap);
 
     // draw focus, if any
     if (hasFocus()) {

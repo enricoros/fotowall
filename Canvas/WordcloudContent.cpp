@@ -31,7 +31,7 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
 
     // temporarily get words
     Wordcloud::Scanner scanner;
-    QString fileName = QFileDialog::getOpenFileName(0, tr("Select a text file"));
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Create a Wordcloud from a text file"));
     if (fileName.isEmpty()) {
         scanner.addFromString(tr("Welcome to Wordcloud. Change options on the sidebar."));
         Wordcloud::WordList list = scanner.takeWords(false);

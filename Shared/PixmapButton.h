@@ -23,6 +23,7 @@ class PixmapButton : public QAbstractButton
 {
     Q_OBJECT
     Q_PROPERTY(QSize fixedSize READ fixedSize WRITE setFixedSize)
+    Q_PROPERTY(QPixmap hoverPixmap READ hoverPixmap WRITE setHoverPixmap)
     Q_PROPERTY(QPixmap pixmap READ pixmap WRITE setPixmap)
     public:
         PixmapButton(QWidget * parent = 0);
@@ -34,6 +35,10 @@ class PixmapButton : public QAbstractButton
         // hover text (accelerator like)
         void setHoverText(const QString & text);
         QString hoverText() const;
+
+        // change mouse-over pixmap
+        void setHoverPixmap(const QPixmap & pixmap);
+        QPixmap hoverPixmap() const;
 
         // enforce the fixed size notion
         void setFixedSize(const QSize & size);
@@ -51,6 +56,7 @@ class PixmapButton : public QAbstractButton
         QPixmap m_fixedPixmap;
         QFont m_hoverFont;
         QString m_hoverText;
+        QPixmap m_hoverPixmap;
         bool m_hovering;
 };
 

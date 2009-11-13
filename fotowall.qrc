@@ -22,9 +22,12 @@
         <file>data/home-newwordcloud.png</file>
         <file>data/home-wizard.png</file>
         <file>data/insert-download.png</file>
+        <file>data/insert-fotowall.png</file>
         <file>data/insert-image.png</file>
+        <file>data/insert-overlay-plus.png</file>
         <file>data/insert-text.png</file>
         <file>data/insert-webcam.png</file>
+        <file>data/insert-wordcloud.png</file>
         <file>data/effects-icons/autoblend-effect.png</file>
         <file>data/effects-icons/black-and-white-effect.png</file>
         <file>data/effects-icons/glow-effect.png</file>
