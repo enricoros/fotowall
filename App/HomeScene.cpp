@@ -54,6 +54,7 @@ class HomeLabel : public AbstractContent
             // incremental change over AbstractContent
             setFlag(QGraphicsItem::ItemIsMovable, false);
             setFlag(QGraphicsItem::ItemIsSelectable, false);
+            setFlag(QGraphicsItem::ItemIsFocusable, true);
             setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
             const int pixW = pixmap.width();
             const int pixH = pixmap.height();
@@ -63,6 +64,18 @@ class HomeLabel : public AbstractContent
         QString contentName() const
         {
             return "HomeLabel";
+        }
+
+        void focusInEvent(QFocusEvent *event)
+        {
+            event->accept();
+            hoverEnterEvent(0);
+        }
+
+        void focusOutEvent(QFocusEvent *event)
+        {
+            event->accept();
+            hoverLeaveEvent(0);
         }
 
         void hoverEnterEvent(QGraphicsSceneHoverEvent *)
@@ -107,28 +120,32 @@ HomeScene::HomeScene(QObject * parent)
   : AbstractScene(parent)
   , m_logoPixmap(":/data/home-logo.png")
 {
+    // create the 3 buttons
 #ifndef NO_WORDCLOUD_APPLIANCE
     HomeLabel * newWordcloud = new HomeLabel(tr("Wordcloud"), QPixmap(":/data/home-newwordcloud.png"), this);
      connect(newWordcloud, SIGNAL(requestEditing()), this, SIGNAL(startWordcloud()));
 #else
-    HomeLabel * newWordcloud = new HomeLabel(tr("(Coming in 1.0)"), QPixmap(":/data/home-newwordcloud.png"), this);
+    HomeLabel * newWordcloud = new HomeLabel(tr("coming soon"), QPixmap(":/data/home-newwordcloud.png"), this);
      newWordcloud->setEnabled(false);
 #if QT_VERSION >= 0x040500
      newWordcloud->setOpacity(0.2);
 #endif
 #endif
+     newWordcloud->setZValue(0.0);
      m_labels.append(newWordcloud);
 
     HomeLabel * newCanvas = new HomeLabel(tr("Create"), QPixmap(":/data/home-newcanvas.png"), this);
      connect(newCanvas, SIGNAL(requestEditing()), this, SIGNAL(startCanvas()));
+     newCanvas->setZValue(1.0);
      m_labels.append(newCanvas);
 
-    HomeLabel * wizard = new HomeLabel(tr("Wizard (coming soon)"), QPixmap(":/data/home-wizard.png"), this);
+    HomeLabel * wizard = new HomeLabel(tr("coming soon"), QPixmap(":/data/home-wizard.png"), this);
      connect(wizard, SIGNAL(requestEditing()), this, SIGNAL(startWizard()));
      wizard->setEnabled(false);
 #if QT_VERSION >= 0x040500
      wizard->setOpacity(0.2);
 #endif
+     wizard->setZValue(0.0);
      m_labels.append(wizard);
 }
 
@@ -163,7 +180,7 @@ void HomeScene::drawForeground(QPainter *painter, const QRectF &rect)
 
 void HomeScene::keyPressEvent(QKeyEvent *event)
 {
-    event->accept();
+    AbstractScene::keyPressEvent(event);
     emit keyPressed(event->key());
 }
 
@@ -184,7 +201,7 @@ void HomeScene::resize(const QSize & size)
         double xPos = margin + (int)(((qreal)cIdx + 0.5) * (qreal)width / (qreal)cols);
         double yPos = margin + (int)(((qreal)rIdx + 0.5) * (qreal)height / (qreal)rows);
         if (cols == 3 && cIdx != 1)
-            yPos += 10;
+            yPos += 4;
         m_labels[i]->setPos(QPointF(xPos, yPos) - m_labels[i]->boundingRect().center());
         if (++cIdx >= cols) {
             cIdx = 0;

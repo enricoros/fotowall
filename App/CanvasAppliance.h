@@ -43,9 +43,9 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         QMenu * createBackgroundMenu();
         QMenu * createDecorationMenu();
         void setNormalProject();
+        void setExactSizeProject(bool usePrevious);
         void setCDProject();
         void setDVDProject();
-        void setExactSizeProject(bool usePrevious);
         void configurePrint(bool enabled);
 
     private:

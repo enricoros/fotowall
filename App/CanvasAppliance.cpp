@@ -84,8 +84,14 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // set the startup project mode
-    int projectModeIndex = extCanvas->modeInfo()->projectMode();
-    slotProjectComboActivated(projectModeIndex);
+    int pComboIndex = 0;
+    switch (extCanvas->modeInfo()->projectMode()) {
+        case CanvasModeInfo::ModeNormal:    pComboIndex = 0; break;
+        case CanvasModeInfo::ModeCD:        pComboIndex = 2; break;
+        case CanvasModeInfo::ModeDVD:       pComboIndex = 3; break;
+        case CanvasModeInfo::ModeExactSize: pComboIndex = 1; break;
+    }
+    slotProjectComboActivated(pComboIndex);
 }
 
 CanvasAppliance::~CanvasAppliance()
@@ -276,31 +282,9 @@ void CanvasAppliance::setNormalProject()
     configurePrint(false);
 }
 
-void CanvasAppliance::setCDProject()
-{
-    ui.projectCombo->setCurrentIndex(1);
-    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
-    m_extCanvas->modeInfo()->setPrintLandscape(false);
-    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    m_extCanvas->adjustSceneSize();
-    m_extCanvas->setCDMarkers();
-    configurePrint(true);
-}
-
-void CanvasAppliance::setDVDProject()
-{
-    ui.projectCombo->setCurrentIndex(2);
-    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
-    m_extCanvas->modeInfo()->setPrintLandscape(true);
-    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
-    m_extCanvas->adjustSceneSize();
-    m_extCanvas->setDVDMarkers();
-    configurePrint(true);
-}
-
 void CanvasAppliance::setExactSizeProject(bool usePrevious)
 {
-    ui.projectCombo->setCurrentIndex(3);
+    ui.projectCombo->setCurrentIndex(1);
     m_extCanvas->clearMarkers();
     if (!usePrevious || !m_extCanvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
@@ -328,6 +312,28 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
     }
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
     m_extCanvas->adjustSceneSize();
+    configurePrint(true);
+}
+
+void CanvasAppliance::setCDProject()
+{
+    ui.projectCombo->setCurrentIndex(2);
+    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
+    m_extCanvas->modeInfo()->setPrintLandscape(false);
+    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
+    m_extCanvas->adjustSceneSize();
+    m_extCanvas->setCDMarkers();
+    configurePrint(true);
+}
+
+void CanvasAppliance::setDVDProject()
+{
+    ui.projectCombo->setCurrentIndex(3);
+    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
+    m_extCanvas->modeInfo()->setPrintLandscape(true);
+    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
+    m_extCanvas->adjustSceneSize();
+    m_extCanvas->setDVDMarkers();
     configurePrint(true);
 }
 
@@ -388,9 +394,9 @@ void CanvasAppliance::slotProjectComboActivated(int index)
 {
     switch (index) {
         case 0: setNormalProject();             break;
-        case 1: setCDProject();                 break;
-        case 2: setDVDProject();                break;
-        case 3: setExactSizeProject(!sender()); break;
+        case 1: setExactSizeProject(!sender()); break;
+        case 2: setCDProject();                 break;
+        case 3: setDVDProject();                break;
     }
 }
 

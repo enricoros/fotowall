@@ -440,17 +440,17 @@
       </item>
       <item>
        <property name="text">
+        <string>Exact Size...</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>CD Cover</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>DVD Cover</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Exact Size...</string>
        </property>
       </item>
      </widget>
