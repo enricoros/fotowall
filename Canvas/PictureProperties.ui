@@ -137,14 +137,14 @@
     <widget class="PaneWidget" name="perspWidget" native="true">
      <property name="minimumSize">
       <size>
-       <width>51</width>
-       <height>51</height>
+       <width>61</width>
+       <height>61</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>51</width>
-       <height>51</height>
+       <width>61</width>
+       <height>61</height>
       </size>
      </property>
     </widget>
