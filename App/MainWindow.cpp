@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget * parent)
 
     // init ui
     ui->setupUi(this);
-    ui->sceneView->setFocus();
+    ui->topBar->setFixedHeight(App::TopBarHeight);
     ui->onlineHelpButton->setMenu(createOnlineHelpMenu());    
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget * parent)
     ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
     ui->applianceSidebar->hide();
+    ui->sceneView->setFocus();
     connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
     createLikeBack();
 

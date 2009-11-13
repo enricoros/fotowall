@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QKeyEvent>
 #include <QMimeData>
 #include <QPainter>
 #include <QTextDocument>
@@ -340,6 +341,17 @@ void TextContent::selectionChanged(bool selected)
     // hide shape editing controls
     if (!selected && isShapeEditing())
         setShapeEditing(false);
+}
+
+void TextContent::keyPressEvent(QKeyEvent * event)
+{
+    // use F2 to edit the text
+    if (event->key() == Qt::Key_F2) {
+        event->accept();
+        emit requestConfig(mapToScene(contentRect().bottomRight()).toPoint());
+        return;
+    }
+    AbstractContent::keyPressEvent(event);
 }
 
 void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)

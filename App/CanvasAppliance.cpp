@@ -42,6 +42,10 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
 {
     // init UI
     ui.setupUi(m_dummyWidget);
+    ui.addContentBox->setFixedHeight(App::TopBarHeight);
+    ui.propertiesBox->setFixedHeight(App::TopBarHeight);
+    ui.canvasPropertiesBox->setFixedHeight(App::TopBarHeight);
+    ui.fileBox->setFixedHeight(App::TopBarHeight);
     connect(ui.bPicture, SIGNAL(clicked()), this, SLOT(slotAddPicture()));
     connect(ui.bText, SIGNAL(clicked()), this, SLOT(slotAddText()));
     connect(ui.bWebcam, SIGNAL(clicked()), this, SLOT(slotAddWebcam()));
@@ -60,7 +64,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     topbarAddWidget(ui.addContentBox);
     topbarAddWidget(ui.propertiesBox);
     topbarAddWidget(ui.canvasPropertiesBox);
-    topbarAddWidget(ui.fileWidget, true);
+    topbarAddWidget(ui.fileBox, true);
 
     // populate menus
     ui.arrangeButton->setMenu(createArrangeMenu());
@@ -95,7 +99,7 @@ CanvasAppliance::~CanvasAppliance()
     delete ui.addContentBox;
     delete ui.propertiesBox;
     delete ui.canvasPropertiesBox;
-    delete ui.fileWidget;
+    delete ui.fileBox;
     delete m_dummyWidget;
 }
 
@@ -523,6 +527,8 @@ void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
         delete prevItem->widget();
         delete prevItem;
     }
+    if (!ui.propLayout->isEmpty())
+        qWarning("CanvasAppliance::slotShowPropertiesWidget: problem in the properties layout: not empty (%d)", ui.propLayout->count());
 
     // show the Properties container with new content and title
     if (widget) {

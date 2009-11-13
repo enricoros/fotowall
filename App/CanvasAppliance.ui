@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>351</width>
-    <height>340</height>
+    <width>329</width>
+    <height>314</height>
    </rect>
   </property>
   <widget class="GroupBoxWidget" name="addContentBox" native="true">
@@ -15,7 +15,7 @@
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>300</width>
+     <width>302</width>
      <height>50</height>
     </rect>
    </property>
@@ -93,7 +93,16 @@
     <number>2</number>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>2</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <property name="spacing">
@@ -205,19 +214,19 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>381</width>
-     <height>16</height>
+     <width>157</width>
+     <height>13</height>
     </rect>
    </property>
    <property name="text">
-    <string notr="true">This is the 'add content' widget. See the Actions too!</string>
+    <string notr="true">This is the 'add content' Box</string>
    </property>
   </widget>
   <widget class="GroupBoxWidget" name="propertiesBox" native="true">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>120</y>
+     <y>110</y>
      <width>12</width>
      <height>50</height>
     </rect>
@@ -314,35 +323,35 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>100</y>
-     <width>381</width>
-     <height>16</height>
+     <y>90</y>
+     <width>197</width>
+     <height>13</height>
     </rect>
    </property>
    <property name="text">
-    <string notr="true">This is the 'Content Properties' widget.</string>
+    <string notr="true">This is the 'Content Properties' Box</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>180</y>
-     <width>381</width>
-     <height>16</height>
+     <y>170</y>
+     <width>127</width>
+     <height>13</height>
     </rect>
    </property>
    <property name="text">
-    <string notr="true">This is the Canvas widget.</string>
+    <string notr="true">This is the Canvas Box</string>
    </property>
   </widget>
   <widget class="GroupBoxWidget" name="canvasPropertiesBox" native="true">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>200</y>
-     <width>200</width>
-     <height>50</height>
+     <y>190</y>
+     <width>189</width>
+     <height>44</height>
     </rect>
    </property>
    <property name="palette">
@@ -526,13 +535,13 @@
     </item>
    </layout>
   </widget>
-  <widget class="GroupBoxWidget" name="fileWidget" native="true">
+  <widget class="GroupBoxWidget" name="fileBox" native="true">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>280</y>
-     <width>60</width>
-     <height>49</height>
+     <y>260</y>
+     <width>56</width>
+     <height>47</height>
     </rect>
    </property>
    <property name="palette">
@@ -675,13 +684,13 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>260</y>
-     <width>381</width>
-     <height>16</height>
+     <y>240</y>
+     <width>103</width>
+     <height>13</height>
     </rect>
    </property>
    <property name="text">
-    <string notr="true">This is the File widget.</string>
+    <string notr="true">This is the File Box</string>
    </property>
   </widget>
  </widget>

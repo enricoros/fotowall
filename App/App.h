@@ -31,6 +31,9 @@ class App
         static Workflow * workflow;
         static AbstractPictureService * pictureService;
 
+        // consts
+        static const int TopBarHeight = 80;
+
         // commands understood by container
         enum {
             CC_ShowPictureSearch    = 0x0001

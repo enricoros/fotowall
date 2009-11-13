@@ -19,12 +19,6 @@
    </property>
    <item row="0" column="0" colspan="2">
     <widget class="QWidget" name="topBar" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>80</height>
-      </size>
-     </property>
      <property name="styleSheet">
       <string notr="true">#topBar {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
@@ -47,6 +41,9 @@ stop:1 rgba(237, 237, 237, 255))
         <layout class="QHBoxLayout" name="applianceLeftBarLayout">
          <property name="spacing">
           <number>0</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
          </property>
          <property name="margin">
           <number>0</number>
@@ -443,6 +440,9 @@ stop:1 rgba(237, 237, 237, 255))
         <layout class="QHBoxLayout" name="applianceRightBarLayout">
          <property name="spacing">
           <number>0</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
          </property>
          <property name="margin">
           <number>0</number>
