@@ -42,18 +42,12 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
 {
     // init UI
     ui.setupUi(m_dummyWidget);
-    ui.b1->setDefaultAction(ui.aAddPicture);
-    ui.b2->setDefaultAction(ui.aAddText);
-    ui.b3->setDefaultAction(ui.aAddWebcam);
-    ui.b4->setDefaultAction(ui.aAddWordcloud);
-    ui.b5->setDefaultAction(ui.aAddCanvas);
-    ui.b6->setDefaultAction(ui.aSearchPictures);
-    connect(ui.aAddPicture, SIGNAL(triggered()), this, SLOT(slotAddPicture()));
-    connect(ui.aAddText, SIGNAL(triggered()), this, SLOT(slotAddText()));
-    connect(ui.aAddWebcam, SIGNAL(triggered()), this, SLOT(slotAddWebcam()));
-    connect(ui.aAddCanvas, SIGNAL(triggered()), this, SLOT(slotAddCanvas()));
-    connect(ui.aAddWordcloud, SIGNAL(triggered()), this, SLOT(slotAddWordcloud()));
-    connect(ui.aSearchPictures, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
+    connect(ui.bPicture, SIGNAL(clicked()), this, SLOT(slotAddPicture()));
+    connect(ui.bText, SIGNAL(clicked()), this, SLOT(slotAddText()));
+    connect(ui.bWebcam, SIGNAL(clicked()), this, SLOT(slotAddWebcam()));
+    connect(ui.bWordcloud, SIGNAL(clicked()), this, SLOT(slotAddWordcloud()));
+    connect(ui.bCanvas, SIGNAL(clicked()), this, SLOT(slotAddCanvas()));
+    connect(ui.bWebsearch, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
     connect(ui.projectCombo, SIGNAL(activated(int)), this, SLOT(slotProjectComboActivated(int)));
@@ -80,7 +74,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     connect(m_extCanvas, SIGNAL(filePathChanged()), this, SLOT(slotFilePathChanged()));
 
     // react to VideoProvider
-    ui.aAddWebcam->setVisible(VideoProvider::instance()->inputCount() > 0);
+    ui.bWebcam->setVisible(VideoProvider::instance()->inputCount() > 0);
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // set the startup project mode
@@ -553,5 +547,5 @@ void CanvasAppliance::slotFilePathChanged()
 void CanvasAppliance::slotVerifyVideoInputs(int count)
 {
     // maybe blink or something?
-    ui.aAddWebcam->setVisible(count > 0);
+    ui.bWebcam->setVisible(count > 0);
 }

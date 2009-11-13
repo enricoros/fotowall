@@ -15,8 +15,8 @@
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>117</width>
-     <height>62</height>
+     <width>300</width>
+     <height>50</height>
     </rect>
    </property>
    <property name="palette">
@@ -93,95 +93,107 @@
     <number>2</number>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <property name="leftMargin">
-     <number>6</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>6</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
     <property name="spacing">
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="QToolButton" name="b1">
-      <property name="iconSize">
+     <widget class="PixmapButton" name="bPicture" native="true">
+      <property name="toolTip">
+       <string>Add Picture</string>
+      </property>
+      <property name="fixedSize" stdset="0">
        <size>
-        <width>25</width>
-        <height>22</height>
+        <width>50</width>
+        <height>50</height>
        </size>
       </property>
-      <property name="autoRaise">
-       <bool>true</bool>
+      <property name="pixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-image.png</pixmap>
       </property>
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QToolButton" name="b2">
-      <property name="iconSize">
+     <widget class="PixmapButton" name="bText" native="true">
+      <property name="toolTip">
+       <string>Add Text</string>
+      </property>
+      <property name="fixedSize" stdset="0">
        <size>
-        <width>25</width>
-        <height>22</height>
+        <width>50</width>
+        <height>50</height>
        </size>
       </property>
-      <property name="autoRaise">
-       <bool>true</bool>
+      <property name="pixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-text.png</pixmap>
       </property>
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QToolButton" name="b3">
-      <property name="iconSize">
+     <widget class="PixmapButton" name="bWebcam" native="true">
+      <property name="toolTip">
+       <string>Add Webcam</string>
+      </property>
+      <property name="fixedSize" stdset="0">
        <size>
-        <width>25</width>
-        <height>22</height>
+        <width>50</width>
+        <height>50</height>
        </size>
       </property>
-      <property name="autoRaise">
-       <bool>true</bool>
+      <property name="pixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-webcam.png</pixmap>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QToolButton" name="b4">
-      <property name="iconSize">
+    <item row="0" column="3">
+     <widget class="PixmapButton" name="bWordcloud" native="true">
+      <property name="toolTip">
+       <string>Add Wordcloud</string>
+      </property>
+      <property name="fixedSize" stdset="0">
        <size>
-        <width>25</width>
-        <height>22</height>
+        <width>50</width>
+        <height>50</height>
        </size>
       </property>
-      <property name="autoRaise">
-       <bool>true</bool>
+      <property name="pixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/textbold.png</pixmap>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QToolButton" name="b5">
-      <property name="iconSize">
+    <item row="0" column="4">
+     <widget class="PixmapButton" name="bCanvas" native="true">
+      <property name="toolTip">
+       <string>Add Canvas</string>
+      </property>
+      <property name="fixedSize" stdset="0">
        <size>
-        <width>25</width>
-        <height>22</height>
+        <width>50</width>
+        <height>50</height>
        </size>
       </property>
-      <property name="autoRaise">
-       <bool>true</bool>
+      <property name="pixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/textbold.png</pixmap>
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QToolButton" name="b6">
-      <property name="iconSize">
+    <item row="0" column="5">
+     <widget class="PixmapButton" name="bWebsearch" native="true">
+      <property name="toolTip">
+       <string>Search Web Pictures</string>
+      </property>
+      <property name="fixedSize" stdset="0">
        <size>
-        <width>25</width>
-        <height>22</height>
+        <width>50</width>
+        <height>50</height>
        </size>
       </property>
-      <property name="autoRaise">
+      <property name="pixmap" stdset="0">
+       <pixmap resource="../fotowall.qrc">:/data/insert-download.png</pixmap>
+      </property>
+      <property name="checkable" stdset="0">
        <bool>true</bool>
       </property>
      </widget>
@@ -672,69 +684,18 @@
     <string notr="true">This is the File widget.</string>
    </property>
   </widget>
-  <action name="aAddPicture">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-image.png</normaloff>:/data/insert-image.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Picture</string>
-   </property>
-  </action>
-  <action name="aAddText">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-text.png</normaloff>:/data/insert-text.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Text</string>
-   </property>
-  </action>
-  <action name="aAddWebcam">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-webcam.png</normaloff>:/data/insert-webcam.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Webcam</string>
-   </property>
-  </action>
-  <action name="aSearchPictures">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/insert-download.png</normaloff>:/data/insert-download.png</iconset>
-   </property>
-   <property name="text">
-    <string>Search Web Pictures</string>
-   </property>
-  </action>
-  <action name="aAddCanvas">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/textinsertimage.png</normaloff>:/data/textinsertimage.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Fotowall File</string>
-   </property>
-  </action>
-  <action name="aAddWordcloud">
-   <property name="icon">
-    <iconset resource="../fotowall.qrc">
-     <normaloff>:/data/textinsertimage.png</normaloff>:/data/textinsertimage.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Wordcloud</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>GroupBoxWidget</class>
    <extends>QWidget</extends>
    <header>Shared/GroupBoxWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PixmapButton</class>
+   <extends>QWidget</extends>
+   <header>Shared/PixmapButton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

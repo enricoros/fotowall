@@ -40,7 +40,8 @@ class FileBoxWidget : public GroupBoxWidget
             lay->setSpacing(0);
 
             // add open button
-            openButton = new PixmapButton(QSize(64, 60), this);
+            openButton = new PixmapButton(this);
+            openButton->setFixedSize(QSize(64, 60));
             openButton->setToolTip(tr("Open"));
             openButton->setPixmap(QPixmap(":/data/action-open.png"));
             lay->addWidget(openButton);

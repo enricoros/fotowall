@@ -21,8 +21,11 @@
 
 class PixmapButton : public QAbstractButton
 {
+    Q_OBJECT
+    Q_PROPERTY(QSize fixedSize READ fixedSize WRITE setFixedSize)
+    Q_PROPERTY(QPixmap pixmap READ pixmap WRITE setPixmap)
     public:
-        PixmapButton(const QSize & fixedSize = QSize(32, 32), QWidget * parent = 0);
+        PixmapButton(QWidget * parent = 0);
 
         // change pixmap
         void setPixmap(const QPixmap & pixmap);

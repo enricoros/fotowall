@@ -39,9 +39,10 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
     lay->setSpacing(0);
     for (int i = 0; i < qMin(5, urls.size()); i++) {
         const QUrl & url = urls[i];
-        PixmapButton * button = new PixmapButton(QSize(64, 60), this);
+        PixmapButton * button = new PixmapButton(this);
         connect(button, SIGNAL(clicked()), this, SLOT(slotClicked()));
         connect(button, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotContextMenu(const QPoint &)));
+        button->setFixedSize(QSize(64, 60));
         button->setContextMenuPolicy(Qt::CustomContextMenu);
         button->setProperty("url", url);
         button->setHoverText(QString::number(i+1));

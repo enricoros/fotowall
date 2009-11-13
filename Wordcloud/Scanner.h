@@ -34,7 +34,7 @@ namespace Wordcloud {
             void clear();
 
             // outputs
-            WordList takeWords();
+            WordList takeWords(bool cleanList);
             int wordCount() const;
             bool isEmpty() const;
 

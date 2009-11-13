@@ -32,6 +32,9 @@ class PictureSearchWidget : public QWidget
         PictureSearchWidget(QNetworkAccessManager * extAccessManager, QWidget * parent = 0);
         ~PictureSearchWidget();
 
+        // focus the line edit
+        void setFocus();
+
         // ::QWidget
         void paintEvent(QPaintEvent * event);
 

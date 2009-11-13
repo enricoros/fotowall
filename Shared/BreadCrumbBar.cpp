@@ -21,6 +21,8 @@
 #include <QMenu>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QStyleOptionFocusRect>
+#include <QStyle>
 
 #define BAR_RADIUS 6
 #define BAR_H_MARGIN 7
@@ -103,10 +105,10 @@ void BcLabel::paintEvent(QPaintEvent * event)
     // focus handling
     if (hasFocus()) {
         QPainter p(this);
-        p.setRenderHint(QPainter::Antialiasing, false);
-        p.setPen(QPen(Qt::darkGray, 1, Qt::DashLine));
-        p.setBrush(Qt::NoBrush);
-        p.drawRect(rect().adjusted(0, 0, -1, -1));
+        QStyleOptionFocusRect opt;
+        opt.initFrom(this);
+        opt.backgroundColor = Qt::white;
+        style()->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, &p, this);
     }
 }
 
@@ -163,6 +165,14 @@ void BcExpander::paintEvent(QPaintEvent * /*event*/)
             p.drawLine(3, 1, 7, 5);
             p.drawLine(7, 5, 3, 9);
         }
+    }
+
+    // focus handling
+    if (hasFocus()) {
+        QStyleOptionFocusRect opt;
+        opt.initFrom(this);
+        opt.backgroundColor = Qt::white;
+        style()->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, &p, this);
     }
 }
 

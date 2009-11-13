@@ -72,17 +72,19 @@ static bool wordFrequencySorter(const Word &w1, const Word &w2)
     return w1.count > w2.count;
 }
 
-WordList Scanner::takeWords()
+WordList Scanner::takeWords(bool cleanList)
 {
     // remove common words, single ones, and sort by frequency
-    removeWordsByLanguage(QLocale::Italian);
-    removeWordsByLanguage(QLocale::English);
-    int count = 2;
-    while (m_words.size() >= 40) {
-        removeWordsBelowCount(count);
-        ++count;
+    if (cleanList) {
+        removeWordsByLanguage(QLocale::Italian);
+        removeWordsByLanguage(QLocale::English);
+        int count = 2;
+        while (m_words.size() >= 40) {
+            removeWordsBelowCount(count);
+            ++count;
+        }
+        qSort(m_words.begin(), m_words.end(), wordFrequencySorter);
     }
-    qSort(m_words.begin(), m_words.end(), wordFrequencySorter);
 
     // clear private list and return
     WordList wl = m_words;

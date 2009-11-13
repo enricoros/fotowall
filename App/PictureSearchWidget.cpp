@@ -202,7 +202,6 @@ PictureSearchWidget::PictureSearchWidget(QNetworkAccessManager * extAccessManage
         m_ui->fRadio->setChecked(true);
     else if (LastProvider == 1)
         m_ui->gRadio->setChecked(true);
-    m_ui->lineEdit->setFocus();
     adjustSize();
 
     // init
@@ -233,6 +232,11 @@ PictureSearchWidget::~PictureSearchWidget()
         App::pictureService = 0;
     }
     delete m_ui;
+}
+
+void PictureSearchWidget::setFocus()
+{
+    m_ui->lineEdit->setFocus();
 }
 
 void PictureSearchWidget::paintEvent(QPaintEvent *)
