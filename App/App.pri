@@ -13,8 +13,6 @@ HEADERS += \
     App/Settings.h \
     App/UrlHistoryBox.h \
     App/VersionCheckDialog.h \
-    App/WordcloudAppliance.h \
-    App/WordcloudSidebar.h \
     App/Workflow.h
 
 SOURCES += \
@@ -32,8 +30,6 @@ SOURCES += \
     App/Settings.cpp \
     App/UrlHistoryBox.cpp \
     App/VersionCheckDialog.cpp \
-    App/WordcloudAppliance.cpp \
-    App/WordcloudSidebar.cpp \
     App/Workflow.cpp
 
 FORMS += \
@@ -42,6 +38,18 @@ FORMS += \
     App/ExportWizard.ui \
     App/MainWindow.ui \
     App/PictureSearchWidget.ui \
-    App/VersionCheckDialog.ui \
-    App/WordcloudAppliance.ui \
-    App/WordcloudSidebar.ui
+    App/VersionCheckDialog.ui
+
+!contains(DEFINES, NO_WORDCLOUD_APPLIANCE) {
+    HEADERS += \
+        App/WordcloudAppliance.h \
+        App/WordcloudSidebar.h
+
+    SOURCES += \
+        App/WordcloudAppliance.cpp \
+        App/WordcloudSidebar.cpp
+
+    FORMS += \
+        App/WordcloudAppliance.ui \
+        App/WordcloudSidebar.ui
+}

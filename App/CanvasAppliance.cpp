@@ -479,7 +479,13 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
+#ifndef NO_WORDCLOUD_APPLIANCE
         App::workflow->stackSlaveWordcloud_A(wc);
+#else
+        Q_UNUSED(wc);
+        ButtonsDialog info("WordcloudMissingInfo", tr("Wordcloud Editor"), tr("The Wordcloud editor will be ready in the Fotowall REVO (1.0) release."), QDialogButtonBox::Ok, true, true);
+        info.execute();
+#endif
         return;
     }
 }

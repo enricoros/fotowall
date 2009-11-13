@@ -129,10 +129,12 @@ void HomeAppliance::slotStartCanvas()
     App::workflow->startCanvas_A();
 }
 
+#ifndef NO_WORDCLOUD_APPLIANCE
 void HomeAppliance::slotStartWordcloud()
 {
     App::workflow->startWordcloud_A();
 }
+#endif
 
 void HomeAppliance::slotStartWizard()
 {

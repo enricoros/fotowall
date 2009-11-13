@@ -23,7 +23,9 @@
 #include "FotowallFile.h"
 #include "HomeAppliance.h"
 #include "Settings.h"
+#ifndef NO_WORDCLOUD_APPLIANCE
 #include "WordcloudAppliance.h"
+#endif
 
 #include <QFileDialog>
 #include <QTimer>
@@ -101,6 +103,13 @@ void Workflow::startCanvas_A()
     scheduleCommand(Command::MasterCanvas);
 }
 
+void Workflow::stackSlaveCanvas_A(SingleResourceLoaner * resource)
+{
+    // schedule slave canvas
+    scheduleCommand(Command(Command::SlaveCanvas, QVariant(), resource));
+}
+
+#ifndef NO_WORDCLOUD_APPLIANCE
 void Workflow::startWordcloud_A()
 {
     // schedule wordcloud creation
@@ -108,17 +117,12 @@ void Workflow::startWordcloud_A()
     scheduleCommand(Command::MasterWordcloud);
 }
 
-void Workflow::stackSlaveCanvas_A(SingleResourceLoaner * resource)
-{
-    // schedule slave canvas
-    scheduleCommand(Command(Command::SlaveCanvas, QVariant(), resource));
-}
-
 void Workflow::stackSlaveWordcloud_A(SingleResourceLoaner * resource)
 {
     // schedule slave wordcloud
     scheduleCommand(Command(Command::SlaveWordcloud, QVariant(), resource));
 }
+#endif
 
 bool Workflow::applianceCommand(int command)
 {
@@ -140,10 +144,13 @@ bool Workflow::requestExit()
         if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(node.appliance)) {
             if (cApp->pendingChanges())
                 ++requiringSave;
-        } else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(node.appliance)) {
+        }
+#ifndef NO_WORDCLOUD_APPLIANCE
+        else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(node.appliance)) {
             if (wApp->pendingChanges())
                 ++requiringSave;
         }
+#endif
     }
 
     // fast-quit
@@ -223,6 +230,18 @@ bool Workflow::processCommand(const Workflow::Command & command)
             pushNode(canvasApp);
             } return true;
 
+        case Command::SlaveCanvas: {
+            // get the Canvas out of the resource
+            Canvas * canvas = static_cast<Canvas *>(qVariantValue<void *>(command.res->takeResource()));
+
+            // create the canvas appliance
+            if (canvas) {
+                CanvasAppliance * canvasApp = new CanvasAppliance(canvas);
+                pushNode(Node(canvasApp, command.res));
+            }
+            } return true;
+
+#ifndef NO_WORDCLOUD_APPLIANCE
         case Command::MasterWordcloud: {
             Wordcloud::Cloud * cloud = new Wordcloud::Cloud(this);
 
@@ -235,17 +254,6 @@ bool Workflow::processCommand(const Workflow::Command & command)
             pushNode(wcApp);
             } return true;
 
-        case Command::SlaveCanvas: {
-            // get the Canvas out of the resource
-            Canvas * canvas = static_cast<Canvas *>(qVariantValue<void *>(command.res->takeResource()));
-
-            // create the canvas appliance
-            if (canvas) {
-                CanvasAppliance * canvasApp = new CanvasAppliance(canvas);
-                pushNode(Node(canvasApp, command.res));
-            }
-            } return true;
-
         case Command::SlaveWordcloud: {
             // get the Cloud out of the resource
             Wordcloud::Cloud * cloud = static_cast<Wordcloud::Cloud *>(qVariantValue<void *>(command.res->takeResource()));
@@ -254,6 +262,7 @@ bool Workflow::processCommand(const Workflow::Command & command)
             WordcloudAppliance * wcApp = new WordcloudAppliance(cloud, this);
             pushNode(Node(wcApp, command.res));
             } return true;
+#endif
     }
 
     // catch errors
@@ -285,11 +294,15 @@ void Workflow::popNode(bool discardChanges)
                 if (!discardChanges && cApp->pendingChanges())
                     cApp->saveToFile();
                 delete cApp->takeCanvas();
-            } else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(app)) {
+            }
+#ifndef NO_WORDCLOUD_APPLIANCE
+            else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(app)) {
                 if (!discardChanges)
                     wApp->saveToFile();
                 delete wApp->takeCloud();
-            } else if (dynamic_cast<HomeAppliance *>(app)) {
+            }
+#endif
+            else if (dynamic_cast<HomeAppliance *>(app)) {
                 // no data to delete here
             } else
                 qWarning("Workflow::popNode: saving of appliance '%s' not handled", qPrintable(app->applianceName()));
@@ -300,10 +313,14 @@ void Workflow::popNode(bool discardChanges)
             if (CanvasAppliance * cApp = dynamic_cast<CanvasAppliance *>(app)) {
                 Canvas * modifiedCanvas = cApp->takeCanvas();
                 node.res->returnResource(qVariantFromValue((void *)modifiedCanvas));
-            } else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(app)) {
+            }
+#ifndef NO_WORDCLOUD_APPLIANCE
+            else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(app)) {
                 Wordcloud::Cloud * modifiedCloud = wApp->takeCloud();
                 node.res->returnResource(qVariantFromValue((void *)modifiedCloud));
-            } else
+            }
+#endif
+            else
                 qWarning("Workflow::popNode: releasing of appliance '%s' not handled", qPrintable(app->applianceName()));
         }
 

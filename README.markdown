@@ -11,8 +11,6 @@ Check out the [home page](http://www.enricoros.com/opensource/fotowall) and the
 ChangeLog
 ---------
 
-Unreleased 0.9.x:
-
 Work in progress:
 
 * (Work In Progress) Arrange Contents
@@ -21,7 +19,11 @@ Work in progress:
 * Arnaud's Undo/Redo system
 * Wordcloud editor
 
-Done:
+Fotowall "REVO" 1.0 (unreleased):
+
+* New Content: Wordcloud
+
+Fotowall "Alchimia" 0.9 (unreleased):
 
 * Basic GraphicsEffects support (shadows and blur)
 * Home screen with intuitive workflow and breadcrumb navigation
@@ -34,7 +36,6 @@ Done:
 * Cleanups: Selection, Frames, Rendering, Backgrounding, 
 * Perspective Property editor
 * Google Images search (by Marco Bavagnoli, reqby. Rossana)
-* New Content: Wordcloud
 * New Content: Fotowall
 * Scrollable/Zoomable Canvas
   * perfectly handles the Exact Size mode
@@ -44,7 +45,7 @@ Done:
 * Export to SVG
 * Massive code refactor
 
-Version 0.8.0 (2009-09-12):
+Version 0.8 (2009-09-12):
 
 * Bezier Shaped Text
 * Pictures: Crop and change Opacity

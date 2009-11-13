@@ -42,7 +42,9 @@ class HomeScene : public AbstractScene
     Q_SIGNALS:
         void keyPressed(int qtKey);
         void startCanvas();
+#ifndef NO_WORDCLOUD_APPLIANCE
         void startWordcloud();
+#endif
         void startWizard();
 
     private:

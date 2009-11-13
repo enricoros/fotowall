@@ -40,7 +40,9 @@ class HomeAppliance : public QObject, public PlugGui::AbstractAppliance
         void slotLoadCanvas(const QUrl & url);
         void slotOpenFile();
         void slotStartCanvas();
+#ifndef NO_WORDCLOUD_APPLIANCE
         void slotStartWordcloud();
+#endif
         void slotStartWizard();
 };
 

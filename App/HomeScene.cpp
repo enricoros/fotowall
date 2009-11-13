@@ -107,10 +107,16 @@ HomeScene::HomeScene(QObject * parent)
   : AbstractScene(parent)
   , m_logoPixmap(":/data/home-logo.png")
 {
+#ifndef NO_WORDCLOUD_APPLIANCE
     HomeLabel * newWordcloud = new HomeLabel(tr("Wordcloud"), QPixmap(":/data/home-newwordcloud.png"), this);
      connect(newWordcloud, SIGNAL(requestEditing()), this, SIGNAL(startWordcloud()));
+#else
+    HomeLabel * newWordcloud = new HomeLabel(tr("(Coming in 1.0)"), QPixmap(":/data/home-newwordcloud.png"), this);
      newWordcloud->setEnabled(false);
+#if QT_VERSION >= 0x040500
      newWordcloud->setOpacity(0.2);
+#endif
+#endif
      m_labels.append(newWordcloud);
 
     HomeLabel * newCanvas = new HomeLabel(tr("Create"), QPixmap(":/data/home-newcanvas.png"), this);
@@ -120,7 +126,9 @@ HomeScene::HomeScene(QObject * parent)
     HomeLabel * wizard = new HomeLabel(tr("Wizard (coming soon)"), QPixmap(":/data/home-wizard.png"), this);
      connect(wizard, SIGNAL(requestEditing()), this, SIGNAL(startWizard()));
      wizard->setEnabled(false);
+#if QT_VERSION >= 0x040500
      wizard->setOpacity(0.2);
+#endif
      m_labels.append(wizard);
 }
 
