@@ -168,7 +168,7 @@ QStringList FotowallFile::getLoadFotowallFiles()
     QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
     // ask the 'load' file name
-    QStringList fileNames = QFileDialog::getOpenFileNames(0, QObject::tr("Select one or more Fotowall files to add"), defaultLoadPath, QObject::tr("Fotowall (*.fotowall)"));
+    QStringList fileNames = QFileDialog::getOpenFileNames(0, QObject::tr("Add Fotowall files to the Canvas"), defaultLoadPath, QObject::tr("Fotowall (*.fotowall)"));
     if (fileNames.isEmpty())
         return QStringList();
 

@@ -355,7 +355,7 @@ void CanvasAppliance::slotAddPicture()
     QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(0, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()));
+    QStringList fileNames = QFileDialog::getOpenFileNames(0, tr("Add Pictures to the Canvas"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()));
     if (fileNames.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
