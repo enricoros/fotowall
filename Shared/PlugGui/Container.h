@@ -41,6 +41,7 @@ namespace PlugGui {
             virtual void applianceSetSidebar(QWidget * widget) = 0;
             virtual void applianceSetCentralwidget(QWidget * widget) = 0;
             virtual void applianceSetValue(quint32 key, const QVariant & value) = 0;
+            virtual void applianceSetFocusToScene() = 0;
     };
 
 }

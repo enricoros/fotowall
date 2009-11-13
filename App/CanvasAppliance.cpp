@@ -346,6 +346,7 @@ void CanvasAppliance::slotAddCanvas()
     if (fileNames.isEmpty())
         return;
     m_extCanvas->addCanvasViewContent(fileNames);
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotAddPicture()
@@ -359,21 +360,25 @@ void CanvasAppliance::slotAddPicture()
         return;
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
     m_extCanvas->addPictureContent(fileNames);
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotAddText()
 {
     m_extCanvas->addTextContent();
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
     m_extCanvas->addWebcamContent(0);
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotAddWordcloud()
 {
     m_extCanvas->addWordcloudContent();
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotSearchPicturesToggled(bool visible)

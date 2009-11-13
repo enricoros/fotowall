@@ -167,6 +167,7 @@ void Canvas::addAutoContent(const QStringList & fileNames)
 
 void Canvas::addCanvasViewContent(const QStringList & fileNames)
 {
+    clearSelection();
     int offset = -30 * fileNames.size() / 2;
     QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
     foreach (const QString & localFile, fileNames) {
@@ -178,13 +179,16 @@ void Canvas::addCanvasViewContent(const QStringList & fileNames)
         if (!d->loadFromFile(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
-        } else
+        } else {
+            d->setSelected(true);
             pos += QPoint(30, 30);
+        }
     }
 }
 
 void Canvas::addPictureContent(const QStringList & fileNames)
 {
+    clearSelection();
     int offset = -30 * fileNames.size() / 2;
     QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
     foreach (const QString & localFile, fileNames) {
@@ -196,24 +200,32 @@ void Canvas::addPictureContent(const QStringList & fileNames)
         if (!p->loadPhoto(localFile, true, true)) {
             m_content.removeAll(p);
             delete p;
-        } else
+        } else {
+            p->setSelected(true);
             pos += QPoint(30, 30);
+        }
     }
 }
 
 void Canvas::addTextContent()
 {
-    createText(nearCenter(sceneRect()));
+    clearSelection();
+    TextContent * t = createText(nearCenter(sceneRect()));
+    t->setSelected(true);
 }
 
 void Canvas::addWebcamContent(int input)
 {
-    createWebcam(input, nearCenter(sceneRect()));
+    clearSelection();
+    WebcamContent * w = createWebcam(input, nearCenter(sceneRect()));
+    w->setSelected(true);
 }
 
 void Canvas::addWordcloudContent()
 {
-    createWordcloud(nearCenter(sceneRect()));
+    clearSelection();
+    WordcloudContent * w = createWordcloud(nearCenter(sceneRect()));
+    w->setSelected(true);
 }
 
 void Canvas::addManualContent(AbstractContent * content, const QPoint & pos)

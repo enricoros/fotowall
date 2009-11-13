@@ -54,6 +54,7 @@ namespace PlugGui {
             void centralwidgetSet(QWidget *);
             void centralwidgetClear();
             void containerValueSet(quint32 key, const QVariant & value);
+            void setFocusToScene();
 
         private:
             void updateContainerTopbar();

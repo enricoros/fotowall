@@ -40,6 +40,7 @@ class MainWindow : public PlugGui::Container
         void applianceSetSidebar(QWidget * widget);
         void applianceSetCentralwidget(QWidget * widget);
         void applianceSetValue(quint32 key, const QVariant & value);
+        void applianceSetFocusToScene();
 
         // ::QWidget
         void closeEvent(QCloseEvent * event);

@@ -213,6 +213,11 @@ void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
         qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
 }
 
+void MainWindow::applianceSetFocusToScene()
+{
+    ui->sceneView->setFocus(Qt::OtherFocusReason);
+}
+
 void MainWindow::closeEvent(QCloseEvent * event)
 {
     event->setAccepted(App::workflow->requestExit());

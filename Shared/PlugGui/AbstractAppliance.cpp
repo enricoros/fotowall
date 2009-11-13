@@ -165,6 +165,12 @@ void AbstractAppliance::containerValueSet(quint32 key, const QVariant & value)
         m_containerPtr->applianceSetValue(key, value);
 }
 
+void AbstractAppliance::setFocusToScene()
+{
+    if (m_containerPtr)
+        m_containerPtr->applianceSetFocusToScene();
+}
+
 void AbstractAppliance::updateContainerTopbar()
 {
     if (!m_containerPtr)
