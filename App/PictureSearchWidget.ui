@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PictureSearchItem</class>
- <widget class="QWidget" name="PictureSearchItem">
+ <class>PictureSearchWidget</class>
+ <widget class="QWidget" name="PictureSearchWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

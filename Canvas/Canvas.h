@@ -32,8 +32,6 @@ class CanvasViewContent;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
-class PictureSearchItem;
-class QNetworkAccessManager;
 class QTimer;
 class TextContent;
 class WebcamContent;
@@ -42,8 +40,9 @@ class WordcloudContent;
 class Canvas : public AbstractScene
 {
     Q_OBJECT
+    Q_PROPERTY(QString filePath READ filePath WRITE setFilePath NOTIFY filePathChanged)
     public:
-        Canvas(QObject * parent = 0);
+        Canvas(int sDpiX, int sDpiY, QObject * parent = 0);
         ~Canvas();
 
         // add/remove content
@@ -60,12 +59,13 @@ class Canvas : public AbstractScene
         void resize(const QSize & size);
         void resizeEvent();
 
+        // properties
+        QString filePath() const;
+        void setFilePath(const QString & filePath);
+        QString prettyBaseName() const;
+
         // item interaction
         void selectAllContent(bool selected = true);
-
-        // selectors
-        void setSearchPicturesVisible(bool visible);
-        bool searchPicturesVisible() const;
 
         // arrangement
         void setForceFieldEnabled(bool enabled);
@@ -98,8 +98,8 @@ class Canvas : public AbstractScene
         // change size and project mode (CD, DVD, etc)
         CanvasModeInfo * modeInfo() const;
 
-        void toXml(QDomElement & canvasElement) const;
-        void fromXml(QDomElement & canvasElement);
+        void saveToXml(QDomElement & canvasElement) const;
+        void loadFromXml(QDomElement & canvasElement);
 
         // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
@@ -110,6 +110,7 @@ class Canvas : public AbstractScene
         void backConfigChanged();
         void requestContentEditing(AbstractContent * content);
         void showPropertiesWidget(QWidget * widget);
+        void filePathChanged();
 
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
@@ -132,8 +133,8 @@ class Canvas : public AbstractScene
         void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
 
+        QString m_filePath;
         CanvasModeInfo * m_modeInfo;
-        QNetworkAccessManager * m_networkAccessManager;
         QList<AbstractContent *> m_content;
         QList<AbstractConfig *> m_configs;
         QList<HighlightItem *> m_highlightItems;
@@ -151,9 +152,9 @@ class Canvas : public AbstractScene
         QPixmap m_backTile;
         QPixmap m_backCache;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
-        PictureSearchItem * m_pictureSearch;
         QTimer * m_forceFieldTimer;
         QTime m_forceFieldTime;
+        bool m_pendingChanges;
 
     private Q_SLOTS:
         friend class AbstractConfig; // HACK here, only to call 1 method
@@ -177,6 +178,8 @@ class Canvas : public AbstractScene
         void slotGradColorChanged();
         void slotBackContentChanged();
 
+        void slotMarkChanges();
+        void slotResetChanges();
         void slotCloseIntroduction();
         void slotApplyForce();
 };

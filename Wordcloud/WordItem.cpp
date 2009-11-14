@@ -14,9 +14,12 @@
 
 #include "WordItem.h"
 
+#include <QApplication>
 #include <QPainterPathStroker>
 #include <QPainter>
 #include <QPen>
+#include <QStyle>
+#include <QStyleOptionFocusRect>
 #include <QStyleOptionGraphicsItem>
 
 using namespace Wordcloud;
@@ -61,9 +64,10 @@ void WordItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     // draw the standard selection
     if (option->state & QStyle::State_Selected) {
-        painter->setPen(QPen(option->palette.windowText(), 0, Qt::DashLine));
-        painter->setBrush(Qt::NoBrush);
-        painter->drawRect(QRectF(boundingRect().toRect()).adjusted(-0.5, -0.5, -0.5, -0.5));
+        QStyleOptionFocusRect opt;
+        opt.rect = boundingRect().toRect();
+        opt.backgroundColor = Qt::white;
+        QApplication::style()->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, painter, 0);
     }
     painter->restore();
 }

@@ -17,12 +17,14 @@
 
 #include <QtGlobal>
 #include <QStringList>
+#include <QImage>
 class Canvas;
 
 namespace FotowallFile
 {
     // read a .fotowall file and setup the Canvas
     bool read(const QString & filePath, Canvas * canvas, bool inHistory);
+    QImage embeddedPreview(const QString & filePath);
 
     // save the given Canvas to a .fotowall file
     bool saveV2(const QString & filePath, const Canvas * canvas);
@@ -30,7 +32,7 @@ namespace FotowallFile
     // file selector dialogs
     QString getLoadFotowallFile();
     QStringList getLoadFotowallFiles();
-    QString getSaveFotowallFile();
+    QString getSaveFotowallFile(const QString & defaultFilePath);
 };
 
 #endif

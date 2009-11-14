@@ -26,6 +26,9 @@ contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, o
     QT += opengl
 }
 
+# disable the Wordcloud appliance (for 0.9 release)
+DEFINES += NO_WORDCLOUD_APPLIANCE
+
 # Fotowall input files
 include(fotowall.pri)
 # Posterazor input files

@@ -20,6 +20,8 @@ namespace Ui { class MainWindow; }
 class LikeBack;
 class QMenu;
 class QNetworkReply;
+class QNetworkAccessManager;
+class PictureSearchWidget;
 class Workflow;
 
 class MainWindow : public PlugGui::Container
@@ -32,11 +34,13 @@ class MainWindow : public PlugGui::Container
     protected:
         // ::Appliance::Container
         QSize sceneViewSize() const;
+        void applianceSetTitle(const QString & title);
         void applianceSetScene(AbstractScene * scene);
         void applianceSetTopbar(const QList<QWidget *> & widgets);
         void applianceSetSidebar(QWidget * widget);
         void applianceSetCentralwidget(QWidget * widget);
         void applianceSetValue(quint32 key, const QVariant & value);
+        void applianceSetFocusToScene();
 
         // ::QWidget
         void closeEvent(QCloseEvent * event);
@@ -48,6 +52,8 @@ class MainWindow : public PlugGui::Container
         void createLikeBack();
 
         Ui::MainWindow *        ui;
+        QNetworkAccessManager * m_networkAccessManager;
+        PictureSearchWidget *   m_pictureSearch;
         LikeBack *              m_likeBack;
         QAction *               m_aHelpTutorial;
         QString                 m_website;
@@ -68,7 +74,7 @@ class MainWindow : public PlugGui::Container
         void slotHelpWebsiteFetchError();
         void slotHelpTutorial();
         void slotHelpUpdates();
-        void slotVerifyTutorial(QNetworkReply * reply);
+        void slotVerifyTutorialReply();
 
         // setup box
         bool on_accelTestButton_clicked();

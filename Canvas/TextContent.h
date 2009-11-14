@@ -59,6 +59,7 @@ class TextContent : public AbstractContent
         void selectionChanged(bool selected);
 
         // ::QGraphicsItem
+        void keyPressEvent(QKeyEvent *event);
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
     private:

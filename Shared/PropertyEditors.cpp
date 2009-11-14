@@ -125,3 +125,47 @@ void PE_AbstractButton::slotPropertyChanged()
         m_control->setChecked(boolValue);
     }
 }
+
+
+
+PE_Combo::PE_Combo(QComboBox * _combo, QObject * _target, const char * propertyName, QObject * parent)
+  : PE_TypeControl<QComboBox>(_combo, _target, propertyName, parent)
+{
+    // read initial value and link to property changes
+    slotPropertyChanged();
+#if QT_VERSION >= 0x040500
+    if (m_property.hasNotifySignal()) {
+        QMetaMethod notifySignal = m_property.notifySignal();
+        int nameLength = qstrlen(notifySignal.signature());
+        char signalName[nameLength + 2];
+        signalName[0] = '0' + QSIGNAL_CODE;
+        qstrcpy(signalName + 1, notifySignal.signature());
+        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
+    }
+#endif
+
+    // link to the abstract button checkstate change
+    connect(m_control.data(), SIGNAL(currentIndexChanged(int)), this, SLOT(slotComboChanged(int)));
+
+    // allow Bool properties only
+    if (m_property.type() != QVariant::Int)
+        qWarning("PE_Combo: unhandled property '%s' of type %d", propertyName, (int)m_property.type());
+    else
+        m_isValid = true;
+}
+
+void PE_Combo::slotComboChanged(int intValue)
+{
+    // set the property to the current state of the button
+    if (m_control && m_target && (m_property.type() == QVariant::Int))
+        m_property.write(m_target.data(), intValue);
+}
+
+void PE_Combo::slotPropertyChanged()
+{
+    // set the button check state as the bool property
+    if (m_control && m_target && (m_property.type() == QVariant::Int)) {
+        int intValue = m_property.read(m_target.data()).toInt();
+        m_control->setCurrentIndex(intValue);
+    }
+}

@@ -19,6 +19,7 @@
 #include "Wordcloud/Cloud.h"
 #include "ui_WordcloudAppliance.h"
 class QMenu;
+class WordcloudSidebar;
 
 class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
 {
@@ -33,6 +34,7 @@ class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
         // peek into the cloud
         Wordcloud::Cloud * cloud() const;
 
+        bool pendingChanges() const;
         void saveToFile(const QString & fileName = QString());
 
         // ::Appliance::AbstractAppliance
@@ -43,7 +45,7 @@ class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
         AbstractScene * m_scene;
         Ui::WordcloudApplianceElements * ui;
         QWidget * m_dummyWidget;
-        QWidget * m_sidebar;
+        WordcloudSidebar * m_sidebar;
 
     private Q_SLOTS:
         void slotRegenCloud();

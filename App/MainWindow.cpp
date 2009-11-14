@@ -15,11 +15,13 @@
 #include "App/MainWindow.h"
 
 #include "3rdparty/likebackfrontend/LikeBack.h"
+#include "Shared/BreadCrumbBar.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "Hardware3DTest.h"
+#include "PictureSearchWidget.h"
 #include "SceneView.h"
 #include "Settings.h"
 #include "VersionCheckDialog.h"
@@ -53,29 +55,27 @@
 MainWindow::MainWindow(QWidget * parent)
     : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
+    , m_networkAccessManager(0)
+    , m_pictureSearch(0)
     , m_likeBack(0)
     , m_aHelpTutorial(0)
     , m_applyingAccelState(false)
 {
     // setup widget
-#if QT_VERSION >= 0x040500
-    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
-#else
-    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() + "   -Limited Edition (Qt 4.4)-");
-#endif
+    applianceSetTitle(QString());
     setWindowIcon(QIcon(":/data/fotowall.png"));
 
     // init ui
     ui->setupUi(this);
-    ui->sceneView->setFocus();
-    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
-    ui->sceneView->addOverlayWidget(ui->applianceNavBar);
+    ui->topBar->setFixedHeight(App::TopBarHeight);
+    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());    
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
     ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
     ui->applianceSidebar->hide();
+    ui->sceneView->setFocus();
     connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
     createLikeBack();
 
@@ -87,8 +87,14 @@ MainWindow::MainWindow(QWidget * parent)
     } else
         show();
 
+    // create the Appliance navigation bar
+    BreadCrumbBar * applianceNavBar = new BreadCrumbBar(ui->sceneView);
+    applianceNavBar->setObjectName(QString::fromUtf8("applianceNavBar"));
+    applianceNavBar->setTranslucent(true);
+    ui->sceneView->addOverlayWidget(applianceNavBar);
+
     // start the workflow
-    new Workflow(this, ui->applianceNavBar);
+    new Workflow(this, applianceNavBar);
 
     // check stuff on the net
     checkForTutorial();
@@ -109,6 +115,7 @@ MainWindow::~MainWindow()
 
     // delete everything
     delete App::workflow;
+    delete m_networkAccessManager;
     delete m_likeBack;
     delete ui;
     // m_aHelpTutorial is deleted by its menu (that's parented to this)
@@ -119,12 +126,22 @@ QSize MainWindow::sceneViewSize() const
     return ui->sceneView->viewport()->size();
 }
 
+void MainWindow::applianceSetTitle(const QString & title)
+{
+    QString tString = title.isEmpty() ? QString() : title + " - ";
+    tString += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
+#if QT_VERSION < 0x040500
+    tString += "   -Limited Edition (Qt 4.4)-";
+#endif
+    setWindowTitle(tString);
+}
+
 void MainWindow::applianceSetScene(AbstractScene * scene)
 {
     ui->sceneView->setScene(scene);
 }
 
-static void hideLayoutChildWidges(QLayout * layout)
+static void removeLayoutChildWidges(QLayout * layout)
 {
     while (QLayoutItem * item = layout->takeAt(0)) {
         if (QWidget * oldWidget = item->widget())
@@ -136,8 +153,8 @@ static void hideLayoutChildWidges(QLayout * layout)
 void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
     // clear the topbar layout hiding all widgets
-    hideLayoutChildWidges(ui->applianceLeftBarLayout);
-    hideLayoutChildWidges(ui->applianceRightBarLayout);
+    removeLayoutChildWidges(ui->applianceLeftBarLayout);
+    removeLayoutChildWidges(ui->applianceRightBarLayout);
 
     // add the widgets to the topbar and show them
     foreach (QWidget * widget, widgets) {
@@ -152,7 +169,7 @@ void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 void MainWindow::applianceSetSidebar(QWidget * widget)
 {
     // clear the sidebar layout hiding any widget
-    hideLayoutChildWidges(ui->applianceSidebarLayout);
+    removeLayoutChildWidges(ui->applianceSidebarLayout);
 
     // completely hide the sidebar if no widget
     ui->applianceSidebar->setVisible(widget);
@@ -170,9 +187,35 @@ void MainWindow::applianceSetCentralwidget(QWidget * widget)
         qWarning("MainWindow::applianceSetCentralwidget: unsupported");
 }
 
-void MainWindow::applianceSetValue(quint32 key, const QVariant & /*value*/)
+void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
 {
-    qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
+    if (key == App::CC_ShowPictureSearch) {
+
+        // destroy if needed
+        bool visible = value.toBool();
+        if (!visible && m_pictureSearch) {
+            m_pictureSearch->deleteLater();
+            m_pictureSearch = 0;
+            return;
+        }
+
+        // create if needed
+        if (visible && !m_pictureSearch) {
+            if (!m_networkAccessManager)
+                m_networkAccessManager = new QNetworkAccessManager(this);
+            m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
+            ui->sceneView->addOverlayWidget(m_pictureSearch, false);
+            m_pictureSearch->setFocus();
+            return;
+        }
+
+    } else
+        qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
+}
+
+void MainWindow::applianceSetFocusToScene()
+{
+    ui->sceneView->setFocus(Qt::OtherFocusReason);
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -206,9 +249,10 @@ void MainWindow::checkForTutorial()
     m_aHelpTutorial->setVisible(false);
 
     // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
-    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(slotVerifyTutorial(QNetworkReply*)));
-    manager->get(QNetworkRequest(TUTORIAL_URL));
+    if (!m_networkAccessManager)
+        m_networkAccessManager = new QNetworkAccessManager(this);
+    QNetworkReply * reply = m_networkAccessManager->get(QNetworkRequest(TUTORIAL_URL));
+    connect(reply, SIGNAL(finished()), this, SLOT(slotVerifyTutorialReply()));
 }
 
 void MainWindow::checkForUpdates()
@@ -320,8 +364,9 @@ void MainWindow::slotHelpUpdates()
     App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
 }
 
-void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
+void MainWindow::slotVerifyTutorialReply()
 {
+    QNetworkReply * reply = static_cast<QNetworkReply *>(sender());
     if (reply->error() != QNetworkReply::NoError)
         return;
 

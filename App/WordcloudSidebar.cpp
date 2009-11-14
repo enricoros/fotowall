@@ -12,45 +12,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HomeScene_h__
-#define __HomeScene_h__
+#include "WordcloudSidebar.h"
 
-#include "Shared/AbstractScene.h"
-#include <QList>
-#include <QPixmap>
-#include <QRect>
+#include <QPalette>
 
-/**
-    \brief The Scene showing the {New Canvas, New Wordcloud, etc..} items.
-*/
-class HomeScene : public AbstractScene
+
+WordcloudSidebar::WordcloudSidebar(QWidget *parent)
+  : QWidget(parent)
 {
-    Q_OBJECT
-    public:
-        HomeScene(QObject * parent = 0);
-        ~HomeScene();
+    setupUi(this);
 
-        // ::QGraphicsScene
-        void drawBackground(QPainter *painter, const QRectF &rect);
-        void drawForeground(QPainter *painter, const QRectF &rect);
-        void keyPressEvent(QKeyEvent *event);
+    setAutoFillBackground(true);
+    QPalette pal;
+    pal.setBrush(QPalette::Window, Qt::lightGray);
+    setPalette(pal);
+}
 
-        // ::AbstractScene
-        void resize(const QSize & size);
-        bool sceneSelectable() const;
-
-    Q_SIGNALS:
-        void keyPressed(int qtKey);
-        void startCanvas();
-#ifndef NO_WORDCLOUD_APPLIANCE
-        void startWordcloud();
-#endif
-        void startWizard();
-
-    private:
-        QList<QGraphicsItem *> m_labels;
-        QPixmap m_logoPixmap;
-        QRect m_logoRect;
-};
-
-#endif
+WordcloudSidebar::~WordcloudSidebar()
+{
+}

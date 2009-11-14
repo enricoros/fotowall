@@ -237,12 +237,18 @@ QWidget * PictureContent::createPropertyWidget()
     PictureProperties * p = new PictureProperties();
 
     // connect actions
-    new PE_AbstractButton(p->gimpButton, this, "externalEdit", p);
-    new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
-    p->perspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
-    new PE_PaneWidget(p->perspWidget, this, "perspective", p);
+    connect(p->bFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
+    connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
+    connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
+    connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
+    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
 
     // properties link
+    new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
+    new PE_AbstractButton(p->gimpButton, this, "externalEdit", p);
+    p->perspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
+    new PE_PaneWidget(p->perspWidget, this, "perspective", p);
+    new PE_Combo(p->fxCombo, this, "fxIndex", p);
 
     return p;
 }
@@ -286,6 +292,7 @@ bool PictureContent::fromXml(QDomElement & contentElement)
 
 void PictureContent::toXml(QDomElement & contentElement) const
 {
+    // save AbstractContent properties and rename to 'picture'
     AbstractContent::toXml(contentElement);
     contentElement.setTagName("picture");
 

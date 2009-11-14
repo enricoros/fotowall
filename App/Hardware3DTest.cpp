@@ -34,7 +34,7 @@
 
 Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
   : QDialog(parent, flags)
-  , m_canvas(new Canvas(this))
+  , m_canvas(new Canvas(physicalDpiX(), physicalDpiY(), this))
   , m_view(0)
   , m_resultIdx(0)
   , m_retCode(Canceled)

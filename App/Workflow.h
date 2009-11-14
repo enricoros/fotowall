@@ -35,9 +35,11 @@ class Workflow : public QObject
         // change workflow
         bool loadCanvas_A(const QString & fileName = QString());
         void startCanvas_A();
-        void startWordcloud_A();
         void stackSlaveCanvas_A(SingleResourceLoaner *);
+#ifndef NO_WORDCLOUD_APPLIANCE
+        void startWordcloud_A();
         void stackSlaveWordcloud_A(SingleResourceLoaner *);
+#endif
 
         //
         bool applianceCommand(int command);
@@ -45,7 +47,12 @@ class Workflow : public QObject
 
     private:
         struct Command {
-            enum Type { ResetToLevel, MasterCanvas, MasterWordcloud, SlaveCanvas, SlaveWordcloud };
+            enum Type {
+                ResetToLevel, MasterCanvas, SlaveCanvas
+#ifndef NO_WORDCLOUD_APPLIANCE
+                , MasterWordcloud, SlaveWordcloud
+#endif
+            };
 
             Type type;
             QVariant param;
@@ -64,7 +71,7 @@ class Workflow : public QObject
         };
 
         void pushNode(const Node & node);
-        void popNode();
+        void popNode(bool discardChanges);
         void updateBreadcrumb();
 
         // external objects

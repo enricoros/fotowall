@@ -19,12 +19,6 @@
    </property>
    <item row="0" column="0" colspan="2">
     <widget class="QWidget" name="topBar" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>80</height>
-      </size>
-     </property>
      <property name="styleSheet">
       <string notr="true">#topBar {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
@@ -47,6 +41,9 @@ stop:1 rgba(237, 237, 237, 255))
         <layout class="QHBoxLayout" name="applianceLeftBarLayout">
          <property name="spacing">
           <number>0</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
          </property>
          <property name="margin">
           <number>0</number>
@@ -431,7 +428,7 @@ stop:1 rgba(237, 237, 237, 255))
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>Test OpenGL</string>
+            <string>Test GL</string>
            </property>
           </widget>
          </item>
@@ -444,6 +441,9 @@ stop:1 rgba(237, 237, 237, 255))
          <property name="spacing">
           <number>0</number>
          </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
+         </property>
          <property name="margin">
           <number>0</number>
          </property>
@@ -453,21 +453,14 @@ stop:1 rgba(237, 237, 237, 255))
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="BreadCrumbBar" name="applianceNavBar" native="true">
-     <property name="translucent" stdset="0">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <widget class="SceneView" name="sceneView">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="1" column="1">
     <widget class="QWidget" name="applianceSidebar" native="true">
      <layout class="QVBoxLayout" name="applianceSidebarLayout">
       <property name="spacing">
@@ -483,21 +476,15 @@ stop:1 rgba(237, 237, 237, 255))
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SceneView</class>
-   <extends>QGraphicsView</extends>
-   <header>App/SceneView.h</header>
-  </customwidget>
-  <customwidget>
-   <class>BreadCrumbBar</class>
-   <extends>QWidget</extends>
-   <header>Shared/BreadCrumbBar.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>GroupBoxWidget</class>
    <extends>QWidget</extends>
    <header>Shared/GroupBoxWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SceneView</class>
+   <extends>QGraphicsView</extends>
+   <header>App/SceneView.h</header>
   </customwidget>
   <customwidget>
    <class>BlinkingToolButton</class>
@@ -505,6 +492,18 @@ stop:1 rgba(237, 237, 237, 255))
    <header>Shared/BlinkingToolButton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>sceneView</tabstop>
+  <tabstop>introButton</tabstop>
+  <tabstop>onlineHelpButton</tabstop>
+  <tabstop>lbLike</tabstop>
+  <tabstop>lbDislike</tabstop>
+  <tabstop>lbFeature</tabstop>
+  <tabstop>lbBug</tabstop>
+  <tabstop>transpBox</tabstop>
+  <tabstop>accelBox</tabstop>
+  <tabstop>accelTestButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../3rdparty/likebackfrontend/likebackfrontend.qrc"/>
   <include location="../fotowall.qrc"/>

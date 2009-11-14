@@ -270,11 +270,11 @@ void GroupBoxWidget::slotAnimateDesign()
         ANIMATE_PARAM("fixedWidth", 200, 0, true)
     } else if (m_checkable && !m_checked) {
         // checkable off: shrink to the target width
-        ANIMATE_PARAM("fixedWidth", 300, m_titleFont.pixelSize() + 8, true);
-        ANIMATE_PARAM("cAnim", 300, 0.0, false);
+        ANIMATE_PARAM("fixedWidth", 200, m_titleFont.pixelSize() + 8, true);
+        ANIMATE_PARAM("cAnim", 200, 0.0, false);
     } else {
         // normal: expand to the full size
-        ANIMATE_PARAM("fixedWidth", 400, calcMinWidth(), true);
+        ANIMATE_PARAM("fixedWidth", 300, calcMinWidth(), true);
         ANIMATE_PARAM("cAnim", 200, 1.0, false);
     }
 

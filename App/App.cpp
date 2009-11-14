@@ -23,6 +23,7 @@
 
 Settings * App::settings = 0;
 Workflow * App::workflow = 0;
+AbstractPictureService * App::pictureService = 0;
 
 
 /// Functions

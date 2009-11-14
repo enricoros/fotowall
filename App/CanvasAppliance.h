@@ -25,12 +25,13 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
-        CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent = 0);
+        CanvasAppliance(Canvas * extCanvas, QObject * parent = 0);
         ~CanvasAppliance();
 
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
         Canvas * takeCanvas();
 
+        bool pendingChanges() const;
         bool saveToFile(const QString & fileName = QString());
 
         // ::Appliance::AbstractAppliance
@@ -42,9 +43,9 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         QMenu * createBackgroundMenu();
         QMenu * createDecorationMenu();
         void setNormalProject();
+        void setExactSizeProject(bool usePrevious);
         void setCDProject();
         void setDVDProject();
-        void setExactSizeProject(bool usePrevious);
         void configurePrint(bool enabled);
 
     private:
@@ -88,6 +89,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         void slotEditContent(AbstractContent * content);
         void slotBackConfigChanged();
         void slotShowPropertiesWidget(QWidget *);
+        void slotFilePathChanged();
 
         // other actions
         void slotVerifyVideoInputs(int count);

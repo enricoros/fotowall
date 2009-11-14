@@ -18,6 +18,7 @@
 #include <QObject>
 #include <QAbstractButton>
 #include <QAbstractSlider>
+#include <QComboBox>
 #include <QMetaProperty>
 #include <QPointer>
 #include <QVariant>
@@ -75,6 +76,17 @@ class PE_AbstractButton : public PE_TypeControl<QAbstractButton>
 
     private Q_SLOTS:
         void slotButtonChecked(bool checked);
+        void slotPropertyChanged();
+};
+
+class PE_Combo : public PE_TypeControl<QComboBox>
+{
+    Q_OBJECT
+    public:
+        PE_Combo(QComboBox * combo, QObject * target, const char * propertyName, QObject * parent = 0);
+
+    private Q_SLOTS:
+        void slotComboChanged(int index);
         void slotPropertyChanged();
 };
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>194</width>
+    <width>247</width>
     <height>56</height>
    </rect>
   </property>
@@ -23,7 +23,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QFrame" name="stackFrame">
@@ -135,6 +135,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>2</number>
+     </property>
      <item>
       <widget class="QToolButton" name="bEditShape">
        <property name="text">
@@ -143,12 +146,19 @@
        <property name="checkable">
         <bool>true</bool>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="bClearShape">
-       <property name="text">
-        <string>X</string>
+       <property name="icon">
+        <iconset resource="../fotowall.qrc">
+         <normaloff>:/data/action-clear-r.png</normaloff>:/data/action-clear-r.png</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -166,6 +176,41 @@
         <iconset resource="../fotowall.qrc">
          <normaloff>:/data/text-deshake.png</normaloff>:/data/text-deshake.png</iconset>
        </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="fxCombo">
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>No Fx</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Black Shadow</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>White Shadow</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Soft Blur</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Strong Blur</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>

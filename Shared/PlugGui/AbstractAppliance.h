@@ -17,6 +17,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QString>
 #include <QVariant>
 #include "../AbstractScene.h"
 #include "Container.h"
@@ -42,6 +43,8 @@ namespace PlugGui {
 
         protected:
             // used by reimpls to access the container
+            void windowTitleSet(const QString & title);
+            void windowTitleClear();
             void sceneSet(AbstractScene *);
             void sceneClear();
             void topbarAddWidget(QWidget *, bool rightBar = false, int index = -1);
@@ -51,6 +54,7 @@ namespace PlugGui {
             void centralwidgetSet(QWidget *);
             void centralwidgetClear();
             void containerValueSet(quint32 key, const QVariant & value);
+            void setFocusToScene();
 
         private:
             void updateContainerTopbar();
@@ -61,6 +65,7 @@ namespace PlugGui {
             typedef QPointer<Container> ContainerPointer;
             typedef QMap<int, QVariant> ValueMap;
 
+            QString m_windowTitle;
             ScenePointer m_pScene;
             QList<WidgetPointer> m_pTopbar;
             WidgetPointer m_pSidebar;

@@ -12,43 +12,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __PictureSearchItem_h__
-#define __PictureSearchItem_h__
+#ifndef __PictureSearchWidget_h__
+#define __PictureSearchWidget_h__
 
-#include <QGraphicsProxyWidget>
-class AbstractPictureService;
+#include <QWidget>
 class GSuggestCompletion;
 class QLabel;
 class QNetworkAccessManager;
 class SearchSymbol;
-class Ui_PictureSearchItem;
+class Ui_PictureSearchWidget;
 
 // uncomment following to enable Ariya Hidayat's google suggestions code
 //#define ENABLE_GCOMPLETION
 
-class PictureSearchItem : public QGraphicsProxyWidget
+class PictureSearchWidget : public QWidget
 {
     Q_OBJECT
     public:
-        PictureSearchItem(QNetworkAccessManager * extAccessManager, QGraphicsItem * parent = 0);
-        ~PictureSearchItem();
+        PictureSearchWidget(QNetworkAccessManager * extAccessManager, QWidget * parent = 0);
+        ~PictureSearchWidget();
 
-        // used to download pictures
-        AbstractPictureService * pictureService() const;
+        // focus the line edit
+        void setFocus();
 
-        // ::QGraphicsItem
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-
-        static int LastProvider;
+        // ::QWidget
+        void paintEvent(QPaintEvent * event);
 
     private:
-        QNetworkAccessManager * m_extAccessManager;
-        AbstractPictureService * m_pictureService;
 #ifdef ENABLE_GCOMPLETION
         GSuggestCompletion * m_completion;
 #endif
-        Ui_PictureSearchItem * m_ui;
+        QNetworkAccessManager * m_extAccessManager;
+        Ui_PictureSearchWidget * m_ui;
         SearchSymbol * m_searchSymbol;
+        static int LastProvider;
 
     private Q_SLOTS:
         void slotProviderChanged();

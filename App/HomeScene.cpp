@@ -35,6 +35,9 @@
     instance->setProperty(propName, endValue);
 #endif
 
+// uncomment following to draw a subtle shadow behind the labels
+#define HOMELABEL_SHADOWED
+
 
 /** Home Label **/
 
@@ -50,10 +53,12 @@ class HomeLabel : public AbstractContent
             setFrameTextEnabled(true);
             setFrameTextReadonly(true);
             setFrameText(title);
+            setMirrored(false);
 
             // incremental change over AbstractContent
             setFlag(QGraphicsItem::ItemIsMovable, false);
             setFlag(QGraphicsItem::ItemIsSelectable, false);
+            setFlag(QGraphicsItem::ItemIsFocusable, true);
             setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
             const int pixW = pixmap.width();
             const int pixH = pixmap.height();
@@ -63,6 +68,26 @@ class HomeLabel : public AbstractContent
         QString contentName() const
         {
             return "HomeLabel";
+        }
+
+#ifdef HOMELABEL_SHADOWED
+        QRectF boundingRect() const
+        {
+            const QRectF origRect = AbstractContent::boundingRect();
+            return origRect.adjusted(0, 0, 0, origRect.height() * 0.2);
+        }
+#endif
+
+        void focusInEvent(QFocusEvent *event)
+        {
+            event->accept();
+            hoverEnterEvent(0);
+        }
+
+        void focusOutEvent(QFocusEvent *event)
+        {
+            event->accept();
+            hoverLeaveEvent(0);
         }
 
         void hoverEnterEvent(QGraphicsSceneHoverEvent *)
@@ -98,6 +123,26 @@ class HomeLabel : public AbstractContent
             painter->setRenderHint(QPainter::SmoothPixmapTransform, false);
         }
 
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+        {
+            // draw a 'shadow-like' gradient
+#ifdef HOMELABEL_SHADOWED
+            QRadialGradient rg(0.5, 0.5, 0.5);
+             rg.setCoordinateMode(QGradient::ObjectBoundingMode);
+             int opacity = (int)(24.0 * (1.0 - 3 * (property("scale").toDouble() - 1.0)));
+             rg.setColorAt(0.0, QColor(32, 32, 32, opacity));
+             rg.setColorAt(1.0, Qt::transparent);
+            painter->setBrush(rg);
+            painter->setPen(Qt::NoPen);
+            QRect shadowRect = boundingRect().toRect();
+            shadowRect.setTop(boundingRect().bottom() - 2 * 8);
+            painter->drawRect(shadowRect);
+#endif
+
+            // paint the AbstractContent
+            AbstractContent::paint(painter, option, widget);
+        }
+
     private:
         QPixmap m_pixmap;
 };
@@ -107,19 +152,32 @@ HomeScene::HomeScene(QObject * parent)
   : AbstractScene(parent)
   , m_logoPixmap(":/data/home-logo.png")
 {
-    HomeLabel * newWordcloud = new HomeLabel(tr("Wordcloud (coming soon)"), QPixmap(":/data/home-newwordcloud.png"), this);
+    // create the 3 buttons
+#ifndef NO_WORDCLOUD_APPLIANCE
+    HomeLabel * newWordcloud = new HomeLabel(tr("Wordcloud"), QPixmap(":/data/home-newwordcloud.png"), this);
      connect(newWordcloud, SIGNAL(requestEditing()), this, SIGNAL(startWordcloud()));
-     newWordcloud->setOpacity(0.5);
+#else
+    HomeLabel * newWordcloud = new HomeLabel(tr("coming soon"), QPixmap(":/data/home-newwordcloud.png"), this);
+     newWordcloud->setEnabled(false);
+#if QT_VERSION >= 0x040500
+     newWordcloud->setOpacity(0.2);
+#endif
+#endif
+     newWordcloud->setZValue(0.0);
      m_labels.append(newWordcloud);
 
     HomeLabel * newCanvas = new HomeLabel(tr("Create"), QPixmap(":/data/home-newcanvas.png"), this);
      connect(newCanvas, SIGNAL(requestEditing()), this, SIGNAL(startCanvas()));
+     newCanvas->setZValue(1.0);
      m_labels.append(newCanvas);
 
-    HomeLabel * wizard = new HomeLabel(tr("Wizard (coming soon)"), QPixmap(":/data/home-wizard.png"), this);
+    HomeLabel * wizard = new HomeLabel(tr("coming soon"), QPixmap(":/data/home-wizard.png"), this);
      connect(wizard, SIGNAL(requestEditing()), this, SIGNAL(startWizard()));
      wizard->setEnabled(false);
+#if QT_VERSION >= 0x040500
      wizard->setOpacity(0.2);
+#endif
+     wizard->setZValue(0.0);
      m_labels.append(wizard);
 }
 
@@ -154,7 +212,7 @@ void HomeScene::drawForeground(QPainter *painter, const QRectF &rect)
 
 void HomeScene::keyPressEvent(QKeyEvent *event)
 {
-    event->accept();
+    AbstractScene::keyPressEvent(event);
     emit keyPressed(event->key());
 }
 
@@ -172,10 +230,10 @@ void HomeScene::resize(const QSize & size)
     const int cols = (int)ceil((qreal)count / (qreal)rows);
     int rIdx = 0, cIdx = 0;
     for (int i = 0; i < count; i++) {
-        double xPos = margin + (int)(((qreal)cIdx + 0.5) * (qreal)width / (qreal)cols);
-        double yPos = margin + (int)(((qreal)rIdx + 0.5) * (qreal)height / (qreal)rows);
+        double xPos = margin + (int)(((qreal)cIdx + 0.50) * (qreal)width / (qreal)cols);
+        double yPos = margin + (int)(((qreal)rIdx + 0.55) * (qreal)height / (qreal)rows);
         if (cols == 3 && cIdx != 1)
-            yPos += 10;
+            yPos += 4;
         m_labels[i]->setPos(QPointF(xPos, yPos) - m_labels[i]->boundingRect().center());
         if (++cIdx >= cols) {
             cIdx = 0;

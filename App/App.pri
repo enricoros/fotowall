@@ -8,11 +8,11 @@ HEADERS += \
     App/HomeAppliance.h \
     App/HomeScene.h \
     App/MainWindow.h \
+    App/PictureSearchWidget.h \
     App/SceneView.h \
     App/Settings.h \
     App/UrlHistoryBox.h \
     App/VersionCheckDialog.h \
-    App/WordcloudAppliance.h \
     App/Workflow.h
 
 SOURCES += \
@@ -25,11 +25,11 @@ SOURCES += \
     App/HomeAppliance.cpp \
     App/HomeScene.cpp \
     App/MainWindow.cpp \
+    App/PictureSearchWidget.cpp \
     App/SceneView.cpp \
     App/Settings.cpp \
     App/UrlHistoryBox.cpp \
     App/VersionCheckDialog.cpp \
-    App/WordcloudAppliance.cpp \
     App/Workflow.cpp
 
 FORMS += \
@@ -37,5 +37,19 @@ FORMS += \
     App/ExactSizeDialog.ui \
     App/ExportWizard.ui \
     App/MainWindow.ui \
-    App/VersionCheckDialog.ui \
-    App/WordcloudAppliance.ui
+    App/PictureSearchWidget.ui \
+    App/VersionCheckDialog.ui
+
+!contains(DEFINES, NO_WORDCLOUD_APPLIANCE) {
+    HEADERS += \
+        App/WordcloudAppliance.h \
+        App/WordcloudSidebar.h
+
+    SOURCES += \
+        App/WordcloudAppliance.cpp \
+        App/WordcloudSidebar.cpp
+
+    FORMS += \
+        App/WordcloudAppliance.ui \
+        App/WordcloudSidebar.ui
+}

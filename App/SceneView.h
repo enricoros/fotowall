@@ -25,6 +25,7 @@ class SceneView : public QGraphicsView
 {
     Q_OBJECT
     Q_PROPERTY(bool openGL READ openGL WRITE setOpenGL)
+    Q_PROPERTY(qreal viewScale READ viewScale WRITE setViewScale NOTIFY viewScaleChanged)
     public:
         SceneView(QWidget * parent = 0);
         ~SceneView();
@@ -41,9 +42,17 @@ class SceneView : public QGraphicsView
 
         // layout widgets inside this
         void addOverlayWidget(QWidget * widget, bool top = true);
+        void removeOverlayWidget(QWidget * widget);
+
+        // properties
+        qreal viewScale() const;
+        void setViewScale(qreal scale);
 
     Q_SIGNALS:
         void heavyRepaint();
+
+        // properties notifications
+        void viewScaleChanged();
 
     protected:
         // ::QGraphicsView
@@ -51,12 +60,14 @@ class SceneView : public QGraphicsView
         // ::QWidget
         void paintEvent(QPaintEvent * event);
         void resizeEvent(QResizeEvent * event);
+        void wheelEvent(QWheelEvent *event);
 
     private:
+        qreal m_viewScale;
         bool m_openGL;
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
-        QVBoxLayout * m_viewportLayout;
+        QVBoxLayout * m_overLayout;
         QTime m_paintTime;
         QTimer * m_heavyTimer;
         int m_heavyCounter;

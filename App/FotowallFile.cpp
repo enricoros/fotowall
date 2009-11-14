@@ -78,12 +78,37 @@ bool FotowallFile::read(const QString & filePath, Canvas * canvas, bool inHistor
         return false;
 
     // restore the canvas
-    canvas->fromXml(canvasElement);
+    canvas->loadFromXml(canvasElement);
+    canvas->setFilePath(filePath);
 
     // add to the recent history
     if (inHistory)
         App::settings->addRecentFotowallUrl(QUrl(filePath));
     return true;
+}
+
+QImage FotowallFile::embeddedPreview(const QString &filePath)
+{
+    // open the file for reading
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly))
+        return QImage();
+
+    // load the DOM
+    QDomDocument doc;
+    if (!doc.setContent(&file, false))
+        return QImage();
+    file.close();
+
+    // get the Canvas/Preview element
+    QDomElement previewElement = doc.documentElement().firstChildElement("canvas").firstChildElement("preview");
+    if (previewElement.isElement()) {
+        QString imageTextData = previewElement.text();
+        QByteArray imageData = QByteArray::fromBase64(imageTextData.toLatin1());
+        return QImage::fromData(imageData, "PNG");
+    }
+
+    return QImage();
 }
 
 bool FotowallFile::saveV2(const QString & filePath, const Canvas * canvas)
@@ -101,7 +126,9 @@ bool FotowallFile::saveV2(const QString & filePath, const Canvas * canvas)
      rootElement.appendChild(canvasElement);
 
     // save current canvas
-    canvas->toXml(canvasElement);
+    Canvas * rwCanvas = (Canvas *)canvas;
+    rwCanvas->setFilePath(filePath);
+    canvas->saveToXml(canvasElement);
 
     // open the file for writing
     QFile file(filePath);
@@ -141,7 +168,7 @@ QStringList FotowallFile::getLoadFotowallFiles()
     QString defaultLoadPath = App::settings->value("Fotowall/LoadProjectDir").toString();
 
     // ask the 'load' file name
-    QStringList fileNames = QFileDialog::getOpenFileNames(0, QObject::tr("Select one or more Fotowall files to add"), defaultLoadPath, QObject::tr("Fotowall (*.fotowall)"));
+    QStringList fileNames = QFileDialog::getOpenFileNames(0, QObject::tr("Add Fotowall files to the Canvas"), defaultLoadPath, QObject::tr("Fotowall (*.fotowall)"));
     if (fileNames.isEmpty())
         return QStringList();
 
@@ -150,11 +177,11 @@ QStringList FotowallFile::getLoadFotowallFiles()
     return fileNames;
 }
 
-QString FotowallFile::getSaveFotowallFile()
+QString FotowallFile::getSaveFotowallFile(const QString & defaultFilePath)
 {
     // make up the default save path
-    QString defaultSavePath = QObject::tr("Unnamed %1.fotowall").arg(QDate::currentDate().toString());
-    if (App::settings->contains("Fotowall/SaveProjectDir"))
+    QString defaultSavePath = defaultFilePath;
+    if (App::settings->contains("Fotowall/SaveProjectDir") && !defaultFilePath.contains(QDir::separator()))
         defaultSavePath.prepend(App::settings->value("Fotowall/SaveProjectDir").toString() + QDir::separator());
 
     // ask the 'save' file name
