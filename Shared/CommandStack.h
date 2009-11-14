@@ -17,7 +17,6 @@
 
 #include "AbstractCommand.h"
 #include <QList>
-#include <QDebug>
 
 /* This class keep a track of all the commands executed. It allows to do/undo each command
  * by calling AbstractCommand virtual functions.
@@ -29,34 +28,13 @@ class CommandStack
         static CommandStack & instance();
 
         // Add the command in the stack, and execute it
-        void doCommand(AbstractCommand *command)
-        {
-            qDebug() << "do command << " << command->name();
-            m_undoStack.push_back(command);
-            command->exec();
-        }
+        void doCommand(AbstractCommand *command);
         // Add the command in the stack, but do not execute it
         // (useful for letting Qt manage the moves for exemple)
-        void addCommand(AbstractCommand *command)
-        {
-            qDebug() << "add command << " << command->name();
-            m_undoStack.push_back(command);
-        }
+        void addCommand(AbstractCommand *command);
 
-        void undoLast()
-        {
-            if(m_undoStack.size() == 0) return;
-            AbstractCommand * command = m_undoStack.takeLast();
-            command->unexec();
-            m_redoStack.push_back(command);
-        }
-        void redoLast()
-        {
-            if(m_redoStack.size() == 0) return;
-            AbstractCommand *command = m_redoStack.takeLast();
-            command->exec();
-            m_undoStack.push_back(command);
-        }
+        void undoLast();
+        void redoLast();
 
         void changeContent(AbstractContent *pC, AbstractContent *nC);
 

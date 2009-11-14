@@ -12,6 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "Shared/GroupedCommands.h"
 #include "CanvasAppliance.h"
 
 #include "Shared/CommandStack.h"
@@ -364,8 +365,12 @@ void CanvasAppliance::slotAddPicture()
     if (fileNames.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
-    NewImageCommand *c = new NewImageCommand(m_extCanvas, fileNames);
-    CommandStack::instance().doCommand(c);
+    GroupedCommands *gc = new GroupedCommands();
+    foreach(QString file, fileNames) {
+        NewImageCommand *c = new NewImageCommand(m_extCanvas, file);
+        gc->addCommand(c);
+    }
+    CommandStack::instance().doCommand(gc);
 }
 
 void CanvasAppliance::slotAddText()

@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "CommandStack.h"
+#include <QDebug>
 
 CommandStack & CommandStack::instance()
 {
@@ -20,16 +21,49 @@ CommandStack & CommandStack::instance()
     return instance;
 }
 
+
+void CommandStack::doCommand(AbstractCommand *command)
+{
+    qDebug() << "do command << " << command->name();
+    m_undoStack.push_back(command);
+    command->exec();
+}
+
+void CommandStack::addCommand(AbstractCommand *command)
+{
+    qDebug() << "add command << " << command->name();
+    m_undoStack.push_back(command);
+}
+
+void CommandStack::undoLast()
+{
+    if(m_undoStack.size() == 0) return;
+    AbstractCommand * command = m_undoStack.takeLast();
+    qDebug() << "undo command " << command->name();
+    command->unexec();
+    m_redoStack.push_back(command);
+}
+
+void CommandStack::redoLast()
+{
+    if(m_redoStack.size() == 0) return;
+    AbstractCommand *command = m_redoStack.takeLast();
+    qDebug() << "redo command " << command->name();
+    command->exec();
+    m_undoStack.push_back(command);
+}
+
 void CommandStack::changeContent(AbstractContent *pC, AbstractContent *nC)
 {
     foreach (AbstractCommand *c, m_undoStack) {
         if(c->content() == pC) {
-            qDebug() << "set content : " << nC << " instead of " << c->content();
+            qDebug() << "Command " << c->name() << " set content : " << nC << " instead of " << c->content();
             c->setContent(nC);
         }
     }
     foreach (AbstractCommand *c, m_redoStack) {
         if(c->content() == pC)
-            c->setContent(nC);
+            qDebug() << "Command " << c->name() << " set content : " << nC << " instead of " << c->content();
+        c->setContent(nC);
     }
 }

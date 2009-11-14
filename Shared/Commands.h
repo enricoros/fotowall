@@ -228,39 +228,38 @@ class MotionCommand : public AbstractCommand {
 class NewImageCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
-        const QStringList m_imagesPath;
-        QList<PictureContent *> m_images;
+        const QString m_imagePath;
+        PictureContent * m_image;
     public:
-        NewImageCommand(Canvas *canvas, const QStringList& paths) : m_canvas(canvas), m_imagesPath(paths)
+        NewImageCommand(Canvas *canvas, const QString& path) : m_canvas(canvas), m_imagePath(path), m_image(0)
         {}
 
         void exec() {
-            if(m_images.isEmpty()) {
-                m_images = m_canvas->addPictureContent(m_imagesPath);
-            } else {
-                foreach(AbstractContent *image, m_images) {
-                    image->show();
-                }
-            }
+            QStringList paths; paths << m_imagePath;
+            QList<PictureContent *> nimage = m_canvas->addPictureContent(paths);
+            CommandStack::instance().changeContent(m_image, nimage[0]);
+            m_image = nimage[0];
         }
         void unexec() {
-            // Instead of deleting images, keep them in memory.
-            // It's faster to restaure, and fix some other problems if redo is used :
-            // the stack would contains commands using the old deleted item...
-            foreach(AbstractContent *image, m_images) {
-                image->hide();
-            }
-            //m_canvas->removeContents(m_images);
+            m_canvas->deleteContent(m_image);
+        }
+        bool setContent(AbstractContent *content) {
+            PictureContent *c = dynamic_cast<PictureContent *>(content);
+            if(c) {
+                m_image = c;
+                return true;
+            } else
+                return false;
+        }
+
+        AbstractContent *content() const {
+            return m_image;
         }
         QString name() {
             return tr("Add images");
         }
         QString description() {
-            QString desc;
-            foreach (QString path, m_imagesPath) {
-               desc += path += "\n";
-            }
-            return desc;
+            return m_imagePath;
         }
 };
 
@@ -406,7 +405,7 @@ class DeleteContentCommand : public AbstractCommand {
     private:
         AbstractContent *m_content;
         Canvas *m_canvas;
-            QDomDocument doc;
+        QDomDocument doc;
         QDomElement m_pConfig;
     public:
         DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_content(content)
@@ -421,7 +420,7 @@ class DeleteContentCommand : public AbstractCommand {
             qDebug() << "content  " << m_pConfig.tagName() << " << " << m_pConfig.text();
             AbstractContent * ncontent = m_canvas->contentFromXml(m_pConfig);
             CommandStack::instance().changeContent(m_content, ncontent);
-            m_content = ncontent;
+            //m_content = ncontent;
         }
 
         QString name() {
