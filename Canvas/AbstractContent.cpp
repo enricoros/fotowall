@@ -214,9 +214,9 @@ quint32 AbstractContent::frameClass() const
 }
 
 #include <QGraphicsTextItem>
-class MyTextItem : public QGraphicsTextItem {
+class FrameTextItem : public QGraphicsTextItem {
     public:
-        MyTextItem(QGraphicsItem * parent = 0)
+        FrameTextItem(QGraphicsItem * parent = 0)
             : QGraphicsTextItem(parent)
         {
         }
@@ -259,7 +259,7 @@ void AbstractContent::setFrameTextEnabled(bool enabled)
 {
     // create the Text Item, if enabled...
     if (enabled && !m_frameTextItem) {
-        m_frameTextItem = new MyTextItem(this);
+        m_frameTextItem = new FrameTextItem(this);
         m_frameTextItem->setTextInteractionFlags(Qt::TextEditorInteraction);
         QFont f("Sans Serif");
         //f.setPointSizeF(7.5);
