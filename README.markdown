@@ -17,11 +17,10 @@ Work in progress:
 * (Work In Progress) More properties in the top bar
 * FotowallFile
 * Arnaud's Undo/Redo system
-* Wordcloud editor
 
 Fotowall "REVO" 1.0 (unreleased):
 
-* New Content: Wordcloud
+* Wordcloud editor
 
 Fotowall "Alchimia" 0.9 (unreleased):
 
@@ -33,10 +32,11 @@ Fotowall "Alchimia" 0.9 (unreleased):
 * Cursor key movement
 * OpenGL testing and performance auto-detection
 * CD/DVD markers redux
-* Cleanups: Selection, Frames, Rendering, Backgrounding, 
+* Cleanups: Selection, Frames, Rendering, Backgrounding
 * Perspective Property editor
 * Google Images search (by Marco Bavagnoli, reqby. Rossana)
-* New Content: Fotowall
+* New Content: Wordcloud
+* New Content: Fotowall Canvas
 * Scrollable/Zoomable Canvas
   * perfectly handles the Exact Size mode
 * Save on exit

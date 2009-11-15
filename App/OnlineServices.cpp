@@ -104,7 +104,7 @@ void OnlineServices::openBlog()
     }
 
     // ask for confirmation
-    if (QMessageBox::question(0, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+    if (QMessageBox::question(0, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
         return;
 
     // if already fetched, grab the url and go

@@ -38,7 +38,7 @@ class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
         void saveToFile(const QString & fileName = QString());
 
         // ::Appliance::AbstractAppliance
-        QString applianceName() const { return tr("Word Cloud"); }
+        QString applianceName() const { return tr("Wordcloud"); }
 
     private:
         Wordcloud::Cloud * m_extCloud;
