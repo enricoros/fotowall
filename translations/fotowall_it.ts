@@ -144,10 +144,18 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <location line="+10"/>
         <source>Drag with Left or Right mouse button.
  - Hold down SHIFT for free resize
+ - Hold down CTRL to rotate only
+ - Hold down ALT to snap rotation
+ - Double click (with LMB/RMB) to restore the aspect ratio/rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drag with Left or Right mouse button.
+ - Hold down SHIFT for free resize
  - Hold down CTRL to allow rotation
  - Hold down ALT to snap rotation
  - Double click (with LMB/RMB) to restore the aspect ratio/rotation</source>
-        <translation>Trascina con i pulsanti Sinistro o Destro del mouse.
+        <translation type="obsolete">Trascina con i pulsanti Sinistro o Destro del mouse.
  - Tieni premuto SHIFT per il ridimensionamento livero
  - Tieni premuto CTRL per consentire la rotazione
  - Tieni premuto ALT per ruotare per passi
@@ -165,12 +173,12 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+67"/>
+        <location filename="../Canvas/Canvas.cpp" line="+65"/>
         <source>Unnamed %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+445"/>
+        <location line="+442"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
@@ -180,7 +188,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+761"/>
+        <location line="+737"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -213,7 +221,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+16"/>
         <source>Random Placement</source>
         <translation type="unfinished"></translation>
     </message>
@@ -948,9 +956,49 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>HelpAppliance</name>
+    <message>
+        <location filename="../App/HelpAppliance.h" line="+30"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HelpApplianceWidgets</name>
+    <message>
+        <location filename="../App/HelpAppliance.ui"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>INTERNET</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Fotowall&apos;s Website</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Video Tutorial (0.2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Check for Updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Fotowall&apos;s Blog</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HelpItem</name>
     <message>
-        <location filename="../Canvas/HelpItem.cpp" line="+33"/>
         <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
@@ -980,7 +1028,7 @@ p, li { white-space: pre-wrap; }
   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
   &lt;div&gt;
@@ -1009,6 +1057,38 @@ p, li { white-space: pre-wrap; }
   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall è LGPL, creato da Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../App/HelpItem.cpp" line="+33"/>
+        <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
+&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
+&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
+   &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;
+      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
+        Welcome
+      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
+   &lt;/span&gt;
+   &lt;br /&gt;
+   &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;
+      &lt;b&gt;Playing&lt;/b&gt; with &lt;b&gt;Fotowall&lt;/b&gt; is easy
+   &lt;/div&gt;
+   &lt;ul&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; add contents&lt;/b&gt; using the &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;ADD NEW&lt;/span&gt;&lt;/i&gt; buttons or &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;drop them&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt; move contents around &lt;/b&gt; and &lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt; rotate them&lt;/b&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;by &lt;i&gt;dragging the corners&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;right click on the objects&lt;/span&gt;&lt;/i&gt; or &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;use the top bar&lt;/span&gt;&lt;/i&gt; to &lt;b&gt;modify properties&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;double click any content&lt;/i&gt;&lt;/span&gt; to &lt;b&gt;open the editor&lt;/b&gt; or set it as &lt;b&gt;background&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;...and we&apos;ll let you discover the rest!&lt;/li&gt;
+   &lt;/ul&gt;
+   &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;
+      Please make sure to share your best work with your friends ;-)
+   &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
+   &lt;br/&gt;
+   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
+      Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
+   &lt;/font&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1244,19 +1324,16 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Cancella il Titolo</translation>
     </message>
     <message>
-        <location filename="../App/MainWindow.cpp" line="+235"/>
         <source>Tutorial Video (0.2)</source>
-        <translation>Video Introduttivo (0.2)</translation>
+        <translation type="obsolete">Video Introduttivo (0.2)</translation>
     </message>
     <message>
-        <location line="+4"/>
         <source>Check for Updates</source>
-        <translation>Controlla Aggiornamenti</translation>
+        <translation type="obsolete">Controlla Aggiornamenti</translation>
     </message>
     <message>
-        <location line="+4"/>
         <source>Fotowall&apos;s Blog</source>
-        <translation>Blog di Fotowall</translation>
+        <translation type="obsolete">Blog di Fotowall</translation>
     </message>
     <message>
         <source>Select all</source>
@@ -1283,7 +1360,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Immagini (%1)</translation>
     </message>
     <message>
-        <location line="+172"/>
+        <location filename="../App/MainWindow.cpp" line="+289"/>
         <source>OpenGL</source>
         <translation>OpenGL</translation>
     </message>
@@ -1317,35 +1394,36 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Inserire il titolo</translation>
     </message>
     <message>
-        <location line="-179"/>
         <source>Opening Fotowall&apos;s author Blog</source>
-        <translation>Apertura del Blog dell&apos;autore di Fotowall</translation>
+        <translation type="obsolete">Apertura del Blog dell&apos;autore di Fotowall</translation>
     </message>
     <message>
-        <location line="+0"/>
         <source>This is the blog of the main author of Fotowall.
 You can find some news while we set up a proper website ;-)
 Do you want to open the web page?</source>
-        <translation>Questo è il blog dell&apos;autore di Fotowall.
+        <translation type="obsolete">Questo è il blog dell&apos;autore di Fotowall.
 Ci troverai delle news aggiornate mentre noi perdisponiamo un sito come si deve ;-)
 Vuoi aprire la pagina web?</translation>
     </message>
     <message>
-        <location line="+28"/>
         <source>Opening the Web Tutorial</source>
-        <translation>Apertura del Tutorial da Web</translation>
+        <translation type="obsolete">Apertura del Tutorial da Web</translation>
     </message>
     <message>
-        <location line="+0"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 It&apos;s about Fotowall 0.2 a rather old version.
 Do you want to open the web page?</source>
-        <translation>Il Tutorial è stato creato da Peter Upfold per Fosswire.
+        <translation type="obsolete">Il Tutorial è stato creato da Peter Upfold per Fosswire.
 Riguarda Fotowall 0.2, una delle prime versioni.
 Vuoi aprire la pagina web?</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="-306"/>
+        <source> ? </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+182"/>
         <source>Accelerated Rendering</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1390,22 +1468,19 @@ Vuoi aprire la pagina web?</translation>
         <translation type="obsolete">Decorazioni</translation>
     </message>
     <message>
-        <location filename="../App/MainWindow.ui"/>
         <source>HELP</source>
-        <translation>AIUTO</translation>
+        <translation type="obsolete">AIUTO</translation>
     </message>
     <message>
-        <location/>
         <source>OnLine</source>
-        <translation>Online</translation>
+        <translation type="obsolete">Online</translation>
     </message>
     <message>
-        <location/>
         <source>Introduction</source>
-        <translation>Introduzione</translation>
+        <translation type="obsolete">Introduzione</translation>
     </message>
     <message>
-        <location/>
+        <location filename="../App/MainWindow.ui"/>
         <source>SETUP</source>
         <translation>SETUP</translation>
     </message>
@@ -1464,32 +1539,6 @@ Vuoi aprire la pagina web?</translation>
     </message>
     <message>
         <location/>
-        <source>Click here to tell the developers about something you liked</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
-      </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Click here to tell the developers about something you did not like</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Click here to tell the developers about a problem in the application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Click here to tell the developers about new features you would like to have in this application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Test GL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1497,7 +1546,7 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>MetaXml::Connector</name>
     <message>
-        <location filename="../Shared/MetaXmlReader.cpp" line="+164"/>
+        <location filename="../Shared/MetaXmlReader.cpp" line="+170"/>
         <source>Network Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1512,6 +1561,33 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
         <source>Type here...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OnlineServices</name>
+    <message>
+        <location filename="../App/OnlineServices.cpp" line="+107"/>
+        <source>Opening Fotowall&apos;s author Blog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>This is the blog of the main author of Fotowall.
+You can find some news while we set up a proper website ;-)
+Do you want to open the web page?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Opening the Web Tutorial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>The Tutorial is provided on Fosswire by Peter Upfold.
+It&apos;s about Fotowall 0.2 a rather old version.
+Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1887,7 +1963,7 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../App/SceneView.cpp" line="+254"/>
+        <location filename="../App/SceneView.cpp" line="+265"/>
         <source>%1%</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2193,7 +2269,7 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+164"/>
+        <location filename="../App/Workflow.cpp" line="+178"/>
         <source>Closing Fotowall...</source>
         <translation type="unfinished"></translation>
     </message>
