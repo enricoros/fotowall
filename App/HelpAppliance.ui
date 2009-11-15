@@ -10,9 +10,6 @@
     <height>129</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <widget class="GroupBoxWidget" name="helpBox" native="true">
    <property name="geometry">
     <rect>
@@ -96,7 +93,7 @@
     <bool>true</bool>
    </property>
    <property name="title" stdset="0">
-    <string>INTERNET</string>
+    <string>ONLINE</string>
    </property>
    <property name="checkable" stdset="0">
     <bool>false</bool>

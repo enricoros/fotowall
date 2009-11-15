@@ -67,10 +67,10 @@ class SearchSymbol : public QWidget
         QTime m_time;
 };
 
-class MyListWidget : public QListWidget
+class PicturesListWidget : public QListWidget
 {
     public:
-        MyListWidget(QWidget * parent)
+        PicturesListWidget(QWidget * parent)
           : QListWidget(parent)
         {
         }
@@ -112,10 +112,10 @@ class MyListWidget : public QListWidget
         }
 };
 
-class MyLineEdit : public QLineEdit
+class DottedLineEdit : public QLineEdit
 {
     public:
-        MyLineEdit(QWidget * parent = 0)
+        DottedLineEdit(QWidget * parent = 0)
           : QLineEdit(parent)
           , m_welcome(true)
         {

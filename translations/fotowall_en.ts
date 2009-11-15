@@ -198,7 +198,7 @@ Use CTRL to cancel the transformations.</source>
     </message>
     <message>
         <location line="+0"/>
-        <source>You won&apos;t see through the Canvas unless you remove the background gradient.&lt;br&gt;&lt;b&gt;Do you want me to clear the background?&lt;/b&gt;</source>
+        <source>You won&apos;t see through the Canvas unless you clear the background.&lt;br&gt;&lt;b&gt;Do you want me to clear it?&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -444,19 +444,6 @@ Use CTRL to cancel the transformations.</source>
     </message>
 </context>
 <context>
-    <name>Cloud</name>
-    <message>
-        <location filename="../Wordcloud/Cloud.cpp" line="+213"/>
-        <source>Placing Words...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>ColorAction</name>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+277"/>
@@ -465,23 +452,18 @@ Use CTRL to cancel the transformations.</source>
     </message>
 </context>
 <context>
-    <name>Connector</name>
-    <message>
-        <location filename="../Shared/MetaXmlReader.cpp" line="+170"/>
-        <source>Network Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+19"/>
-        <source>Network Timeout</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>CroppingDialog</name>
     <message>
         <location filename="../Shared/CroppingDialog.ui"/>
         <source>Cropping</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DottedLineEdit</name>
+    <message>
+        <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
+        <source>Type here...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -926,16 +908,6 @@ p, li { white-space: pre-wrap; }
     <name>HelpApplianceWidgets</name>
     <message>
         <location filename="../App/HelpAppliance.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>INTERNET</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Fotowall&apos;s Website</source>
         <translation type="unfinished"></translation>
     </message>
@@ -952,6 +924,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location/>
         <source>Fotowall&apos;s Blog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>ONLINE</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1207,10 +1184,15 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>MyLineEdit</name>
+    <name>MetaXml::Connector</name>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
-        <source>Type here...</source>
+        <location filename="../Shared/MetaXmlReader.cpp" line="+170"/>
+        <source>Network Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Network Timeout</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1224,7 +1206,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+0"/>
         <source>This is the blog of the main author of Fotowall.
-You can find some news while we set up a proper website ;-)
 Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1384,11 +1365,6 @@ Do you want to open the web page?</source>
     <name>PictureProperties</name>
     <message>
         <location filename="../Canvas/PictureProperties.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1427,11 +1403,6 @@ Do you want to open the web page?</source>
     <name>PictureSearchWidget</name>
     <message>
         <location filename="../App/PictureSearchWidget.ui"/>
-        <source>Flickr Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Flickr</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1554,7 +1525,7 @@ Do you want to open the web page?</source>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+538"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+532"/>
         <source>Visual Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1604,19 +1575,6 @@ Do you want to open the web page?</source>
     <message>
         <location line="+6"/>
         <source>Subscript</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Scanner</name>
-    <message>
-        <location filename="../Wordcloud/Scanner.cpp" line="+113"/>
-        <source>Word</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>#</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1810,10 +1768,36 @@ Do you want to open the web page?</source>
     </message>
 </context>
 <context>
+    <name>Wordcloud::Cloud</name>
+    <message>
+        <location filename="../Wordcloud/Cloud.cpp" line="+213"/>
+        <source>Placing Words...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Wordcloud::Scanner</name>
+    <message>
+        <location filename="../Wordcloud/Scanner.cpp" line="+112"/>
+        <source>Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>#</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WordcloudAppliance</name>
     <message>
         <location filename="../App/WordcloudAppliance.h" line="+41"/>
-        <source>Word Cloud</source>
+        <source>Wordcloud</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1839,11 +1823,6 @@ Do you want to open the web page?</source>
     <name>WordcloudSidebar</name>
     <message>
         <location filename="../App/WordcloudSidebar.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Regen</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1869,12 +1848,12 @@ Do you want to open the web page?</source>
     </message>
     <message>
         <location/>
-        <source>Font</source>
+        <source>Scheem2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <source>Scheme2</source>
+        <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

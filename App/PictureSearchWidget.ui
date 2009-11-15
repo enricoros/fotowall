@@ -10,9 +10,6 @@
     <height>329</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Flickr Search</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="verticalSpacing">
     <number>0</number>
@@ -21,7 +18,7 @@
     <number>4</number>
    </property>
    <item row="0" column="0">
-    <widget class="MyLineEdit" name="lineEdit"/>
+    <widget class="DottedLineEdit" name="lineEdit"/>
    </item>
    <item row="0" column="1">
     <widget class="QPushButton" name="searchButton"/>
@@ -144,7 +141,7 @@
     </layout>
    </item>
    <item row="3" column="0" colspan="2">
-    <widget class="MyListWidget" name="listWidget">
+    <widget class="PicturesListWidget" name="listWidget">
      <property name="minimumSize">
       <size>
        <width>450</width>
@@ -196,12 +193,12 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MyListWidget</class>
+   <class>PicturesListWidget</class>
    <extends>QListWidget</extends>
    <header>QListWidget</header>
   </customwidget>
   <customwidget>
-   <class>MyLineEdit</class>
+   <class>DottedLineEdit</class>
    <extends>QLineEdit</extends>
    <header>QLineEdit</header>
   </customwidget>

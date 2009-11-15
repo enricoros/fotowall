@@ -136,7 +136,7 @@ bool CanvasAppliance::applianceCommand(int command)
         // No Background
         case App::AC_ClearBackground:
             if (m_extCanvas->backMode() != Canvas::BackNone) {
-                ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("You won't see through the Canvas unless you remove the background gradient.<br><b>Do you want me to clear the background?</b>"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
+                ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("You won't see through the Canvas unless you clear the background.<br><b>Do you want me to clear it?</b>"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
                 query.setButtonText(QDialogButtonBox::Yes, tr("Yes, thanks"));
                 query.setIcon(QStyle::SP_MessageBoxQuestion);
                 if (query.execute() == QDialogButtonBox::Yes)
