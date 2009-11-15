@@ -143,14 +143,10 @@ STRG benutzen um die Umwandlung abzubrechen.</translation>
         <location line="+10"/>
         <source>Drag with Left or Right mouse button.
  - Hold down SHIFT for free resize
- - Hold down CTRL to allow rotation
+ - Hold down CTRL to rotate only
  - Hold down ALT to snap rotation
  - Double click (with LMB/RMB) to restore the aspect ratio/rotation</source>
-        <translation>Ziehen mit linker oder rechter Maustaste.
-- Halte SHIFT um die Größe frei anzupassen.
-- Halte STRG um Rotation zu erlauben.
-- Halte ALT um die Rotation festzuhalten.
-Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wieder herzustellen.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -164,34 +160,34 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+67"/>
+        <location filename="../Canvas/Canvas.cpp" line="+65"/>
         <source>Unnamed %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+445"/>
+        <location line="+442"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hintergrund</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Front</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vordergrund</translation>
     </message>
     <message>
-        <location line="+761"/>
+        <location line="+737"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+152"/>
         <source>Delete content</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inhalt löschen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der ausgewählte Inhalt (%1) wird komplett gelöscht! Fortfahren ?</translation>
     </message>
 </context>
 <context>
@@ -199,7 +195,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location filename="../App/CanvasAppliance.cpp" line="+139"/>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Transparenz</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -212,7 +208,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+16"/>
         <source>Random Placement</source>
         <translation type="unfinished"></translation>
     </message>
@@ -229,17 +225,17 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location line="+6"/>
         <source>Enable force field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aktiviere &apos;Erzwingen&apos;-Feld</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nichts</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Transparency can be saved to PNG images only.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die gewählte Transparenz kann im PNG Bild gespeichert werden.</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -254,67 +250,67 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location line="+6"/>
         <source>Gradient</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Steigung</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Content</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inhalt</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Double click on any content to put it on background.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jeder Inhalt kann durch einen Doppelklick als Hintergrund eingestellt werden.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Content Aspect Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Seitenverhältnis des Inhalt</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Keep proportions by expanding</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erhalte Seitenverhältnis durch Erweiterung</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Keep proportions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erhalte Seitenverhältnis</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Ignore proportions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ignoriere Seitenverhältnis</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Top bar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Balken oben</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Bottom bar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Balken unten</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set title...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Setze Titeltext ...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lösche Titeltext</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Drucken</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exportiere</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -324,17 +320,17 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location line="+0"/>
         <source>Images (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bild(er) (%1)</translation>
     </message>
     <message>
         <location line="+98"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Titel</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Insert the title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gebe eine Überschrift ein</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -357,22 +353,22 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location filename="../App/CanvasAppliance.ui"/>
         <source>ADD NEW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">NEUES HINZUFÜGEN</translation>
     </message>
     <message>
         <location/>
         <source>Add Picture</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bild hinzufügen</translation>
     </message>
     <message>
         <location/>
         <source>Add Text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Text hinzufügen</translation>
     </message>
     <message>
         <location/>
         <source>Add Webcam</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Webcam hinzufügen</translation>
     </message>
     <message>
         <location/>
@@ -397,7 +393,7 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location/>
         <source>Screen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bildschirm</translation>
     </message>
     <message>
         <location/>
@@ -407,22 +403,22 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location/>
         <source>CD Cover</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CD Hülle</translation>
     </message>
     <message>
         <location/>
         <source>DVD Cover</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DVD Hülle</translation>
     </message>
     <message>
         <location/>
         <source>Decorations</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dekoration</translation>
     </message>
     <message>
         <location/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hintergrund</translation>
     </message>
     <message>
         <location/>
@@ -432,12 +428,12 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location/>
         <source>FILE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DATEI</translation>
     </message>
     <message>
         <location/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Speichern</translation>
     </message>
 </context>
 <context>
@@ -445,6 +441,19 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
     <message>
         <location filename="../Canvas/CanvasViewContent.h" line="+36"/>
         <source>Canvas View</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Cloud</name>
+    <message>
+        <location filename="../Wordcloud/Cloud.cpp" line="+213"/>
+        <source>Placing Words...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -459,12 +468,14 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
 <context>
     <name>Connector</name>
     <message>
+        <location filename="../Shared/MetaXmlReader.cpp" line="+170"/>
         <source>Network Error</source>
-        <translation type="obsolete">Netzwerkfehler</translation>
+        <translation type="unfinished">Netzwerkfehler</translation>
     </message>
     <message>
+        <location line="+19"/>
         <source>Network Timeout</source>
-        <translation type="obsolete">Netzwerkzeitüberschreitung</translation>
+        <translation type="unfinished">Netzwerkzeitüberschreitung</translation>
     </message>
 </context>
 <context>
@@ -473,33 +484,6 @@ Doppelklick mit linker/rechter Maustaste um das Seitenverhältnis/Rotation wiede
         <location filename="../Shared/CroppingDialog.ui"/>
         <source>Cropping</source>
         <translation>Zurechtschneiden</translation>
-    </message>
-</context>
-<context>
-    <name>Desk</name>
-    <message>
-        <source>Back</source>
-        <translation type="obsolete">Hintergrund</translation>
-    </message>
-    <message>
-        <source>Front</source>
-        <translation type="obsolete">Vordergrund</translation>
-    </message>
-    <message>
-        <source>SELECTION</source>
-        <translation type="obsolete">AUSWAHL</translation>
-    </message>
-    <message>
-        <source>%1 objects selected</source>
-        <translation type="obsolete">%1 Objekt(e) ausgewählt</translation>
-    </message>
-    <message>
-        <source>Delete content</source>
-        <translation type="obsolete">Inhalt löschen</translation>
-    </message>
-    <message>
-        <source>All the %1 selected content will be deleted, do you want to continue ?</source>
-        <translation type="obsolete">Der ausgewählte Inhalt (%1) wird komplett gelöscht! Fortfahren ?</translation>
     </message>
 </context>
 <context>
@@ -739,10 +723,6 @@ Wechsle zu den Eigenschften des Desktop und wähle dort die Datei:
         <translation>Größe und Ausrichtung</translation>
     </message>
     <message>
-        <source>Pixels</source>
-        <translation type="obsolete">Punkte</translation>
-    </message>
-    <message>
         <location/>
         <source>Landscape</source>
         <translation>Querformat</translation>
@@ -904,7 +884,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+2"/>
         <source>OpenGL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OpenGL</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -938,66 +918,79 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>HelpAppliance</name>
+    <message>
+        <location filename="../App/HelpAppliance.h" line="+30"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HelpApplianceWidgets</name>
+    <message>
+        <location filename="../App/HelpAppliance.ui"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>INTERNET</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Fotowall&apos;s Website</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Video Tutorial (0.2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Check for Updates</source>
+        <translation type="unfinished">Prüfe auf Updates</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Fotowall&apos;s Blog</source>
+        <translation type="unfinished">Blog zu Fotowall</translation>
+    </message>
+</context>
+<context>
     <name>HelpItem</name>
     <message>
-        <location filename="../Canvas/HelpItem.cpp" line="+33"/>
+        <location filename="../App/HelpItem.cpp" line="+33"/>
         <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
-  &lt;div&gt;
-    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;Welcome&lt;/span&gt;
-    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-  &lt;/div&gt;
-
-  &lt;br /&gt;
-  &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;&lt;b&gt;Playing&lt;/b&gt; with &lt;b&gt;Fotowall&lt;/b&gt; is easy&lt;/div&gt;
-
-  &lt;div&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;b&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;add&lt;/b&gt; a picture&amp;nbsp;using the&amp;nbsp;&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;add pictures&lt;/span&gt;&lt;/i&gt;&amp;nbsp;button or &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;drop it&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt;&amp;nbsp;&amp;nbsp; to &lt;b&gt;place it where you want&lt;/b&gt;,&amp;nbsp;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;try&lt;/span&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;every small icon&lt;/i&gt;&lt;/span&gt;&lt;i&gt;&amp;nbsp;&lt;/i&gt;on the frame&lt;/i&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;right click&lt;/span&gt;&lt;/i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;on the picture&lt;/span&gt; to &lt;b&gt;change its look&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;double click&lt;/span&gt;&lt;/i&gt;&lt;b&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&amp;nbsp;&lt;/span&gt;&lt;/b&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;the picture&lt;/span&gt; to set it as &lt;b&gt;background&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;click&lt;/span&gt;&lt;/i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&amp;nbsp;the&amp;nbsp;corners&lt;/span&gt; to change wall&amp;nbsp;&lt;b&gt;colors&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;just look and you will find ...&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-
-  &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;Please make sure to share your best work with your friends ;-)&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
-
-  &lt;br/&gt;
-  &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
+   &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;
+      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
+        Welcome
+      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
+   &lt;/span&gt;
+   &lt;br /&gt;
+   &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;
+      &lt;b&gt;Playing&lt;/b&gt; with &lt;b&gt;Fotowall&lt;/b&gt; is easy
+   &lt;/div&gt;
+   &lt;ul&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; add contents&lt;/b&gt; using the &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;ADD NEW&lt;/span&gt;&lt;/i&gt; buttons or &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;drop them&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt; move contents around &lt;/b&gt; and &lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt; rotate them&lt;/b&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;by &lt;i&gt;dragging the corners&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;right click on the objects&lt;/span&gt;&lt;/i&gt; or &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;use the top bar&lt;/span&gt;&lt;/i&gt; to &lt;b&gt;modify properties&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;double click any content&lt;/i&gt;&lt;/span&gt; to &lt;b&gt;open the editor&lt;/b&gt; or set it as &lt;b&gt;background&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;...and we&apos;ll let you discover the rest!&lt;/li&gt;
+   &lt;/ul&gt;
+   &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;
+      Please make sure to share your best work with your friends ;-)
+   &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
+   &lt;br/&gt;
+   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
+      Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
+   &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
-&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
-&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
-  &lt;div&gt;
-    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;Herzlich Willkommen&lt;/span&gt;
-    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-  &lt;/div&gt;
-
-  &lt;br /&gt;
-  &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;&lt;b&gt;Einfach ausprobieren! Das Spielen mit Fotowall ist sehr einfach ...&lt;/b&gt;&lt;/div&gt;
-
-  &lt;div&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;b&gt;&lt;img src=&quot;:/data/action-add.png&quot;&gt;&amp;nbsp;&amp;nbsp; Neues Bild&lt;/b&gt; einfach mit &lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Bild hinzufügen&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: yellow;&quot;&gt;&lt;/span&gt; Knopf hinzufügen oder nutze Drag-and-Drop&lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;img src=&quot;:/data/action-rotate.png&quot;&gt;&amp;nbsp;&amp;nbsp; Das &lt;/i&gt;&lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Bild einfach &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;irgendwo plazieren&lt;/span&gt;&lt;/i&gt; und anschließend einfach zum Modifizieren jedes der kleinen Symbole auf dem Rahmen ausprobieren.&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;img src=&quot;:/data/action-configure.png&quot;&gt;&amp;nbsp;&amp;nbsp; &lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Klicke mit der rechten Maustaste auf das Bild&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um das &lt;b&gt;&lt;span style=&quot;font-style: italic;&quot;&gt;Aussehen des Bildes zu verändern&lt;/span&gt;&lt;/b&gt;.&lt;/li&gt;
-      &lt;li&gt; Nutze einen &lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Doppelklick auf das Bild&lt;/span&gt;&lt;/i&gt;&lt;b&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt;&lt;/b&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um es als &lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Hintergrundbild&lt;/span&gt; zu nutzen.&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;Klicke auf die Bildecken&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;background-color: rgb(255, 226, 0);&quot;&gt;&lt;/span&gt; um die &lt;span style=&quot;font-weight: bold; font-style: italic;&quot;&gt;Hintergrundfarben&lt;/span&gt; zu ändern.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-
-  &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;Es wäre toll, wenn Ihr Eure schönsten Arbeiten mit anderen Leuten und Freunden teilen würdet :-) ...&lt;br&gt;&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
-
-  &lt;br/&gt;
-  &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1161,124 +1154,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <source>Enable force field</source>
-        <translation type="obsolete">Aktiviere &apos;Erzwingen&apos;-Feld</translation>
-    </message>
-    <message>
-        <source>Auto-arrange new pictures</source>
-        <translation type="obsolete">Neue Bilder automatisch anordnen</translation>
-    </message>
-    <message>
-        <source>Rearrange</source>
-        <translation type="obsolete">Neuanordnen</translation>
-    </message>
-    <message>
-        <source>Shaped</source>
-        <translation type="obsolete">Form</translation>
-    </message>
-    <message>
-        <source>Collage</source>
-        <translation type="obsolete">Kollage</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Nichts</translation>
-    </message>
-    <message>
-        <source>Transparency can be saved to PNG images only.</source>
-        <translation type="obsolete">Die gewählte Transparenz kann im PNG Bild gespeichert werden.</translation>
-    </message>
-    <message>
-        <source>Gradient</source>
-        <translation type="obsolete">Steigung</translation>
-    </message>
-    <message>
-        <source>Content</source>
-        <translation type="obsolete">Inhalt</translation>
-    </message>
-    <message>
-        <source>Double click on any content to put it on background.</source>
-        <translation type="obsolete">Jeder Inhalt kann durch einen Doppelklick als Hintergrund eingestellt werden.</translation>
-    </message>
-    <message>
-        <source>Content Aspect Ratio</source>
-        <translation type="obsolete">Seitenverhältnis des Inhalt</translation>
-    </message>
-    <message>
-        <source>Keep proportions by expanding</source>
-        <translation type="obsolete">Erhalte Seitenverhältnis durch Erweiterung</translation>
-    </message>
-    <message>
-        <source>Keep proportions</source>
-        <translation type="obsolete">Erhalte Seitenverhältnis</translation>
-    </message>
-    <message>
-        <source>Ignore proportions</source>
-        <translation type="obsolete">Ignoriere Seitenverhältnis</translation>
-    </message>
-    <message>
-        <source>Top bar</source>
-        <translation type="obsolete">Balken oben</translation>
-    </message>
-    <message>
-        <source>Bottom bar</source>
-        <translation type="obsolete">Balken unten</translation>
-    </message>
-    <message>
-        <source>Set title...</source>
-        <translation type="obsolete">Setze Titeltext ...</translation>
-    </message>
-    <message>
-        <source>Clear title</source>
-        <translation type="obsolete">Lösche Titeltext</translation>
-    </message>
-    <message>
-        <location filename="../App/MainWindow.cpp" line="+235"/>
-        <source>Tutorial Video (0.2)</source>
-        <translation>Videoanleitung (zu Fotowall V0.2)</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Check for Updates</source>
-        <translation>Prüfe auf Updates</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Fotowall&apos;s Blog</source>
-        <translation>Blog zu Fotowall</translation>
-    </message>
-    <message>
-        <source>Select all</source>
-        <translation type="obsolete">Alles auswählen</translation>
-    </message>
-    <message>
-        <source>CTRL+A</source>
-        <translation type="obsolete">STRG+A</translation>
-    </message>
-    <message>
-        <source>Export</source>
-        <translation type="obsolete">Exportiere</translation>
-    </message>
-    <message>
-        <source>print</source>
-        <translation type="obsolete">Drucken</translation>
-    </message>
-    <message>
-        <source>Select one or more pictures to add</source>
-        <translation type="obsolete">Zum Hinzufügen wähle ein oder mehrere Bild(er) aus</translation>
-    </message>
-    <message>
-        <source>Images (%1)</source>
-        <translation type="obsolete">Bild(er) (%1)</translation>
-    </message>
-    <message>
-        <location line="+172"/>
+        <location filename="../App/MainWindow.cpp" line="+289"/>
         <source>OpenGL</source>
         <translation>OpenGL</translation>
-    </message>
-    <message>
-        <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system. Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
-        <translation type="obsolete">Es ist nicht sichergestellt das OpenGL unterstützte Grafik auf Ihrem System funktioniert. Probiere es einfach aus, ob es funtioniert.&lt;br&gt; - falls sich die Grafikausgabe langsam anfühlt, stelle bitte sicher, daß der Grafiktreiber OpenGL hardwareseitig beschleunigt&lt;br&gt; - falls Fotowall nach der Umstellung auf OpenGL nicht mehr funktioniert, benutzen Sie diese Funktion beim nächsten Start nicht mehr&lt;br&gt;&lt;br&gt;ANMERKUNG: OpenGL funktioniert nicht mit &quot;Transparent&quot; Modus.</translation>
     </message>
     <message>
         <location line="+95"/>
@@ -1286,50 +1164,12 @@ p, li { white-space: pre-wrap; }
         <translation>Transparenz</translation>
     </message>
     <message>
-        <source>This feature has not been widely tested yet.&lt;br&gt; - on linux it requires compositing (like compiz/beryl, kwin4)&lt;br&gt; - on windows and mac it seems to work&lt;br&gt;If you see a black background then transparency is not supported on your system.&lt;br&gt;&lt;br&gt;NOTE: you should set the &apos;Transparent&apos; Background to notice the the window transparency.&lt;br&gt;</source>
-        <translation type="obsolete">Die Funktion wurde zur Zeit noch nicht umfangreich getestet.&lt;br&gt; -unter Linux wird composite Modus, wie unter compiz/beryl oder kwin4, benötigt&lt;br&gt; - unter Windows und Mac OS scheint es zu funktionieren&lt;br&gt;Sollten Sie einen schwarzen Hintergrund sehen, dann wird Transparenz auf Ihrem System nicht unterstützt.&lt;br&gt;&lt;br&gt;ANMERKUNG: Sie sollten &quot;transparenten&quot; Hintergrund verwenden um transparente Fenster zu nutzen.&lt;br&gt;</translation>
+        <location line="-306"/>
+        <source> ? </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select the Fotowall file</source>
-        <translation type="obsolete">Wähle die Fotowall Datei aus</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">Titel</translation>
-    </message>
-    <message>
-        <source>Insert the title</source>
-        <translation type="obsolete">Gebe eine Überschrift ein</translation>
-    </message>
-    <message>
-        <location line="-179"/>
-        <source>Opening Fotowall&apos;s author Blog</source>
-        <translation>Öffne das Blog des Fotowall Autor</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>This is the blog of the main author of Fotowall.
-You can find some news while we set up a proper website ;-)
-Do you want to open the web page?</source>
-        <translation>Dies ist das Blog des Hauptentwicklers von Fotowall.
-Hier findet Ihr einige Neuigkeiten, bis eine richtige Webseite erstellt ist.
-Wollen Sie die Webseite öffnen?</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>Opening the Web Tutorial</source>
-        <translation>Öffne die Anleitung im Internet</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>The Tutorial is provided on Fosswire by Peter Upfold.
-It&apos;s about Fotowall 0.2 a rather old version.
-Do you want to open the web page?</source>
-        <translation>Die Anleitung wird durch Peter Upfold bereitgestellt und basiert zur Zeit auf einer alten Version von Fotowall (Version 0.2a).
-Wollen Sie die Webseite öffnen?</translation>
-    </message>
-    <message>
-        <location line="+27"/>
+        <location line="+182"/>
         <source>Accelerated Rendering</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1354,60 +1194,9 @@ Wollen Sie die Webseite öffnen?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Support (%1)</source>
-        <translation type="obsolete">Unterstützung (%1)</translation>
-    </message>
-    <message>
-        <source>ADD NEW</source>
-        <translation type="obsolete">NEUES HINZUFÜGEN</translation>
-    </message>
-    <message>
-        <source>Background</source>
-        <translation type="obsolete">Hintergrund</translation>
-    </message>
-    <message>
-        <source>Decorations</source>
-        <translation type="obsolete">Dekoration</translation>
-    </message>
-    <message>
         <location filename="../App/MainWindow.ui"/>
-        <source>HELP</source>
-        <translation>HILFE</translation>
-    </message>
-    <message>
-        <location/>
-        <source>OnLine</source>
-        <translation>Online</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Introduction</source>
-        <translation>Einführung</translation>
-    </message>
-    <message>
-        <location/>
         <source>SETUP</source>
         <translation>EINSTELLUNGEN</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">Modus</translation>
-    </message>
-    <message>
-        <source>Screen</source>
-        <translation type="obsolete">Bildschirm</translation>
-    </message>
-    <message>
-        <source>CD Cover</source>
-        <translation type="obsolete">CD Hülle</translation>
-    </message>
-    <message>
-        <source>DVD Cover</source>
-        <translation type="obsolete">DVD Hülle</translation>
-    </message>
-    <message>
-        <source>Exact Size</source>
-        <translation type="obsolete">Genaue Größe</translation>
     </message>
     <message>
         <location/>
@@ -1415,75 +1204,8 @@ Wollen Sie die Webseite öffnen?</translation>
         <translation>Transparente Fenster</translation>
     </message>
     <message>
-        <source>FILE</source>
-        <translation type="obsolete">DATEI</translation>
-    </message>
-    <message>
-        <source>Load</source>
-        <translation type="obsolete">Laden</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Speichern</translation>
-    </message>
-    <message>
-        <source>Add Picture</source>
-        <translation type="obsolete">Bild hinzufügen</translation>
-    </message>
-    <message>
-        <source>Add Text</source>
-        <translation type="obsolete">Text hinzufügen</translation>
-    </message>
-    <message>
-        <source>Add Webcam</source>
-        <translation type="obsolete">Webcam hinzufügen</translation>
-    </message>
-    <message>
-        <source>Add Flickr</source>
-        <translation type="obsolete">Flickr-Objekt hinzufügen</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Click here to tell the developers about something you liked</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
-      </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Click here to tell the developers about something you did not like</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Click here to tell the developers about a problem in the application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Click here to tell the developers about new features you would like to have in this application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location/>
         <source>Test GL</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>MetaXml::Connector</name>
-    <message>
-        <location filename="../Shared/MetaXmlReader.cpp" line="+164"/>
-        <source>Network Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+19"/>
-        <source>Network Timeout</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1493,6 +1215,36 @@ Wollen Sie die Webseite öffnen?</translation>
         <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
         <source>Type here...</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OnlineServices</name>
+    <message>
+        <location filename="../App/OnlineServices.cpp" line="+107"/>
+        <source>Opening Fotowall&apos;s author Blog</source>
+        <translation type="unfinished">Öffne das Blog des Fotowall Autor</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>This is the blog of the main author of Fotowall.
+You can find some news while we set up a proper website ;-)
+Do you want to open the web page?</source>
+        <translation type="unfinished">Dies ist das Blog des Hauptentwicklers von Fotowall.
+Hier findet Ihr einige Neuigkeiten, bis eine richtige Webseite erstellt ist.
+Wollen Sie die Webseite öffnen?</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Opening the Web Tutorial</source>
+        <translation type="unfinished">Öffne die Anleitung im Internet</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>The Tutorial is provided on Fosswire by Peter Upfold.
+It&apos;s about Fotowall 0.2 a rather old version.
+Do you want to open the web page?</source>
+        <translation type="unfinished">Die Anleitung wird durch Peter Upfold bereitgestellt und basiert zur Zeit auf einer alten Version von Fotowall (Version 0.2a).
+Wollen Sie die Webseite öffnen?</translation>
     </message>
 </context>
 <context>
@@ -1685,7 +1437,7 @@ Wollen Sie die Webseite öffnen?</translation>
     <message>
         <location filename="../App/PictureSearchWidget.ui"/>
         <source>Flickr Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Such in Flickr</translation>
     </message>
     <message>
         <location/>
@@ -1763,38 +1515,38 @@ Wollen Sie die Webseite öffnen?</translation>
     <message>
         <location filename="../App/FotowallFile.cpp" line="+59"/>
         <source>Loading error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ladefahler</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Unable to load the Fotowall file %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kann die Fotowall Datei %1 nicht laden.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Parsing error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler bei der Analyse</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Unable to parse the Fotowall file %1. The error was: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kann die Fotowall Datei %1 nicht analysieren. Der aufgetretene Fehler ist: %2</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>File Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dateifehler</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error saving to the Fotowall file &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Speichern der Fotowall Datei &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+20"/>
         <location line="+32"/>
         <source>Select the Fotowall file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wähle die Fotowall Datei aus</translation>
     </message>
     <message>
         <location line="-32"/>
@@ -1811,7 +1563,7 @@ Wollen Sie die Webseite öffnen?</translation>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+533"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+539"/>
         <source>Source</source>
         <translation>Ursprung</translation>
     </message>
@@ -1865,9 +1617,22 @@ Wollen Sie die Webseite öffnen?</translation>
     </message>
 </context>
 <context>
+    <name>Scanner</name>
+    <message>
+        <location filename="../Wordcloud/Scanner.cpp" line="+113"/>
+        <source>Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>#</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SceneView</name>
     <message>
-        <location filename="../App/SceneView.cpp" line="+254"/>
+        <location filename="../App/SceneView.cpp" line="+265"/>
         <source>%1%</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1877,7 +1642,7 @@ Wollen Sie die Webseite öffnen?</translation>
     <message>
         <location filename="../Canvas/SelectionProperties.cpp" line="+35"/>
         <source>SELECTION</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">AUSWAHL</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1887,7 +1652,7 @@ Wollen Sie die Webseite öffnen?</translation>
     <message>
         <location line="+2"/>
         <source>%1 objects selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 Objekt(e) ausgewählt</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2031,28 +1796,6 @@ Wollen Sie die Webseite öffnen?</translation>
     </message>
 </context>
 <context>
-    <name>WarningBox</name>
-    <message>
-        <source>show this warning again next time</source>
-        <translation type="obsolete">Zeige die Warnung nächstes Mal an</translation>
-    </message>
-</context>
-<context>
-    <name>WebContentSelectorItem</name>
-    <message>
-        <source>cancel</source>
-        <translation type="obsolete">Abbrechen</translation>
-    </message>
-    <message>
-        <source>search</source>
-        <translation type="obsolete">Suchen</translation>
-    </message>
-    <message>
-        <source>Flickr Search</source>
-        <translation type="obsolete">Such in Flickr</translation>
-    </message>
-</context>
-<context>
     <name>WebcamContent</name>
     <message>
         <location filename="../Canvas/WebcamContent.cpp" line="+35"/>
@@ -2073,32 +1816,6 @@ Wollen Sie die Webseite öffnen?</translation>
         <location filename="../Canvas/WebcamContent.h" line="+33"/>
         <source>Webcam</source>
         <translation>Webkamera</translation>
-    </message>
-</context>
-<context>
-    <name>Wordcloud::Cloud</name>
-    <message>
-        <location filename="../Wordcloud/Cloud.cpp" line="+213"/>
-        <source>Placing Words...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Wordcloud::Scanner</name>
-    <message>
-        <location filename="../Wordcloud/Scanner.cpp" line="+112"/>
-        <source>Word</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>#</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2173,7 +1890,7 @@ Wollen Sie die Webseite öffnen?</translation>
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+164"/>
+        <location filename="../App/Workflow.cpp" line="+178"/>
         <source>Closing Fotowall...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2190,7 +1907,7 @@ Wollen Sie die Webseite öffnen?</translation>
     <message>
         <location line="+1"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Speichern</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2206,36 +1923,6 @@ Wollen Sie die Webseite öffnen?</translation>
         <location line="+1"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>XmlRead</name>
-    <message>
-        <source>Loading error</source>
-        <translation type="obsolete">Ladefahler</translation>
-    </message>
-    <message>
-        <source>Unable to load the Fotowall file %1</source>
-        <translation type="obsolete">Kann die Fotowall Datei %1 nicht laden.</translation>
-    </message>
-    <message>
-        <source>Unable to parse the Fotowall file %1. The error was: %2</source>
-        <translation type="obsolete">Kann die Fotowall Datei %1 nicht analysieren. Der aufgetretene Fehler ist: %2</translation>
-    </message>
-    <message>
-        <source>Parsing error</source>
-        <translation type="obsolete">Fehler bei der Analyse</translation>
-    </message>
-</context>
-<context>
-    <name>XmlSave</name>
-    <message>
-        <source>File Error</source>
-        <translation type="obsolete">Dateifehler</translation>
-    </message>
-    <message>
-        <source>Error saving to the Fotowall file &apos;%1&apos;</source>
-        <translation type="obsolete">Fehler beim Speichern der Fotowall Datei &apos;%1&apos;.</translation>
     </message>
 </context>
 </TS>

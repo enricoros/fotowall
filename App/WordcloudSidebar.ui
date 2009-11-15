@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
+    <width>305</width>
     <height>224</height>
    </rect>
   </property>
@@ -54,7 +54,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Scheem2</string>
+         <string>Scheme2</string>
         </property>
        </item>
       </widget>
