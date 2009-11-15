@@ -17,6 +17,25 @@
    <property name="spacing">
     <number>0</number>
    </property>
+   <item row="1" column="0">
+    <widget class="SceneView" name="sceneView">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QWidget" name="applianceSidebar" native="true">
+     <layout class="QVBoxLayout" name="applianceSidebarLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+     </layout>
+    </widget>
+   </item>
    <item row="0" column="0" colspan="2">
     <widget class="QWidget" name="topBar" native="true">
      <property name="styleSheet">
@@ -65,233 +84,107 @@ stop:1 rgba(237, 237, 237, 255))
        </spacer>
       </item>
       <item>
-       <widget class="GroupBoxWidget" name="helpWidget" native="true">
-        <property name="palette">
-         <palette>
-          <active>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="32">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </active>
-          <inactive>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="32">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </inactive>
-          <disabled>
-           <colorrole role="Base">
-            <brush brushstyle="SolidPattern">
-             <color alpha="32">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="Window">
-            <brush brushstyle="SolidPattern">
-             <color alpha="32">
-              <red>0</red>
-              <green>0</green>
-              <blue>0</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </disabled>
-         </palette>
-        </property>
+       <widget class="QWidget" name="feedbackWidget" native="true">
         <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="title" stdset="0">
-         <string>HELP</string>
-        </property>
-        <property name="checkable" stdset="0">
-         <bool>true</bool>
-        </property>
-        <property name="checked" stdset="0">
          <bool>false</bool>
         </property>
-        <property name="borderFlags" stdset="0">
-         <number>1</number>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
-          <number>6</number>
-         </property>
-         <property name="topMargin">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
           <number>0</number>
          </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>14</number>
+         </property>
          <property name="rightMargin">
-          <number>6</number>
+          <number>4</number>
          </property>
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <item row="1" column="0">
-          <widget class="QToolButton" name="onlineHelpButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+         <item>
+          <widget class="PixmapButton" name="lbLike" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
-           <property name="text">
-            <string>OnLine</string>
+           <property name="maximumSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
-           <property name="popupMode">
-            <enum>QToolButton::InstantPopup</enum>
+           <property name="pixmap" stdset="0">
+            <pixmap resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">:/likeback/like.png</pixmap>
            </property>
-           <property name="autoRaise">
+           <property name="fixedSize" stdset="0">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+           <property name="fadeInactive" stdset="0">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QToolButton" name="introButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+         <item>
+          <widget class="PixmapButton" name="lbFeature" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
-           <property name="text">
-            <string>Introduction</string>
+           <property name="maximumSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
-           <property name="popupMode">
-            <enum>QToolButton::InstantPopup</enum>
+           <property name="pixmap" stdset="0">
+            <pixmap resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">:/likeback/feature.png</pixmap>
            </property>
-           <property name="autoRaise">
+           <property name="fixedSize" stdset="0">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+           <property name="fadeInactive" stdset="0">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QToolButton" name="lbLike">
-           <property name="toolTip">
-            <string>Click here to tell the developers about something you liked</string>
+         <item>
+          <widget class="PixmapButton" name="lbBug" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
-           <property name="whatsThis">
-            <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
-      </string>
+           <property name="maximumSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
-           <property name="text">
-            <string/>
+           <property name="pixmap" stdset="0">
+            <pixmap resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">:/likeback/bug.png</pixmap>
            </property>
-           <property name="icon">
-            <iconset resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">
-             <normaloff>:/likeback/like.png</normaloff>:/likeback/like.png</iconset>
+           <property name="fixedSize" stdset="0">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
-           <property name="autoRaise">
+           <property name="fadeInactive" stdset="0">
             <bool>true</bool>
-           </property>
-           <property name="button" stdset="0">
-            <number>1</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QToolButton" name="lbDislike">
-           <property name="toolTip">
-            <string>Click here to tell the developers about something you did not like</string>
-           </property>
-           <property name="whatsThis">
-            <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
-      </string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">
-             <normaloff>:/likeback/dislike.png</normaloff>:/likeback/dislike.png</iconset>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-           <property name="button" stdset="0">
-            <number>2</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QToolButton" name="lbBug">
-           <property name="toolTip">
-            <string>Click here to tell the developers about a problem in the application</string>
-           </property>
-           <property name="whatsThis">
-            <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
-      </string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">
-             <normaloff>:/likeback/bug.png</normaloff>:/likeback/bug.png</iconset>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-           <property name="button" stdset="0">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QToolButton" name="lbFeature">
-           <property name="toolTip">
-            <string>Click here to tell the developers about new features you would like to have in this application</string>
-           </property>
-           <property name="whatsThis">
-            <string>&lt;html&gt;Click on one of these icons to send your feedback to the developers of this application. You can disable the icons with the &quot;Show Feedback Icons&quot; checkbox in the Help menu.&lt;/html&gt;
-      </string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../3rdparty/likebackfrontend/likebackfrontend.qrc">
-             <normaloff>:/likeback/feature.png</normaloff>:/likeback/feature.png</iconset>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-           <property name="button" stdset="0">
-            <number>3</number>
            </property>
           </widget>
          </item>
@@ -453,25 +346,6 @@ stop:1 rgba(237, 237, 237, 255))
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="SceneView" name="sceneView">
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QWidget" name="applianceSidebar" native="true">
-     <layout class="QVBoxLayout" name="applianceSidebarLayout">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="margin">
-       <number>0</number>
-      </property>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -491,15 +365,15 @@ stop:1 rgba(237, 237, 237, 255))
    <extends>QToolButton</extends>
    <header>Shared/BlinkingToolButton.h</header>
   </customwidget>
+  <customwidget>
+   <class>PixmapButton</class>
+   <extends>QWidget</extends>
+   <header>Shared/PixmapButton.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>sceneView</tabstop>
-  <tabstop>introButton</tabstop>
-  <tabstop>onlineHelpButton</tabstop>
-  <tabstop>lbLike</tabstop>
-  <tabstop>lbDislike</tabstop>
-  <tabstop>lbFeature</tabstop>
-  <tabstop>lbBug</tabstop>
   <tabstop>transpBox</tabstop>
   <tabstop>accelBox</tabstop>
   <tabstop>accelTestButton</tabstop>

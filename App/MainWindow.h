@@ -18,8 +18,6 @@
 #include "Shared/PlugGui/Container.h"
 namespace Ui { class MainWindow; }
 class LikeBack;
-class QMenu;
-class QNetworkReply;
 class QNetworkAccessManager;
 class PictureSearchWidget;
 class Workflow;
@@ -46,35 +44,23 @@ class MainWindow : public PlugGui::Container
         void closeEvent(QCloseEvent * event);
 
     private:
-        QMenu * createOnlineHelpMenu();
-        void checkForTutorial();
-        void checkForUpdates();
         void createLikeBack();
 
         Ui::MainWindow *        ui;
         QNetworkAccessManager * m_networkAccessManager;
         PictureSearchWidget *   m_pictureSearch;
         LikeBack *              m_likeBack;
-        QAction *               m_aHelpTutorial;
-        QString                 m_website;
         bool                    m_applyingAccelState;
 
     private Q_SLOTS:
         // notifications
+        void slotHelpBarClicked(quint32);
         void slotRenderingSlow();
 
         // help box
-        void on_introButton_clicked();
         void on_lbBug_clicked();
         void on_lbFeature_clicked();
-        void on_lbDislike_clicked();
         void on_lbLike_clicked();
-        void slotHelpWebsite();
-        void slotHelpWebsiteFetched();
-        void slotHelpWebsiteFetchError();
-        void slotHelpTutorial();
-        void slotHelpUpdates();
-        void slotVerifyTutorialReply();
 
         // setup box
         bool on_accelTestButton_clicked();

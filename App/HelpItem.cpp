@@ -14,7 +14,7 @@
 
 #include "HelpItem.h"
 #if defined(USE_QTWEBKIT)
-#include "BrowserItem.h"
+#include "Shared/BrowserItem.h"
 #else
 #include <QGraphicsTextItem>
 #endif
@@ -30,35 +30,36 @@ HelpItem::HelpItem(QGraphicsItem * parent)
     : AbstractDisposeable(parent, true)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
 {
-    QString introduction = tr("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
-"<html><!--head><meta name=\"qrichtext\" content=\"1\" /></head-->\n"
-"<body style=\"font-family:'Sans Serif';\">\n"
-"  <div>\n"
-"    <img src=':/data/action-remove.png'>\n"
-"    <span style='font-size: 26px; font-weight: normal; color: #FF0000;'>Welcome</span>\n"
-"    <img src=':/data/action-remove.png'>\n"
-"  </div>\n"
-"\n"
-"  <br />\n"
-"  <div style='font-size: 16px; font-weight: normal;'><b>Playing</b> with <b>Fotowall</b> is easy</div>\n"
-"\n"
-"  <div>\n"
-"    <ul>\n"
-"      <li><b><img src=':/data/action-add.png'>&nbsp;&nbsp;&nbsp;add</b> a picture&nbsp;using the&nbsp;<i><span style='background-color: rgb(255, 226, 0);'>add pictures</span></i>&nbsp;button or <i><span style='background-color: rgb(255, 226, 0);'>drop it</span></i></li>\n"
-"      <li><i><img src=':/data/action-rotate.png'>&nbsp;&nbsp; to <b>place it where you want</b>,&nbsp;<span style='background-color: rgb(255, 226, 0);'>try</span> <span style='background-color: rgb(255, 226, 0);'><i>every small icon</i></span><i>&nbsp;</i>on the frame</i></li>\n"
-"      <li><i><img src=':/data/action-configure.png'>&nbsp;&nbsp;&nbsp;<span style='background-color: rgb(255, 226, 0);'>right click</span></i> <span style='background-color: rgb(255, 226, 0);'>on the picture</span> to <b>change its look</b></li>\n"
-"      <li><i><span style='background-color: rgb(255, 226, 0);'>double click</span></i><b><span style='background-color: rgb(255, 226, 0);'>&nbsp;</span></b><span style='background-color: rgb(255, 226, 0);'>the picture</span> to set it as <b>background</b></li>\n"
-"      <li><i><span style='background-color: rgb(255, 226, 0);'>click</span></i><span style='background-color: rgb(255, 226, 0);'>&nbsp;the&nbsp;corners</span> to change wall&nbsp;<b>colors</b></li>\n"
-"      <li>just look and you will find ...</li>\n"
-"    </ul>\n"
-"  </div>\n"
-"\n"
-"  <div><font color='#2B2B2B'><b>Please make sure to share your best work with your friends ;-)</b></font></div>\n"
-"\n"
-"  <br/>\n"
-"  <div><font color='#616161' style='font-size: 11px; font-weight: normal;'>Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009</font></div>\n"
-"</body>\n"
-"</html>");
+    QString introduction = tr(
+        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
+        "<html><!--head><meta name=\"qrichtext\" content=\"1\" /></head-->\n"
+        "<body style=\"font-family:'Sans Serif';\">\n"
+        "   <span style='font-size: 26px; font-weight: normal; color: #FF0000;'>\n"
+        "      <img src=':/data/action-remove.png'>\n"
+        "        Welcome\n"
+        "      <img src=':/data/action-remove.png'>\n"
+        "   </span>\n"
+        "   <br />\n"
+        "   <div style='font-size: 16px; font-weight: normal;'>\n"
+        "      <b>Playing</b> with <b>Fotowall</b> is easy\n"
+        "   </div>\n"
+        "   <ul>\n"
+        "      <li><img src=':/data/action-add.png'><b> add contents</b> using the <i><span style='background-color: rgb(255, 226, 0);'>ADD NEW</span></i> buttons or <i><span style='background-color: rgb(255, 226, 0);'>drop them</span></i></li>\n"
+        "      <li><img src=':/data/action-move.png'><b> move contents around </b> and <b><img src=':/data/action-rotate.png'> rotate them</b> <span style='background-color: rgb(255, 226, 0);'>by <i>dragging the corners</i></span></li>\n"
+        "      <li><img src=':/data/action-configure.png'><i> <span style='background-color: rgb(255, 226, 0);'>right click on the objects</span></i> or <i><span style='background-color: rgb(255, 226, 0);'>use the top bar</span></i> to <b>modify properties</b></li>\n"
+        "      <li><span style='background-color: rgb(255, 226, 0);'><i>double click any content</i></span> to <b>open the editor</b> or set it as <b>background</b></li>\n"
+        "      <li>...and we'll let you discover the rest!</li>\n"
+        "   </ul>\n"
+        "   <div><font color='#2B2B2B'><b>\n"
+        "      Please make sure to share your best work with your friends ;-)\n"
+        "   </b></font></div>\n"
+        "   <br/>\n"
+        "   <div><font color='#616161' style='font-size: 11px; font-weight: normal;'>\n"
+        "      Fotowall is LGPL, by Enrico Ros <enrico.ros@gmail.com>, 2009\n"
+        "   </font></div>\n"
+        "</body>\n"
+        "</html>"
+    );
 #if defined(USE_QTWEBKIT)
     // show fancy help in internal browser
 #error WebKit was completely disabled, to only have 1 version of the HTML to translate...

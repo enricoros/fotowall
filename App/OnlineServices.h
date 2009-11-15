@@ -12,70 +12,43 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MetaXmlReader_h__
-#define __MetaXmlReader_h__
+#ifndef __OnlineServices_h__
+#define __OnlineServices_h__
 
+#include <QObject>
 #include <QList>
-#include <QString>
-#include <QXmlStreamReader>
 class QNetworkAccessManager;
 
-namespace MetaXml {
 
-// structures definition
-struct Release {
-    QString name;
-    QString version;
-    QString url;
-};
-
-struct Website {
-    enum Type { HomePage, Blog, Other } type;
-    QString name;
-    QString url;
-};
-
-/// Reader class
-class Reader_1 : public QXmlStreamReader {
-    public:
-        Reader_1(const QByteArray & data);
-
-        // out data
-        QList<Release> releases;
-        QList<Website> websites;
-
-    private:
-        void read();
-        void readReleases();
-        Release readRelease();
-        void readWebsites();
-};
-
-/// Fetcher class
-class Connector : public QObject {
+class OnlineServices : public QObject {
     Q_OBJECT
     public:
-        static Connector * instance();
-        Connector();
+        OnlineServices(QNetworkAccessManager *, QObject * parent = 0);
+        ~OnlineServices();
 
-        bool hasDone() const;
-        bool isValid() const;
+        // return true if already present, otherwise start a search
+        bool checkForTutorial();
 
-        const Reader_1 * reader() const;
+    public Q_SLOTS:
+        void openWebpage();
+        void openBlog();
+        void openTutorial();
+        void checkForUpdates();
 
     Q_SIGNALS:
-        void fetched();
-        void fetchError(const QString & description);
+        void tutorialFound(bool);
 
     private:
+        void autoUpdate();
+
+        enum PostFetchOp { OpenWebsite, OpenBlog };
         QNetworkAccessManager * m_nam;
-        Reader_1 * m_reader;
+        bool                    m_haveTutorial;
+        QList<PostFetchOp>      m_postOps;
 
     private Q_SLOTS:
-        void slotGotReply();
-        void slotTimeOut();
+        void slotCheckTutorialReply();
+        void slotConnectorFinished();
 };
-
-}
 
 #endif

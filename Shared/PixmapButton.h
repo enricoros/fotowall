@@ -25,6 +25,7 @@ class PixmapButton : public QAbstractButton
     Q_PROPERTY(QSize fixedSize READ fixedSize WRITE setFixedSize)
     Q_PROPERTY(QPixmap hoverPixmap READ hoverPixmap WRITE setHoverPixmap)
     Q_PROPERTY(QPixmap pixmap READ pixmap WRITE setPixmap)
+    Q_PROPERTY(bool fadeInactive READ fadeInactive WRITE setFadeInactive)
     public:
         PixmapButton(QWidget * parent = 0);
 
@@ -39,6 +40,10 @@ class PixmapButton : public QAbstractButton
         // change mouse-over pixmap
         void setHoverPixmap(const QPixmap & pixmap);
         QPixmap hoverPixmap() const;
+
+        // fade out if non-hovered/focused
+        void setFadeInactive(bool);
+        bool fadeInactive() const;
 
         // enforce the fixed size notion
         void setFixedSize(const QSize & size);
@@ -57,6 +62,7 @@ class PixmapButton : public QAbstractButton
         QFont m_hoverFont;
         QString m_hoverText;
         QPixmap m_hoverPixmap;
+        bool m_fadeInactive;
         bool m_hovering;
 };
 

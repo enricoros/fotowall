@@ -909,7 +909,7 @@ void AbstractContent::createCorner(Qt::Corner corner, bool noRescale)
     CornerItem * c = new CornerItem(corner, noRescale, this);
     c->setVisible(m_controlsVisible);
     c->setZValue(2.0);
-    c->setToolTip(tr("Drag with Left or Right mouse button.\n - Hold down SHIFT for free resize\n - Hold down CTRL to allow rotation\n - Hold down ALT to snap rotation\n - Double click (with LMB/RMB) to restore the aspect ratio/rotation"));
+    c->setToolTip(tr("Drag with Left or Right mouse button.\n - Hold down SHIFT for free resize\n - Hold down CTRL to rotate only\n - Hold down ALT to snap rotation\n - Double click (with LMB/RMB) to restore the aspect ratio/rotation"));
     m_cornerItems.append(c);
 }
 

@@ -18,6 +18,7 @@
 #include <QObject>
 #include <QUrl>
 class AbstractPictureService;
+class OnlineServices;
 class Settings;
 class Workflow;
 
@@ -29,6 +30,7 @@ class App
         // uniquely instanced objects
         static Settings * settings;
         static Workflow * workflow;
+        static OnlineServices * onlineServices;
         static AbstractPictureService * pictureService;
 
         // consts
@@ -41,8 +43,7 @@ class App
 
         // commands understood by appliances
         enum {
-            AC_ClearBackground      = 0x0001,
-            AC_ShowIntro            = 0x0002
+            AC_ClearBackground      = 0x0001
         };
 
         // utility functions

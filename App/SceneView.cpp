@@ -21,10 +21,14 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRectF>
+#include <QScrollBar>
 #include <QStyleOption>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWheelEvent>
+
+// the constant top margin of the grid layout
+#define GRIDLAYOUT_TOPMARGIN 5
 
 /// The style used by the SceneView's rubberband selection
 class RubberBandStyle : public QCommonStyle
@@ -59,7 +63,7 @@ SceneView::SceneView(QWidget * parent)
   , m_openGL(false)
   , m_abstractScene(0)
   , m_style(0)
-  , m_overLayout(0)
+  , m_overGridLayout(0)
   , m_heavyTimer(0)
   , m_heavyCounter(0)
 {
@@ -82,11 +86,10 @@ SceneView::SceneView(QWidget * parent)
     viewport()->setStyle(m_style);
 
     // create the layout for the overlay widgets
-    m_overLayout = new QVBoxLayout();
-    m_overLayout->setContentsMargins(0, 4, 0, 4);
-    m_overLayout->setSpacing(3);
-    m_overLayout->addStretch(100);
-    setLayout(m_overLayout);
+    m_overGridLayout = new QGridLayout;
+    m_overGridLayout->setContentsMargins(0, GRIDLAYOUT_TOPMARGIN, 0, 0);
+    m_overGridLayout->setSpacing(3);
+    setLayout(m_overGridLayout);
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
     //setCacheMode(CacheBackground);
@@ -176,21 +179,28 @@ void SceneView::setOpenGL(bool enabled)
 void SceneView::setOpenGL(bool) {};
 #endif
 
-void SceneView::addOverlayWidget(QWidget * widget, bool top)
+void SceneView::addOverlayWidget(QWidget * widget, int row, Qt::Alignment alignment)
 {
-    Qt::Alignment align = Qt::AlignLeft;
-    if (top)
-        align |= Qt::AlignTop;
+    // add the widget at the right place in the grid layout
+    if (alignment == Qt::AlignRight)
+        m_overGridLayout->addWidget(widget, row, 1, 1, 1, Qt::AlignRight);
+    else if (alignment & Qt::AlignHCenter)
+        m_overGridLayout->addWidget(widget, row, 0, 1, 2, Qt::AlignLeft);
     else
-        align |= Qt::AlignBottom;
-    m_overLayout->insertWidget(m_overLayout->count() - 1, widget, 0, align);
+        m_overGridLayout->addWidget(widget, row, 0, 1, 1, Qt::AlignLeft);
+
+    // hackish way to have a bottom spacer (works for monotonic insertion only)
+    m_overGridLayout->setRowStretch(row, 0);
+    m_overGridLayout->setRowStretch(row + 1, 100);
+
+    // ensure the widget is shown
     widget->show();
 }
 
 void SceneView::removeOverlayWidget(QWidget *widget)
 {
     widget->hide();
-    m_overLayout->removeWidget(widget);
+    m_overGridLayout->removeWidget(widget);
     widget->setParent(0);
 }
 
@@ -246,14 +256,18 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
         painter->resetTransform();
 
         // draw shadow
-        QRect viewporRect = viewport()->contentsRect();
-        viewporRect.setHeight(8);
-        painter->drawTiledPixmap(viewporRect, shadowTile);
+        QRect viewportRect = viewport()->contentsRect();
+        int viewportHeight = viewportRect.height();
+        viewportRect.setHeight(8);
+        painter->drawTiledPixmap(viewportRect, shadowTile);
 
         // draw text
         QString text = tr("%1%").arg(m_viewScale * 100);
         QRect textRect = QFontMetrics(painter->font()).boundingRect(text).adjusted(-2, -1, 2, 1);
-        textRect.moveTopRight(QPoint(viewporRect.width() - 5, 5));
+        if (QApplication::isLeftToRight())
+            textRect.moveBottomLeft(QPoint(5, viewportHeight - 5));
+        else
+            textRect.moveBottomRight(QPoint(viewportRect.width() - 5, viewportHeight - 5));
         painter->fillRect(textRect, palette().color(QPalette::Highlight));
         painter->setPen(palette().color(QPalette::HighlightedText));
         painter->drawText(textRect, Qt::AlignCenter, text);
@@ -335,6 +349,12 @@ void SceneView::layoutScene()
     Qt::ScrollBarPolicy sPolicy = scrollbarsNeeded ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
     setVerticalScrollBarPolicy(sPolicy);
     setHorizontalScrollBarPolicy(sPolicy);
+
+    // change the overlay layout margins to skip the bars (if present)
+    if (QApplication::isLeftToRight())
+        m_overGridLayout->setContentsMargins(0, GRIDLAYOUT_TOPMARGIN, scrollbarsNeeded ? verticalScrollBar()->width() : 0, scrollbarsNeeded ? horizontalScrollBar()->height() : 0);
+    else
+        m_overGridLayout->setContentsMargins(scrollbarsNeeded ? verticalScrollBar()->width() : 0, GRIDLAYOUT_TOPMARGIN, 0, scrollbarsNeeded ? horizontalScrollBar()->height() : 0);
 
     // change the selection/scrolling policy
     if (m_abstractScene->sceneSelectable())

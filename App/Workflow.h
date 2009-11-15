@@ -40,8 +40,10 @@ class Workflow : public QObject
         void startWordcloud_A();
         void stackSlaveWordcloud_A(SingleResourceLoaner *);
 #endif
+        void stackHelpAppliance();
+        void popCurrentAppliance();
 
-        //
+        // other utilities
         bool applianceCommand(int command);
         bool requestExit();
 

@@ -21,21 +21,28 @@ struct InternalNode;
 class BreadCrumbBar : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(bool translucent READ translucent WRITE setTranslucent)
     public:
-        BreadCrumbBar(QWidget * parent);
+        BreadCrumbBar(QWidget * parent = 0);
 
         enum { InvalidNode = 0 };
         quint32 addNode(quint32 id, const QString & text, quint32 parentId = 0);
         void deleteNode(quint32 id);
         void clearNodes();
 
-        // QWidget
-        void paintEvent(QPaintEvent * event);
+        // enable clickable leaves, active by default
+        void setClickableLeaves(bool);
+        bool clickableLeaves() const;
 
-        // drawing style
-        void setTranslucent(bool);
-        bool translucent() const;
+        // enable background drawing, active by default
+        void setDrawBackground(bool);
+        bool drawBackground() const;
+
+        // invert background offset (used by right-side bcbars)
+        void setBackgroundOffset(int side = 0);
+        int backgroundOffset() const;
+
+        // ::QWidget
+        void paintEvent(QPaintEvent * event);
 
     Q_SIGNALS:
         void nodeClicked(quint32 id);
@@ -43,7 +50,9 @@ class BreadCrumbBar : public QWidget
     private:
         void processLayout();
         InternalNode * m_root;
-        bool m_translucent;
+        bool m_clickableLeaves;
+        bool m_drawBackground;
+        int m_backgroundOffset;
 
     private Q_SLOTS:
         void slotLabelClicked(quint32 id);

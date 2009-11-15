@@ -21,6 +21,7 @@
 #include "Canvas/Canvas.h"
 #include "CanvasAppliance.h"
 #include "FotowallFile.h"
+#include "HelpAppliance.h"
 #include "HomeAppliance.h"
 #include "Settings.h"
 #ifndef NO_WORDCLOUD_APPLIANCE
@@ -123,6 +124,19 @@ void Workflow::stackSlaveWordcloud_A(SingleResourceLoaner * resource)
     scheduleCommand(Command(Command::SlaveWordcloud, QVariant(), resource));
 }
 #endif
+
+void Workflow::stackHelpAppliance()
+{
+    // if no help app, immediately stack it
+    if (m_stack.isEmpty() || !dynamic_cast<HelpAppliance *>(m_stack.last().appliance))
+        pushNode(new HelpAppliance);
+}
+
+void Workflow::popCurrentAppliance()
+{
+    if (!m_stack.isEmpty())
+        scheduleCommand(Command(Command::ResetToLevel, m_stack.size() - 1));
+}
 
 bool Workflow::applianceCommand(int command)
 {
@@ -302,7 +316,7 @@ void Workflow::popNode(bool discardChanges)
                 delete wApp->takeCloud();
             }
 #endif
-            else if (dynamic_cast<HomeAppliance *>(app)) {
+            else if (dynamic_cast<HomeAppliance *>(app) || dynamic_cast<HelpAppliance *>(app)) {
                 // no data to delete here
             } else
                 qWarning("Workflow::popNode: saving of appliance '%s' not handled", qPrintable(app->applianceName()));

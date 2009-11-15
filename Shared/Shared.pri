@@ -5,6 +5,7 @@ HEADERS += \
     Shared/PictureServices/AbstractPictureService.h \
     Shared/PictureServices/FlickrPictureService.h \
     Shared/PictureServices/GoogleImagesPictureService.h \
+    Shared/AbstractDisposeable.h \
     Shared/AbstractScene.h \
     Shared/AbstractResourceProvider.h \
     Shared/BlinkingToolButton.h \
@@ -17,6 +18,7 @@ HEADERS += \
     Shared/GlowEffectDialog.h \
     Shared/GlowEffectWidget.h \
     Shared/GroupBoxWidget.h \
+    Shared/HighlightItem.h \
     Shared/MetaXmlReader.h \
     Shared/PanePropertyEditor.h \
     Shared/PictureEffect.h \
@@ -32,6 +34,7 @@ SOURCES += \
     Shared/PictureServices/AbstractPictureService.cpp \
     Shared/PictureServices/FlickrPictureService.cpp \
     Shared/PictureServices/GoogleImagesPictureService.cpp \
+    Shared/AbstractDisposeable.cpp \
     Shared/AbstractScene.cpp \
     Shared/BlinkingToolButton.cpp \
     Shared/BreadCrumbBar.cpp \
@@ -43,6 +46,7 @@ SOURCES += \
     Shared/GlowEffectDialog.cpp \
     Shared/GlowEffectWidget.cpp \
     Shared/GroupBoxWidget.cpp \
+    Shared/HighlightItem.cpp \
     Shared/PanePropertyEditor.cpp \
     Shared/PixmapButton.cpp \
     Shared/PropertyEditors.cpp \

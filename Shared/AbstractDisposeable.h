@@ -3,7 +3,7 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,29 +12,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HelpItem_h__
-#define __HelpItem_h__
+#ifndef __AbstractDisposeable_h__
+#define __AbstractDisposeable_h__
 
-#include "AbstractDisposeable.h"
-class Frame;
+#include <QtGlobal>
+#if QT_VERSION >= 0x040600
+#include <QGraphicsObject>
+#include <QPropertyAnimation>
+#else
+#include <QObject>
+#include <QGraphicsItem>
+#endif
 
-class HelpItem : public AbstractDisposeable
+/**
+    \class AbstractDisposeable
+    Base class of 'disposeable' items (items you can call 'dispose' on them and
+    forget about them).
+*/
+#if QT_VERSION >= 0x040600
+class AbstractDisposeable : public QGraphicsObject
+#else
+class AbstractDisposeable : public QObject, public QGraphicsItem
+#endif
 {
-    Q_OBJECT
     public:
-        HelpItem(QGraphicsItem * parent = 0);
-        ~HelpItem();
+        AbstractDisposeable(QGraphicsItem * parent = 0, bool fadeIn = false);
+        virtual ~AbstractDisposeable() {}
 
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
-
-    Q_SIGNALS:
-        void closeMe();
-
-    private:
-        Frame * m_frame;
+        // reimplement this to add a custom deletion behavior
+        virtual void dispose();
 };
 
 #endif
