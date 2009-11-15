@@ -26,8 +26,8 @@ class OnlineServices : public QObject {
         OnlineServices(QNetworkAccessManager *, QObject * parent = 0);
         ~OnlineServices();
 
-        // basic operations used by Fotowall
-        bool haveTutorial() const;
+        // return true if already present, otherwise start a search
+        bool checkForTutorial();
 
     public Q_SLOTS:
         void openWebpage();
@@ -40,7 +40,6 @@ class OnlineServices : public QObject {
 
     private:
         void autoUpdate();
-        void checkForTutorial();
 
         enum PostFetchOp { OpenWebsite, OpenBlog };
         QNetworkAccessManager * m_nam;

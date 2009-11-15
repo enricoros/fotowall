@@ -45,7 +45,6 @@ OnlineServices::OnlineServices(QNetworkAccessManager * nam, QObject * parent)
 
     // start-up operations
     autoUpdate();
-    checkForTutorial();
 }
 
 OnlineServices::~OnlineServices()
@@ -54,9 +53,16 @@ OnlineServices::~OnlineServices()
     App::onlineServices = 0;
 }
 
-bool OnlineServices::haveTutorial() const
+bool OnlineServices::checkForTutorial()
 {
-    return m_haveTutorial;
+    // if altready found, don't check again
+    if (m_haveTutorial)
+        return true;
+
+    // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
+    QNetworkReply * reply = m_nam->get(QNetworkRequest(TUTORIAL_URL));
+    connect(reply, SIGNAL(finished()), this, SLOT(slotCheckTutorialReply()));
+    return false;
 }
 
 void OnlineServices::openWebpage()
@@ -139,16 +145,6 @@ void OnlineServices::autoUpdate()
     // check for updates 30 days after the last one
     if (lastCheck.daysTo(QDate::currentDate()) > 30)
         QTimer::singleShot(2000, this, SLOT(checkForUpdates()));
-}
-
-void OnlineServices::checkForTutorial()
-{
-    // hide the tutorial link
-    m_haveTutorial = false;
-
-    // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
-    QNetworkReply * reply = m_nam->get(QNetworkRequest(TUTORIAL_URL));
-    connect(reply, SIGNAL(finished()), this, SLOT(slotCheckTutorialReply()));
 }
 
 void OnlineServices::slotCheckTutorialReply()

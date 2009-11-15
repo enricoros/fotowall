@@ -74,7 +74,7 @@ HelpAppliance::HelpAppliance(QObject *parent)
 {
     // create the gui components over a dummy widget
     ui.setupUi(m_dummyWidget);
-    ui.tutorialButton->setVisible(App::onlineServices->haveTutorial());
+    ui.tutorialButton->setVisible(App::onlineServices->checkForTutorial());
     connect(App::onlineServices, SIGNAL(tutorialFound(bool)), ui.tutorialButton, SLOT(setVisible(bool)));
     connect(ui.webButton, SIGNAL(clicked()), App::onlineServices, SLOT(openWebpage()));
     connect(ui.blogButton, SIGNAL(clicked()), App::onlineServices, SLOT(openBlog()));
