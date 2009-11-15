@@ -79,6 +79,20 @@ MainWindow::MainWindow(QWidget * parent)
     connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
     createLikeBack();
 
+    // create the Workflow navigation bar
+    BreadCrumbBar * workflowBar = new BreadCrumbBar(ui->sceneView);
+    workflowBar->setObjectName(QString::fromUtf8("applianceNavBar"));
+    workflowBar->setClickableLeaves(false);
+    workflowBar->setBackgroundOffset(-1);
+    ui->sceneView->addOverlayWidget(workflowBar, 0, Qt::AlignLeft);
+
+    // create the Help bar
+    BreadCrumbBar * helpBar = new BreadCrumbBar(ui->sceneView);
+    connect(helpBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotHelpBarClicked(quint32)));
+    helpBar->setBackgroundOffset(1);
+    helpBar->addNode(1, tr("?"), 0);
+    ui->sceneView->addOverlayWidget(helpBar, 0, Qt::AlignRight);
+
     // show (with last geometry)
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
         QRect desktopGeometry = QApplication::desktop()->availableGeometry();
@@ -87,14 +101,8 @@ MainWindow::MainWindow(QWidget * parent)
     } else
         show();
 
-    // create the Appliance navigation bar
-    BreadCrumbBar * applianceNavBar = new BreadCrumbBar(ui->sceneView);
-    applianceNavBar->setObjectName(QString::fromUtf8("applianceNavBar"));
-    applianceNavBar->setTranslucent(true);
-    ui->sceneView->addOverlayWidget(applianceNavBar);
-
     // start the workflow
-    new Workflow(this, applianceNavBar);
+    new Workflow(this, workflowBar);
 
     // check stuff on the net
     checkForTutorial();
@@ -204,7 +212,7 @@ void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
             if (!m_networkAccessManager)
                 m_networkAccessManager = new QNetworkAccessManager(this);
             m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
-            ui->sceneView->addOverlayWidget(m_pictureSearch, false);
+            ui->sceneView->addOverlayWidget(m_pictureSearch, 1, Qt::AlignCenter);
             m_pictureSearch->setFocus();
             return;
         }
@@ -286,6 +294,11 @@ void MainWindow::slotRenderingSlow()
         ui->modeWidget->setChecked(true);
         ui->accelTestButton->drawAttenction();
     }
+}
+
+void MainWindow::slotHelpBarClicked(quint32)
+{
+    App::workflow->applianceCommand(App::AC_ShowIntro);
 }
 
 void MainWindow::on_introButton_clicked()

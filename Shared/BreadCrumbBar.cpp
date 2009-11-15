@@ -230,7 +230,9 @@ struct InternalNode {
 BreadCrumbBar::BreadCrumbBar(QWidget * parent)
   : QWidget(parent)
   , m_root(0)
-  , m_translucent(false)
+  , m_clickableLeaves(true)
+  , m_drawBackground(true)
+  , m_backgroundOffset(0)
 {
     // init defaults
     processLayout();
@@ -283,15 +285,58 @@ void BreadCrumbBar::clearNodes()
     processLayout();
 }
 
-void BreadCrumbBar::paintEvent(QPaintEvent * event)
+void BreadCrumbBar::setClickableLeaves(bool clickable)
 {
-    // translucent painting
-    if (m_translucent && layout()) {
-#if 0
+    if (m_clickableLeaves != clickable) {
+        m_clickableLeaves = clickable;
+        processLayout();
+    }
+}
+
+bool BreadCrumbBar::clickableLeaves() const
+{
+    return m_clickableLeaves;
+}
+
+void BreadCrumbBar::setDrawBackground(bool enable)
+{
+    if (m_drawBackground != enable) {
+        m_drawBackground = enable;
+        update();
+    }
+}
+
+bool BreadCrumbBar::drawBackground() const
+{
+    return m_drawBackground;
+}
+
+void BreadCrumbBar::setBackgroundOffset(int side)
+{
+    if (m_backgroundOffset != side) {
+        m_backgroundOffset = side;
+        update();
+    }
+}
+
+int BreadCrumbBar::backgroundOffset() const
+{
+    return m_backgroundOffset;
+}
+
+void BreadCrumbBar::paintEvent(QPaintEvent * /*event*/)
+{
+    // skip drawing if not requested
+    if (!m_drawBackground)
         return;
-#else
-        // find children boundaries
-        QRectF boundaries;
+
+    // find out the painting boundaries
+    QRectF boundaries = rect();
+    boundaries.adjust(0.5, 0.5, -0.5, -0.5);
+#if 0
+    // find children boundaries
+    if (layout()) {
+        boundaries = QRectF();
         const QLayout * lay = layout();
         const int children = lay->count();
         for (int i = 0; i < children; ++i) {
@@ -300,43 +345,30 @@ void BreadCrumbBar::paintEvent(QPaintEvent * event)
                 boundaries = boundaries.isNull() ? child->geometry() : boundaries.united(child->geometry());
         }
         boundaries.adjust(-BAR_H_MARGIN + 0.5, -BAR_V_MARGIN + 0.5, BAR_H_MARGIN - 0.5, BAR_V_MARGIN - 0.5);
+    }
+#endif
 
-        // adapt a bit the boundaries to hide a round side
+    // adapt a bit the boundaries to hide a round side
+    if (m_backgroundOffset) {
+        bool adjustLeft = false;
+        adjustLeft = m_backgroundOffset > 0;
         if (QApplication::isRightToLeft())
+            adjustLeft = !adjustLeft;
+        if (adjustLeft)
             boundaries.adjust(0, 0, BAR_RADIUS, 0);
         else
             boundaries.adjust(-BAR_RADIUS, 0, 0, 0);
-
-        // paint a rounded rect
-        QPainter p(this);
-        p.setRenderHint(QPainter::Antialiasing, true);
-        p.setPen(QPen(Qt::darkGray, 1));
-        QLinearGradient lg(0, 0, 0, height());
-        lg.setColorAt(0.0, QColor(255, 255, 255));
-        lg.setColorAt(1.0, QColor(200, 200, 200));
-        p.setBrush(lg);
-        p.drawRoundedRect(boundaries, BAR_RADIUS, BAR_RADIUS, Qt::AbsoluteSize);
-#endif
-    } else {
-        QPainter p(this);
-        QLinearGradient lg(0, 0, 0, height());
-        lg.setColorAt(0.0, QColor(237, 237, 237));
-        lg.setColorAt(1.0, Qt::lightGray);
-        p.fillRect(event->rect(), lg);
     }
-}
 
-void BreadCrumbBar::setTranslucent(bool translucent)
-{
-    if (m_translucent != translucent) {
-        m_translucent = translucent;
-        update();
-    }
-}
-
-bool BreadCrumbBar::translucent() const
-{
-    return m_translucent;
+    // paint a rounded rect
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing, true);
+    p.setPen(QPen(Qt::darkGray, 1));
+    QLinearGradient lg(0, 0, 0, height());
+    lg.setColorAt(0.0, QColor(255, 255, 255));
+    lg.setColorAt(1.0, QColor(200, 200, 200));
+    p.setBrush(lg);
+    p.drawRoundedRect(boundaries, BAR_RADIUS, BAR_RADIUS, Qt::AbsoluteSize);
 }
 
 void BreadCrumbBar::processLayout()
@@ -364,7 +396,7 @@ void BreadCrumbBar::processLayout()
             node->label->setText(node->text);
             connect(node->label, SIGNAL(labelClicked(quint32)), this, SLOT(slotLabelClicked(quint32)));
         }
-        node->label->setLast(node->children.isEmpty());
+        node->label->setLast(node->children.isEmpty() && !m_clickableLeaves);
         hLay->addWidget(node->label);
 
         // create/destroy expander when needed

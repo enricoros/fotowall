@@ -18,7 +18,7 @@
 #include <QGraphicsView>
 #include <QTime>
 class AbstractScene;
-class QVBoxLayout;
+class QGridLayout;
 class RubberBandStyle;
 
 class SceneView : public QGraphicsView
@@ -41,7 +41,7 @@ class SceneView : public QGraphicsView
         void setOpenGL(bool enabled);
 
         // layout widgets inside this
-        void addOverlayWidget(QWidget * widget, bool top = true);
+        void addOverlayWidget(QWidget * widget, int row, Qt::Alignment alignment);
         void removeOverlayWidget(QWidget * widget);
 
         // properties
@@ -67,7 +67,7 @@ class SceneView : public QGraphicsView
         bool m_openGL;
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
-        QVBoxLayout * m_overLayout;
+        QGridLayout * m_overGridLayout;
         QTime m_paintTime;
         QTimer * m_heavyTimer;
         int m_heavyCounter;

@@ -63,6 +63,9 @@ class MainWindow : public PlugGui::Container
         // notifications
         void slotRenderingSlow();
 
+        // help bar
+        void slotHelpBarClicked(quint32);
+
         // help box
         void on_introButton_clicked();
         void on_lbBug_clicked();
