@@ -198,7 +198,7 @@ Use CTRL to cancel the transformations.</source>
     </message>
     <message>
         <location line="+0"/>
-        <source>You won&apos;t see through the Canvas unless you remove the background gradient.&lt;br&gt;&lt;b&gt;Do you want me to clear the background?&lt;/b&gt;</source>
+        <source>You won&apos;t see through the Canvas unless you clear the background.&lt;br&gt;&lt;b&gt;Do you want me to clear it?&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -456,6 +456,14 @@ Use CTRL to cancel the transformations.</source>
     <message>
         <location filename="../Shared/CroppingDialog.ui"/>
         <source>Cropping</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DottedLineEdit</name>
+    <message>
+        <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
+        <source>Type here...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -900,16 +908,6 @@ p, li { white-space: pre-wrap; }
     <name>HelpApplianceWidgets</name>
     <message>
         <location filename="../App/HelpAppliance.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>INTERNET</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Fotowall&apos;s Website</source>
         <translation type="unfinished"></translation>
     </message>
@@ -926,6 +924,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location/>
         <source>Fotowall&apos;s Blog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>ONLINE</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1194,14 +1197,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>MyLineEdit</name>
-    <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
-        <source>Type here...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>OnlineServices</name>
     <message>
         <location filename="../App/OnlineServices.cpp" line="+107"/>
@@ -1211,7 +1206,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+0"/>
         <source>This is the blog of the main author of Fotowall.
-You can find some news while we set up a proper website ;-)
 Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1371,11 +1365,6 @@ Do you want to open the web page?</source>
     <name>PictureProperties</name>
     <message>
         <location filename="../Canvas/PictureProperties.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1414,11 +1403,6 @@ Do you want to open the web page?</source>
     <name>PictureSearchWidget</name>
     <message>
         <location filename="../App/PictureSearchWidget.ui"/>
-        <source>Flickr Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Flickr</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1813,7 +1797,7 @@ Do you want to open the web page?</source>
     <name>WordcloudAppliance</name>
     <message>
         <location filename="../App/WordcloudAppliance.h" line="+41"/>
-        <source>Word Cloud</source>
+        <source>Wordcloud</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1839,11 +1823,6 @@ Do you want to open the web page?</source>
     <name>WordcloudSidebar</name>
     <message>
         <location filename="../App/WordcloudSidebar.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Regen</source>
         <translation type="unfinished"></translation>
     </message>

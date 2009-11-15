@@ -212,7 +212,7 @@ Utiliser CTRL pour annuler les transformations.</translation>
     </message>
     <message>
         <location line="+0"/>
-        <source>You won&apos;t see through the Canvas unless you remove the background gradient.&lt;br&gt;&lt;b&gt;Do you want me to clear the background?&lt;/b&gt;</source>
+        <source>You won&apos;t see through the Canvas unless you clear the background.&lt;br&gt;&lt;b&gt;Do you want me to clear it?&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -502,6 +502,14 @@ Utiliser CTRL pour annuler les transformations.</translation>
     <message>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
         <translation type="obsolete">Les %1 éléments sélectionnés seront supprimés, voulez-vous continuer ?</translation>
+    </message>
+</context>
+<context>
+    <name>DottedLineEdit</name>
+    <message>
+        <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
+        <source>Type here...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -950,12 +958,7 @@ p, li { white-space: pre-wrap; }
     <name>HelpApplianceWidgets</name>
     <message>
         <location filename="../App/HelpAppliance.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>INTERNET</source>
+        <source>ONLINE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1315,16 +1318,46 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Images (%1)</translation>
     </message>
     <message>
-        <location filename="../App/MainWindow.cpp" line="+289"/>
+        <location filename="../App/MainWindow.cpp" line="+78"/>
+        <source> ? </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+182"/>
+        <source>Accelerated Rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>OpenGL accelerates graphics. However it&apos;s not supported by every system.&lt;br&gt;&lt;b&gt;Do you want to do an acceleration test?&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
         <source>OpenGL</source>
         <translation></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>OpenGL accelerates graphics, but it doesn&apos;t work on some systems.&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, don&apos;t enable OpenGL next time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Test OpenGL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+92"/>
+        <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OpenGL accelerates graphics. However it&apos;s not guaranteed that it will work on your system. Just try and see if it works for you ;-)&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, just don&apos;t use this feature next time&lt;br&gt;&lt;br&gt;NOTE: OpenGL doesn&apos;t work with &apos;Transparent&apos; mode.&lt;br&gt;</source>
         <translation type="obsolete">OpenGL accélère le graphique. Cependant ce n&apos;est pas garanti que ça fonctionne sur votre système. Essayez et regardez si ça fonctionne pour vous ;-)&lt;br&gt; - Si ça semble plus lent, vérifiez que votre pilote accélère OpenGL&lt;br&gt; - Si Fotowall s&apos;arrête de répondre après être passé à OpenGL, n&apos;utilisez pas cette fonctionnalité la prochaine fois&lt;br&gt;&lt;br&gt;NOTE : OpenGL ne fonctionne pas avec le mode &apos;Transparent&apos;.&lt;br&gt;</translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+0"/>
         <source>Transparency</source>
         <translation>Transparence</translation>
     </message>
@@ -1371,36 +1404,6 @@ Do you want to open the web page?</source>
         <translation type="obsolete">Le tutoriel est fourni sur Fosswire par Peter Upfold.
 Il concerne Fotowall 0.2, une version plutôt ancienne.
 Voulez vous ouvrir la page web ?</translation>
-    </message>
-    <message>
-        <location line="-306"/>
-        <source> ? </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+182"/>
-        <source>Accelerated Rendering</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>OpenGL accelerates graphics. However it&apos;s not supported by every system.&lt;br&gt;&lt;b&gt;Do you want to do an acceleration test?&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+29"/>
-        <source>OpenGL accelerates graphics, but it doesn&apos;t work on some systems.&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, don&apos;t enable OpenGL next time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Test OpenGL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+92"/>
-        <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Support (%1)</source>
@@ -1512,14 +1515,6 @@ Voulez vous ouvrir la page web ?</translation>
     </message>
 </context>
 <context>
-    <name>MyLineEdit</name>
-    <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
-        <source>Type here...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>OnlineServices</name>
     <message>
         <location filename="../App/OnlineServices.cpp" line="+107"/>
@@ -1529,7 +1524,6 @@ Voulez vous ouvrir la page web ?</translation>
     <message>
         <location line="+0"/>
         <source>This is the blog of the main author of Fotowall.
-You can find some news while we set up a proper website ;-)
 Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1692,11 +1686,6 @@ Do you want to open the web page?</source>
     <name>PictureProperties</name>
     <message>
         <location filename="../Canvas/PictureProperties.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Remove</source>
         <translation type="unfinished">Supprimer</translation>
     </message>
@@ -1735,11 +1724,6 @@ Do you want to open the web page?</source>
     <name>PictureSearchWidget</name>
     <message>
         <location filename="../App/PictureSearchWidget.ui"/>
-        <source>Flickr Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Flickr</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2160,7 +2144,7 @@ Do you want to open the web page?</source>
     <name>WordcloudAppliance</name>
     <message>
         <location filename="../App/WordcloudAppliance.h" line="+41"/>
-        <source>Word Cloud</source>
+        <source>Wordcloud</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2186,11 +2170,6 @@ Do you want to open the web page?</source>
     <name>WordcloudSidebar</name>
     <message>
         <location filename="../App/WordcloudSidebar.ui"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Regen</source>
         <translation type="unfinished"></translation>
     </message>
