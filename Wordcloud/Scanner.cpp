@@ -78,6 +78,7 @@ WordList Scanner::takeWords(bool cleanList)
     if (cleanList) {
         removeWordsByLanguage(QLocale::Italian);
         removeWordsByLanguage(QLocale::English);
+        removeWordsByLanguage(QLocale::French);
         int count = 2;
         while (m_words.size() >= 40) {
             removeWordsBelowCount(count);
@@ -170,6 +171,16 @@ void Scanner::removeWordsByLanguage(QLocale::Language language)
             static const char * er[] = {
                 "and", "are", "has", "to", "by", "for", "or", "the", "I", "you",
                 "on", "off", "of", "with"
+            };
+            regExps = er;
+            regExpCount = sizeof(er) / sizeof(const char *);
+            } break;
+
+        case QLocale::French: {
+            static const char * er[] = {
+                "le", "d[ue]", "un", "être", "et", "a", "je", "tu", "il.", "nous", "vous",
+                "me", "te", "[mts]on", "lui", "nous", "ne", "sont", "que", "[sc]e", "qui", "dans",
+                "elle", "au", "le", "pour", "par", "y", "avec",  "si", "là", "ça"
             };
             regExps = er;
             regExpCount = sizeof(er) / sizeof(const char *);
