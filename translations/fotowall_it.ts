@@ -1885,12 +1885,12 @@ Vuoi aprire la pagina web?</translation>
     </message>
     <message>
         <location/>
-        <source>Scheem2</source>
+        <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <source>Font</source>
+        <source>Scheme2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -311,7 +311,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location line="+0"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exportuj</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1885,12 +1885,12 @@ Czy chcesz otworzyć stronę internetowa?</translation>
     </message>
     <message>
         <location/>
-        <source>Scheem2</source>
+        <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <source>Font</source>
+        <source>Scheme2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

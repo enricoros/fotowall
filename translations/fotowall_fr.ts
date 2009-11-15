@@ -883,7 +883,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+127"/>
         <source>Non-OpenGL</source>
-        <translation>Pas-OpenGL</translation>
+        <translation type="unfinished">Non-OpenGL</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -994,7 +994,7 @@ p, li { white-space: pre-wrap; }
    &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
+        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;
@@ -1007,7 +1007,7 @@ p, li { white-space: pre-wrap; }
       &lt;b&gt;S&apos;amuser&lt;/b&gt; avec &lt;b&gt;Fotowall&lt;/b&gt; est facile
    &lt;/div&gt;
    &lt;ul&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; ajouter du contenu&lt;/b&gt; en utilisant &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;AJOUTER UN NOUVEAU&lt;/span&gt;&lt;/i&gt; boutons ou &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;déposez le&lt;&gt;/span&gt;&lt;/i&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; ajouter du contenu&lt;/b&gt; en utilisant &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;AJOUTER NOUVEAU&lt;/span&gt;&lt;/i&gt; boutons ou &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;déposez le&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
       &lt;li&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt; déplacer le contenu&lt;/b&gt; et &lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt; tournez les&lt;/b&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;en &lt;i&gt;glissant les coins&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;
       &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;clic droit sur les objets&lt;/span&gt;&lt;/i&gt; ou &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;utiliser la barre du haut&lt;/span&gt;&lt;/i&gt; pour &lt;b&gt;modifier les propriétés&lt;/b&gt;&lt;/li&gt;
       &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;double cliquez n&apos;importe quel contenu&lt;/i&gt;&lt;/span&gt; pour &lt;b&gt;ouvrir l&apos;éditeur&lt;/b&gt; ou le mettre en &lt;b&gt;arrière plan&lt;/b&gt;&lt;/li&gt;
@@ -1100,7 +1100,7 @@ p, li { white-space: pre-wrap; }
         <location line="+4"/>
         <source>&lt;p&gt;You can provide the developers a brief description of your opinions about %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</source>
         <comment>Feedback dialog text, %1=Application name,%2=message with list of accepted languages for the comment,%3=optional text to remind to balance the likes and dislikes,%4=optional text to disallow feature requests.</comment>
-        <translation>&lt;p&gt;Vous pouvez donner aux développeurs une brève description de vos opinions à propos de %1.&lt;br/&gt;%2 %3 %4&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Vous pouvez donner aux développeurs une brève description de vos opinions à propos de %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -1181,8 +1181,8 @@ p, li { white-space: pre-wrap; }
         <location/>
         <source>&lt;html&gt;Specifying an email address will allow the developers to ask you for more information on your report, or to tell you when your feature will be implemented.&lt;br/&gt;
 &lt;b&gt;Your email address will not be used for anything else but this report.&lt;/b&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Spécifier une adresse email permettra aux développeurs de vous demander plus d&apos;information sur votre rapport, ou de vous indiquer quand votre fonctionnalité sera implémentée.&lt;br/&gt;
-&lt;b&gt;Votre adresse email ne sera pas utiliser à d&apos;autres fins que ce rapport.&lt;/b&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished">&lt;html&gt;Spécifier une adresse email permettra aux développeurs de vous demander plus d&apos;information sur votre rapport, ou de vous indiquer quand votre fonctionnalité sera implémentée.&lt;br/&gt;
+&lt;b&gt;Votre adresse email ne sera pas utilisée à d&apos;autres fins que ce rapport.&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1898,6 +1898,7 @@ Voulez vous ouvrir la page web ?</translation>
     <message>
         <location/>
         <source>Randomize</source>
+        <translatorcomment>Vérifier en contexte</translatorcomment>
         <translation type="unfinished">Au hasard</translation>
     </message>
     <message>
@@ -1917,13 +1918,13 @@ Voulez vous ouvrir la page web ?</translation>
     </message>
     <message>
         <location/>
-        <source>Scheem2</source>
-        <translation type="unfinished"></translation>
+        <source>Font</source>
+        <translation>Police</translation>
     </message>
     <message>
         <location/>
-        <source>Font</source>
-        <translation type="unfinished"></translation>
+        <source>Scheme2</source>
+        <translation>Theme2</translation>
     </message>
 </context>
 <context>
@@ -1931,37 +1932,37 @@ Voulez vous ouvrir la page web ?</translation>
     <message>
         <location filename="../App/Workflow.cpp" line="+178"/>
         <source>Closing Fotowall...</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermeture de Fotowall...</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Are you sure you want to quit and lose your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes vous sur de vouloir quitter et perdre vos modifications ?</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save</source>
-        <translation type="unfinished">Sauvegarder</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Don&apos;t Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas sauvegarder</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Are you sure you want to quit?</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes vous sur de vouloir quitter ?</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitter</translation>
     </message>
 </context>
 </TS>
