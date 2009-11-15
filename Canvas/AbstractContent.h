@@ -15,7 +15,7 @@
 #ifndef __AbstractContent_h__
 #define __AbstractContent_h__
 
-#include "AbstractDisposeable.h"
+#include "Shared/AbstractDisposeable.h"
 #include "3rdparty/enricomath.h"
 #include <QDomElement>
 class AbstractConfig;

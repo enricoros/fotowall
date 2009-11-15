@@ -3,7 +3,7 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
+ *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,37 +12,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MirrorItem_h__
-#define __MirrorItem_h__
+#ifndef __HelpItem_h__
+#define __HelpItem_h__
 
 #include "Shared/AbstractDisposeable.h"
+class Frame;
 
-/**
-    \brief Mirrors a transformed PictureContent
-*/
-class MirrorItem : public AbstractDisposeable
+class HelpItem : public AbstractDisposeable
 {
     Q_OBJECT
     public:
-        MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent = 0);
-        ~MirrorItem();
-
-        // ::AbstractDisposeable
-        //void dispose();
+        HelpItem(QGraphicsItem * parent = 0);
+        ~HelpItem();
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
 
-    public Q_SLOTS:
-        void sourceMoved();
-        void sourceChanged();
+    Q_SIGNALS:
+        void closeMe();
 
     private:
-        QGraphicsItem * m_source;
-        QRectF m_boundingRect;
-        QPixmap m_pixmap;
-        bool m_dirty;
+        Frame * m_frame;
 };
 
 #endif

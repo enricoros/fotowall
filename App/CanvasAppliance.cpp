@@ -143,11 +143,6 @@ bool CanvasAppliance::applianceCommand(int command)
                     m_extCanvas->setBackMode(Canvas::BackNone);
             }
             return true;
-
-        // Show Introduction
-        case App::AC_ShowIntro:
-            m_extCanvas->showIntroduction();
-            return true;
     }
 
     // unimplemented command

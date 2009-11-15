@@ -3,7 +3,7 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,29 +12,44 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HelpItem_h__
-#define __HelpItem_h__
+#ifndef __OnlineServices_h__
+#define __OnlineServices_h__
 
-#include "AbstractDisposeable.h"
-class Frame;
+#include <QObject>
+#include <QList>
+class QNetworkAccessManager;
 
-class HelpItem : public AbstractDisposeable
-{
+
+class OnlineServices : public QObject {
     Q_OBJECT
     public:
-        HelpItem(QGraphicsItem * parent = 0);
-        ~HelpItem();
+        OnlineServices(QNetworkAccessManager *, QObject * parent = 0);
+        ~OnlineServices();
 
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        // basic operations used by Fotowall
+        bool haveTutorial() const;
+
+    public Q_SLOTS:
+        void openWebpage();
+        void openBlog();
+        void openTutorial();
+        void checkForUpdates();
 
     Q_SIGNALS:
-        void closeMe();
+        void tutorialFound(bool);
 
     private:
-        Frame * m_frame;
+        void autoUpdate();
+        void checkForTutorial();
+
+        enum PostFetchOp { OpenWebsite, OpenBlog };
+        QNetworkAccessManager * m_nam;
+        bool                    m_haveTutorial;
+        QList<PostFetchOp>      m_postOps;
+
+    private Q_SLOTS:
+        void slotCheckTutorialReply();
+        void slotConnectorFinished();
 };
 
 #endif

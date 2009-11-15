@@ -27,7 +27,7 @@
 /**
     \class AbstractDisposeable
     Base class of 'disposeable' items (items you can call 'dispose' on them and
-    forget about them.
+    forget about them).
 */
 #if QT_VERSION >= 0x040600
 class AbstractDisposeable : public QGraphicsObject

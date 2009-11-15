@@ -18,11 +18,10 @@
 #include "Frames/FrameFactory.h"
 #include "Shared/PictureServices/AbstractPictureService.h"
 #include "Shared/ColorPickerItem.h"
+#include "Shared/HighlightItem.h"
 #include "Shared/RenderOpts.h"
 #include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"
-#include "HelpItem.h"
-#include "HighlightItem.h"
 #include "PictureContent.h"
 #include "PictureConfig.h"
 #include "SelectionProperties.h"
@@ -54,7 +53,6 @@
 Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent)
     : AbstractScene(parent)
     , m_modeInfo(new CanvasModeInfo)
-    , m_helpItem(0)
     , m_backMode(BackGradient)
     , m_backContent(0)
     , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
@@ -137,7 +135,6 @@ Canvas::~Canvas()
 {
     clearContent();
     qDeleteAll(m_highlightItems);
-    delete m_helpItem;
     delete m_titleColorPicker;
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
@@ -263,8 +260,6 @@ void Canvas::resizeEvent()
     m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(sceneWidth() - COLORPICKER_W, sceneHeight() - COLORPICKER_H);
-    if (m_helpItem)
-        m_helpItem->setPos(sceneCenter().toPoint());
     foreach (HighlightItem * highlight, m_highlightItems)
         highlight->reposition(sceneRect());
 
@@ -545,30 +540,6 @@ bool Canvas::pendingChanges() const
         highlight->setPosF(x, y); \
         highlight->show(); \
     }
-
-void Canvas::showIntroduction()
-{
-    if (m_helpItem)
-        return;
-
-    // help item
-    m_helpItem = new HelpItem();
-    connect(m_helpItem, SIGNAL(closeMe()), this, SLOT(slotCloseIntroduction()));
-    addItem(m_helpItem);
-    m_helpItem->setZValue(10001);
-    m_helpItem->setPos(sceneRect().center().toPoint());
-    m_helpItem->show();
-
-    // blink items
-    if (m_topBarEnabled || m_bottomBarEnabled)
-        HIGHLIGHT(0.0, 0.0, false);
-    if (!m_titleText.isEmpty())
-        HIGHLIGHT(0.5, 0.0, false);
-    if (m_backMode == BackGradient) {
-        HIGHLIGHT(1.0, 0.0, false);
-        HIGHLIGHT(1.0, 1.0, false);
-    }
-}
 
 void Canvas::blinkBackGradients()
 {
@@ -1512,15 +1483,6 @@ void Canvas::slotMarkChanges()
 void Canvas::slotResetChanges()
 {
     m_pendingChanges = false;
-}
-
-void Canvas::slotCloseIntroduction()
-{
-    m_helpItem->dispose();
-    m_helpItem = 0;
-    foreach (HighlightItem * highlight, m_highlightItems)
-        highlight->deleteAfterAnimation();
-    m_highlightItems.clear();
 }
 
 void Canvas::slotApplyForce()

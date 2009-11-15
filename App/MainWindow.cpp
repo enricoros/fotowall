@@ -17,36 +17,23 @@
 #include "3rdparty/likebackfrontend/LikeBack.h"
 #include "Shared/BreadCrumbBar.h"
 #include "Shared/ButtonsDialog.h"
-#include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "Hardware3DTest.h"
+#include "OnlineServices.h"
 #include "PictureSearchWidget.h"
 #include "SceneView.h"
 #include "Settings.h"
-#include "VersionCheckDialog.h"
 #include "Workflow.h"
 #include "ui_MainWindow.h"
 
 #include <QApplication>
 #include <QCloseEvent>
-#include <QDir>
-#include <QDesktopServices>
 #include <QDesktopWidget>
-#include <QFileDialog>
-#include <QFile>
-#include <QMenu>
-#include <QMessageBox>
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QTimer>
 #include <QVariant>
 
-// current location and 'check string' for the tutorial
-#define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
-#define TUTORIAL_STRING "Peter walks you through how to use Foto"
-#define ENRICOBLOG_STRING "http://www.enricoros.com/blog/tag/fotowall/"
+// const strings
 #define FOTOWALL_FEEDBACK_LANGS "en,it,fr"
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
@@ -55,10 +42,9 @@
 MainWindow::MainWindow(QWidget * parent)
     : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
-    , m_networkAccessManager(0)
+    , m_networkAccessManager(new QNetworkAccessManager)
     , m_pictureSearch(0)
     , m_likeBack(0)
-    , m_aHelpTutorial(0)
     , m_applyingAccelState(false)
 {
     // setup widget
@@ -68,7 +54,6 @@ MainWindow::MainWindow(QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->topBar->setFixedHeight(App::TopBarHeight);
-    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());    
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
@@ -90,7 +75,7 @@ MainWindow::MainWindow(QWidget * parent)
     BreadCrumbBar * helpBar = new BreadCrumbBar(ui->sceneView);
     connect(helpBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotHelpBarClicked(quint32)));
     helpBar->setBackgroundOffset(1);
-    helpBar->addNode(1, tr("?"), 0);
+    helpBar->addNode(1, tr(" ? "), 0);
     ui->sceneView->addOverlayWidget(helpBar, 0, Qt::AlignRight);
 
     // show (with last geometry)
@@ -102,15 +87,14 @@ MainWindow::MainWindow(QWidget * parent)
         show();
 
     // start the workflow
-    new Workflow(this, workflowBar);
+    new Workflow((PlugGui::Container *)this, workflowBar);
 
-    // check stuff on the net
-    checkForTutorial();
-    checkForUpdates();
+    // create the online services
+    new OnlineServices(m_networkAccessManager);
 
-    // the first time, show the introduction
+    // start with the Help appliance the first time
     if (App::settings->firstTime())
-        on_introButton_clicked();
+        App::workflow->stackHelpAppliance();
 }
 
 MainWindow::~MainWindow()
@@ -123,10 +107,10 @@ MainWindow::~MainWindow()
 
     // delete everything
     delete App::workflow;
+    delete App::onlineServices;
     delete m_networkAccessManager;
     delete m_likeBack;
     delete ui;
-    // m_aHelpTutorial is deleted by its menu (that's parented to this)
 }
 
 QSize MainWindow::sceneViewSize() const
@@ -209,8 +193,6 @@ void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
 
         // create if needed
         if (visible && !m_pictureSearch) {
-            if (!m_networkAccessManager)
-                m_networkAccessManager = new QNetworkAccessManager(this);
             m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
             ui->sceneView->addOverlayWidget(m_pictureSearch, 1, Qt::AlignCenter);
             m_pictureSearch->setFocus();
@@ -231,57 +213,17 @@ void MainWindow::closeEvent(QCloseEvent * event)
     event->setAccepted(App::workflow->requestExit());
 }
 
-QMenu * MainWindow::createOnlineHelpMenu()
-{
-    QMenu * menu = new QMenu(this);
-    menu->setSeparatorsCollapsible(false);
-
-    m_aHelpTutorial = new QAction(tr("Tutorial Video (0.2)"), menu);
-    connect(m_aHelpTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
-    menu->addAction(m_aHelpTutorial);
-
-    QAction * aCheckUpdates = new QAction(tr("Check for Updates"), menu);
-    connect(aCheckUpdates, SIGNAL(triggered()), this, SLOT(slotHelpUpdates()));
-    menu->addAction(aCheckUpdates);
-
-    QAction * aFotowallBlog = new QAction(tr("Fotowall's Blog"), menu);
-    connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpWebsite()));
-    menu->addAction(aFotowallBlog);
-
-    return menu;
-}
-
-void MainWindow::checkForTutorial()
-{
-    // hide the tutorial link
-    m_aHelpTutorial->setVisible(false);
-
-    // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
-    if (!m_networkAccessManager)
-        m_networkAccessManager = new QNetworkAccessManager(this);
-    QNetworkReply * reply = m_networkAccessManager->get(QNetworkRequest(TUTORIAL_URL));
-    connect(reply, SIGNAL(finished()), this, SLOT(slotVerifyTutorialReply()));
-}
-
-void MainWindow::checkForUpdates()
-{
-    // find out the time of the last update check
-    QDate lastCheck = App::settings->value("Fotowall/LastUpdateCheck").toDate();
-    if (lastCheck.isNull()) {
-        App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
-        return;
-    }
-
-    // check for updates 30 days after the last one
-    if (lastCheck.daysTo(QDate::currentDate()) > 30)
-        QTimer::singleShot(2000, this, SLOT(slotHelpUpdates()));
-}
-
 void MainWindow::createLikeBack()
 {
     m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
     m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
     m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
+}
+
+void MainWindow::slotHelpBarClicked(quint32 id)
+{
+    if (id == 1)
+        App::workflow->stackHelpAppliance();
 }
 
 void MainWindow::slotRenderingSlow()
@@ -296,24 +238,9 @@ void MainWindow::slotRenderingSlow()
     }
 }
 
-void MainWindow::slotHelpBarClicked(quint32)
-{
-    App::workflow->applianceCommand(App::AC_ShowIntro);
-}
-
-void MainWindow::on_introButton_clicked()
-{
-    App::workflow->applianceCommand(App::AC_ShowIntro);
-}
-
 void MainWindow::on_lbLike_clicked()
 {
     m_likeBack->execCommentDialog(LikeBack::Like);
-}
-
-void MainWindow::on_lbDislike_clicked()
-{
-    m_likeBack->execCommentDialog(LikeBack::Dislike);
 }
 
 void MainWindow::on_lbFeature_clicked()
@@ -324,68 +251,6 @@ void MainWindow::on_lbFeature_clicked()
 void MainWindow::on_lbBug_clicked()
 {
     m_likeBack->execCommentDialog(LikeBack::Bug);
-}
-
-void MainWindow::slotHelpWebsite()
-{
-    // start a fetch if no URL has been determined
-    if (m_website.isEmpty()) {
-        MetaXml::Connector * conn = new MetaXml::Connector();
-        connect(conn, SIGNAL(fetched()), this, SLOT(slotHelpWebsiteFetched()));
-        connect(conn, SIGNAL(fetchError(const QString &)), this, SLOT(slotHelpWebsiteFetchError()));
-        return;
-    }
-
-    // open the website
-    if (QMessageBox::question(this, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
-        QDesktopServices::openUrl(QUrl(m_website));
-}
-
-void MainWindow::slotHelpWebsiteFetched()
-{
-    // get the websites from the conn
-    MetaXml::Connector * conn = dynamic_cast<MetaXml::Connector *>(sender());
-    if (conn && !conn->reader()->websites.isEmpty()) {
-        m_website = conn->reader()->websites.first().url;
-        if (!m_website.isEmpty()) {
-            slotHelpWebsite();
-            return;
-        }
-    }
-
-    // catch-all condition: use default url
-    slotHelpWebsiteFetchError();
-}
-
-void MainWindow::slotHelpWebsiteFetchError()
-{
-    m_website = ENRICOBLOG_STRING;
-    slotHelpWebsite();
-}
-
-void MainWindow::slotHelpTutorial()
-{
-    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about Fotowall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
-    if (answer == QMessageBox::Yes)
-        QDesktopServices::openUrl(TUTORIAL_URL);
-}
-
-void MainWindow::slotHelpUpdates()
-{
-    VersionCheckDialog vcd;
-    vcd.exec();
-    App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
-}
-
-void MainWindow::slotVerifyTutorialReply()
-{
-    QNetworkReply * reply = static_cast<QNetworkReply *>(sender());
-    if (reply->error() != QNetworkReply::NoError)
-        return;
-
-    QString htmlCode = reply->readAll();
-    bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
-    m_aHelpTutorial->setVisible(tutorialValid);
 }
 
 bool MainWindow::on_accelTestButton_clicked()

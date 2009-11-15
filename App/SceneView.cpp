@@ -28,7 +28,7 @@
 #include <QWheelEvent>
 
 // the constant top margin of the grid layout
-#define GRIDLAYOUT_TOPMARGIN 4
+#define GRIDLAYOUT_TOPMARGIN 5
 
 /// The style used by the SceneView's rubberband selection
 class RubberBandStyle : public QCommonStyle

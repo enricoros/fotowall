@@ -92,7 +92,6 @@ class Canvas : public AbstractScene
 
         // save, restore, load, help
         bool pendingChanges() const;
-        void showIntroduction();
         void blinkBackGradients();
 
         // change size and project mode (CD, DVD, etc)
@@ -138,7 +137,6 @@ class Canvas : public AbstractScene
         QList<AbstractContent *> m_content;
         QList<AbstractConfig *> m_configs;
         QList<HighlightItem *> m_highlightItems;
-        HelpItem * m_helpItem;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;
@@ -180,7 +178,6 @@ class Canvas : public AbstractScene
 
         void slotMarkChanges();
         void slotResetChanges();
-        void slotCloseIntroduction();
         void slotApplyForce();
 };
 

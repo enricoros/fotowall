@@ -14,7 +14,7 @@
 
 #include "HelpItem.h"
 #if defined(USE_QTWEBKIT)
-#include "BrowserItem.h"
+#include "Shared/BrowserItem.h"
 #else
 #include <QGraphicsTextItem>
 #endif

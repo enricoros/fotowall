@@ -22,6 +22,7 @@
 
 PixmapButton::PixmapButton(QWidget * parent)
     : QAbstractButton(parent)
+    , m_fadeInactive(false)
     , m_hovering(false)
 {
     m_hoverFont = QApplication::font();
@@ -60,6 +61,19 @@ void PixmapButton::setHoverPixmap(const QPixmap & pixmap)
 QPixmap PixmapButton::hoverPixmap() const
 {
     return m_hoverPixmap;
+}
+
+void PixmapButton::setFadeInactive(bool fade)
+{
+    if (m_fadeInactive != fade) {
+        m_fadeInactive = fade;
+        update();
+    }
+}
+
+bool PixmapButton::fadeInactive() const
+{
+    return m_fadeInactive;
 }
 
 void PixmapButton::setFixedSize(const QSize & size)
@@ -118,10 +132,15 @@ void PixmapButton::paintEvent(QPaintEvent *)
         p.fillRect(rect().adjusted(2, 2, -2, -2), palette().color(QPalette::Button));
 #endif
     } else {
+        bool fade = m_fadeInactive && !isDown() && !m_hovering && !hasFocus();
+        if (fade)
+            p.setOpacity(0.4);
         int offset = (isDown() | isChecked()) ? 1 : 0;
         p.drawPixmap( offset + (width() - m_fixedPixmap.width()) / 2,
                       offset + (height() - m_fixedPixmap.height()) / 2,
                       m_fixedPixmap);
+        if (fade)
+            p.setOpacity(1.0);
     }
 
     // draw hover text, if any

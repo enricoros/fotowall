@@ -12,37 +12,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MirrorItem_h__
-#define __MirrorItem_h__
+#ifndef __HelpAppliance_h__
+#define __HelpAppliance_h__
 
-#include "Shared/AbstractDisposeable.h"
+#include "Shared/PlugGui/AbstractAppliance.h"
+#include "ui_HelpAppliance.h"
+class HelpScene;
 
-/**
-    \brief Mirrors a transformed PictureContent
-*/
-class MirrorItem : public AbstractDisposeable
+class HelpAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
-        MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent = 0);
-        ~MirrorItem();
+        HelpAppliance(QObject * parent = 0);
+        ~HelpAppliance();
 
-        // ::AbstractDisposeable
-        //void dispose();
-
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-
-    public Q_SLOTS:
-        void sourceMoved();
-        void sourceChanged();
+        // ::Appliance::AbstractAppliance
+        QString applianceName() const { return tr("Help"); }
 
     private:
-        QGraphicsItem * m_source;
-        QRectF m_boundingRect;
-        QPixmap m_pixmap;
-        bool m_dirty;
+        Ui::HelpApplianceWidgets ui;
+        HelpScene * m_helpScene;
+        QWidget *   m_dummyWidget;
+
+    private Q_SLOTS:
+        void slotClose();
+
 };
 
 #endif
