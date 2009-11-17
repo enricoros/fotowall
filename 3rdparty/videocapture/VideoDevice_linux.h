@@ -65,19 +65,17 @@ namespace VideoCapture {
     @class VideoDevice
 */
 
-typedef enum
-{
+typedef enum {
     VIDEODEV_DRIVER_NONE
 #if defined(Q_OS_LINUX)
-    , VIDEODEV_DRIVER_V4L
+  , VIDEODEV_DRIVER_V4L
 #ifdef V4L2_CAP_VIDEO_CAPTURE
-    , VIDEODEV_DRIVER_V4L2
+  , VIDEODEV_DRIVER_V4L2
 #endif
 #endif
 } videodev_driver;
 
-typedef enum
-{
+typedef enum {
     // Packed RGB formats
     PIXELFORMAT_NONE	= 0,
     PIXELFORMAT_GREY	= (1 << 0),
@@ -117,10 +115,9 @@ typedef enum
     PIXELFORMAT_WNVA	= (1 << 26),
     PIXELFORMAT_YYUV	= (1 << 27)
     //	PIXELFORMAT_ALL		= 0x00003FFF
-} pixel_format;
+} PixelFormat;
 
-typedef enum
-{
+typedef enum {
     // One bit for each
     STANDARD_PAL_B		= (1 << 0),
     STANDARD_PAL_B1		= (1 << 1),
@@ -178,25 +175,21 @@ typedef enum
     STANDARD_ALL		= ( STANDARD_525_60  | STANDARD_625_50)
 } signal_standard;
 
-typedef enum
-{
+typedef enum {
     IO_METHOD_NONE,
     IO_METHOD_READ,
     IO_METHOD_MMAP,
     IO_METHOD_USERPTR
 } io_method;
 
-struct imagebuffer
-{
-    int height;
+struct ImageBuffer {
     int width;
-    pixel_format pixelformat;
-#warning THIS IS AN OVERKILL (see the YUYV conversions... phew!)
-    QVector <uchar> data; // maybe it should be a rawbuffer instead of it? It could make us avoid a memory copy
+    int height;
+    PixelFormat pixelformat;
+    QByteArray data;
 };
 
-struct rawbuffer // raw buffer
-{
+struct DataBuffer {
     uchar * start;
     size_t length;
 };
@@ -234,43 +227,34 @@ class VideoDevice {
         bool detectSignalStandards() const;
         void detectPixelFormats();
 
-
-    int width() const;
-    int height() const;
-
-    pixel_format setPixelFormat(pixel_format newformat);
-    int pixelFormatCode(pixel_format pixelformat);
-    pixel_format pixelFormatForPalette( int palette );
-
-    int pixelFormatDepth(pixel_format pixelformat) const;
-
-        QString pixelFormatName(pixel_format pixelformat) const;
+        PixelFormat setPixelFormat(PixelFormat newformat) const;
+        int pixelFormatToPlatform(PixelFormat pixelformat) const;
+        PixelFormat pixelFormatFromPlatform(int platform) const;
+        int pixelFormatDepth(PixelFormat pixelformat) const;
+        QString pixelFormatName(PixelFormat pixelformat) const;
         QString pixelFormatNamePlatform(int pixelformat) const;
 
-    __u64 signalStandardCode(signal_standard standard);
-
+        /*__u64 signalStandardCode(signal_standard standard);
         QString signalStandardName(signal_standard standard) const;
-        QString signalStandardName(int standard) const;
+        QString signalStandardName(int standard) const;*/
+        bool setInputParameters();
+        /*float getBrightness();
+        float setBrightness(float brightness);
+        float getContrast();
+        float setContrast(float contrast);
+        float getSaturation();
+        float setSaturation(float saturation);
+        float getWhiteness();
+        float setWhiteness(float whiteness);
+        float getHue();
+        float setHue(float Hue);*/
 
-    int setInputParameters();
-
-    float getBrightness();
-    float setBrightness(float brightness);
-    float getContrast();
-    float setContrast(float contrast);
-    float getSaturation();
-    float setSaturation(float saturation);
-    float getWhiteness();
-    float setWhiteness(float whiteness);
-    float getHue();
-    float setHue(float Hue);
-
-    bool getAutoBrightnessContrast() const;
-    bool setAutoBrightnessContrast(bool brightnesscontrast);
-    bool getAutoColorCorrection() const;
-    bool setAutoColorCorrection(bool colorcorrection);
-    bool getImageAsMirror();
-    bool setImageAsMirror(bool imageasmirror);
+        bool getAutoBrightnessContrast() const;
+        bool setAutoBrightnessContrast(bool brightnesscontrast);
+        bool getAutoColorCorrection() const;
+        bool setAutoColorCorrection(bool colorcorrection);
+        bool getImageAsMirror();
+        bool setImageAsMirror(bool imageasmirror);
 
         bool canCapture() const;
         bool canChromakey() const;
@@ -280,7 +264,6 @@ class VideoDevice {
         bool canAsyncIO() const;
         bool canStream() const;
 
-    // OK
     private:
         QString m_videoFileName;
         int m_videoFileDescriptor;
@@ -289,25 +272,16 @@ class VideoDevice {
         videodev_driver m_driver;
         io_method m_ioMethod;
 
+        int m_minWidth, m_minHeight, m_maxWidth, m_maxHeight;
+
         QVector<VideoCapture::VideoInput> m_input;
-
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-        void enumerateControls() const;
-        void enumerateMenu(quint32 id, quint32 min, quint32 max) const;
-#endif
-#endif
-
-    int m_minWidth, m_minHeight, m_maxWidth, m_maxHeight;
-    int m_currentWidth, m_currentHeight;
-
-    QVector<rawbuffer> m_rawbuffers;
-    unsigned int m_streambuffers;
-    imagebuffer m_currentbuffer;
-    int m_buffer_size;
-
         int m_currentInput;
-        pixel_format m_pixelFormat;
+
+        ImageBuffer m_imageBuffer;
+
+        QVector<DataBuffer> m_dataBuffers;
+
+        bool m_capturing;
 
         // capabilities found in 'checkdevice'
         bool m_videocapture;
@@ -322,6 +296,12 @@ class VideoDevice {
         bool initIoRead();
         bool initIoMmap();
         bool initIoUserptr();
+#ifdef Q_OS_LINUX
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+        void enumerateControls() const;
+        void enumerateMenu(quint32 id, quint32 min, quint32 max) const;
+#endif
+#endif
 };
 
 }

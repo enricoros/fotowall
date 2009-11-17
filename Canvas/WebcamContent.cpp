@@ -48,7 +48,7 @@ WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * 
 
     // start the video flow
     if (input >= 0 && input < VideoProvider::instance()->inputCount())
-        VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
+        m_broken = !VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
     else
         m_broken = true;
 }

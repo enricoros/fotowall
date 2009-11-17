@@ -40,7 +40,7 @@ class VideoProvider : public QObject
         int inputCount() const;
 
         // register to an input
-        void connectInput(int input, QObject * receiver, const char * method);
+        bool connectInput(int input, QObject * receiver, const char * method);
         void disconnectReceiver(QObject * receiver);
 
         // enable swapping of an input

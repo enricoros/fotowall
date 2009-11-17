@@ -47,38 +47,39 @@ int VideoProvider::inputCount() const
     return m_inputs.size();
 }
 
-void VideoProvider::connectInput(int iIdx, QObject * receiver, const char * method)
+bool VideoProvider::connectInput(int iIdx, QObject * receiver, const char * method)
 {
     // safety check
     if (iIdx < 0 || iIdx >= m_inputs.size() || !receiver || !method) {
         qWarning("VideoProvider::connectInput: fail");
-        return;
+        return false;
     }
-
-    // connect input
-    VideoInput * input = m_inputs[iIdx];
-    if (!connect(input, SIGNAL(newPixmap(QPixmap)), receiver, method)) {
-        qWarning("VideoProvider::connectInput: error connecting input %d to %s", iIdx, method);
-        return;
-    }
-
-    // add it to the receivers list (for ref. counting only)
-    input->receivers.append(receiver);
 
     // start the video if we're the first
+    VideoInput * input = m_inputs[iIdx];
     if (!input->active) {
-        // start the video
 #if defined(HAS_VIDEOCAPTURE)
+        // try to start the video
         if (!input->device->setCaptureSize(input->device->maxWidth(), input->device->maxHeight()))
             qWarning("VideoProvider::connectInput: can't set the capture size. trying anyways..");
-        input->device->startCapturing();
-#else
-        // TODO
+        if (!input->device->startCapturing()) {
+            qWarning("VideoProvider::connectInput: can't start capture, stopping");
+            return false;
+        }
 #endif
 
         // mark as active
         input->active = true;
     }
+
+    // connect input
+    if (!connect(input, SIGNAL(newPixmap(QPixmap)), receiver, method)) {
+        qWarning("VideoProvider::connectInput: error connecting input %d to %s", iIdx, method);
+        return false;
+    }
+
+    // add it to the receivers list (for ref. counting only)
+    input->receivers.append(receiver);
 
     // start the capture timer if needed
     if (!m_snapTimer) {
@@ -86,6 +87,9 @@ void VideoProvider::connectInput(int iIdx, QObject * receiver, const char * meth
         connect(m_snapTimer, SIGNAL(timeout()), this, SLOT(slotCaptureVideoFrames()));
         m_snapTimer->start(50);
     }
+
+    // tell that everything went good
+    return true;
 }
 
 void VideoProvider::disconnectReceiver(QObject * receiver)
