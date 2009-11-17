@@ -52,9 +52,9 @@ public:
     float setWhiteness(float whiteness);
     float getHue();
     float setHue(float Hue);
-    bool getAutoBrightnessContrast();
+    bool getAutoBrightnessContrast() const;
     bool setAutoBrightnessContrast(bool brightnesscontrast);
-    bool getAutoColorCorrection();
+    bool getAutoColorCorrection() const;
     bool setAutoColorCorrection(bool colorcorrection);
     bool getImageAsMirror();
     bool setImageAsMirror(bool imageasmirror);

@@ -135,7 +135,7 @@ float VideoInput::setHue(float hue)
 }
 
 
-bool VideoInput::getAutoBrightnessContrast()
+bool VideoInput::getAutoBrightnessContrast() const
 {
     //HERE;
     return m_autobrightnesscontrast;
@@ -148,7 +148,7 @@ bool VideoInput::setAutoBrightnessContrast(bool brightnesscontrast)
     return getAutoBrightnessContrast();
 }
 
-bool VideoInput::getAutoColorCorrection()
+bool VideoInput::getAutoColorCorrection() const
 {
     //HERE;
     return m_autocolorcorrection;

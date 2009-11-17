@@ -191,6 +191,7 @@ struct imagebuffer
     int height;
     int width;
     pixel_format pixelformat;
+#warning THIS IS AN OVERKILL (see the YUYV conversions... phew!)
     QVector <uchar> data; // maybe it should be a rawbuffer instead of it? It could make us avoid a memory copy
 };
 
@@ -201,47 +202,57 @@ struct rawbuffer // raw buffer
 };
 
 class VideoDevice {
-public:
-    VideoDevice();
-    ~VideoDevice();
+    public:
+        VideoDevice(const QString & filename);
+        ~VideoDevice();
 
-    int setFileName(QString filename);
-    int open();
-    bool isOpen();
-    int checkDevice();
-    int showDeviceCapabilities();
-    int initDevice();
-    int inputs();
-    int width();
-    int minWidth();
-    int maxWidth();
-    int height();
-    int minHeight();
-    int maxHeight();
-    int setSize( int newwidth, int newheight);
+        // OK
+        bool open();
+        void close();
+        bool isOpen() const;
+        bool printDeviceProperties() const;
+
+        int inputCount() const;
+        int currentInput() const;
+        bool setCurrentInput(int index);
+
+        int minWidth() const;
+        int minHeight() const;
+        int maxWidth() const;
+        int maxHeight() const;
+
+        bool setCaptureSize(int newWidth, int newHeight);
+        QSize captureSize() const;
+        bool startCapturing();
+        bool stopCapturing();
+
+        bool acquireFrame();
+        bool getImage(QImage *qimage) const;
+
+    private:
+        bool queryDeviceProperties();
+        bool detectSignalStandards() const;
+        void detectPixelFormats();
+
+
+    int width() const;
+    int height() const;
 
     pixel_format setPixelFormat(pixel_format newformat);
     int pixelFormatCode(pixel_format pixelformat);
     pixel_format pixelFormatForPalette( int palette );
-    int pixelFormatDepth(pixel_format pixelformat);
-    QString pixelFormatName(pixel_format pixelformat);
-    QString pixelFormatName(int pixelformat);
-    int detectPixelFormats();
+
+    int pixelFormatDepth(pixel_format pixelformat) const;
+
+        QString pixelFormatName(pixel_format pixelformat) const;
+        QString pixelFormatNamePlatform(int pixelformat) const;
 
     __u64 signalStandardCode(signal_standard standard);
-    QString signalStandardName(signal_standard standard);
-    QString signalStandardName(int standard);
-    int detectSignalStandards();
 
-    int currentInput();
-    int selectInput(int input);
+        QString signalStandardName(signal_standard standard) const;
+        QString signalStandardName(int standard) const;
+
     int setInputParameters();
-    int startCapturing();
-    int getFrame();
-    int getFrame(imagebuffer *imgbuffer);
-    int getImage(QImage *qimage);
-    int stopCapturing();
-    int close();
 
     float getBrightness();
     float setBrightness(float brightness);
@@ -254,77 +265,63 @@ public:
     float getHue();
     float setHue(float Hue);
 
-    bool getAutoBrightnessContrast();
+    bool getAutoBrightnessContrast() const;
     bool setAutoBrightnessContrast(bool brightnesscontrast);
-    bool getAutoColorCorrection();
+    bool getAutoColorCorrection() const;
     bool setAutoColorCorrection(bool colorcorrection);
     bool getImageAsMirror();
     bool setImageAsMirror(bool imageasmirror);
 
-    bool canCapture();
-    bool canChromakey();
-    bool canScale();
-    bool canOverlay();
-    bool canRead();
-    bool canAsyncIO();
-    bool canStream();
+        bool canCapture() const;
+        bool canChromakey() const;
+        bool canScale() const;
+        bool canOverlay() const;
+        bool canRead() const;
+        bool canAsyncIO() const;
+        bool canStream() const;
 
-    void setUdi( const QString & );
-    QString udi() const;
-    QString m_model;
-    QString m_name;
-    size_t m_modelindex; // Defines what's the number of a device when more than 1 device of a given model is present;
-    QString full_filename;
-    videodev_driver m_driver;
-    int descriptor;
+    // OK
+    private:
+        QString m_videoFileName;
+        int m_videoFileDescriptor;
+        QString m_videoCardName;
 
-    //protected:
+        videodev_driver m_driver;
+        io_method m_ioMethod;
+
+        QVector<VideoCapture::VideoInput> m_input;
+
 #ifdef Q_OS_LINUX
-    struct video_capability V4L_capabilities;
-    struct video_buffer V4L_videobuffer;
 #ifdef V4L2_CAP_VIDEO_CAPTURE
-    struct v4l2_capability V4L2_capabilities;
-    struct v4l2_cropcap cropcap;
-    struct v4l2_crop crop;
-    struct v4l2_format fmt;
-    struct v4l2_fmtdesc fmtdesc; // Not sure if it must be here or inside detectPixelFormats(). Should inve
-    //	struct v4l2_input m_input;
-    struct v4l2_queryctrl queryctrl;
-    struct v4l2_querymenu querymenu;
-    void enumerateControls (void);
-    void enumerateMenu (void);
+        void enumerateControls() const;
+        void enumerateMenu(quint32 id, quint32 min, quint32 max) const;
 #endif
 #endif
-    QVector<VideoCapture::VideoInput> m_input;
-    //	QFile file;
-private:
+
     int m_minWidth, m_minHeight, m_maxWidth, m_maxHeight;
-    int currentwidth, currentheight;
+    int m_currentWidth, m_currentHeight;
 
     QVector<rawbuffer> m_rawbuffers;
     unsigned int m_streambuffers;
     imagebuffer m_currentbuffer;
     int m_buffer_size;
 
-    int m_current_input;
-    pixel_format m_pixelformat;
+        int m_currentInput;
+        pixel_format m_pixelFormat;
 
-    io_method m_io_method;
-    bool m_videocapture;
-    bool m_videochromakey;
-    bool m_videoscale;
-    bool m_videooverlay;
-    bool m_videoread;
-    bool m_videoasyncio;
-    bool m_videostream;
+        // capabilities found in 'checkdevice'
+        bool m_videocapture;
+        bool m_videochromakey;
+        bool m_videoscale;
+        bool m_videooverlay;
+        bool m_videoread;
+        bool m_videoasyncio;
+        bool m_videostream;
 
-    int xioctl(int request, void *arg);
-    int errnoReturn(const char* s);
-    int initRead();
-    int initMmap();
-    int initUserptr();
-
-    QString m_udi;
+        int xioctl(int request, void *arg) const;
+        bool initIoRead();
+        bool initIoMmap();
+        bool initIoUserptr();
 };
 
 }

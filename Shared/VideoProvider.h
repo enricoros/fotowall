@@ -56,7 +56,7 @@ class VideoProvider : public QObject
         bool m_swapVideo;
 
     private Q_SLOTS:
-        void scanDevices();
+        void initDevices();
         void slotInitVideo(const QString & device);
         void slotCaptureVideoFrames();
 };

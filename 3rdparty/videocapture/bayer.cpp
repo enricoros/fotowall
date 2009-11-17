@@ -26,10 +26,11 @@
  * SUCH DAMAGE.
  */
 
-void bayer2rgb24(unsigned char *dst, unsigned char *src, long int WIDTH, long int HEIGHT)
+void bayer2rgb24(unsigned char *dst, const unsigned char *src, long int WIDTH, long int HEIGHT)
 {
 	long int i;
-	unsigned char *rawpt, *scanpt;
+	const unsigned char *rawpt;
+    unsigned char *scanpt;
 	long int size;
 
 	rawpt = src;

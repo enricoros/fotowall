@@ -28,602 +28,283 @@
 
 namespace VideoCapture {
 
-VideoDevice::VideoDevice()
-  : m_minWidth(-1)
+VideoDevice::VideoDevice(const QString & fileName)
+  : m_videoFileName(fileName)
+  , m_videoFileDescriptor(-1)
+  , m_driver(VIDEODEV_DRIVER_NONE)
+  , m_ioMethod(IO_METHOD_NONE)
+  , m_minWidth(-1)
   , m_minHeight(-1)
   , m_maxWidth(-1)
   , m_maxHeight(-1)
-  , m_io_method(IO_METHOD_NONE)
+  , m_currentWidth(-1)
+  , m_currentHeight(-1)
+  , m_streambuffers(0)
+  , m_currentInput(-1)
 {
-    //	qDebug() << "libkopete (avdevice): VideoDevice() called";
-    descriptor = -1;
-    m_streambuffers  = 0;
-    m_current_input = 0;
-    //	qDebug() << "libkopete (avdevice): VideoDevice() exited successfuly";
 }
-
 
 VideoDevice::~VideoDevice()
 {
+    close();
 }
 
 #ifdef V4L2_CAP_VIDEO_CAPTURE
-
-void VideoDevice::enumerateControls (void)
+// OK
+void VideoDevice::enumerateControls() const
 {
     // -----------------------------------------------------------------------------------------------------------------
     // This must turn up to be a proper method to check for controls' existence.
-    CLEAR (queryctrl);
     // v4l2_queryctrl may zero the .id in some cases, even if the IOCTL returns EXIT_SUCCESS (tested with a bttv card, when testing for V4L2_CID_AUDIO_VOLUME).
     // As of 6th Aug 2007, according to the V4L2 specification version 0.21, this behavior is undocumented, and the example 1-8 code found at
     // http://www.linuxtv.org/downloads/video4linux/API/V4L2_API/spec/x519.htm fails because of this behavior with a bttv card.
+    struct v4l2_queryctrl queryctrl;
 
-    int currentid = V4L2_CID_BASE;
-
-    qDebug() << "Checking CID controls";
-
-    for (currentid = V4L2_CID_BASE; currentid < V4L2_CID_LASTP1; currentid++)
-        //for (queryctrl.id = 9963776; queryctrl.id < 9963800; queryctrl.id++)
-    {
+    qDebug() << "VideoDevice::enumerateControls: Checking CID controls";
+    for (int currentid = V4L2_CID_BASE; currentid < V4L2_CID_LASTP1; currentid++) {
+        CLEAR(queryctrl);
         queryctrl.id = currentid;
-        if (0 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
-        {
+        if (0 == xioctl(VIDIOC_QUERYCTRL, &queryctrl)) {
             if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
                 continue;
-
-            qDebug() <<  " Control: " << QString::fromLocal8Bit((const char*)queryctrl.name) << " Values from " << queryctrl.minimum << " to " << queryctrl.maximum << " with steps of " << queryctrl.step << ". Default: " << queryctrl.default_value;
-
-            //			switch (queryctrl.type)
-            //			{
-            //				case V4L2_CTRL_TYPE_INTEGER :
-            //			}
-            if (queryctrl.type == V4L2_CTRL_TYPE_MENU)
-                enumerateMenu ();
-        }
-        else
-        {
-            if (errno == EINVAL)
-                continue;
-
-            perror ("VIDIOC_QUERYCTRL");
-            //			exit (EXIT_FAILURE);
-        }
+            qDebug() << " Control:" << QString::fromLocal8Bit((const char*)queryctrl.name) << " [" << queryctrl.minimum << "..." << queryctrl.maximum << "] /" << queryctrl.step << " (default:" << queryctrl.default_value <<  ")";
+            switch (queryctrl.type) {
+                case V4L2_CTRL_TYPE_INTEGER:    break;
+                case V4L2_CTRL_TYPE_BOOLEAN:    break;
+                case V4L2_CTRL_TYPE_MENU:       enumerateMenu(queryctrl.id, queryctrl.minimum, queryctrl.maximum);    break;
+                case V4L2_CTRL_TYPE_BUTTON:     break;
+                case V4L2_CTRL_TYPE_INTEGER64:  break;
+                case V4L2_CTRL_TYPE_CTRL_CLASS: break;
+            }
+        } else if (errno != EINVAL)
+            perror("VIDIOC_QUERYCTRL");
     }
 
-    qDebug() << "Checking CID private controls";
-
-    for (currentid = V4L2_CID_PRIVATE_BASE;; currentid++)
-    {
+    qDebug() << "VideoDevice::enumerateControls: Checking CID private controls";
+    for (int currentid = V4L2_CID_PRIVATE_BASE;; currentid++) {
+        CLEAR(queryctrl);
         queryctrl.id = currentid;
-        if ( 0 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
-        {
+        if (0 == xioctl (VIDIOC_QUERYCTRL, &queryctrl)) {
             if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
                 continue;
-
-            qDebug() << " Control: " << QString::fromLocal8Bit((const char*)queryctrl.name) << " Values from " << queryctrl.minimum << " to " << queryctrl.maximum << " with steps of " << queryctrl.step << ". Default: " << queryctrl.default_value;
-
+            qDebug() << " Control:" << QString::fromLocal8Bit((const char*)queryctrl.name) << " [" << queryctrl.minimum << "..." << queryctrl.maximum << "] /" << queryctrl.step << " (default: " << queryctrl.default_value << ")";
             if (queryctrl.type == V4L2_CTRL_TYPE_MENU)
-                enumerateMenu ();
-        }
-        else
-        {
+                enumerateMenu(queryctrl.id, queryctrl.minimum, queryctrl.maximum);
+        } else {
             if (errno == EINVAL)
                 break;
-
             perror ("VIDIOC_QUERYCTRL");
-            //			exit (EXIT_FAILURE);
         }
     }
 }
 
-void VideoDevice::enumerateMenu (void)
+// OK
+void VideoDevice::enumerateMenu(quint32 id, quint32 min, quint32 max) const
 {
     qDebug() <<  "  Menu items:";
-
-    memset (&querymenu, 0, sizeof (querymenu));
-    querymenu.id = queryctrl.id;
-
-    for (querymenu.index = queryctrl.minimum; (int)querymenu.index <= queryctrl.maximum; querymenu.index++)
-    {
-        if (0 == xioctl (VIDIOC_QUERYMENU, &querymenu))
-        {
-            qDebug() <<  "  " << QString::fromLocal8Bit((const char*)querymenu.name);
-        }
-        else
-        {
-            perror ("VIDIOC_QUERYMENU");
-            exit (EXIT_FAILURE);
+    struct v4l2_querymenu queryMenu;
+    CLEAR(queryMenu);
+    queryMenu.id = id;
+    for (queryMenu.index = min; queryMenu.index <= max; ++queryMenu.index) {
+        if (0 == xioctl (VIDIOC_QUERYMENU, &queryMenu))
+            qDebug() <<  "  " << QString::fromLocal8Bit((const char*)queryMenu.name);
+        else {
+            perror("VIDIOC_QUERYMENU");
+            break;
         }
     }
 }
 #endif
 
-/*!
-\fn VideoDevice::xioctl(int fd, int request, void *arg)
-*/
-int VideoDevice::xioctl(int request, void *arg)
+// OK
+bool VideoDevice::open()
 {
-    int r;
-
-    do r = ioctl (descriptor, request, arg);
-    while (-1 == r && EINTR == errno);
-    return r;
-}
-
-/*!
-\fn VideoDevice::errnoReturn(const char* s)
-*/
-int VideoDevice::errnoReturn(const char* s)
-{
-    /// @todo implement me
-    fprintf (stderr, "%s error %d, %s\n",s, errno, strerror (errno));
-    return EXIT_FAILURE;
-}
-
-/*!
-\fn VideoDevice::setFileName(QString name)
-*/
-int VideoDevice::setFileName(QString filename)
-{
-    /// @todo implement me
-    full_filename=filename;
-    return EXIT_SUCCESS;
-}
-
-/*!
-\fn VideoDevice::open()
-*/
-int VideoDevice::open()
-{
-    /// @todo implement me
-
-    qDebug() << "called";
-    if(-1 != descriptor)
-    {
-        qDebug() << "Device is already open";
-        return EXIT_SUCCESS;
-    }
-    descriptor = ::open (QFile::encodeName(full_filename), O_RDWR, 0);
-    if(isOpen())
-    {
-        qDebug() << "File " << full_filename << " was opened successfuly";
-        if(EXIT_FAILURE==checkDevice())
-        {
-            qDebug() << "File " << full_filename << " could not be opened";
-            close();
-            return EXIT_FAILURE;
-        }
-    }
-    else
-    {
-        qDebug() << "Unable to open file " << full_filename << "Err: "<< errno;
-        return EXIT_FAILURE;
+    if (m_videoFileDescriptor != -1) {
+        qDebug() << "VideoDevice::open: Device is already open";
+        return true;
     }
 
-    initDevice();
-    selectInput(m_current_input);
-    qDebug() << "exited successfuly";
-    return EXIT_SUCCESS;
-}
-
-bool VideoDevice::isOpen()
-{
-    if(-1 == descriptor)
-    {
-        //		qDebug() << "VideoDevice::isOpen() File is not open";
+    // open video device and check opening
+    m_videoFileDescriptor = ::open(QFile::encodeName(m_videoFileName).constData(), O_RDWR, 0);
+    if (m_videoFileDescriptor == -1) {
+        qDebug() << "VideoDevice::open: Unable to open file" << m_videoFileName << "Err:"<< errno;
         return false;
     }
-    //	qDebug() << "VideoDevice::isOpen() File is open";
+
+    // check device (capabilities and stuff)
+    if (!queryDeviceProperties()) {
+        qDebug() << "VideoDevice::open: File" << m_videoFileName << "could not be opened.";
+        close();
+        return false;
+    }
+
+    // select the first input
+    if (!m_input.isEmpty())
+        setCurrentInput(0);
     return true;
 }
 
-int VideoDevice::checkDevice()
+// OK
+void VideoDevice::close()
 {
-    qDebug() << "checkDevice() called.";
-    if(isOpen())
-    {
-        m_videocapture=false;
-        m_videochromakey=false;
-        m_videoscale=false;
-        m_videooverlay=false;
-        m_videoread=false;
-        m_videoasyncio=false;
-        m_videostream=false;
-
-        m_driver=VIDEODEV_DRIVER_NONE;
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-
-        CLEAR(V4L2_capabilities);
-
-        if (-1 != xioctl (VIDIOC_QUERYCAP, &V4L2_capabilities))
-        {
-            if (!(V4L2_capabilities.capabilities & V4L2_CAP_VIDEO_CAPTURE))
-            {
-                qDebug() << "checkDevice(): " << full_filename << " is not a video capture device.";
-                m_driver = VIDEODEV_DRIVER_NONE;
-                return EXIT_FAILURE;
-            }
-            m_videocapture=true;
-            qDebug() << "checkDevice(): " << full_filename << " is a V4L2 device.";
-            m_driver = VIDEODEV_DRIVER_V4L2;
-            m_model=QString::fromLocal8Bit((const char*)V4L2_capabilities.card);
-
-
-            // Detect maximum and minimum resolution supported by the V4L2 device. VIDIOC_ENUM_FRAMESIZES is still experimental.
-            CLEAR (fmt);
-            fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-            if (-1 == xioctl (VIDIOC_G_FMT, &fmt))
-                qDebug() << "VIDIOC_G_FMT failed (" << errno << ").";
-            fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-            fmt.fmt.pix.width       = 32767;
-            fmt.fmt.pix.height      = 32767;
-            fmt.fmt.pix.field       = V4L2_FIELD_ANY;
-            if (-1 == xioctl (VIDIOC_S_FMT, &fmt))
-            {
-                qDebug() << "Detecting maximum size with VIDIOC_S_FMT failed (" << errno << "). Returned max width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
-                return EXIT_FAILURE;
-            }
-            m_maxWidth  = fmt.fmt.pix.width;
-            m_maxHeight = fmt.fmt.pix.height;
-            if (-1 == xioctl (VIDIOC_G_FMT, &fmt))
-                qDebug() << "VIDIOC_G_FMT failed (" << errno << ").";
-            fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-            fmt.fmt.pix.width       = 1;
-            fmt.fmt.pix.height      = 1;
-            fmt.fmt.pix.field       = V4L2_FIELD_ANY;
-            if (-1 == xioctl (VIDIOC_S_FMT, &fmt))
-            {
-                qDebug() << "Detecting minimum size with VIDIOC_S_FMT failed (" << errno << "). Returned min width: " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
-                return EXIT_FAILURE;
-            }
-            m_minWidth  = fmt.fmt.pix.width;
-            m_minHeight = fmt.fmt.pix.height;
-
-            // Buggy driver paranoia
-            /*				min = fmt.fmt.pix.width * 2;
-            if (fmt.fmt.pix.bytesperline < min)
-                fmt.fmt.pix.bytesperline = min;
-            min = fmt.fmt.pix.bytesperline * fmt.fmt.pix.height;
-            if (fmt.fmt.pix.sizeimage < min)
-                fmt.fmt.pix.sizeimage = min;
-            m_buffer_size=fmt.fmt.pix.sizeimage ;*/
-
-            int inputisok=EXIT_SUCCESS;
-            m_input.clear();
-            for(unsigned int loop=0; inputisok==EXIT_SUCCESS; loop++)
-            {
-                struct v4l2_input videoinput;
-                CLEAR(videoinput);
-                videoinput.index = loop;
-                inputisok=xioctl(VIDIOC_ENUMINPUT, &videoinput);
-                if(inputisok==EXIT_SUCCESS)
-                {
-                    VideoInput tempinput;
-                    tempinput.name = QString::fromLocal8Bit((const char*)videoinput.name);
-                    tempinput.hastuner = videoinput.type & V4L2_INPUT_TYPE_TUNER;
-                    detectSignalStandards();
-                    tempinput.m_standards = videoinput.std;
-                    m_input.push_back(tempinput);
-                    qDebug() << "Input " << loop << ": " << tempinput.name << " (tuner: " << ((videoinput.type & V4L2_INPUT_TYPE_TUNER) != 0) << ")";
-                    if((videoinput.type & V4L2_INPUT_TYPE_TUNER) != 0)
-                    {
-                        //						_tunerForInput[name] = desc.tuner;
-                        //						_isTuner = true;
-                    }
-                    else
-                    {
-                        //						_tunerForInput[name] = -1;
-                    }
-                }
-            }
-        }
-        else
-        {
-            // V4L-only drivers should return an EINVAL in errno to indicate they cannot handle V4L2 calls. Not every driver is compliant, so
-            // it will try the V4L api even if the error code is different than expected.
-            qDebug() << "checkDevice(): " << full_filename << " is not a V4L2 device.";
-        }
-
-#endif
-
-        CLEAR(V4L_capabilities);
-
-        if(m_driver==VIDEODEV_DRIVER_NONE)
-        {
-            qDebug() << "checkDevice(): " << full_filename << " Trying V4L API.";
-            if (-1 == xioctl (VIDIOCGCAP, &V4L_capabilities))
-            {
-                perror ("ioctl (VIDIOCGCAP)");
-                m_driver = VIDEODEV_DRIVER_NONE;
-                return EXIT_FAILURE;
-            }
-            else
-            {
-                qDebug() << full_filename << " is a V4L device.";
-                m_driver = VIDEODEV_DRIVER_V4L;
-                m_model=QString::fromLocal8Bit((const char*)V4L_capabilities.name);
-                if(V4L_capabilities.type & VID_TYPE_CAPTURE)
-                    m_videocapture=true;
-                if(V4L_capabilities.type & VID_TYPE_CHROMAKEY)
-                    m_videochromakey=true;
-                if(V4L_capabilities.type & VID_TYPE_SCALES)
-                    m_videoscale=true;
-                if(V4L_capabilities.type & VID_TYPE_OVERLAY)
-                    m_videooverlay=true;
-                //				qDebug() << "libkopete (avdevice):     Inputs : " << V4L_capabilities.channels;
-                //				qDebug() << "libkopete (avdevice):     Audios : " << V4L_capabilities.audios;
-                m_minWidth  = V4L_capabilities.minwidth;
-                m_maxWidth  = V4L_capabilities.maxwidth;
-                m_minHeight = V4L_capabilities.minheight;
-                m_maxHeight = V4L_capabilities.maxheight;
-
-
-                int inputisok=EXIT_SUCCESS;
-                m_input.clear();
-                for(int loop=0; loop < V4L_capabilities.channels; loop++)
-                {
-                    struct video_channel videoinput;
-                    CLEAR(videoinput);
-                    videoinput.channel = loop;
-                    videoinput.norm    = 1;
-                    inputisok=xioctl(VIDIOCGCHAN, &videoinput);
-                    if(inputisok==EXIT_SUCCESS)
-                    {
-                        VideoInput tempinput;
-                        tempinput.name = QString::fromLocal8Bit((const char*)videoinput.name);
-                        tempinput.hastuner=videoinput.flags & VIDEO_VC_TUNER;
-                        // TODO: The routine to detect the appropriate video standards for V4L must be placed here
-                        m_input.push_back(tempinput);
-                        //						qDebug() << "libkopete (avdevice): Input " << loop << ": " << tempinput.name << " (tuner: " << ((videoinput.flags & VIDEO_VC_TUNER) != 0) << ")";
-                        /*						if((input.type & V4L2_INPUT_TYPE_TUNER) != 0)
-                    {
-//							_tunerForInput[name] = desc.tuner;
-//							_isTuner = true;
-                    }
-                    else
-                    {
-//							_tunerForInput[name] = -1;
-                    }
-*/					}
-                }
-
-            }
-        }
-#endif
-        m_name=m_model; // Take care about changing the name to be different from the model itself...
-
-        detectPixelFormats();
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-        enumerateControls();
-#endif
-        // TODO: Now we must execute the proper initialization according to the type of the driver.
-        qDebug() << "checkDevice() exited successfuly.";
-        return EXIT_SUCCESS;
+    if (isOpen()) {
+        stopCapturing();
+        if (-1 == ::close(m_videoFileDescriptor))
+            perror("close");
     }
-    return EXIT_FAILURE;
+    m_videoFileDescriptor = -1;
 }
 
-
-/*!
-\fn VideoDevice::showDeviceCapabilities()
-*/
-int VideoDevice::showDeviceCapabilities()
+// OK
+bool VideoDevice::isOpen() const
 {
-    qDebug() << "showDeviceCapabilities() called.";
-    if(isOpen())
-    {
-        /*		qDebug() << "libkopete (avdevice): Driver: " << (const char*)V4L2_capabilities.driver << " "
-        << ((V4L2_capabilities.version>>16) & 0xFF) << "."
-        << ((V4L2_capabilities.version>> 8) & 0xFF) << "."
-        << ((V4L2_capabilities.version    ) & 0xFF) << endl;
-    qDebug() << "libkopete (avdevice): Device: " << name;
-    qDebug() << "libkopete (avdevice): Capabilities:";
-    if(V4L2_capabilities.capabilities & V4L2_CAP_VIDEO_CAPTURE)
-        qDebug() << "libkopete (avdevice):     Video capture";
-    if(V4L2_capabilities.capabilities & V4L2_CAP_VIDEO_OUTPUT)
-        qDebug() << "libkopete (avdevice):     Video output";
-    if(V4L2_capabilities.capabilities & V4L2_CAP_VIDEO_OVERLAY)
-        qDebug() << "libkopete (avdevice):     Video overlay";
-    if(V4L2_capabilities.capabilities & V4L2_CAP_VBI_CAPTURE)
-        qDebug() << "libkopete (avdevice):     VBI capture";
-    if(V4L2_capabilities.capabilities & V4L2_CAP_VBI_OUTPUT)
-        qDebug() << "libkopete (avdevice):     VBI output";
-    if(V4L2_capabilities.capabilities & V4L2_CAP_RDS_CAPTURE)
-        qDebug() << "libkopete (avdevice):     RDS capture";
-    if(V4L2_capabilities.capabilities & V4L2_CAP_TUNER)
-        qDebug() << "libkopete (avdevice):     Tuner IO";
-    if(V4L2_capabilities.capabilities & V4L2_CAP_AUDIO)
-        qDebug() << "libkopete (avdevice):     Audio IO";
-;*/
-        qDebug() << "Device model: " << m_model;
-        qDebug() << "Device name : " << m_name;
-        qDebug() << "Capabilities:";
-        if(canCapture())
-            qDebug() << "    Video capture";
-        if(canRead())
-            qDebug() << "        Read";
-        if(canAsyncIO())
-            qDebug() << "        Asynchronous input/output";
-        if(canStream())
-            qDebug() << "        Streaming";
-        if(canChromakey())
-            qDebug() << "    Video chromakey";
-        if(canScale())
-            qDebug() << "    Video scales";
-        if(canOverlay())
-            qDebug() << "    Video overlay";
-        //		qDebug() << "libkopete (avdevice):     Audios : " << V4L_capabilities.audios;
-        qDebug() << "    Max res: " << maxWidth() << " x " << maxHeight();
-        qDebug() << "    Min res: " << minWidth() << " x " << minHeight();
-        qDebug() << "    Inputs : " << inputs();
-        for (int loop=0; loop < inputs(); loop++)
-            qDebug() << "Input " << loop << ": " << m_input[loop].name << " (tuner: " << m_input[loop].hastuner << ")";
-        qDebug() << "showDeviceCapabilities() exited successfuly.";
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
+    return m_videoFileDescriptor != -1;
 }
 
-/*!
-\fn VideoDevicePool::initDevice()
-*/
-int VideoDevice::initDevice()
+// OK
+bool VideoDevice::printDeviceProperties() const
 {
-    /// @todo implement me
-    qDebug() << "initDevice() started";
-    if(-1 == descriptor)
-    {
-        qDebug() << "initDevice() Device is not open";
-        return EXIT_FAILURE;
-    }
-    m_io_method = IO_METHOD_NONE;
-    switch(m_driver)
-    {
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-    case VIDEODEV_DRIVER_V4L2:
-        if(V4L2_capabilities.capabilities & V4L2_CAP_READWRITE)
-        {
-            m_videoread=true;
-            m_io_method = IO_METHOD_READ;
-            qDebug() << "    Read/Write interface";
-        }
-        if(V4L2_capabilities.capabilities & V4L2_CAP_ASYNCIO)
-        {
-            m_videoasyncio=true;
-            qDebug() << "    Async IO interface";
-        }
-        if(V4L2_capabilities.capabilities & V4L2_CAP_STREAMING)
-        {
-            m_videostream=true;
-            m_io_method = IO_METHOD_MMAP;
-            //				m_io_method = IO_METHOD_USERPTR;
-            qDebug() << "    Streaming interface";
-        }
-        if(m_io_method==IO_METHOD_NONE)
-        {
-            qDebug() << "initDevice() Found no suitable input/output method for " << full_filename;
-            return EXIT_FAILURE;
-        }
-        break;
-#endif
-    case VIDEODEV_DRIVER_V4L:
-        m_videoread=true;
-        m_io_method=IO_METHOD_READ;
-        if(-1 != xioctl(VIDIOCGFBUF,&V4L_videobuffer))
-        {
-            //				m_videostream=true;
-            //				m_io_method = IO_METHOD_MMAP;
-            qDebug() << "    Streaming interface";
-        }
-        break;
-#endif
-    case VIDEODEV_DRIVER_NONE:
-    default:
-
-        break;
-    }
-
-    // Select video input, video standard and tune here.
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-    cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    if (-1 == xioctl (VIDIOC_CROPCAP, &cropcap))
-    { // Errors ignored.
-    }
-    crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    crop.c = cropcap.defrect; // reset to default
-    if (-1 == xioctl (VIDIOC_S_CROP, &crop))
-    {
-        switch (errno)
-        {
-        case EINVAL: break;  // Cropping not supported.
-        default:     break;  // Errors ignored.
-        }
-    }
-#endif
-#endif
-
-    //showDeviceCapabilities();
-    qDebug() << "initDevice() exited successfuly";
+    if (!isOpen())
+        return false;
+    qDebug() << "Device model: " << m_videoCardName << " capabilities:";
+    if (canCapture())
+        qDebug() << "    Video capture";
+    if (canRead())
+        qDebug() << "        Read";
+    if (canAsyncIO())
+        qDebug() << "        Asynchronous input/output";
+    if (canStream())
+        qDebug() << "        Streaming";
+    if (canChromakey())
+        qDebug() << "    Video chromakey";
+    if (canScale())
+        qDebug() << "    Video scales";
+    if (canOverlay())
+        qDebug() << "    Video overlay";
+    //qDebug() << "libkopete (avdevice):     Audios : " << V4L_capabilities.audios;
+    qDebug() << "    Max res: " << maxWidth() << " x " << maxHeight();
+    qDebug() << "    Min res: " << minWidth() << " x " << minHeight();
+    qDebug() << "    Inputs : " << inputCount();
+    for (int loop=0; loop < inputCount(); ++loop)
+        qDebug() << "Input " << loop << ": " << m_input[loop].name << " (tuner: " << m_input[loop].hastuner << ")";
     return EXIT_SUCCESS;
 }
 
-int VideoDevice::inputs()
+// OK
+int VideoDevice::inputCount() const
 {
     return m_input.size();
 }
 
-
-int VideoDevice::width()
+// OK
+int VideoDevice::currentInput() const
 {
-    return currentwidth;
+    return isOpen() ? m_currentInput : 0;
 }
 
-int VideoDevice::minWidth()
+// OK
+bool VideoDevice::setCurrentInput(int index)
+{
+    if (index < 0 || index >= inputCount())
+        return false;
+    if (index == m_currentInput)
+        return true;
+    if (!isOpen()) {
+        qWarning("VideoDevice::selectInput: device not opened");
+        return false;
+    }
+
+    // select the input
+    switch (m_driver) {
+#ifdef Q_OS_LINUX
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+        case VIDEODEV_DRIVER_V4L2:
+            if (-1 == ioctl(m_videoFileDescriptor, VIDIOC_S_INPUT, &index)) {
+                perror ("VIDIOC_S_INPUT");
+                return false;
+            }
+            break;
+#endif
+        case VIDEODEV_DRIVER_V4L:
+            struct video_channel V4L_input;
+            CLEAR(V4L_input);
+            V4L_input.channel = index;
+            V4L_input.norm = 4; // Hey, it's plain wrong! It should be input's signal standard!
+            if (-1 == ioctl(m_videoFileDescriptor, VIDIOCSCHAN, &V4L_input)) {
+                perror("VIDIOCSCHAN");
+                return false;
+            }
+            break;
+#endif
+        case VIDEODEV_DRIVER_NONE:
+        default:
+            break;
+    }
+    m_currentInput = index;
+    qDebug() << "VideoDevice::selectInput: selected input" << index << m_input[index].name;
+
+    // apply parameters to the input
+    setInputParameters();
+    return true;
+}
+
+// OK
+int VideoDevice::minWidth() const
 {
     return m_minWidth;
 }
 
-int VideoDevice::maxWidth()
-{
-    return m_maxWidth;
-}
-
-int VideoDevice::height()
-{
-    return currentheight;
-}
-
-int VideoDevice::minHeight()
+// OK
+int VideoDevice::minHeight() const
 {
     return m_minHeight;
 }
 
-int VideoDevice::maxHeight()
+// OK
+int VideoDevice::maxWidth() const
+{
+    return m_maxWidth;
+}
+
+// OK
+int VideoDevice::maxHeight() const
 {
     return m_maxHeight;
 }
 
-int VideoDevice::setSize( int newwidth, int newheight)
+// OK
+bool VideoDevice::setCaptureSize(int newWidth, int newHeight)
 {
-    qDebug() << "setSize(" << newwidth << ", " << newheight << ") called.";
-    if(isOpen())
-    {
-        // It should not be there. It must remain in a completely distict place, cause this method should not change the pixelformat.
-        // It shouldn't try to find a suitable pixel format this way. It should use values discovered by - detectPixelFormats() - to choose a valid one.
-        qDebug() <<  "Trying YUY422P";
-        if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_YUV422P))
-        {
-            qDebug() <<  "Device doesn't seem to support YUV422P format. Trying YUYV.";
-            if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_YUYV))
-            {
-                qDebug() <<  "Device doesn't seem to support YUYV format. Trying UYVY.";
-                if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_UYVY))
-                {
-                    qDebug() <<  "Device doesn't seem to support UYVY format. Trying YUV420P.";
-                    if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_YUV420P))
-                    {
-                        qDebug() <<  "Device doesn't seem to support YUV420P format. Trying RGB24.";
-                        if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_RGB24))
-                        {
-                            qDebug() <<  "Device doesn't seem to support RGB24 format. Trying BGR24.";
-                            if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_BGR24))
-                            {
-                                qDebug() <<  "Device doesn't seem to support RGB24 format. Trying RGB32.";
-                                if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_RGB32))
-                                {
-                                    qDebug() <<  "Device doesn't seem to support RGB32 format. Trying BGR32.";
-                                    if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_BGR32))
-                                    {
-                                        qDebug() <<  "Device doesn't seem to support BGR32 format. Trying SBGGR8.";
-                                        if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_SBGGR8))
-                                        {
-                                            qDebug() <<  "Device doesn't seem to support SBGGR8 format. Trying SN9C10X.";
-                                            if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_SN9C10X))
-                                                qDebug() <<  "Device doesn't seem to support BGR32 format. Fallback to it is not yet implemented.";
-                                        }
+    qDebug() << "VideoDevice::setCaptureSize:" << newWidth << "x" << newHeight;
+    if (!isOpen()) {
+        qWarning("VideoDevice::setCaptureSize: not opened");
+        return false;
+    }
+
+    // set the pixel format
+    // It should not be there. It must remain in a completely distict place, cause this method should not change the pixelformat.
+    // It shouldn't try to find a suitable pixel format this way. It should use values discovered by - detectPixelFormats() - to choose a valid one.
+    qDebug() << "VideoDevice::setCaptureSize: Trying YUY422P";
+    if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_YUV422P)) {
+        qDebug() <<  "  Device doesn't seem to support YUV422P format. Trying YUYV.";
+        if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_YUYV)) {
+            qDebug() <<  "  Device doesn't seem to support YUYV format. Trying UYVY.";
+            if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_UYVY)) {
+                qDebug() <<  "  Device doesn't seem to support UYVY format. Trying YUV420P.";
+                if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_YUV420P)) {
+                    qDebug() <<  "  Device doesn't seem to support YUV420P format. Trying RGB24.";
+                    if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_RGB24)) {
+                        qDebug() <<  "  Device doesn't seem to support RGB24 format. Trying BGR24.";
+                        if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_BGR24)) {
+                            qDebug() <<  "  Device doesn't seem to support RGB24 format. Trying RGB32.";
+                            if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_RGB32)) {
+                                qDebug() <<  "  Device doesn't seem to support RGB32 format. Trying BGR32.";
+                                if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_BGR32)) {
+                                    qDebug() <<  "  Device doesn't seem to support BGR32 format. Trying SBGGR8.";
+                                    if (PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_SBGGR8)) {
+                                        qDebug() <<  "  Device doesn't seem to support SBGGR8 format. Trying SN9C10X.";
+                                        if(PIXELFORMAT_NONE == setPixelFormat(PIXELFORMAT_SN9C10X))
+                                            qDebug() <<  "  Device doesn't seem to support BGR32 format. Fallback to it is not yet implemented.";
                                     }
                                 }
                             }
@@ -632,698 +313,536 @@ int VideoDevice::setSize( int newwidth, int newheight)
                 }
             }
         }
+    }
 
-        if(newwidth  > m_maxWidth ) newwidth  = m_maxWidth;
-        if(newheight > m_maxHeight) newheight = m_maxHeight;
-        if(newwidth  < m_minWidth ) newwidth  = m_minWidth;
-        if(newheight < m_minHeight) newheight = m_minHeight;
+    // keep the size into boundaries
+    if (newWidth  > m_maxWidth ) newWidth  = m_maxWidth;
+    if (newHeight > m_maxHeight) newHeight = m_maxHeight;
+    if (newWidth  < m_minWidth ) newWidth  = m_minWidth;
+    if (newHeight < m_minHeight) newHeight = m_minHeight;
+    m_currentWidth  = newWidth;
+    m_currentHeight = newHeight;
 
-        currentwidth  = newwidth;
-        currentheight = newheight;
-
-        //qDebug() << "width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << width() << "x" << height();
-        // Change resolution for the video device
-        switch(m_driver)
-        {
+    //qDebug() << "VideoDevice::setCaptureSize: width:" << pixelFormatNamePlatform(fmt.fmt.pix.pixelformat) << " " << width() << "x" << height();
+    // Change resolution for the video device
+    switch (m_driver) {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
         case VIDEODEV_DRIVER_V4L2:
-            //				CLEAR (fmt);
-            if (-1 == xioctl (VIDIOC_G_FMT, &fmt))
-                qDebug() << "VIDIOC_G_FMT failed (" << errno << ").Returned width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
-            fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-            fmt.fmt.pix.width       = width();
-            fmt.fmt.pix.height      = height();
-            fmt.fmt.pix.field       = V4L2_FIELD_ANY;
-            if (-1 == xioctl (VIDIOC_S_FMT, &fmt))
-            {
-                qDebug() << "VIDIOC_S_FMT failed (" << errno << ").Returned width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
+            struct v4l2_format format;
+            CLEAR(format);
+            format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            if (-1 == xioctl(VIDIOC_G_FMT, &format))
+                qDebug() << "VideoDevice::setCaptureSize: VIDIOC_G_FMT failed (" << errno << "). Returned width: " << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << " " << format.fmt.pix.width << "x" << format.fmt.pix.height;
+            format.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            format.fmt.pix.width       = width();
+            format.fmt.pix.height      = height();
+            format.fmt.pix.field       = V4L2_FIELD_ANY;
+            if (-1 == xioctl(VIDIOC_S_FMT, &format)) {
+                qDebug() << "VideoDevice::setCaptureSize: VIDIOC_S_FMT failed (" << errno << "). Returned width: " << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << " " << format.fmt.pix.width << "x" << format.fmt.pix.height;
                 // Note VIDIOC_S_FMT may change width and height.
-            }
-            else
-            {
+            } else {
                 // Buggy driver paranoia.
-                qDebug() << "VIDIOC_S_FMT worked (" << errno << ").Returned width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
-                unsigned int min = fmt.fmt.pix.width * 2;
-                if (fmt.fmt.pix.bytesperline < min)
-                    fmt.fmt.pix.bytesperline = min;
-                min = fmt.fmt.pix.bytesperline * fmt.fmt.pix.height;
-                if (fmt.fmt.pix.sizeimage < min)
-                    fmt.fmt.pix.sizeimage = min;
-                m_buffer_size=fmt.fmt.pix.sizeimage ;
+                qDebug() << "VideoDevice::setCaptureSize: VIDIOC_S_FMT worked (" << errno << "). Returned width: " << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << " " << format.fmt.pix.width << "x" << format.fmt.pix.height;
+                unsigned int min = format.fmt.pix.width * 2;
+                if (format.fmt.pix.bytesperline < min)
+                    format.fmt.pix.bytesperline = min;
+                min = format.fmt.pix.bytesperline * format.fmt.pix.height;
+                if (format.fmt.pix.sizeimage < min)
+                    format.fmt.pix.sizeimage = min;
+                m_buffer_size=format.fmt.pix.sizeimage ;
             }
             break;
 #endif
-        case VIDEODEV_DRIVER_V4L:
-            {
-                struct video_window V4L_videowindow;
-
-                if (xioctl (VIDIOCGWIN, &V4L_videowindow)== -1)
-                {
-                    perror ("ioctl VIDIOCGWIN");
-                    //					return (NULL);
-                }
-                V4L_videowindow.width  = width();
-                V4L_videowindow.height = height();
-                V4L_videowindow.clipcount=0;
-                if (xioctl (VIDIOCSWIN, &V4L_videowindow)== -1)
-                {
-                    perror ("ioctl VIDIOCSWIN");
-                    //					return (NULL);
-                }
-                qDebug() << "------------- width: " << V4L_videowindow.width << " Height: " << V4L_videowindow.height << " Clipcount: " << V4L_videowindow.clipcount << " -----------------";
-
-                //				qDebug() << "libkopete (avdevice): V4L_picture.palette: " << V4L_picture.palette << " Depth: " << V4L_picture.depth;
-
-                /*				if(-1 == xioctl(VIDIOCGFBUF,&V4L_videobuffer))
-                qDebug() << "libkopete (avdevice): VIDIOCGFBUF failed (" << errno << "): Device cannot stream";*/
-
+        case VIDEODEV_DRIVER_V4L: {
+            struct video_window V4L_videowindow;
+            if (xioctl(VIDIOCGWIN, &V4L_videowindow)== -1) {
+                perror ("ioctl VIDIOCGWIN");
+                //return false;
             }
-            break;
+            V4L_videowindow.width  = width();
+            V4L_videowindow.height = height();
+            V4L_videowindow.clipcount = 0;
+            if (xioctl(VIDIOCSWIN, &V4L_videowindow)== -1) {
+                perror ("ioctl VIDIOCSWIN");
+                //					return (NULL);
+            }
+            qDebug() << "VideoDevice::setCaptureSize: width:" << V4L_videowindow.width << " Height:" << V4L_videowindow.height << " Clipcount:" << V4L_videowindow.clipcount;
+            //qDebug() << "libkopete (avdevice): V4L_picture.palette: " << V4L_picture.palette << " Depth: " << V4L_picture.depth;
+            /*if (-1 == xioctl(VIDIOCGFBUF,&V4L_videobuffer))
+            qDebug() << "libkopete (avdevice): VIDIOCGFBUF failed (" << errno << "): Device cannot stream";*/
+            } break;
 #endif
         case VIDEODEV_DRIVER_NONE:
         default:
             break;
-        }
-        m_buffer_size = width() * height() * pixelFormatDepth(m_pixelformat) / 8;
-        qDebug() << "------------------------- ------- -- m_buffer_size: " << m_buffer_size << " !!! -- ------- -----------------------------------------";
-
-        m_currentbuffer.pixelformat=m_pixelformat;
-        m_currentbuffer.data.resize(m_buffer_size);
-
-        switch (m_io_method)
-        {
-        case IO_METHOD_NONE:                    break;
-        case IO_METHOD_READ:    initRead ();    break;
-        case IO_METHOD_MMAP:    initMmap ();    break;
-        case IO_METHOD_USERPTR: initUserptr (); break;
-        }
-
-        qDebug() << "setSize(" << newwidth << ", " << newheight << ") exited successfuly.";
-        return EXIT_SUCCESS;
     }
-    qDebug() << "setSize(" << newwidth << ", " << newheight << ") Device is not open.";
-    return EXIT_FAILURE;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-pixel_format VideoDevice::setPixelFormat(pixel_format newformat)
-{
-    pixel_format ret = PIXELFORMAT_NONE;
-    //qDebug() << "called.";
-    // Change the pixel format for the video device
-    switch(m_driver)
-    {
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-    case VIDEODEV_DRIVER_V4L2:
-        //			CLEAR (fmt);
-        if (-1 == xioctl (VIDIOC_G_FMT, &fmt))
-        {
-            //				return errnoReturn ("VIDIOC_S_FMT");
-            //				qDebug() << "VIDIOC_G_FMT failed (" << errno << ").Returned width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
-        }
-        else
-            m_pixelformat = pixelFormatForPalette(fmt.fmt.pix.pixelformat);
-
-        fmt.fmt.pix.pixelformat = pixelFormatCode(newformat);
-        if (-1 == xioctl (VIDIOC_S_FMT, &fmt))
-        {
-            //				qDebug() << "VIDIOC_S_FMT failed (" << errno << ").Returned width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
-        }
-        else
-        {
-            if ((int)fmt.fmt.pix.pixelformat == pixelFormatCode(newformat)) // Thih "if" (not what is contained within) is a fix for a bug in sn9c102 driver.
-            {
-                m_pixelformat = newformat;
-                ret = m_pixelformat;
-            }
-        }
-        break;
-#endif
-    case VIDEODEV_DRIVER_V4L:
-        {
-            struct video_picture V4L_picture;
-            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
-                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
-            //			qDebug() << "V4L_picture.palette: " << V4L_picture.palette << " Depth: " << V4L_picture.depth;
-            V4L_picture.palette = pixelFormatCode(newformat);
-            V4L_picture.depth   = pixelFormatDepth(newformat);
-            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
-            {
-                //				qDebug() << "Device seems to not support " << pixelFormatName(newformat) << " format. Fallback to it is not yet implemented.";
-            }
-
-            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
-                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
-
-            //			qDebug() << "V4L_picture.palette: " << V4L_picture.palette << " Depth: " << V4L_picture.depth;
-            m_pixelformat=pixelFormatForPalette(V4L_picture.palette);
-            if (m_pixelformat == newformat)
-                ret = newformat;
-
-        }
-        break;
-#endif
-    case VIDEODEV_DRIVER_NONE:
-    default:
-        break;
+    m_buffer_size = width() * height() * pixelFormatDepth(m_pixelFormat) / 8;
+    if (m_buffer_size <= 0) {
+        qDebug("VideoDevice::setCaptureSize: invalid buffer size %d", m_buffer_size);
+        return false;
     }
-    return ret;
-}
+    qDebug() << "VideoDevice::setCaptureSize: buffer size: " << m_buffer_size;
+    m_currentbuffer.pixelformat = m_pixelFormat;
+    m_currentbuffer.data.resize(m_buffer_size);
 
-
-
-
-
-
-/*!
-\fn Kopete::AV::VideoDevice::currentInput()
-*/
-int VideoDevice::currentInput()
-{
-    /// @todo implement me
-    if(isOpen())
-    {
-        return m_current_input;
-    }
-    return 0;
-}
-
-/*!
-\fn Kopete::AV::VideoDevice::selectInput(int input)
-*/
-int VideoDevice::selectInput(int newinput)
-{
-    /// @todo implement me
-    if(m_current_input >= inputs())
-        return EXIT_FAILURE;
-
-    if(isOpen())
-    {
-        switch (m_driver)
-        {
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-        case VIDEODEV_DRIVER_V4L2:
-            if (-1 == ioctl (descriptor, VIDIOC_S_INPUT, &newinput))
-            {
-                perror ("VIDIOC_S_INPUT");
-                return EXIT_FAILURE;
-            }
+    // INIT THE I/O after the resize!
+    switch (m_ioMethod) {
+        case IO_METHOD_NONE:
             break;
-#endif
-        case VIDEODEV_DRIVER_V4L:
-            struct video_channel V4L_input;
-            V4L_input.channel=newinput;
-            V4L_input.norm=4; // Hey, it's plain wrong! It should be input's signal standard!
-            if (-1 == ioctl (descriptor, VIDIOCSCHAN, &V4L_input))
-            {
-                perror ("ioctl (VIDIOCSCHAN)");
-                return EXIT_FAILURE;
-            }
-            break;
-#endif
-        case VIDEODEV_DRIVER_NONE:
-        default:
-            break;
-        }
-        qDebug() << "Selected input " << newinput << " (" << m_input[newinput].name << ")";
-        m_current_input = newinput;
-        setInputParameters();
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
 
-/*!
-\fn Kopete::AV::VideoDevice::setInputParameters()
-*/
-int VideoDevice::setInputParameters()
-{
-    /// @todo implement me
-    if( (isOpen()) && (m_current_input < inputs() ) )
-    {
-        setBrightness( getBrightness() );
-        setContrast( getContrast() );
-        setSaturation( getSaturation() );
-        setWhiteness( getWhiteness() );
-        setHue( getHue() );
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-/*!
-\fn VideoDevice::startCapturing()
-*/
-int VideoDevice::startCapturing()
-{
-
-    qDebug() << "called.";
-    if(isOpen())
-    {
-        switch (m_io_method)
-        {
-        case IO_METHOD_NONE: // Device cannot capture frames
-            return EXIT_FAILURE;
-            break;
-        case IO_METHOD_READ: // Nothing to do
-            break;
-        case IO_METHOD_MMAP:
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-            {
-                unsigned int loop;
-                for (loop = 0; loop < m_streambuffers; ++loop)
-                {
-                    struct v4l2_buffer buf;
-                    CLEAR (buf);
-                    buf.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-                    buf.memory = V4L2_MEMORY_MMAP;
-                    buf.index  = loop;
-                    if (-1 == xioctl (VIDIOC_QBUF, &buf))
-                        return errnoReturn ("VIDIOC_QBUF");
-                }
-                enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-                if (-1 == xioctl (VIDIOC_STREAMON, &type))
-                    return errnoReturn ("VIDIOC_STREAMON");
-            }
-#endif
-#endif
-            break;
-        case IO_METHOD_USERPTR:
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-            {
-                unsigned int loop;
-                for (loop = 0; loop < m_streambuffers; ++loop)
-                {
-                    struct v4l2_buffer buf;
-                    CLEAR (buf);
-                    buf.type      = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-                    buf.memory    = V4L2_MEMORY_USERPTR;
-                    buf.m.userptr = (unsigned long) m_rawbuffers[loop].start;
-                    buf.length    = m_rawbuffers[loop].length;
-                    if (-1 == xioctl (VIDIOC_QBUF, &buf))
-                        return errnoReturn ("VIDIOC_QBUF");
-                }
-                enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-                if (-1 == xioctl (VIDIOC_STREAMON, &type))
-                    return errnoReturn ("VIDIOC_STREAMON");
-            }
-#endif
-#endif
-            break;
-        }
-
-        qDebug() << "exited successfuly.";
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-/*!
-\fn VideoDevice::getFrame()
-*/
-int VideoDevice::getFrame()
-{
-    /// @todo implement me
-    ssize_t bytesread;
-
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-    struct v4l2_buffer v4l2buffer;
-#endif
-#endif
-    // 	qDebug() << "getFrame() called.";
-    if(isOpen())
-    {
-        switch (m_io_method)
-        {
-        case IO_METHOD_NONE: // Device cannot capture frames
-            return EXIT_FAILURE;
-            break;
         case IO_METHOD_READ:
-            // 				qDebug() << "Using IO_METHOD_READ.File descriptor: " << descriptor << " Buffer address: " << &m_currentbuffer.data[0] << " Size: " << m_currentbuffer.data.size();
-            bytesread = read (descriptor, &m_currentbuffer.data[0], m_currentbuffer.data.size());
-            if (-1 == bytesread) // must verify this point with ov511 driver.
-            {
-                qDebug() << "IO_METHOD_READ failed.";
-                switch (errno)
-                {
-                case EAGAIN:
-                    return EXIT_FAILURE;
-                case EIO: /* Could ignore EIO, see spec. fall through */
-                default:
-                    return errnoReturn ("read");
-                }
-            }
-            if((int)m_currentbuffer.data.size() < bytesread)
-            {
-                qDebug() << "IO_METHOD_READ returned less bytes (" << bytesread << ") than it was asked for (" << m_currentbuffer.data.size() <<").";
-            }
-            break;
+            return initIoRead();
+
         case IO_METHOD_MMAP:
+            return initIoMmap();
+
+        case IO_METHOD_USERPTR:
+            return initIoUserptr();
+    }
+    return true;
+}
+
+// OK
+bool VideoDevice::startCapturing()
+{
+    // TODO: check that capture size has been set
+    if (!isOpen()) {
+        qDebug("VideoDevice::startCapturing: not opened");
+        return false;
+    }
+
+    switch (m_ioMethod) {
+        case IO_METHOD_NONE:
+            // Device cannot capture frames
+            return false;
+
+        case IO_METHOD_READ:
+            // Nothing to do
+            break;
+
+        case IO_METHOD_MMAP: {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
+            for (unsigned int i = 0; i < m_streambuffers; ++i) {
+                struct v4l2_buffer buf;
+                CLEAR (buf);
+                buf.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+                buf.memory = V4L2_MEMORY_MMAP;
+                buf.index  = i;
+                if (-1 == xioctl (VIDIOC_QBUF, &buf)) {
+                    perror("VIDIOC_QBUF");
+                    return false;
+                }
+            }
+            enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            if (-1 == xioctl(VIDIOC_STREAMON, &type)) {
+                perror("VIDIOC_STREAMON");
+                return false;
+            }
+#endif
+#endif
+            } break;
+
+        case IO_METHOD_USERPTR: {
+#ifdef Q_OS_LINUX
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+            for (unsigned int i = 0; i < m_streambuffers; ++i) {
+                struct v4l2_buffer buf;
+                CLEAR (buf);
+                buf.type      = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+                buf.memory    = V4L2_MEMORY_USERPTR;
+                buf.m.userptr = (unsigned long) m_rawbuffers[i].start;
+                buf.length    = m_rawbuffers[i].length;
+                if (-1 == xioctl (VIDIOC_QBUF, &buf)) {
+                    perror("VIDIOC_QBUF");
+                    return false;
+                }
+            }
+            enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            if (-1 == xioctl (VIDIOC_STREAMON, &type)) {
+                perror("VIDIOC_STREAMON");
+                return false;
+            }
+#endif
+#endif
+            } break;
+    }
+    qDebug("VideoDevice::startCapturing: started streaming");
+    return true;
+}
+
+// OK
+bool VideoDevice::stopCapturing()
+{
+    if (!isOpen()) {
+        qDebug("VideoDevice::stopCapturing: not opened");
+        return false;
+    }
+
+    switch (m_ioMethod) {
+        case IO_METHOD_NONE:
+            // Device cannot capture frames
+            return false;
+
+        case IO_METHOD_READ:
+            // Nothing to do
+            break;
+
+        case IO_METHOD_MMAP:
+        case IO_METHOD_USERPTR: {
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+            enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            if (-1 == xioctl(VIDIOC_STREAMOFF, &type)) {
+                perror("VIDIOC_STREAMOFF");
+                return false;
+            }
+            if (m_ioMethod == IO_METHOD_MMAP) {
+                for (unsigned int i = 0; i < m_streambuffers; ++i) {
+                    if (::munmap(m_rawbuffers[i].start, m_rawbuffers[i].length) != 0)
+                        qDebug() << "VideoDevice::stopCapturing: unable to munmap";
+                }
+            }
+#endif
+            } break;
+    }
+    return true;
+}
+
+// OK
+bool VideoDevice::acquireFrame()
+{
+    // TODO: check that streaming has started
+    if (!isOpen()) {
+        qDebug("VideoDevice::acquireFrame: not opened");
+        return false;
+    }
+
+    switch (m_ioMethod) {
+        case IO_METHOD_NONE:
+            // Device cannot capture frames
+            return false;
+
+        case IO_METHOD_READ: {
+            //qDebug() << "Using IO_METHOD_READ.File descriptor: " << m_videoFileDescriptor << " Buffer address: " << &m_currentbuffer.data[0] << " Size: " << m_currentbuffer.data.size();
+            ssize_t bytesread = read(m_videoFileDescriptor, &m_currentbuffer.data[0], m_currentbuffer.data.size());
+            if (bytesread < 1) { // must verify this point with ov511 driver.
+                qDebug("VideoDevice::acquireFrame: IO_METHOD_READ failed");
+                switch (errno) {
+                    case EAGAIN:
+                        return false;
+                    case EIO: // Could ignore EIO, see spec. fall through
+                    default: {
+                        perror("read");
+                        return false;
+                    }
+                }
+            }
+            if ((int)m_currentbuffer.data.size() < bytesread)
+                qDebug() << "VideoDevice::acquireFrame: IO_METHOD_READ returned less bytes (" << bytesread << ") than it was asked for (" << m_currentbuffer.data.size() << ")";
+            } break;
+
+        case IO_METHOD_MMAP: {
+#ifdef Q_OS_LINUX
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+            struct v4l2_buffer v4l2buffer;
             CLEAR (v4l2buffer);
             v4l2buffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
             v4l2buffer.memory = V4L2_MEMORY_MMAP;
-            if (-1 == xioctl (VIDIOC_DQBUF, &v4l2buffer))
-            {
-                qDebug() << full_filename << " MMAPed getFrame failed.";
-                switch (errno)
-                {
-                case EAGAIN:
-                    {
-                        qDebug() << full_filename << " MMAPed getFrame failed: EAGAIN. Pointer: ";
-                        return EXIT_FAILURE;
-                    }
-                case EIO: /* Could ignore EIO, see spec. fall through */
-                default:
-                    return errnoReturn ("VIDIOC_DQBUF");
+            if (-1 == xioctl (VIDIOC_DQBUF, &v4l2buffer)) {
+                qDebug() << "VideoDevice::acquireFrame:" << m_videoFileName << "MMAPed getFrame failed";
+                switch (errno) {
+                    case EAGAIN:
+                        qDebug() << "VideoDevice::acquireFrame:" << m_videoFileName << " MMAPed getFrame failed: EAGAIN. Pointer: ";
+                        return false;
+
+                    case EIO: // Could ignore EIO, see spec. fall through
+                    default:
+                        perror("VIDIOC_DQBUF");
+                        return false;
                 }
             }
-            /*				if (v4l2buffer.index < m_streambuffers)
+            /*if (v4l2buffer.index < m_streambuffers)
                 return EXIT_FAILURE;*/ //it was an assert()
-            // qDebug() << "m_rawbuffers[" << v4l2buffer.index << "].start: " << (void *)m_rawbuffers[v4l2buffer.index].start << "   Size: " << m_currentbuffer.data.size();
-
+            // qDebug() << "VideoDevice::acquireFrame: m_rawbuffers[" << v4l2buffer.index << "].start: " << (void *)m_rawbuffers[v4l2buffer.index].start << "   Size: " << m_currentbuffer.data.size();
             memcpy(&m_currentbuffer.data[0], m_rawbuffers[v4l2buffer.index].start, m_currentbuffer.data.size());
-            if (-1 == xioctl (VIDIOC_QBUF, &v4l2buffer))
-                return errnoReturn ("VIDIOC_QBUF");
+            if (-1 == xioctl (VIDIOC_QBUF, &v4l2buffer)) {
+                perror("VIDIOC_QBUF");
+                return false;
+            }
 #endif
 #endif
-            break;
-        case IO_METHOD_USERPTR:
+            } break;
+
+        case IO_METHOD_USERPTR: {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
-            {
-                unsigned int i;
-                CLEAR (v4l2buffer);
-                v4l2buffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-                v4l2buffer.memory = V4L2_MEMORY_USERPTR;
-                if (-1 == xioctl (VIDIOC_DQBUF, &v4l2buffer))
-                {
-                    switch (errno)
-                    {
+            struct v4l2_buffer v4l2buffer;
+            CLEAR(v4l2buffer);
+            v4l2buffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            v4l2buffer.memory = V4L2_MEMORY_USERPTR;
+            if (-1 == xioctl (VIDIOC_DQBUF, &v4l2buffer)) {
+                switch (errno) {
                     case EAGAIN:
-                        return EXIT_FAILURE;
-                    case EIO: /* Could ignore EIO, see spec. fall through */
+                        return false;
+                    case EIO: // Could ignore EIO, see spec. fall through
                     default:
-                        return errnoReturn ("VIDIOC_DQBUF");
-                    }
+                        perror("VIDIOC_DQBUF");
+                        return false;
                 }
-                for (i = 0; i < m_streambuffers; ++i)
-                    if (v4l2buffer.m.userptr == (unsigned long) m_rawbuffers[i].start && v4l2buffer.length == m_rawbuffers[i].length)
-                        break;
-                if (i < m_streambuffers)
-                    return EXIT_FAILURE;
-                if (-1 == xioctl (VIDIOC_QBUF, &v4l2buffer))
-                    return errnoReturn ("VIDIOC_QBUF");
+            }
+            unsigned int i = 0;
+            for (; i < m_streambuffers; ++i)
+                if (v4l2buffer.m.userptr == (unsigned long) m_rawbuffers[i].start && v4l2buffer.length == m_rawbuffers[i].length)
+                    break;
+            if (i < m_streambuffers)
+                return EXIT_FAILURE;
+            if (-1 == xioctl(VIDIOC_QBUF, &v4l2buffer)) {
+                perror("VIDIOC_QBUF");
+                return false;
             }
 #endif
 #endif
-            break;
-        }
-        // 		qDebug() << "exited successfuly.";
-        return EXIT_SUCCESS;
+            } break;
     }
-    return EXIT_FAILURE;
+    return true;
 }
 
-/*!
-\fn VideoDevice::getFrame(imagebuffer *imgbuffer)
-*/
-int VideoDevice::getFrame(imagebuffer *imgbuffer)
+// OK
+bool VideoDevice::getImage(QImage * qimage) const
 {
-    if(imgbuffer)
-    {
-        getFrame();
-        imgbuffer->height      = m_currentbuffer.height;
-        imgbuffer->width       = m_currentbuffer.width;
-        imgbuffer->pixelformat = m_currentbuffer.pixelformat;
-        imgbuffer->data        = m_currentbuffer.data;
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-/*!
-\fn Kopete::AV::VideoDevice::getImage(const QImage *qimage)
-*/
-int VideoDevice::getImage(QImage *qimage)
-{
-    /// @todo implement me
-
     // do NOT delete qimage here, as it is received as a parameter
     if (qimage->width() != width() || qimage->height() != height())
-        *qimage = QImage(width(), height(), QImage::Format_RGB32);
+        *qimage = QImage(width(), height(), QImage::Format_ARGB32);
 
-    uchar *bits=qimage->bits();
-    // qDebug() << "Capturing in " << pixelFormatName(m_currentbuffer.pixelformat);
-    switch(m_currentbuffer.pixelformat)
-    {
-    case PIXELFORMAT_NONE	: break;
+    //qDebug() << "VideoDevice::getImage: capturing in " << pixelFormatName(m_currentbuffer.pixelformat);
+    uchar * imgData = qimage->bits();
+    int imgBytes = qimage->numBytes();
+    bool decoded = false;
+    switch (m_currentbuffer.pixelformat) {
+        case PIXELFORMAT_NONE	: break;
 
         // Packed RGB formats
-    case PIXELFORMAT_RGB332	:
-        {
-            int step=0;
-            for(int loop=0;loop < qimage->numBytes();loop+=4)
+        case PIXELFORMAT_RGB332	:
             {
-                bits[loop]   = (m_currentbuffer.data[step]>>5<<5)+(m_currentbuffer.data[step]>>5<<2)+(m_currentbuffer.data[step]>>6);
-                bits[loop+1] = (m_currentbuffer.data[step]>>2<<5)+(m_currentbuffer.data[step]<<3>>5<<2)+(m_currentbuffer.data[step]<<3>>6);
-                bits[loop+2] = (m_currentbuffer.data[step]<<6)+(m_currentbuffer.data[step]<<6>>2)+(m_currentbuffer.data[step]<<6>>4)+(m_currentbuffer.data[step]<<6>>6);
-                bits[loop+3] = 255;
-                step++;
+                int step=0;
+                for (int loop=0;loop < imgBytes;loop+=4) {
+                    imgData[loop]   = (m_currentbuffer.data[step]>>5<<5)+(m_currentbuffer.data[step]>>5<<2)+(m_currentbuffer.data[step]>>6);
+                    imgData[loop+1] = (m_currentbuffer.data[step]>>2<<5)+(m_currentbuffer.data[step]<<3>>5<<2)+(m_currentbuffer.data[step]<<3>>6);
+                    imgData[loop+2] = (m_currentbuffer.data[step]<<6)+(m_currentbuffer.data[step]<<6>>2)+(m_currentbuffer.data[step]<<6>>4)+(m_currentbuffer.data[step]<<6>>6);
+                    imgData[loop+3] = 255;
+                    step++;
+                }
+                decoded = true;
             }
-        }
-        break;
-    case PIXELFORMAT_RGB444	: break;
-    case PIXELFORMAT_RGB555	: break;
-    case PIXELFORMAT_RGB565	:
-        {
-            int step=0;
-            for(int loop=0;loop < qimage->numBytes();loop+=4)
+            break;
+        case PIXELFORMAT_RGB444	: break;
+        case PIXELFORMAT_RGB555	: break;
+        case PIXELFORMAT_RGB565	:
             {
-                bits[loop]   = (m_currentbuffer.data[step]<<3)+(m_currentbuffer.data[step]<<3>>5);
-                bits[loop+1] = ((m_currentbuffer.data[step+1])<<5)|m_currentbuffer.data[step]>>5;
-                bits[loop+2] = ((m_currentbuffer.data[step+1])&248)+((m_currentbuffer.data[step+1])>>5);
-                bits[loop+3] = 255;
-                step+=2;
+                int step=0;
+                for (int loop=0;loop < imgBytes;loop+=4) {
+                    imgData[loop]   = (m_currentbuffer.data[step]<<3)+(m_currentbuffer.data[step]<<3>>5);
+                    imgData[loop+1] = ((m_currentbuffer.data[step+1])<<5)|m_currentbuffer.data[step]>>5;
+                    imgData[loop+2] = ((m_currentbuffer.data[step+1])&248)+((m_currentbuffer.data[step+1])>>5);
+                    imgData[loop+3] = 255;
+                    step+=2;
+                }
+                decoded = true;
             }
-        }
-        break;
-    case PIXELFORMAT_RGB555X: break;
-    case PIXELFORMAT_RGB565X: break;
-    case PIXELFORMAT_BGR24	:
-        {
-            int step=0;
-            for(int loop=0;loop < qimage->numBytes();loop+=4)
+            break;
+        case PIXELFORMAT_RGB555X: break;
+        case PIXELFORMAT_RGB565X: break;
+        case PIXELFORMAT_BGR24	:
             {
-                bits[loop]   = m_currentbuffer.data[step+2];
-                bits[loop+1] = m_currentbuffer.data[step+1];
-                bits[loop+2] = m_currentbuffer.data[step];
-                bits[loop+3] = 255;
-                step+=3;
+                int step=0;
+                for(int loop=0;loop < imgBytes;loop+=4) {
+                    imgData[loop]   = m_currentbuffer.data[step+2];
+                    imgData[loop+1] = m_currentbuffer.data[step+1];
+                    imgData[loop+2] = m_currentbuffer.data[step];
+                    imgData[loop+3] = 255;
+                    step+=3;
+                }
+                decoded = true;
             }
-        }
-        break;
-    case PIXELFORMAT_RGB24	:
-        {
-            int step=0;
-            for(int loop=0;loop < qimage->numBytes();loop+=4)
+            break;
+        case PIXELFORMAT_RGB24	:
             {
-                bits[loop]   = m_currentbuffer.data[step];
-                bits[loop+1] = m_currentbuffer.data[step+1];
-                bits[loop+2] = m_currentbuffer.data[step+2];
-                bits[loop+3] = 255;
-                step+=3;
+                int step=0;
+                for(int loop=0;loop < imgBytes;loop+=4) {
+                    imgData[loop]   = m_currentbuffer.data[step];
+                    imgData[loop+1] = m_currentbuffer.data[step+1];
+                    imgData[loop+2] = m_currentbuffer.data[step+2];
+                    imgData[loop+3] = 255;
+                    step+=3;
+                }
+                decoded = true;
             }
-        }
-        break;
-    case PIXELFORMAT_BGR32	:
-        {
-            int step=0;
-            for(int loop=0;loop < qimage->numBytes();loop+=4)
+            break;
+        case PIXELFORMAT_BGR32	:
             {
-                bits[loop]   = m_currentbuffer.data[step+2];
-                bits[loop+1] = m_currentbuffer.data[step+1];
-                bits[loop+2] = m_currentbuffer.data[step];
-                bits[loop+3] = m_currentbuffer.data[step+3];
-                step+=4;
+                int step=0;
+                for(int loop=0;loop < imgBytes;loop+=4) {
+                    imgData[loop]   = m_currentbuffer.data[step+2];
+                    imgData[loop+1] = m_currentbuffer.data[step+1];
+                    imgData[loop+2] = m_currentbuffer.data[step];
+                    imgData[loop+3] = m_currentbuffer.data[step+3];
+                    step+=4;
+                }
+                decoded = true;
             }
-        }
-        break;
-    case PIXELFORMAT_RGB32	: memcpy(bits,&m_currentbuffer.data[0], m_currentbuffer.data.size());
-        break;
+            break;
+        case PIXELFORMAT_RGB32	:
+            memcpy(imgData, &m_currentbuffer.data[0], m_currentbuffer.data.size());
+            break;
 
         // Bayer RGB format
-    case PIXELFORMAT_SBGGR8	:
-        {
-            unsigned char *d = (unsigned char *) malloc (width() * height() * 3);
-            bayer2rgb24(d, &m_currentbuffer.data.first(), width(), height());
-            int step=0;
-            for(int loop=0;loop < qimage->numBytes();loop+=4)
+        case PIXELFORMAT_SBGGR8	:
             {
-                bits[loop]   = d[step+2];
-                bits[loop+1] = d[step+1];
-                bits[loop+2] = d[step];
-                bits[loop+3] = 255;
-                step+=3;
+                unsigned char *d = (unsigned char *) malloc (width() * height() * 3);
+                bayer2rgb24(d, &m_currentbuffer.data.first(), width(), height());
+                int step=0;
+                for(int loop=0;loop < imgBytes;loop+=4) {
+                    imgData[loop]   = d[step+2];
+                    imgData[loop+1] = d[step+1];
+                    imgData[loop+2] = d[step];
+                    imgData[loop+3] = 255;
+                    step+=3;
+                }
+                free(d);
+                decoded = true;
             }
-            free(d);
-        }
-        break;
+            break;
 
         // YUV formats
-    case PIXELFORMAT_GREY	:
-        {
-            int step=0;
-            for(int loop=0;loop < qimage->numBytes();loop+=4)
+        case PIXELFORMAT_GREY	:
             {
-                bits[loop]   = m_currentbuffer.data[step];
-                bits[loop+1] = m_currentbuffer.data[step];
-                bits[loop+2] = m_currentbuffer.data[step];
-                bits[loop+3] = 255;
-                step++;
-            }
-        }
-        break;
-    case PIXELFORMAT_YUYV:
-    case PIXELFORMAT_UYVY:
-    case PIXELFORMAT_YUV420P:
-    case PIXELFORMAT_YUV422P:
-        {
-            uchar *yptr, *cbptr, *crptr;
-            bool halfheight=false;
-            bool packed=false;
-            // Adjust algorythm to specific YUV data arrangements.
-            if (m_currentbuffer.pixelformat == PIXELFORMAT_YUV420P)
-                halfheight=true;
-            if (m_currentbuffer.pixelformat == PIXELFORMAT_YUYV)
-            {
-                yptr = &m_currentbuffer.data[0];
-                cbptr = yptr + 1;
-                crptr = yptr + 3;
-                packed=true;
-            }
-            else if (m_currentbuffer.pixelformat == PIXELFORMAT_UYVY)
-            {
-                cbptr = &m_currentbuffer.data[0];
-                yptr = cbptr + 1;
-                crptr = cbptr + 2;
-                packed=true;
-            }
-            else
-            {
-                yptr = &m_currentbuffer.data[0];
-                cbptr = yptr + (width()*height());
-                crptr = cbptr + (width()*height()/(halfheight ? 4:2));
-            }
-
-            for(int y=0; y<height(); y++)
-            {
-                // Decode scanline
-                for(int x=0; x<width(); x++)
-                {
-                    int c,d,e;
-
-                    if (packed)
-                    {
-                        c = (yptr[x<<1])-16;
-                        d = (cbptr[x>>1<<2])-128;
-                        e = (crptr[x>>1<<2])-128;
-                    }
-                    else
-                    {
-                        c = (yptr[x])-16;
-                        d = (cbptr[x>>1])-128;
-                        e = (crptr[x>>1])-128;
-                    }
-
-                    int r = (298 * c           + 409 * e + 128)>>8;
-                    int g = (298 * c - 100 * d - 208 * e + 128)>>8;
-                    int b = (298 * c + 516 * d           + 128)>>8;
-
-                    if (r<0) r=0;   if (r>255) r=255;
-                    if (g<0) g=0;   if (g>255) g=255;
-                    if (b<0) b=0;   if (b>255) b=255;
-
-                    uint *p = (uint*)qimage->scanLine(y)+x;
-                    *p = qRgba(r,g,b,255);
-
+                int step=0;
+                for(int loop=0;loop < imgBytes;loop+=4) {
+                    imgData[loop]   = m_currentbuffer.data[step];
+                    imgData[loop+1] = m_currentbuffer.data[step];
+                    imgData[loop+2] = m_currentbuffer.data[step];
+                    imgData[loop+3] = 255;
+                    step++;
                 }
-                // Jump to next line
-                if (packed)
-                {
-                    yptr+=width()*2;
-                    cbptr+=width()*2;
-                    crptr+=width()*2;
+                decoded = true;
+            }
+            break;
+        case PIXELFORMAT_YUYV:
+        case PIXELFORMAT_UYVY:
+        case PIXELFORMAT_YUV420P:
+        case PIXELFORMAT_YUV422P:
+            {
+                const uchar *yptr, *cbptr, *crptr;
+                bool halfheight = false;
+                bool packed = false;
+                // Adjust algorythm to specific YUV data arrangements.
+                if (m_currentbuffer.pixelformat == PIXELFORMAT_YUV420P)
+                    halfheight = true;
+                if (m_currentbuffer.pixelformat == PIXELFORMAT_YUYV) {
+                    yptr = &m_currentbuffer.data[0];
+                    cbptr = yptr + 1;
+                    crptr = yptr + 3;
+                    packed = true;
+                } else if (m_currentbuffer.pixelformat == PIXELFORMAT_UYVY) {
+                    cbptr = &m_currentbuffer.data[0];
+                    yptr = cbptr + 1;
+                    crptr = cbptr + 2;
+                    packed = true;
+                } else {
+                    yptr = &m_currentbuffer.data[0];
+                    cbptr = yptr + (width()*height());
+                    crptr = cbptr + (width()*height()/(halfheight ? 4:2));
                 }
-                else
-                {
-                    yptr+=width();
-                    if (!halfheight || y&1)
-                    {
-                        cbptr+=width()/2;
-                        crptr+=width()/2;
+
+                for(int y=0; y<height(); y++) {
+                    // Decode scanline
+                    for(int x=0; x<width(); x++) {
+                        int c,d,e;
+
+                        if (packed) {
+                            c = (yptr[x<<1])-16;
+                            d = (cbptr[x>>1<<2])-128;
+                            e = (crptr[x>>1<<2])-128;
+                        } else {
+                            c = (yptr[x])-16;
+                            d = (cbptr[x>>1])-128;
+                            e = (crptr[x>>1])-128;
+                        }
+
+                        int r = (298 * c           + 409 * e + 128)>>8;
+                        int g = (298 * c - 100 * d - 208 * e + 128)>>8;
+                        int b = (298 * c + 516 * d           + 128)>>8;
+
+                        if (r<0) r=0;   if (r>255) r=255;
+                        if (g<0) g=0;   if (g>255) g=255;
+                        if (b<0) b=0;   if (b>255) b=255;
+
+                        uint *p = (uint*)qimage->scanLine(y)+x;
+                        *p = qRgba(r,g,b,255);
+                    }
+                    // Jump to next line
+                    if (packed) {
+                        yptr+=width()*2;
+                        cbptr+=width()*2;
+                        crptr+=width()*2;
+                    } else {
+                        yptr+=width();
+                        if (!halfheight || y&1)
+                        {
+                            cbptr+=width()/2;
+                            crptr+=width()/2;
+                        }
                     }
                 }
+                decoded = true;
             }
-        }
-        break;
+            break;
 
         // Compressed formats
-    case PIXELFORMAT_JPEG	: break;
-    case PIXELFORMAT_MPEG	: break;
+        case PIXELFORMAT_JPEG	: break;
+        case PIXELFORMAT_MPEG	: break;
 
         // Reserved formats
-    case PIXELFORMAT_DV	: break;
-    case PIXELFORMAT_ET61X251:break;
-    case PIXELFORMAT_HI240	: break;
-    case PIXELFORMAT_HM12	: break;
-    case PIXELFORMAT_MJPEG	: break;
-    case PIXELFORMAT_PWC1	: break;
-    case PIXELFORMAT_PWC2	: break;
-    case PIXELFORMAT_SN9C10X:
-        {
-            unsigned char *s = new unsigned char [width() * height()];
-            unsigned char *d = new unsigned char [width() * height() * 3];
-            sonix_decompress_init();
-            sonix_decompress(width(), height(), &m_currentbuffer.data.first(), s);
-            bayer2rgb24(d, s, width(), height());
-            int step=0;
-            for(int loop=0;loop < qimage->numBytes();loop+=4)
+        case PIXELFORMAT_DV     : break;
+        case PIXELFORMAT_ET61X251:break;
+        case PIXELFORMAT_HI240	: break;
+        case PIXELFORMAT_HM12	: break;
+        case PIXELFORMAT_MJPEG	: break;
+        case PIXELFORMAT_PWC1	: break;
+        case PIXELFORMAT_PWC2	: break;
+        case PIXELFORMAT_SN9C10X:
             {
-                bits[loop]   = d[step+2];
-                bits[loop+1] = d[step+1];
-                bits[loop+2] = d[step];
-                bits[loop+3] = 255;
-                step+=3;
+                unsigned char *s = new unsigned char [width() * height()];
+                unsigned char *d = new unsigned char [width() * height() * 3];
+                sonix_decompress_init();
+                sonix_decompress(width(), height(), &m_currentbuffer.data.first(), s);
+                bayer2rgb24(d, s, width(), height());
+                int step=0;
+                for(int loop=0;loop < imgBytes;loop+=4)
+                {
+                    imgData[loop]   = d[step+2];
+                    imgData[loop+1] = d[step+1];
+                    imgData[loop+2] = d[step];
+                    imgData[loop+3] = 255;
+                    step+=3;
+                }
+                delete[] s;
+                delete[] d;
+                decoded = true;
             }
-            delete[] s;
-            delete[] d;
-        }
-    case PIXELFORMAT_WNVA	: break;
-    case PIXELFORMAT_YYUV	: break;
+        case PIXELFORMAT_WNVA	: break;
+        case PIXELFORMAT_YYUV	: break;
+    }
+
+    // handle undecodable images
+    if (!decoded) {
+        qimage->fill(0xFF0040A0);
+        return false;
     }
 
     // Proccesses image for automatic Brightness/Contrast/Color correction
-    if (getAutoBrightnessContrast()||getAutoColorCorrection())
-    {
+    if (getAutoBrightnessContrast() || getAutoColorCorrection()) {
         ///unsigned long long result=0;
         unsigned long long R=0, G=0, B=0, A=0, global=0;
         int Rmax=0, Gmax=0, Bmax=0, Amax=0, globalmax=0;
@@ -1331,19 +850,18 @@ int VideoDevice::getImage(QImage *qimage)
         int Rrange=255, Grange=255, Brange=255 /**, Arange=255, globarange=255**/;
 
         // Finds minimum and maximum intensity for each color component
-        for(int loop=0;loop < qimage->numBytes();loop+=4)
-        {
-            R+=bits[loop];
-            G+=bits[loop+1];
-            B+=bits[loop+2];
+        for(int loop=0;loop < imgBytes;loop+=4) {
+            R+=imgData[loop];
+            G+=imgData[loop+1];
+            B+=imgData[loop+2];
             //			A+=bits[loop+3];
-            if (bits[loop]   < Rmin) Rmin = bits[loop];
-            if (bits[loop+1] < Gmin) Gmin = bits[loop+1];
-            if (bits[loop+2] < Bmin) Bmin = bits[loop+2];
+            if (imgData[loop]   < Rmin) Rmin = imgData[loop];
+            if (imgData[loop+1] < Gmin) Gmin = imgData[loop+1];
+            if (imgData[loop+2] < Bmin) Bmin = imgData[loop+2];
             //			if (bits[loop+3] < Amin) Amin = bits[loop+3];
-            if (bits[loop]   > Rmax) Rmax = bits[loop];
-            if (bits[loop+1] > Gmax) Gmax = bits[loop+1];
-            if (bits[loop+2] > Bmax) Bmax = bits[loop+2];
+            if (imgData[loop]   > Rmax) Rmax = imgData[loop];
+            if (imgData[loop+1] > Gmax) Gmax = imgData[loop+1];
+            if (imgData[loop+2] > Bmax) Bmax = imgData[loop+2];
             //			if (bits[loop+3] > Amax) Amax = bits[loop+3];
         }
         global = R + G + B;
@@ -1353,8 +871,7 @@ int VideoDevice::getImage(QImage *qimage)
         // If no color correction should be performed, simply level all the intensities so they're just the same.
         // In fact color correction should use the R, G and B variables to detect color deviation and "bump up" the saturation,
         // but it's computationally more expensive and the current way returns better results to the user.
-        if(!getAutoColorCorrection())
-        {
+        if (!getAutoColorCorrection()) {
             Rmin = globalmin ; Rmax = globalmax;
             Gmin = globalmin ; Gmax = globalmax;
             Bmin = globalmin ; Bmax = globalmax;
@@ -1370,84 +887,456 @@ int VideoDevice::getImage(QImage *qimage)
                 " Rmin: " << Rmin << " Gmin: " << Gmin << " Bmin: " << Bmin << " Amin: " << Amin << " globalmin: " << globalmin <<
                 " Rmax: " << Rmax << " Gmax: " << Gmax << " Bmax: " << Bmax << " Amax: " << Amax << " globalmax: " << globalmax ;
 
-        for(int loop=0;loop < qimage->numBytes();loop+=4)
-        {
-            bits[loop]   = (bits[loop]   - Rmin) * 255 / (Rrange);
-            bits[loop+1] = (bits[loop+1] - Gmin) * 255 / (Grange);
-            bits[loop+2] = (bits[loop+2] - Bmin) * 255 / (Brange);
+        for(int loop=0; loop < imgBytes; loop+=4) {
+            imgData[loop]   = (imgData[loop]   - Rmin) * 255 / (Rrange);
+            imgData[loop+1] = (imgData[loop+1] - Gmin) * 255 / (Grange);
+            imgData[loop+2] = (imgData[loop+2] - Bmin) * 255 / (Brange);
             //			bits[loop+3] = (bits[loop+3] - Amin) * 255 / (Arange);
         }
     }
-    return EXIT_SUCCESS;
+    return true;
 }
 
-/*!
-\fn VideoDevice::stopCapturing()
-*/
-int VideoDevice::stopCapturing()
+// OK
+bool VideoDevice::queryDeviceProperties()
 {
-    /// @todo implement me
-    qDebug() << "called.";
-    if(isOpen())
-    {
-        switch (m_io_method)
-        {
-        case IO_METHOD_NONE: // Device cannot capture frames
-            return EXIT_FAILURE;
-            break;
-        case IO_METHOD_READ: // Nothing to do
-            break;
-        case IO_METHOD_MMAP:
-        case IO_METHOD_USERPTR:
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-            {
-                enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-                if (-1 == xioctl (VIDIOC_STREAMOFF, &type))
-                    return errnoReturn ("VIDIOC_STREAMOFF");
+    if (m_videoFileDescriptor == -1) {
+        qWarning("VideoDevice::queryDeviceProperties: device not open");
+        return false;
+    }
 
-                if (m_io_method == IO_METHOD_MMAP)
-                {
-                    unsigned int loop;
-                    for (loop = 0; loop < m_streambuffers; ++loop)
-                    {
-                        if (munmap(m_rawbuffers[loop].start,m_rawbuffers[loop].length) != 0)
-                        {
-                            qDebug() << "unable to munmap.";
-                        }
-                    }
+    // reset caps
+    m_driver = VIDEODEV_DRIVER_NONE;
+    m_ioMethod = IO_METHOD_NONE;
+    m_videocapture = false;
+    m_videochromakey = false;
+    m_videoscale = false;
+    m_videooverlay = false;
+    m_videoread = false;
+    m_videoasyncio = false;
+    m_videostream = false;
+
+#ifdef Q_OS_LINUX
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+    struct v4l2_capability V4L2_capabilities;
+    CLEAR(V4L2_capabilities);
+    if (-1 != xioctl(VIDIOC_QUERYCAP, &V4L2_capabilities)) {
+        // check that is a CaptureDevice
+        if (!(V4L2_capabilities.capabilities & V4L2_CAP_VIDEO_CAPTURE)) {
+            qDebug() << "VideoDevice::queryDeviceProperties:" << m_videoFileName << "is not a video capture device.";
+            return false;
+        }
+        qDebug() << "VideoDevice::queryDeviceProperties:" << m_videoFileName << "is a V4L2 device.";
+        m_driver = VIDEODEV_DRIVER_V4L2;
+        m_videocapture = true;
+        m_videoCardName = QString::fromLocal8Bit((const char*)V4L2_capabilities.card);
+
+        // find out acquiral mechanism, based on capabilities
+        if (V4L2_capabilities.capabilities & V4L2_CAP_READWRITE) {
+            m_ioMethod = IO_METHOD_READ;
+            m_videoread = true;
+        }
+        if (V4L2_capabilities.capabilities & V4L2_CAP_STREAMING) {
+            m_ioMethod = IO_METHOD_MMAP;
+            m_videostream = true;
+        }
+        if (V4L2_capabilities.capabilities & V4L2_CAP_ASYNCIO)
+            m_videoasyncio = true;
+
+        // Detect maximum and minimum resolution supported by the V4L2 device. VIDIOC_ENUM_FRAMESIZES is still experimental.
+        struct v4l2_format format;
+        CLEAR(format);
+        format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        if (-1 == xioctl(VIDIOC_G_FMT, &format))
+            qDebug() << "VideoDevice::queryDeviceProperties: VIDIOC_G_FMT failed (" << errno << ").";
+        format.type            = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        format.fmt.pix.width   = 32767;
+        format.fmt.pix.height  = 32767;
+        format.fmt.pix.field   = V4L2_FIELD_ANY;
+        if (-1 == xioctl(VIDIOC_S_FMT, &format)) {
+            qDebug() << "VideoDevice::queryDeviceProperties: Detecting maximum size with VIDIOC_S_FMT failed (" << errno << "). Returned max width: " << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << " " << format.fmt.pix.width << "x" << format.fmt.pix.height;
+            return false;
+        }
+        m_maxWidth  = format.fmt.pix.width;
+        m_maxHeight = format.fmt.pix.height;
+
+        if (-1 == xioctl(VIDIOC_G_FMT, &format))
+            qDebug() << "VideoDevice::queryDeviceProperties: VIDIOC_G_FMT failed (" << errno << ").";
+        format.type            = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        format.fmt.pix.width   = 1;
+        format.fmt.pix.height  = 1;
+        format.fmt.pix.field   = V4L2_FIELD_ANY;
+        if (-1 == xioctl(VIDIOC_S_FMT, &format)) {
+            qDebug() << "VideoDevice::queryDeviceProperties: Detecting minimum size with VIDIOC_S_FMT failed (" << errno << "). Returned min width: " << format.fmt.pix.width << "x" << format.fmt.pix.height;
+            return false;
+        }
+        m_minWidth  = format.fmt.pix.width;
+        m_minHeight = format.fmt.pix.height;
+
+        // Buggy driver paranoia
+        /* min = fmt.fmt.pix.width * 2;
+        if (fmt.fmt.pix.bytesperline < min)
+            fmt.fmt.pix.bytesperline = min;
+        min = fmt.fmt.pix.bytesperline * fmt.fmt.pix.height;
+        if (fmt.fmt.pix.sizeimage < min)
+            fmt.fmt.pix.sizeimage = min;
+        m_buffer_size=fmt.fmt.pix.sizeimage ;*/
+
+        // Recreate the inputs vector
+        m_input.clear();
+        for (unsigned int iNumber=0; iNumber < 99; ++iNumber) {
+            // get input description
+            struct v4l2_input videoInput;
+            CLEAR(videoInput);
+            videoInput.index = iNumber;
+            if (xioctl(VIDIOC_ENUMINPUT, &videoInput))
+                break;
+
+            // append new VideoInput
+            VideoInput input;
+            input.name = QString::fromLocal8Bit((const char*)videoInput.name);
+            input.hastuner = videoInput.type & V4L2_INPUT_TYPE_TUNER;
+            detectSignalStandards();
+            input.m_standards = videoInput.std;
+            m_input.append(input);
+            qDebug() << "VideoDevice::queryDeviceProperties: Input " << iNumber << ": " << input.name << " (tuner: " << ((videoInput.type & V4L2_INPUT_TYPE_TUNER) != 0) << ")";
+        }
+    } else {
+        // V4L-only drivers should return an EINVAL in errno to indicate they cannot handle V4L2 calls. Not every driver is compliant, so
+        // it will try the V4L api even if the error code is different than expected.
+        qDebug() << "VideoDevice::queryDeviceProperties: " << m_videoFileName << " is not a V4L2 device.";
+    }
+#endif
+
+    if (m_driver == VIDEODEV_DRIVER_NONE) {
+        qDebug() << "VideoDevice::queryDeviceProperties: " << m_videoFileName << " Trying V4L API.";
+
+        // check that is a V4L device
+        struct video_capability V4L_capabilities;
+        CLEAR(V4L_capabilities);
+        if (-1 == xioctl(VIDIOCGCAP, &V4L_capabilities)) {
+            perror("VIDIOCGCAP");
+            return false;
+        }
+        qDebug() << "VideoDevice::queryDeviceProperties: " << m_videoFileName << " is a V4L device.";
+
+        // init capabilities and min/max sizes
+        m_driver = VIDEODEV_DRIVER_V4L;
+        m_videoCardName = QString::fromLocal8Bit((const char*)V4L_capabilities.name);
+        m_videocapture = V4L_capabilities.type & VID_TYPE_CAPTURE;
+        m_videochromakey = V4L_capabilities.type & VID_TYPE_CHROMAKEY;
+        m_videoscale = V4L_capabilities.type & VID_TYPE_SCALES;
+        m_videooverlay = V4L_capabilities.type & VID_TYPE_OVERLAY;
+        //qDebug() << "libkopete (avdevice):     Inputs : " << V4L_capabilities.channels;
+        //qDebug() << "libkopete (avdevice):     Audios : " << V4L_capabilities.audios;
+        m_minWidth  = V4L_capabilities.minwidth;
+        m_maxWidth  = V4L_capabilities.maxwidth;
+        m_minHeight = V4L_capabilities.minheight;
+        m_maxHeight = V4L_capabilities.maxheight;
+
+        // use a read i/o method
+        m_ioMethod = IO_METHOD_READ;
+        m_videoread = true;
+        struct video_buffer V4L_videobuffer;
+        if (-1 != xioctl(VIDIOCGFBUF, &V4L_videobuffer)) {
+            //	m_ioMethod = IO_METHOD_MMAP;
+            //	m_videostream = true;
+            qDebug() << "    Has got a Streaming interface, but we'll stick to READ for compat";
+        }
+
+        // Recreate the inputs vector
+        m_input.clear();
+        for (int iNumber = 0; iNumber < V4L_capabilities.channels; ++iNumber)
+        {
+            struct video_channel videoInput;
+            CLEAR(videoInput);
+            videoInput.channel = iNumber;
+            videoInput.norm    = 1;
+            if (xioctl(VIDIOCGCHAN, &videoInput))
+            {
+                VideoInput input;
+                input.name = QString::fromLocal8Bit((const char*)videoInput.name);
+                input.hastuner = videoInput.flags & VIDEO_VC_TUNER;
+                detectSignalStandards();
+                m_input.append(input);
+                qDebug() << "VideoDevice::queryDeviceProperties: Input " << iNumber << ": " << input.name << " (tuner: " << ((videoInput.flags & VIDEO_VC_TUNER) != 0) << ")";
+            }
+        }
+    }
+#endif
+
+    // check if able to read from video
+    if (m_ioMethod == IO_METHOD_NONE) {
+        qDebug() << "VideoDevice::queryDeviceProperties: found no suitable input/output method for " << m_videoFileName;
+        return false;
+    }
+
+    // print out supported pixel format/s
+    detectPixelFormats();
+
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+    // print out the controls supported by the input device
+    enumerateControls();
+
+    // Reset cropping to default
+    struct v4l2_cropcap cropcap;
+    CLEAR(cropcap);
+    cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if (-1 == xioctl(VIDIOC_CROPCAP, &cropcap)) {
+        // Errors ignored.
+    }
+    struct v4l2_crop crop;
+    CLEAR(crop);
+    crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    crop.c = cropcap.defrect; // reset to default
+    if (-1 == xioctl(VIDIOC_S_CROP, &crop)) {
+        switch (errno)
+        {
+            case EINVAL: break;  // Cropping not supported.
+            default:     break;  // Errors ignored.
+        }
+    }
+#endif
+
+    // checked: ok
+    return true;
+}
+
+// OK
+bool VideoDevice::detectSignalStandards() const
+{
+    if (!isOpen()) {
+        qWarning("VideoDevice::detectSignalStandards: device not opened.");
+        return false;
+    }
+
+    switch (m_driver) {
+#ifdef Q_OS_LINUX
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+        case VIDEODEV_DRIVER_V4L2: {
+            // get the index of the current input
+            int index = 0;
+            if (-1 == xioctl(VIDIOC_G_INPUT, &index)) {
+                perror("VIDIOC_G_INPUT");
+                return false;
+            }
+
+            // describe the current input
+            struct v4l2_input input;
+            CLEAR(input);
+            input.index = index;
+            if (-1 == xioctl(VIDIOC_ENUMINPUT, &input)) {
+                perror("VIDIOC_ENUM_INPUT");
+                return false;
+            }
+            //qWarning("VideoDevice::detectSignalStandards: input %d is '%s' std: 0x%x", index, input.name, (int)input.std);
+
+            // skip standard matching if reported is unknown
+            if (input.std != V4L2_STD_UNKNOWN) {
+                // match the input.std to all the device's standards
+                struct v4l2_standard standard;
+                CLEAR(standard);
+                standard.index = 0;
+                while (-1 != xioctl(VIDIOC_ENUMSTD, &standard)) {
+                    //qDebug() << "SSS" << standard.name;
+                    if (standard.id & input.std)
+                        qDebug() << signalStandardName(standard.id) << " (" << standard.id << ")" << V4L2_STD_NTSC;
+                    standard.index++;
+                }
+
+                // EINVAL indicates the end of the enumeration, which cannot be empty unless this device falls under the USB exception.
+                if (errno != EINVAL || standard.index == 0) {
+                    perror("VIDIOC_ENUMSTD");
+                    return false;
                 }
             }
+            }break;
 #endif
+        case VIDEODEV_DRIVER_V4L:
+            // TODO
             break;
-        }
-        qDebug() << "exited successfuly.";
+#endif
+        case VIDEODEV_DRIVER_NONE:
+        default:
+            break;
+    }
+    return true;
+}
+
+// OK
+void VideoDevice::detectPixelFormats()
+{
+    switch (m_driver) {
+#ifdef Q_OS_LINUX
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+        case VIDEODEV_DRIVER_V4L2:
+            struct v4l2_fmtdesc fmtdesc;
+            CLEAR(fmtdesc);
+            fmtdesc.index = 0;
+            fmtdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            while (true) {
+                if (-1 == xioctl(VIDIOC_ENUM_FMT, &fmtdesc))
+                    break;
+                qDebug("VideoDevice::detectPixelFormats: 0x%x '%s'", (int)fmtdesc.pixelformat, qPrintable(pixelFormatNamePlatform(fmtdesc.pixelformat)));
+                fmtdesc.index++;
+            }
+            //if (fmtdesc.index)
+            //    break;
+            // fall back to V4L detection
+#endif
+        case VIDEODEV_DRIVER_V4L:
+            // TODO: This thing can be used to detect what pixel formats are supported in a API-independent way, but V4L2 has VIDIOC_ENUM_PIXFMT.
+            // The correct thing to do is to isolate these calls and do a proper implementation for V4L and another for V4L2 when this thing will be migrated to a plugin architecture.
+            qDebug() << "VideoDevice::detectPixelFormats: supported pixel formats (V4L style):";
+
+            // Packed RGB formats
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB332))	qDebug() << pixelFormatName(PIXELFORMAT_RGB332);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB444))	qDebug() << pixelFormatName(PIXELFORMAT_RGB444);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB555))	qDebug() << pixelFormatName(PIXELFORMAT_RGB555);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB565))	qDebug() << pixelFormatName(PIXELFORMAT_RGB565);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB555X))qDebug() << pixelFormatName(PIXELFORMAT_RGB555X);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB565X))qDebug() << pixelFormatName(PIXELFORMAT_RGB565X);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_BGR24))	qDebug() << pixelFormatName(PIXELFORMAT_BGR24);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB24))	qDebug() << pixelFormatName(PIXELFORMAT_RGB24);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_BGR32))	qDebug() << pixelFormatName(PIXELFORMAT_BGR32);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB32))	qDebug() << pixelFormatName(PIXELFORMAT_RGB32);
+
+            // Bayer RGB format
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_SBGGR8))	qDebug() << pixelFormatName(PIXELFORMAT_SBGGR8);
+
+            // YUV formats
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_GREY))	qDebug() << pixelFormatName(PIXELFORMAT_GREY);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YUYV))	qDebug() << pixelFormatName(PIXELFORMAT_YUYV);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_UYVY))	qDebug() << pixelFormatName(PIXELFORMAT_UYVY);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YUV420P))qDebug() << pixelFormatName(PIXELFORMAT_YUV420P);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YUV422P))qDebug() << pixelFormatName(PIXELFORMAT_YUV422P);
+
+            // Compressed formats
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_JPEG))	qDebug() << pixelFormatName(PIXELFORMAT_JPEG);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_MPEG))	qDebug() << pixelFormatName(PIXELFORMAT_MPEG);
+
+            // Reserved formats
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_DV))		qDebug() << pixelFormatName(PIXELFORMAT_DV);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_ET61X251))qDebug() << pixelFormatName(PIXELFORMAT_ET61X251);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_HI240))	qDebug() << pixelFormatName(PIXELFORMAT_HI240);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_HM12))	qDebug() << pixelFormatName(PIXELFORMAT_HM12);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_MJPEG))	qDebug() << pixelFormatName(PIXELFORMAT_MJPEG);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_PWC1))	qDebug() << pixelFormatName(PIXELFORMAT_PWC1);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_PWC2))	qDebug() << pixelFormatName(PIXELFORMAT_PWC2);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_SN9C10X))qDebug() << pixelFormatName(PIXELFORMAT_SN9C10X);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_WNVA))	qDebug() << pixelFormatName(PIXELFORMAT_WNVA);
+            if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YYUV))	qDebug() << pixelFormatName(PIXELFORMAT_YYUV);
+            break;
+#endif
+        case VIDEODEV_DRIVER_NONE:
+        default:
+            break;
+    }
+}
+
+int VideoDevice::width() const
+{
+    return m_currentWidth;
+}
+
+int VideoDevice::height() const
+{
+    return m_currentHeight;
+}
+
+
+
+pixel_format VideoDevice::setPixelFormat(pixel_format newformat)
+{
+    pixel_format ret = PIXELFORMAT_NONE;
+    //qDebug() << "called.";
+    // Change the pixel format for the video device
+    switch (m_driver) {
+#ifdef Q_OS_LINUX
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+        case VIDEODEV_DRIVER_V4L2:
+            struct v4l2_format format;
+            CLEAR(format);
+            format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            if (-1 == xioctl (VIDIOC_G_FMT, &format)) {
+                perror("VIDIOC_G_FMT");
+                //qDebug() << "VIDIOC_G_FMT failed (" << errno << "). Returned width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
+            } else
+                m_pixelFormat = pixelFormatForPalette(format.fmt.pix.pixelformat);
+
+            format.fmt.pix.pixelformat = pixelFormatCode(newformat);
+            if (-1 == xioctl(VIDIOC_S_FMT, &format)) {
+                //perror("VIDIOC_S_FMT");
+                //qDebug() << "VIDIOC_S_FMT failed (" << errno << "). Returned width: " << pixelFormatName(fmt.fmt.pix.pixelformat) << " " << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
+            } else {
+                if ((int)format.fmt.pix.pixelformat == pixelFormatCode(newformat)) {
+                    // This "if" (not what is contained within) is a fix for a bug in sn9c102 driver.
+                    m_pixelFormat = newformat;
+                    ret = m_pixelFormat;
+                }
+            }
+            break;
+#endif
+        case VIDEODEV_DRIVER_V4L: {
+            struct video_picture V4L_picture;
+            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
+                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
+            //			qDebug() << "V4L_picture.palette: " << V4L_picture.palette << " Depth: " << V4L_picture.depth;
+            V4L_picture.palette = pixelFormatCode(newformat);
+            V4L_picture.depth   = pixelFormatDepth(newformat);
+            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
+            {
+                //				qDebug() << "Device seems to not support " << pixelFormatName(newformat) << " format. Fallback to it is not yet implemented.";
+            }
+
+            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
+                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
+
+            //			qDebug() << "V4L_picture.palette: " << V4L_picture.palette << " Depth: " << V4L_picture.depth;
+            m_pixelFormat=pixelFormatForPalette(V4L_picture.palette);
+            if (m_pixelFormat == newformat)
+                ret = newformat;
+            } break;
+#endif
+        case VIDEODEV_DRIVER_NONE:
+        default:
+            break;
+    }
+    return ret;
+}
+
+
+
+
+
+
+
+/*!
+\fn Kopete::AV::VideoDevice::setInputParameters()
+*/
+int VideoDevice::setInputParameters()
+{
+    // ### BETTER TO NOT SET ANYTHING UNTIL WE PUT IN PLACE A GOOD SOLUTION! //
+    return 0;
+
+    /// @todo implement me
+    if( (isOpen()) && (m_currentInput < inputCount() ) )
+    {
+        setBrightness( getBrightness() );
+        setContrast( getContrast() );
+        setSaturation( getSaturation() );
+        setWhiteness( getWhiteness() );
+        setHue( getHue() );
         return EXIT_SUCCESS;
     }
     return EXIT_FAILURE;
 }
 
 
-/*!
-\fn VideoDevice::close()
-*/
-int VideoDevice::close()
-{
-    /// @todo implement me
-    qDebug() << " called.";
-    if(isOpen())
-    {
-        qDebug() << " Device is open. Trying to properly shutdown the device.";
-        stopCapturing();
-        qDebug() << "::close() returns " << ::close(descriptor);
-    }
-    descriptor = -1;
-    return EXIT_SUCCESS;
-}
-
 float VideoDevice::getBrightness()
 {
-    if (m_current_input < m_input.size() )
-        return m_input[m_current_input].getBrightness();
+    if (m_currentInput < m_input.size() )
+        return m_input[m_currentInput].getBrightness();
     else
         return 0;
 }
@@ -1455,9 +1344,9 @@ float VideoDevice::getBrightness()
 float VideoDevice::setBrightness(float brightness)
 {
     qDebug() << "(" << brightness << ") called.";
-    m_input[m_current_input].setBrightness(brightness); // Just to check bounds
+    m_input[m_currentInput].setBrightness(brightness); // Just to check bounds
 
-    switch(m_driver)
+    switch (m_driver)
     {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
@@ -1516,8 +1405,8 @@ float VideoDevice::setBrightness(float brightness)
 
 float VideoDevice::getContrast()
 {
-    if (m_current_input < m_input.size() )
-        return m_input[m_current_input].getContrast();
+    if (m_currentInput < m_input.size() )
+        return m_input[m_currentInput].getContrast();
     else
         return 0;
 }
@@ -1525,9 +1414,9 @@ float VideoDevice::getContrast()
 float VideoDevice::setContrast(float contrast)
 {
     qDebug() << "(" << contrast << ") called.";
-    m_input[m_current_input].setContrast(contrast); // Just to check bounds
+    m_input[m_currentInput].setContrast(contrast); // Just to check bounds
 
-    switch(m_driver)
+    switch (m_driver)
     {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
@@ -1586,8 +1475,8 @@ float VideoDevice::setContrast(float contrast)
 
 float VideoDevice::getSaturation()
 {
-    if (m_current_input < m_input.size() )
-        return m_input[m_current_input].getSaturation();
+    if (m_currentInput < m_input.size() )
+        return m_input[m_currentInput].getSaturation();
     else
         return 0;
 }
@@ -1595,9 +1484,9 @@ float VideoDevice::getSaturation()
 float VideoDevice::setSaturation(float saturation)
 {
     qDebug() << "(" << saturation << ") called.";
-    m_input[m_current_input].setSaturation(saturation); // Just to check bounds
+    m_input[m_currentInput].setSaturation(saturation); // Just to check bounds
 
-    switch(m_driver)
+    switch (m_driver)
     {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
@@ -1656,8 +1545,8 @@ float VideoDevice::setSaturation(float saturation)
 
 float VideoDevice::getWhiteness()
 {
-    if (m_current_input < m_input.size() )
-        return m_input[m_current_input].getWhiteness();
+    if (m_currentInput < m_input.size() )
+        return m_input[m_currentInput].getWhiteness();
     else
         return 0;
 }
@@ -1665,9 +1554,9 @@ float VideoDevice::getWhiteness()
 float VideoDevice::setWhiteness(float whiteness)
 {
     qDebug() << "(" << whiteness << ") called.";
-    m_input[m_current_input].setWhiteness(whiteness); // Just to check bounds
+    m_input[m_currentInput].setWhiteness(whiteness); // Just to check bounds
 
-    switch(m_driver)
+    switch (m_driver)
     {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
@@ -1726,8 +1615,8 @@ float VideoDevice::setWhiteness(float whiteness)
 
 float VideoDevice::getHue()
 {
-    if (m_current_input < m_input.size() )
-        return m_input[m_current_input].getHue();
+    if (m_currentInput < m_input.size() )
+        return m_input[m_currentInput].getHue();
     else
         return 0;
 }
@@ -1735,9 +1624,9 @@ float VideoDevice::getHue()
 float VideoDevice::setHue(float hue)
 {
     qDebug() << "(" << hue << ") called.";
-    m_input[m_current_input].setHue(hue); // Just to check bounds
+    m_input[m_currentInput].setHue(hue); // Just to check bounds
 
-    switch(m_driver)
+    switch (m_driver)
     {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
@@ -1795,10 +1684,10 @@ float VideoDevice::setHue(float hue)
 }
 
 
-bool VideoDevice::getAutoBrightnessContrast()
+bool VideoDevice::getAutoBrightnessContrast() const
 {
-    if (m_current_input < m_input.size() )
-        return m_input[m_current_input].getAutoBrightnessContrast();
+    if (m_currentInput < m_input.size())
+        return m_input[m_currentInput].getAutoBrightnessContrast();
     else
         return false;
 }
@@ -1806,20 +1695,20 @@ bool VideoDevice::getAutoBrightnessContrast()
 bool VideoDevice::setAutoBrightnessContrast(bool brightnesscontrast)
 {
     qDebug() << "VideoDevice::setAutoBrightnessContrast(" << brightnesscontrast << ") called.";
-    if (m_current_input < m_input.size() )
+    if (m_currentInput < m_input.size() )
     {
-        m_input[m_current_input].setAutoBrightnessContrast(brightnesscontrast);
-        return m_input[m_current_input].getAutoBrightnessContrast();
+        m_input[m_currentInput].setAutoBrightnessContrast(brightnesscontrast);
+        return m_input[m_currentInput].getAutoBrightnessContrast();
     }
     else
         return false;
 
 }
 
-bool VideoDevice::getAutoColorCorrection()
+bool VideoDevice::getAutoColorCorrection() const
 {
-    if (m_current_input < m_input.size() )
-        return m_input[m_current_input].getAutoColorCorrection();
+    if (m_currentInput < m_input.size() )
+        return m_input[m_currentInput].getAutoColorCorrection();
     else
         return false;
 }
@@ -1827,10 +1716,10 @@ bool VideoDevice::getAutoColorCorrection()
 bool VideoDevice::setAutoColorCorrection(bool colorcorrection)
 {
     qDebug() << "VideoDevice::setAutoColorCorrection(" << colorcorrection << ") called.";
-    if (m_current_input < m_input.size() )
+    if (m_currentInput < m_input.size() )
     {
-        m_input[m_current_input].setAutoColorCorrection(colorcorrection);
-        return m_input[m_current_input].getAutoColorCorrection();
+        m_input[m_currentInput].setAutoColorCorrection(colorcorrection);
+        return m_input[m_currentInput].getAutoColorCorrection();
     }
     else
         return false;
@@ -1838,8 +1727,8 @@ bool VideoDevice::setAutoColorCorrection(bool colorcorrection)
 
 bool VideoDevice::getImageAsMirror()
 {
-    if (m_current_input < m_input.size() )
-        return m_input[m_current_input].getImageAsMirror();
+    if (m_currentInput < m_input.size() )
+        return m_input[m_currentInput].getImageAsMirror();
     else
         return false;
 }
@@ -1847,10 +1736,10 @@ bool VideoDevice::getImageAsMirror()
 bool VideoDevice::setImageAsMirror(bool imageasmirror)
 {
     qDebug() << "VideoDevice::setImageAsMirror(" << imageasmirror << ") called.";
-    if (m_current_input < m_input.size() )
+    if (m_currentInput < m_input.size() )
     {
-        m_input[m_current_input].setImageAsMirror(imageasmirror);
-        return m_input[m_current_input].getImageAsMirror();
+        m_input[m_currentInput].setImageAsMirror(imageasmirror);
+        return m_input[m_currentInput].getImageAsMirror();
     }
     else
         return false;
@@ -1858,12 +1747,12 @@ bool VideoDevice::setImageAsMirror(bool imageasmirror)
 
 pixel_format VideoDevice::pixelFormatForPalette( int palette )
 {
-    switch(m_driver)
+    switch (m_driver)
     {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
     case VIDEODEV_DRIVER_V4L2:
-        switch(palette)
+        switch (palette)
         {
         case 0 				: return PIXELFORMAT_NONE;	break;
 
@@ -1912,7 +1801,7 @@ pixel_format VideoDevice::pixelFormatForPalette( int palette )
         break;
 #endif
     case VIDEODEV_DRIVER_V4L:
-        switch(palette)
+        switch (palette)
         {
         case 0				: return PIXELFORMAT_NONE;	break;
         case VIDEO_PALETTE_GREY		: return PIXELFORMAT_GREY;	break;
@@ -1938,12 +1827,12 @@ pixel_format VideoDevice::pixelFormatForPalette( int palette )
 
 int VideoDevice::pixelFormatCode(pixel_format pixelformat)
 {
-    switch(m_driver)
+    switch (m_driver)
     {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
     case VIDEODEV_DRIVER_V4L2:
-        switch(pixelformat)
+        switch (pixelformat)
         {
         case PIXELFORMAT_NONE	: return 0;			break;
 
@@ -1992,7 +1881,7 @@ int VideoDevice::pixelFormatCode(pixel_format pixelformat)
         break;
 #endif
     case VIDEODEV_DRIVER_V4L:
-        switch(pixelformat)
+        switch (pixelformat)
         {
         case PIXELFORMAT_NONE	: return 0;			break;
 
@@ -2043,270 +1932,187 @@ int VideoDevice::pixelFormatCode(pixel_format pixelformat)
     return PIXELFORMAT_NONE;
 }
 
-int VideoDevice::pixelFormatDepth(pixel_format pixelformat)
+// OK
+int VideoDevice::pixelFormatDepth(pixel_format pixelformat) const
 {
-    switch(pixelformat)
-    {
-    case PIXELFORMAT_NONE	: return 0;	break;
+    switch (pixelformat) {
+        case PIXELFORMAT_NONE	: return 0;	break;
 
         // Packed RGB formats
-    case PIXELFORMAT_RGB332	: return 8;	break;
-    case PIXELFORMAT_RGB444	: return 16;	break;
-    case PIXELFORMAT_RGB555	: return 16;	break;
-    case PIXELFORMAT_RGB565	: return 16;	break;
-    case PIXELFORMAT_RGB555X: return 16;	break;
-    case PIXELFORMAT_RGB565X: return 16;	break;
-    case PIXELFORMAT_BGR24	: return 24;	break;
-    case PIXELFORMAT_RGB24	: return 24;	break;
-    case PIXELFORMAT_BGR32	: return 32;	break;
-    case PIXELFORMAT_RGB32	: return 32;	break;
+        case PIXELFORMAT_RGB332	: return 8;	break;
+        case PIXELFORMAT_RGB444	: return 16;break;
+        case PIXELFORMAT_RGB555	: return 16;break;
+        case PIXELFORMAT_RGB565	: return 16;break;
+        case PIXELFORMAT_RGB555X: return 16;break;
+        case PIXELFORMAT_RGB565X: return 16;break;
+        case PIXELFORMAT_BGR24	: return 24;break;
+        case PIXELFORMAT_RGB24	: return 24;break;
+        case PIXELFORMAT_BGR32	: return 32;break;
+        case PIXELFORMAT_RGB32	: return 32;break;
 
         // Bayer RGB format
-    case PIXELFORMAT_SBGGR8	: return 0;	break;
+        case PIXELFORMAT_SBGGR8	: return 0;	break;
 
         // YUV formats
-    case PIXELFORMAT_GREY	: return 8;	break;
-    case PIXELFORMAT_YUYV	: return 16;	break;
-    case PIXELFORMAT_UYVY	: return 16;	break;
-    case PIXELFORMAT_YUV420P: return 16;	break;
-    case PIXELFORMAT_YUV422P: return 16;	break;
+        case PIXELFORMAT_GREY	: return 8;	break;
+        case PIXELFORMAT_YUYV	: return 16;break;
+        case PIXELFORMAT_UYVY	: return 16;break;
+        case PIXELFORMAT_YUV420P: return 16;break;
+        case PIXELFORMAT_YUV422P: return 16;break;
 
         // Compressed formats
-    case PIXELFORMAT_JPEG	: return 0;	break;
-    case PIXELFORMAT_MPEG	: return 0;	break;
+        case PIXELFORMAT_JPEG	: return 0;	break;
+        case PIXELFORMAT_MPEG	: return 0;	break;
 
         // Reserved formats
-    case PIXELFORMAT_DV	: return 0;	break;
-    case PIXELFORMAT_ET61X251:return 0;	break;
-    case PIXELFORMAT_HI240	: return 8;	break;
-    case PIXELFORMAT_HM12	: return 0;	break;
-    case PIXELFORMAT_MJPEG	: return 0;	break;
-    case PIXELFORMAT_PWC1	: return 0;	break;
-    case PIXELFORMAT_PWC2	: return 0;	break;
-    case PIXELFORMAT_SN9C10X: return 0;	break;
-    case PIXELFORMAT_WNVA	: return 0;	break;
-    case PIXELFORMAT_YYUV	: return 0;	break;
+        case PIXELFORMAT_DV     : return 0;	break;
+        case PIXELFORMAT_ET61X251:return 0;	break;
+        case PIXELFORMAT_HI240	: return 8;	break;
+        case PIXELFORMAT_HM12	: return 0;	break;
+        case PIXELFORMAT_MJPEG	: return 0;	break;
+        case PIXELFORMAT_PWC1	: return 0;	break;
+        case PIXELFORMAT_PWC2	: return 0;	break;
+        case PIXELFORMAT_SN9C10X: return 0;	break;
+        case PIXELFORMAT_WNVA	: return 0;	break;
+        case PIXELFORMAT_YYUV	: return 0;	break;
     }
     return 0;
 }
 
-QString VideoDevice::pixelFormatName(pixel_format pixelformat)
+// OK
+QString VideoDevice::pixelFormatName(pixel_format pixelformat) const
 {
-    QString returnvalue;
-    returnvalue = "None";
-    switch(pixelformat)
-    {
-    case PIXELFORMAT_NONE	: returnvalue = "None";			break;
+    QString returnvalue("None");
+    switch (pixelformat) {
+        case PIXELFORMAT_NONE	: returnvalue = "None";             break;
 
         // Packed RGB formats
-    case PIXELFORMAT_RGB332	: returnvalue = "8-bit RGB332";		break;
-    case PIXELFORMAT_RGB444	: returnvalue = "8-bit RGB444";		break;
-    case PIXELFORMAT_RGB555	: returnvalue = "16-bit RGB555";	break;
-    case PIXELFORMAT_RGB565	: returnvalue = "16-bit RGB565";	break;
-    case PIXELFORMAT_RGB555X: returnvalue = "16-bit RGB555X";	break;
-    case PIXELFORMAT_RGB565X: returnvalue = "16-bit RGB565X";	break;
-    case PIXELFORMAT_BGR24	: returnvalue = "24-bit BGR24";		break;
-    case PIXELFORMAT_RGB24	: returnvalue = "24-bit RGB24";		break;
-    case PIXELFORMAT_BGR32	: returnvalue = "32-bit BGR32";		break;
-    case PIXELFORMAT_RGB32	: returnvalue = "32-bit RGB32";		break;
+        case PIXELFORMAT_RGB332	: returnvalue = "8-bit RGB332";		break;
+        case PIXELFORMAT_RGB444	: returnvalue = "8-bit RGB444";		break;
+        case PIXELFORMAT_RGB555	: returnvalue = "16-bit RGB555";	break;
+        case PIXELFORMAT_RGB565	: returnvalue = "16-bit RGB565";	break;
+        case PIXELFORMAT_RGB555X: returnvalue = "16-bit RGB555X";	break;
+        case PIXELFORMAT_RGB565X: returnvalue = "16-bit RGB565X";	break;
+        case PIXELFORMAT_BGR24	: returnvalue = "24-bit BGR24";		break;
+        case PIXELFORMAT_RGB24	: returnvalue = "24-bit RGB24";		break;
+        case PIXELFORMAT_BGR32	: returnvalue = "32-bit BGR32";		break;
+        case PIXELFORMAT_RGB32	: returnvalue = "32-bit RGB32";		break;
 
         // Bayer RGB format
-    case PIXELFORMAT_SBGGR8	: returnvalue = "Bayer RGB format";	break;
+        case PIXELFORMAT_SBGGR8	: returnvalue = "Bayer RGB format";	break;
 
         // YUV formats
-    case PIXELFORMAT_GREY	: returnvalue = "8-bit Grayscale";	break;
-    case PIXELFORMAT_YUYV	: returnvalue = "Packed YUV 4:2:2";	break;
-    case PIXELFORMAT_UYVY	: returnvalue = "Packed YVU 4:2:2";	break;
-    case PIXELFORMAT_YUV420P: returnvalue = "Planar YUV 4:2:0";	break;
-    case PIXELFORMAT_YUV422P: returnvalue = "Planar YUV 4:2:2";	break;
-
+        case PIXELFORMAT_GREY	: returnvalue = "8-bit Grayscale";	break;
+        case PIXELFORMAT_YUYV	: returnvalue = "Packed YUV 4:2:2";	break;
+        case PIXELFORMAT_UYVY	: returnvalue = "Packed YVU 4:2:2";	break;
+        case PIXELFORMAT_YUV420P: returnvalue = "Planar YUV 4:2:0";	break;
+        case PIXELFORMAT_YUV422P: returnvalue = "Planar YUV 4:2:2";	break;
 
         // Compressed formats
-    case PIXELFORMAT_JPEG	: returnvalue = "JPEG image";		break;
-    case PIXELFORMAT_MPEG	: returnvalue = "MPEG stream";		break;
+        case PIXELFORMAT_JPEG	: returnvalue = "JPEG image";		break;
+        case PIXELFORMAT_MPEG	: returnvalue = "MPEG stream";		break;
 
         // Reserved formats
-    case PIXELFORMAT_DV	: returnvalue = "DV (unknown)";		break;
-    case PIXELFORMAT_ET61X251:returnvalue = "ET61X251";		break;
-    case PIXELFORMAT_HI240	: returnvalue = "8-bit HI240 (RGB332)";	break;
-    case PIXELFORMAT_HM12	: returnvalue = "Packed YUV 4:2:2";	break;
-    case PIXELFORMAT_MJPEG	: returnvalue = "8-bit Grayscale";	break;
-    case PIXELFORMAT_PWC1	: returnvalue = "PWC1";			break;
-    case PIXELFORMAT_PWC2	: returnvalue = "PWC2";			break;
-    case PIXELFORMAT_SN9C10X: returnvalue = "SN9C102";		break;
-    case PIXELFORMAT_WNVA	: returnvalue = "Winnov Videum";	break;
-    case PIXELFORMAT_YYUV	: returnvalue = "YYUV (unknown)";	break;
+        case PIXELFORMAT_DV	: returnvalue = "DV (unknown)";         break;
+        case PIXELFORMAT_ET61X251:returnvalue = "ET61X251";         break;
+        case PIXELFORMAT_HI240	: returnvalue = "8-bit HI240 (RGB332)";	break;
+        case PIXELFORMAT_HM12	: returnvalue = "Packed YUV 4:2:2";	break;
+        case PIXELFORMAT_MJPEG	: returnvalue = "8-bit Grayscale";	break;
+        case PIXELFORMAT_PWC1	: returnvalue = "PWC1";             break;
+        case PIXELFORMAT_PWC2	: returnvalue = "PWC2";             break;
+        case PIXELFORMAT_SN9C10X: returnvalue = "SN9C102";          break;
+        case PIXELFORMAT_WNVA	: returnvalue = "Winnov Videum";	break;
+        case PIXELFORMAT_YYUV	: returnvalue = "YYUV (unknown)";	break;
     }
     return returnvalue;
 }
 
-QString VideoDevice::pixelFormatName(int pixelformat)
+// OK
+QString VideoDevice::pixelFormatNamePlatform(int pixelformat) const
 {
-    QString returnvalue;
-    returnvalue = "None";
-    switch(m_driver)
-    {
+    QString returnvalue("None");
+    switch (m_driver) {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
-    case VIDEODEV_DRIVER_V4L2:
-        switch(pixelformat)
-        {
-        case 0				: returnvalue = pixelFormatName(PIXELFORMAT_NONE);	break;
+        case VIDEODEV_DRIVER_V4L2:
+            switch (pixelformat) {
+                case 0                      : returnvalue = pixelFormatName(PIXELFORMAT_NONE);      break;
 
-            // Packed RGB formats
-        case V4L2_PIX_FMT_RGB332	: returnvalue = pixelFormatName(PIXELFORMAT_RGB332);	break;
-#if defined( V4L2_PIX_FMT_RGB444 )
-        case V4L2_PIX_FMT_RGB444	: returnvalue = pixelFormatName(PIXELFORMAT_RGB444);	break;
+                // Packed RGB formats
+                case V4L2_PIX_FMT_RGB332	: returnvalue = pixelFormatName(PIXELFORMAT_RGB332);	break;
+#if defined(V4L2_PIX_FMT_RGB444)
+                case V4L2_PIX_FMT_RGB444	: returnvalue = pixelFormatName(PIXELFORMAT_RGB444);	break;
 #endif
-        case V4L2_PIX_FMT_RGB555	: returnvalue = pixelFormatName(PIXELFORMAT_RGB555);	break;
-        case V4L2_PIX_FMT_RGB565	: returnvalue = pixelFormatName(PIXELFORMAT_RGB565);	break;
-        case V4L2_PIX_FMT_RGB555X	: returnvalue = pixelFormatName(PIXELFORMAT_RGB555X);	break;
-        case V4L2_PIX_FMT_RGB565X	: returnvalue = pixelFormatName(PIXELFORMAT_RGB565X);	break;
-        case V4L2_PIX_FMT_BGR24		: returnvalue = pixelFormatName(PIXELFORMAT_BGR24);	break;
-        case V4L2_PIX_FMT_RGB24		: returnvalue = pixelFormatName(PIXELFORMAT_RGB24);	break;
-        case V4L2_PIX_FMT_BGR32		: returnvalue = pixelFormatName(PIXELFORMAT_BGR32);	break;
-        case V4L2_PIX_FMT_RGB32		: returnvalue = pixelFormatName(PIXELFORMAT_RGB32);	break;
+                case V4L2_PIX_FMT_RGB555	: returnvalue = pixelFormatName(PIXELFORMAT_RGB555);	break;
+                case V4L2_PIX_FMT_RGB565	: returnvalue = pixelFormatName(PIXELFORMAT_RGB565);	break;
+                case V4L2_PIX_FMT_RGB555X	: returnvalue = pixelFormatName(PIXELFORMAT_RGB555X);	break;
+                case V4L2_PIX_FMT_RGB565X	: returnvalue = pixelFormatName(PIXELFORMAT_RGB565X);	break;
+                case V4L2_PIX_FMT_BGR24		: returnvalue = pixelFormatName(PIXELFORMAT_BGR24);     break;
+                case V4L2_PIX_FMT_RGB24		: returnvalue = pixelFormatName(PIXELFORMAT_RGB24);     break;
+                case V4L2_PIX_FMT_BGR32		: returnvalue = pixelFormatName(PIXELFORMAT_BGR32);     break;
+                case V4L2_PIX_FMT_RGB32		: returnvalue = pixelFormatName(PIXELFORMAT_RGB32);     break;
 
-            // Bayer RGB format
-        case V4L2_PIX_FMT_SBGGR8	: returnvalue = pixelFormatName(PIXELFORMAT_SBGGR8);	break;
+                // Bayer RGB format
+                case V4L2_PIX_FMT_SBGGR8	: returnvalue = pixelFormatName(PIXELFORMAT_SBGGR8);	break;
 
-            // YUV formats
-        case V4L2_PIX_FMT_GREY		: returnvalue = pixelFormatName(PIXELFORMAT_GREY);	break;
-        case V4L2_PIX_FMT_YUYV		: returnvalue = pixelFormatName(PIXELFORMAT_YUYV);	break;
-        case V4L2_PIX_FMT_UYVY		: returnvalue = pixelFormatName(PIXELFORMAT_UYVY);	break;
-        case V4L2_PIX_FMT_YUV420	: returnvalue = pixelFormatName(PIXELFORMAT_YUV420P);	break;
-        case V4L2_PIX_FMT_YUV422P	: returnvalue = pixelFormatName(PIXELFORMAT_YUV422P);	break;
+                // YUV formats
+                case V4L2_PIX_FMT_GREY		: returnvalue = pixelFormatName(PIXELFORMAT_GREY);      break;
+                case V4L2_PIX_FMT_YUYV		: returnvalue = pixelFormatName(PIXELFORMAT_YUYV);      break;
+                case V4L2_PIX_FMT_UYVY		: returnvalue = pixelFormatName(PIXELFORMAT_UYVY);      break;
+                case V4L2_PIX_FMT_YUV420	: returnvalue = pixelFormatName(PIXELFORMAT_YUV420P);	break;
+                case V4L2_PIX_FMT_YUV422P	: returnvalue = pixelFormatName(PIXELFORMAT_YUV422P);	break;
 
-            // Compressed formats
-        case V4L2_PIX_FMT_JPEG		: returnvalue = pixelFormatName(PIXELFORMAT_JPEG);	break;
-        case V4L2_PIX_FMT_MPEG		: returnvalue = pixelFormatName(PIXELFORMAT_MPEG);	break;
+                // Compressed formats
+                case V4L2_PIX_FMT_JPEG		: returnvalue = pixelFormatName(PIXELFORMAT_JPEG);      break;
+                case V4L2_PIX_FMT_MPEG		: returnvalue = pixelFormatName(PIXELFORMAT_MPEG);      break;
 
-            // Reserved formats
-        case V4L2_PIX_FMT_DV		: returnvalue = pixelFormatName(PIXELFORMAT_DV);	break;
-        case V4L2_PIX_FMT_ET61X251	: returnvalue = pixelFormatName(PIXELFORMAT_ET61X251);	break;
-        case V4L2_PIX_FMT_HI240		: returnvalue = pixelFormatName(PIXELFORMAT_HI240);	break;
+                // Reserved formats
+                case V4L2_PIX_FMT_DV		: returnvalue = pixelFormatName(PIXELFORMAT_DV);        break;
+                case V4L2_PIX_FMT_ET61X251	: returnvalue = pixelFormatName(PIXELFORMAT_ET61X251);	break;
+                case V4L2_PIX_FMT_HI240		: returnvalue = pixelFormatName(PIXELFORMAT_HI240);     break;
 #if defined( V4L2_PIX_FMT_HM12 )
-        case V4L2_PIX_FMT_HM12		: returnvalue = pixelFormatName(PIXELFORMAT_HM12);	break;
+                case V4L2_PIX_FMT_HM12		: returnvalue = pixelFormatName(PIXELFORMAT_HM12);      break;
 #endif
-        case V4L2_PIX_FMT_MJPEG		: returnvalue = pixelFormatName(PIXELFORMAT_MJPEG);	break;
-        case V4L2_PIX_FMT_PWC1		: returnvalue = pixelFormatName(PIXELFORMAT_PWC1);	break;
-        case V4L2_PIX_FMT_PWC2		: returnvalue = pixelFormatName(PIXELFORMAT_PWC2);	break;
-        case V4L2_PIX_FMT_SN9C10X	: returnvalue = pixelFormatName(PIXELFORMAT_SN9C10X);	break;
-        case V4L2_PIX_FMT_WNVA		: returnvalue = pixelFormatName(PIXELFORMAT_WNVA);	break;
-        case V4L2_PIX_FMT_YYUV		: returnvalue = pixelFormatName(PIXELFORMAT_YYUV);	break;
-        }
-        break;
+                case V4L2_PIX_FMT_MJPEG		: returnvalue = pixelFormatName(PIXELFORMAT_MJPEG);     break;
+                case V4L2_PIX_FMT_PWC1		: returnvalue = pixelFormatName(PIXELFORMAT_PWC1);      break;
+                case V4L2_PIX_FMT_PWC2		: returnvalue = pixelFormatName(PIXELFORMAT_PWC2);      break;
+                case V4L2_PIX_FMT_SN9C10X	: returnvalue = pixelFormatName(PIXELFORMAT_SN9C10X);	break;
+                case V4L2_PIX_FMT_WNVA		: returnvalue = pixelFormatName(PIXELFORMAT_WNVA);      break;
+                case V4L2_PIX_FMT_YYUV		: returnvalue = pixelFormatName(PIXELFORMAT_YYUV);      break;
+            }
+            break;
 #endif
-    case VIDEODEV_DRIVER_V4L:
-        switch(pixelformat)
-        {
-        case VIDEO_PALETTE_GREY		: returnvalue = pixelFormatName(PIXELFORMAT_GREY);	break;
-        case VIDEO_PALETTE_HI240	: returnvalue = pixelFormatName(PIXELFORMAT_RGB332);	break;
-        case VIDEO_PALETTE_RGB555	: returnvalue = pixelFormatName(PIXELFORMAT_RGB555);	break;
-        case VIDEO_PALETTE_RGB565	: returnvalue = pixelFormatName(PIXELFORMAT_RGB565);	break;
-        case VIDEO_PALETTE_RGB24	: returnvalue = pixelFormatName(PIXELFORMAT_RGB24);	break;
-        case VIDEO_PALETTE_RGB32	: returnvalue = pixelFormatName(PIXELFORMAT_RGB32);	break;
-        case VIDEO_PALETTE_YUYV		: returnvalue = pixelFormatName(PIXELFORMAT_YUYV);	break;
-        case VIDEO_PALETTE_UYVY		: returnvalue = pixelFormatName(PIXELFORMAT_UYVY);	break;
-        case VIDEO_PALETTE_YUV420	:
-        case VIDEO_PALETTE_YUV420P	: returnvalue = pixelFormatName(PIXELFORMAT_YUV420P);	break;
-        case VIDEO_PALETTE_YUV422P	: returnvalue = pixelFormatName(PIXELFORMAT_YUV422P);	break;
-        }
-        break;
+        case VIDEODEV_DRIVER_V4L:
+            switch (pixelformat) {
+                case VIDEO_PALETTE_GREY		: returnvalue = pixelFormatName(PIXELFORMAT_GREY);      break;
+                case VIDEO_PALETTE_HI240	: returnvalue = pixelFormatName(PIXELFORMAT_RGB332);	break;
+                case VIDEO_PALETTE_RGB555	: returnvalue = pixelFormatName(PIXELFORMAT_RGB555);	break;
+                case VIDEO_PALETTE_RGB565	: returnvalue = pixelFormatName(PIXELFORMAT_RGB565);	break;
+                case VIDEO_PALETTE_RGB24	: returnvalue = pixelFormatName(PIXELFORMAT_RGB24);     break;
+                case VIDEO_PALETTE_RGB32	: returnvalue = pixelFormatName(PIXELFORMAT_RGB32);     break;
+                case VIDEO_PALETTE_YUYV		: returnvalue = pixelFormatName(PIXELFORMAT_YUYV);      break;
+                case VIDEO_PALETTE_UYVY		: returnvalue = pixelFormatName(PIXELFORMAT_UYVY);      break;
+                case VIDEO_PALETTE_YUV420	:
+                case VIDEO_PALETTE_YUV420P	: returnvalue = pixelFormatName(PIXELFORMAT_YUV420P);	break;
+                case VIDEO_PALETTE_YUV422P	: returnvalue = pixelFormatName(PIXELFORMAT_YUV422P);	break;
+            }
+            break;
 #endif
-    case VIDEODEV_DRIVER_NONE:
-    default:
-        break;
+        case VIDEODEV_DRIVER_NONE:
+        default:
+            break;
     }
     return returnvalue;
-}
-
-int VideoDevice::detectPixelFormats()
-{
-    int err = 0;
-    switch(m_driver)
-    {
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-    case VIDEODEV_DRIVER_V4L2:
-        fmtdesc.index = 0;
-        fmtdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-
-        while ( err == 0 )
-        {
-            if (-1 == xioctl (VIDIOC_ENUM_FMT, &fmtdesc))
-                //				if (ioctl(fd, VIDIOC_ENUM_FMT, &fmtdesc) < 0 )
-            {
-                perror("VIDIOC_ENUM_FMT");
-                err = errno;
-            }
-            else
-            {
-                qDebug () << fmtdesc.pixelformat << "  " << pixelFormatName(fmtdesc.pixelformat); // Need a cleanup. PixelFormatForPalette is a really bad name
-                fmtdesc.index++;
-            }
-        }
-        //			break;
-#endif
-    case VIDEODEV_DRIVER_V4L:
-        // TODO: THis thing can be used to detec what pixel formats are supported in a API-independent way, but V4L2 has VIDIOC_ENUM_PIXFMT.
-        // The correct thing to do is to isolate these calls and do a proper implementation for V4L and another for V4L2 when this thing will be migrated to a plugin architecture.
-
-        // Packed RGB formats
-        qDebug() << "Supported pixel formats:";
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB332))	qDebug() << pixelFormatName(PIXELFORMAT_RGB332);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB444))	qDebug() << pixelFormatName(PIXELFORMAT_RGB444);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB555))	qDebug() << pixelFormatName(PIXELFORMAT_RGB555);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB565))	qDebug() << pixelFormatName(PIXELFORMAT_RGB565);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB555X))	qDebug() << pixelFormatName(PIXELFORMAT_RGB555X);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB565X))	qDebug() << pixelFormatName(PIXELFORMAT_RGB565X);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_BGR24))	qDebug() << pixelFormatName(PIXELFORMAT_BGR24);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB24))	qDebug() << pixelFormatName(PIXELFORMAT_RGB24);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_BGR32))	qDebug() << pixelFormatName(PIXELFORMAT_BGR32);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_RGB32))	qDebug() << pixelFormatName(PIXELFORMAT_RGB32);
-
-        // Bayer RGB format
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_SBGGR8))	qDebug() << pixelFormatName(PIXELFORMAT_SBGGR8);
-
-        // YUV formats
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_GREY))	qDebug() << pixelFormatName(PIXELFORMAT_GREY);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YUYV))	qDebug() << pixelFormatName(PIXELFORMAT_YUYV);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_UYVY))	qDebug() << pixelFormatName(PIXELFORMAT_UYVY);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YUV420P))	qDebug() << pixelFormatName(PIXELFORMAT_YUV420P);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YUV422P))	qDebug() << pixelFormatName(PIXELFORMAT_YUV422P);
-
-        // Compressed formats
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_JPEG))	qDebug() << pixelFormatName(PIXELFORMAT_JPEG);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_MPEG))	qDebug() << pixelFormatName(PIXELFORMAT_MPEG);
-
-        // Reserved formats
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_DV))		qDebug() << pixelFormatName(PIXELFORMAT_DV);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_ET61X251))	qDebug() << pixelFormatName(PIXELFORMAT_ET61X251);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_HI240))	qDebug() << pixelFormatName(PIXELFORMAT_HI240);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_HM12))	qDebug() << pixelFormatName(PIXELFORMAT_HM12);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_MJPEG))	qDebug() << pixelFormatName(PIXELFORMAT_MJPEG);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_PWC1))	qDebug() << pixelFormatName(PIXELFORMAT_PWC1);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_PWC2))	qDebug() << pixelFormatName(PIXELFORMAT_PWC2);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_SN9C10X))	qDebug() << pixelFormatName(PIXELFORMAT_SN9C10X);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_WNVA))	qDebug() << pixelFormatName(PIXELFORMAT_WNVA);
-        if(PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YYUV))	qDebug() << pixelFormatName(PIXELFORMAT_YYUV);
-        break;
-#endif
-    case VIDEODEV_DRIVER_NONE:
-    default:
-        return PIXELFORMAT_NONE;	break;
-    }
-    return PIXELFORMAT_NONE;
 }
 
 __u64 VideoDevice::signalStandardCode(signal_standard standard)
 {
-    switch(m_driver)
+    switch (m_driver)
     {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
     case VIDEODEV_DRIVER_V4L2:
-        switch(standard)
+        switch (standard)
         {
         case STANDARD_PAL_B	: return V4L2_STD_PAL_B;	break;
         case STANDARD_PAL_B1	: return V4L2_STD_PAL_B1;	break;
@@ -2361,7 +2167,7 @@ __u64 VideoDevice::signalStandardCode(signal_standard standard)
         break;
 #endif
     case VIDEODEV_DRIVER_V4L:
-        switch(standard)
+        switch (standard)
         {
         case STANDARD_PAL_B	: return VIDEO_MODE_PAL;	break;
         case STANDARD_PAL_B1	: return VIDEO_MODE_PAL;	break;
@@ -2422,420 +2228,313 @@ __u64 VideoDevice::signalStandardCode(signal_standard standard)
     return STANDARD_UNKNOWN;
 }
 
-QString VideoDevice::signalStandardName(signal_standard standard)
+QString VideoDevice::signalStandardName(signal_standard standard) const
 {
     QString returnvalue;
-    returnvalue = "None";
-    switch(standard)
-    {
-    case STANDARD_PAL_B	: returnvalue = "PAL-B";	break;
-    case STANDARD_PAL_B1	: returnvalue = "PAL-B1"; 	break;
-    case STANDARD_PAL_G	: returnvalue = "PAL-G";	break;
-    case STANDARD_PAL_H	: returnvalue = "PAL-H";	break;
-    case STANDARD_PAL_I	: returnvalue = "PAL-I";	break;
-    case STANDARD_PAL_D	: returnvalue = "PAL-D";	break;
-    case STANDARD_PAL_D1	: returnvalue = "PAL-D1";	break;
-    case STANDARD_PAL_K	: returnvalue = "PAL-K";	break;
+    switch (standard) {
+        case STANDARD_PAL_B     : returnvalue = "PAL-B";        break;
+        case STANDARD_PAL_B1	: returnvalue = "PAL-B1";       break;
+        case STANDARD_PAL_G     : returnvalue = "PAL-G";        break;
+        case STANDARD_PAL_H     : returnvalue = "PAL-H";        break;
+        case STANDARD_PAL_I     : returnvalue = "PAL-I";        break;
+        case STANDARD_PAL_D     : returnvalue = "PAL-D";        break;
+        case STANDARD_PAL_D1	: returnvalue = "PAL-D1";       break;
+        case STANDARD_PAL_K     : returnvalue = "PAL-K";        break;
 
-    case STANDARD_PAL_M	: returnvalue = "PAL-M";	break;
-    case STANDARD_PAL_N	: returnvalue = "PAL-N";	break;
-    case STANDARD_PAL_Nc	: returnvalue = "PAL-Nc";	break;
-    case STANDARD_PAL_60	: returnvalue = "PAL-60";	break;
+        case STANDARD_PAL_M     : returnvalue = "PAL-M";        break;
+        case STANDARD_PAL_N     : returnvalue = "PAL-N";        break;
+        case STANDARD_PAL_Nc	: returnvalue = "PAL-Nc";       break;
+        case STANDARD_PAL_60	: returnvalue = "PAL-60";       break;
 
-    case STANDARD_NTSC_M	: returnvalue = "NTSC-M";	break;
-    case STANDARD_NTSC_M_JP	: returnvalue = "NTSC-M(JP)";	break;
-    case STANDARD_NTSC_443	: returnvalue = "NTSC-443";	break;
-    case STANDARD_NTSC_M_KR	: returnvalue = "NTSC-M(KR)";	break;
+        case STANDARD_NTSC_M	: returnvalue = "NTSC-M";       break;
+        case STANDARD_NTSC_M_JP	: returnvalue = "NTSC-M(JP)";	break;
+        case STANDARD_NTSC_443	: returnvalue = "NTSC-443";     break;
+        case STANDARD_NTSC_M_KR	: returnvalue = "NTSC-M(KR)";	break;
 
-    case STANDARD_SECAM_B	: returnvalue = "SECAM-B";	break;
-    case STANDARD_SECAM_D	: returnvalue = "SECAM-D";	break;
-    case STANDARD_SECAM_G	: returnvalue = "SECAM-G";	break;
-    case STANDARD_SECAM_H	: returnvalue = "SECAM-H";	break;
-    case STANDARD_SECAM_K	: returnvalue = "SECAM-K";	break;
-    case STANDARD_SECAM_K1	: returnvalue = "SECAM-K1";	break;
-    case STANDARD_SECAM_L	: returnvalue = "SECAM-L";	break;
-    case STANDARD_SECAM_LC	: returnvalue = "SECAM-LC";	break;
+        case STANDARD_SECAM_B	: returnvalue = "SECAM-B";      break;
+        case STANDARD_SECAM_D	: returnvalue = "SECAM-D";      break;
+        case STANDARD_SECAM_G	: returnvalue = "SECAM-G";      break;
+        case STANDARD_SECAM_H	: returnvalue = "SECAM-H";      break;
+        case STANDARD_SECAM_K	: returnvalue = "SECAM-K";      break;
+        case STANDARD_SECAM_K1	: returnvalue = "SECAM-K1";     break;
+        case STANDARD_SECAM_L	: returnvalue = "SECAM-L";      break;
+        case STANDARD_SECAM_LC	: returnvalue = "SECAM-LC";     break;
 
-    case STANDARD_ATSC_8_VSB: returnvalue = "ATSC-8-VSB";	break;
-    case STANDARD_ATSC_16_VSB:returnvalue = "ATSC-16-VSB";	break;
+        case STANDARD_ATSC_8_VSB: returnvalue = "ATSC-8-VSB";	break;
+        case STANDARD_ATSC_16_VSB:returnvalue = "ATSC-16-VSB";	break;
 
-    case STANDARD_PAL_BG	: returnvalue = "PAL-BG";	break;
-    case STANDARD_PAL_DK	: returnvalue = "PAL-DK";	break;
-    case STANDARD_PAL	: returnvalue = "PAL";		break;
-    case STANDARD_NTSC	: returnvalue = "NTSC";		break;
-    case STANDARD_SECAM_DK  : returnvalue = "SECAM-DK";	break;
-    case STANDARD_SECAM	: returnvalue = "SECAM";	break;
+        case STANDARD_PAL_BG	: returnvalue = "PAL-BG";       break;
+        case STANDARD_PAL_DK	: returnvalue = "PAL-DK";       break;
+        case STANDARD_PAL       : returnvalue = "PAL";          break;
+        case STANDARD_NTSC      : returnvalue = "NTSC";         break;
+        case STANDARD_SECAM_DK  : returnvalue = "SECAM-DK";     break;
+        case STANDARD_SECAM     : returnvalue = "SECAM";        break;
 
-    case STANDARD_MN	: returnvalue = "DK";		break;
-    case STANDARD_B		: returnvalue = "B";		break;
-    case STANDARD_GH	: returnvalue = "GH";		break;
-    case STANDARD_DK	: returnvalue = "DK";		break;
+        case STANDARD_MN        : returnvalue = "DK";           break;
+        case STANDARD_B         : returnvalue = "B";            break;
+        case STANDARD_GH        : returnvalue = "GH";           break;
+        case STANDARD_DK        : returnvalue = "DK";           break;
 
-    case STANDARD_525_60	: returnvalue = "525 lines 60Hz";break;
-    case STANDARD_625_50	: returnvalue = "625 lines 50Hz";break;
-    case STANDARD_ATSC	: returnvalue = "ATSC"; 	break;
+        case STANDARD_525_60	: returnvalue = "525 lines 60Hz";break;
+        case STANDARD_625_50	: returnvalue = "625 lines 50Hz";break;
+        case STANDARD_ATSC      : returnvalue = "ATSC";         break;
 
-    case STANDARD_UNKNOWN	: returnvalue = "Unknown";	break;
-    case STANDARD_ALL	: returnvalue = "All";		break;
+        case STANDARD_UNKNOWN	: returnvalue = "Unknown";      break;
+        case STANDARD_ALL       : returnvalue = "All";          break;
+        default                 : returnvalue = "Really Unknown";break;
     }
     return returnvalue;
 }
 
-QString VideoDevice::signalStandardName(int standard)
+QString VideoDevice::signalStandardName(int standard) const
 {
-    QString returnvalue;
-    returnvalue = "None";
-    switch(m_driver)
-    {
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-    case VIDEODEV_DRIVER_V4L2:
-        switch(standard)
-        {
-        case V4L2_STD_PAL_B	: returnvalue = signalStandardName(STANDARD_PAL_B);	break;
-        case V4L2_STD_PAL_B1	: returnvalue = signalStandardName(STANDARD_PAL_B1);	break;
-        case V4L2_STD_PAL_G	: returnvalue = signalStandardName(STANDARD_PAL_G);	break;
-        case V4L2_STD_PAL_H	: returnvalue = signalStandardName(STANDARD_PAL_H);	break;
-        case V4L2_STD_PAL_I	: returnvalue = signalStandardName(STANDARD_PAL_I);	break;
-        case V4L2_STD_PAL_D	: returnvalue = signalStandardName(STANDARD_PAL_D);	break;
-        case V4L2_STD_PAL_D1	: returnvalue = signalStandardName(STANDARD_PAL_D1);	break;
-        case V4L2_STD_PAL_K	: returnvalue = signalStandardName(STANDARD_PAL_K);	break;
-        case V4L2_STD_PAL_M	: returnvalue = signalStandardName(STANDARD_PAL_M);	break;
-        case V4L2_STD_PAL_N	: returnvalue = signalStandardName(STANDARD_PAL_N);	break;
-        case V4L2_STD_PAL_Nc	: returnvalue = signalStandardName(STANDARD_PAL_Nc);	break;
-        case V4L2_STD_PAL_60	: returnvalue = signalStandardName(STANDARD_PAL_60);	break;
-        case V4L2_STD_NTSC_M	: returnvalue = signalStandardName(STANDARD_NTSC_M);	break;
-        case V4L2_STD_NTSC_M_JP	: returnvalue = signalStandardName(STANDARD_NTSC_M_JP);	break;
-        case V4L2_STD_NTSC_443	: returnvalue = signalStandardName(STANDARD_NTSC_443);	break; // Commented out because my videodev2.h header seems to not include this standard in struct __u64 v4l2_std_id
-        case V4L2_STD_NTSC_M_KR	: returnvalue = signalStandardName(STANDARD_NTSC_M_KR);	break; // Commented out because my videodev2.h header seems to not include this standard in struct __u64 v4l2_std_id
-        case V4L2_STD_SECAM_B	: returnvalue = signalStandardName(STANDARD_SECAM_B);	break;
-        case V4L2_STD_SECAM_D	: returnvalue = signalStandardName(STANDARD_SECAM_D);	break;
-        case V4L2_STD_SECAM_G	: returnvalue = signalStandardName(STANDARD_SECAM_G);	break;
-        case V4L2_STD_SECAM_H	: returnvalue = signalStandardName(STANDARD_SECAM_H);	break;
-        case V4L2_STD_SECAM_K	: returnvalue = signalStandardName(STANDARD_SECAM_K);	break;
-        case V4L2_STD_SECAM_K1	: returnvalue = signalStandardName(STANDARD_SECAM_K1);	break;
-        case V4L2_STD_SECAM_L	: returnvalue = signalStandardName(STANDARD_SECAM_L);	break;
-        case V4L2_STD_SECAM_LC	: returnvalue = signalStandardName(STANDARD_SECAM_LC);	break;
-
-        case V4L2_STD_ATSC_8_VSB: returnvalue = signalStandardName(STANDARD_ATSC_8_VSB);break;
-        case V4L2_STD_ATSC_16_VSB:returnvalue = signalStandardName(STANDARD_ATSC_16_VSB);break;
-
-        case V4L2_STD_PAL_BG	: returnvalue = signalStandardName(STANDARD_PAL_BG);	break;
-        case V4L2_STD_PAL_DK	: returnvalue = signalStandardName(STANDARD_PAL_DK);	break;
-        case V4L2_STD_PAL	: returnvalue = signalStandardName(STANDARD_PAL);	break;
-        case V4L2_STD_NTSC	: returnvalue = signalStandardName(STANDARD_NTSC);	break;
-        case V4L2_STD_SECAM_DK	: returnvalue = signalStandardName(STANDARD_SECAM_DK);	break;
-        case V4L2_STD_SECAM	: returnvalue = signalStandardName(STANDARD_SECAM);	break;
-
-        case V4L2_STD_MN	: returnvalue = signalStandardName(STANDARD_MN);	break;
-        case V4L2_STD_B		: returnvalue = signalStandardName(STANDARD_B);		break;
-        case V4L2_STD_GH	: returnvalue = signalStandardName(STANDARD_GH);	break;
-        case V4L2_STD_DK	: returnvalue = signalStandardName(STANDARD_DK);	break;
-
-        case V4L2_STD_525_60	: returnvalue = signalStandardName(STANDARD_525_60);	break;
-        case V4L2_STD_625_50	: returnvalue = signalStandardName(STANDARD_625_50);	break;
-        case V4L2_STD_ATSC	: returnvalue = signalStandardName(STANDARD_ATSC);	break;
-
-        case V4L2_STD_UNKNOWN	: returnvalue = signalStandardName(STANDARD_UNKNOWN);	break;
-        case V4L2_STD_ALL	: returnvalue = signalStandardName(STANDARD_ALL);	break;
-        }
-        break;
-#endif
-    case VIDEODEV_DRIVER_V4L:
-        switch(standard)
-        {
-        case VIDEO_MODE_PAL	: returnvalue = signalStandardName(STANDARD_PAL);	break;
-        case VIDEO_MODE_NTSC	: returnvalue = signalStandardName(STANDARD_NTSC);	break;
-        case VIDEO_MODE_SECAM	: returnvalue = signalStandardName(STANDARD_SECAM);	break;
-        case VIDEO_MODE_AUTO	: returnvalue = signalStandardName(STANDARD_ALL);	break;	// It must be disabled until I find a correct way to handle those non-standard bttv modes
-            //				case VIDEO_MODE_PAL_Nc	: returnvalue = signalStandardName(STANDARD_PAL_Nc);	break;	// Undocumented value found to be compatible with V4L bttv driver
-        case VIDEO_MODE_PAL_M	: returnvalue = signalStandardName(STANDARD_PAL_M);	break;	// Undocumented value found to be compatible with V4L bttv driver
-        case VIDEO_MODE_PAL_N	: returnvalue = signalStandardName(STANDARD_PAL_N);	break;	// Undocumented value found to be compatible with V4L bttv driver
-        case VIDEO_MODE_NTSC_JP	: returnvalue = signalStandardName(STANDARD_NTSC_M_JP);	break;	// Undocumented value found to be compatible with V4L bttv driver
-        }
-        break;
-#endif
-    case VIDEODEV_DRIVER_NONE:
-    default:
-        break;
-    }
-    return returnvalue;
-}
-
-/*!
-\fn VideoDevice::detectSignalStandards()
-// this must be done once for each _input_.
-*/
-int VideoDevice::detectSignalStandards()
-{
-    qDebug() << "called.";
-    if(isOpen())
-    {
-        switch(m_driver)
-        {
+    QString returnvalue = "None";
+    switch (m_driver) {
 #ifdef Q_OS_LINUX
 #ifdef V4L2_CAP_VIDEO_CAPTURE
         case VIDEODEV_DRIVER_V4L2:
+            switch (standard)
+            {
+                case V4L2_STD_PAL_B     : returnvalue = signalStandardName(STANDARD_PAL_B);     break;
+                case V4L2_STD_PAL_B1	: returnvalue = signalStandardName(STANDARD_PAL_B1);   	break;
+                case V4L2_STD_PAL_G     : returnvalue = signalStandardName(STANDARD_PAL_G);     break;
+                case V4L2_STD_PAL_H     : returnvalue = signalStandardName(STANDARD_PAL_H);     break;
+                case V4L2_STD_PAL_I     : returnvalue = signalStandardName(STANDARD_PAL_I);     break;
+                case V4L2_STD_PAL_D     : returnvalue = signalStandardName(STANDARD_PAL_D);     break;
+                case V4L2_STD_PAL_D1	: returnvalue = signalStandardName(STANDARD_PAL_D1);	break;
+                case V4L2_STD_PAL_K     : returnvalue = signalStandardName(STANDARD_PAL_K);     break;
+                case V4L2_STD_PAL_M     : returnvalue = signalStandardName(STANDARD_PAL_M);     break;
+                case V4L2_STD_PAL_N     : returnvalue = signalStandardName(STANDARD_PAL_N);     break;
+                case V4L2_STD_PAL_Nc	: returnvalue = signalStandardName(STANDARD_PAL_Nc);	break;
+                case V4L2_STD_PAL_60	: returnvalue = signalStandardName(STANDARD_PAL_60);	break;
+                case V4L2_STD_NTSC_M	: returnvalue = signalStandardName(STANDARD_NTSC_M);	break;
+                case V4L2_STD_NTSC_M_JP	: returnvalue = signalStandardName(STANDARD_NTSC_M_JP);	break;
+                case V4L2_STD_NTSC_443	: returnvalue = signalStandardName(STANDARD_NTSC_443);	break; // Commented out because my videodev2.h header seems to not include this standard in struct __u64 v4l2_std_id
+                case V4L2_STD_NTSC_M_KR	: returnvalue = signalStandardName(STANDARD_NTSC_M_KR);	break; // Commented out because my videodev2.h header seems to not include this standard in struct __u64 v4l2_std_id
+                case V4L2_STD_SECAM_B	: returnvalue = signalStandardName(STANDARD_SECAM_B);	break;
+                case V4L2_STD_SECAM_D	: returnvalue = signalStandardName(STANDARD_SECAM_D);	break;
+                case V4L2_STD_SECAM_G	: returnvalue = signalStandardName(STANDARD_SECAM_G);	break;
+                case V4L2_STD_SECAM_H	: returnvalue = signalStandardName(STANDARD_SECAM_H);	break;
+                case V4L2_STD_SECAM_K	: returnvalue = signalStandardName(STANDARD_SECAM_K);	break;
+                case V4L2_STD_SECAM_K1	: returnvalue = signalStandardName(STANDARD_SECAM_K1);	break;
+                case V4L2_STD_SECAM_L	: returnvalue = signalStandardName(STANDARD_SECAM_L);	break;
+                case V4L2_STD_SECAM_LC	: returnvalue = signalStandardName(STANDARD_SECAM_LC);	break;
 
+                case V4L2_STD_ATSC_8_VSB: returnvalue = signalStandardName(STANDARD_ATSC_8_VSB);break;
+                case V4L2_STD_ATSC_16_VSB:returnvalue = signalStandardName(STANDARD_ATSC_16_VSB);break;
 
-            struct v4l2_input input;
-            struct v4l2_standard standard;
+                case V4L2_STD_PAL_BG	: returnvalue = signalStandardName(STANDARD_PAL_BG);	break;
+                case V4L2_STD_PAL_DK	: returnvalue = signalStandardName(STANDARD_PAL_DK);	break;
+                case V4L2_STD_PAL       : returnvalue = signalStandardName(STANDARD_PAL);       break;
+                case V4L2_STD_NTSC      : returnvalue = signalStandardName(STANDARD_NTSC);      break;
+                case V4L2_STD_SECAM_DK	: returnvalue = signalStandardName(STANDARD_SECAM_DK);	break;
+                case V4L2_STD_SECAM     : returnvalue = signalStandardName(STANDARD_SECAM);     break;
 
-            memset (&input, 0, sizeof (input));
+                case V4L2_STD_MN        : returnvalue = signalStandardName(STANDARD_MN);        break;
+                case V4L2_STD_B         : returnvalue = signalStandardName(STANDARD_B);         break;
+                case V4L2_STD_GH        : returnvalue = signalStandardName(STANDARD_GH);        break;
+                case V4L2_STD_DK        : returnvalue = signalStandardName(STANDARD_DK);        break;
 
-            if (-1 == xioctl (VIDIOC_G_INPUT, &input.index)) {
-                perror ("VIDIOC_G_INPUT");
-                return EXIT_FAILURE;
+                case V4L2_STD_525_60	: returnvalue = signalStandardName(STANDARD_525_60);	break;
+                case V4L2_STD_625_50	: returnvalue = signalStandardName(STANDARD_625_50);	break;
+                case V4L2_STD_ATSC      : returnvalue = signalStandardName(STANDARD_ATSC);      break;
+
+                case V4L2_STD_UNKNOWN	: returnvalue = signalStandardName(STANDARD_UNKNOWN);	break;
+                case V4L2_STD_ALL       : returnvalue = signalStandardName(STANDARD_ALL);       break;
             }
-
-            if (-1 == xioctl (VIDIOC_ENUMINPUT, &input)) {
-                perror ("VIDIOC_ENUM_INPUT");
-                return EXIT_FAILURE;
-            }
-
-            //			printf ("Current input %s supports:\n", input.name);
-
-            memset (&standard, 0, sizeof (standard));
-            standard.index = 0;
-
-            while (0 == xioctl (VIDIOC_ENUMSTD, &standard)) {
-                if (standard.id & input.std)
-                    //						qDebug() << standard.name;
-                    qDebug() << signalStandardName(standard.id) << " (" << standard.id << ")" << V4L2_STD_NTSC;
-
-                standard.index++;
-            }
-
-            /* EINVAL indicates the end of the enumeration, which cannot be
-empty unless this device falls under the USB exception. */
-
-            if (errno != EINVAL || standard.index == 0) {
-                perror ("VIDIOC_ENUMSTD");
-                return EXIT_FAILURE;
-            }
-
-
             break;
 #endif
         case VIDEODEV_DRIVER_V4L:
+            switch (standard) {
+                case VIDEO_MODE_PAL     : returnvalue = signalStandardName(STANDARD_PAL);	break;
+                case VIDEO_MODE_NTSC	: returnvalue = signalStandardName(STANDARD_NTSC);	break;
+                case VIDEO_MODE_SECAM	: returnvalue = signalStandardName(STANDARD_SECAM);	break;
+                case VIDEO_MODE_AUTO	: returnvalue = signalStandardName(STANDARD_ALL);	break;	// It must be disabled until I find a correct way to handle those non-standard bttv modes
+                    //				case VIDEO_MODE_PAL_Nc	: returnvalue = signalStandardName(STANDARD_PAL_Nc);	break;	// Undocumented value found to be compatible with V4L bttv driver
+                case VIDEO_MODE_PAL_M	: returnvalue = signalStandardName(STANDARD_PAL_M);	break;	// Undocumented value found to be compatible with V4L bttv driver
+                case VIDEO_MODE_PAL_N	: returnvalue = signalStandardName(STANDARD_PAL_N);	break;	// Undocumented value found to be compatible with V4L bttv driver
+                case VIDEO_MODE_NTSC_JP	: returnvalue = signalStandardName(STANDARD_NTSC_M_JP);	break;	// Undocumented value found to be compatible with V4L bttv driver
+            }
             break;
 #endif
         case VIDEODEV_DRIVER_NONE:
         default:
             break;
-        }
-        //FIXME: return a real value
-        return EXIT_SUCCESS;
     }
-    return EXIT_FAILURE;
+    return returnvalue;
 }
 
-/*!
-\fn VideoDevice::initRead()
-*/
-int VideoDevice::initRead()
-{
-    /// @todo implement me
-
-    qDebug() << "called.";
-    if(isOpen())
-    {
-        m_rawbuffers.resize(1);
-        if (m_rawbuffers.size()==0)
-        {
-            fprintf (stderr, "Out of memory\n");
-            return EXIT_FAILURE;
-        }
-        qDebug() << "m_buffer_size: " << m_buffer_size;
-
-        //		m_rawbuffers[0].pixelformat=m_pixelformat;
-        m_rawbuffers[0].length = m_buffer_size;
-        m_rawbuffers[0].start = (uchar *)malloc (m_buffer_size);
-
-        if (!m_rawbuffers[0].start)
-        {
-            fprintf (stderr, "Out of memory\n");
-            return EXIT_FAILURE;
-        }
-        qDebug() << "exited successfuly.";
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-
-/*!
-\fn VideoDevice::initMmap()
-*/
-int VideoDevice::initMmap()
-{
-    /// @todo implement me
-#define BUFFERS 2
-    if(isOpen())
-    {
-        qDebug() << full_filename << " Trying to MMAP";
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-        struct v4l2_requestbuffers req;
-
-        CLEAR (req);
-
-        req.count  = BUFFERS;
-        req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        req.memory = V4L2_MEMORY_MMAP;
-
-        if (-1 == xioctl (VIDIOC_REQBUFS, &req))
-        {
-            if (EINVAL == errno)
-            {
-                qDebug() << full_filename << " does not support memory mapping";
-                return EXIT_FAILURE;
-            }
-            else
-            {
-                return errnoReturn ("VIDIOC_REQBUFS");
-            }
-        }
-
-        if (req.count < BUFFERS)
-        {
-            qDebug() << "Insufficient buffer memory on " << full_filename;
-            return EXIT_FAILURE;
-        }
-
-        m_rawbuffers.resize(req.count);
-
-        if (m_rawbuffers.size()==0)
-        {
-            qDebug() <<  "Out of memory";
-            return EXIT_FAILURE;
-        }
-
-        for (m_streambuffers = 0; m_streambuffers < req.count; ++m_streambuffers)
-        {
-            struct v4l2_buffer v4l2buffer;
-
-            CLEAR (v4l2buffer);
-
-            v4l2buffer.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-            v4l2buffer.memory = V4L2_MEMORY_MMAP;
-            v4l2buffer.index  = m_streambuffers;
-
-            if (-1 == xioctl (VIDIOC_QUERYBUF, &v4l2buffer))
-                return errnoReturn ("VIDIOC_QUERYBUF");
-
-            m_rawbuffers[m_streambuffers].length = v4l2buffer.length;
-            m_rawbuffers[m_streambuffers].start = (uchar *) mmap (NULL /* start anywhere */, v4l2buffer.length, PROT_READ | PROT_WRITE /* required */, MAP_SHARED /* recommended */, descriptor, v4l2buffer.m.offset);
-
-            if (MAP_FAILED == m_rawbuffers[m_streambuffers].start)
-                return errnoReturn ("mmap");
-        }
-#endif
-        m_currentbuffer.data.resize(m_rawbuffers[0].length); // Makes the imagesize.data buffer size equal to the rawbuffer size
-        qDebug() << full_filename << " m_currentbuffer.data.size(): " << m_currentbuffer.data.size();
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-
-/*!
-\fn VideoDevice::initUserptr()
-*/
-int VideoDevice::initUserptr()
-{
-    /// @todo implement me
-    if(isOpen())
-    {
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-        struct v4l2_requestbuffers req;
-
-        CLEAR (req);
-
-        req.count  = 2;
-        req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        req.memory = V4L2_MEMORY_USERPTR;
-
-        if (-1 == xioctl (VIDIOC_REQBUFS, &req))
-        {
-            if (EINVAL == errno)
-            {
-                qDebug() << full_filename << " does not support memory mapping";
-                return EXIT_FAILURE;
-            }
-            else
-            {
-                return errnoReturn ("VIDIOC_REQBUFS");
-            }
-        }
-
-        m_rawbuffers.resize(4);
-
-        if (m_rawbuffers.size()==0)
-        {
-            fprintf (stderr, "Out of memory\n");
-            return EXIT_FAILURE;
-        }
-
-        for (m_streambuffers = 0; m_streambuffers < 4; ++m_streambuffers)
-        {
-            m_rawbuffers[m_streambuffers].length = m_buffer_size;
-            m_rawbuffers[m_streambuffers].start = (uchar *) malloc (m_buffer_size);
-
-            if (!m_rawbuffers[m_streambuffers].start)
-            {
-                qDebug() <<  "Out of memory";
-                return EXIT_FAILURE;
-            }
-        }
-#endif
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-bool VideoDevice::canCapture()
+bool VideoDevice::canCapture() const
 {
     return m_videocapture;
 }
 
-bool VideoDevice::canChromakey()
+bool VideoDevice::canChromakey() const
 {
     return m_videochromakey;
 }
 
-bool VideoDevice::canScale()
+bool VideoDevice::canScale() const
 {
     return m_videoscale;
 }
 
-bool VideoDevice::canOverlay()
+bool VideoDevice::canOverlay() const
 {
     return m_videooverlay;
 }
 
-bool VideoDevice::canRead()
+bool VideoDevice::canRead() const
 {
     return m_videoread;
 }
 
-bool VideoDevice::canAsyncIO()
+bool VideoDevice::canAsyncIO() const
 {
     return m_videoasyncio;
 }
 
-bool VideoDevice::canStream()
+bool VideoDevice::canStream() const
 {
     return m_videostream;
 }
 
-void VideoDevice::setUdi( const QString & udi )
+// OK
+int VideoDevice::xioctl(int request, void *arg) const
 {
-    m_udi = udi;
+    int r;
+    //qWarning() << "ioctl:" << m_videoFileDescriptor << request;
+    do { r = ioctl(m_videoFileDescriptor, request, arg); }
+    while (r == -1 && errno == EINTR);
+    return r;
 }
 
-QString VideoDevice::udi() const
+// OK
+bool VideoDevice::initIoRead()
 {
-    return m_udi;
+    if (!isOpen()) {
+        qDebug("VideoDevice::initIoRead: not opened");
+        return false;
+    }
+
+    m_rawbuffers.resize(1);
+    if (m_rawbuffers.size() == 0) {
+        qDebug("VideoDevice::initIoRead: Out of memory");
+        return false;
+    }
+
+    //m_rawbuffers[0].pixelformat = m_pixelformat;
+    m_rawbuffers[0].length = m_buffer_size;
+    m_rawbuffers[0].start = (uchar *)malloc(m_buffer_size);
+    if (!m_rawbuffers[0].start) {
+        qDebug("VideoDevice::initIoRead: Out of memory 2");
+        return false;
+    }
+    return true;
 }
 
+
+// OK
+bool VideoDevice::initIoMmap()
+{
+#define BUFFERS 2
+    if (!isOpen()) {
+        qDebug("VideoDevice::initIoMmap: not opened");
+        return false;
+    }
+
+    qDebug() << "VideoDevice::initIoMmap:" << m_videoFileName << " Trying to MMAP";
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+    struct v4l2_requestbuffers req;
+    CLEAR (req);
+    req.count  = BUFFERS;
+    req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    req.memory = V4L2_MEMORY_MMAP;
+    if (-1 == xioctl(VIDIOC_REQBUFS, &req)) {
+        if (errno == EINVAL) {
+            qDebug() << "VideoDevice::initIoMmap:" << m_videoFileName << "does not support memory mapping";
+            return false;
+        } else {
+            perror("VIDIOC_REQBUFS");
+            return false;
+        }
+    }
+
+    if (req.count < BUFFERS) {
+        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_videoFileName;
+        return false;
+    }
+
+    m_rawbuffers.resize(req.count);
+    if (m_rawbuffers.size() == 0) {
+        qDebug("VideoDevice::initIoMmap: Out of memory");
+        return false;
+    }
+
+    for (m_streambuffers = 0; m_streambuffers < req.count; ++m_streambuffers) {
+        struct v4l2_buffer v4l2buffer;
+        CLEAR (v4l2buffer);
+        v4l2buffer.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        v4l2buffer.memory = V4L2_MEMORY_MMAP;
+        v4l2buffer.index  = m_streambuffers;
+        if (-1 == xioctl (VIDIOC_QUERYBUF, &v4l2buffer)) {
+            perror("VIDIOC_QUERYBUF");
+            return false;
+        }
+        m_rawbuffers[m_streambuffers].length = v4l2buffer.length;
+        m_rawbuffers[m_streambuffers].start = (uchar *) mmap (NULL /* start anywhere */, v4l2buffer.length, PROT_READ | PROT_WRITE /* required */, MAP_SHARED /* recommended */, m_videoFileDescriptor, v4l2buffer.m.offset);
+        if (MAP_FAILED == m_rawbuffers[m_streambuffers].start) {
+            perror("mmap");
+            return false;
+        }
+    }
+#endif
+    m_currentbuffer.data.resize(m_rawbuffers[0].length); // Makes the imagesize.data buffer size equal to the rawbuffer size
+    qDebug() << "VideoDevice::initIoMmap:" << m_videoFileName << "m_currentbuffer.data.size():" << m_currentbuffer.data.size();
+    return true;
 }
+
+
+// OK
+bool VideoDevice::initIoUserptr()
+{
+    if (!isOpen()) {
+        qDebug("VideoDevice::initIoUserptr: not opened");
+        return false;
+    }
+
+#ifdef V4L2_CAP_VIDEO_CAPTURE
+    struct v4l2_requestbuffers req;
+    CLEAR(req);
+    req.count  = 2;
+    req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    req.memory = V4L2_MEMORY_USERPTR;
+    if (-1 == xioctl(VIDIOC_REQBUFS, &req)) {
+        if (EINVAL == errno) {
+            qDebug() << "VideoDevice::initIoUserptr:" << m_videoFileName << "does not support memory mapping";
+            return false;
+        } else {
+            perror("VIDIOC_REQBUFS");
+            return false;
+        }
+    }
+
+    m_rawbuffers.resize(4);
+    if (m_rawbuffers.size() == 0) {
+        qDebug("VideoDevice::initIoUserptr: Out of memory");
+        return false;
+    }
+
+    for (m_streambuffers = 0; m_streambuffers < 4; ++m_streambuffers) {
+        m_rawbuffers[m_streambuffers].length = m_buffer_size;
+        m_rawbuffers[m_streambuffers].start = (uchar *)malloc(m_buffer_size);
+        if (!m_rawbuffers[m_streambuffers].start) {
+            qDebug("VideoDevice::initIoUserptr: Out of memory 2");
+            return false;
+        }
+    }
+#endif
+    return true;
+}
+
+} // namespace VideoCapture

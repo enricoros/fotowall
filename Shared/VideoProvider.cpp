@@ -33,7 +33,7 @@ VideoProvider::VideoProvider()
 {
     // defer video initialization, to offload gui on startup...
     if (!Disable)
-        QTimer::singleShot(500, this, SLOT(scanDevices()));
+        QTimer::singleShot(500, this, SLOT(initDevices()));
 }
 
 VideoProvider::~VideoProvider()
@@ -69,7 +69,8 @@ void VideoProvider::connectInput(int iIdx, QObject * receiver, const char * meth
     if (!input->active) {
         // start the video
 #if defined(HAS_VIDEOCAPTURE)
-        input->device->setSize(input->device->maxWidth(), input->device->maxHeight());
+        if (!input->device->setCaptureSize(input->device->maxWidth(), input->device->maxHeight()))
+            qWarning("VideoProvider::connectInput: can't set the capture size. trying anyways..");
         input->device->startCapturing();
 #else
         // TODO
@@ -141,14 +142,14 @@ bool VideoProvider::swapped(int iIdx) const
     return false;
 }
 
-void VideoProvider::scanDevices()
+void VideoProvider::initDevices()
 {
 #if defined(Q_OS_LINUX)
     QDirIterator dirIt("/dev", QStringList() << "video*", QDir::Files | QDir::System);
     while (dirIt.hasNext())
         slotInitVideo(dirIt.next());
 #else
-    qWarning("VideoProvider::scanDevices: not implemented for your system");
+    qWarning("VideoProvider::initDevices: not implemented for your system");
 #endif
 }
 
@@ -156,19 +157,16 @@ void VideoProvider::slotInitVideo(const QString & device)
 {
 #if defined(HAS_VIDEOCAPTURE)
     // create a new capture device and initialize it
-    VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice();
-    capture->setFileName(device);
+    VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice(device);
     capture->open();
-    if (!capture->isOpen() || capture->inputs() < 1) {
+    if (!capture->isOpen() || capture->inputCount() < 1) {
         delete capture;
         return;
     }
+    //capture->close();         // leave capture open...
 
     // setup input
-    //capture->close();         // leave capture open...
-    capture->selectInput(0);
-    // called by selectInput(0);
-    //capture->setInputParameters();
+    capture->setCurrentInput(0);
 
     // if everything's ok setup the device and add it to the internal queue
     VideoInput * input = new VideoInput();
@@ -194,12 +192,15 @@ void VideoProvider::slotCaptureVideoFrames()
 
 #if defined(HAS_VIDEOCAPTURE)
         // get frame (and check correctness)
-        if (input->device->getFrame() != EXIT_SUCCESS)
+        if (!input->device->acquireFrame())
             continue;
 
         // get the qimage from the frame
         QImage frameImage;
-        input->device->getImage(&frameImage);
+        if (!input->device->getImage(&frameImage)) {
+            // display the invalid (blue) image anyways
+            //continue;
+        }
 
         // apply mirror, if requested
         if (input->swapped)
