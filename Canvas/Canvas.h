@@ -50,7 +50,7 @@ class Canvas : public AbstractScene
         void addCanvasViewContent(const QStringList & fileNames);
         void addPictureContent(const QStringList & fileNames);
         void addTextContent();
-        void addWebcamContent(int input);
+        void addWebcamContent(int webcamIndex);
         void addWordcloudContent();
         void addManualContent(AbstractContent * content, const QPoint & pos);
         void clearContent();
@@ -127,7 +127,7 @@ class Canvas : public AbstractScene
         CanvasViewContent * createCanvasView(const QPoint & pos);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
-        WebcamContent * createWebcam(int input, const QPoint & pos);
+        WebcamContent * createWebcam(int webcamIndex, const QPoint & pos);
         WordcloudContent * createWordcloud(const QPoint & pos);
         void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);

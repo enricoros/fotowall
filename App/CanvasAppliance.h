@@ -20,6 +20,7 @@
 class QMenu;
 class AbstractContent;
 class Canvas;
+class PixmapButton;
 
 class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 {
@@ -55,6 +56,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         QActionGroup *              m_gBackModeGroup;
         QActionGroup *              m_gBackRatioGroup;
         QAction *                   m_gBackContentAction;
+        QList<PixmapButton *>       m_webcamButtons;
 
     private Q_SLOTS:
 

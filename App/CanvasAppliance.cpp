@@ -48,7 +48,6 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     ui.fileBox->setFixedHeight(App::TopBarHeight);
     connect(ui.bPicture, SIGNAL(clicked()), this, SLOT(slotAddPicture()));
     connect(ui.bText, SIGNAL(clicked()), this, SLOT(slotAddText()));
-    connect(ui.bWebcam, SIGNAL(clicked()), this, SLOT(slotAddWebcam()));
     connect(ui.bWordcloud, SIGNAL(clicked()), this, SLOT(slotAddWordcloud()));
     connect(ui.bCanvas, SIGNAL(clicked()), this, SLOT(slotAddCanvas()));
     connect(ui.bWebsearch, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
@@ -78,7 +77,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     connect(m_extCanvas, SIGNAL(filePathChanged()), this, SLOT(slotFilePathChanged()));
 
     // react to VideoProvider
-    ui.bWebcam->setVisible(VideoProvider::instance()->inputCount() > 0);
+    slotVerifyVideoInputs(VideoProvider::instance()->inputCount());
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // set the startup project mode
@@ -366,7 +365,8 @@ void CanvasAppliance::slotAddText()
 
 void CanvasAppliance::slotAddWebcam()
 {
-    m_extCanvas->addWebcamContent(0);
+    int webcamIndex = sender()->property("index").toInt();
+    m_extCanvas->addWebcamContent(webcamIndex);
     setFocusToScene();
 }
 
@@ -552,6 +552,19 @@ void CanvasAppliance::slotFilePathChanged()
 
 void CanvasAppliance::slotVerifyVideoInputs(int count)
 {
-    // maybe blink or something?
-    ui.bWebcam->setVisible(count > 0);
+    // delete previous buttons
+    qDeleteAll(m_webcamButtons);
+    m_webcamButtons.clear();
+
+    // create new buttons, indexed and connected
+    for (int i = 0; i < count; i++) {
+        PixmapButton * p = new PixmapButton(ui.addContentBox);
+        p->setFixedSize(QSize(50, 50));
+        p->setPixmap(QPixmap(":/data/insert-webcam.png"));
+        p->setHoverPixmap(QPixmap(":/data/insert-overlay-plus.png"));
+        p->setProperty("index", i);
+        connect(p, SIGNAL(clicked()), this, SLOT(slotAddWebcam()));
+        ui.addWebcamLayout->addWidget(p);
+        m_webcamButtons.append(p);
+    }
 }

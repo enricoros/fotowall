@@ -15,7 +15,7 @@
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>302</width>
+     <width>252</width>
      <height>50</height>
     </rect>
    </property>
@@ -92,7 +92,7 @@
    <property name="borderFlags" stdset="0">
     <number>2</number>
    </property>
-   <layout class="QGridLayout" name="gridLayout_2">
+   <layout class="QGridLayout" name="addContentLayout">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -147,23 +147,14 @@
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="PixmapButton" name="bWebcam" native="true">
-      <property name="toolTip">
-       <string>Add Webcam</string>
+     <layout class="QHBoxLayout" name="addWebcamLayout">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="fixedSize" stdset="0">
-       <size>
-        <width>50</width>
-        <height>50</height>
-       </size>
+      <property name="sizeConstraint">
+       <enum>QLayout::SetFixedSize</enum>
       </property>
-      <property name="pixmap" stdset="0">
-       <pixmap resource="../fotowall.qrc">:/data/insert-webcam.png</pixmap>
-      </property>
-      <property name="hoverPixmap" stdset="0">
-       <pixmap resource="../fotowall.qrc">:/data/insert-overlay-plus.png</pixmap>
-      </property>
-     </widget>
+     </layout>
     </item>
     <item row="0" column="3">
      <widget class="PixmapButton" name="bWordcloud" native="true">

@@ -23,9 +23,9 @@
 #include <QSvgRenderer>
 #include <QTimer>
 
-WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * parent)
+WebcamContent::WebcamContent(int webcamIndex, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
-    , m_input(input)
+    , m_input(webcamIndex)
     , m_still(false)
     , m_dummyRenderer(0)
     , m_broken(false)
@@ -47,8 +47,8 @@ WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * 
     addButtonItem(bStill);
 
     // start the video flow
-    if (input >= 0 && input < VideoProvider::instance()->inputCount())
-        m_broken = !VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
+    if (webcamIndex >= 0 && webcamIndex < VideoProvider::instance()->inputCount())
+        m_broken = !VideoProvider::instance()->connectInput(webcamIndex, this, SLOT(setPixmap(const QPixmap &)));
     else
         m_broken = true;
 }

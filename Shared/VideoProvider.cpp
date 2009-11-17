@@ -174,6 +174,7 @@ void VideoProvider::slotInitVideo(const QString & device)
 
     // if everything's ok setup the device and add it to the internal queue
     VideoInput * input = new VideoInput();
+    input->channels = capture->inputCount();
     input->device = capture;
     m_inputs.append(input);
 
@@ -201,13 +202,14 @@ void VideoProvider::slotCaptureVideoFrames()
 
         // get the qimage from the frame
         QImage frameImage;
-        if (!input->device->getImage(&frameImage)) {
+        bool captured = input->device->getImage(&frameImage);
+        if (!captured) {
             // display the invalid (blue) image anyways
             //continue;
         }
 
         // apply mirror, if requested
-        if (input->swapped)
+        if (captured && input->swapped)
             frameImage = frameImage.mirrored(true, false);
 
         // set the pixmap
@@ -219,8 +221,9 @@ void VideoProvider::slotCaptureVideoFrames()
 }
 
 VideoInput::VideoInput()
-    : active(false)
-    , swapped(false)
+  : channels(1)
+  , active(false)
+  , swapped(false)
 {
 }
 

@@ -73,6 +73,7 @@ class VideoInput : public QObject
         VideoInput();
         ~VideoInput();
 
+        int channels;
         bool active;
         bool swapped;
         QList<QObject *> receivers;

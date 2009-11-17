@@ -18,12 +18,14 @@ Work in progress:
 * FotowallFile
 * Arnaud's Undo/Redo system
 
-Fotowall "REVO" 1.0 (unreleased):
+In progress for Fotowall "REVO" 1.0 (unreleased):
 
-* Wordcloud editor
+* Wordcloud editorD
+* Text shaking
 
 Fotowall "Alchimia" 0.9 (unreleased):
 
+* Multiple webcams, unbroken colors
 * Basic GraphicsEffects support (shadows and blur)
 * Home screen with intuitive workflow and breadcrumb navigation
 * Background polishing
@@ -163,8 +165,7 @@ improvement and the code is kept clean and small.
 * masked pic
 * both new and old resize&co
 * webcam: on win32
-* webcam: multiple webcams
-* webcam: configuration panel. should fix bad images.
+* webcam: configuration panel
 * templates
   * the template system could even be some auto-generated fotowall file with changing urls.
 * provide some default/example files, also loadable with a short path

@@ -211,10 +211,10 @@ void Canvas::addTextContent()
     t->setSelected(true);
 }
 
-void Canvas::addWebcamContent(int input)
+void Canvas::addWebcamContent(int webcamIndex)
 {
     clearSelection();
-    WebcamContent * w = createWebcam(input, nearCenter(sceneRect()));
+    WebcamContent * w = createWebcam(webcamIndex, nearCenter(sceneRect()));
     w->setSelected(true);
 }
 
@@ -1194,9 +1194,9 @@ TextContent * Canvas::createText(const QPoint & pos)
     return t;
 }
 
-WebcamContent * Canvas::createWebcam(int input, const QPoint & pos)
+WebcamContent * Canvas::createWebcam(int webcamIndex, const QPoint & pos)
 {
-    WebcamContent * w = new WebcamContent(input, this);
+    WebcamContent * w = new WebcamContent(webcamIndex, this);
     initContent(w, pos);
     return w;
 }
