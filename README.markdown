@@ -20,7 +20,7 @@ Work in progress:
 
 In progress for Fotowall "REVO" 1.0 (unreleased):
 
-* Wordcloud editorD
+* Wordcloud editor
 * Text shaking
 
 Fotowall "Alchimia" 0.9 (unreleased):
@@ -150,6 +150,7 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist
 
+* Progress dialog when loading images/{fotowall file made of many} and/or threaded loading
 * Text shaking
 * pop-art: pointel-ize, like krita brushes, using circles of different size
 * add the undo/redo support

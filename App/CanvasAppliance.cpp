@@ -111,24 +111,6 @@ Canvas * CanvasAppliance::takeCanvas()
     return canvas;
 }
 
-bool CanvasAppliance::pendingChanges() const
-{
-    return m_extCanvas ? m_extCanvas->pendingChanges() : false;
-}
-
-bool CanvasAppliance::saveToFile(const QString & __fileName)
-{
-    // ask for file name if not given
-    if (__fileName.isEmpty()) {
-        QString fileName = FotowallFile::getSaveFotowallFile(m_extCanvas->filePath());
-        if (fileName.isNull())
-            return false;
-        return FotowallFile::saveV2(fileName, m_extCanvas);
-    }
-
-    return FotowallFile::saveV2(__fileName, m_extCanvas);
-}
-
 bool CanvasAppliance::applianceCommand(int command)
 {
     switch (command) {
@@ -147,6 +129,24 @@ bool CanvasAppliance::applianceCommand(int command)
     // unimplemented command
     qWarning("CanvasAppliance::applianceCommand: unimplemented 0x%x", command);
     return false;
+}
+
+bool CanvasAppliance::appliancePendingChanges() const
+{
+    return m_extCanvas ? m_extCanvas->pendingChanges() : false;
+}
+
+bool CanvasAppliance::applianceSave(const QString & __fileName)
+{
+    // ask for file name if not given
+    if (__fileName.isEmpty()) {
+        QString fileName = FotowallFile::getSaveFotowallFile(m_extCanvas->filePath());
+        if (fileName.isNull())
+            return false;
+        return FotowallFile::saveV2(fileName, m_extCanvas);
+    }
+
+    return FotowallFile::saveV2(__fileName, m_extCanvas);
 }
 
 QMenu * CanvasAppliance::createArrangeMenu()
@@ -465,7 +465,7 @@ bool CanvasAppliance::slotFileLoad()
 
 bool CanvasAppliance::slotFileSave()
 {
-    return saveToFile();
+    return applianceSave();
 }
 
 bool CanvasAppliance::slotFileExport()

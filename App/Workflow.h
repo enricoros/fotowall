@@ -58,22 +58,22 @@ class Workflow : public QObject
 
             Type type;
             QVariant param;
-            SingleResourceLoaner * res;
+            SingleResourceLoaner * loaner;
 
-            Command(Type type, const QVariant & param = QVariant(), SingleResourceLoaner * res = 0) : type(type), param(param), res(res) {}
+            Command(Type type, const QVariant & param = QVariant(), SingleResourceLoaner * loaner = 0) : type(type), param(param), loaner(loaner) {}
         };
         void scheduleCommand(const Command & command);
         bool processCommand(const Command & command);
 
         struct Node {
             PlugGui::AbstractAppliance * appliance;
-            SingleResourceLoaner * res;
+            SingleResourceLoaner * loaner;
 
-            Node(PlugGui::AbstractAppliance * app, SingleResourceLoaner * res = 0) : appliance(app), res(res) {}
+            Node(PlugGui::AbstractAppliance * app, SingleResourceLoaner * loaner = 0) : appliance(app), loaner(loaner) {}
         };
 
         void pushNode(const Node & node);
-        void popNode(bool discardChanges);
+        bool popNode(bool allowSaving);
         void updateBreadcrumb();
 
         // external objects

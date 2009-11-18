@@ -32,12 +32,11 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
         Canvas * takeCanvas();
 
-        bool pendingChanges() const;
-        bool saveToFile(const QString & fileName = QString());
-
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
         bool applianceCommand(int command);
+        bool appliancePendingChanges() const;
+        bool applianceSave(const QString & fileName = QString());
 
     private:
         QMenu * createArrangeMenu();

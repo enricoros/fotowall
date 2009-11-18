@@ -34,11 +34,10 @@ class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
         // peek into the cloud
         Wordcloud::Cloud * cloud() const;
 
-        bool pendingChanges() const;
-        void saveToFile(const QString & fileName = QString());
-
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Wordcloud"); }
+        bool appliancePendingChanges() const;
+        bool applianceSave(const QString & fileName = QString());
 
     private:
         Wordcloud::Cloud * m_extCloud;

@@ -75,6 +75,17 @@ bool AbstractAppliance::applianceCommand(int command)
     return false;
 }
 
+bool AbstractAppliance::appliancePendingChanges() const
+{
+    return false;
+}
+
+bool AbstractAppliance::applianceSave(const QString &fileName)
+{
+    qWarning("AbstractAppliance::applianceSaveAs: saving not implemented for %s to '%s'", qPrintable(applianceName()), qPrintable(fileName));
+    return true;
+}
+
 void AbstractAppliance::windowTitleSet(const QString &title)
 {
     m_windowTitle = title;

@@ -97,19 +97,20 @@ Wordcloud::Cloud * WordcloudAppliance::cloud() const
     return m_extCloud;
 }
 
-bool WordcloudAppliance::pendingChanges() const
+bool WordcloudAppliance::appliancePendingChanges() const
 {
     // ###
     return true;
 }
 
-void WordcloudAppliance::saveToFile(const QString &__fileName)
+bool WordcloudAppliance::applianceSave(const QString &__fileName)
 {
     if (__fileName.isEmpty()) {
         // ###
         qWarning("WordcloudAppliance::saveToFile: not implemented");
     }
     qWarning("WordcloudAppliance::saveToFile: not implemented");
+    return true;
 }
 
 void WordcloudAppliance::slotRegenCloud()
