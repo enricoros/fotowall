@@ -562,6 +562,7 @@ void CanvasAppliance::slotVerifyVideoInputs(int count)
         p->setFixedSize(QSize(50, 50));
         p->setPixmap(QPixmap(":/data/insert-webcam.png"));
         p->setHoverPixmap(QPixmap(":/data/insert-overlay-plus.png"));
+        p->setToolTip(tr("Add Webcam"));
         p->setProperty("index", i);
         connect(p, SIGNAL(clicked()), this, SLOT(slotAddWebcam()));
         ui.addWebcamLayout->addWidget(p);

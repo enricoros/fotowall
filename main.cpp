@@ -52,7 +52,7 @@ int main( int argc, char ** args )
 
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.8.97");
+    app.setApplicationVersion("0.8.99");
     app.setOrganizationName("Enrico Ros");
     RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
 
@@ -69,6 +69,9 @@ int main( int argc, char ** args )
     RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
     VideoProvider::Disable = app.arguments().contains("-novideo");
     App::settings->setValue("Fotowall/FirstTime", false);
+
+    // startup video early.. disabled for production
+    //VideoProvider::instance()->inputCount();
 
     for (int i = 1; i < argc; i++)
         if (App::isContentUrl(args[i]))
