@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "Workflow.h"
 
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMenu>
@@ -84,9 +85,10 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     int pComboIndex = 0;
     switch (extCanvas->modeInfo()->projectMode()) {
         case CanvasModeInfo::ModeNormal:    pComboIndex = 0; break;
-        case CanvasModeInfo::ModeCD:        pComboIndex = 2; break;
-        case CanvasModeInfo::ModeDVD:       pComboIndex = 3; break;
+        case CanvasModeInfo::ModeCD:        pComboIndex = 3; break;
+        case CanvasModeInfo::ModeDVD:       pComboIndex = 4; break;
         case CanvasModeInfo::ModeExactSize: pComboIndex = 1; break;
+        case CanvasModeInfo::ModeWallpaper: pComboIndex = 2; break;
     }
     slotProjectComboActivated(pComboIndex);
 }
@@ -307,9 +309,23 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
     configurePrint(true);
 }
 
+void CanvasAppliance::setWallpaperProject()
+{
+    QSize wallSize = QApplication::desktop()->screenGeometry().size();
+    QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
+    if (!wallSize.isValid() || screenDpi.x() <= 0 || screenDpi.y() <= 0)
+        return;
+    ui.projectCombo->setCurrentIndex(2);
+    m_extCanvas->clearMarkers();
+    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF((qreal)wallSize.width() / screenDpi.x(), (qreal)wallSize.height() / screenDpi.y()));
+    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeWallpaper);
+    m_extCanvas->adjustSceneSize();
+    configurePrint(false);
+}
+
 void CanvasAppliance::setCDProject()
 {
-    ui.projectCombo->setCurrentIndex(2);
+    ui.projectCombo->setCurrentIndex(3);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
@@ -320,7 +336,7 @@ void CanvasAppliance::setCDProject()
 
 void CanvasAppliance::setDVDProject()
 {
-    ui.projectCombo->setCurrentIndex(3);
+    ui.projectCombo->setCurrentIndex(4);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
     m_extCanvas->modeInfo()->setPrintLandscape(true);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
@@ -393,8 +409,9 @@ void CanvasAppliance::slotProjectComboActivated(int index)
     switch (index) {
         case 0: setNormalProject();             break;
         case 1: setExactSizeProject(!sender()); break;
-        case 2: setCDProject();                 break;
-        case 3: setDVDProject();                break;
+        case 2: setWallpaperProject();          break;
+        case 3: setCDProject();                 break;
+        case 4: setDVDProject();                break;
     }
 }
 
@@ -470,7 +487,9 @@ bool CanvasAppliance::slotFileSave()
 
 bool CanvasAppliance::slotFileExport()
 {
-    return ExportWizard(m_extCanvas, m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeNormal).exec();
+    bool printPreferred = m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeNormal &&
+                          m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeWallpaper;
+    return ExportWizard(m_extCanvas, printPreferred).exec();
 }
 
 void CanvasAppliance::slotEditContent(AbstractContent *content)

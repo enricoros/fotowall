@@ -472,6 +472,11 @@
       </item>
       <item>
        <property name="text">
+        <string>Desktop</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>CD Cover</string>
        </property>
       </item>
