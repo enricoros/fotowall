@@ -1,29 +1,15 @@
 /***************************************************************************
- * This file is part of the Vecta project                                  *
  *                                                                         *
- * Copyright (c) 2009 Enrico Ros                                           *
+ *   This file is part of the Fotowall project,                            *
+ *       http://www.enricoros.com/opensource/fotowall                      *
+ *                                                                         *
+ *   Copyright (C) 2009 by Enrico Ros                                      *
  *         2007-2009 Enrico Ros <enrico.ros@gmail.com>                     *
  *                                                                         *
- * Permission is hereby granted, free of charge, to any person             *
- * obtaining a copy of this software and associated documentation          *
- * files (the "Software"), to deal in the Software without                 *
- * restriction, including without limitation the rights to use,            *
- * copy, modify, merge, publish, distribute, sublicense, and/or sell       *
- * copies of the Software, and to permit persons to whom the               *
- * Software is furnished to do so, subject to the following                *
- * conditions:                                                             *
- *                                                                         *
- * The above copyright notice and this permission notice shall be          *
- * included in all copies or substantial portions of the Software.         *
- *                                                                         *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,         *
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES         *
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                *
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT             *
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,            *
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING            *
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR           *
- * OTHER DEALINGS IN THE SOFTWARE.                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
@@ -92,6 +78,31 @@ static FloodPolys recursiveParse( QDomElement & element, const QString & element
             if ( !elementId.isEmpty() && elementId != id )
                 continue;
 
+            // roughtly parse pen and brush
+            QPen sPen(Qt::black);
+            QBrush sBrush(Qt::NoBrush);
+            QString s = elem.attribute( "style" );
+            QStringList ps = s.simplified().split( ';' );
+            while ( !ps.isEmpty() ) {
+                const QString styleToken = ps.takeFirst();
+                int idx = styleToken.indexOf( ':' );
+                if (idx < 1)
+                    continue;
+                const QString sName = styleToken.left( idx );
+                const QString sValue = styleToken.mid( idx + 1 );
+                if ( sValue == "none" )
+                    continue;
+                if ( sName == "fill" )
+                    sBrush = QBrush( QColor( sValue ) );
+                else if ( sName == "stroke" )
+                    sPen.setColor( QColor( sValue ) );
+                else if ( sName == "stroke-width" )
+                    sPen.setWidth( sValue.toDouble() );
+                else {
+                    // suppress debug
+                }
+            }
+
             // parse path tokens
             QString d = elem.attribute( "d" );
             QStringList pd = d.simplified().split( ' ' );
@@ -100,6 +111,8 @@ static FloodPolys recursiveParse( QDomElement & element, const QString & element
 
             // build the line
             FloodPoly line;
+            line.setPen( sPen );
+            line.setBrush( sBrush );
             while ( !pd.isEmpty() ) {
                 FloodPoly::Node newNode;
                 // NOTE: the second C overwrites the control of the previous C'ed point
@@ -130,6 +143,8 @@ static FloodPolys recursiveParse( QDomElement & element, const QString & element
                     // append the line
                     lines.append( line );
                     line = FloodPoly();
+                    line.setPen( sPen );
+                    line.setBrush( sBrush );
                     continue;
                 // suppress A element
                 } else {
@@ -138,6 +153,9 @@ static FloodPolys recursiveParse( QDomElement & element, const QString & element
                 }
                 line.addNode( newNode );
             }
+            // add unclosed lines
+            if (line.nodes())
+                lines.append( line );
         }
         // text, rect: skip
         else if ( tagName == "text" || tagName == "rect" ) {

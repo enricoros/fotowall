@@ -17,10 +17,12 @@
 #include "Canvas/AbstractContent.h"
 #include "Frames/StandardFrame.h"
 #include "Shared/RenderOpts.h"
+//#include "3rdparty/pencil/PencilItem.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QPainter>
+#include <QTimer>
 
 #if QT_VERSION >= 0x040600
 #include <QPropertyAnimation>
@@ -151,6 +153,9 @@ class HomeLabel : public AbstractContent
 HomeScene::HomeScene(QObject * parent)
   : AbstractScene(parent)
   , m_logoPixmap(":/data/home-logo.png")
+#ifdef HAVE_PENCIL_ITEM
+  , m_pencil(0)
+#endif
 {
     // create the 3 buttons
 #ifndef NO_WORDCLOUD_APPLIANCE
@@ -179,6 +184,11 @@ HomeScene::HomeScene(QObject * parent)
 #endif
      wizard->setZValue(0.0);
      m_labels.append(wizard);
+
+#ifdef HAVE_PENCIL_ITEM
+     // create the pencil item the first time
+     QTimer::singleShot(1000, this, SLOT(slotCreatePencil()));
+#endif
 }
 
 HomeScene::~HomeScene()
@@ -250,9 +260,28 @@ void HomeScene::resize(const QSize & size)
             top = qMax((qreal)0, (m_labels[1]->sceneBoundingRect().top() - m_logoPixmap.height()) / 2);
         m_logoRect = QRect((sceneWidth() - m_logoPixmap.width()) / 2, top, m_logoPixmap.width(), m_logoPixmap.height());
     }
+
+    // pencil item
+#ifdef HAVE_PENCIL_ITEM
+    if (m_pencil) {
+        QRectF pRect = m_pencil->boundingRect();
+        m_pencil->setPos(QPointF((sceneWidth() - pRect.width()) / 2, 9 * (sceneHeight() - pRect.height()) / 10));
+    }
+#endif
 }
 
 bool HomeScene::sceneSelectable() const
 {
     return false;
+}
+
+void HomeScene::slotCreatePencil()
+{
+#ifdef HAVE_PENCIL_ITEM
+    if (!m_pencil) {
+        m_pencil = new PencilItem(":/data/home-art.svg");
+        m_pencil->setZValue(999);
+        addItem(m_pencil);
+    }
+#endif
 }

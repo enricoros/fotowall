@@ -12,50 +12,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HomeScene_h__
-#define __HomeScene_h__
+#ifndef __PencilItem_h__
+#define __PencilItem_h__
 
-#include "Shared/AbstractScene.h"
+#include <QGraphicsItem>
+#include <QLineF>
 #include <QList>
-#include <QPixmap>
-#include <QRect>
-class HomePencilItem;
+#include <QPainterPath>
+#include <QRectF>
 
-/**
-    \brief The Scene showing the {New Canvas, New Wordcloud, etc..} items.
-*/
-class HomeScene : public AbstractScene
+#if QT_VERSION >= 0x040600
+
+// the pencil item is present
+#define HAVE_PENCIL_ITEM
+
+class PencilItem : public QGraphicsObject
 {
     Q_OBJECT
+    Q_PROPERTY(qreal alpha READ alpha WRITE setAlpha)
     public:
-        HomeScene(QObject * parent = 0);
-        ~HomeScene();
+        PencilItem(const QString & svgFileName, QGraphicsItem * parent = 0);
 
-        // ::QGraphicsScene
-        void drawBackground(QPainter *painter, const QRectF &rect);
-        void drawForeground(QPainter *painter, const QRectF &rect);
-        void keyPressEvent(QKeyEvent *event);
-
-        // ::AbstractScene
-        void resize(const QSize & size);
-        bool sceneSelectable() const;
-
-    Q_SIGNALS:
-        void keyPressed(int qtKey);
-        void startCanvas();
-#ifndef NO_WORDCLOUD_APPLIANCE
-        void startWordcloud();
-#endif
-        void startWizard();
+        // :QGraphicsItem
+        QRectF boundingRect() const;
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     private:
-        QList<QGraphicsItem *> m_labels;
-        QPixmap m_logoPixmap;
-        QRect m_logoRect;
-        HomePencilItem * m_pencil;
+        // properties
+        qreal alpha() const;
+        void setAlpha(qreal alpha);
 
-    private Q_SLOTS:
-        void slotCreatePencil();
+        struct Step {
+            bool move;
+            QPointF point;
+        };
+
+        QRectF m_rect;
+        qreal m_alpha;
+        QList<Step> m_steps;
+
 };
+#endif
 
 #endif

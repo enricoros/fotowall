@@ -1,29 +1,15 @@
 /***************************************************************************
- * This file is part of the Vecta project                                  *
  *                                                                         *
- * Copyright (c) 2009 Enrico Ros                                           *
+ *   This file is part of the Fotowall project,                            *
+ *       http://www.enricoros.com/opensource/fotowall                      *
+ *                                                                         *
+ *   Copyright (C) 2009 by Enrico Ros                                      *
  *         2007-2009 Enrico Ros <enrico.ros@gmail.com>                     *
  *                                                                         *
- * Permission is hereby granted, free of charge, to any person             *
- * obtaining a copy of this software and associated documentation          *
- * files (the "Software"), to deal in the Software without                 *
- * restriction, including without limitation the rights to use,            *
- * copy, modify, merge, publish, distribute, sublicense, and/or sell       *
- * copies of the Software, and to permit persons to whom the               *
- * Software is furnished to do so, subject to the following                *
- * conditions:                                                             *
- *                                                                         *
- * The above copyright notice and this permission notice shall be          *
- * included in all copies or substantial portions of the Software.         *
- *                                                                         *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,         *
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES         *
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                *
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT             *
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,            *
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING            *
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR           *
- * OTHER DEALINGS IN THE SOFTWARE.                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
@@ -32,7 +18,9 @@
 
 #include <QtCore/QList>
 #include <QtCore/QString>
+#include <QtGui/QBrush>
 #include <QtGui/QPainterPath>
+#include <QtGui/QPen>
 #include <QRectF>
 #include "enricomath.h"
 
@@ -69,6 +57,12 @@ class FloodPoly {
         Nodes & edit();
         const Nodes & view() const;
 
+        // looks
+        QPen pen() const;
+        void setPen(const QPen & pen);
+        QBrush brush() const;
+        void setBrush(const QBrush & brush);
+
         // other stuff
         FloodPoly fadedTo( const FloodPoly & other, double phase ) const;
 
@@ -80,6 +74,8 @@ class FloodPoly {
 
     private:
         Nodes m_nodes;
+        QPen m_pen;
+        QBrush m_brush;
 };
 
 /// \brief FloodPoly collection
