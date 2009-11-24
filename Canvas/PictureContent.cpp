@@ -443,7 +443,12 @@ void PictureContent::setExternalEdit(bool enabled)
         }
 
         // open it with the gimp
-        if (!QProcess::startDetached("gimp", QStringList() << fileName)) {
+#ifdef Q_OS_WIN32
+        QString executable = "gimp.exe";
+#else
+        QString executable = "gimp";
+#endif
+        if (!QProcess::startDetached(executable, QStringList() << fileName)) {
             qWarning("PictureContent::slotGimpEdit: can't start The Gimp");
             return;
         }

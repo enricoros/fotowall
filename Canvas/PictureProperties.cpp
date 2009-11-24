@@ -18,6 +18,9 @@ PictureProperties::PictureProperties(QWidget *parent)
   : QWidget(parent)
 {
     setupUi(this);
+#if QT_VERSION < 0x040600
+    fxCombo->hide();
+#endif
 }
 
 PictureProperties::~PictureProperties()
