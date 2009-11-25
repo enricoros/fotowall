@@ -16,46 +16,37 @@
 #ifndef __VideoDevice_h__
 #define __VideoDevice_h__
 
+#include <QtGlobal>
+#include <QSize>
 #include <QString>
-
-#ifdef Q_OS_LINUX
-#include <sys/time.h>
-#include <sys/mman.h>
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <signal.h>
-
-#include <asm/types.h>
-#undef __STRICT_ANSI__
-#ifndef __u64 //required by videodev.h
-#define __u64 quint64
-#endif // __u64
-#ifndef __s64 //required by videodev.h
-#define __s64 qint64
-#endif // __s64
-
-#ifndef pgoff_t
-#define pgoff_t unsigned long
-#endif
-
-#include <linux/fs.h>
-#include <linux/kernel.h>
-#include <linux/videodev.h>
-#define VIDEO_MODE_PAL_Nc  3
-#define VIDEO_MODE_PAL_M   4
-#define VIDEO_MODE_PAL_N   5
-#define VIDEO_MODE_NTSC_JP 6
-#define __STRICT_ANSI__
-
-#endif // Q_OS_LINUX
-
+#include <QVector>
 #include "VideoInput.h"
-#include <QString>
-#include <QFile>
-#include <QImage>
+class QImage;
+
+// enable frameworks
+#if defined(Q_OS_LINUX)
+    #define VIDEODEV_LINUX_V4L
+    // this is here to detect wether V4L2 is present
+    #include <asm/types.h>
+    #undef __STRICT_ANSI__
+    #ifndef __u64 //required by videodev.h
+    #define __u64 quint64
+    #endif
+    #ifndef __s64 //required by videodev.h
+    #define __s64 qint64
+    #endif
+    #ifndef pgoff_t
+    #define pgoff_t unsigned long
+    #endif
+    #include <linux/fs.h>
+    #include <linux/kernel.h>
+    #include <linux/videodev.h>
+    #ifdef V4L2_CAP_VIDEO_CAPTURE
+        #define VIDEODEV_LINUX_V4L_TWO
+    #endif
+#elif defined(Q_WS_WIN)
+    #define VIDEODEV_WIN_AVICAP
+#endif
 
 namespace VideoCapture {
 
@@ -64,16 +55,6 @@ namespace VideoCapture {
     @author Kopete Developers - modified by Enrico Ros for Fotowall inclusion
     @class VideoDevice
 */
-
-typedef enum {
-    VIDEODEV_DRIVER_NONE
-#if defined(Q_OS_LINUX)
-  , VIDEODEV_DRIVER_V4L
-#ifdef V4L2_CAP_VIDEO_CAPTURE
-  , VIDEODEV_DRIVER_V4L2
-#endif
-#endif
-} videodev_driver;
 
 typedef enum {
     // Packed RGB formats
@@ -104,8 +85,8 @@ typedef enum {
     PIXELFORMAT_MPEG	= (1 << 17),
 
     // Reserved formats
-    PIXELFORMAT_DV		= (1 << 18),
-    PIXELFORMAT_ET61X251	= (1 << 19),
+    PIXELFORMAT_DV	= (1 << 18),
+    PIXELFORMAT_ET61X251= (1 << 19),
     PIXELFORMAT_HI240	= (1 << 20),
     PIXELFORMAT_HM12	= (1 << 21),
     PIXELFORMAT_MJPEG	= (1 << 22),
@@ -114,10 +95,10 @@ typedef enum {
     PIXELFORMAT_SN9C10X	= (1 << 25),
     PIXELFORMAT_WNVA	= (1 << 26),
     PIXELFORMAT_YYUV	= (1 << 27)
-    //	PIXELFORMAT_ALL		= 0x00003FFF
+    //PIXELFORMAT_ALL	= 0x00003FFF
 } PixelFormat;
 
-typedef enum {
+/*typedef enum {
     // One bit for each
     STANDARD_PAL_B		= (1 << 0),
     STANDARD_PAL_B1		= (1 << 1),
@@ -161,7 +142,7 @@ typedef enum {
     STANDARD_SECAM_DK       = ( STANDARD_SECAM_D | STANDARD_SECAM_K  | STANDARD_SECAM_K1 ),
     STANDARD_SECAM		= ( STANDARD_SECAM_B | STANDARD_SECAM_G  | STANDARD_SECAM_H  | STANDARD_SECAM_DK | STANDARD_SECAM_L | STANDARD_SECAM_LC ),
 
-    // some merged standards */
+    // some merged standards
     STANDARD_MN		= ( STANDARD_PAL_M  | STANDARD_PAL_N    | STANDARD_PAL_Nc  | STANDARD_NTSC ),
     STANDARD_B		= ( STANDARD_PAL_B  | STANDARD_PAL_B1   | STANDARD_SECAM_B ),
     STANDARD_GH		= ( STANDARD_PAL_G  | STANDARD_PAL_H    | STANDARD_SECAM_G | STANDARD_SECAM_H ),
@@ -173,26 +154,7 @@ typedef enum {
 
     STANDARD_UNKNOWN	= 0,
     STANDARD_ALL		= ( STANDARD_525_60  | STANDARD_625_50)
-} signal_standard;
-
-typedef enum {
-    IO_METHOD_NONE,
-    IO_METHOD_READ,
-    IO_METHOD_MMAP,
-    IO_METHOD_USERPTR
-} io_method;
-
-struct ImageBuffer {
-    int width;
-    int height;
-    PixelFormat pixelformat;
-    QByteArray data;
-};
-
-struct DataBuffer {
-    uchar * start;
-    size_t length;
-};
+} signal_standard;*/
 
 class VideoDevice {
     public:
@@ -234,7 +196,7 @@ class VideoDevice {
         QString pixelFormatName(PixelFormat pixelformat) const;
         QString pixelFormatNamePlatform(int pixelformat) const;
 
-        /*__u64 signalStandardCode(signal_standard standard);
+        /*quint64 signalStandardCode(signal_standard standard);
         QString signalStandardName(signal_standard standard) const;
         QString signalStandardName(int standard) const;*/
         bool setInputParameters();
@@ -268,22 +230,6 @@ class VideoDevice {
         QString m_videoFileName;
         int m_videoFileDescriptor;
         QString m_videoCardName;
-
-        videodev_driver m_driver;
-        io_method m_ioMethod;
-
-        int m_minWidth, m_minHeight, m_maxWidth, m_maxHeight;
-
-        QVector<VideoCapture::VideoInput> m_input;
-        int m_currentInput;
-
-        ImageBuffer m_imageBuffer;
-
-        QVector<DataBuffer> m_dataBuffers;
-
-        bool m_capturing;
-
-        // capabilities found in 'checkdevice'
         bool m_videocapture;
         bool m_videochromakey;
         bool m_videoscale;
@@ -292,15 +238,55 @@ class VideoDevice {
         bool m_videoasyncio;
         bool m_videostream;
 
-        int xioctl(int request, void *arg) const;
+        enum videodev_driver {
+            VIDEODEV_DRIVER_NONE
+#if defined(VIDEODEV_LINUX_V4L)
+          , VIDEODEV_DRIVER_V4L
+#endif
+#if defined(VIDEODEV_LINUX_V4L_TWO)
+          , VIDEODEV_DRIVER_V4L2
+#endif
+#if defined(VIDEODEV_WIN_AVICAP)
+          , VIDEODEV_DRIVER_AVICAP
+#endif
+        } m_driver;
+
+        enum io_method {
+            IO_METHOD_NONE,
+            IO_METHOD_READ,
+            IO_METHOD_MMAP,
+            IO_METHOD_USERPTR
+        } m_ioMethod;
+
+        int m_minWidth, m_minHeight, m_maxWidth, m_maxHeight;
+
+        QVector<VideoCapture::VideoInput> m_input;
+        int m_currentInput;
+
+        struct ImageBuffer {
+            int width;
+            int height;
+            PixelFormat pixelformat;
+            QByteArray data;
+        } m_imageBuffer;
+
+        struct DataBuffer {
+            uchar * start;
+            size_t length;
+        };
+        QVector<DataBuffer> m_dataBuffers;
+
+        bool m_capturing;
+
         bool initIoRead();
         bool initIoMmap();
         bool initIoUserptr();
-#ifdef Q_OS_LINUX
-#ifdef V4L2_CAP_VIDEO_CAPTURE
+#if defined(VIDEODEV_LINUX_V4L)
+        int xioctl(int request, void *arg) const;
+#endif
+#if defined(VIDEODEV_LINUX_V4L_TWO)
         void enumerateControls() const;
         void enumerateMenu(quint32 id, quint32 min, quint32 max) const;
-#endif
 #endif
 };
 

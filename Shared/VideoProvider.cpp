@@ -17,83 +17,8 @@
 #include <QPixmap>
 #include <QTimer>
 #if defined(HAS_VIDEOCAPTURE)
-#include "3rdparty/videocapture/VideoDevice_linux.h"
+#include "3rdparty/videocapture/VideoDevice.h"
 #endif
-
-//#ifdef Q_WS_WIN
-/**
-  Windows image capture - Enrico Ros <enrico.ros@gmail.com>
-*/
-#include <QLibrary>
-#include <QWidget>
-#include <QDebug>
-#include <qt_windows.h>
-#include <TCHAR.H>
-#include <Vfw.h>
-
-/*#if (_WIN32_WINNT >= 0x0600) // Vista or later
-#elif (_WIN32_WINNT >= 0x0501) // Windows XP
-#endif*/
-
-// VFW entry points
-typedef HWND (VFWAPI *PtrCapCreateCaptureWindowW) (
-        LPCWSTR lpszWindowName,
-        DWORD dwStyle,
-        __in int x, __in int y, __in int nWidth, __in int nHeight,
-        __in_opt HWND hwndParent, __in int nID);
-static PtrCapCreateCaptureWindowW pCapCreateCaptureWindowW = 0;
-
-static bool vpResolveLibs()
-{
-    if (!pCapCreateCaptureWindowW) {
-        QLibrary lAvicap(QString::fromAscii("avicap32"));
-        pCapCreateCaptureWindowW = (PtrCapCreateCaptureWindowW)lAvicap.resolve("capCreateCaptureWindowW");
-    }
-    return pCapCreateCaptureWindowW != 0;
-}
-
-static bool vpInitWindows()
-{
-    bool result = false;
-    if (vpResolveLibs()) {
-        qWarning("Avicap Library resolved!");
-
-        //wizard generated InitInstance
-        QWidget * widget = new QWidget;
-        widget->setAttribute(Qt::WA_NativeWindow);
-        widget->resize(320, 200);
-        widget->show();
-
-        HWND hWnd = WindowFromDC(widget->getDC());
-
-        HWND hWndC = pCapCreateCaptureWindowW((LPCWSTR)"Capture Window", WS_CHILD | WS_VISIBLE, 0, 0, 640, 480, (HWND) hWnd, 0);
-
-        ShowWindow(hWnd, SW_SHOW);// wizard
-        UpdateWindow(hWnd);// wizard
-
-        if (capDriverConnect(hWndC, 0))
-        {
-            qWarning("OK");
-            capPreviewRate( hWndC, 66);
-            capPreviewScale( hWndC, TRUE);
-            capPreview( hWndC, TRUE);
-        }
-
-        //wizard generated WndProc callback
-        /*case WM_CLOSE:
-            capDriverDisconnect( hWndC);
-            DestroyWindow( hWndC);
-            DestroyWindow(hWnd);
-            break;
-        case WM_DESTROY://wizard....
-            PostQuitMessage(0);
-            break;
-            */
-    }
-    return result;
-}
-//#endif
-
 
 // the global video provider instance
 Q_GLOBAL_STATIC(VideoProvider, s_providerInstance)
@@ -223,12 +148,12 @@ bool VideoProvider::swapped(int iIdx) const
 
 void VideoProvider::initDevices()
 {
-#if defined(Q_OS_LINUX)
+#if defined(VIDEODEV_LINUX_V4L)
     QDirIterator dirIt("/dev", QStringList() << "video*", QDir::Files | QDir::System);
     while (dirIt.hasNext())
         slotInitVideo(dirIt.next());
-#elif defined(Q_WS_WIN)
-    vpInitWindows();
+#elif defined(VIDEODEV_WIN_AVICAP)
+    slotInitVideo(QString());
 #else
     qWarning("VideoProvider::initDevices: not implemented for your system");
 #endif
