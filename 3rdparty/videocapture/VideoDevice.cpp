@@ -43,58 +43,55 @@
 #define IO_DATA_BUFFERS 2
 #endif
 
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
 #include <QLibrary>
 #include <QWidget>
 #include <qt_windows.h>
-#include <TCHAR.H>
 #include <Vfw.h>
 
-/*#if (_WIN32_WINNT >= 0x0600) // Vista or later
-#elif (_WIN32_WINNT >= 0x0501) // Windows XP
-#endif*/
-
 // VFW entry points
-typedef HWND (VFWAPI *PtrCapCreateCaptureWindowW) (
-        LPCWSTR lpszWindowName,
-        DWORD dwStyle,
+typedef HWND (VFWAPI *PtrCapCreateCaptureWindowA) (
+        LPCSTR lpszWindowName,
+        __in DWORD dwStyle,
         __in int x, __in int y, __in int nWidth, __in int nHeight,
         __in_opt HWND hwndParent, __in int nID);
-static PtrCapCreateCaptureWindowW pCapCreateCaptureWindowW = 0;
-
+typedef BOOL (VFWAPI *PtrCapGetDriverDescriptionA) (
+        UINT wDriverIndex,
+        __out_ecount(cbName) LPSTR lpszName, __in int cbName,
+        __out_ecount(cbVer) LPSTR lpszVer, __in int cbVer);
+static PtrCapCreateCaptureWindowA pCapCreateCaptureWindowA = 0;
+static PtrCapGetDriverDescriptionA pCapGetDriverDescriptionA = 0;
 static bool vfwResolveSymbols()
 {
-    if (!pCapCreateCaptureWindowW) {
+    if (!pCapCreateCaptureWindowA) {
         QLibrary lAvicap(QString::fromAscii("avicap32"));
-        pCapCreateCaptureWindowW = (PtrCapCreateCaptureWindowW)lAvicap.resolve("capCreateCaptureWindowW");
+        pCapCreateCaptureWindowA = (PtrCapCreateCaptureWindowA)lAvicap.resolve("capCreateCaptureWindowA");
+        pCapGetDriverDescriptionA = (PtrCapGetDriverDescriptionA)lAvicap.resolve("capGetDriverDescriptionA");
     }
-    return pCapCreateCaptureWindowW != 0;
+    return pCapCreateCaptureWindowA && pCapGetDriverDescriptionA;
 }
 
 static bool vfwInit()
 {
     bool result = false;
     if (vfwResolveSymbols()) {
-        qWarning("Avicap Library resolved!");
 
         //wizard generated InitInstance
         QWidget * widget = new QWidget;
         widget->setAttribute(Qt::WA_NativeWindow);
-        widget->resize(320, 200);
         widget->show();
 
         HWND hWnd = WindowFromDC(widget->getDC());
+        //ShowWindow(hWnd, SW_SHOW);// wizard
+        //UpdateWindow(hWnd);// wizard
 
-        HWND hWndC = pCapCreateCaptureWindowW((LPCWSTR)"Capture Window", WS_CHILD | WS_VISIBLE, 0, 0, 640, 480, (HWND) hWnd, 0);
-
-        ShowWindow(hWnd, SW_SHOW);// wizard
-        UpdateWindow(hWnd);// wizard
+        HWND hWndC = pCapCreateCaptureWindowA((LPCSTR)"Capture Window", WS_CHILD | WS_VISIBLE, 0, 0, 640, 480, (HWND) hWnd, 0);
 
         if (capDriverConnect(hWndC, 0))
         {
             qWarning("OK");
-            capPreviewRate( hWndC, 66);
-            capPreviewScale( hWndC, TRUE);
+            capPreviewRate(hWndC, 40);
+            //capPreviewScale( hWndC, TRUE);
             capPreview( hWndC, TRUE);
         }
 
@@ -118,9 +115,11 @@ static bool vfwInit()
 
 namespace VideoCapture {
 
-VideoDevice::VideoDevice(const QString & fileName)
-  : m_videoFileName(fileName)
+VideoDevice::VideoDevice(const DeviceInfo & info)
+  : m_info(info)
+#if defined(VIDEODEV_LINUX_V4L)
   , m_videoFileDescriptor(-1)
+#endif
   , m_driver(VIDEODEV_DRIVER_NONE)
   , m_ioMethod(IO_METHOD_NONE)
   , m_minWidth(-1)
@@ -141,29 +140,57 @@ VideoDevice::~VideoDevice()
     close();
 }
 
+QList<DeviceInfo> VideoDevice::devices()
+{
+    QList<DeviceInfo> devices;
+    int idx = 0;
+#if defined(VIDEODEV_LINUX_V4L)
+    QDirIterator dirIt("/dev", QStringList() << "video*", QDir::Files | QDir::System);
+    while (dirIt.hasNext()) {
+        DeviceInfo info;
+        info.name = dirIt.next();
+        info.index = idx++;
+        devices.append(info);
+    }    
+#elif defined(VIDEODEV_WIN_VFW)
+    if (vfwResolveSymbols()) {
+        char szDeviceName[80];      // driver name
+        char szDeviceVersion[80];   // driver version
+        for (int i = 0; i < 10; ++i) {
+            if (pCapGetDriverDescriptionA(i, (LPSTR)szDeviceName, sizeof(szDeviceName), (LPSTR)szDeviceVersion, sizeof(szDeviceVersion))) {
+                DeviceInfo info;
+                info.name = QString(szDeviceName);
+                info.version = QString(szDeviceVersion);
+                info.index = idx++;
+                devices.append(info);
+            }
+        }
+    }
+#else
+    qWarning("VideoDevice::devices: not implemented for this platform");
+#endif
+    return devices;
+}
+
 bool VideoDevice::open()
 {
+#if defined(VIDEODEV_LINUX_V4L)
     if (m_videoFileDescriptor != -1) {
         qDebug() << "VideoDevice::open: Device is already open";
         return true;
     }
 
-#if defined(VIDEODEV_LINUX_V4L)
     // open video device and check opening
-    m_videoFileDescriptor = ::open(QFile::encodeName(m_videoFileName).constData(), O_RDWR, 0);
+    m_videoFileDescriptor = ::open(QFile::encodeName(m_info.name).constData(), O_RDWR, 0);
     if (m_videoFileDescriptor == -1) {
-        qDebug() << "VideoDevice::open: Unable to open file" << m_videoFileName << "Err:"<< errno;
+        qDebug() << "VideoDevice::open: Unable to open file" << m_info.name << "Err:"<< errno;
         return false;
     }
-#elif defined(VIDEODEV_WIN_AVICAP)
-    WINTODO;
-#else
-    // TODO...
 #endif
 
     // check device (capabilities and stuff)
     if (!queryDeviceProperties()) {
-        qDebug() << "VideoDevice::open: File" << m_videoFileName << "could not be opened.";
+        qDebug() << "VideoDevice::open: File" << m_info.name << "could not be opened.";
         close();
         return false;
     }
@@ -184,7 +211,7 @@ void VideoDevice::close()
             perror("close");
     }
     m_videoFileDescriptor = -1;
-#elif defined(VIDEODEV_WIN_AVICAP)
+#elif defined(VIDEODEV_WIN_VFW)
     WINTODO;
 #else
     // TODO...
@@ -193,7 +220,13 @@ void VideoDevice::close()
 
 bool VideoDevice::isOpen() const
 {
+#if defined(VIDEODEV_LINUX_V4L)
     return m_videoFileDescriptor != -1;
+#elif defined(VIDEODEV_WIN_VFW)
+    return true;
+#else
+    return false;
+#endif
 }
 
 bool VideoDevice::printDeviceProperties() const
@@ -267,9 +300,9 @@ bool VideoDevice::setCurrentInput(int index)
             }
             break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
-            WINTODO;
+            // nothing to do here, we already have 1 input only
             break;
 #endif
         case VIDEODEV_DRIVER_NONE:
@@ -377,7 +410,7 @@ bool VideoDevice::setCaptureSize(int newWidth, int newHeight)
                 qDebug() << "VideoDevice::setCaptureSize: VIDIOC_S_FMT failed (" << errno << "). Pixel format:" << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << "size:" << format.fmt.pix.width << "x" << format.fmt.pix.height << "(" << newWidth << "x" << newHeight << ")";
             break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             WINTODO;
             break;
@@ -417,6 +450,7 @@ bool VideoDevice::startCapturing()
         return false;
     }
 
+#if defined(VIDEODEV_LINUX_V4L)
     switch (m_ioMethod) {
         case IO_METHOD_NONE:
             // Device cannot capture frames
@@ -488,6 +522,9 @@ bool VideoDevice::startCapturing()
     qDebug("VideoDevice::startCapturing: started");
     m_capturing = true;
     return true;
+#elif defined(VIDEODEV_WIN_VFW)
+    return false;
+#endif
 }
 
 bool VideoDevice::stopCapturing()
@@ -591,10 +628,10 @@ bool VideoDevice::acquireFrame()
             v4l2buffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
             v4l2buffer.memory = V4L2_MEMORY_MMAP;
             if (-1 == xioctl (VIDIOC_DQBUF, &v4l2buffer)) {
-                qDebug() << "VideoDevice::acquireFrame:" << m_videoFileName << "MMAPed getFrame failed";
+                qDebug() << "VideoDevice::acquireFrame:" << m_info.name << "MMAPed getFrame failed";
                 switch (errno) {
                     case EAGAIN:
-                        qDebug() << "VideoDevice::acquireFrame:" << m_videoFileName << " MMAPed getFrame failed: EAGAIN. Pointer: ";
+                        qDebug() << "VideoDevice::acquireFrame:" << m_info.name << " MMAPed getFrame failed: EAGAIN. Pointer: ";
                         return false;
 
                     case EIO: // Could ignore EIO, see spec. fall through
@@ -950,7 +987,7 @@ bool VideoDevice::getImage(QImage * qimage) const
 
 bool VideoDevice::queryDeviceProperties()
 {
-    if (m_videoFileDescriptor == -1) {
+    if (!isOpen()) {
         qWarning("VideoDevice::queryDeviceProperties: device not open");
         return false;
     }
@@ -966,16 +1003,17 @@ bool VideoDevice::queryDeviceProperties()
     m_videoasyncio = false;
     m_videostream = false;
 
+#if defined(VIDEODEV_LINUX_V4L)
 #if defined(VIDEODEV_LINUX_V4L_TWO)
     struct v4l2_capability V4L2_capabilities;
     CLEAR(V4L2_capabilities);
     if (-1 != xioctl(VIDIOC_QUERYCAP, &V4L2_capabilities)) {
         // check that is a CaptureDevice
         if (!(V4L2_capabilities.capabilities & V4L2_CAP_VIDEO_CAPTURE)) {
-            qDebug() << "VideoDevice::queryDeviceProperties:" << m_videoFileName << "is not a video capture device.";
+            qDebug() << "VideoDevice::queryDeviceProperties:" << m_info.name << "is not a video capture device.";
             return false;
         }
-        qDebug() << "VideoDevice::queryDeviceProperties:" << m_videoFileName << "is a V4L2 device.";
+        qDebug() << "VideoDevice::queryDeviceProperties:" << m_info.name << "is a V4L2 device.";
         m_driver = VIDEODEV_DRIVER_V4L2;
         m_videocapture = true;
         m_videoCardName = QString::fromLocal8Bit((const char*)V4L2_capabilities.card);
@@ -1053,12 +1091,11 @@ bool VideoDevice::queryDeviceProperties()
     } else {
         // V4L-only drivers should return an EINVAL in errno to indicate they cannot handle V4L2 calls. Not every driver is compliant, so
         // it will try the V4L api even if the error code is different than expected.
-        qDebug() << "VideoDevice::queryDeviceProperties: " << m_videoFileName << " is not a V4L2 device.";
+        qDebug() << "VideoDevice::queryDeviceProperties: " << m_info.name << " is not a V4L2 device.";
     }
 #endif
-#if defined(VIDEODEV_LINUX_V4L)
     if (m_driver == VIDEODEV_DRIVER_NONE) {
-        qDebug() << "VideoDevice::queryDeviceProperties: " << m_videoFileName << " Trying V4L API.";
+        qDebug() << "VideoDevice::queryDeviceProperties: " << m_info.name << " Trying V4L API.";
 
         // check that is a V4L device
         struct video_capability V4L_capabilities;
@@ -1067,7 +1104,7 @@ bool VideoDevice::queryDeviceProperties()
             perror("VIDIOCGCAP");
             return false;
         }
-        qDebug() << "VideoDevice::queryDeviceProperties: " << m_videoFileName << " is a V4L device.";
+        qDebug() << "VideoDevice::queryDeviceProperties: " << m_info.name << " is a V4L device.";
 
         // init capabilities and min/max sizes
         m_driver = VIDEODEV_DRIVER_V4L;
@@ -1112,21 +1149,27 @@ bool VideoDevice::queryDeviceProperties()
             }
         }
     }
-#endif
-#if defined(VIDEODEV_WIN_AVICAP)
-    WINTODO;
+#elif defined(VIDEODEV_WIN_VFW)
+    m_driver = VIDEODEV_DRIVER_AVICAP;
+    m_ioMethod = IO_METHOD_READ;
+    m_videoCardName = m_info.name;
+    VideoInput input1;
+    input1.name = m_info.name;
+    input1.hastuner = false;
+    m_input.append(input1);
 #endif
 
     // check if able to read from video
     if (m_ioMethod == IO_METHOD_NONE) {
-        qDebug() << "VideoDevice::queryDeviceProperties: found no suitable input/output method for " << m_videoFileName;
+        qDebug() << "VideoDevice::queryDeviceProperties: found no suitable input/output method for " << m_info.name;
         return false;
     }
 
+    // do other Platform-related initialization
+#if defined(VIDEODEV_LINUX_V4L)
     // print out supported pixel format/s
     detectPixelFormats();
 
-    // do other Platform-related initialization
 #if defined(VIDEODEV_LINUX_V4L_TWO)
     // print out the controls supported by the input device
     enumerateControls();
@@ -1148,6 +1191,7 @@ bool VideoDevice::queryDeviceProperties()
             default:     break;  // Errors ignored.
         }
     }
+#endif
 #endif
 
     // device can be used
@@ -1207,7 +1251,7 @@ bool VideoDevice::detectSignalStandards() const
             }
             }break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             WINTODO;
             break;
@@ -1282,7 +1326,7 @@ void VideoDevice::detectPixelFormats()
             if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YYUV))	qDebug() << pixelFormatName(PIXELFORMAT_YYUV);
             break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             WINTODO;
             break;
@@ -1340,7 +1384,7 @@ PixelFormat VideoDevice::setPixelFormat(PixelFormat newformat) const
             }
             break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             Q_UNUSED(newformat)
             WINTODO;
@@ -1435,7 +1479,7 @@ float VideoDevice::setBrightness(float brightness)
         }
         break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
     case VIDEODEV_DRIVER_AVICAP:
         WINTODO;
         break;
@@ -1509,7 +1553,7 @@ float VideoDevice::setContrast(float contrast)
         }
         break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
     case VIDEODEV_DRIVER_AVICAP:
         WINTODO;
         break;
@@ -1583,7 +1627,7 @@ float VideoDevice::setSaturation(float saturation)
         }
         break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
     case VIDEODEV_DRIVER_AVICAP:
         WINTODO;
         break;
@@ -1657,7 +1701,7 @@ float VideoDevice::setWhiteness(float whiteness)
         }
         break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
     case VIDEODEV_DRIVER_AVICAP:
         WINTODO;
         break;
@@ -1731,7 +1775,7 @@ float VideoDevice::setHue(float hue)
         }
         break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
     case VIDEODEV_DRIVER_AVICAP:
         WINTODO;
         break;
@@ -1865,7 +1909,7 @@ PixelFormat VideoDevice::pixelFormatFromPlatform(int platform) const
             }
             break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             Q_UNUSED(platform)
             WINTODO;
@@ -1974,7 +2018,7 @@ int VideoDevice::pixelFormatToPlatform(PixelFormat pixelformat) const
             }
             break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             Q_UNUSED(pixelformat)
             WINTODO;
@@ -2149,7 +2193,7 @@ QString VideoDevice::pixelFormatNamePlatform(int pixelformat) const
             }
             break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             Q_UNUSED(pixelformat)
             WINTODO;
@@ -2278,7 +2322,7 @@ quint64 VideoDevice::signalStandardCode(signal_standard standard)
         }
         break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             Q_UNUSED(standard)
             WINTODO;
@@ -2419,7 +2463,7 @@ QString VideoDevice::signalStandardName(int standard) const
             }
             break;
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
         case VIDEODEV_DRIVER_AVICAP:
             Q_UNUSED(standard)
             WINTODO;
@@ -2494,7 +2538,7 @@ bool VideoDevice::initIoMmap()
     req.memory = V4L2_MEMORY_MMAP;
     if (-1 == xioctl(VIDIOC_REQBUFS, &req)) {
         if (errno == EINVAL) {
-            qDebug() << "VideoDevice::initIoMmap:" << m_videoFileName << "does not support memory mapping";
+            qDebug() << "VideoDevice::initIoMmap:" << m_info.name << "does not support memory mapping";
             return false;
         } else {
             perror("VIDIOC_REQBUFS (mmap)");
@@ -2502,7 +2546,7 @@ bool VideoDevice::initIoMmap()
         }
     }
     if (req.count < IO_DATA_BUFFERS) {
-        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_videoFileName;
+        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_info.name;
         return false;
     }
 
@@ -2560,7 +2604,7 @@ bool VideoDevice::initIoUserptr()
     req.memory = V4L2_MEMORY_USERPTR;
     if (-1 == xioctl(VIDIOC_REQBUFS, &req)) {
         if (EINVAL == errno) {
-            qDebug() << "VideoDevice::initIoUserptr:" << m_videoFileName << "does not support memory mapping";
+            qDebug() << "VideoDevice::initIoUserptr:" << m_info.name << "does not support memory mapping";
             return false;
         } else {
             perror("VIDIOC_REQBUFS (uptr)");
@@ -2568,7 +2612,7 @@ bool VideoDevice::initIoUserptr()
         }
     }
     if (req.count < IO_DATA_BUFFERS) {
-        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_videoFileName;
+        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_info.name;
         return false;
     }
 

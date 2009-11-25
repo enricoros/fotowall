@@ -84,7 +84,7 @@ bool VideoProvider::connectInput(int iIdx, QObject * receiver, const char * meth
     // start the capture timer if needed
     if (!m_snapTimer) {
         m_snapTimer = new QTimer(this);
-        connect(m_snapTimer, SIGNAL(timeout()), this, SLOT(slotCaptureVideoFrames()));
+        connect(m_snapTimer, SIGNAL(timeout()), this, SLOT(slotCaptureFromDevices()));
         m_snapTimer->start(50);
     }
 
@@ -148,47 +148,33 @@ bool VideoProvider::swapped(int iIdx) const
 
 void VideoProvider::initDevices()
 {
-#if defined(VIDEODEV_LINUX_V4L)
-    QDirIterator dirIt("/dev", QStringList() << "video*", QDir::Files | QDir::System);
-    while (dirIt.hasNext())
-        slotInitVideo(dirIt.next());
-#elif defined(VIDEODEV_WIN_AVICAP)
-    slotInitVideo(QString());
-#else
-    qWarning("VideoProvider::initDevices: not implemented for your system");
-#endif
-}
-
-void VideoProvider::slotInitVideo(const QString & device)
-{
 #if defined(HAS_VIDEOCAPTURE)
-    // create a new capture device and initialize it
-    VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice(device);
-    capture->open();
-    if (!capture->isOpen() || capture->inputCount() < 1) {
-        delete capture;
-        return;
+    foreach (const VideoCapture::DeviceInfo & info, VideoCapture::VideoDevice::devices()) {
+        // create a new capture device and initialize it
+        VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice(info);
+        capture->open();
+        if (!capture->isOpen() || capture->inputCount() < 1) {
+            delete capture;
+            return;
+        }
+        //capture->close();         // leave capture open...
+
+        // setup input
+        capture->setCurrentInput(0);
+
+        // add the internal reference
+        VideoInput * input = new VideoInput();
+        input->channels = capture->inputCount();
+        input->device = capture;
+        m_inputs.append(input);
+
+        // update status
+        emit inputCountChanged(m_inputs.size());
     }
-    //capture->close();         // leave capture open...
-
-    // setup input
-    capture->setCurrentInput(0);
-
-    // if everything's ok setup the device and add it to the internal queue
-    VideoInput * input = new VideoInput();
-    input->channels = capture->inputCount();
-    input->device = capture;
-    m_inputs.append(input);
-
-    // update status
-    emit inputCountChanged(m_inputs.size());
-#else
-    // TODO
-    Q_UNUSED(device);
 #endif
 }
 
-void VideoProvider::slotCaptureVideoFrames()
+void VideoProvider::slotCaptureFromDevices()
 {
     // capture from every input to every receiver
     foreach (VideoInput * input, m_inputs) {

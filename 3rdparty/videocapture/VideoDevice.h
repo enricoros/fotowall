@@ -45,7 +45,7 @@ class QImage;
         #define VIDEODEV_LINUX_V4L_TWO
     #endif
 #elif defined(Q_WS_WIN)
-    #define VIDEODEV_WIN_AVICAP
+    #define VIDEODEV_WIN_VFW
 #endif
 
 namespace VideoCapture {
@@ -156,10 +156,18 @@ typedef enum {
     STANDARD_ALL		= ( STANDARD_525_60  | STANDARD_625_50)
 } signal_standard;*/
 
+struct DeviceInfo {
+    QString name;
+    QString version;
+    int index;
+};
+
 class VideoDevice {
     public:
-        VideoDevice(const QString & filename);
+        VideoDevice(const DeviceInfo & info);
         ~VideoDevice();
+
+        static QList<DeviceInfo> devices();
 
         // OK
         bool open();
@@ -227,8 +235,10 @@ class VideoDevice {
         bool canStream() const;
 
     private:
-        QString m_videoFileName;
+        DeviceInfo m_info;
+#if defined(VIDEODEV_LINUX_V4L)
         int m_videoFileDescriptor;
+#endif
         QString m_videoCardName;
         bool m_videocapture;
         bool m_videochromakey;
@@ -246,7 +256,7 @@ class VideoDevice {
 #if defined(VIDEODEV_LINUX_V4L_TWO)
           , VIDEODEV_DRIVER_V4L2
 #endif
-#if defined(VIDEODEV_WIN_AVICAP)
+#if defined(VIDEODEV_WIN_VFW)
           , VIDEODEV_DRIVER_AVICAP
 #endif
         } m_driver;
@@ -283,10 +293,10 @@ class VideoDevice {
         bool initIoUserptr();
 #if defined(VIDEODEV_LINUX_V4L)
         int xioctl(int request, void *arg) const;
-#endif
 #if defined(VIDEODEV_LINUX_V4L_TWO)
         void enumerateControls() const;
         void enumerateMenu(quint32 id, quint32 min, quint32 max) const;
+#endif
 #endif
 };
 
