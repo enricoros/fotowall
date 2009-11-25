@@ -20,16 +20,7 @@ PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _targe
 {
     // read initial value and link to property changes
     slotPropertyChanged();
-#if QT_VERSION >= 0x040500
-    if (m_property.hasNotifySignal()) {
-        QMetaMethod notifySignal = m_property.notifySignal();
-        int nameLength = qstrlen(notifySignal.signature());
-        char signalName[nameLength + 2];
-        signalName[0] = '0' + QSIGNAL_CODE;
-        qstrcpy(signalName + 1, notifySignal.signature());
-        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
-    }
-#endif
+    PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
 
     // link to the slider changes
     connect(m_control.data(), SIGNAL(valueChanged(int)), this, SLOT(slotSliderValueChanged(int)));
@@ -89,16 +80,7 @@ PE_AbstractButton::PE_AbstractButton(QAbstractButton * _button, QObject * _targe
 {
     // read initial value and link to property changes
     slotPropertyChanged();
-#if QT_VERSION >= 0x040500
-    if (m_property.hasNotifySignal()) {
-        QMetaMethod notifySignal = m_property.notifySignal();
-        int nameLength = qstrlen(notifySignal.signature());
-        char signalName[nameLength + 2];
-        signalName[0] = '0' + QSIGNAL_CODE;
-        qstrcpy(signalName + 1, notifySignal.signature());
-        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
-    }
-#endif
+    PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
 
     // link to the abstract button checkstate change
     connect(m_control.data(), SIGNAL(toggled(bool)), this, SLOT(slotButtonChecked(bool)));
@@ -133,16 +115,7 @@ PE_Combo::PE_Combo(QComboBox * _combo, QObject * _target, const char * propertyN
 {
     // read initial value and link to property changes
     slotPropertyChanged();
-#if QT_VERSION >= 0x040500
-    if (m_property.hasNotifySignal()) {
-        QMetaMethod notifySignal = m_property.notifySignal();
-        int nameLength = qstrlen(notifySignal.signature());
-        char signalName[nameLength + 2];
-        signalName[0] = '0' + QSIGNAL_CODE;
-        qstrcpy(signalName + 1, notifySignal.signature());
-        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
-    }
-#endif
+    PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
 
     // link to the abstract button checkstate change
     connect(m_control.data(), SIGNAL(currentIndexChanged(int)), this, SLOT(slotComboChanged(int)));

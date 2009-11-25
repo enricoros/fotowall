@@ -165,16 +165,7 @@ PE_PaneWidget::PE_PaneWidget(PaneWidget * _pane, QObject * _target, const char *
 {
     // read initial value and link to property changes
     slotPropertyChanged();
-#if QT_VERSION >= 0x040500
-    if (m_property.hasNotifySignal()) {
-        QMetaMethod notifySignal = m_property.notifySignal();
-        int nameLength = qstrlen(notifySignal.signature());
-        char signalName[nameLength + 2];
-        signalName[0] = '0' + QSIGNAL_CODE;
-        qstrcpy(signalName + 1, notifySignal.signature());
-        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
-    }
-#endif
+    PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
 
     // link to the slider changes
     connect(m_control.data(), SIGNAL(valueChanged(const QPointF &)), this, SLOT(slotPaneValueChanged(const QPointF &)));
