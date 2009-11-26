@@ -161,7 +161,7 @@ bool VideoInput::setAutoColorCorrection(bool colorcorrection)
     return getAutoColorCorrection();
 }
 
-bool VideoInput::getImageAsMirror()
+bool VideoInput::getImageAsMirror() const
 {
     //HERE;
     return m_imageasmirror;

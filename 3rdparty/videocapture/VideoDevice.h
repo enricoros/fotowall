@@ -45,6 +45,8 @@ class QImage;
         #define VIDEODEV_LINUX_V4L_TWO
     #endif
 #elif defined(Q_WS_WIN)
+    #include <qt_windows.h>
+    class QWidget;
     #define VIDEODEV_WIN_VFW
 #endif
 
@@ -157,9 +159,17 @@ typedef enum {
 } signal_standard;*/
 
 struct DeviceInfo {
-    QString name;
+    QString prettyName;
     QString version;
+    QString filePath;
     int index;
+};
+
+struct ImageBuffer {
+    int width;
+    int height;
+    PixelFormat pixelformat;
+    QByteArray data;
 };
 
 class VideoDevice {
@@ -170,22 +180,20 @@ class VideoDevice {
         static QList<DeviceInfo> devices();
 
         // OK
-        bool open();
+        bool init();
         void close();
-        bool isOpen() const;
         bool printDeviceProperties() const;
 
         int inputCount() const;
         int currentInput() const;
         bool setCurrentInput(int index);
 
-        int minWidth() const;
-        int minHeight() const;
-        int maxWidth() const;
-        int maxHeight() const;
+        QSize minSize() const;
+        QSize maxSize() const;
 
-        bool setCaptureSize(int newWidth, int newHeight);
+        bool setCaptureSize(const QSize & newSize);
         QSize captureSize() const;
+
         bool startCapturing();
         bool stopCapturing();
 
@@ -194,7 +202,6 @@ class VideoDevice {
 
     private:
         bool queryDeviceProperties();
-        bool detectSignalStandards() const;
         void detectPixelFormats();
 
         PixelFormat setPixelFormat(PixelFormat newformat) const;
@@ -223,7 +230,7 @@ class VideoDevice {
         bool setAutoBrightnessContrast(bool brightnesscontrast);
         bool getAutoColorCorrection() const;
         bool setAutoColorCorrection(bool colorcorrection);
-        bool getImageAsMirror();
+        bool getImageAsMirror() const;
         bool setImageAsMirror(bool imageasmirror);
 
         bool canCapture() const;
@@ -236,10 +243,7 @@ class VideoDevice {
 
     private:
         DeviceInfo m_info;
-#if defined(VIDEODEV_LINUX_V4L)
-        int m_videoFileDescriptor;
-#endif
-        QString m_videoCardName;
+
         bool m_videocapture;
         bool m_videochromakey;
         bool m_videoscale;
@@ -248,37 +252,12 @@ class VideoDevice {
         bool m_videoasyncio;
         bool m_videostream;
 
-        enum videodev_driver {
-            VIDEODEV_DRIVER_NONE
-#if defined(VIDEODEV_LINUX_V4L)
-          , VIDEODEV_DRIVER_V4L
-#endif
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-          , VIDEODEV_DRIVER_V4L2
-#endif
-#if defined(VIDEODEV_WIN_VFW)
-          , VIDEODEV_DRIVER_AVICAP
-#endif
-        } m_driver;
-
-        enum io_method {
-            IO_METHOD_NONE,
-            IO_METHOD_READ,
-            IO_METHOD_MMAP,
-            IO_METHOD_USERPTR
-        } m_ioMethod;
-
         int m_minWidth, m_minHeight, m_maxWidth, m_maxHeight;
 
-        QVector<VideoCapture::VideoInput> m_input;
+        QVector<VideoCapture::VideoInput> m_inputs;
         int m_currentInput;
 
-        struct ImageBuffer {
-            int width;
-            int height;
-            PixelFormat pixelformat;
-            QByteArray data;
-        } m_imageBuffer;
+        ImageBuffer m_imageBuffer;
 
         struct DataBuffer {
             uchar * start;
@@ -288,15 +267,37 @@ class VideoDevice {
 
         bool m_capturing;
 
+        // video for linux data
+#if defined(VIDEODEV_LINUX_V4L)
+        int m_videoFileDescriptor;
+        enum Driver {
+            LINUX_DRIVER_NONE,
+#if defined(VIDEODEV_LINUX_V4L_TWO)
+            LINUX_DRIVER_V4L2,
+#endif
+            LINUX_DRIVER_V4L
+        } m_linuxDriver;
+        enum IOMethod {
+            IO_METHOD_NONE,
+            IO_METHOD_READ,
+            IO_METHOD_MMAP,
+            IO_METHOD_USERPTR
+        } m_linuxIO;
+        bool detectSignalStandards() const;
+        int xioctl(int request, void *arg) const;
         bool initIoRead();
         bool initIoMmap();
         bool initIoUserptr();
-#if defined(VIDEODEV_LINUX_V4L)
-        int xioctl(int request, void *arg) const;
 #if defined(VIDEODEV_LINUX_V4L_TWO)
         void enumerateControls() const;
         void enumerateMenu(quint32 id, quint32 min, quint32 max) const;
 #endif
+#endif
+
+        // video for windows data
+#if defined(VIDEODEV_WIN_VFW)
+        QWidget * m_vWidget;
+        HWND m_vHwnd;
 #endif
 };
 

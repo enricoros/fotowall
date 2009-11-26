@@ -47,7 +47,7 @@ public:
     bool setAutoBrightnessContrast(bool brightnesscontrast);
     bool getAutoColorCorrection() const;
     bool setAutoColorCorrection(bool colorcorrection);
-    bool getImageAsMirror();
+    bool getImageAsMirror() const;
     bool setImageAsMirror(bool imageasmirror);
 
 private:

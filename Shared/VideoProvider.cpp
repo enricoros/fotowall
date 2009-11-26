@@ -60,7 +60,7 @@ bool VideoProvider::connectInput(int iIdx, QObject * receiver, const char * meth
     if (!input->active) {
 #if defined(HAS_VIDEOCAPTURE)
         // try to start the video
-        if (!input->device->setCaptureSize(input->device->maxWidth(), input->device->maxHeight()))
+        if (!input->device->setCaptureSize(input->device->maxSize()))
             qWarning("VideoProvider::connectInput: can't set the capture size. trying anyways..");
         if (!input->device->startCapturing()) {
             qWarning("VideoProvider::connectInput: can't start capture, stopping");
@@ -152,8 +152,7 @@ void VideoProvider::initDevices()
     foreach (const VideoCapture::DeviceInfo & info, VideoCapture::VideoDevice::devices()) {
         // create a new capture device and initialize it
         VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice(info);
-        capture->open();
-        if (!capture->isOpen() || capture->inputCount() < 1) {
+        if (!capture->init() || capture->inputCount() < 1) {
             delete capture;
             return;
         }
