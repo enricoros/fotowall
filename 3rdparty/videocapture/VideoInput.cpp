@@ -28,16 +28,17 @@
 namespace VideoCapture {
 
 VideoInput::VideoInput()
+  : m_brightness(0.5)
+  , m_contrast(0.5)
+  , m_saturation(0.5)
+  , m_whiteness(0.5)
+  , m_hue(0.5)
+  , m_autobrightnesscontrast(false)
+  , m_autocolorcorrection(false)
+  , m_imageasmirror(false)
 {
     HERE;
-    m_brightness = 0.5;
-    m_contrast = 0.5;
-    m_saturation = 0.5;
-    m_hue = 0.5;
-    m_autobrightnesscontrast = false;
-    m_autocolorcorrection = false;
 }
-
 
 VideoInput::~VideoInput()
 {
@@ -89,12 +90,7 @@ float VideoInput::getSaturation()
 float VideoInput::setSaturation(float saturation)
 {
     //HERE;
-    if ( saturation > 1 )
-        saturation = 1;
-    else
-        if ( saturation < 0 )
-            saturation = 0;
-    m_saturation = saturation;
+    m_saturation = qBound((float)0.0, saturation, (float)1.0);
     return getSaturation();
 }
 
@@ -107,12 +103,7 @@ float VideoInput::getWhiteness()
 float VideoInput::setWhiteness(float whiteness)
 {
     //HERE;
-    if ( whiteness > 1 )
-        whiteness = 1;
-    else
-        if ( whiteness < 0 )
-            whiteness = 0;
-    m_whiteness = whiteness;
+    m_whiteness = qBound((float)0.0, whiteness, (float)1.0);
     return getWhiteness();
 }
 
@@ -125,12 +116,7 @@ float VideoInput::getHue()
 float VideoInput::setHue(float hue)
 {
     //HERE;
-    if ( hue > 1 )
-        hue = 1;
-    else
-        if ( hue < 0 )
-            hue = 0;
-    m_hue = hue;
+    m_hue = qBound((float)0.0, hue, (float)1.0);
     return getHue();
 }
 

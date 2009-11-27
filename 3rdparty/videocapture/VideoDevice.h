@@ -23,16 +23,17 @@
 #include "VideoInput.h"
 class QImage;
 
-// enable frameworks
+// check which backends to enable, based on the environment
 #if defined(Q_OS_LINUX)
-    #define VIDEODEV_LINUX_V4L
+
+    #define VD_BUILD_LINUX                      ///< build V4L code
     // this is here to detect wether V4L2 is present
     #include <asm/types.h>
     #undef __STRICT_ANSI__
-    #ifndef __u64 //required by videodev.h
+    #ifndef __u64 // required by videodev.h
     #define __u64 quint64
     #endif
-    #ifndef __s64 //required by videodev.h
+    #ifndef __s64 // required by videodev.h
     #define __s64 qint64
     #endif
     #ifndef pgoff_t
@@ -42,22 +43,24 @@ class QImage;
     #include <linux/kernel.h>
     #include <linux/videodev.h>
     #ifdef V4L2_CAP_VIDEO_CAPTURE
-        #define VIDEODEV_LINUX_V4L_TWO
+        #define VD_BUILD_LINUX_TWO              ///< build V4L2 code too
     #endif
+
 #elif defined(Q_WS_WIN)
+
     #include <qt_windows.h>
     class QWidget;
-    #define VIDEODEV_WIN_VFW
+    #define VD_BUILD_WIN_VFW                    ///< build VFW code
+
 #endif
 
 namespace VideoCapture {
 
 /**
-    @brief One video grabbing device, can stream multiple inputs.
-    @author Kopete Developers - modified by Enrico Ros for Fotowall inclusion
-    @class VideoDevice
+    \brief One per video grabbing device, can choose which input to stream.
+    \author Kopete Developers - modified by Enrico Ros for Fotowall inclusion
+    \class VideoDevice
 */
-
 typedef enum {
     // Packed RGB formats
     PIXELFORMAT_NONE	= 0,
@@ -100,63 +103,16 @@ typedef enum {
     //PIXELFORMAT_ALL	= 0x00003FFF
 } PixelFormat;
 
-/*typedef enum {
-    // One bit for each
-    STANDARD_PAL_B		= (1 << 0),
-    STANDARD_PAL_B1		= (1 << 1),
-    STANDARD_PAL_G		= (1 << 2),
-    STANDARD_PAL_H		= (1 << 3),
-    STANDARD_PAL_I		= (1 << 4),
-    STANDARD_PAL_D		= (1 << 5),
-    STANDARD_PAL_D1		= (1 << 6),
-    STANDARD_PAL_K		= (1 << 7),
-
-    STANDARD_PAL_M		= (1 << 8),
-    STANDARD_PAL_N		= (1 << 9),
-    STANDARD_PAL_Nc		= (1 << 10),
-    STANDARD_PAL_60		= (1 << 11),
-    // STANDARD_PAL_60 is a hybrid standard with 525 lines, 60 Hz refresh rate, and PAL color modulation with a 4.43 MHz color subcarrier. Some PAL video recorders can play back NTSC tapes in this mode for display on a 50/60 Hz agnostic PAL TV.
-
-    STANDARD_NTSC_M		= (1 << 12),
-    STANDARD_NTSC_M_JP	= (1 << 13),
-    STANDARD_NTSC_443	= (1 << 14),
-    // STANDARD_NTSC_443 is a hybrid standard with 525 lines, 60 Hz refresh rate, and NTSC color modulation with a 4.43 MHz color subcarrier.
-    STANDARD_NTSC_M_KR	= (1 << 15),
-
-    STANDARD_SECAM_B	= (1 << 16),
-    STANDARD_SECAM_D	= (1 << 17),
-    STANDARD_SECAM_G	= (1 << 18),
-    STANDARD_SECAM_H	= (1 << 19),
-    STANDARD_SECAM_K	= (1 << 20),
-    STANDARD_SECAM_K1	= (1 << 21),
-    STANDARD_SECAM_L	= (1 << 22),
-    STANDARD_SECAM_LC	= (1 << 23),
-
-    // ATSC/HDTV
-    STANDARD_ATSC_8_VSB	= (1 << 24),
-    STANDARD_ATSC_16_VSB	= (1 << 25),
-
-    // Some common needed stuff
-    STANDARD_PAL_BG		= ( STANDARD_PAL_B   | STANDARD_PAL_B1   | STANDARD_PAL_G  ),
-    STANDARD_PAL_DK		= ( STANDARD_PAL_D   | STANDARD_PAL_D1   | STANDARD_PAL_K  ),
-    STANDARD_PAL		= ( STANDARD_PAL_BG  | STANDARD_PAL_DK   | STANDARD_PAL_H    | STANDARD_PAL_I  ),
-    STANDARD_NTSC		= ( STANDARD_NTSC_M  | STANDARD_NTSC_M_JP| STANDARD_NTSC_M_KR ),
-    STANDARD_SECAM_DK       = ( STANDARD_SECAM_D | STANDARD_SECAM_K  | STANDARD_SECAM_K1 ),
-    STANDARD_SECAM		= ( STANDARD_SECAM_B | STANDARD_SECAM_G  | STANDARD_SECAM_H  | STANDARD_SECAM_DK | STANDARD_SECAM_L | STANDARD_SECAM_LC ),
-
-    // some merged standards
-    STANDARD_MN		= ( STANDARD_PAL_M  | STANDARD_PAL_N    | STANDARD_PAL_Nc  | STANDARD_NTSC ),
-    STANDARD_B		= ( STANDARD_PAL_B  | STANDARD_PAL_B1   | STANDARD_SECAM_B ),
-    STANDARD_GH		= ( STANDARD_PAL_G  | STANDARD_PAL_H    | STANDARD_SECAM_G | STANDARD_SECAM_H ),
-    STANDARD_DK		= ( STANDARD_PAL_DK | STANDARD_SECAM_DK ),
-
-    STANDARD_525_60		= ( STANDARD_PAL_M   | STANDARD_PAL_60   | STANDARD_NTSC     | STANDARD_NTSC_443),
-    STANDARD_625_50		= ( STANDARD_PAL     | STANDARD_PAL_N    | STANDARD_PAL_Nc   | STANDARD_SECAM),
-    STANDARD_ATSC		= ( STANDARD_ATSC_8_VSB | STANDARD_ATSC_16_VSB ),
-
-    STANDARD_UNKNOWN	= 0,
-    STANDARD_ALL		= ( STANDARD_525_60  | STANDARD_625_50)
-} signal_standard;*/
+enum DeviceAttribute {
+    DA_None         = 0x0000,
+    DA_Capture      = 0x0001,
+    DA_ChromaKey    = 0x0002,
+    DA_Scale        = 0x0004,
+    DA_Overlay      = 0x0008,
+    DA_IORead       = 0x0010,
+    DA_IOAsync      = 0x0020,
+    DA_IOStream     = 0x0040
+};
 
 struct DeviceInfo {
     QString prettyName;
@@ -165,11 +121,19 @@ struct DeviceInfo {
     int index;
 };
 
+enum FrameOperation {
+    FO_None                     = 0x0000,
+    FO_AutoBrightnessContrast   = 0x0001,
+    FO_AutoColorCorrection      = 0x0002,
+    FO_HorizontalMirror         = 0x0004
+};
+
 struct ImageBuffer {
-    int width;
-    int height;
+    QSize size;
     PixelFormat pixelformat;
     QByteArray data;
+
+    ImageBuffer() : pixelformat(PIXELFORMAT_NONE) {}
 };
 
 class VideoDevice {
@@ -177,28 +141,37 @@ class VideoDevice {
         VideoDevice(const DeviceInfo & info);
         ~VideoDevice();
 
-        static QList<DeviceInfo> devices();
+        // describe candidate video devices
+        static QList<DeviceInfo> scanDevices();
 
-        // OK
-        bool init();
+        // open the device for using it
+        bool open();
         void close();
-        bool printDeviceProperties() const;
 
+        /* the following are valid only when opened */
+
+        bool testAttributes(quint32 attributes) const;
+        void printDeviceProperties() const;
         int inputCount() const;
-        int currentInput() const;
-        bool setCurrentInput(int index);
-
         QSize minSize() const;
         QSize maxSize() const;
 
-        bool setCaptureSize(const QSize & newSize);
+        int currentInput() const;
+        bool setCurrentInput(int index);
+
         QSize captureSize() const;
+        bool setCaptureSize(const QSize & newSize);
 
         bool startCapturing();
         bool stopCapturing();
 
-        bool acquireFrame();
-        bool getImage(QImage *qimage) const;
+        /* the following are valid only when capturing */
+
+        bool captureFrame();
+        bool getLastFrame(QImage * qImage) const;
+
+        quint32 frameOperations() const;
+        void setFrameOperations(quint32 operations);
 
     private:
         bool queryDeviceProperties();
@@ -211,71 +184,32 @@ class VideoDevice {
         QString pixelFormatName(PixelFormat pixelformat) const;
         QString pixelFormatNamePlatform(int pixelformat) const;
 
-        /*quint64 signalStandardCode(signal_standard standard);
-        QString signalStandardName(signal_standard standard) const;
-        QString signalStandardName(int standard) const;*/
         bool setInputParameters();
-        /*float getBrightness();
-        float setBrightness(float brightness);
-        float getContrast();
-        float setContrast(float contrast);
-        float getSaturation();
-        float setSaturation(float saturation);
-        float getWhiteness();
-        float setWhiteness(float whiteness);
-        float getHue();
-        float setHue(float Hue);*/
-
-        bool getAutoBrightnessContrast() const;
-        bool setAutoBrightnessContrast(bool brightnesscontrast);
-        bool getAutoColorCorrection() const;
-        bool setAutoColorCorrection(bool colorcorrection);
-        bool getImageAsMirror() const;
-        bool setImageAsMirror(bool imageasmirror);
-
-        bool canCapture() const;
-        bool canChromakey() const;
-        bool canScale() const;
-        bool canOverlay() const;
-        bool canRead() const;
-        bool canAsyncIO() const;
-        bool canStream() const;
 
     private:
         DeviceInfo m_info;
+        quint32 m_frameOperations;
 
-        bool m_videocapture;
-        bool m_videochromakey;
-        bool m_videoscale;
-        bool m_videooverlay;
-        bool m_videoread;
-        bool m_videoasyncio;
-        bool m_videostream;
-
-        int m_minWidth, m_minHeight, m_maxWidth, m_maxHeight;
-
+        // read on open
+        quint32 m_attributes;
+        QSize m_minSize;
+        QSize m_maxSize;
         QVector<VideoCapture::VideoInput> m_inputs;
+
+        // status
         int m_currentInput;
-
         ImageBuffer m_imageBuffer;
-
-        struct DataBuffer {
-            uchar * start;
-            size_t length;
-        };
-        QVector<DataBuffer> m_dataBuffers;
-
         bool m_capturing;
 
-        // video for linux data
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
+        // Video 4 Linux data
         int m_videoFileDescriptor;
         enum Driver {
             LINUX_DRIVER_NONE,
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-            LINUX_DRIVER_V4L2,
-#endif
             LINUX_DRIVER_V4L
+#if defined(VD_BUILD_LINUX_TWO)
+           ,LINUX_DRIVER_V4L2
+#endif
         } m_linuxDriver;
         enum IOMethod {
             IO_METHOD_NONE,
@@ -283,19 +217,20 @@ class VideoDevice {
             IO_METHOD_MMAP,
             IO_METHOD_USERPTR
         } m_linuxIO;
+        struct FrameMemory {
+            uchar * start;
+            size_t length;
+        };
+        QVector<FrameMemory> m_frameMemory;
         bool detectSignalStandards() const;
         int xioctl(int request, void *arg) const;
         bool initIoRead();
         bool initIoMmap();
         bool initIoUserptr();
-#if defined(VIDEODEV_LINUX_V4L_TWO)
         void enumerateControls() const;
         void enumerateMenu(quint32 id, quint32 min, quint32 max) const;
-#endif
-#endif
-
-        // video for windows data
-#if defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
+        // Video For Windows data
         QWidget * m_vWidget;
         HWND m_vHwnd;
 #endif

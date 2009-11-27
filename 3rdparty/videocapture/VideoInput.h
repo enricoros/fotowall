@@ -25,6 +25,7 @@ namespace VideoCapture {
     @brief Describe/Control the parameters of a single video stream
     @author Kopete Developers - modified by Enrico Ros for Fotowall inclusion
 */
+/// THIS CLASS IS GOING AWAY !! - ENRICO - 20091127
 class VideoInput {
 public:
     VideoInput();

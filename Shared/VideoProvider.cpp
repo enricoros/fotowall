@@ -149,10 +149,10 @@ bool VideoProvider::swapped(int iIdx) const
 void VideoProvider::initDevices()
 {
 #if defined(HAS_VIDEOCAPTURE)
-    foreach (const VideoCapture::DeviceInfo & info, VideoCapture::VideoDevice::devices()) {
+    foreach (const VideoCapture::DeviceInfo & info, VideoCapture::VideoDevice::scanDevices()) {
         // create a new capture device and initialize it
         VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice(info);
-        if (!capture->init() || capture->inputCount() < 1) {
+        if (!capture->open() || capture->inputCount() < 1) {
             delete capture;
             return;
         }
@@ -184,12 +184,12 @@ void VideoProvider::slotCaptureFromDevices()
 
 #if defined(HAS_VIDEOCAPTURE)
         // get frame (and check correctness)
-        if (!input->device->acquireFrame())
+        if (!input->device->captureFrame())
             continue;
 
         // get the qimage from the frame
         QImage frameImage;
-        bool captured = input->device->getImage(&frameImage);
+        bool captured = input->device->getLastFrame(&frameImage);
         if (!captured) {
             // display the invalid (blue) image anyways
             //continue;

@@ -18,11 +18,13 @@
 #include "bayer.h"
 #include "sonix_compress.h"
 
+#include <QDirIterator>
 #include <QDebug>
 #include <QFile>
 #include <QImage>
 
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
+
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
@@ -31,19 +33,15 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
-/*#define VIDEO_MODE_PAL_Nc  3
-#define VIDEO_MODE_PAL_M   4
-#define VIDEO_MODE_PAL_N   5
-#define VIDEO_MODE_NTSC_JP 6*/
 #define __STRICT_ANSI__
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
 // the number of buffer MMAPed or UPTRed
 #define IO_DATA_BUFFERS 2
-#endif
 
-#if defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
+
 #include <QLibrary>
 #include <QWidget>
 #include <Vfw.h>
@@ -69,8 +67,8 @@ static bool vfwResolveSymbols()
     return pCapCreateCaptureWindowA && pCapGetDriverDescriptionA;
 }
 #define WINTODO qWarning("%s:%d: %s [WIN-TODO]", __FILE__, __LINE__, __FUNCTION__)
-#endif
 
+#endif
 
 #define CLEAR(x) memset(&(x), 0, sizeof (x))
 
@@ -78,26 +76,22 @@ namespace VideoCapture {
 
 VideoDevice::VideoDevice(const DeviceInfo & info)
   : m_info(info)
-  , m_minWidth(-1)
-  , m_minHeight(-1)
-  , m_maxWidth(-1)
-  , m_maxHeight(-1)
+  , m_frameOperations(FO_None)
+  , m_attributes(DA_None)
+  , m_minSize(-1, -1)
+  , m_maxSize(-1, -1)
   , m_currentInput(-1)
   , m_capturing(false)
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
   , m_videoFileDescriptor(-1)
   , m_linuxDriver(LINUX_DRIVER_NONE)
   , m_linuxIO(IO_METHOD_NONE)
 #endif
-#if defined(VIDEODEV_WIN_VFW)
+#if defined(VD_BUILD_WIN_VFW)
   , m_vWidget(0)
   , m_vHwnd(0)
 #endif
 {
-    // empty image buffer
-    m_imageBuffer.width = 0;
-    m_imageBuffer.height = 0;
-    m_imageBuffer.pixelformat = PIXELFORMAT_NONE;
 }
 
 VideoDevice::~VideoDevice()
@@ -105,29 +99,31 @@ VideoDevice::~VideoDevice()
     close();
 }
 
-QList<DeviceInfo> VideoDevice::devices()
+QList<DeviceInfo> VideoDevice::scanDevices()
 {
     QList<DeviceInfo> devices;
     int idx = 0;
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     QDirIterator dirIt("/dev", QStringList() << "video*", QDir::Files | QDir::System);
     while (dirIt.hasNext()) {
         DeviceInfo info;
-        info.prettyName = QString(tr("Camera %1")).arg(idx + 1);
-        info.filePath = info.prettyName;
-        info.index = idx++;
+         info.prettyName = QString(QObject::tr("Camera %1")).arg(idx + 1);
+         info.version = QString();
+         info.filePath = dirIt.next();
+         info.index = idx++;
         devices.append(info);
     }    
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     if (vfwResolveSymbols()) {
         char szDeviceName[80];      // driver name
         char szDeviceVersion[80];   // driver version
         for (int i = 0; i < 10; ++i) {
             if (pCapGetDriverDescriptionA(i, (LPSTR)szDeviceName, sizeof(szDeviceName), (LPSTR)szDeviceVersion, sizeof(szDeviceVersion))) {
                 DeviceInfo info;
-                info.prettyName = QString(szDeviceName);
-                info.version = QString(szDeviceVersion);
-                info.index = idx++;
+                 info.prettyName = QString(szDeviceName);
+                 info.version = QString(szDeviceVersion);
+                 info.filePath = QString();
+                 info.index = idx++;
                 devices.append(info);
             }
         }
@@ -138,9 +134,9 @@ QList<DeviceInfo> VideoDevice::devices()
     return devices;
 }
 
-bool VideoDevice::init()
+bool VideoDevice::open()
 {
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     if (m_videoFileDescriptor != -1) {
         qDebug() << "VideoDevice::open: Device is already open";
         return true;
@@ -152,6 +148,8 @@ bool VideoDevice::init()
         qDebug() << "VideoDevice::open: Unable to open file" << m_info.filePath << "Err:"<< errno;
         return false;
     }
+#elif defined(VD_BUILD_WIN_VFW)
+    WINTODO;
 #endif
 
     // check device (capabilities and stuff)
@@ -162,8 +160,7 @@ bool VideoDevice::init()
     }
 
     // select the first input
-    if (!m_inputs.isEmpty())
-        setCurrentInput(0);
+    setCurrentInput(0);
     return true;
 }
 
@@ -171,56 +168,70 @@ void VideoDevice::close()
 {
     if (m_capturing)
         stopCapturing();
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     if (m_videoFileDescriptor != -1) {
         if (-1 == ::close(m_videoFileDescriptor))
             perror("close");
     }
     m_videoFileDescriptor = -1;
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     WINTODO;
 #endif
 }
 
-bool VideoDevice::printDeviceProperties() const
+bool VideoDevice::testAttributes(quint32 attributes) const
+{
+    return (m_attributes & attributes) == attributes;
+}
+
+void VideoDevice::printDeviceProperties() const
 {
     qDebug() << "Device model: " << m_info.prettyName << " capabilities:";
-    if (canCapture())
+    if (m_attributes & DA_Capture)
         qDebug() << "    Video capture";
-    if (canRead())
+    if (m_attributes & DA_IORead)
         qDebug() << "        Read";
-    if (canAsyncIO())
+    if (m_attributes & DA_IOAsync)
         qDebug() << "        Asynchronous input/output";
-    if (canStream())
+    if (m_attributes & DA_IOStream)
         qDebug() << "        Streaming";
-    if (canChromakey())
+    if (m_attributes & DA_ChromaKey)
         qDebug() << "    Video chromakey";
-    if (canScale())
+    if (m_attributes & DA_Scale)
         qDebug() << "    Video scales";
-    if (canOverlay())
+    if (m_attributes & DA_Overlay)
         qDebug() << "    Video overlay";
-    qDebug() << "    Max res: " << maxSize();
-    qDebug() << "    Min res: " << minSize();
+    qDebug() << "    Max res: " << m_maxSize;
+    qDebug() << "    Min res: " << m_minSize;
     qDebug() << "    Inputs : " << inputCount();
-    for (int loop = 0; loop < inputCount(); ++loop)
-        qDebug() << "Input " << loop << ": " << m_inputs[loop].name << " (tuner: " << m_inputs[loop].hastuner << ")";
-    return true;
+    for (int i = 0; i < inputCount(); ++i)
+        qDebug() << "      Input" << i << ": " << m_inputs[i].name << " (tuner: " << m_inputs[i].hastuner << ")";
 }
 
 int VideoDevice::inputCount() const
 {
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     return m_inputs.size();
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     return 1;
 #endif
 }
 
+QSize VideoDevice::minSize() const
+{
+    return m_minSize;
+}
+
+QSize VideoDevice::maxSize() const
+{
+    return m_maxSize;
+}
+
 int VideoDevice::currentInput() const
 {
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     return m_videoFileDescriptor != -1 ? m_currentInput : 0;
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     return 0;
 #endif
 }
@@ -232,7 +243,7 @@ bool VideoDevice::setCurrentInput(int index)
     if (index == m_currentInput)
         return true;
 
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     if (m_videoFileDescriptor == -1) {
         qWarning("VideoDevice::selectInput: device not opened");
         return false;
@@ -253,7 +264,7 @@ bool VideoDevice::setCurrentInput(int index)
                 return false;
             }
             break;
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
         case LINUX_DRIVER_V4L2:
             if (-1 == ioctl(m_videoFileDescriptor, VIDIOC_S_INPUT, &index)) {
                 perror ("VIDIOC_S_INPUT");
@@ -272,14 +283,9 @@ bool VideoDevice::setCurrentInput(int index)
     return true;
 }
 
-QSize VideoDevice::minSize() const
+QSize VideoDevice::captureSize() const
 {
-    return QSize(m_minWidth, m_minHeight);
-}
-
-QSize VideoDevice::maxSize() const
-{
-    return QSize(m_maxWidth, m_maxHeight);
+    return m_imageBuffer.size;
 }
 
 bool VideoDevice::setCaptureSize(const QSize & newSize)
@@ -288,7 +294,7 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
         qWarning("VideoDevice::setCaptureSize: can't chance parameters on-the-fly while capturing");
         return false;
     }
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     if (m_videoFileDescriptor == -1) {
         qWarning("VideoDevice::setCaptureSize: not opened");
         return false;
@@ -313,11 +319,11 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
         qWarning("VideoDevice::setCaptureSize: can't set a pixel format. trying to proceed anyways");
     
     // 2. keep the size into boundaries
-    m_imageBuffer.width = qBound(m_minWidth,  newSize.width(),  m_maxWidth );
-    m_imageBuffer.height = qBound(m_minHeight, newSize.height(), m_maxHeight);
+    m_imageBuffer.size = QSize( qBound(m_minSize.width(),  newSize.width(),  m_maxSize.width()  ),
+                                qBound(m_minSize.height(), newSize.height(), m_maxSize.height() ) );
 
     // 3. change resolution for the video device
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     switch (m_linuxDriver) {
         case LINUX_DRIVER_NONE:
             break;
@@ -328,8 +334,8 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
                 perror ("ioctl VIDIOCGWIN");
                 //return false;
             }
-            V4L_videowindow.width  = m_imageBuffer.width;
-            V4L_videowindow.height = m_imageBuffer.height;
+            V4L_videowindow.width  = m_imageBuffer.size.width();
+            V4L_videowindow.height = m_imageBuffer.size.height();
             V4L_videowindow.clipcount = 0;
             if (xioctl(VIDIOCSWIN, &V4L_videowindow)== -1) {
                 perror ("ioctl VIDIOCSWIN");
@@ -341,7 +347,7 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
             qDebug() << "VIDIOCGFBUF failed (" << errno << "): Device cannot stream";*/
             } break;
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
         case LINUX_DRIVER_V4L2:
             struct v4l2_format format;
             CLEAR(format);
@@ -349,20 +355,19 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
             if (-1 == xioctl(VIDIOC_G_FMT, &format))
                 qDebug() << "VideoDevice::setCaptureSize: VIDIOC_G_FMT failed (" << errno << "). Returned width: " << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << " " << format.fmt.pix.width << "x" << format.fmt.pix.height;
             format.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-            format.fmt.pix.width       = m_imageBuffer.width;
-            format.fmt.pix.height      = m_imageBuffer.height;
+            format.fmt.pix.width       = m_imageBuffer.size.width();
+            format.fmt.pix.height      = m_imageBuffer.size.height();
             format.fmt.pix.field       = V4L2_FIELD_ANY;
             if (-1 != xioctl(VIDIOC_S_FMT, &format)) {
                 // Note VIDIOC_S_FMT may change width and height.
-                m_imageBuffer.width = format.fmt.pix.width;
-                m_imageBuffer.height = format.fmt.pix.height;
-                qDebug() << "VideoDevice::setCaptureSize: using" << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << "pixel format, size:" << m_imageBuffer.width << "x" << m_imageBuffer.height;
+                m_imageBuffer.size = QSize(format.fmt.pix.width, format.fmt.pix.height);
+                qDebug() << "VideoDevice::setCaptureSize: using" << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << "pixel format, size:" << m_imageBuffer.size;
             } else
                 qDebug() << "VideoDevice::setCaptureSize: VIDIOC_S_FMT failed (" << errno << "). Pixel format:" << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << "size:" << format.fmt.pix.width << "x" << format.fmt.pix.height << "(" << newSize.width() << "x" << newSize.height() << ")";
             break;
 #endif
     }
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     pixelFormat = PIXELFORMAT_YUYV;
     m_imageBuffer.width = 640;
     m_imageBuffer.height = 480;
@@ -375,7 +380,7 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
         qDebug("VideoDevice::setCaptureSize: invalid depth %d, trying to assume 32", bitPerPixel);
         bitPerPixel = 32;
     }
-    int bufferSize = m_imageBuffer.width * m_imageBuffer.height * bitPerPixel / 8;
+    int bufferSize = m_imageBuffer.size.width() * m_imageBuffer.size.height() * bitPerPixel / 8;
     if (bufferSize <= 0) {
         qDebug("VideoDevice::setCaptureSize: invalid buffer size %d", bufferSize);
         return false;
@@ -386,11 +391,7 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
     return true;
 }
 
-QSize VideoDevice::captureSize() const
-{
-    return QSize(m_imageBuffer.width, m_imageBuffer.height);
-}
-
+#if defined(VD_BUILD_WIN_VFW)
 static ImageBuffer * s_imageBuffer = 0;
 static LRESULT videoCallback(__in HWND hWnd, __in LPVIDEOHDR lpVHdr)
 {
@@ -401,6 +402,7 @@ static LRESULT videoCallback(__in HWND hWnd, __in LPVIDEOHDR lpVHdr)
     s_imageBuffer = 0;
     return 0;
 }
+#endif
 
 bool VideoDevice::startCapturing()
 {
@@ -408,8 +410,11 @@ bool VideoDevice::startCapturing()
         qDebug("VideoDevice::startCapturing: already started");
         return true;
     }
-#if defined(VIDEODEV_LINUX_V4L)
-    // TODO: check that capture size has been set
+    if (!m_imageBuffer.size.isValid() || m_imageBuffer.data.size() < 64) {
+        qDebug("VideoDevice::startCapturing: set capture size before start capturing");
+        return false;
+    }
+#if defined(VD_BUILD_LINUX)
     if (m_videoFileDescriptor == -1) {
         qDebug("VideoDevice::startCapturing: not opened");
         return false;
@@ -430,9 +435,9 @@ bool VideoDevice::startCapturing()
             if (!initIoMmap())
                 return false;
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
             // queue buffers
-            for (int i = 0; i < m_dataBuffers.size(); ++i) {
+            for (int i = 0; i < m_frameMemory.size(); ++i) {
                 struct v4l2_buffer buf;
                 CLEAR(buf);
                 buf.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -458,15 +463,15 @@ bool VideoDevice::startCapturing()
             if (!initIoUserptr())
                 return false;
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
             // queue buffers
-            for (int i = 0; i < m_dataBuffers.size(); ++i) {
+            for (int i = 0; i < m_frameMemory.size(); ++i) {
                 struct v4l2_buffer buf;
                 CLEAR(buf);
                 buf.type      = V4L2_BUF_TYPE_VIDEO_CAPTURE;
                 buf.memory    = V4L2_MEMORY_USERPTR;
-                buf.m.userptr = (unsigned long)m_dataBuffers[i].start;
-                buf.length    = m_dataBuffers[i].length;
+                buf.m.userptr = (unsigned long)m_frameMemory[i].start;
+                buf.length    = m_frameMemory[i].length;
                 if (-1 == xioctl (VIDIOC_QBUF, &buf)) {
                     perror("VIDIOC_QBUF (uptr)");
                     return false;
@@ -482,7 +487,7 @@ bool VideoDevice::startCapturing()
 #endif
             } break;
     }
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     if (!vfwResolveSymbols())
         return false;
 
@@ -516,10 +521,10 @@ bool VideoDevice::startCapturing()
     CAPSTATUS capStatus;
     capGetStatus(m_vHwnd, &capStatus, sizeof(CAPSTATUS));
 
-    m_minWidth = m_maxWidth = capStatus.uiImageWidth;
-    m_minHeight = m_maxHeight = capStatus.uiImageHeight;
+    m_maxSize = QSize(capStatus.uiImageWidth, capStatus.uiImageHeight);
+    m_minSize = m_maxSize;
 
-    qWarning() << m_minWidth  << m_maxHeight;
+    qWarning() << "VideoDevice::startCapturing(VFW): size is" << m_maxSize;
 
     capSetCallbackOnFrame(m_vHwnd, videoCallback);
     //capPreviewRate(m_vHwnd, 40);
@@ -539,7 +544,7 @@ bool VideoDevice::stopCapturing()
         qDebug("VideoDevice::stopCapturing: already stopped");
         return true;
     }
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     if (m_videoFileDescriptor == -1) {
         qDebug("VideoDevice::stopCapturing: not opened");
         return false;
@@ -555,7 +560,7 @@ bool VideoDevice::stopCapturing()
 
         case IO_METHOD_MMAP:
         case IO_METHOD_USERPTR: {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
             // stop streaming
             enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
             if (-1 == xioctl(VIDIOC_STREAMOFF, &type))
@@ -563,13 +568,13 @@ bool VideoDevice::stopCapturing()
 
             // un-mmap/free userspace buffers
             if (m_linuxIO == IO_METHOD_MMAP) {
-                for (int i = 0; i < m_dataBuffers.size(); ++i) {
-                    if (::munmap(m_dataBuffers[i].start, m_dataBuffers[i].length) != 0)
+                for (int i = 0; i < m_frameMemory.size(); ++i) {
+                    if (::munmap(m_frameMemory[i].start, m_frameMemory[i].length) != 0)
                         qDebug() << "VideoDevice::stopCapturing: unable to munmap";
                 }
             } else if (m_linuxIO == IO_METHOD_USERPTR) {
-                for (int i = 0; i < m_dataBuffers.size(); ++i)
-                    ::free(m_dataBuffers[i].start);
+                for (int i = 0; i < m_frameMemory.size(); ++i)
+                    ::free(m_frameMemory[i].start);
             }
 
             // release device buffers
@@ -580,11 +585,11 @@ bool VideoDevice::stopCapturing()
             req.memory = (m_linuxIO == IO_METHOD_MMAP) ? V4L2_MEMORY_MMAP : V4L2_MEMORY_USERPTR;
             if (-1 == xioctl(VIDIOC_REQBUFS, &req))
                 perror("VIDIOC_REQBUFS (stop)");
-            m_dataBuffers.clear();
+            m_frameMemory.clear();
 #endif
             } break;
     }
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     if (m_vHwnd) {
         capPreview(m_vHwnd, FALSE);
         capDriverDisconnect(m_vHwnd);
@@ -600,13 +605,13 @@ bool VideoDevice::stopCapturing()
     return true;
 }
 
-bool VideoDevice::acquireFrame()
+bool VideoDevice::captureFrame()
 {
     if (!m_capturing) {
         qDebug("VideoDevice::acquireFrame: start stream before acquiring frames");
         return false;
     }
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     if (m_videoFileDescriptor == -1) {
         qDebug("VideoDevice::acquireFrame: not opened");
         return false;
@@ -637,7 +642,7 @@ bool VideoDevice::acquireFrame()
             } break;
 
         case IO_METHOD_MMAP: {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
             // dequeue a buffer
             struct v4l2_buffer v4l2buffer;
             CLEAR(v4l2buffer);
@@ -658,7 +663,7 @@ bool VideoDevice::acquireFrame()
             }
 
             // copy data to the ImageBuffer
-            memcpy(m_imageBuffer.data.data(), m_dataBuffers[v4l2buffer.index].start, m_imageBuffer.data.size());
+            memcpy(m_imageBuffer.data.data(), m_frameMemory[v4l2buffer.index].start, m_imageBuffer.data.size());
 
             // queue the buffer back
             if (-1 == xioctl(VIDIOC_QBUF, &v4l2buffer)) {
@@ -669,7 +674,7 @@ bool VideoDevice::acquireFrame()
             } break;
 
         case IO_METHOD_USERPTR: {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
             // dequeue a buffer
             struct v4l2_buffer v4l2buffer;
             CLEAR(v4l2buffer);
@@ -686,13 +691,13 @@ bool VideoDevice::acquireFrame()
                 }
             }
 
-            // find the related DataBuffer
+            // find the related FrameMemory
             int i = 0;
-            for (; i < m_dataBuffers.size(); ++i)
-                if (v4l2buffer.m.userptr == (unsigned long)m_dataBuffers[i].start && v4l2buffer.length == m_dataBuffers[i].length)
+            for (; i < m_frameMemory.size(); ++i)
+                if (v4l2buffer.m.userptr == (unsigned long)m_frameMemory[i].start && v4l2buffer.length == m_frameMemory[i].length)
                     break;
-            if (i >= m_dataBuffers.size()) {
-                qWarning("VideoDevice::acquireFrame: can't find the related DataBuffer");
+            if (i >= m_frameMemory.size()) {
+                qWarning("VideoDevice::acquireFrame: can't find the related FrameMemory");
                 return false;
             }
 
@@ -707,7 +712,7 @@ bool VideoDevice::acquireFrame()
 #endif
             } break;
     }
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     s_imageBuffer = &m_imageBuffer;
     if (!capGrabFrameNoStop(m_vHwnd))
         return false;
@@ -716,11 +721,11 @@ bool VideoDevice::acquireFrame()
     return true;
 }
 
-bool VideoDevice::getImage(QImage * qimage) const
+bool VideoDevice::getLastFrame(QImage * qimage) const
 {
     // do NOT delete qimage here, as it is received as a parameter
-    const int W = m_imageBuffer.width;
-    const int H = m_imageBuffer.height;
+    const int W = m_imageBuffer.size.width();
+    const int H = m_imageBuffer.size.height();
     if (qimage->width() != W || qimage->height() != H)
         *qimage = QImage(W, H, QImage::Format_ARGB32);
 
@@ -952,11 +957,11 @@ bool VideoDevice::getImage(QImage * qimage) const
     }
 
     // Proccesses image for automatic Brightness/Contrast/Color correction
-    if (getAutoBrightnessContrast() || getAutoColorCorrection()) {
+    if (m_frameOperations & (FO_AutoBrightnessContrast | FO_AutoColorCorrection)) {
         ///unsigned long long result=0;
-        unsigned long long R=0, G=0, B=0, A=0, global=0;
-        int Rmax=0, Gmax=0, Bmax=0, Amax=0, globalmax=0;
-        int Rmin=255, Gmin=255, Bmin=255, Amin=255, globalmin=255;
+        unsigned long long R=0, G=0, B=0, /*A=0,*/ global=0;
+        int Rmax=0, Gmax=0, Bmax=0, /*Amax=0,*/ globalmax=0;
+        int Rmin=255, Gmin=255, Bmin=255, /*Amin=255,*/ globalmin=255;
         int Rrange=255, Grange=255, Brange=255 /**, Arange=255, globarange=255**/;
 
         // Finds minimum and maximum intensity for each color component
@@ -981,7 +986,7 @@ bool VideoDevice::getImage(QImage * qimage) const
         // If no color correction should be performed, simply level all the intensities so they're just the same.
         // In fact color correction should use the R, G and B variables to detect color deviation and "bump up" the saturation,
         // but it's computationally more expensive and the current way returns better results to the user.
-        if (!getAutoColorCorrection()) {
+        if (!(m_frameOperations & FO_AutoColorCorrection)) {
             Rmin = globalmin ; Rmax = globalmax;
             Gmin = globalmin ; Gmax = globalmax;
             Bmin = globalmin ; Bmax = globalmax;
@@ -993,35 +998,40 @@ bool VideoDevice::getImage(QImage * qimage) const
         Brange = Bmax - Bmin; if (Brange == 0) Brange = 255;
         //			Arange = Amax - Amin; if (Arange == 0) Arange = 255;
 
-        qDebug() << " R: " << R << " G: " << G << " B: " << B << " A: " << A << " global: " << global <<
+        /*qDebug() << " R: " << R << " G: " << G << " B: " << B << " A: " << A << " global: " << global <<
                 " Rmin: " << Rmin << " Gmin: " << Gmin << " Bmin: " << Bmin << " Amin: " << Amin << " globalmin: " << globalmin <<
                 " Rmax: " << Rmax << " Gmax: " << Gmax << " Bmax: " << Bmax << " Amax: " << Amax << " globalmax: " << globalmax ;
-
-        for(int loop=0; loop < imgBytes; loop+=4) {
-            imgData[loop]   = (imgData[loop]   - Rmin) * 255 / (Rrange);
-            imgData[loop+1] = (imgData[loop+1] - Gmin) * 255 / (Grange);
-            imgData[loop+2] = (imgData[loop+2] - Bmin) * 255 / (Brange);
+*/
+        for(int i = 0; i < imgBytes; i += 4) {
+            imgData[i]   = (imgData[i]   - Rmin) * 255 / (Rrange);
+            imgData[i+1] = (imgData[i+1] - Gmin) * 255 / (Grange);
+            imgData[i+2] = (imgData[i+2] - Bmin) * 255 / (Brange);
             //			bits[loop+3] = (bits[loop+3] - Amin) * 255 / (Arange);
         }
     }
     return true;
 }
 
+quint32 VideoDevice::frameOperations() const
+{
+    return m_frameOperations;
+}
+
+void VideoDevice::setFrameOperations(quint32 operations)
+{
+    m_frameOperations = operations;
+}
+
 bool VideoDevice::queryDeviceProperties()
 {
     // reset caps
-    m_videocapture = false;
-    m_videochromakey = false;
-    m_videoscale = false;
-    m_videooverlay = false;
-    m_videoread = false;
-    m_videoasyncio = false;
-    m_videostream = false;
+    m_attributes = DA_None;
+    m_inputs.clear();
 
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     m_linuxDriver = LINUX_DRIVER_NONE;
     m_linuxIO = IO_METHOD_NONE;
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
     struct v4l2_capability V4L2_capabilities;
     CLEAR(V4L2_capabilities);
     if (-1 != xioctl(VIDIOC_QUERYCAP, &V4L2_capabilities)) {
@@ -1032,20 +1042,20 @@ bool VideoDevice::queryDeviceProperties()
         }
         qDebug() << "VideoDevice::queryDeviceProperties:" << m_info.filePath << "is a V4L2 device.";
         m_linuxDriver = LINUX_DRIVER_V4L2;
-        m_videocapture = true;
+        m_attributes |= DA_Capture;
         m_info.prettyName = QString::fromLocal8Bit((const char*)V4L2_capabilities.card);
 
         // find out acquiral mechanism, based on capabilities
         if (V4L2_capabilities.capabilities & V4L2_CAP_READWRITE) {
             m_linuxIO = IO_METHOD_READ;
-            m_videoread = true;
+            m_attributes |= DA_IORead;
         }
         if (V4L2_capabilities.capabilities & V4L2_CAP_STREAMING) {
             m_linuxIO = IO_METHOD_MMAP;
-            m_videostream = true;
+            m_attributes |= DA_IOStream;
         }
         if (V4L2_capabilities.capabilities & V4L2_CAP_ASYNCIO)
-            m_videoasyncio = true;
+            m_attributes |= DA_IOAsync;
 
         // Detect maximum and minimum resolution supported by the V4L2 device. VIDIOC_ENUM_FRAMESIZES is still experimental.
         struct v4l2_format format;
@@ -1061,8 +1071,7 @@ bool VideoDevice::queryDeviceProperties()
             qDebug() << "VideoDevice::queryDeviceProperties: Detecting maximum size with VIDIOC_S_FMT failed (" << errno << "). Returned max width: " << pixelFormatNamePlatform(format.fmt.pix.pixelformat) << " " << format.fmt.pix.width << "x" << format.fmt.pix.height;
             return false;
         }
-        m_maxWidth  = format.fmt.pix.width;
-        m_maxHeight = format.fmt.pix.height;
+        m_maxSize = QSize(format.fmt.pix.width, format.fmt.pix.height);
 
         if (-1 == xioctl(VIDIOC_G_FMT, &format))
             qDebug() << "VideoDevice::queryDeviceProperties: VIDIOC_G_FMT failed (" << errno << ").";
@@ -1074,8 +1083,7 @@ bool VideoDevice::queryDeviceProperties()
             qDebug() << "VideoDevice::queryDeviceProperties: Detecting minimum size with VIDIOC_S_FMT failed (" << errno << "). Returned min width: " << format.fmt.pix.width << "x" << format.fmt.pix.height;
             return false;
         }
-        m_minWidth  = format.fmt.pix.width;
-        m_minHeight = format.fmt.pix.height;
+        m_minSize = QSize(format.fmt.pix.width, format.fmt.pix.height);
 
         // Buggy driver paranoia
         /* min = fmt.fmt.pix.width * 2;
@@ -1087,7 +1095,6 @@ bool VideoDevice::queryDeviceProperties()
         m_buffer_size=fmt.fmt.pix.sizeimage ;*/
 
         // Recreate the inputs vector
-        m_inputs.clear();
         for (unsigned int iNumber=0; iNumber < 99; ++iNumber) {
             // get input description
             struct v4l2_input videoInput;
@@ -1126,29 +1133,28 @@ bool VideoDevice::queryDeviceProperties()
         // init capabilities and min/max sizes
         m_linuxDriver = LINUX_DRIVER_V4L;
         m_info.prettyName = QString::fromLocal8Bit((const char*)V4L_capabilities.name);
-        m_videocapture = V4L_capabilities.type & VID_TYPE_CAPTURE;
-        m_videochromakey = V4L_capabilities.type & VID_TYPE_CHROMAKEY;
-        m_videoscale = V4L_capabilities.type & VID_TYPE_SCALES;
-        m_videooverlay = V4L_capabilities.type & VID_TYPE_OVERLAY;
-        //qDebug() << "Inputs : " << V4L_capabilities.channels;
-        //qDebug() << "Audios : " << V4L_capabilities.audios;
-        m_minWidth  = V4L_capabilities.minwidth;
-        m_maxWidth  = V4L_capabilities.maxwidth;
-        m_minHeight = V4L_capabilities.minheight;
-        m_maxHeight = V4L_capabilities.maxheight;
+        if (V4L_capabilities.type & VID_TYPE_CAPTURE)
+            m_attributes |= DA_Capture;
+        if (V4L_capabilities.type & VID_TYPE_CHROMAKEY)
+            m_attributes |= DA_ChromaKey;
+        if (V4L_capabilities.type & VID_TYPE_SCALES)
+            m_attributes |= DA_Scale;
+        if (V4L_capabilities.type & VID_TYPE_OVERLAY)
+            m_attributes |= DA_Overlay;
+        m_minSize = QSize(V4L_capabilities.minwidth, V4L_capabilities.minheight);
+        m_maxSize = QSize(V4L_capabilities.maxwidth, V4L_capabilities.maxheight);
 
         // use a read i/o method
+        m_attributes |= DA_IORead;
         m_linuxIO = IO_METHOD_READ;
-        m_videoread = true;
         struct video_buffer V4L_videobuffer;
         if (-1 != xioctl(VIDIOCGFBUF, &V4L_videobuffer)) {
             //	m_linuxIO = IO_METHOD_MMAP;
-            //	m_videostream = true;
+            //	m_attributes |= DA_IOStream;
             qDebug() << "    Has got a Streaming interface, but we'll stick to READ for compat";
         }
 
         // Recreate the inputs vector
-        m_inputs.clear();
         for (int iNumber = 0; iNumber < V4L_capabilities.channels; ++iNumber)
         {
             struct video_channel videoInput;
@@ -1176,7 +1182,7 @@ bool VideoDevice::queryDeviceProperties()
     // print out supported pixel format/s
     detectPixelFormats();
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
     // print out the controls supported by the input device
     enumerateControls();
 
@@ -1198,7 +1204,7 @@ bool VideoDevice::queryDeviceProperties()
         }
     }
 #endif
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     VideoInput input1;
     input1.name = m_info.prettyName;
     input1.hastuner = false;
@@ -1211,12 +1217,12 @@ bool VideoDevice::queryDeviceProperties()
 
 void VideoDevice::detectPixelFormats()
 {
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     switch (m_linuxDriver) {
         case LINUX_DRIVER_NONE:
             break;
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
         case LINUX_DRIVER_V4L2:
             struct v4l2_fmtdesc fmtdesc;
             CLEAR(fmtdesc);
@@ -1277,7 +1283,7 @@ void VideoDevice::detectPixelFormats()
             if (PIXELFORMAT_NONE != setPixelFormat(PIXELFORMAT_YYUV))	qDebug() << pixelFormatName(PIXELFORMAT_YYUV);
             break;
     }
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     WINTODO;
 #endif
 }
@@ -1285,7 +1291,7 @@ void VideoDevice::detectPixelFormats()
 PixelFormat VideoDevice::setPixelFormat(PixelFormat newformat) const
 {
     // change the pixel format for the video device
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     switch (m_linuxDriver) {
         case LINUX_DRIVER_NONE:
             break;
@@ -1307,7 +1313,7 @@ PixelFormat VideoDevice::setPixelFormat(PixelFormat newformat) const
                 return newformat;
             } break;
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
         case LINUX_DRIVER_V4L2:
             // query current format
             struct v4l2_format format;
@@ -1335,7 +1341,7 @@ PixelFormat VideoDevice::setPixelFormat(PixelFormat newformat) const
 #endif
     }
     return PIXELFORMAT_NONE;
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     Q_UNUSED(newformat)
     WINTODO;
     return PIXELFORMAT_NONE;
@@ -1357,408 +1363,9 @@ bool VideoDevice::setInputParameters()
     return true;
 }
 
-/*
-float VideoDevice::getBrightness()
-{
-    if (m_currentInput < m_inputs.size() )
-        return m_inputs[m_currentInput].getBrightness();
-    else
-        return 0;
-}
-
-float VideoDevice::setBrightness(float brightness)
-{
-    qDebug() << "(" << brightness << ") called.";
-    m_inputs[m_currentInput].setBrightness(brightness); // Just to check bounds
-
-    switch (m_linuxDriver)
-    {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-    case LINUX_DRIVER_V4L2:
-        {
-            struct v4l2_queryctrl queryctrl;
-            struct v4l2_control control;
-
-            CLEAR (queryctrl);
-            queryctrl.id = V4L2_CID_BRIGHTNESS;
-
-            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
-            {
-                if (errno != EINVAL)
-                {
-                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
-                } else
-                {
-                    qDebug() << "Device doesn't support the Brightness control.";
-                }
-            } else
-                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
-                {
-                qDebug() << "Brightness control is disabled.";
-            } else
-            {
-                CLEAR (control);
-                control.id = V4L2_CID_BRIGHTNESS;
-                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getBrightness());
-
-                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
-                {
-                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
-                }
-            }
-        }
-        break;
-#endif
-#if defined(VIDEODEV_LINUX_V4L)
-    case LINUX_DRIVER_V4L:
-        {
-            struct video_picture V4L_picture;
-            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
-                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
-            V4L_picture.brightness = uint(65535 * getBrightness());
-            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
-                qDebug() << "Device seems to not support adjusting image brightness. Fallback to it is not yet implemented.";
-        }
-        break;
-#endif
-    case LINUX_DRIVER_NONE:
-        break;
-    }
-    return getBrightness();
-}
-
-float VideoDevice::getContrast()
-{
-    if (m_currentInput < m_inputs.size() )
-        return m_inputs[m_currentInput].getContrast();
-    else
-        return 0;
-}
-
-float VideoDevice::setContrast(float contrast)
-{
-    qDebug() << "(" << contrast << ") called.";
-    m_inputs[m_currentInput].setContrast(contrast); // Just to check bounds
-
-    switch (m_linuxDriver)
-    {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-    case LINUX_DRIVER_V4L2:
-        {
-            struct v4l2_queryctrl queryctrl;
-            struct v4l2_control control;
-
-            CLEAR (queryctrl);
-            queryctrl.id = V4L2_CID_CONTRAST;
-
-            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
-            {
-                if (errno != EINVAL)
-                {
-                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
-                } else
-                {
-                    qDebug() << "Device doesn't support the Contrast control.";
-                }
-            } else
-                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
-                {
-                qDebug() << "Contrast control is disabled.";
-            } else
-            {
-                CLEAR (control);
-                control.id = V4L2_CID_CONTRAST;
-                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getContrast());
-
-                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
-                {
-                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
-                }
-            }
-        }
-        break;
-#endif
-#if defined(VIDEODEV_LINUX_V4L)
-    case LINUX_DRIVER_V4L:
-        {
-            struct video_picture V4L_picture;
-            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
-                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
-            V4L_picture.contrast = uint(65535*getContrast());
-            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
-                qDebug() << "Device seems to not support adjusting image contrast. Fallback to it is not yet implemented.";
-        }
-        break;
-#endif
-    case LINUX_DRIVER_NONE:
-        break;
-    }
-    return getContrast();
-}
-
-float VideoDevice::getSaturation()
-{
-    if (m_currentInput < m_inputs.size() )
-        return m_inputs[m_currentInput].getSaturation();
-    else
-        return 0;
-}
-
-float VideoDevice::setSaturation(float saturation)
-{
-    qDebug() << "(" << saturation << ") called.";
-    m_inputs[m_currentInput].setSaturation(saturation); // Just to check bounds
-
-    switch (m_linuxDriver)
-    {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-    case LINUX_DRIVER_V4L2:
-        {
-            struct v4l2_queryctrl queryctrl;
-            struct v4l2_control control;
-
-            CLEAR (queryctrl);
-            queryctrl.id = V4L2_CID_SATURATION;
-
-            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
-            {
-                if (errno != EINVAL)
-                {
-                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
-                } else
-                {
-                    qDebug() << "Device doesn't support the Saturation control.";
-                }
-            } else
-                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
-                {
-                qDebug() << "Saturation control is disabled.";
-            } else
-            {
-                CLEAR (control);
-                control.id = V4L2_CID_SATURATION;
-                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getSaturation());
-
-                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
-                {
-                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
-                }
-            }
-        }
-        break;
-#endif
-#if defined(VIDEODEV_LINUX_V4L)
-    case LINUX_DRIVER_V4L:
-        {
-            struct video_picture V4L_picture;
-            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
-                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
-            V4L_picture.colour = uint(65535*getSaturation());
-            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
-                qDebug() << "Device seems to not support adjusting image saturation. Fallback to it is not yet implemented.";
-        }
-        break;
-#endif
-    case LINUX_DRIVER_NONE:
-        break;
-    }
-    return getSaturation();
-}
-
-float VideoDevice::getWhiteness()
-{
-    if (m_currentInput < m_inputs.size() )
-        return m_inputs[m_currentInput].getWhiteness();
-    else
-        return 0;
-}
-
-float VideoDevice::setWhiteness(float whiteness)
-{
-    qDebug() << "(" << whiteness << ") called.";
-    m_inputs[m_currentInput].setWhiteness(whiteness); // Just to check bounds
-
-    switch (m_linuxDriver)
-    {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-    case LINUX_DRIVER_V4L2:
-        {
-            struct v4l2_queryctrl queryctrl;
-            struct v4l2_control control;
-
-            CLEAR (queryctrl);
-            queryctrl.id = V4L2_CID_WHITENESS;
-
-            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
-            {
-                if (errno != EINVAL)
-                {
-                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
-                } else
-                {
-                    qDebug() << "Device doesn't support the Whiteness control.";
-                }
-            } else
-                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
-                {
-                qDebug() << "Whiteness control is disabled.";
-            } else
-            {
-                CLEAR (control);
-                control.id = V4L2_CID_WHITENESS;
-                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getWhiteness());
-
-                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
-                {
-                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
-                }
-            }
-        }
-        break;
-#endif
-#if defined(VIDEODEV_LINUX_V4L)
-    case LINUX_DRIVER_V4L:
-        {
-            struct video_picture V4L_picture;
-            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
-                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
-            V4L_picture.whiteness = uint(65535*getWhiteness());
-            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
-                qDebug() << "Device seems to not support adjusting white level. Fallback to it is not yet implemented.";
-        }
-        break;
-#endif
-    case LINUX_DRIVER_NONE:
-        break;
-    }
-    return getWhiteness();
-}
-
-float VideoDevice::getHue()
-{
-    if (m_currentInput < m_inputs.size() )
-        return m_inputs[m_currentInput].getHue();
-    else
-        return 0;
-}
-
-float VideoDevice::setHue(float hue)
-{
-    qDebug() << "(" << hue << ") called.";
-    m_inputs[m_currentInput].setHue(hue); // Just to check bounds
-
-    switch (m_linuxDriver)
-    {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-    case LINUX_DRIVER_V4L2:
-        {
-            struct v4l2_queryctrl queryctrl;
-            struct v4l2_control control;
-
-            CLEAR (queryctrl);
-            queryctrl.id = V4L2_CID_HUE;
-
-            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
-            {
-                if (errno != EINVAL)
-                {
-                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
-                } else
-                {
-                    qDebug() << "Device doesn't support the Hue control.";
-                }
-            } else
-                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
-                {
-                qDebug() << "Hue control is disabled.";
-            } else
-            {
-                CLEAR (control);
-                control.id = V4L2_CID_HUE;
-                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getHue());
-
-                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
-                {
-                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
-                }
-            }
-        }
-        break;
-#endif
-#if defined(VIDEODEV_LINUX_V4L)
-    case LINUX_DRIVER_V4L:
-        {
-            struct video_picture V4L_picture;
-            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
-                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
-            V4L_picture.hue = uint(65535*getHue());
-            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
-                qDebug() << "Device seems to not support adjusting image hue. Fallback to it is not yet implemented.";
-        }
-        break;
-#endif
-    case LINUX_DRIVER_NONE:
-        break;
-    }
-    return getHue();
-}
-*/
-
-bool VideoDevice::getAutoBrightnessContrast() const
-{
-    if (m_currentInput < m_inputs.size())
-        return m_inputs[m_currentInput].getAutoBrightnessContrast();
-    else
-        return false;
-}
-
-bool VideoDevice::setAutoBrightnessContrast(bool brightnesscontrast)
-{
-    qDebug() << "VideoDevice::setAutoBrightnessContrast(" << brightnesscontrast << ") called.";
-    if (m_currentInput < m_inputs.size()) {
-        m_inputs[m_currentInput].setAutoBrightnessContrast(brightnesscontrast);
-        return m_inputs[m_currentInput].getAutoBrightnessContrast();
-    }
-    return false;
-}
-
-bool VideoDevice::getAutoColorCorrection() const
-{
-    if (m_currentInput < m_inputs.size())
-        return m_inputs[m_currentInput].getAutoColorCorrection();
-    return false;
-}
-
-bool VideoDevice::setAutoColorCorrection(bool colorcorrection)
-{
-    qDebug() << "VideoDevice::setAutoColorCorrection(" << colorcorrection << ") called.";
-    if (m_currentInput < m_inputs.size()) {
-        m_inputs[m_currentInput].setAutoColorCorrection(colorcorrection);
-        return m_inputs[m_currentInput].getAutoColorCorrection();
-    }
-    return false;
-}
-
-bool VideoDevice::getImageAsMirror() const
-{
-    if (m_currentInput < m_inputs.size())
-        return m_inputs[m_currentInput].getImageAsMirror();
-    return false;
-}
-
-bool VideoDevice::setImageAsMirror(bool imageasmirror)
-{
-    qDebug() << "VideoDevice::setImageAsMirror(" << imageasmirror << ") called.";
-    if (m_currentInput < m_inputs.size()) {
-        m_inputs[m_currentInput].setImageAsMirror(imageasmirror);
-        return m_inputs[m_currentInput].getImageAsMirror();
-    }
-    return false;
-}
-
 PixelFormat VideoDevice::pixelFormatFromPlatform(int platform) const
 {
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     switch (m_linuxDriver) {
         case LINUX_DRIVER_NONE:
             break;
@@ -1780,7 +1387,7 @@ PixelFormat VideoDevice::pixelFormatFromPlatform(int platform) const
             }
             break;
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
         case LINUX_DRIVER_V4L2:
             switch (platform) {
                 case 0                      : return PIXELFORMAT_NONE;      break;
@@ -1831,7 +1438,7 @@ PixelFormat VideoDevice::pixelFormatFromPlatform(int platform) const
 #endif
     }
     return PIXELFORMAT_NONE;
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     Q_UNUSED(platform)
     WINTODO;
     return PIXELFORMAT_NONE;
@@ -1840,7 +1447,7 @@ PixelFormat VideoDevice::pixelFormatFromPlatform(int platform) const
 
 int VideoDevice::pixelFormatToPlatform(PixelFormat pixelformat) const
 {
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     switch (m_linuxDriver) {
         case LINUX_DRIVER_NONE:
             break;
@@ -1889,7 +1496,7 @@ int VideoDevice::pixelFormatToPlatform(PixelFormat pixelformat) const
             }
             break;
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
         case LINUX_DRIVER_V4L2:
             switch (pixelformat) {
                 case PIXELFORMAT_NONE	: return 0;                     break;
@@ -1940,7 +1547,7 @@ int VideoDevice::pixelFormatToPlatform(PixelFormat pixelformat) const
 #endif
     }
     return PIXELFORMAT_NONE;
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     Q_UNUSED(pixelformat)
     WINTODO;
     return PIXELFORMAT_NONE;
@@ -2043,7 +1650,7 @@ QString VideoDevice::pixelFormatName(PixelFormat pixelformat) const
 QString VideoDevice::pixelFormatNamePlatform(int pixelformat) const
 {
     QString returnvalue("None");
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     switch (m_linuxDriver) {
         case LINUX_DRIVER_NONE:
             break;
@@ -2064,7 +1671,7 @@ QString VideoDevice::pixelFormatNamePlatform(int pixelformat) const
             }
             break;
 
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
         case LINUX_DRIVER_V4L2:
             switch (pixelformat) {
                 case 0                          : returnvalue = pixelFormatName(PIXELFORMAT_NONE);      break;
@@ -2114,19 +1721,714 @@ QString VideoDevice::pixelFormatNamePlatform(int pixelformat) const
             break;
 #endif
     }
-#elif defined(VIDEODEV_WIN_VFW)
+#elif defined(VD_BUILD_WIN_VFW)
     Q_UNUSED(pixelformat)
     WINTODO;
 #endif
     return returnvalue;
 }
 
+#if defined(VD_BUILD_LINUX)
+bool VideoDevice::detectSignalStandards() const
+{
+    if (m_videoFileDescriptor == -1) {
+        qWarning("VideoDevice::detectSignalStandards: device not opened.");
+        return false;
+    }
+
+    switch (m_linuxDriver) {
+        case LINUX_DRIVER_NONE:
+            break;
+
+        case LINUX_DRIVER_V4L:
+            // TODO
+            break;
+
+#if defined(VD_BUILD_LINUX_TWO)
+        case LINUX_DRIVER_V4L2: {
+            // get the index of the current input
+            int index = 0;
+            if (-1 == xioctl(VIDIOC_G_INPUT, &index)) {
+                perror("VIDIOC_G_INPUT");
+                return false;
+            }
+
+            // describe the current input
+            struct v4l2_input input;
+            CLEAR(input);
+            input.index = index;
+            if (-1 == xioctl(VIDIOC_ENUMINPUT, &input)) {
+                perror("VIDIOC_ENUM_INPUT");
+                return false;
+            }
+            //qWarning("VideoDevice::detectSignalStandards: input %d is '%s' std: 0x%x", index, input.name, (int)input.std);
+
+            // skip standard matching if reported is unknown
+            if (input.std != V4L2_STD_UNKNOWN) {
+                // match the input.std to all the device's standards
+                struct v4l2_standard standard;
+                CLEAR(standard);
+                standard.index = 0;
+                while (-1 != xioctl(VIDIOC_ENUMSTD, &standard)) {
+                    //qDebug() << "SSS" << standard.name;
+                    if (standard.id & input.std)
+                        qDebug() << "VideoDevice::detectSignalStandards:" << /*signalStandardName(standard.id) <<*/ "(" << standard.id << ")";
+                    standard.index++;
+                }
+
+                // EINVAL indicates the end of the enumeration, which cannot be empty unless this device falls under the USB exception.
+                if (errno != EINVAL || standard.index == 0) {
+                    perror("VIDIOC_ENUMSTD");
+                    return false;
+                }
+            }
+            }break;
+#endif
+    }
+    return true;
+}
+
+int VideoDevice::xioctl(int request, void *arg) const
+{
+    int r;
+    //qWarning() << "ioctl:" << m_videoFileDescriptor << request;
+    do { r = ioctl(m_videoFileDescriptor, request, arg); }
+    while (r == -1 && errno == EINTR);
+    return r;
+}
+
+bool VideoDevice::initIoRead()
+{
+    if (m_videoFileDescriptor == -1) {
+        qDebug("VideoDevice::initIoRead: not opened");
+        return false;
+    }
+
+    // don't allocate anything: data will be copied straight to the ImageBuffer
+    m_frameMemory.clear();
+    return true;
+}
+
+bool VideoDevice::initIoMmap()
+{
+    if (m_videoFileDescriptor == -1) {
+        qDebug("VideoDevice::initIoMmap: not opened");
+        return false;
+    }
+
+#if defined(VD_BUILD_LINUX_TWO)
+    // request some MMAP buffers
+    struct v4l2_requestbuffers req;
+    CLEAR(req);
+    req.count  = IO_DATA_BUFFERS;
+    req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    req.memory = V4L2_MEMORY_MMAP;
+    if (-1 == xioctl(VIDIOC_REQBUFS, &req)) {
+        if (errno == EINVAL) {
+            qDebug() << "VideoDevice::initIoMmap:" << m_info.filePath << "does not support memory mapping";
+            return false;
+        } else {
+            perror("VIDIOC_REQBUFS (mmap)");
+            return false;
+        }
+    }
+    if (req.count < IO_DATA_BUFFERS) {
+        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_info.filePath;
+        return false;
+    }
+
+    // for each requested buffer
+    m_frameMemory.clear();
+    for (unsigned int i = 0; i < req.count; ++i) {
+        // configure buffer for mmap
+        struct v4l2_buffer vBuffer;
+        CLEAR(vBuffer);
+        vBuffer.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        vBuffer.memory = V4L2_MEMORY_MMAP;
+        vBuffer.index  = i;
+        if (-1 == xioctl(VIDIOC_QUERYBUF, &vBuffer)) {
+            perror("VIDIOC_QUERYBUF (mmap)");
+            return false;
+        }
+
+        // do mmap
+        void * start = mmap(NULL /* start anywhere */, vBuffer.length, PROT_READ | PROT_WRITE /* required */, MAP_SHARED /* recommended */, m_videoFileDescriptor, vBuffer.m.offset);
+        if (start == MAP_FAILED) {
+            perror("mmap (mmap)");
+            return false;
+        }
+
+        // create the FrameMemory companion
+        FrameMemory m;
+        m.length = vBuffer.length;
+        m.start = (uchar *)start;
+        m_frameMemory.append(m);
+    }
+#endif
+
+    // Makes the imagesize.data buffer size equal to the rawbuffer size
+    if (m_imageBuffer.data.size() != (int)m_frameMemory[0].length) {
+        qWarning("VideoDevice::initIoMmap: image buffer size %d was different than buffer's one %d. adapted.", m_imageBuffer.data.size(), m_frameMemory[0].length);
+        m_imageBuffer.data.resize(m_frameMemory[0].length);
+    }
+    qDebug() << "VideoDevice::initIoMmap: image buffer size" << m_imageBuffer.data.size();
+    return true;
+}
+
+bool VideoDevice::initIoUserptr()
+{
+    if (m_videoFileDescriptor == -1) {
+        qDebug("VideoDevice::initIoUserptr: not opened");
+        return false;
+    }
+
+#if defined(VD_BUILD_LINUX_TWO)
+    // request some USERPTR buffers
+    struct v4l2_requestbuffers req;
+    CLEAR(req);
+    req.count  = IO_DATA_BUFFERS;
+    req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    req.memory = V4L2_MEMORY_USERPTR;
+    if (-1 == xioctl(VIDIOC_REQBUFS, &req)) {
+        if (EINVAL == errno) {
+            qDebug() << "VideoDevice::initIoUserptr:" << m_info.filePath << "does not support memory mapping";
+            return false;
+        } else {
+            perror("VIDIOC_REQBUFS (uptr)");
+            return false;
+        }
+    }
+    if (req.count < IO_DATA_BUFFERS) {
+        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_info.filePath;
+        return false;
+    }
+
+    // for each requested buffer
+    m_frameMemory.clear();
+    for (unsigned int i = 0; i < req.count; ++i) {
+        // create the FrameMemory with userspace memory allocation
+        FrameMemory m;
+        m.length = m_imageBuffer.data.size();
+        m.start = (uchar *)malloc(m.length);
+        if (!m.start) {
+            qDebug("VideoDevice::initIoUserptr: Out of memory");
+            return false;
+        }
+        m_frameMemory.append(m);
+    }
+#endif
+    return true;
+}
+
+void VideoDevice::enumerateControls() const
+{
+#if defined(VD_BUILD_LINUX_TWO)
+    // -----------------------------------------------------------------------------------------------------------------
+    // This must turn up to be a proper method to check for controls' existence.
+    // v4l2_queryctrl may zero the .id in some cases, even if the IOCTL returns EXIT_SUCCESS (tested with a bttv card, when testing for V4L2_CID_AUDIO_VOLUME).
+    // As of 6th Aug 2007, according to the V4L2 specification version 0.21, this behavior is undocumented, and the example 1-8 code found at
+    // http://www.linuxtv.org/downloads/video4linux/API/V4L2_API/spec/x519.htm fails because of this behavior with a bttv card.
+    struct v4l2_queryctrl queryctrl;
+
+    qDebug() << "VideoDevice::enumerateControls: Checking CID controls";
+    for (int currentid = V4L2_CID_BASE; currentid < V4L2_CID_LASTP1; currentid++) {
+        CLEAR(queryctrl);
+        queryctrl.id = currentid;
+        if (0 == xioctl(VIDIOC_QUERYCTRL, &queryctrl)) {
+            if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
+                continue;
+            qDebug() << " Control:" << QString::fromLocal8Bit((const char*)queryctrl.name) << " [" << queryctrl.minimum << "..." << queryctrl.maximum << "] /" << queryctrl.step << " (default:" << queryctrl.default_value <<  ")";
+            switch (queryctrl.type) {
+                case V4L2_CTRL_TYPE_INTEGER:    break;
+                case V4L2_CTRL_TYPE_BOOLEAN:    break;
+                case V4L2_CTRL_TYPE_MENU:       enumerateMenu(queryctrl.id, queryctrl.minimum, queryctrl.maximum);    break;
+                case V4L2_CTRL_TYPE_BUTTON:     break;
+                case V4L2_CTRL_TYPE_INTEGER64:  break;
+                case V4L2_CTRL_TYPE_CTRL_CLASS: break;
+            }
+        } else if (errno != EINVAL)
+            perror("VIDIOC_QUERYCTRL");
+    }
+
+    qDebug() << "VideoDevice::enumerateControls: Checking CID private controls";
+    for (int currentid = V4L2_CID_PRIVATE_BASE;; currentid++) {
+        CLEAR(queryctrl);
+        queryctrl.id = currentid;
+        if (0 == xioctl (VIDIOC_QUERYCTRL, &queryctrl)) {
+            if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
+                continue;
+            qDebug() << " Control:" << QString::fromLocal8Bit((const char*)queryctrl.name) << " [" << queryctrl.minimum << "..." << queryctrl.maximum << "] /" << queryctrl.step << " (default: " << queryctrl.default_value << ")";
+            if (queryctrl.type == V4L2_CTRL_TYPE_MENU)
+                enumerateMenu(queryctrl.id, queryctrl.minimum, queryctrl.maximum);
+        } else {
+            if (errno == EINVAL)
+                break;
+            perror ("VIDIOC_QUERYCTRL");
+        }
+    }
+#endif
+}
+
+void VideoDevice::enumerateMenu(quint32 id, quint32 min, quint32 max) const
+{
+#if defined(VD_BUILD_LINUX_TWO)
+    qDebug() <<  "  Menu items:";
+    struct v4l2_querymenu queryMenu;
+    CLEAR(queryMenu);
+    queryMenu.id = id;
+    for (queryMenu.index = min; queryMenu.index <= max; ++queryMenu.index) {
+        if (0 == xioctl (VIDIOC_QUERYMENU, &queryMenu))
+            qDebug() <<  "  " << QString::fromLocal8Bit((const char*)queryMenu.name);
+        else {
+            perror("VIDIOC_QUERYMENU");
+            break;
+        }
+    }
+#else
+    Q_UNUSED(id);
+    Q_UNUSED(min);
+    Q_UNUSED(max);
+#endif
+}
+#endif
+
+
+/// Obsolete Code
+/// Obsolete Code
+/// Obsolete Code
+
 /*
+
+typedef enum {
+    // One bit for each
+    STANDARD_PAL_B		= (1 << 0),
+    STANDARD_PAL_B1		= (1 << 1),
+    STANDARD_PAL_G		= (1 << 2),
+    STANDARD_PAL_H		= (1 << 3),
+    STANDARD_PAL_I		= (1 << 4),
+    STANDARD_PAL_D		= (1 << 5),
+    STANDARD_PAL_D1		= (1 << 6),
+    STANDARD_PAL_K		= (1 << 7),
+
+    STANDARD_PAL_M		= (1 << 8),
+    STANDARD_PAL_N		= (1 << 9),
+    STANDARD_PAL_Nc		= (1 << 10),
+    STANDARD_PAL_60		= (1 << 11),
+    // STANDARD_PAL_60 is a hybrid standard with 525 lines, 60 Hz refresh rate, and PAL color modulation with a 4.43 MHz color subcarrier. Some PAL video recorders can play back NTSC tapes in this mode for display on a 50/60 Hz agnostic PAL TV.
+
+    STANDARD_NTSC_M		= (1 << 12),
+    STANDARD_NTSC_M_JP	= (1 << 13),
+    STANDARD_NTSC_443	= (1 << 14),
+    // STANDARD_NTSC_443 is a hybrid standard with 525 lines, 60 Hz refresh rate, and NTSC color modulation with a 4.43 MHz color subcarrier.
+    STANDARD_NTSC_M_KR	= (1 << 15),
+
+    STANDARD_SECAM_B	= (1 << 16),
+    STANDARD_SECAM_D	= (1 << 17),
+    STANDARD_SECAM_G	= (1 << 18),
+    STANDARD_SECAM_H	= (1 << 19),
+    STANDARD_SECAM_K	= (1 << 20),
+    STANDARD_SECAM_K1	= (1 << 21),
+    STANDARD_SECAM_L	= (1 << 22),
+    STANDARD_SECAM_LC	= (1 << 23),
+
+    // ATSC/HDTV
+    STANDARD_ATSC_8_VSB	= (1 << 24),
+    STANDARD_ATSC_16_VSB	= (1 << 25),
+
+    // Some common needed stuff
+    STANDARD_PAL_BG		= ( STANDARD_PAL_B   | STANDARD_PAL_B1   | STANDARD_PAL_G  ),
+    STANDARD_PAL_DK		= ( STANDARD_PAL_D   | STANDARD_PAL_D1   | STANDARD_PAL_K  ),
+    STANDARD_PAL		= ( STANDARD_PAL_BG  | STANDARD_PAL_DK   | STANDARD_PAL_H    | STANDARD_PAL_I  ),
+    STANDARD_NTSC		= ( STANDARD_NTSC_M  | STANDARD_NTSC_M_JP| STANDARD_NTSC_M_KR ),
+    STANDARD_SECAM_DK       = ( STANDARD_SECAM_D | STANDARD_SECAM_K  | STANDARD_SECAM_K1 ),
+    STANDARD_SECAM		= ( STANDARD_SECAM_B | STANDARD_SECAM_G  | STANDARD_SECAM_H  | STANDARD_SECAM_DK | STANDARD_SECAM_L | STANDARD_SECAM_LC ),
+
+    // some merged standards
+    STANDARD_MN		= ( STANDARD_PAL_M  | STANDARD_PAL_N    | STANDARD_PAL_Nc  | STANDARD_NTSC ),
+    STANDARD_B		= ( STANDARD_PAL_B  | STANDARD_PAL_B1   | STANDARD_SECAM_B ),
+    STANDARD_GH		= ( STANDARD_PAL_G  | STANDARD_PAL_H    | STANDARD_SECAM_G | STANDARD_SECAM_H ),
+    STANDARD_DK		= ( STANDARD_PAL_DK | STANDARD_SECAM_DK ),
+
+    STANDARD_525_60		= ( STANDARD_PAL_M   | STANDARD_PAL_60   | STANDARD_NTSC     | STANDARD_NTSC_443),
+    STANDARD_625_50		= ( STANDARD_PAL     | STANDARD_PAL_N    | STANDARD_PAL_Nc   | STANDARD_SECAM),
+    STANDARD_ATSC		= ( STANDARD_ATSC_8_VSB | STANDARD_ATSC_16_VSB ),
+
+    STANDARD_UNKNOWN	= 0,
+    STANDARD_ALL		= ( STANDARD_525_60  | STANDARD_625_50)
+} signal_standard;
+
+#define VIDEO_MODE_PAL_Nc  3
+#define VIDEO_MODE_PAL_M   4
+#define VIDEO_MODE_PAL_N   5
+#define VIDEO_MODE_NTSC_JP 6
+
+**** in VideoDevice class definition ****
+    quint64 signalStandardCode(signal_standard standard);
+    QString signalStandardName(signal_standard standard) const;
+    QString signalStandardName(int standard) const;
+
+    float getBrightness();
+    float setBrightness(float brightness);
+    float getContrast();
+    float setContrast(float contrast);
+    float getSaturation();
+    float setSaturation(float saturation);
+    float getWhiteness();
+    float setWhiteness(float whiteness);
+    float getHue();
+    float setHue(float Hue);
+
+
+float VideoDevice::getBrightness()
+{
+    if (m_currentInput < m_inputs.size() )
+        return m_inputs[m_currentInput].getBrightness();
+    else
+        return 0;
+}
+
+float VideoDevice::setBrightness(float brightness)
+{
+    qDebug() << "(" << brightness << ") called.";
+    m_inputs[m_currentInput].setBrightness(brightness); // Just to check bounds
+
+    switch (m_linuxDriver)
+    {
+#if defined(VD_BUILD_LINUX_TWO)
+    case LINUX_DRIVER_V4L2:
+        {
+            struct v4l2_queryctrl queryctrl;
+            struct v4l2_control control;
+
+            CLEAR (queryctrl);
+            queryctrl.id = V4L2_CID_BRIGHTNESS;
+
+            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
+            {
+                if (errno != EINVAL)
+                {
+                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
+                } else
+                {
+                    qDebug() << "Device doesn't support the Brightness control.";
+                }
+            } else
+                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
+                {
+                qDebug() << "Brightness control is disabled.";
+            } else
+            {
+                CLEAR (control);
+                control.id = V4L2_CID_BRIGHTNESS;
+                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getBrightness());
+
+                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
+                {
+                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
+                }
+            }
+        }
+        break;
+#endif
+#if defined(VD_BUILD_LINUX)
+    case LINUX_DRIVER_V4L:
+        {
+            struct video_picture V4L_picture;
+            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
+                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
+            V4L_picture.brightness = uint(65535 * getBrightness());
+            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
+                qDebug() << "Device seems to not support adjusting image brightness. Fallback to it is not yet implemented.";
+        }
+        break;
+#endif
+    case LINUX_DRIVER_NONE:
+        break;
+    }
+    return getBrightness();
+}
+
+float VideoDevice::getContrast()
+{
+    if (m_currentInput < m_inputs.size() )
+        return m_inputs[m_currentInput].getContrast();
+    else
+        return 0;
+}
+
+float VideoDevice::setContrast(float contrast)
+{
+    qDebug() << "(" << contrast << ") called.";
+    m_inputs[m_currentInput].setContrast(contrast); // Just to check bounds
+
+    switch (m_linuxDriver)
+    {
+#if defined(VD_BUILD_LINUX_TWO)
+    case LINUX_DRIVER_V4L2:
+        {
+            struct v4l2_queryctrl queryctrl;
+            struct v4l2_control control;
+
+            CLEAR (queryctrl);
+            queryctrl.id = V4L2_CID_CONTRAST;
+
+            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
+            {
+                if (errno != EINVAL)
+                {
+                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
+                } else
+                {
+                    qDebug() << "Device doesn't support the Contrast control.";
+                }
+            } else
+                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
+                {
+                qDebug() << "Contrast control is disabled.";
+            } else
+            {
+                CLEAR (control);
+                control.id = V4L2_CID_CONTRAST;
+                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getContrast());
+
+                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
+                {
+                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
+                }
+            }
+        }
+        break;
+#endif
+#if defined(VD_BUILD_LINUX)
+    case LINUX_DRIVER_V4L:
+        {
+            struct video_picture V4L_picture;
+            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
+                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
+            V4L_picture.contrast = uint(65535*getContrast());
+            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
+                qDebug() << "Device seems to not support adjusting image contrast. Fallback to it is not yet implemented.";
+        }
+        break;
+#endif
+    case LINUX_DRIVER_NONE:
+        break;
+    }
+    return getContrast();
+}
+
+float VideoDevice::getSaturation()
+{
+    if (m_currentInput < m_inputs.size() )
+        return m_inputs[m_currentInput].getSaturation();
+    else
+        return 0;
+}
+
+float VideoDevice::setSaturation(float saturation)
+{
+    qDebug() << "(" << saturation << ") called.";
+    m_inputs[m_currentInput].setSaturation(saturation); // Just to check bounds
+
+    switch (m_linuxDriver)
+    {
+#if defined(VD_BUILD_LINUX_TWO)
+    case LINUX_DRIVER_V4L2:
+        {
+            struct v4l2_queryctrl queryctrl;
+            struct v4l2_control control;
+
+            CLEAR (queryctrl);
+            queryctrl.id = V4L2_CID_SATURATION;
+
+            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
+            {
+                if (errno != EINVAL)
+                {
+                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
+                } else
+                {
+                    qDebug() << "Device doesn't support the Saturation control.";
+                }
+            } else
+                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
+                {
+                qDebug() << "Saturation control is disabled.";
+            } else
+            {
+                CLEAR (control);
+                control.id = V4L2_CID_SATURATION;
+                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getSaturation());
+
+                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
+                {
+                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
+                }
+            }
+        }
+        break;
+#endif
+#if defined(VD_BUILD_LINUX)
+    case LINUX_DRIVER_V4L:
+        {
+            struct video_picture V4L_picture;
+            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
+                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
+            V4L_picture.colour = uint(65535*getSaturation());
+            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
+                qDebug() << "Device seems to not support adjusting image saturation. Fallback to it is not yet implemented.";
+        }
+        break;
+#endif
+    case LINUX_DRIVER_NONE:
+        break;
+    }
+    return getSaturation();
+}
+
+float VideoDevice::getWhiteness()
+{
+    if (m_currentInput < m_inputs.size() )
+        return m_inputs[m_currentInput].getWhiteness();
+    else
+        return 0;
+}
+
+float VideoDevice::setWhiteness(float whiteness)
+{
+    qDebug() << "(" << whiteness << ") called.";
+    m_inputs[m_currentInput].setWhiteness(whiteness); // Just to check bounds
+
+    switch (m_linuxDriver)
+    {
+#if defined(VD_BUILD_LINUX_TWO)
+    case LINUX_DRIVER_V4L2:
+        {
+            struct v4l2_queryctrl queryctrl;
+            struct v4l2_control control;
+
+            CLEAR (queryctrl);
+            queryctrl.id = V4L2_CID_WHITENESS;
+
+            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
+            {
+                if (errno != EINVAL)
+                {
+                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
+                } else
+                {
+                    qDebug() << "Device doesn't support the Whiteness control.";
+                }
+            } else
+                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
+                {
+                qDebug() << "Whiteness control is disabled.";
+            } else
+            {
+                CLEAR (control);
+                control.id = V4L2_CID_WHITENESS;
+                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getWhiteness());
+
+                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
+                {
+                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
+                }
+            }
+        }
+        break;
+#endif
+#if defined(VD_BUILD_LINUX)
+    case LINUX_DRIVER_V4L:
+        {
+            struct video_picture V4L_picture;
+            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
+                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
+            V4L_picture.whiteness = uint(65535*getWhiteness());
+            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
+                qDebug() << "Device seems to not support adjusting white level. Fallback to it is not yet implemented.";
+        }
+        break;
+#endif
+    case LINUX_DRIVER_NONE:
+        break;
+    }
+    return getWhiteness();
+}
+
+float VideoDevice::getHue()
+{
+    if (m_currentInput < m_inputs.size() )
+        return m_inputs[m_currentInput].getHue();
+    else
+        return 0;
+}
+
+float VideoDevice::setHue(float hue)
+{
+    qDebug() << "(" << hue << ") called.";
+    m_inputs[m_currentInput].setHue(hue); // Just to check bounds
+
+    switch (m_linuxDriver)
+    {
+#if defined(VD_BUILD_LINUX_TWO)
+    case LINUX_DRIVER_V4L2:
+        {
+            struct v4l2_queryctrl queryctrl;
+            struct v4l2_control control;
+
+            CLEAR (queryctrl);
+            queryctrl.id = V4L2_CID_HUE;
+
+            if (-1 == xioctl (VIDIOC_QUERYCTRL, &queryctrl))
+            {
+                if (errno != EINVAL)
+                {
+                    qDebug() <<  "VIDIOC_QUERYCTRL failed (" << errno << ").";
+                } else
+                {
+                    qDebug() << "Device doesn't support the Hue control.";
+                }
+            } else
+                if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
+                {
+                qDebug() << "Hue control is disabled.";
+            } else
+            {
+                CLEAR (control);
+                control.id = V4L2_CID_HUE;
+                control.value = (__s32)((queryctrl.maximum - queryctrl.minimum)*getHue());
+
+                if (-1 == xioctl (VIDIOC_S_CTRL, &control))
+                {
+                    qDebug() <<  "VIDIOC_S_CTRL failed (" << errno << ").";
+                }
+            }
+        }
+        break;
+#endif
+#if defined(VD_BUILD_LINUX)
+    case LINUX_DRIVER_V4L:
+        {
+            struct video_picture V4L_picture;
+            if(-1 == xioctl(VIDIOCGPICT, &V4L_picture))
+                qDebug() << "VIDIOCGPICT failed (" << errno << ").";
+            V4L_picture.hue = uint(65535*getHue());
+            if(-1 == xioctl(VIDIOCSPICT,&V4L_picture))
+                qDebug() << "Device seems to not support adjusting image hue. Fallback to it is not yet implemented.";
+        }
+        break;
+#endif
+    case LINUX_DRIVER_NONE:
+        break;
+    }
+    return getHue();
+}
+
 quint64 VideoDevice::signalStandardCode(signal_standard standard)
 {
     switch (m_linuxDriver)
     {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
     case LINUX_DRIVER_V4L2:
         switch (standard)
         {
@@ -2182,7 +2484,7 @@ quint64 VideoDevice::signalStandardCode(signal_standard standard)
         }
         break;
 #endif
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
     case LINUX_DRIVER_V4L:
         switch (standard)
         {
@@ -2306,7 +2608,7 @@ QString VideoDevice::signalStandardName(int standard) const
 {
     QString returnvalue = "None";
     switch (m_linuxDriver) {
-#if defined(VIDEODEV_LINUX_V4L_TWO)
+#if defined(VD_BUILD_LINUX_TWO)
         case LINUX_DRIVER_V4L2:
             switch (standard)
             {
@@ -2359,7 +2661,7 @@ QString VideoDevice::signalStandardName(int standard) const
             }
             break;
 #endif
-#if defined(VIDEODEV_LINUX_V4L)
+#if defined(VD_BUILD_LINUX)
         case LINUX_DRIVER_V4L:
             switch (standard) {
                 case VIDEO_MODE_PAL     : returnvalue = signalStandardName(STANDARD_PAL);	break;
@@ -2379,297 +2681,5 @@ QString VideoDevice::signalStandardName(int standard) const
     return returnvalue;
 }
 */
-bool VideoDevice::canCapture() const
-{
-    return m_videocapture;
-}
-
-bool VideoDevice::canChromakey() const
-{
-    return m_videochromakey;
-}
-
-bool VideoDevice::canScale() const
-{
-    return m_videoscale;
-}
-
-bool VideoDevice::canOverlay() const
-{
-    return m_videooverlay;
-}
-
-bool VideoDevice::canRead() const
-{
-    return m_videoread;
-}
-
-bool VideoDevice::canAsyncIO() const
-{
-    return m_videoasyncio;
-}
-
-bool VideoDevice::canStream() const
-{
-    return m_videostream;
-}
-
-#if defined(VIDEODEV_LINUX_V4L)
-bool VideoDevice::detectSignalStandards() const
-{
-    if (m_videoFileDescriptor == -1) {
-        qWarning("VideoDevice::detectSignalStandards: device not opened.");
-        return false;
-    }
-
-    switch (m_linuxDriver) {
-        case LINUX_DRIVER_NONE:
-            break;
-
-        case LINUX_DRIVER_V4L:
-            // TODO
-            break;
-
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-        case LINUX_DRIVER_V4L2: {
-            // get the index of the current input
-            int index = 0;
-            if (-1 == xioctl(VIDIOC_G_INPUT, &index)) {
-                perror("VIDIOC_G_INPUT");
-                return false;
-            }
-
-            // describe the current input
-            struct v4l2_input input;
-            CLEAR(input);
-            input.index = index;
-            if (-1 == xioctl(VIDIOC_ENUMINPUT, &input)) {
-                perror("VIDIOC_ENUM_INPUT");
-                return false;
-            }
-            //qWarning("VideoDevice::detectSignalStandards: input %d is '%s' std: 0x%x", index, input.name, (int)input.std);
-
-            // skip standard matching if reported is unknown
-            if (input.std != V4L2_STD_UNKNOWN) {
-                // match the input.std to all the device's standards
-                struct v4l2_standard standard;
-                CLEAR(standard);
-                standard.index = 0;
-                while (-1 != xioctl(VIDIOC_ENUMSTD, &standard)) {
-                    //qDebug() << "SSS" << standard.name;
-                    if (standard.id & input.std)
-                        qDebug() << "VideoDevice::detectSignalStandards:" << /*signalStandardName(standard.id) <<*/ "(" << standard.id << ")";
-                    standard.index++;
-                }
-
-                // EINVAL indicates the end of the enumeration, which cannot be empty unless this device falls under the USB exception.
-                if (errno != EINVAL || standard.index == 0) {
-                    perror("VIDIOC_ENUMSTD");
-                    return false;
-                }
-            }
-            }break;
-#endif
-    }
-    return true;
-}
-
-int VideoDevice::xioctl(int request, void *arg) const
-{
-    int r;
-    //qWarning() << "ioctl:" << m_videoFileDescriptor << request;
-    do { r = ioctl(m_videoFileDescriptor, request, arg); }
-    while (r == -1 && errno == EINTR);
-    return r;
-}
-
-bool VideoDevice::initIoRead()
-{
-    if (m_videoFileDescriptor == -1) {
-        qDebug("VideoDevice::initIoRead: not opened");
-        return false;
-    }
-
-    // don't allocate anything: data will be copied straight to the ImageBuffer
-    m_dataBuffers.clear();
-    return true;
-}
-
-bool VideoDevice::initIoMmap()
-{
-    if (m_videoFileDescriptor == -1) {
-        qDebug("VideoDevice::initIoMmap: not opened");
-        return false;
-    }
-
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-    // request some MMAP buffers
-    struct v4l2_requestbuffers req;
-    CLEAR(req);
-    req.count  = IO_DATA_BUFFERS;
-    req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    req.memory = V4L2_MEMORY_MMAP;
-    if (-1 == xioctl(VIDIOC_REQBUFS, &req)) {
-        if (errno == EINVAL) {
-            qDebug() << "VideoDevice::initIoMmap:" << m_info.filePath << "does not support memory mapping";
-            return false;
-        } else {
-            perror("VIDIOC_REQBUFS (mmap)");
-            return false;
-        }
-    }
-    if (req.count < IO_DATA_BUFFERS) {
-        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_info.filePath;
-        return false;
-    }
-
-    // for each requested buffer
-    m_dataBuffers.clear();
-    for (unsigned int i = 0; i < req.count; ++i) {
-        // configure buffer for mmap
-        struct v4l2_buffer vBuffer;
-        CLEAR(vBuffer);
-        vBuffer.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        vBuffer.memory = V4L2_MEMORY_MMAP;
-        vBuffer.index  = i;
-        if (-1 == xioctl(VIDIOC_QUERYBUF, &vBuffer)) {
-            perror("VIDIOC_QUERYBUF (mmap)");
-            return false;
-        }
-
-        // do mmap
-        void * start = mmap(NULL /* start anywhere */, vBuffer.length, PROT_READ | PROT_WRITE /* required */, MAP_SHARED /* recommended */, m_videoFileDescriptor, vBuffer.m.offset);
-        if (start == MAP_FAILED) {
-            perror("mmap (mmap)");
-            return false;
-        }
-
-        // create the DataBuffer companion
-        DataBuffer d;
-        d.length = vBuffer.length;
-        d.start = (uchar *)start;
-        m_dataBuffers.append(d);
-    }
-#endif
-
-    // Makes the imagesize.data buffer size equal to the rawbuffer size
-    if (m_imageBuffer.data.size() != (int)m_dataBuffers[0].length) {
-        qWarning("VideoDevice::initIoMmap: image buffer size %d was different than buffer's one %d. adapted.", m_imageBuffer.data.size(), m_dataBuffers[0].length);
-        m_imageBuffer.data.resize(m_dataBuffers[0].length);
-    }
-    qDebug() << "VideoDevice::initIoMmap: image buffer size" << m_imageBuffer.data.size();
-    return true;
-}
-
-bool VideoDevice::initIoUserptr()
-{
-    if (m_videoFileDescriptor == -1) {
-        qDebug("VideoDevice::initIoUserptr: not opened");
-        return false;
-    }
-
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-    // request some USERPTR buffers
-    struct v4l2_requestbuffers req;
-    CLEAR(req);
-    req.count  = IO_DATA_BUFFERS;
-    req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    req.memory = V4L2_MEMORY_USERPTR;
-    if (-1 == xioctl(VIDIOC_REQBUFS, &req)) {
-        if (EINVAL == errno) {
-            qDebug() << "VideoDevice::initIoUserptr:" << m_info.filePath << "does not support memory mapping";
-            return false;
-        } else {
-            perror("VIDIOC_REQBUFS (uptr)");
-            return false;
-        }
-    }
-    if (req.count < IO_DATA_BUFFERS) {
-        qDebug() << "VideoDevice::initIoMmap: insufficient buffer memory on " << m_info.filePath;
-        return false;
-    }
-
-    // for each requested buffer
-    m_dataBuffers.clear();
-    for (unsigned int i = 0; i < req.count; ++i) {
-        // create the DataBuffer with userspace memory allocation
-        DataBuffer d;
-        d.length = m_imageBuffer.data.size();
-        d.start = (uchar *)malloc(d.length);
-        if (!d.start) {
-            qDebug("VideoDevice::initIoUserptr: Out of memory");
-            return false;
-        }
-        m_dataBuffers.append(d);
-    }
-#endif
-    return true;
-}
-
-#if defined(VIDEODEV_LINUX_V4L_TWO)
-void VideoDevice::enumerateControls() const
-{
-    // -----------------------------------------------------------------------------------------------------------------
-    // This must turn up to be a proper method to check for controls' existence.
-    // v4l2_queryctrl may zero the .id in some cases, even if the IOCTL returns EXIT_SUCCESS (tested with a bttv card, when testing for V4L2_CID_AUDIO_VOLUME).
-    // As of 6th Aug 2007, according to the V4L2 specification version 0.21, this behavior is undocumented, and the example 1-8 code found at
-    // http://www.linuxtv.org/downloads/video4linux/API/V4L2_API/spec/x519.htm fails because of this behavior with a bttv card.
-    struct v4l2_queryctrl queryctrl;
-
-    qDebug() << "VideoDevice::enumerateControls: Checking CID controls";
-    for (int currentid = V4L2_CID_BASE; currentid < V4L2_CID_LASTP1; currentid++) {
-        CLEAR(queryctrl);
-        queryctrl.id = currentid;
-        if (0 == xioctl(VIDIOC_QUERYCTRL, &queryctrl)) {
-            if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
-                continue;
-            qDebug() << " Control:" << QString::fromLocal8Bit((const char*)queryctrl.name) << " [" << queryctrl.minimum << "..." << queryctrl.maximum << "] /" << queryctrl.step << " (default:" << queryctrl.default_value <<  ")";
-            switch (queryctrl.type) {
-                case V4L2_CTRL_TYPE_INTEGER:    break;
-                case V4L2_CTRL_TYPE_BOOLEAN:    break;
-                case V4L2_CTRL_TYPE_MENU:       enumerateMenu(queryctrl.id, queryctrl.minimum, queryctrl.maximum);    break;
-                case V4L2_CTRL_TYPE_BUTTON:     break;
-                case V4L2_CTRL_TYPE_INTEGER64:  break;
-                case V4L2_CTRL_TYPE_CTRL_CLASS: break;
-            }
-        } else if (errno != EINVAL)
-            perror("VIDIOC_QUERYCTRL");
-    }
-
-    qDebug() << "VideoDevice::enumerateControls: Checking CID private controls";
-    for (int currentid = V4L2_CID_PRIVATE_BASE;; currentid++) {
-        CLEAR(queryctrl);
-        queryctrl.id = currentid;
-        if (0 == xioctl (VIDIOC_QUERYCTRL, &queryctrl)) {
-            if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
-                continue;
-            qDebug() << " Control:" << QString::fromLocal8Bit((const char*)queryctrl.name) << " [" << queryctrl.minimum << "..." << queryctrl.maximum << "] /" << queryctrl.step << " (default: " << queryctrl.default_value << ")";
-            if (queryctrl.type == V4L2_CTRL_TYPE_MENU)
-                enumerateMenu(queryctrl.id, queryctrl.minimum, queryctrl.maximum);
-        } else {
-            if (errno == EINVAL)
-                break;
-            perror ("VIDIOC_QUERYCTRL");
-        }
-    }
-}
-
-void VideoDevice::enumerateMenu(quint32 id, quint32 min, quint32 max) const
-{
-    qDebug() <<  "  Menu items:";
-    struct v4l2_querymenu queryMenu;
-    CLEAR(queryMenu);
-    queryMenu.id = id;
-    for (queryMenu.index = min; queryMenu.index <= max; ++queryMenu.index) {
-        if (0 == xioctl (VIDIOC_QUERYMENU, &queryMenu))
-            qDebug() <<  "  " << QString::fromLocal8Bit((const char*)queryMenu.name);
-        else {
-            perror("VIDIOC_QUERYMENU");
-            break;
-        }
-    }
-}
-#endif
-#endif
 
 } // namespace VideoCapture
