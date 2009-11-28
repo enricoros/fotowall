@@ -368,9 +368,9 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
 #endif
     }
 #elif defined(VD_BUILD_WIN_VFW)
+    // THIS IS RUDE!! :-/ FIXME TODO HELPME
     pixelFormat = PIXELFORMAT_YUYV;
-    m_imageBuffer.width = 640;
-    m_imageBuffer.height = 480;
+    m_imageBuffer.size = QSize(640, 480);
 #endif
 
     // 4. setup imagebuffer
@@ -393,7 +393,7 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
 
 #if defined(VD_BUILD_WIN_VFW)
 static ImageBuffer * s_imageBuffer = 0;
-static LRESULT videoCallback(__in HWND hWnd, __in LPVIDEOHDR lpVHdr)
+static LRESULT videoCallback(__in HWND /*hWnd*/, __in LPVIDEOHDR lpVHdr)
 {
     if (!s_imageBuffer || !(lpVHdr->dwFlags & VHDR_KEYFRAME))
         return 0;
