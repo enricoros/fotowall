@@ -19,29 +19,21 @@
 
 #include <QString>
 
-#ifdef Q_OS_LINUX
-#include <asm/types.h>
-#undef __STRICT_ANSI__
-#endif
-
-#ifndef __u64 //required by videodev.h
-#define __u64 quint64
-#endif
-
 namespace VideoCapture {
 
 /**
     @brief Describe/Control the parameters of a single video stream
     @author Kopete Developers - modified by Enrico Ros for Fotowall inclusion
 */
-class VideoInput{
+/// THIS CLASS IS GOING AWAY !! - ENRICO - 20091127
+class VideoInput {
 public:
     VideoInput();
     ~VideoInput();
 
     QString name;
     int  hastuner;
-    __u64 m_standards;
+    quint64 m_standards;
     float getBrightness();
     float setBrightness(float brightness);
     float getContrast();
@@ -56,7 +48,7 @@ public:
     bool setAutoBrightnessContrast(bool brightnesscontrast);
     bool getAutoColorCorrection() const;
     bool setAutoColorCorrection(bool colorcorrection);
-    bool getImageAsMirror();
+    bool getImageAsMirror() const;
     bool setImageAsMirror(bool imageasmirror);
 
 private:

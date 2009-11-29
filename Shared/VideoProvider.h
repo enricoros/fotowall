@@ -57,8 +57,7 @@ class VideoProvider : public QObject
 
     private Q_SLOTS:
         void initDevices();
-        void slotInitVideo(const QString & device);
-        void slotCaptureVideoFrames();
+        void slotCaptureFromDevices();
 };
 
 #if defined(HAS_VIDEOCAPTURE)
