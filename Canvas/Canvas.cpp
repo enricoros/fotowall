@@ -902,7 +902,7 @@ void Canvas::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 
         // match local and remote urls against all supported extensions
         foreach (const QUrl & url, event->mimeData()->urls()) {
-            if (url.scheme() == "http" || url.scheme() == "ftp" || !url.toLocalFile().isEmpty()) {
+            if (url.scheme() == "http" || url.scheme() == "ftp" || !url.toString().isEmpty()) {
                 QString urlString = url.toString();
                 foreach (const QString & extension, extensions) {
                     if (urlString.endsWith(extension, Qt::CaseInsensitive)) {
@@ -958,9 +958,14 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             }
 
             // handle local files
-            if (QFile::exists(url.toLocalFile())) {
+#ifdef Q_WS_WIN
+            QString fileName = url.toString();
+#else
+            QString fileName = url.toLocalFile();
+#endif
+            if (QFile::exists(fileName)) {
                 PictureContent * p = createPicture(pos);
-                if (!p->loadPhoto(url.toLocalFile(), true, true)) {
+                if (!p->loadPhoto(fileName, true, true)) {
                     m_content.removeAll(p);
                     delete p;
                 } else

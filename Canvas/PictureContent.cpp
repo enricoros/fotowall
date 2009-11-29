@@ -414,8 +414,13 @@ void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
             }
         }
         // handle local drops
-        if (QFile::exists(url.toLocalFile())) {
-            if (loadPhoto(url.toLocalFile(), true, true)) {
+#ifdef Q_WS_WIN
+        QString fileName = url.toString();
+#else
+        QString fileName = url.toLocalFile();
+#endif
+        if (QFile::exists(fileName)) {
+            if (loadPhoto(fileName, true, true)) {
                 event->accept();
                 return;
             }

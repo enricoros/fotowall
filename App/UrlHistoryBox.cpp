@@ -79,7 +79,11 @@ void UrlHistoryBox::slotContextMenu(const QPoint & widgetPos)
     PixmapButton * button = static_cast<PixmapButton *>(sender());
     QPoint screenPos = button->mapToGlobal(widgetPos);
     QUrl fileUrl = button->property("url").toUrl();
+#ifdef Q_WS_WIN
+    QString fileString = fileUrl.toString();
+#else
     QString fileString = fileUrl.toLocalFile();
+#endif
     if (!QFile::exists(fileString))
         return;
 
@@ -113,7 +117,11 @@ void UrlHistoryBox::slotNextPreview()
         return;
     int currentIndex = m_previewIndex++;
     QUrl currentUrl = m_entries[currentIndex]->property("url").toUrl();
+#ifdef Q_WS_WIN
+    QString fileName = currentUrl.toString();
+#else
     QString fileName = currentUrl.toLocalFile();
+#endif
 
     // get the embedded preview
     QImage previewImage = FotowallFile::embeddedPreview(fileName);
