@@ -1,9 +1,9 @@
 VPATH += $$PWD
 DEPENDPATH += $$PWD
 
-macx: CONFIG += NO_VIDEOCAPTURE
+macx: CONFIG += no-webcam
 
-!contains(CONFIG, NO_VIDEOCAPTURE): {
+!contains(CONFIG, no-webcam): {
     DEFINES += HAS_VIDEOCAPTURE
 
     HEADERS += bayer.h \

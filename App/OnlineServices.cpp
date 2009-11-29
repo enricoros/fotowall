@@ -43,8 +43,10 @@ OnlineServices::OnlineServices(QNetworkAccessManager * nam, QObject * parent)
     // set the global reference
     App::onlineServices = this;
 
+#if !defined(NO_UPDATE_CHECK)
     // start-up operations
     autoUpdate();
+#endif
 }
 
 OnlineServices::~OnlineServices()
