@@ -32,6 +32,8 @@ class WordcloudContent : public AbstractContent, public SingleResourceLoaner
         WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~WordcloudContent();
 
+        void manualInitialization();
+
         // ::AbstractContent
         QString contentName() const { return tr("Wordcloud"); }
         bool fromXml(QDomElement & contentElement, const QDir & baseDir);

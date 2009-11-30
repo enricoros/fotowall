@@ -166,6 +166,7 @@ void UrlHistoryBox::slotContextMenu(const QPoint & widgetPos)
         if (QFile::remove(fwFilePath)) {
             m_entries.removeAll(button);
             button->deleteLater();
+            emit urlRemoved(QUrl(fwFilePath));
         } else
             qWarning("UrlHistoryBox::slotContextMenu: cannot remove file");
     }

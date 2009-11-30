@@ -16,6 +16,7 @@
 #define __WordItem_h__
 
 #include <QAbstractGraphicsShapeItem>
+#include <QDomElement>
 #include "Bits.h"
 
 namespace Wordcloud {
@@ -27,6 +28,9 @@ namespace Wordcloud {
         public:
             WordItem(const Word & word, const QFont & font, double rotation,
                      int minCount, int maxCount, QGraphicsItem * parent = 0);
+
+            WordItem(QDomElement & wordElement, QGraphicsItem * parent = 0);
+            void saveToXml(QDomElement & wordElement) const;
 
             QRectF tmpPlacedRect;
 
@@ -47,8 +51,8 @@ namespace Wordcloud {
             void regeneratePath();
 
             QFont m_font;
-            double m_rotation;
-            Word m_word;
+            qreal m_rotation;
+            QString m_string;
 
             QPainterPath m_path;
             QRectF m_boudingRect;

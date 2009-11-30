@@ -222,6 +222,7 @@ void Canvas::addWordcloudContent()
 {
     clearSelection();
     WordcloudContent * w = createWordcloud(nearCenter(sceneRect()));
+    w->manualInitialization();
     w->setSelected(true);
 }
 

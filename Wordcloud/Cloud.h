@@ -16,6 +16,7 @@
 #define __Cloud_h__
 
 #include <QObject>
+#include <QDomElement>
 #include "Bits.h"
 #include "WordItem.h"
 
@@ -48,6 +49,10 @@ namespace Wordcloud {
 
             void setBusyMode(Wordcloud::BusyMode mode);
             Wordcloud::BusyMode busyMode() const;
+
+            // load/save
+            bool loadFromXml(QDomElement & cloudElement);
+            void saveToXml(QDomElement & cloudElement) const;
 
         private:
             void process();

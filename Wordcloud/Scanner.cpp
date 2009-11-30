@@ -87,6 +87,11 @@ WordList Scanner::takeWords(bool cleanList)
         qSort(m_words.begin(), m_words.end(), wordFrequencySorter);
     }
 
+    // FIXME find out common words (FAKE: use the first..)
+    WordList::iterator wIt = m_words.begin();
+    for (; wIt != m_words.end(); ++wIt)
+        wIt->commonString = wIt->variants.begin().key();
+
     // clear private list and return
     WordList wl = m_words;
     m_words.clear();

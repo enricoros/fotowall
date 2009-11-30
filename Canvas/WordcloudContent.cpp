@@ -28,7 +28,20 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
 {
     connect(m_cloudScene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintScene(const QList<QRectF> &)));
     m_cloud->setScene(m_cloudScene);
+}
 
+WordcloudContent::~WordcloudContent()
+{
+    if (m_cloudTaken)
+        qWarning("WordcloudContent::~WordcloudContent: Wordcloud still exported");
+    // this deletes even all the items of the cloud
+    delete m_cloudScene;
+    // this deletes only the container (BAD DONE, IMPROVE)
+    delete m_cloud;
+}
+
+void WordcloudContent::manualInitialization()
+{
     // temporarily get words
     Wordcloud::Scanner scanner;
     QString txtFilePath = QFileDialog::getOpenFileName(0, tr("Create a Wordcloud from a text file"));
@@ -48,24 +61,13 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
     }
 }
 
-WordcloudContent::~WordcloudContent()
-{
-    if (m_cloudTaken)
-        qWarning("WordcloudContent::~WordcloudContent: Wordcloud still exported");
-    // this deletes even all the items of the cloud
-    delete m_cloudScene;
-    // this deletes only the container (BAD DONE, IMPROVE)
-    delete m_cloud;
-}
-
 bool WordcloudContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
     AbstractContent::fromXml(contentElement, baseDir);
 
-    qWarning("WordcloudContent::fromXml: not implemented");
-
-    // ### load wordcloud properties
-    return false;
+    // restore the cloud
+    QDomElement cloudElement = contentElement.firstChildElement("cloud");
+    return m_cloud->loadFromXml(cloudElement);
 }
 
 void WordcloudContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
@@ -73,9 +75,17 @@ void WordcloudContent::toXml(QDomElement & contentElement, const QDir & baseDir)
     AbstractContent::toXml(contentElement, baseDir);
     contentElement.setTagName("wordcloud");
 
-    qWarning("WordcloudContent::toXml: not implemented");
+    // sanity check
+    if (m_cloudTaken) {
+        qWarning("WordcloudContent::toXml: resource taken, can't save it");
+        return;
+    }
 
-    // ### save all wordclouds
+    // dump cloud
+    QDomDocument doc = contentElement.ownerDocument();
+    QDomElement cloudElement = doc.createElement("cloud");
+    contentElement.appendChild(cloudElement);
+    m_cloud->saveToXml(cloudElement);
 }
 
 void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
