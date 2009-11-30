@@ -130,7 +130,7 @@ void HomeAppliance::slotRemoveFromHistory(const QUrl & url)
 
     // change urls
     QList<QUrl> recentUrls = App::settings->recentFotowallUrls();
-    m_historyBox->changeUrls(recentUrls);
+    m_historyBox->changeUrls(recentUrls, false);
 }
 
 void HomeAppliance::slotOpenFile()

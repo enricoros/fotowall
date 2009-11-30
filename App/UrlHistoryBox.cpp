@@ -37,7 +37,7 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
 
     // set initial urls, if given
     if (!urls.isEmpty())
-        changeUrls(urls);
+        changeUrls(urls, true);
 }
 
 UrlHistoryBox::~UrlHistoryBox()
@@ -46,7 +46,7 @@ UrlHistoryBox::~UrlHistoryBox()
     m_entries.clear();
 }
 
-void UrlHistoryBox::changeUrls(const QList<QUrl> & urls)
+void UrlHistoryBox::changeUrls(const QList<QUrl> & urls, bool delayPreview)
 {
     // remove previous icons, if any
     qDeleteAll(m_entries);
@@ -66,13 +66,27 @@ void UrlHistoryBox::changeUrls(const QList<QUrl> & urls)
         button->setProperty("url", url);
         button->setHoverText(QString::number(i+1));
         button->setToolTip(url.toString());
+        int mag = (qrand() % 7) + (qrand() % 7);
+        static bool dir = true; dir = !dir;
+        int angle = dir ? mag : -mag;
+        button->setProperty("angle", angle);
         layout()->addWidget(button);
         m_entries.append(button);
+        if (delayPreview) {
+#if 0
+            QImage img(48, 48, QImage::Format_ARGB32_Premultiplied);
+            img.fill(0xFF808080);
+            button->setPixmap(prettyPixmap(img, angle));
+#endif
+        } else
+            genPreview(button);
     }
 
     // start preview jobs
-    m_previewIndex = 0;
-    QTimer::singleShot(100, this, SLOT(slotNextPreview()));
+    if (delayPreview) {
+        m_previewIndex = 0;
+        QTimer::singleShot(100, this, SLOT(slotNextPreview()));
+    }
 }
 
 QUrl UrlHistoryBox::urlForEntry(int index) const
@@ -80,6 +94,41 @@ QUrl UrlHistoryBox::urlForEntry(int index) const
     if (index < 0 || index >= m_entries.size())
         return QUrl();
     return m_entries[index]->property("url").toUrl();
+}
+
+QPixmap UrlHistoryBox::prettyPixmap(const QImage & image, int angle)
+{
+    QTransform rot;
+    rot.rotate(angle);
+    const QImage rotated = image.transformed(rot, Qt::SmoothTransformation);
+    const QImage shadowed = GlowEffectWidget::dropShadow(rotated, QColor(64, 64, 64), 6, 1, 1);
+    return QPixmap::fromImage(shadowed);
+}
+
+void UrlHistoryBox::genPreview(PixmapButton * button)
+{
+    QUrl currentUrl = button->property("url").toUrl();
+    QString fwFilePath = currentUrl.toString();
+
+    // get the embedded preview
+    QImage previewImage = FotowallFile::embeddedPreview(fwFilePath);
+
+    // generate preview
+    if (previewImage.isNull()) {
+        Canvas * canvas = new Canvas(physicalDpiX(), physicalDpiY(), this);
+        if (FotowallFile::read(fwFilePath, canvas, false)) {
+            // render canvas, rotate, drop shadow and set
+            canvas->resizeAutoFit();
+            previewImage = canvas->renderedImage(QSize(48, 48), Qt::KeepAspectRatio, true);
+        }
+        delete canvas;
+    }
+
+    // make a pretty preview (rotated and shadowed)
+    if (!previewImage.isNull()) {
+        int angle = button->property("angle").toInt();
+        button->setPixmap(prettyPixmap(previewImage, angle));
+    }
 }
 
 void UrlHistoryBox::slotClicked()
@@ -124,38 +173,13 @@ void UrlHistoryBox::slotContextMenu(const QPoint & widgetPos)
 
 void UrlHistoryBox::slotNextPreview()
 {
-    if (m_previewIndex >= m_entries.size())
-        return;
-    int currentIndex = m_previewIndex++;
-    QUrl currentUrl = m_entries[currentIndex]->property("url").toUrl();
-    QString fwFilePath = currentUrl.toString();
+    if (m_previewIndex < m_entries.size()) {
+        PixmapButton * btn = m_entries[m_previewIndex];
+        genPreview(btn);
+        m_previewIndex++;
 
-    // get the embedded preview
-    QImage previewImage = FotowallFile::embeddedPreview(fwFilePath);
-
-    // generate preview
-    if (previewImage.isNull()) {
-        Canvas * canvas = new Canvas(physicalDpiX(), physicalDpiY(), this);
-        if (FotowallFile::read(fwFilePath, canvas, false)) {
-            // render canvas, rotate, drop shadow and set
-            canvas->resizeAutoFit();
-            previewImage = canvas->renderedImage(QSize(48, 48), Qt::KeepAspectRatio, true);
-        }
-        delete canvas;
+        // start next job right after
+        if (m_previewIndex < m_entries.size())
+            QTimer::singleShot(10, this, SLOT(slotNextPreview()));
     }
-
-    // make a pretty preview (rotated and shadowed)
-    if (!previewImage.isNull()) {
-        QTransform rot;
-         int mag = (qrand() % 7) + (qrand() % 7);
-         static bool dir = true; dir = !dir;
-         rot.rotate(dir ? mag : -mag);
-        const QImage rotated = previewImage.transformed(rot, Qt::SmoothTransformation);
-        const QImage shadowed = GlowEffectWidget::dropShadow(rotated, QColor(64, 64, 64), 6, 1, 1);
-        m_entries[currentIndex]->setPixmap(QPixmap::fromImage(shadowed));
-    }
-
-    // start next job right after
-    if (m_previewIndex < m_entries.size())
-        QTimer::singleShot(20, this, SLOT(slotNextPreview()));
 }
