@@ -70,6 +70,11 @@ void Settings::addRecentFotowallUrl(const QUrl & fotowallUrl)
     m_recentFotowallUrls.prepend(fotowallUrl);
 }
 
+void Settings::removeRecentFotowallUrl(const QUrl & fotowallUrl)
+{
+    m_recentFotowallUrls.removeAll(fotowallUrl);
+}
+
 void Settings::addCommandlineUrl(const QString & url)
 {
     m_commandlineUrls.append(url);

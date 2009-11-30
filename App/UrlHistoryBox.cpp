@@ -29,14 +29,33 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
   : GroupBoxWidget(parent)
   , m_previewIndex(0)
 {
-    // skip if empty
+    // create this layout
+    QHBoxLayout * lay = new QHBoxLayout(this);
+    lay->setContentsMargins(2, 0, 0, 0);
+    lay->setSpacing(0);
+    setLayout(lay);
+
+    // set initial urls, if given
+    if (!urls.isEmpty())
+        changeUrls(urls);
+}
+
+UrlHistoryBox::~UrlHistoryBox()
+{
+    qDeleteAll(m_entries);
+    m_entries.clear();
+}
+
+void UrlHistoryBox::changeUrls(const QList<QUrl> & urls)
+{
+    // remove previous icons, if any
+    qDeleteAll(m_entries);
+    m_entries.clear();
+
     if (urls.isEmpty())
         return;
 
     // add buttons
-    QHBoxLayout * lay = new QHBoxLayout(this);
-    lay->setContentsMargins(2, 0, 0, 0);
-    lay->setSpacing(0);
     for (int i = 0; i < qMin(5, urls.size()); i++) {
         const QUrl & url = urls[i];
         PixmapButton * button = new PixmapButton(this);
@@ -47,18 +66,13 @@ UrlHistoryBox::UrlHistoryBox(const QList<QUrl> &urls, QWidget *parent)
         button->setProperty("url", url);
         button->setHoverText(QString::number(i+1));
         button->setToolTip(url.toString());
-        lay->addWidget(button);
+        layout()->addWidget(button);
         m_entries.append(button);
     }
 
     // start preview jobs
+    m_previewIndex = 0;
     QTimer::singleShot(100, this, SLOT(slotNextPreview()));
-}
-
-UrlHistoryBox::~UrlHistoryBox()
-{
-    qDeleteAll(m_entries);
-    m_entries.clear();
 }
 
 QUrl UrlHistoryBox::urlForEntry(int index) const
@@ -79,12 +93,8 @@ void UrlHistoryBox::slotContextMenu(const QPoint & widgetPos)
     PixmapButton * button = static_cast<PixmapButton *>(sender());
     QPoint screenPos = button->mapToGlobal(widgetPos);
     QUrl fileUrl = button->property("url").toUrl();
-#ifdef Q_WS_WIN
-    QString fileString = fileUrl.toString();
-#else
-    QString fileString = fileUrl.toLocalFile();
-#endif
-    if (!QFile::exists(fileString))
+    QString fwFilePath = fileUrl.toString();
+    if (!QFile::exists(fwFilePath))
         return;
 
     // build menu
@@ -102,8 +112,9 @@ void UrlHistoryBox::slotContextMenu(const QPoint & widgetPos)
     } else if (action == removeAction) {
         m_entries.removeAll(button);
         button->deleteLater();
+        emit urlRemoved(QUrl(fwFilePath));
     } else if (action == deleteAction) {
-        if (QFile::remove(fileString)) {
+        if (QFile::remove(fwFilePath)) {
             m_entries.removeAll(button);
             button->deleteLater();
         } else
@@ -117,19 +128,15 @@ void UrlHistoryBox::slotNextPreview()
         return;
     int currentIndex = m_previewIndex++;
     QUrl currentUrl = m_entries[currentIndex]->property("url").toUrl();
-#ifdef Q_WS_WIN
-    QString fileName = currentUrl.toString();
-#else
-    QString fileName = currentUrl.toLocalFile();
-#endif
+    QString fwFilePath = currentUrl.toString();
 
     // get the embedded preview
-    QImage previewImage = FotowallFile::embeddedPreview(fileName);
+    QImage previewImage = FotowallFile::embeddedPreview(fwFilePath);
 
     // generate preview
     if (previewImage.isNull()) {
         Canvas * canvas = new Canvas(physicalDpiX(), physicalDpiY(), this);
-        if (FotowallFile::read(fileName, canvas, false)) {
+        if (FotowallFile::read(fwFilePath, canvas, false)) {
             // render canvas, rotate, drop shadow and set
             canvas->resizeAutoFit();
             previewImage = canvas->renderedImage(QSize(48, 48), Qt::KeepAspectRatio, true);
@@ -150,5 +157,5 @@ void UrlHistoryBox::slotNextPreview()
 
     // start next job right after
     if (m_previewIndex < m_entries.size())
-        QTimer::singleShot(10, this, SLOT(slotNextPreview()));
+        QTimer::singleShot(20, this, SLOT(slotNextPreview()));
 }

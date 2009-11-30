@@ -32,6 +32,7 @@ class Settings : public QSettings
         // the recent load/save history
         QList<QUrl> recentFotowallUrls() const;
         void addRecentFotowallUrl(const QUrl & url);
+        void removeRecentFotowallUrl(const QUrl & url);
 
         // commandline files
         void addCommandlineUrl(const QString & url);
