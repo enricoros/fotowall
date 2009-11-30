@@ -22,6 +22,7 @@
 #include "PictureProperties.h"
 
 #include <QDir>
+#include <QDirIterator>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QGraphicsScene>
@@ -301,8 +302,35 @@ bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
     if (path.startsWith("http", Qt::CaseInsensitive) || path.startsWith("ftp", Qt::CaseInsensitive))
         return loadFromNetwork(path, 0);
 
+    // look for the file if can't find it anymore
+    if (!QFile::exists(path)) {
+        QString searchFileName = QFileInfo(path).fileName();
+        if (!searchFileName.isEmpty()) {
+
+            // find all replacements from the current basepath
+            qWarning("PictureContent::fromXml: file '%s' not found, scanning for replacements", qPrintable(path));
+            QDirIterator dIt(baseDir, QDirIterator::Subdirectories);
+            QStringList replacements;
+            while (dIt.hasNext()) {
+                dIt.next();
+                if (dIt.fileName() == searchFileName) {
+                    QString replacement = dIt.fileInfo().absoluteFilePath();
+                    replacements.append(replacement);
+                    qWarning("PictureContent::fromXml:    found '%s'", qPrintable(replacement));
+                }
+            }
+
+            // use the first replacement (### 1.0 display a selection dialog)
+            if (!replacements.isEmpty()) {
+                path = replacements.first();
+                qWarning("PictureContent::fromXml:    using '%s'", qPrintable(path));
+            } else
+                qWarning("PictureContent::fromXml:    not found");
+        }
+    }
+
     // load Local image
-    return loadPhoto(path);
+    return loadPhoto(path, false, false);
 }
 
 void PictureContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
