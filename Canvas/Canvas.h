@@ -91,20 +91,22 @@ class Canvas : public AbstractScene
         void setDVDMarkers();
         void clearMarkers();
 
-        // save, restore, load, help
+        // misc
         bool pendingChanges() const;
         void blinkBackGradients();
+        void setEmbeddedPainting(bool);
 
         // change size and project mode (CD, DVD, etc)
         CanvasModeInfo * modeInfo() const;
-
-        void saveToXml(QDomElement & canvasElement) const;
-        void loadFromXml(QDomElement & canvasElement);
 
         // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
         QImage renderedImage(const QSize & size, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
+
+        // load & save
+        void saveToXml(QDomElement & canvasElement) const;
+        void loadFromXml(QDomElement & canvasElement);
 
     Q_SIGNALS:
         void backConfigChanged();
@@ -154,6 +156,7 @@ class Canvas : public AbstractScene
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
         QTimer * m_forceFieldTimer;
         QTime m_forceFieldTime;
+        bool m_embeddedPainting;
         bool m_pendingChanges;
 
     private Q_SLOTS:

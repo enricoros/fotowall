@@ -125,29 +125,22 @@ void TextContent::setShapeEditing(bool enabled)
     }
 }
 
-QWidget * TextContent::createPropertyWidget()
+QWidget * TextContent::createPropertyWidget(ContentProperties * __p)
 {
-    TextProperties * p = new TextProperties();
-    delete p->bShakeLess;
-    delete p->bShakeMore;
+    TextProperties * tp = __p ? (TextProperties *)__p : new TextProperties;
+    AbstractContent::createPropertyWidget(tp);
 
-    // connect actions
-    connect(p->bFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
-    connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
-    connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
-    connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
-    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
-    //connect(p->bShakeLess, SIGNAL(clicked()), this, SLOT(slotShakeLess()));
-    //connect(p->bShakeMore, SIGNAL(clicked()), this, SLOT(slotShakeMore()));
+    // remove for 0.9 ### put this back for 1.0
+    delete tp->tShakeLess;
+    delete tp->tShakeMore;
 
     // properties link
-    new PE_Combo(p->fxCombo, this, "fxIndex", p);
-    new PE_AbstractButton(p->bEditShape, this, "shapeEditing", p);
-    p->bClearShape->setVisible(hasShape()); // link "hasShape" in a custom way
-    connect(this, SIGNAL(notifyHasShape(bool)), p->bClearShape, SLOT(setVisible(bool)));
-    connect(p->bClearShape, SIGNAL(clicked()), this, SLOT(clearShape()));
+    new PE_AbstractButton(tp->tEditShape, this, "shapeEditing", tp);
+    tp->tClearShape->setVisible(hasShape()); // link "hasShape" in a custom way
+    connect(this, SIGNAL(notifyHasShape(bool)), tp->tClearShape, SLOT(setVisible(bool)));
+    connect(tp->tClearShape, SIGNAL(clicked()), this, SLOT(clearShape()));
 
-    return p;
+    return tp;
 }
 
 bool TextContent::fromXml(QDomElement & contentElement, const QDir & baseDir)

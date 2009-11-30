@@ -15,15 +15,14 @@
 #ifndef __PictureProperties_h__
 #define __PictureProperties_h__
 
-#include <QWidget>
+#include "ContentProperties.h"
 #include "ui_PictureProperties.h"
 
-class PictureProperties : public QWidget, public Ui::PictureProperties {
+class PictureProperties : public ContentProperties, public Ui::PictureProperties {
     Q_OBJECT
     public:
         friend class PictureContent;
-        PictureProperties(QWidget *parent = 0);
-        ~PictureProperties();
+        PictureProperties(QWidget * parent = 0);
 };
 
 #endif

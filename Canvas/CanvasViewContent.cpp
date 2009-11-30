@@ -47,6 +47,7 @@ bool CanvasViewContent::loadFromFile(const QString & fwFilePath, bool /*keepRati
 
     // set the canvas
     m_canvas = canvas;
+    m_canvas->setEmbeddedPainting(true);
     m_canvasCachedSize = m_canvas->sceneSize();
     resizeContents(contentRect(), true);
     update();
@@ -76,6 +77,7 @@ bool CanvasViewContent::fromXml(QDomElement & contentElement, const QDir & baseD
 
     // restore canvas from the element
     m_canvas = new Canvas(96, 96, this);
+    m_canvas->setEmbeddedPainting(true);
     connect(m_canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
     m_canvas->loadFromXml(canvasElement);
     m_canvas->resizeAutoFit();
@@ -143,6 +145,7 @@ QVariant CanvasViewContent::takeResource()
     }
 
     // discard reference
+    m_canvas->setEmbeddedPainting(false);
     m_canvasTaken = true;
     Canvas * canvas = m_canvas;
     m_canvas = 0;
@@ -162,6 +165,7 @@ void CanvasViewContent::returnResource(const QVariant & resource)
 
     // store reference
     m_canvas = static_cast<Canvas *>(qVariantValue<void *>(resource));
+    m_canvas->setEmbeddedPainting(true);
     m_canvasCachedSize = m_canvas->sceneSize();
     m_canvasTaken = false;
     resizeContents(contentRect(), true);

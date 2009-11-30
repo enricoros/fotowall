@@ -13,9 +13,6 @@ ChangeLog
 
 Work in progress:
 
-* URGENT - More properties in the top bar
-  * URGENT - Properties: opacity > 0.0 or lose control.
-  * URGENT - Wrench icon in the props
 * URGENT - Win32 crashfix
 * (Work In Progress) Arrange Contents
 * Arnaud's Undo/Redo system

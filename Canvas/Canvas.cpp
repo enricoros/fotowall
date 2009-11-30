@@ -61,6 +61,7 @@ Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent)
     , m_topBarEnabled(false)
     , m_bottomBarEnabled(false)
     , m_forceFieldTimer(0)
+    , m_embeddedPainting(false)
     , m_pendingChanges(false)
 {
     // init modeinfo
@@ -556,12 +557,90 @@ void Canvas::blinkBackGradients()
     HIGHLIGHT(1.0, 1.0, true);
 }
 
+void Canvas::setEmbeddedPainting(bool embedded)
+{
+    m_embeddedPainting = embedded;
+}
+
+
 /// Modes
 CanvasModeInfo * Canvas::modeInfo() const
 {
     return m_modeInfo;
 }
 
+void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
+{
+    if (hideTools) {
+        clearSelection();
+        foreach(QGraphicsItem *item, m_markerItems)
+            item->hide();
+        foreach(AbstractConfig *conf, m_configs)
+            conf->hide();
+    }
+
+    RenderOpts::HQRendering = true;
+    QGraphicsScene::render(painter, target, source, aspectRatioMode);
+    RenderOpts::HQRendering = false;
+
+    if (hideTools) {
+        foreach(AbstractConfig *conf, m_configs)
+            conf->show();
+        foreach(QGraphicsItem *item, m_markerItems)
+            item->show();
+    }
+}
+
+QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
+{
+    QImage result(iSize, QImage::Format_ARGB32);
+    result.fill(0);
+
+    QPainter painter(&result);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform, true);
+
+    QSize targetSize = sceneSize();
+    targetSize.scale(iSize, aspectRatioMode);
+    int offsetX = (iSize.width() - targetSize.width()) / 2;
+    int offsetY = (iSize.height() - targetSize.height()) / 2;
+
+    QRect targetRect = QRect(offsetX, offsetY, targetSize.width(), targetSize.height());
+    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio, hideTools);
+    painter.end();
+
+    return result;
+}
+
+bool Canvas::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode)
+{
+    // setup printer
+    QPrinter printer;
+    printer.setResolution(printerDpi);
+    printer.setPaperSize(QPrinter::A4);
+
+    // configure printer via the print dialog
+    QPrintDialog printDialog(&printer);
+    if (printDialog.exec() != QDialog::Accepted)
+        return false;
+
+    // TODO: use different ratio modes?
+    QImage image = renderedImage(pixelSize, aspectRatioMode);
+    if (landscape) {
+        // Print in landscape mode, so rotate
+        QMatrix matrix;
+        matrix.rotate(90);
+        image = image.transformed(matrix);
+    }
+
+    // And then print
+    QPainter paint(&printer);
+    paint.drawImage(image.rect(), image);
+    paint.end();
+    return true;
+}
+
+
+/// Load & Save
 void Canvas::saveToXml(QDomElement & canvasElement) const
 {
     QDomDocument doc = canvasElement.ownerDocument();
@@ -822,75 +901,6 @@ void Canvas::loadFromXml(QDomElement & canvasElement)
     adjustSceneSize();
 }
 
-void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
-{
-    if (hideTools) {
-        clearSelection();
-        foreach(QGraphicsItem *item, m_markerItems)
-            item->hide();
-        foreach(AbstractConfig *conf, m_configs)
-            conf->hide();
-    }
-
-    RenderOpts::HQRendering = true;
-    QGraphicsScene::render(painter, target, source, aspectRatioMode);
-    RenderOpts::HQRendering = false;
-
-    if (hideTools) {
-        foreach(AbstractConfig *conf, m_configs)
-            conf->show();
-        foreach(QGraphicsItem *item, m_markerItems)
-            item->show();
-    }
-}
-
-QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
-{
-    QImage result(iSize, QImage::Format_ARGB32);
-    result.fill(0);
-
-    QPainter painter(&result);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform, true);
-
-    QSize targetSize = sceneSize();
-    targetSize.scale(iSize, aspectRatioMode);
-    int offsetX = (iSize.width() - targetSize.width()) / 2;
-    int offsetY = (iSize.height() - targetSize.height()) / 2;
-
-    QRect targetRect = QRect(offsetX, offsetY, targetSize.width(), targetSize.height());
-    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio, hideTools);
-    painter.end();
-
-    return result;
-}
-
-bool Canvas::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode)
-{
-    // setup printer
-    QPrinter printer;
-    printer.setResolution(printerDpi);
-    printer.setPaperSize(QPrinter::A4);
-
-    // configure printer via the print dialog
-    QPrintDialog printDialog(&printer);
-    if (printDialog.exec() != QDialog::Accepted)
-        return false;
-
-    // TODO: use different ratio modes?
-    QImage image = renderedImage(pixelSize, aspectRatioMode);
-    if (landscape) {
-        // Print in landscape mode, so rotate
-        QMatrix matrix;
-        matrix.rotate(90);
-        image = image.transformed(matrix);
-    }
-
-    // And then print
-    QPainter paint(&printer);
-    paint.drawImage(image.rect(), image);
-    paint.end();
-    return true;
-}
 
 /// Drag & Drop image files
 void Canvas::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
@@ -1057,7 +1067,7 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
         switch (m_backMode) {
             case BackNone:
                 // draw checkboard to simulate a transparent background
-                if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering)
+                if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering && !m_embeddedPainting)
                     painter->drawTiledPixmap(expRect, m_backTile, QPointF(expRect.left() % 100, expRect.top() % 100));
                 break;
 

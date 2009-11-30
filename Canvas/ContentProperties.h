@@ -12,11 +12,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PictureProperties.h"
+#ifndef __ContentProperties_h__
+#define __ContentProperties_h__
 
-PictureProperties::PictureProperties(QWidget *parent)
-  : ContentProperties(parent)
-{
-    // inject in the merge widget
-    Ui_PictureProperties::setupUi(cBottomMerge);
-}
+#include <QWidget>
+#include "ui_ContentProperties.h"
+
+class ContentProperties : public QWidget, public Ui::ContentProperties {
+    Q_OBJECT
+    public:
+        friend class AbstractContent;
+        ContentProperties(QWidget *parent = 0);
+        ~ContentProperties();
+};
+
+#endif

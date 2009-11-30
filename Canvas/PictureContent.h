@@ -40,7 +40,7 @@ class PictureContent : public AbstractContent
 
         // ::AbstractContent
         QString contentName() const { return tr("Picture"); }
-        QWidget * createPropertyWidget();
+        QWidget * createPropertyWidget(ContentProperties * p = 0);
         bool fromXml(QDomElement & contentElement, const QDir & baseDir);
         void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);

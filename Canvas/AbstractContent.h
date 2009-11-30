@@ -21,6 +21,7 @@
 #include <QDir>
 class AbstractConfig;
 class ButtonItem;
+class ContentProperties;
 class CornerItem;
 class Frame;
 class MirrorItem;
@@ -90,7 +91,7 @@ class AbstractContent : public AbstractDisposeable
         virtual QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
         virtual int contentHeightForWidth(int width) const;
         virtual bool contentOpaque() const;
-        virtual QWidget * createPropertyWidget();
+        virtual QWidget * createPropertyWidget(ContentProperties * p = 0);
 
         // ::QGraphicsItem
         QRectF boundingRect() const;

@@ -119,6 +119,7 @@ void UrlHistoryBox::genPreview(PixmapButton * button)
         if (FotowallFile::read(fwFilePath, canvas, false)) {
             // render canvas, rotate, drop shadow and set
             canvas->resizeAutoFit();
+            canvas->setEmbeddedPainting(true);
             previewImage = canvas->renderedImage(QSize(48, 48), Qt::KeepAspectRatio, true);
         }
         delete canvas;

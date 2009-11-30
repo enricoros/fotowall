@@ -213,7 +213,7 @@ void SceneView::setViewScale(qreal scale)
 {
     if (m_viewScale != scale) {
         m_viewScale = scale;
-        if (m_viewScale > 0.99 && m_viewScale < 1.01) {
+        if (m_viewScale > 0.98 && m_viewScale < 1.02) {
             m_viewScale = 1.0;
             setTransform(QTransform());
         } else {
@@ -262,7 +262,7 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
         painter->drawTiledPixmap(viewportRect, shadowTile);
 
         // draw text
-        QString text = tr("%1%").arg(m_viewScale * 100);
+        QString text = tr("%1%").arg(qRound(m_viewScale * 100));
         QRect textRect = QFontMetrics(painter->font()).boundingRect(text).adjusted(-2, -1, 2, 1);
         if (QApplication::isLeftToRight())
             textRect.moveBottomLeft(QPoint(5, viewportHeight - 5));
@@ -323,9 +323,9 @@ void SceneView::wheelEvent(QWheelEvent * event)
 {
     if (event->modifiers() == Qt::ControlModifier && m_abstractScene && m_abstractScene->sceneSelectable()) {
         if (event->delta() < 0 && m_viewScale > 0.2)
-            setViewScale(m_viewScale * 0.5);
-        else if (event->delta() > 0 && m_viewScale < 10)
-            setViewScale(m_viewScale * 2.0);
+            setViewScale(m_viewScale * 0.707106781187);
+        else if (event->delta() > 0 && m_viewScale < 15)
+            setViewScale(m_viewScale * 1.41421356237);
         event->accept();
         return;
     }

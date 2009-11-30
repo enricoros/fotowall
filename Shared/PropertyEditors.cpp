@@ -46,7 +46,11 @@ void PE_AbstractSlider::slotSliderValueChanged(int intValue)
     // QVariant::Double: remap to the 0..1 range
     else if (m_property.type() == QVariant::Double) {
         if (m_control->maximum() > m_control->minimum()) {
+#if 1 // ### remove this HACK (don't go to 0, for opacity) for 1.0
+            qreal realVal = (qreal)(intValue - m_control->minimum() + 1) / (qreal)(m_control->maximum() - m_control->minimum() + 1);
+#else
             qreal realVal = (qreal)(intValue - m_control->minimum()) / (qreal)(m_control->maximum() - m_control->minimum());
+#endif
             m_property.write(m_target.data(), realVal);
         }
     }

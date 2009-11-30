@@ -12,11 +12,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "PictureProperties.h"
+#include "ContentProperties.h"
 
-PictureProperties::PictureProperties(QWidget *parent)
-  : ContentProperties(parent)
+ContentProperties::ContentProperties(QWidget *parent)
+  : QWidget(parent)
 {
-    // inject in the merge widget
-    Ui_PictureProperties::setupUi(cBottomMerge);
+    setupUi(this);
+#if QT_VERSION < 0x040600
+    fxCombo->hide();
+#endif
+}
+
+ContentProperties::~ContentProperties()
+{
 }

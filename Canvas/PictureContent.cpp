@@ -17,6 +17,8 @@
 #include "Frames/Frame.h"
 #include "Shared/CPixmap.h"
 #include "Shared/CroppingDialog.h"
+#include "Shared/PanePropertyEditor.h"
+#include "Shared/PropertyEditors.h"
 #include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
 #include "PictureProperties.h"
@@ -233,27 +235,15 @@ void PictureContent::crop()
         addEffect(PictureEffect(PictureEffect::Crop, 0, cropRect));
 }
 
-#include "Shared/PropertyEditors.h"
-#include "Shared/PanePropertyEditor.h"
-QWidget * PictureContent::createPropertyWidget()
+QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
 {
-    PictureProperties * p = new PictureProperties();
-
-    // connect actions
-    connect(p->bFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
-    connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
-    connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
-    connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
-    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
+    PictureProperties * pp = __p ? (PictureProperties *)__p : new PictureProperties;
+    AbstractContent::createPropertyWidget(pp);
 
     // properties link
-    new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
-    new PE_AbstractButton(p->gimpButton, this, "externalEdit", p);
-    p->perspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
-    new PE_PaneWidget(p->perspWidget, this, "perspective", p);
-    new PE_Combo(p->fxCombo, this, "fxIndex", p);
+    new PE_AbstractButton(pp->gimpButton, this, "externalEdit", pp);
 
-    return p;
+    return pp;
 }
 
 bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)

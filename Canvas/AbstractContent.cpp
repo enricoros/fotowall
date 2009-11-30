@@ -18,6 +18,7 @@
 #include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
 #include "CornerItem.h"
+#include "ContentProperties.h"
 #include "MirrorItem.h"
 
 #include <QApplication>
@@ -619,9 +620,24 @@ bool AbstractContent::contentOpaque() const
     return false;
 }
 
-QWidget * AbstractContent::createPropertyWidget()
+QWidget * AbstractContent::createPropertyWidget(ContentProperties * __p)
 {
-    return 0;
+    ContentProperties * cp = __p ? __p : new ContentProperties;
+
+    // connect actions
+    connect(cp->cFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
+    connect(cp->cRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
+    connect(cp->cLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
+    connect(cp->cBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
+    connect(cp->cConfigure, SIGNAL(clicked()), this, SLOT(slotConfigure()));
+
+    // properties link
+    new PE_AbstractSlider(cp->cOpacity, this, "opacity", cp);
+    new PE_Combo(cp->cFxCombo, this, "fxIndex", cp);
+    cp->cPerspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
+    new PE_PaneWidget(cp->cPerspWidget, this, "perspective", cp);
+
+    return cp;
 }
 
 QRectF AbstractContent::boundingRect() const
@@ -826,9 +842,10 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
 void AbstractContent::slotConfigure()
 {
     ButtonItem * item = dynamic_cast<ButtonItem *>(sender());
-    if (!item)
-        return;
-    emit requestConfig(item->scenePos().toPoint());
+    if (item)
+        emit requestConfig(item->scenePos().toPoint());
+    else
+        emit requestConfig(scenePos().toPoint());
 }
 
 void AbstractContent::slotStackFront()

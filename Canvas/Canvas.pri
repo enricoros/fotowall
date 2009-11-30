@@ -12,6 +12,7 @@ HEADERS += \
     Canvas/CanvasModeInfo.h \
     Canvas/CanvasViewContent.h \
     Canvas/Canvas.h \
+    Canvas/ContentProperties.h \
     Canvas/CornerItem.h \
     Canvas/MirrorItem.h \
     Canvas/PictureConfig.h \
@@ -33,6 +34,7 @@ SOURCES += \
     Canvas/CanvasModeInfo.cpp \
     Canvas/CanvasViewContent.cpp \
     Canvas/Canvas.cpp \
+    Canvas/ContentProperties.cpp \
     Canvas/CornerItem.cpp \
     Canvas/MirrorItem.cpp \
     Canvas/PictureConfig.cpp \
@@ -48,6 +50,7 @@ SOURCES += \
 
 FORMS += \
     Canvas/AbstractConfig.ui \
+    Canvas/ContentProperties.ui \
     Canvas/PictureConfig.ui \
     Canvas/PictureProperties.ui \
     Canvas/TextProperties.ui
