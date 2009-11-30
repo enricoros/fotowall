@@ -75,18 +75,18 @@ void WebcamContent::setPixmap(const QPixmap & pixmap)
     emit contentChanged();
 }
 
-bool WebcamContent::fromXml(QDomElement & contentElement)
+bool WebcamContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
-    AbstractContent::fromXml(contentElement);
+    AbstractContent::fromXml(contentElement, baseDir);
 
     // load video properties
     // ... nothing to do here...
     return true;
 }
 
-void WebcamContent::toXml(QDomElement & contentElement) const
+void WebcamContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
 {
-    AbstractContent::toXml(contentElement);
+    AbstractContent::toXml(contentElement, baseDir);
     contentElement.setTagName("webcam");
     contentElement.setAttribute("input", m_input);
 

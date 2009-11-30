@@ -20,7 +20,7 @@
 CPixmap::CPixmap() {
 }
 
-CPixmap::CPixmap(const QString &fileName) : QPixmap(fileName), m_filePath(fileName) {
+CPixmap::CPixmap(const QString &filePath) : QPixmap(filePath), m_filePath(filePath) {
 }
 
 CPixmap::CPixmap(const QImage &image) : QPixmap(QPixmap::fromImage(image)), m_image(image) {

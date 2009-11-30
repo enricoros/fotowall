@@ -428,7 +428,7 @@ bool AbstractContent::beingTransformed() const
     return m_dirtyTransforming;
 }
 
-bool AbstractContent::fromXml(QDomElement & contentElement)
+bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseDir*/)
 {
     // restore content properties
     QDomElement domElement;
@@ -491,7 +491,7 @@ bool AbstractContent::fromXml(QDomElement & contentElement)
     return true;
 }
 
-void AbstractContent::toXml(QDomElement & contentElement) const
+void AbstractContent::toXml(QDomElement & contentElement, const QDir & /*baseDir*/) const
 {
     // Save general item properties
     contentElement.setTagName("abstract");
@@ -860,12 +860,12 @@ void AbstractContent::slotSaveAs()
         defaultSavePath.prepend(s.value("Fotowall/ExportDir").toString() + QDir::separator());
 
     // ask the file name, validate it, store back to settings
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), defaultSavePath, tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
-    if (fileName.isNull())
+    QString imgFilePath = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), defaultSavePath, tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    if (imgFilePath.isNull())
         return;
-    s.setValue("Fotowall/ExportDir", QFileInfo(fileName).absolutePath());
-    if (QFileInfo(fileName).suffix().isEmpty())
-        fileName += ".png";
+    s.setValue("Fotowall/ExportDir", QFileInfo(imgFilePath).absolutePath());
+    if (QFileInfo(imgFilePath).suffix().isEmpty())
+        imgFilePath += ".png";
 
     // find out the Transform chain to mirror a rotated item
     QRectF sceneRectF = mapToScene(boundingRect()).boundingRect();
@@ -898,8 +898,8 @@ void AbstractContent::slotSaveAs()
     RenderOpts::HQRendering = prevHQ;
 
     // save image and check errors
-    if (!image.save(fileName) || !QFile::exists(fileName)) {
-        QMessageBox::warning(0, tr("File Error"), tr("Error saving the Object to '%1'").arg(fileName));
+    if (!image.save(imgFilePath) || !QFile::exists(imgFilePath)) {
+        QMessageBox::warning(0, tr("File Error"), tr("Error saving the Object to '%1'").arg(imgFilePath));
         return;
     }
 }

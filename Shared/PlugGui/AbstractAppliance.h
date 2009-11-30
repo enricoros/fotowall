@@ -38,7 +38,7 @@ namespace PlugGui {
             virtual QString applianceName() const = 0;
             virtual bool applianceCommand(int command);
             virtual bool appliancePendingChanges() const;
-            virtual bool applianceSave(const QString & fileName = QString());
+            virtual bool applianceSave(const QString & filePath = QString());
 
             // this checks that the appliance contents have been destroyed
             virtual ~AbstractAppliance();

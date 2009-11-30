@@ -33,7 +33,7 @@ class Workflow : public QObject
         ~Workflow();
 
         // change workflow
-        bool loadCanvas_A(const QString & fileName = QString());
+        bool loadCanvas_A(const QString & fwFilePath = QString());
         void startCanvas_A();
         void stackSlaveCanvas_A(SingleResourceLoaner *);
 #ifndef NO_WORDCLOUD_APPLIANCE

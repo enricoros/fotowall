@@ -138,17 +138,17 @@ bool CanvasAppliance::appliancePendingChanges() const
     return m_extCanvas ? m_extCanvas->pendingChanges() : false;
 }
 
-bool CanvasAppliance::applianceSave(const QString & __fileName)
+bool CanvasAppliance::applianceSave(const QString & __filePath)
 {
     // ask for file name if not given
-    if (__fileName.isEmpty()) {
-        QString fileName = FotowallFile::getSaveFotowallFile(m_extCanvas->filePath());
-        if (fileName.isNull())
+    if (__filePath.isEmpty()) {
+        QString fwFilePath = FotowallFile::getSaveFotowallFile(m_extCanvas->filePath());
+        if (fwFilePath.isNull())
             return false;
-        return FotowallFile::saveV2(fileName, m_extCanvas);
+        return FotowallFile::saveV2(fwFilePath, m_extCanvas);
     }
 
-    return FotowallFile::saveV2(__fileName, m_extCanvas);
+    return FotowallFile::saveV2(__filePath, m_extCanvas);
 }
 
 QMenu * CanvasAppliance::createArrangeMenu()
@@ -352,10 +352,10 @@ void CanvasAppliance::configurePrint(bool enabled)
 
 void CanvasAppliance::slotAddCanvas()
 {
-    QStringList fileNames = FotowallFile::getLoadFotowallFiles();
-    if (fileNames.isEmpty())
+    QStringList fwFilePaths = FotowallFile::getLoadFotowallFiles();
+    if (fwFilePaths.isEmpty())
         return;
-    m_extCanvas->addCanvasViewContent(fileNames);
+    m_extCanvas->addCanvasViewContent(fwFilePaths);
     setFocusToScene();
 }
 
@@ -365,11 +365,11 @@ void CanvasAppliance::slotAddPicture()
     QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(0, tr("Add Pictures to the Canvas"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()));
-    if (fileNames.isEmpty())
+    QStringList picFilePaths = QFileDialog::getOpenFileNames(0, tr("Add Pictures to the Canvas"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()) /*, 0, QFileDialog::DontResolveSymlinks*/);
+    if (picFilePaths.isEmpty())
         return;
-    App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
-    m_extCanvas->addPictureContent(fileNames);
+    App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
+    m_extCanvas->addPictureContent(picFilePaths);
     setFocusToScene();
 }
 

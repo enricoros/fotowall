@@ -31,8 +31,8 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
 
     // temporarily get words
     Wordcloud::Scanner scanner;
-    QString fileName = QFileDialog::getOpenFileName(0, tr("Create a Wordcloud from a text file"));
-    if (fileName.isEmpty()) {
+    QString txtFilePath = QFileDialog::getOpenFileName(0, tr("Create a Wordcloud from a text file"));
+    if (txtFilePath.isEmpty()) {
         scanner.addFromString(tr("Welcome to Wordcloud. Change options on the sidebar."));
         Wordcloud::WordList list = scanner.takeWords(false);
         Wordcloud::WordList::iterator wIt = list.begin();
@@ -43,7 +43,7 @@ WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * paren
         }
         m_cloud->newCloud(list);
     } else {
-        scanner.addFromFile(fileName);
+        scanner.addFromFile(txtFilePath);
         m_cloud->newCloud(scanner.takeWords(true));
     }
 }
@@ -58,9 +58,9 @@ WordcloudContent::~WordcloudContent()
     delete m_cloud;
 }
 
-bool WordcloudContent::fromXml(QDomElement & contentElement)
+bool WordcloudContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
-    AbstractContent::fromXml(contentElement);
+    AbstractContent::fromXml(contentElement, baseDir);
 
     qWarning("WordcloudContent::fromXml: not implemented");
 
@@ -68,9 +68,9 @@ bool WordcloudContent::fromXml(QDomElement & contentElement)
     return false;
 }
 
-void WordcloudContent::toXml(QDomElement & contentElement) const
+void WordcloudContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
 {
-    AbstractContent::toXml(contentElement);
+    AbstractContent::toXml(contentElement, baseDir);
     contentElement.setTagName("wordcloud");
 
     qWarning("WordcloudContent::toXml: not implemented");

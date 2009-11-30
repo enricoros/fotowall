@@ -52,6 +52,8 @@
 
 Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent)
     : AbstractScene(parent)
+    , m_filePath()
+    , m_fileAbsDir()
     , m_modeInfo(new CanvasModeInfo)
     , m_backMode(BackGradient)
     , m_backContent(0)
@@ -61,9 +63,6 @@ Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent)
     , m_forceFieldTimer(0)
     , m_pendingChanges(false)
 {
-    // init title
-    m_filePath = tr("Unnamed %1").arg(QDate::currentDate().toString()) + ".fotowall";
-
     // init modeinfo
     m_modeInfo->setScreenDpi(sDpiX, sDpiY);
 
@@ -149,11 +148,12 @@ static QPoint nearCenter(const QRectF & rect)
     return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
 }
 
-void Canvas::addAutoContent(const QStringList & fileNames)
+void Canvas::addAutoContent(const QStringList & filePaths)
 {
     // simple auto-detection of the content type
-    foreach (const QString & localFile, fileNames) {
+    foreach (const QString & localFile, filePaths) {
         if (QFile::exists(localFile)) {
+            // Note: should use App.h for this, but dup'ed for isolation
             if (localFile.endsWith(".fotowall", Qt::CaseInsensitive))
                 addCanvasViewContent(QStringList() << localFile);
             else
@@ -162,12 +162,12 @@ void Canvas::addAutoContent(const QStringList & fileNames)
     }
 }
 
-void Canvas::addCanvasViewContent(const QStringList & fileNames)
+void Canvas::addCanvasViewContent(const QStringList & fwFilePaths)
 {
     clearSelection();
-    int offset = -30 * fileNames.size() / 2;
+    int offset = -30 * fwFilePaths.size() / 2;
     QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
-    foreach (const QString & localFile, fileNames) {
+    foreach (const QString & localFile, fwFilePaths) {
         if (!QFile::exists(localFile))
             continue;
 
@@ -183,12 +183,12 @@ void Canvas::addCanvasViewContent(const QStringList & fileNames)
     }
 }
 
-void Canvas::addPictureContent(const QStringList & fileNames)
+void Canvas::addPictureContent(const QStringList & picFilePaths)
 {
     clearSelection();
-    int offset = -30 * fileNames.size() / 2;
+    int offset = -30 * picFilePaths.size() / 2;
     QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
-    foreach (const QString & localFile, fileNames) {
+    foreach (const QString & localFile, picFilePaths) {
         if (!QFile::exists(localFile))
             continue;
 
@@ -272,19 +272,27 @@ void Canvas::resizeEvent()
 
 QString Canvas::filePath() const
 {
+    if (m_filePath.isEmpty())
+        return tr("Unnamed %1").arg(QDate::currentDate().toString()) + ".fotowall";
     return m_filePath;
 }
 
 void Canvas::setFilePath(const QString & filePath)
 {
     if (filePath != m_filePath) {
-        m_filePath = filePath;
+        // use the right path
+        m_filePath = QDir(filePath).canonicalPath();
+        if (m_filePath.isEmpty())
+            m_filePath = filePath;
+        m_fileAbsDir = QFileInfo(m_filePath).absoluteDir();
         emit filePathChanged();
     }
 }
 
 QString Canvas::prettyBaseName() const
 {
+    if (m_filePath.isEmpty())
+        return tr("Unnamed %1").arg(QDate::currentDate().toString()) + ".fotowall";
     return QFileInfo(m_filePath).baseName();
 }
 
@@ -656,7 +664,7 @@ void Canvas::saveToXml(QDomElement & canvasElement) const
             // save content
             QDomElement cEl = doc.createElement("dummy-renamed-element");
             contentElement.appendChild(cEl);
-            content->toXml(cEl);
+            content->toXml(cEl, m_fileAbsDir);
 
             // add a flag to the background element
             if (m_backContent == content) {
@@ -700,8 +708,10 @@ void Canvas::loadFromXml(QDomElement & canvasElement)
         // find the 'meta' element
         QDomElement metaElement = canvasElement.firstChildElement("meta");
         if (metaElement.isElement()) {
+            // set file path if not already set (i.e. if loading sub-canvases)
             QDomElement fpElement = metaElement.firstChildElement("filepath");
-            setFilePath(fpElement.text());
+            if (m_filePath.isEmpty())
+                setFilePath(fpElement.text());
         }
     }
 
@@ -789,7 +799,7 @@ void Canvas::loadFromXml(QDomElement & canvasElement)
             }
 
             // load item properties, and delete it if something goes wrong
-            if (!content->fromXml(ce)) {
+            if (!content->fromXml(ce, m_fileAbsDir)) {
                 m_content.removeAll(content);
                 delete content;
                 continue;
@@ -958,14 +968,10 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             }
 
             // handle local files
-#ifdef Q_WS_WIN
-            QString fileName = url.toString();
-#else
-            QString fileName = url.toLocalFile();
-#endif
-            if (QFile::exists(fileName)) {
+            QString picFilePath = url.toString();
+            if (QFile::exists(picFilePath)) {
                 PictureContent * p = createPicture(pos);
-                if (!p->loadPhoto(fileName, true, true)) {
+                if (!p->loadPhoto(picFilePath, true, true)) {
                     m_content.removeAll(p);
                     delete p;
                 } else

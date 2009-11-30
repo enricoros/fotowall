@@ -249,7 +249,7 @@ void AbstractConfig::layoutButtons()
 
 void AbstractConfig::slotAddFrame()
 {
-    QStringList framesPath = QFileDialog::getOpenFileNames(0, tr("Choose frame images"), QString(), tr("Images (*.svg)"));
+    QStringList framesPath = QFileDialog::getOpenFileNames(0, tr("Choose frame images"), QString(), tr("Images (*.svg)") /*, 0, QFileDialog::DontResolveSymlinks*/);
     if (!framesPath.isEmpty()) {
         foreach (QString frame, framesPath)
             FrameFactory::addSvgFrame(frame);

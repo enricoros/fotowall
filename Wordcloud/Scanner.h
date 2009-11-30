@@ -27,7 +27,7 @@ namespace Wordcloud {
     {
         public:
             // inputs
-            bool addFromFile(const QString & fileName);
+            bool addFromFile(const QString & txtFilePath);
             bool addFromString(const QString & string);
             bool addFromUrl(const QUrl & url);
             bool addFromRss(const QUrl & rss);

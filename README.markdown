@@ -13,9 +13,11 @@ ChangeLog
 
 Work in progress:
 
+* URGENT - More properties in the top bar
+  * URGENT - Properties: opacity > 0.0 or lose control.
+  * URGENT - Wrench icon in the props
+* URGENT - Win32 crashfix
 * (Work In Progress) Arrange Contents
-* (Work In Progress) More properties in the top bar
-* FotowallFile
 * Arnaud's Undo/Redo system
 
 In progress for Fotowall "REVO" 1.0 (unreleased):
@@ -28,8 +30,10 @@ Fotowall "Alchimia" 0.9 (unreleased):
 * More than 200 changes
 * SVG export, Likeback, property editors, more solid, new contents, wordcloud, reworked interface with nested editing
   webcam bugfixes, automatics performance tuning, home screen with previews, autoblend effect, graphics effects, zooming,
+  pencilitem, relative paths,
 
-
+* Relative Saving
+* Experimental Webcam on Win32
 * Multiple webcams, unbroken colors
 * Basic GraphicsEffects support (shadows and blur)
 * Home screen with intuitive workflow and breadcrumb navigation

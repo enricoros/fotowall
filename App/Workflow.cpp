@@ -28,7 +28,6 @@
 #include "WordcloudAppliance.h"
 #endif
 
-#include <QFileDialog>
 #include <QTimer>
 
 
@@ -84,16 +83,16 @@ Workflow::~Workflow()
     // bar and container are external: don't delete
 }
 
-bool Workflow::loadCanvas_A(const QString & givenName)
+bool Workflow::loadCanvas_A(const QString & __fwFilePath)
 {
     // ask for file name, if not provided - can CANCEL
-    QString fileName = givenName.isEmpty() ? FotowallFile::getLoadFotowallFile() : givenName;
-    if (fileName.isEmpty())
+    QString fwFilePath = __fwFilePath.isEmpty() ? FotowallFile::getLoadFotowallFile() : __fwFilePath;
+    if (fwFilePath.isEmpty())
         return false;
 
     // schedule canvas loading
     scheduleCommand(Command::ResetToLevel);
-    scheduleCommand(Command(Command::MasterCanvas, fileName));
+    scheduleCommand(Command(Command::MasterCanvas, fwFilePath));
     return true;
 }
 
@@ -240,8 +239,8 @@ bool Workflow::processCommand(const Workflow::Command & command)
 
             // load a file, if in params
             if (command.param.type() == QVariant::String) {
-                QString fileName = command.param.toString();
-                if (!FotowallFile::read(fileName, canvas, true))
+                QString fwFilePath = command.param.toString();
+                if (!FotowallFile::read(fwFilePath, canvas, true))
                     qWarning("Workflow::processCommand: MasterCanvas: can't load canvas. Display error?");
             }
 

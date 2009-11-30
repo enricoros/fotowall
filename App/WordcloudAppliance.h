@@ -37,7 +37,7 @@ class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Wordcloud"); }
         bool appliancePendingChanges() const;
-        bool applianceSave(const QString & fileName = QString());
+        bool applianceSave(const QString & filePath = QString());
 
     private:
         Wordcloud::Cloud * m_extCloud;

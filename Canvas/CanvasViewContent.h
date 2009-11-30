@@ -30,12 +30,12 @@ class CanvasViewContent : public AbstractContent, public SingleResourceLoaner
         CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~CanvasViewContent();
 
-        bool loadFromFile(const QString & filePath, bool keepRatio = false, bool setName = false);
+        bool loadFromFile(const QString & fwFilePath, bool keepRatio = false, bool setName = false);
 
         // ::AbstractContent
         QString contentName() const { return tr("Canvas View"); }
-        bool fromXml(QDomElement & contentElement);
-        void toXml(QDomElement & contentElement) const;
+        bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;
 

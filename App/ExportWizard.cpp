@@ -122,14 +122,14 @@ ExportWizard::~ExportWizard()
 
 void ExportWizard::setWallpaper()
 {
-    // find a new filePath
-    QString filePath;
+    // find a new path
+    QString wFilePath;
     int fileNumber = 0;
-    while (filePath.isEmpty() || QFile::exists(filePath))
+    while (wFilePath.isEmpty() || QFile::exists(wFilePath))
 #if defined(Q_OS_WIN)
-        filePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".bmp";
+        wFilePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".bmp";
 #else
-        filePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".jpg";
+        wFilePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".jpg";
 #endif
 
     // render the image
@@ -147,9 +147,9 @@ void ExportWizard::setWallpaper()
 
     // save the right kind of image into the home dir
 #if defined(Q_OS_WIN)
-    if (!image.save(filePath, "BMP")) {
+    if (!image.save(wFilePath, "BMP")) {
 #else
-    if (!image.save(filePath, "JPG", 100)) {
+    if (!image.save(wFilePath, "JPG", 100)) {
 #endif
         QMessageBox::warning(this, tr("Wallpaper Error"), tr("Can't save the image to disk."));
         return;
@@ -158,22 +158,22 @@ void ExportWizard::setWallpaper()
 #if defined(Q_OS_WIN)
     //Set new background path
     {QSettings appSettings("HKEY_CURRENT_USER\\Control Panel\\Desktop", QSettings::NativeFormat);
-    appSettings.setValue("ConvertedWallpaper", filePath);
-    appSettings.setValue("Wallpaper", filePath);}
+    appSettings.setValue("ConvertedWallpaper", wFilePath);
+    appSettings.setValue("Wallpaper", wFilePath);}
 
     //Notification to windows refresh desktop
-    SystemParametersInfoA(SPI_SETDESKWALLPAPER, true, (void*)qPrintable(filePath), SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+    SystemParametersInfoA(SPI_SETDESKWALLPAPER, true, (void*)qPrintable(wFilePath), SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
 #elif defined(Q_OS_LINUX)
     // KDE4
     if (QString(qgetenv("KDE_SESSION_VERSION")).startsWith("4"))
-        QMessageBox::warning(this, tr("Manual Wallpaper Change"), tr("KDE4 doesn't yet support changing wallpaper automatically.\nGo to the Desktop Settings and select the file:\n  %1").arg(filePath));
+        QMessageBox::warning(this, tr("Manual Wallpaper Change"), tr("KDE4 doesn't yet support changing wallpaper automatically.\nGo to the Desktop Settings and select the file:\n  %1").arg(wFilePath));
 
     // KDE3
-    QString kde3cmd = "dcop kdesktop KBackgroundIface setWallpaper '" + filePath + "' 6";
+    QString kde3cmd = "dcop kdesktop KBackgroundIface setWallpaper '" + wFilePath + "' 6";
     QProcess::startDetached(kde3cmd);
 
     // Gnome2
-    QString gnome2Cmd = "gconftool -t string -s /desktop/gnome/background/picture_filename " + filePath ;
+    QString gnome2Cmd = "gconftool -t string -s /desktop/gnome/background/picture_filename " + wFilePath ;
     QProcess::startDetached(gnome2Cmd);
 #else
 #warning "Implement background change for this OS"
@@ -186,7 +186,7 @@ void ExportWizard::saveImage()
         QMessageBox::warning(this, tr("No file selected !"), tr("You need to choose a file path for saving."));
         return;
     }
-    QString fileName = m_ui->filePath->text();
+    QString imgFilePath = m_ui->filePath->text();
 
     // get the rendering size
     QSize imageSize(m_ui->saveWidth->value(), m_ui->saveHeight->value());
@@ -210,11 +210,11 @@ void ExportWizard::saveImage()
     }
 
     // save image
-    if (image.save(fileName) && QFile::exists(fileName)) {
-        int size = QFileInfo(fileName).size();
+    if (image.save(imgFilePath) && QFile::exists(imgFilePath)) {
+        int size = QFileInfo(imgFilePath).size();
         QMessageBox::information(this, tr("Done"), tr("The target image is %1 bytes long").arg(size));
     } else
-        QMessageBox::warning(this, tr("Rendering Error"), tr("Error rendering to the file '%1'").arg(fileName));
+        QMessageBox::warning(this, tr("Rendering Error"), tr("Error rendering to the file '%1'").arg(imgFilePath));
 }
 
 void ExportWizard::startPosterazor()
@@ -286,14 +286,14 @@ void ExportWizard::saveSvg()
         QMessageBox::warning(this, tr("No file selected !"), tr("You need to choose a file path for saving."));
         return;
     }
-    QString svgFileName = m_ui->svgFilePath->text();
+    QString svgFilePath = m_ui->svgFilePath->text();
 
     // get the rendering size
     QRect svgRect(m_canvas->sceneRect().toRect());
 
     // create the SVG writer
     QSvgGenerator generator;
-    generator.setFileName(svgFileName);
+    generator.setFileName(svgFilePath);
     generator.setSize(svgRect.size());
 #if QT_VERSION >= 0x040500
     generator.setResolution(physicalDpiX());
@@ -365,13 +365,13 @@ static QString getSavePath(const QString & initialValue, const QString & default
     }
 
     // ask the file name, validate it, store back to settings
-    QString fileName = QFileDialog::getSaveFileName(0, title, defaultSavePath, type);
-    if (!fileName.isEmpty()) {
-        App::settings->setValue("Fotowall/ExportDir", QFileInfo(fileName).absolutePath());
-        if (QFileInfo(fileName).suffix().isEmpty())
-            fileName += "." + defaultExt;
+    QString saveFilePath = QFileDialog::getSaveFileName(0, title, defaultSavePath, type);
+    if (!saveFilePath.isEmpty()) {
+        App::settings->setValue("Fotowall/ExportDir", QFileInfo(saveFilePath).absolutePath());
+        if (QFileInfo(saveFilePath).suffix().isEmpty())
+            saveFilePath += "." + defaultExt;
     }
-    return fileName;
+    return saveFilePath;
 }
 
 void ExportWizard::slotChoosePath()

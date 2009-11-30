@@ -80,13 +80,13 @@ bool AbstractAppliance::appliancePendingChanges() const
     return false;
 }
 
-bool AbstractAppliance::applianceSave(const QString &fileName)
+bool AbstractAppliance::applianceSave(const QString & filePath)
 {
-    qWarning("AbstractAppliance::applianceSaveAs: saving not implemented for %s to '%s'", qPrintable(applianceName()), qPrintable(fileName));
+    qWarning("AbstractAppliance::applianceSaveAs: saving not implemented for %s to '%s'", qPrintable(applianceName()), qPrintable(filePath));
     return true;
 }
 
-void AbstractAppliance::windowTitleSet(const QString &title)
+void AbstractAppliance::windowTitleSet(const QString & title)
 {
     m_windowTitle = title;
     if (m_containerPtr)

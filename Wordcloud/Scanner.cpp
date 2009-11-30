@@ -24,9 +24,9 @@
 
 using namespace Wordcloud;
 
-bool Scanner::addFromFile(const QString & fileName)
+bool Scanner::addFromFile(const QString & txtFilePath)
 {
-    QFile file(fileName);
+    QFile file(txtFilePath);
     if (!file.open(QIODevice::ReadOnly))
         return false;
 

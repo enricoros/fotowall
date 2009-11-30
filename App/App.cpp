@@ -15,7 +15,6 @@
 #include "App.h"
 
 #include <QFile>
-#include <QFileInfo>
 #include <QImageReader>
 
 
@@ -38,18 +37,18 @@ QString App::supportedImageFormats()
     return extensions;
 }
 
-bool App::isPictureFile(const QString & fileName)
+bool App::isPictureFile(const QString & picFilePath)
 {
-    QString extension = fileName.section('.', -1);
+    QString extension = picFilePath.section('.', -1);
     foreach (const QByteArray & format, QImageReader::supportedImageFormats())
         if (!extension.compare(QString(format), Qt::CaseInsensitive))
             return true;
     return false;
 }
 
-bool App::isFotowallFile(const QString & fileName)
+bool App::isFotowallFile(const QString & fwFilePath)
 {
-    return fileName.endsWith(".fotowall", Qt::CaseInsensitive);
+    return fwFilePath.endsWith(".fotowall", Qt::CaseInsensitive);
 }
 
 bool App::isContentUrl(const QString & url)
@@ -69,7 +68,7 @@ bool App::isContentUrl(const QString & url)
 
 bool App::validateFotowallUrl(const QString & url)
 {
-    if (isFotowallFile(url) && QFileInfo(url).exists())
+    if (isFotowallFile(url) && QFile::exists(url))
         return true;
     if (url.startsWith("http:/", Qt::CaseInsensitive) || url.startsWith("ftp:/", Qt::CaseInsensitive)) {
         qWarning("App::validateFotowallUrl: http or ftp urls not allowed for now");

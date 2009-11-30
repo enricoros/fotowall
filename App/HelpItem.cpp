@@ -19,7 +19,6 @@
 #include <QGraphicsTextItem>
 #endif
 #include <QCoreApplication>
-#include <QFile>
 #include <QLocale>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>

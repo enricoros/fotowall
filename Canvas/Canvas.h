@@ -17,11 +17,12 @@
 
 #include "Shared/AbstractScene.h"
 #include <QDataStream>
+#include <QDir>
+#include <QDomElement>
 #include <QPainter>
 #include <QPixmap>
 #include <QRect>
 #include <QTime>
-#include <QDomElement>
 
 class AbstractContent;
 class AbstractConfig;
@@ -46,9 +47,9 @@ class Canvas : public AbstractScene
         ~Canvas();
 
         // add/remove content
-        void addAutoContent(const QStringList & fileNames);
-        void addCanvasViewContent(const QStringList & fileNames);
-        void addPictureContent(const QStringList & fileNames);
+        void addAutoContent(const QStringList & filePaths);
+        void addCanvasViewContent(const QStringList & fwFilePaths);
+        void addPictureContent(const QStringList & picFilePaths);
         void addTextContent();
         void addWebcamContent(int webcamIndex);
         void addWordcloudContent();
@@ -133,6 +134,7 @@ class Canvas : public AbstractScene
         void deleteConfig(AbstractConfig * config);
 
         QString m_filePath;
+        QDir m_fileAbsDir;
         CanvasModeInfo * m_modeInfo;
         QList<AbstractContent *> m_content;
         QList<AbstractConfig *> m_configs;

@@ -37,12 +37,12 @@ CanvasViewContent::~CanvasViewContent()
     delete m_canvas;
 }
 
-bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*/, bool setName)
+bool CanvasViewContent::loadFromFile(const QString & fwFilePath, bool /*keepRatio*/, bool setName)
 {
     // create a Canvas
     Canvas * canvas = new Canvas(96, 96, this);
     connect(canvas, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(slotRepaintCanvas(const QList<QRectF> &)));
-    bool ok = FotowallFile::read(filePath, canvas, false);
+    bool ok = FotowallFile::read(fwFilePath, canvas, false);
     canvas->resizeAutoFit();
 
     // set the canvas
@@ -53,13 +53,13 @@ bool CanvasViewContent::loadFromFile(const QString & filePath, bool /*keepRatio*
 
     // customize the item
     setFrameTextEnabled(setName);
-    setFrameText(QFileInfo(filePath).baseName());
+    setFrameText(QFileInfo(fwFilePath).baseName());
     return ok;
 }
 
-bool CanvasViewContent::fromXml(QDomElement & contentElement)
+bool CanvasViewContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
-    AbstractContent::fromXml(contentElement);
+    AbstractContent::fromXml(contentElement, baseDir);
 
     // sanity check
     if (m_canvas) {
@@ -90,10 +90,10 @@ bool CanvasViewContent::fromXml(QDomElement & contentElement)
     return true;
 }
 
-void CanvasViewContent::toXml(QDomElement & contentElement) const
+void CanvasViewContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
 {
     // save AbstractContent properties and rename to 'embedded-canvas'
-    AbstractContent::toXml(contentElement);
+    AbstractContent::toXml(contentElement, baseDir);
     contentElement.setTagName("embedded-canvas");
 
     // sanity check

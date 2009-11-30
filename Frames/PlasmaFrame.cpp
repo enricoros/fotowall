@@ -87,13 +87,13 @@ struct PlasmaFramePrivate {
 };
 
 
-PlasmaFrame::PlasmaFrame(quint32 frameClass, const QString & fileName)
+PlasmaFrame::PlasmaFrame(quint32 frameClass, const QString & frameFilePath)
     : d(new PlasmaFramePrivate())
 {
     // create the renderer
-    d->svg = new QSvgRenderer(fileName);
+    d->svg = new QSvgRenderer(frameFilePath);
     if (!d->svg->isValid()) {
-        qWarning("PlasmaFrame::PlasmaFrame: invalid file %s", qPrintable(fileName));
+        qWarning("PlasmaFrame::PlasmaFrame: invalid file %s", qPrintable(frameFilePath));
         delete d->svg;
         d->svg = 0;
         return;

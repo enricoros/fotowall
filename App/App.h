@@ -48,8 +48,8 @@ class App
 
         // utility functions
         static QString supportedImageFormats();
-        static bool isPictureFile(const QString & fileName);
-        static bool isFotowallFile(const QString & fileName);
+        static bool isPictureFile(const QString & picFilePath);
+        static bool isFotowallFile(const QString & fwFilePath);
         static bool isContentUrl(const QString & url);
         static bool validateFotowallUrl(const QString & url);
 };

@@ -36,7 +36,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
         bool applianceCommand(int command);
         bool appliancePendingChanges() const;
-        bool applianceSave(const QString & fileName = QString());
+        bool applianceSave(const QString & filePath = QString());
 
     private:
         QMenu * createArrangeMenu();

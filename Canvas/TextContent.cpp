@@ -21,7 +21,6 @@
 #include "TextProperties.h"
 
 #include <QDebug>
-#include <QFileInfo>
 #include <QGraphicsScene>
 #include <QKeyEvent>
 #include <QMimeData>
@@ -151,7 +150,7 @@ QWidget * TextContent::createPropertyWidget()
     return p;
 }
 
-bool TextContent::fromXml(QDomElement & contentElement)
+bool TextContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
     // FIRST load text properties and shape
     // NOTE: order matters here, we don't want to override the size restored later
@@ -189,14 +188,14 @@ bool TextContent::fromXml(QDomElement & contentElement)
     }
 
     // THEN restore the geometry
-    AbstractContent::fromXml(contentElement);
+    AbstractContent::fromXml(contentElement, baseDir);
 
     return true;
 }
 
-void TextContent::toXml(QDomElement & contentElement) const
+void TextContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
 {
-    AbstractContent::toXml(contentElement);
+    AbstractContent::toXml(contentElement, baseDir);
     contentElement.setTagName("text");
 
     // save text properties

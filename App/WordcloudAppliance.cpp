@@ -103,9 +103,9 @@ bool WordcloudAppliance::appliancePendingChanges() const
     return true;
 }
 
-bool WordcloudAppliance::applianceSave(const QString &__fileName)
+bool WordcloudAppliance::applianceSave(const QString &__filePath)
 {
-    if (__fileName.isEmpty()) {
+    if (__filePath.isEmpty()) {
         // ###
         qWarning("WordcloudAppliance::saveToFile: not implemented");
     }

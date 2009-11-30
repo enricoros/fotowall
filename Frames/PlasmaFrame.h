@@ -22,7 +22,7 @@ struct PlasmaFramePrivate;
 class PlasmaFrame : public Frame
 {
     public:
-        PlasmaFrame(quint32 frameClass, const QString & fileName);
+        PlasmaFrame(quint32 frameClass, const QString & frameFilePath);
         ~PlasmaFrame();
 
         bool isValid() const;
