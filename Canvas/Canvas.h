@@ -55,6 +55,7 @@ class Canvas : public AbstractScene
         void addWordcloudContent();
         void addManualContent(AbstractContent * content, const QPoint & pos);
         void clearContent();
+        QPoint visibleCenter() const;
 
         // ::AbstractScene
         void resize(const QSize & size);
@@ -134,6 +135,7 @@ class Canvas : public AbstractScene
         WordcloudContent * createWordcloud(const QPoint & pos);
         void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
+        QGraphicsView * mainGraphicsView() const;
 
         QString m_filePath;
         QDir m_fileAbsDir;

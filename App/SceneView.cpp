@@ -63,6 +63,7 @@ SceneView::SceneView(QWidget * parent)
   , m_openGL(false)
   , m_abstractScene(0)
   , m_style(0)
+  , m_shadowTile(0)
   , m_overGridLayout(0)
   , m_heavyTimer(0)
   , m_heavyCounter(0)
@@ -97,6 +98,7 @@ SceneView::SceneView(QWidget * parent)
 
 SceneView::~SceneView()
 {
+    delete m_shadowTile;
     delete m_style;
 }
 
@@ -242,11 +244,10 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
     QGraphicsView::drawForeground(painter, rect);
 
     // the first time create the Shadow Tile
-    static QPixmap shadowTile;
-    if (shadowTile.isNull()) {
-        shadowTile = QPixmap(64, 8);
-        shadowTile.fill(Qt::transparent);
-        QPainter shadowPainter(&shadowTile);
+    if (!m_shadowTile) {
+        m_shadowTile = new QPixmap(64, 8);
+        m_shadowTile->fill(Qt::transparent);
+        QPainter shadowPainter(m_shadowTile);
         drawVerticalShadow(&shadowPainter, 64, 8);
     }
 
@@ -259,7 +260,7 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
         QRect viewportRect = viewport()->contentsRect();
         int viewportHeight = viewportRect.height();
         viewportRect.setHeight(8);
-        painter->drawTiledPixmap(viewportRect, shadowTile);
+        painter->drawTiledPixmap(viewportRect, *m_shadowTile);
 
         // draw text
         QString text = tr("%1%").arg(qRound(m_viewScale * 100));
@@ -279,7 +280,7 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
 
     // blend the shadow tile
     if (rect.top() < (y + 8))
-        painter->drawTiledPixmap(rect.left(), y, rect.width(), 8, shadowTile);
+        painter->drawTiledPixmap(rect.left(), y, rect.width(), 8, *m_shadowTile);
 }
 
 void SceneView::paintEvent(QPaintEvent * event)

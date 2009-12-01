@@ -85,6 +85,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(slotReflectionToggled(bool)));
 
     // ITEM setup
+    setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
     setWidget(widget);
     static qreal s_propZBase = 99999;
     setZValue(s_propZBase++);

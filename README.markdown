@@ -13,7 +13,6 @@ ChangeLog
 
 Work in progress:
 
-* URGENT - Win32 crashfix
 * (Work In Progress) Arrange Contents
 * Arnaud's Undo/Redo system
 

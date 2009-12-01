@@ -19,6 +19,7 @@
 #include <QTime>
 class AbstractScene;
 class QGridLayout;
+class QPixmap;
 class RubberBandStyle;
 
 class SceneView : public QGraphicsView
@@ -67,6 +68,7 @@ class SceneView : public QGraphicsView
         bool m_openGL;
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
+        QPixmap * m_shadowTile;
         QGridLayout * m_overGridLayout;
         QTime m_paintTime;
         QTimer * m_heavyTimer;

@@ -144,11 +144,6 @@ Canvas::~Canvas()
 }
 
 /// Add Content
-static QPoint nearCenter(const QRectF & rect)
-{
-    return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
-}
-
 void Canvas::addAutoContent(const QStringList & filePaths)
 {
     // simple auto-detection of the content type
@@ -166,8 +161,8 @@ void Canvas::addAutoContent(const QStringList & filePaths)
 void Canvas::addCanvasViewContent(const QStringList & fwFilePaths)
 {
     clearSelection();
-    int offset = -30 * fwFilePaths.size() / 2;
-    QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
+    int offset = -30 * (fwFilePaths.size() - 1) / 2;
+    QPoint pos = visibleCenter() + QPoint(offset, offset);
     foreach (const QString & localFile, fwFilePaths) {
         if (!QFile::exists(localFile))
             continue;
@@ -187,8 +182,8 @@ void Canvas::addCanvasViewContent(const QStringList & fwFilePaths)
 void Canvas::addPictureContent(const QStringList & picFilePaths)
 {
     clearSelection();
-    int offset = -30 * picFilePaths.size() / 2;
-    QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
+    int offset = -30 * (picFilePaths.size() - 1) / 2;
+    QPoint pos = visibleCenter() + QPoint(offset, offset);
     foreach (const QString & localFile, picFilePaths) {
         if (!QFile::exists(localFile))
             continue;
@@ -208,21 +203,21 @@ void Canvas::addPictureContent(const QStringList & picFilePaths)
 void Canvas::addTextContent()
 {
     clearSelection();
-    TextContent * t = createText(nearCenter(sceneRect()));
+    TextContent * t = createText(visibleCenter());
     t->setSelected(true);
 }
 
 void Canvas::addWebcamContent(int webcamIndex)
 {
     clearSelection();
-    WebcamContent * w = createWebcam(webcamIndex, nearCenter(sceneRect()));
+    WebcamContent * w = createWebcam(webcamIndex, visibleCenter());
     w->setSelected(true);
 }
 
 void Canvas::addWordcloudContent()
 {
     clearSelection();
-    WordcloudContent * w = createWordcloud(nearCenter(sceneRect()));
+    WordcloudContent * w = createWordcloud(visibleCenter());
     w->manualInitialization();
     w->setSelected(true);
 }
@@ -241,6 +236,18 @@ void Canvas::clearContent()
     // this is not needed, it's here only as extra-safety
     // Q_ASSERT(!m_backContent)
     m_backContent = 0;
+}
+
+QPoint Canvas::visibleCenter() const
+{
+    QPoint center;
+    QGraphicsView * view = mainGraphicsView();
+    if (view) {
+        QPoint viewCenter = view->viewport()->rect().center();
+        center = view->mapToScene(viewCenter).toPoint();
+    } else
+        center = sceneRect().center().toPoint();
+    return center + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
 }
 
 void Canvas::resize(const QSize & size)
@@ -1259,6 +1266,12 @@ void Canvas::deleteConfig(AbstractConfig * config)
     }
 }
 
+QGraphicsView * Canvas::mainGraphicsView() const
+{
+    QList<QGraphicsView *> vList = views();
+    return vList.isEmpty() ? 0 : vList.first();
+}
+
 /// Slots
 void Canvas::slotSelectionChanged()
 {
@@ -1327,7 +1340,12 @@ void Canvas::slotConfigureContent(const QPoint & scenePoint)
     connect(p, SIGNAL(applyLook(quint32,bool,bool)), this, SLOT(slotApplyLook(quint32,bool,bool)));
     p->show();
     p->setPos(scenePoint - QPoint(10, 10));
-    p->keepInBoundaries(sceneRect().toRect());
+    QGraphicsView * mainView = mainGraphicsView();
+    if (mainView) {
+        QRect bounds = mainView->mapToScene(mainView->viewport()->rect()).boundingRect().toRect();
+        p->keepInBoundaries(bounds);
+    } else
+        p->keepInBoundaries(sceneRect().toRect());
     p->setFocus();
 }
 

@@ -241,7 +241,11 @@ QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
     AbstractContent::createPropertyWidget(pp);
 
     // properties link
+#ifdef Q_WS_WIN
+    delete pp->gimpButton;
+#else
     new PE_AbstractButton(pp->gimpButton, this, "externalEdit", pp);
+#endif
 
     return pp;
 }
@@ -315,7 +319,7 @@ bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
                 path = replacements.first();
                 qWarning("PictureContent::fromXml:    using '%s'", qPrintable(path));
             } else
-                qWarning("PictureContent::fromXml:    not found");
+                qWarning("PictureContent::fromXml:    no replacements found");
         }
     }
 

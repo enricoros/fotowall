@@ -2,6 +2,7 @@ VPATH += $$PWD
 DEPENDPATH += $$PWD
 
 macx: CONFIG += no-webcam
+win32: CONFIG += no-webcam
 
 !contains(CONFIG, no-webcam): {
     DEFINES += HAS_VIDEOCAPTURE
