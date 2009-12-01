@@ -44,6 +44,7 @@ class Workflow : public QObject
         void popCurrentAppliance();
 
         // other utilities
+        QString applianceName() const;
         bool applianceCommand(int command);
         bool requestExit();
 

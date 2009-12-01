@@ -9,7 +9,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+112"/>
+        <location line="+113"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
@@ -97,7 +97,7 @@
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../Canvas/AbstractContent.cpp" line="+83"/>
+        <location filename="../Canvas/AbstractContent.cpp" line="+84"/>
         <source>Change properties...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -114,7 +114,7 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+761"/>
+        <location line="+777"/>
         <source>Unnamed %1.png</source>
         <translation type="unfinished"></translation>
     </message>
@@ -159,12 +159,13 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+65"/>
+        <location filename="../Canvas/Canvas.cpp" line="+285"/>
+        <location line="+19"/>
         <source>Unnamed %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+442"/>
+        <location line="+220"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
@@ -174,12 +175,12 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+737"/>
+        <location line="+755"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+152"/>
+        <location line="+157"/>
         <source>Delete content</source>
         <translation type="unfinished"></translation>
     </message>
@@ -192,7 +193,7 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>CanvasAppliance</name>
     <message>
-        <location filename="../App/CanvasAppliance.cpp" line="+139"/>
+        <location filename="../App/CanvasAppliance.cpp" line="+122"/>
         <source>Transparency</source>
         <translation type="unfinished"></translation>
     </message>
@@ -207,7 +208,7 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+34"/>
         <source>Random Placement</source>
         <translation type="unfinished"></translation>
     </message>
@@ -302,7 +303,7 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+87"/>
         <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
@@ -322,7 +323,7 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+100"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
     </message>
@@ -332,7 +333,7 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+41"/>
         <source>Wordcloud Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -342,7 +343,12 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../App/CanvasAppliance.h" line="+38"/>
+        <location line="+75"/>
+        <source>Add Webcam</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../App/CanvasAppliance.h" line="+36"/>
         <source>Canvas</source>
         <translation type="unfinished"></translation>
     </message>
@@ -362,11 +368,6 @@ Use CTRL to cancel the transformations.</source>
     <message>
         <location/>
         <source>Add Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Add Webcam</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -434,6 +435,11 @@ Use CTRL to cancel the transformations.</source>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location/>
+        <source>Desktop</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CanvasViewContent</name>
@@ -448,6 +454,44 @@ Use CTRL to cancel the transformations.</source>
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+277"/>
         <source>Text Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ContentProperties</name>
+    <message>
+        <location filename="../Canvas/ContentProperties.ui"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Opacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>No Fx</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Black Shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>White Shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Soft Blur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Strong Blur</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -935,7 +979,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HelpItem</name>
     <message>
-        <location filename="../App/HelpItem.cpp" line="+33"/>
+        <location filename="../App/HelpItem.cpp" line="+32"/>
         <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
@@ -975,7 +1019,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>OPEN</source>
         <translation type="unfinished"></translation>
     </message>
@@ -988,7 +1032,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HomeScene</name>
     <message>
-        <location filename="../App/HomeScene.cpp" line="+157"/>
+        <location filename="../App/HomeScene.cpp" line="+162"/>
         <source>Wordcloud</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1199,7 +1243,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OnlineServices</name>
     <message>
-        <location filename="../App/OnlineServices.cpp" line="+107"/>
+        <location filename="../App/OnlineServices.cpp" line="+109"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1340,13 +1384,13 @@ Do you want to open the web page?</source>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../Canvas/PictureContent.cpp" line="+50"/>
-        <location line="+61"/>
+        <location filename="../Canvas/PictureContent.cpp" line="+53"/>
+        <location line="+63"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-54"/>
+        <location line="-56"/>
         <source>Flip horizontally</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1358,44 +1402,6 @@ Do you want to open the web page?</source>
     <message>
         <location filename="../Canvas/PictureContent.h" line="+42"/>
         <source>Picture</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PictureProperties</name>
-    <message>
-        <location filename="../Canvas/PictureProperties.ui"/>
-        <source>Remove</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Opacity:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>No Fx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Black Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>White Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Soft Blur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Strong Blur</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1521,6 +1527,11 @@ Do you want to open the web page?</source>
         <source>Add Fotowall files to the Canvas</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+110"/>
+        <source>Camera %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RichTextEditorDialog</name>
@@ -1581,7 +1592,7 @@ Do you want to open the web page?</source>
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../App/SceneView.cpp" line="+265"/>
+        <location filename="../App/SceneView.cpp" line="+267"/>
         <source>%1%</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1625,7 +1636,7 @@ Do you want to open the web page?</source>
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../Canvas/TextContent.cpp" line="+43"/>
+        <location filename="../Canvas/TextContent.cpp" line="+42"/>
         <source>Right click to Edit the text</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1644,44 +1655,14 @@ Do you want to open the web page?</source>
     <name>TextProperties</name>
     <message>
         <location filename="../Canvas/TextProperties.ui"/>
-        <source>Remove</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Edit Shape</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>No Fx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Black Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>White Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Soft Blur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Strong Blur</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UrlHistoryBox</name>
     <message>
-        <location filename="../App/UrlHistoryBox.cpp" line="+88"/>
+        <location filename="../App/UrlHistoryBox.cpp" line="+152"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1770,7 +1751,7 @@ Do you want to open the web page?</source>
 <context>
     <name>Wordcloud::Cloud</name>
     <message>
-        <location filename="../Wordcloud/Cloud.cpp" line="+213"/>
+        <location filename="../Wordcloud/Cloud.cpp" line="+238"/>
         <source>Placing Words...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1783,7 +1764,7 @@ Do you want to open the web page?</source>
 <context>
     <name>Wordcloud::Scanner</name>
     <message>
-        <location filename="../Wordcloud/Scanner.cpp" line="+112"/>
+        <location filename="../Wordcloud/Scanner.cpp" line="+118"/>
         <source>Word</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1796,7 +1777,7 @@ Do you want to open the web page?</source>
 <context>
     <name>WordcloudAppliance</name>
     <message>
-        <location filename="../App/WordcloudAppliance.h" line="+41"/>
+        <location filename="../App/WordcloudAppliance.h" line="+38"/>
         <source>Wordcloud</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1804,7 +1785,7 @@ Do you want to open the web page?</source>
 <context>
     <name>WordcloudContent</name>
     <message>
-        <location filename="../Canvas/WordcloudContent.cpp" line="+34"/>
+        <location filename="../Canvas/WordcloudContent.cpp" line="+47"/>
         <source>Create a Wordcloud from a text file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1814,7 +1795,7 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Canvas/WordcloudContent.h" line="+36"/>
+        <location filename="../Canvas/WordcloudContent.h" line="+38"/>
         <source>Wordcloud</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1848,50 +1829,63 @@ Do you want to open the web page?</source>
     </message>
     <message>
         <location/>
-        <source>Scheem2</source>
+        <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
-        <source>Font</source>
+        <source>Scheme2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+178"/>
+        <location filename="../App/Workflow.cpp" line="+169"/>
         <source>Closing Fotowall...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
+        <location line="+53"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-51"/>
         <source>Are you sure you want to quit and lose your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
+        <location line="+52"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-51"/>
+        <location line="+52"/>
         <source>Don&apos;t Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-49"/>
         <source>Are you sure you want to quit?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Closing File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

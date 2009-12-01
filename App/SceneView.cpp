@@ -90,7 +90,7 @@ SceneView::SceneView(QWidget * parent)
     m_overGridLayout = new QGridLayout;
     m_overGridLayout->setContentsMargins(0, GRIDLAYOUT_TOPMARGIN, 0, 0);
     m_overGridLayout->setSpacing(3);
-    setLayout(m_overGridLayout);
+    viewport()->setLayout(m_overGridLayout);
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
     //setCacheMode(CacheBackground);
@@ -160,6 +160,7 @@ void SceneView::setOpenGL(bool enabled)
     // change viewport widget and transfer style
     QWidget * newViewport = m_openGL ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget();
     newViewport->setStyle(m_style);
+    newViewport->setLayout(m_overGridLayout);
     setViewport(newViewport);
     setViewportUpdateMode(m_openGL ? FullViewportUpdate : MinimalViewportUpdate);
 
@@ -351,11 +352,13 @@ void SceneView::layoutScene()
     setVerticalScrollBarPolicy(sPolicy);
     setHorizontalScrollBarPolicy(sPolicy);
 
+#if 0 // disabled after transferring the layout to the viewport
     // change the overlay layout margins to skip the bars (if present)
     if (QApplication::isLeftToRight())
         m_overGridLayout->setContentsMargins(0, GRIDLAYOUT_TOPMARGIN, scrollbarsNeeded ? verticalScrollBar()->width() : 0, scrollbarsNeeded ? horizontalScrollBar()->height() : 0);
     else
         m_overGridLayout->setContentsMargins(scrollbarsNeeded ? verticalScrollBar()->width() : 0, GRIDLAYOUT_TOPMARGIN, 0, scrollbarsNeeded ? horizontalScrollBar()->height() : 0);
+#endif
 
     // change the selection/scrolling policy
     if (m_abstractScene->sceneSelectable())

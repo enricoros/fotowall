@@ -11,19 +11,16 @@ Check out the [home page](http://www.enricoros.com/opensource/fotowall) and the
 ChangeLog
 ---------
 
-Work in progress:
-
-* (Work In Progress) Arrange Contents
-* Arnaud's Undo/Redo system
-
 In progress for Fotowall "REVO" 1.0 (unreleased):
 
+* Arnaud's Undo/Redo system
 * Wordcloud editor
+* Arrange Contents
 * Text shaking
 
 Fotowall "Alchimia" 0.9 (unreleased):
 
-* More than 200 changes
+* More than 250 changes
 * SVG export, Likeback, property editors, more solid, new contents, wordcloud, reworked interface with nested editing
   webcam bugfixes, automatics performance tuning, home screen with previews, autoblend effect, graphics effects, zooming,
   pencilitem, relative paths,

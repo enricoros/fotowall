@@ -137,6 +137,13 @@ void Workflow::popCurrentAppliance()
         scheduleCommand(Command(Command::ResetToLevel, m_stack.size() - 1));
 }
 
+QString Workflow::applianceName() const
+{
+    if (!m_stack.isEmpty())
+        return m_stack.last().appliance->applianceName();
+    return "Workflow";
+}
+
 bool Workflow::applianceCommand(int command)
 {
     if (!m_stack.isEmpty())

@@ -240,17 +240,17 @@ void MainWindow::slotRenderingSlow()
 
 void MainWindow::on_lbLike_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Like);
+    m_likeBack->execCommentDialog(LikeBack::Like, QString(), App::workflow->applianceName());
 }
 
 void MainWindow::on_lbFeature_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Feature);
+    m_likeBack->execCommentDialog(LikeBack::Feature, QString(), App::workflow->applianceName());
 }
 
 void MainWindow::on_lbBug_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Bug);
+    m_likeBack->execCommentDialog(LikeBack::Bug, QString(), App::workflow->applianceName());
 }
 
 bool MainWindow::on_accelTestButton_clicked()

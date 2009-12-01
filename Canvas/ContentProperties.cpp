@@ -19,7 +19,7 @@ ContentProperties::ContentProperties(QWidget *parent)
 {
     setupUi(this);
 #if QT_VERSION < 0x040600
-    fxCombo->hide();
+    cFxCombo->hide();
 #endif
 }
 
