@@ -23,11 +23,12 @@
 class Settings : public QSettings
 {
     public:
-        Settings();
+        Settings(bool clearConfig = false);
         ~Settings();
 
         // is this the first time Fotowall is executed
         bool firstTime() const;
+        int usageCount() const;
 
         // the recent load/save history
         QList<QUrl> recentFotowallUrls() const;

@@ -45,6 +45,7 @@ class MainWindow : public PlugGui::Container
 
     private:
         void createLikeBack();
+        void showLikeBack(int type);
 
         Ui::MainWindow *        ui;
         QNetworkAccessManager * m_networkAccessManager;

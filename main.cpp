@@ -65,7 +65,7 @@ int main( int argc, char ** args )
     qtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
 
-    App::settings = new Settings;
+    App::settings = new Settings(app.arguments().contains("-clearconfig"));
     RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
     VideoProvider::Disable = app.arguments().contains("-novideo");
     App::settings->setValue("Fotowall/FirstTime", false);

@@ -86,15 +86,23 @@ MainWindow::MainWindow(QWidget * parent)
     } else
         show();
 
+#if QT_VERSION >= 0x040500
+    // re-apply transparency
+    if (App::settings->value("Fotowall/Tranlucent", false).toBool())
+        ui->transpBox->setChecked(true);
+#endif
+
     // start the workflow
     new Workflow((PlugGui::Container *)this, workflowBar);
 
     // create the online services
     new OnlineServices(m_networkAccessManager);
 
+#if 0
     // start with the Help appliance the first time
     if (App::settings->firstTime())
         App::workflow->stackHelpAppliance();
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -121,7 +129,10 @@ QSize MainWindow::sceneViewSize() const
 void MainWindow::applianceSetTitle(const QString & title)
 {
     QString tString = title.isEmpty() ? QString() : title + " - ";
-    tString += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
+    tString += QCoreApplication::applicationName() + " ";
+    if (title.isEmpty())
+        tString += "' Alchimia ' ";
+    tString += QCoreApplication::applicationVersion();
 #if QT_VERSION < 0x040500
     tString += "   -Limited Edition (Qt 4.4)-";
 #endif
@@ -238,19 +249,27 @@ void MainWindow::slotRenderingSlow()
     }
 }
 
+void MainWindow::showLikeBack(int type)
+{
+    int usageCount = App::settings->value("Fotowall/UsageCount").toInt();
+    QString usageString = QString::number(usageCount);
+    QString windowString = App::workflow->applianceName();
+    m_likeBack->execCommentDialog((LikeBack::Button)type, QString(), windowString, usageString);
+}
+
 void MainWindow::on_lbLike_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Like, QString(), App::workflow->applianceName());
+    showLikeBack(LikeBack::Like);
 }
 
 void MainWindow::on_lbFeature_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Feature, QString(), App::workflow->applianceName());
+    showLikeBack(LikeBack::Feature);
 }
 
 void MainWindow::on_lbBug_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Bug, QString(), App::workflow->applianceName());
+    showLikeBack(LikeBack::Bug);
 }
 
 bool MainWindow::on_accelTestButton_clicked()
@@ -408,7 +427,8 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #endif
 
         // disable appliance background too
-        App::workflow->applianceCommand(App::AC_ClearBackground);
+        if (App::workflow)
+            App::workflow->applianceCommand(App::AC_ClearBackground);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
@@ -425,7 +445,8 @@ void MainWindow::on_transpBox_toggled(bool transparent)
     }
     // refresh the window
     update();
-#else
-    Q_UNUSED(transparent)
 #endif
+
+    // remember in settings
+    App::settings->setValue("Fotowall/Tranlucent", transparent);
 }

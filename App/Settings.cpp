@@ -17,11 +17,19 @@
 #include "App.h"
 
 #include <QStringList>
+#include <QMessageBox>
 
-Settings::Settings()
+Settings::Settings(bool clearConfig)
     : QSettings()
     , m_firstTime(false)
 {
+    // only this timer bybasses clearing
+    int usageCount = value("Fotowall/UsageCount", (int)0).toInt();
+
+    // clear settings if asked to do so
+    if (clearConfig)
+        clear();
+
     // build up the recent urls list
     foreach (const QString & urlString, value("Fotowall/RecentUrls").toStringList())
         if (App::validateFotowallUrl(urlString))
@@ -30,6 +38,9 @@ Settings::Settings()
     // find out if this is the first time
     m_firstTime = value("Fotowall/FirstTime", true).toBool();
     setValue("Fotowall/FirstTime", false);
+
+    // increment usage count
+    setValue("Fotowall/UsageCount", ++usageCount);
 }
 
 Settings::~Settings()
@@ -50,6 +61,11 @@ Settings::~Settings()
 bool Settings::firstTime() const
 {
     return m_firstTime;
+}
+
+int Settings::usageCount() const
+{
+    return value("Fotowall/UsageCount", (int)0).toInt();
 }
 
 QList<QUrl> Settings::recentFotowallUrls() const

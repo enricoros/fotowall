@@ -17,7 +17,9 @@
 #include "Canvas/AbstractContent.h"
 #include "Frames/StandardFrame.h"
 #include "Shared/RenderOpts.h"
-//#include "3rdparty/pencil/PencilItem.h"
+#include "3rdparty/pencil/PencilItem.h"
+#include "App.h"
+#include "Settings.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
@@ -187,7 +189,8 @@ HomeScene::HomeScene(QObject * parent)
 
 #ifdef HAVE_PENCIL_ITEM
      // create the pencil item the first time
-     QTimer::singleShot(1000, this, SLOT(slotCreatePencil()));
+     if (App::settings->firstTime() || !(qrand() % 20))
+        QTimer::singleShot(1000, this, SLOT(slotCreatePencil()));
 #endif
 }
 
@@ -280,7 +283,9 @@ void HomeScene::slotCreatePencil()
 #ifdef HAVE_PENCIL_ITEM
     if (!m_pencil) {
         m_pencil = new PencilItem(":/data/home-art.svg");
+        QRectF pRect = m_pencil->boundingRect();
         m_pencil->setZValue(999);
+        m_pencil->setPos(QPointF((sceneWidth() - pRect.width()) / 2, 9 * (sceneHeight() - pRect.height()) / 10));
         addItem(m_pencil);
     }
 #endif

@@ -22,7 +22,7 @@
 #include <QtGui/QPainterPath>
 #include <QtGui/QPen>
 #include <QRectF>
-#include "enricomath.h"
+#include "3rdparty/enricomath.h"
 
 // TODO: ADD A NOTION OF LINE-FOLLOWING for Rendering Segments
 

@@ -19,7 +19,7 @@
 #include <QList>
 #include <QPixmap>
 #include <QRect>
-class HomePencilItem;
+class PencilItem;
 
 /**
     \brief The Scene showing the {New Canvas, New Wordcloud, etc..} items.
@@ -52,7 +52,7 @@ class HomeScene : public AbstractScene
         QList<QGraphicsItem *> m_labels;
         QPixmap m_logoPixmap;
         QRect m_logoRect;
-        HomePencilItem * m_pencil;
+        PencilItem * m_pencil;
 
     private Q_SLOTS:
         void slotCreatePencil();

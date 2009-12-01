@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "FloodGenerator.h"
-#include "enricomath.h"
+#include "3rdparty/enricomath.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>

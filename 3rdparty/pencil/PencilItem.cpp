@@ -68,14 +68,18 @@ QRectF PencilItem::boundingRect() const
     return m_rect;
 }
 
-void PencilItem::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
+void PencilItem::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    int end = (int)((qreal)m_steps.size() * 1.4 * m_alpha);
-    int width = (int)((qreal)m_steps.size() * 0.4);
+    int end = (int)((qreal)m_steps.size() * 1.5 * m_alpha);
+    int width = (int)((qreal)m_steps.size() * 0.5);
     int start = end - width;
     int stop = qMin(m_steps.size(), end);
     painter->setBrush(Qt::NoBrush);
+#if 1
+    painter->setPen(QPen(QColor(110, 0, 0), 2));
+#else
     painter->setPen(QPen(QApplication::palette().color(QPalette::Highlight), 1));
+#endif
     QPointF p1;
     for (int idx = qMax(0, start); idx < stop; ++idx) {
         const Step & step = m_steps.at(idx);
