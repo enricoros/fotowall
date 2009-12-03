@@ -60,7 +60,7 @@ Settings::~Settings()
 
 bool Settings::firstTime() const
 {
-    return m_firstTime;
+    return m_firstTime || usageCount() < 2;
 }
 
 int Settings::usageCount() const
