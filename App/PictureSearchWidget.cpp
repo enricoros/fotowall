@@ -186,13 +186,8 @@ PictureSearchWidget::PictureSearchWidget(QNetworkAccessManager * extAccessManage
     QFont font;
     font.setPointSize(font.pointSize() - 1);
     setFont(font);
-    QPalette whitePal;
-    whitePal.setBrush(QPalette::Base, QApplication::palette().color(QPalette::Base));
     setContentsMargins(0, 0, 0, 0);
-
     m_ui->setupUi(this);
-    m_ui->fRadio->setPalette(whitePal);
-    m_ui->gRadio->setPalette(whitePal);
     m_ui->listWidget->hide();
     connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
     connect(m_ui->lineEdit, SIGNAL(returnPressed()), m_ui->searchButton, SLOT(click()));
@@ -239,7 +234,13 @@ void PictureSearchWidget::setFocus()
     m_ui->lineEdit->setFocus();
 }
 
-void PictureSearchWidget::paintEvent(QPaintEvent *)
+void PictureSearchWidget::closeEvent(QCloseEvent *event)
+{
+    event->ignore();
+    emit requestClosure();
+}
+
+void PictureSearchWidget::paintEvent(QPaintEvent * event)
 {
     QLinearGradient lg(0, 0, 0, 50);
     if (App::pictureService) {
@@ -247,7 +248,7 @@ void PictureSearchWidget::paintEvent(QPaintEvent *)
             lg.setColorAt(0.0, QColor(255, 200, 200, 200));
         else if (m_ui->gRadio->isChecked())
             lg.setColorAt(0.0, QColor(200, 220, 255, 200));
-        lg.setColorAt(1.0, QColor(200, 200, 200, 220));
+        lg.setColorAt(1.0, QColor(230, 230, 230, 220));
     } else {
         lg.setColorAt(0.0, QColor(255, 255, 255));
         lg.setColorAt(1.0, QColor(200, 200, 200));
@@ -256,10 +257,15 @@ void PictureSearchWidget::paintEvent(QPaintEvent *)
     // draw background frame
     QPainter p(this);
     p.setBrush(lg);
+#if 0
     p.setPen(QPen(Qt::darkGray, 1));
     p.setRenderHint(QPainter::Antialiasing, true);
     QRectF boundaries = QRectF(rect()).adjusted(0.5 - FRAME_RADIUS, 0.5, -0.5, -0.5);
     p.drawRoundedRect(boundaries, FRAME_RADIUS, FRAME_RADIUS, Qt::AbsoluteSize);    
+#else
+    p.setCompositionMode(QPainter::CompositionMode_Source);
+    p.fillRect(event->rect(), lg);
+#endif
 }
 
 void PictureSearchWidget::slotProviderChanged()

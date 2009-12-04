@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>458</width>
-    <height>329</height>
+    <height>306</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -177,6 +177,9 @@
      </property>
      <property name="verticalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
      </property>
      <property name="gridSize">
       <size>

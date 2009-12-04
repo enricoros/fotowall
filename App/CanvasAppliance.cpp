@@ -43,10 +43,6 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
 {
     // init UI
     ui.setupUi(m_dummyWidget);
-    ui.addContentBox->setFixedHeight(App::TopBarHeight);
-    ui.propertiesBox->setFixedHeight(App::TopBarHeight);
-    ui.canvasPropertiesBox->setFixedHeight(App::TopBarHeight);
-    ui.fileBox->setFixedHeight(App::TopBarHeight);
     connect(ui.bPicture, SIGNAL(clicked()), this, SLOT(slotAddPicture()));
     connect(ui.bText, SIGNAL(clicked()), this, SLOT(slotAddText()));
     connect(ui.bWordcloud, SIGNAL(clicked()), this, SLOT(slotAddWordcloud()));
@@ -125,6 +121,11 @@ bool CanvasAppliance::applianceCommand(int command)
                 if (query.execute() == QDialogButtonBox::Yes)
                     m_extCanvas->setBackMode(Canvas::BackNone);
             }
+            return true;
+
+        // Close picture Search
+        case App::AC_ClosePicureSearch:
+            ui.bWebsearch->setChecked(false);
             return true;
     }
 

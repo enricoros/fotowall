@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget * parent)
     : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
     , m_networkAccessManager(new QNetworkAccessManager)
+    , m_navigationLayout(0)
     , m_pictureSearch(0)
     , m_likeBack(0)
     , m_applyingAccelState(false)
@@ -64,19 +65,25 @@ MainWindow::MainWindow(QWidget * parent)
     connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
     createLikeBack();
 
+    // create the navigation layout
+    m_navigationLayout = new QGridLayout;
+    m_navigationLayout->setContentsMargins(0, 0, 0, 0);
+    m_navigationLayout->setSpacing(3);
+    ui->navBar->setLayout(m_navigationLayout);
+
     // create the Workflow navigation bar
     BreadCrumbBar * workflowBar = new BreadCrumbBar(ui->sceneView);
     workflowBar->setObjectName(QString::fromUtf8("applianceNavBar"));
     workflowBar->setClickableLeaves(false);
     workflowBar->setBackgroundOffset(-1);
-    ui->sceneView->addOverlayWidget(workflowBar, 0, Qt::AlignLeft);
+    addNavigationWidget(workflowBar, 0, Qt::AlignLeft);
 
     // create the Help bar
     BreadCrumbBar * helpBar = new BreadCrumbBar(ui->sceneView);
     connect(helpBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotHelpBarClicked(quint32)));
     helpBar->setBackgroundOffset(1);
     helpBar->addNode(1, tr(" ? "), 0);
-    ui->sceneView->addOverlayWidget(helpBar, 0, Qt::AlignRight);
+    addNavigationWidget(helpBar, 0, Qt::AlignRight);
 
     // show (with last geometry)
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
@@ -165,6 +172,7 @@ void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
             ui->applianceRightBarLayout->addWidget(widget);
         else
             ui->applianceLeftBarLayout->addWidget(widget);
+        widget->setFixedHeight(App::TopBarHeight);
         widget->setVisible(true);
     }
 }
@@ -205,7 +213,17 @@ void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
         // create if needed
         if (visible && !m_pictureSearch) {
             m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
-            ui->sceneView->addOverlayWidget(m_pictureSearch, 1, Qt::AlignCenter);
+            connect(m_pictureSearch, SIGNAL(requestClosure()), this, SLOT(slotClosePictureSearch()), Qt::QueuedConnection);
+            m_pictureSearch->setWindowIcon(QIcon(":/data/insert-download.png"));
+            m_pictureSearch->setWindowTitle(tr("Search Web Pictures"));
+            m_pictureSearch->setWindowFlags(Qt::Tool);
+            QPoint newPos = mapToGlobal(ui->sceneView->pos()) + QPoint(-20, 10);
+            if (newPos.x() < 0)
+                newPos.setX(0);
+            m_pictureSearch->move(newPos);
+            m_pictureSearch->layout()->activate();
+            m_pictureSearch->resize(50, 50);
+            m_pictureSearch->show();
             m_pictureSearch->setFocus();
             return;
         }
@@ -229,6 +247,11 @@ void MainWindow::createLikeBack()
     m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
     m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
     m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
+}
+
+void MainWindow::slotClosePictureSearch()
+{
+    App::workflow->applianceCommand(App::AC_ClosePicureSearch);
 }
 
 void MainWindow::slotHelpBarClicked(quint32 id)
@@ -255,6 +278,27 @@ void MainWindow::showLikeBack(int type)
     QString usageString = QString::number(usageCount);
     QString windowString = App::workflow->applianceName();
     m_likeBack->execCommentDialog((LikeBack::Button)type, QString(), windowString, usageString);
+}
+
+void MainWindow::addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment)
+{
+    // add the widget at the right place in the grid layout
+    if (alignment == Qt::AlignRight)
+        m_navigationLayout->addWidget(widget, row, 1, 1, 1, Qt::AlignRight);
+    else if (alignment & Qt::AlignHCenter)
+        m_navigationLayout->addWidget(widget, row, 0, 1, 2, Qt::AlignLeft);
+    else
+        m_navigationLayout->addWidget(widget, row, 0, 1, 1, Qt::AlignLeft);
+
+    // ensure the widget is shown
+    widget->show();
+}
+
+void MainWindow::removeNavigationWidget(QWidget *widget)
+{
+    widget->hide();
+    m_navigationLayout->removeWidget(widget);
+    widget->setParent(0);
 }
 
 void MainWindow::on_lbLike_clicked()

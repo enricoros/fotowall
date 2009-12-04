@@ -36,7 +36,11 @@ class PictureSearchWidget : public QWidget
         void setFocus();
 
         // ::QWidget
+        void closeEvent(QCloseEvent *event);
         void paintEvent(QPaintEvent * event);
+
+    Q_SIGNALS:
+        void requestClosure();
 
     private:
 #ifdef ENABLE_GCOMPLETION

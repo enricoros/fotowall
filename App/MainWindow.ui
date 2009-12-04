@@ -17,14 +17,14 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="SceneView" name="sceneView">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1">
     <widget class="QWidget" name="applianceSidebar" native="true">
      <layout class="QVBoxLayout" name="applianceSidebarLayout">
       <property name="spacing">
@@ -344,6 +344,25 @@ stop:1 rgba(237, 237, 237, 255))
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QWidget" name="navBar" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>10</height>
+      </size>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#navBar {
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #d8d8d8, stop:1 #eeeeee)
+}
+</string>
+     </property>
     </widget>
    </item>
   </layout>

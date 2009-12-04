@@ -231,7 +231,7 @@ BreadCrumbBar::BreadCrumbBar(QWidget * parent)
   : QWidget(parent)
   , m_root(0)
   , m_clickableLeaves(true)
-  , m_drawBackground(true)
+  , m_drawBackground(false)
   , m_backgroundOffset(0)
 {
     // init defaults

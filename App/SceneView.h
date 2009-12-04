@@ -41,10 +41,6 @@ class SceneView : public QGraphicsView
         bool openGL() const;
         void setOpenGL(bool enabled);
 
-        // layout widgets inside this
-        void addOverlayWidget(QWidget * widget, int row, Qt::Alignment alignment);
-        void removeOverlayWidget(QWidget * widget);
-
         // properties
         qreal viewScale() const;
         void setViewScale(qreal scale);
@@ -69,7 +65,6 @@ class SceneView : public QGraphicsView
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
         QPixmap * m_shadowTile;
-        QGridLayout * m_overGridLayout;
         QTime m_paintTime;
         QTimer * m_heavyTimer;
         int m_heavyCounter;

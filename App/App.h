@@ -43,7 +43,8 @@ class App
 
         // commands understood by appliances
         enum {
-            AC_ClearBackground      = 0x0001
+            AC_ClearBackground      = 0x0001,
+            AC_ClosePicureSearch    = 0x0002
         };
 
         // utility functions

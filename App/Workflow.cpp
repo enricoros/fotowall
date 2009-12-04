@@ -358,7 +358,7 @@ void Workflow::updateBreadcrumb()
 {
     // build the new breadcrumbbar's contents
     m_bar->clearNodes();
-    if (m_stack.size() > 1) {
+    if (!m_stack.isEmpty()) {
         quint32 index = 0;
         foreach (const Node & node, m_stack) {
             m_bar->addNode(index + 1, node.appliance->applianceName(), index);

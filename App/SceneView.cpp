@@ -27,9 +27,6 @@
 #include <QVBoxLayout>
 #include <QWheelEvent>
 
-// the constant top margin of the grid layout
-#define GRIDLAYOUT_TOPMARGIN 5
-
 /// The style used by the SceneView's rubberband selection
 class RubberBandStyle : public QCommonStyle
 {
@@ -64,7 +61,6 @@ SceneView::SceneView(QWidget * parent)
   , m_abstractScene(0)
   , m_style(0)
   , m_shadowTile(0)
-  , m_overGridLayout(0)
   , m_heavyTimer(0)
   , m_heavyCounter(0)
 {
@@ -85,12 +81,6 @@ SceneView::SceneView(QWidget * parent)
     // use own style for drawing the RubberBand
     m_style = new RubberBandStyle;
     viewport()->setStyle(m_style);
-
-    // create the layout for the overlay widgets
-    m_overGridLayout = new QGridLayout;
-    m_overGridLayout->setContentsMargins(0, GRIDLAYOUT_TOPMARGIN, 0, 0);
-    m_overGridLayout->setSpacing(3);
-    viewport()->setLayout(m_overGridLayout);
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
     //setCacheMode(CacheBackground);
@@ -160,7 +150,6 @@ void SceneView::setOpenGL(bool enabled)
     // change viewport widget and transfer style
     QWidget * newViewport = m_openGL ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget();
     newViewport->setStyle(m_style);
-    newViewport->setLayout(m_overGridLayout);
     setViewport(newViewport);
     setViewportUpdateMode(m_openGL ? FullViewportUpdate : MinimalViewportUpdate);
 
@@ -181,31 +170,6 @@ void SceneView::setOpenGL(bool enabled)
 #else
 void SceneView::setOpenGL(bool) {};
 #endif
-
-void SceneView::addOverlayWidget(QWidget * widget, int row, Qt::Alignment alignment)
-{
-    // add the widget at the right place in the grid layout
-    if (alignment == Qt::AlignRight)
-        m_overGridLayout->addWidget(widget, row, 1, 1, 1, Qt::AlignRight);
-    else if (alignment & Qt::AlignHCenter)
-        m_overGridLayout->addWidget(widget, row, 0, 1, 2, Qt::AlignLeft);
-    else
-        m_overGridLayout->addWidget(widget, row, 0, 1, 1, Qt::AlignLeft);
-
-    // hackish way to have a bottom spacer (works for monotonic insertion only)
-    m_overGridLayout->setRowStretch(row, 0);
-    m_overGridLayout->setRowStretch(row + 1, 100);
-
-    // ensure the widget is shown
-    widget->show();
-}
-
-void SceneView::removeOverlayWidget(QWidget *widget)
-{
-    widget->hide();
-    m_overGridLayout->removeWidget(widget);
-    widget->setParent(0);
-}
 
 qreal SceneView::viewScale() const
 {
@@ -351,14 +315,6 @@ void SceneView::layoutScene()
     Qt::ScrollBarPolicy sPolicy = scrollbarsNeeded ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
     setVerticalScrollBarPolicy(sPolicy);
     setHorizontalScrollBarPolicy(sPolicy);
-
-#if 0 // disabled after transferring the layout to the viewport
-    // change the overlay layout margins to skip the bars (if present)
-    if (QApplication::isLeftToRight())
-        m_overGridLayout->setContentsMargins(0, GRIDLAYOUT_TOPMARGIN, scrollbarsNeeded ? verticalScrollBar()->width() : 0, scrollbarsNeeded ? horizontalScrollBar()->height() : 0);
-    else
-        m_overGridLayout->setContentsMargins(scrollbarsNeeded ? verticalScrollBar()->width() : 0, GRIDLAYOUT_TOPMARGIN, 0, scrollbarsNeeded ? horizontalScrollBar()->height() : 0);
-#endif
 
     // change the selection/scrolling policy
     if (m_abstractScene->sceneSelectable())

@@ -18,6 +18,7 @@
 #include "Shared/PlugGui/Container.h"
 namespace Ui { class MainWindow; }
 class LikeBack;
+class QGridLayout;
 class QNetworkAccessManager;
 class PictureSearchWidget;
 class Workflow;
@@ -46,15 +47,19 @@ class MainWindow : public PlugGui::Container
     private:
         void createLikeBack();
         void showLikeBack(int type);
+        void addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment);
+        void removeNavigationWidget(QWidget * widget);
 
         Ui::MainWindow *        ui;
         QNetworkAccessManager * m_networkAccessManager;
+        QGridLayout *           m_navigationLayout;
         PictureSearchWidget *   m_pictureSearch;
         LikeBack *              m_likeBack;
         bool                    m_applyingAccelState;
 
     private Q_SLOTS:
         // notifications
+        void slotClosePictureSearch();
         void slotHelpBarClicked(quint32);
         void slotRenderingSlow();
 
