@@ -14,6 +14,8 @@
 
 #include "PencilItem.h"
 
+#if QT_VERSION >= 0x040600
+
 #include "FloodGenerator.h"
 #include "FloodPoly.h"
 
@@ -24,7 +26,6 @@
 #include <QPalette>
 #include <QPropertyAnimation>
 
-#if QT_VERSION >= 0x040600
 
 PencilItem::PencilItem(const QString & svgFileName, QGraphicsItem *parent)
   : QGraphicsObject(parent)
