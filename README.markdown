@@ -18,36 +18,26 @@ In progress for Fotowall "REVO" 1.0 (unreleased):
 * Arrange Contents
 * Text shaking
 
-Fotowall "Alchimia" 0.9 (unreleased):
+Fotowall "Alchimia" 0.9 (2009-12-08):
 
-* More than 250 changes
-* SVG export, Likeback, property editors, more solid, new contents, wordcloud, reworked interface with nested editing
-  webcam bugfixes, automatics performance tuning, home screen with previews, autoblend effect, graphics effects, zooming,
-  pencilitem, relative paths,
-
-* Relative Saving
-* Experimental Webcam on Win32
-* Multiple webcams, unbroken colors
-* Basic GraphicsEffects support (shadows and blur)
-* Home screen with intuitive workflow and breadcrumb navigation
-* Background polishing
-* Print/Export polishing
-* Stacked editing
-* Cursor key movement
-* OpenGL testing and performance auto-detection
-* CD/DVD markers redux
-* Cleanups: Selection, Frames, Rendering, Backgrounding
-* Perspective Property editor
-* Google Images search (by Marco Bavagnoli, reqby. Rossana)
-* New Content: Wordcloud
-* New Content: Fotowall Canvas
-* Scrollable/Zoomable Canvas
-  * perfectly handles the Exact Size mode
-* Save on exit
-* Fixed licensing
+* Fast, Solid and Integrated Workflow with Home Screen
+* New Contents: Canvas and Wordcloud
+* Graphics Effects
+* Nested Editors
 * LikeBack feedback system
-* Export to SVG
-* Massive code refactor
+* Zoomable canvas
+* Other changes (more than 250 ;-)
+  * Autoblend effect for Images
+  * SVG export
+  * Quick and improved property editors
+  * Cursor key movement
+  * OpenGL performance tests and auto-tuning
+  * Google Images search (by Marco Bavagnoli, reqby. Rossana)
+  * Cleanups and Refactors: Selection, Frames, Rendering, Backgrounding, DVD/CD, Print/Export
+  * Fixed relative saving (with contents auto-search)
+  * Fixed multiple Webcams and bad Colors
+  * Fixed the Exact Size modes
+  * Fixed licensing
 
 Version 0.8 (2009-09-12):
 
