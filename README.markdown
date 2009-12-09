@@ -209,6 +209,7 @@ location and issue the followings commands:
 
 - qmake  (or qmake-qt4 if your system is weird)
 - make   (or nmake, if you're on windows)
+- make install (on linux)
 
 The executable will be built and you can start enjoying Fotowall! ;-)
 
