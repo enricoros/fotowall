@@ -142,6 +142,11 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist
 
+* Parametric "Random placement", so the image can not be rotated, for example
+* Change all pictures opacity at the same time (workaround for the 'random placement' that changes opacity too)
+* Font selectable - this is used for title and for frame's text
+* Create a MacOS like screensaver - where polaroids fall on the background over time, one on top of the other (or mixed)
+* Use the Exact size specifying the Pixel size too (carefully choose the other constraint: dpis or print size?)
 * Progress dialog when loading images/{fotowall file made of many} and/or threaded loading
 * Text shaking
 * pop-art: pointel-ize, like krita brushes, using circles of different size
