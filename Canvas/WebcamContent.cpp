@@ -24,7 +24,7 @@
 #include <QTimer>
 
 WebcamContent::WebcamContent(int webcamIndex, QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent, false)
+    : AbstractContent(scene, true, false, parent)
     , m_input(webcamIndex)
     , m_still(false)
     , m_dummyRenderer(0)

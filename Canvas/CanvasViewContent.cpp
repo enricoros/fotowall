@@ -24,7 +24,7 @@
 #include <QPainter>
 
 CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent, false)
+    : AbstractContent(scene, true, false, parent)
     , m_canvas(0)
     , m_canvasTaken(false)
 {

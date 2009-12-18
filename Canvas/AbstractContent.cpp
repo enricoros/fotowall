@@ -40,8 +40,8 @@
 #endif
 
 
-AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noRescale)
-    : AbstractDisposeable(parent, false /*needed for Hardware3DTest*/)
+AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noRescale, QGraphicsItem * parent)
+    : AbstractDisposeable(false /*fadeIn - temp disabled for content*/, parent)
     , m_contentRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)

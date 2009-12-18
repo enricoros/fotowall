@@ -26,7 +26,7 @@
 #include "Frames/FrameFactory.h"
 
 HelpItem::HelpItem(QGraphicsItem * parent)
-    : AbstractDisposeable(parent, true)
+    : AbstractDisposeable(true, parent)
     , m_frame(FrameFactory::createFrame(0x1001 /*HARDCODED*/))
 {
     QString introduction = tr(

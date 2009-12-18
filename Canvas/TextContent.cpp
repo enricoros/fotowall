@@ -30,7 +30,7 @@
 #include <QUrl>
 
 TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent, false)
+    : AbstractContent(scene, true, false, parent)
     , m_text(0)
     , m_textRect(0, 0, 0, 0)
     , m_textMargin(4)

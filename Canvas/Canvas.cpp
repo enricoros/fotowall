@@ -1208,7 +1208,7 @@ CanvasViewContent * Canvas::createCanvasView(const QPoint & pos)
 
 PictureContent * Canvas::createPicture(const QPoint & pos)
 {
-    PictureContent * p = new PictureContent(this);
+    PictureContent * p = new PictureContent(this, false);
     initContent(p, pos);
     connect(p, SIGNAL(flipHorizontally()), this, SLOT(slotFlipHorizontally()));
     connect(p, SIGNAL(flipVertically()), this, SLOT(slotFlipVertically()));

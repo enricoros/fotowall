@@ -21,7 +21,7 @@
 #include <QPainter>
 
 WordcloudContent::WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent)
-  : AbstractContent(scene, parent, false)
+  : AbstractContent(scene, true, false, parent)
   , m_cloudScene(new QGraphicsScene)
   , m_cloud(new Wordcloud::Cloud)
   , m_cloudTaken(false)

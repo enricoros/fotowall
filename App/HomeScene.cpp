@@ -49,7 +49,7 @@ class HomeLabel : public AbstractContent
 {
     public:
         HomeLabel(const QString & title, const QPixmap & pixmap, QGraphicsScene * scene)
-          : AbstractContent(scene, 0, true)
+          : AbstractContent(scene, false, true, 0)
           , m_pixmap(pixmap)
         {
             // create the standard frame and set title

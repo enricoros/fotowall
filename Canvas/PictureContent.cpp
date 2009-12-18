@@ -37,8 +37,8 @@
 #include <QTimer>
 #include <QUrl>
 
-PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent, false)
+PictureContent::PictureContent(QGraphicsScene * scene, bool disableFading, QGraphicsItem * parent)
+    : AbstractContent(scene, !disableFading, false, parent)
     , m_photo(0)
     , m_opaquePhoto(false)
     , m_progress(0)
