@@ -29,7 +29,7 @@ class PictureContent : public AbstractContent
     Q_OBJECT
     Q_PROPERTY(bool externalEdit READ externalEdit WRITE setExternalEdit)
     public:
-        PictureContent(QGraphicsScene * scene, bool disableFading, QGraphicsItem * parent = 0);
+        PictureContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~PictureContent();
 
         bool loadPhoto(const QString & picFilePath, bool keepRatio = false, bool setName = false);

@@ -23,8 +23,8 @@
 #include <QSvgRenderer>
 #include <QTimer>
 
-WebcamContent::WebcamContent(int webcamIndex, QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, true, false, parent)
+WebcamContent::WebcamContent(int webcamIndex, bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
+    : AbstractContent(scene, spontaneous, false, parent)
     , m_input(webcamIndex)
     , m_still(false)
     , m_dummyRenderer(0)

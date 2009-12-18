@@ -23,8 +23,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
-CanvasViewContent::CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, true, false, parent)
+CanvasViewContent::CanvasViewContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
+    : AbstractContent(scene, spontaneous, false, parent)
     , m_canvas(0)
     , m_canvasTaken(false)
 {

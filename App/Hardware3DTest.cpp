@@ -68,7 +68,7 @@ Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
     m_pictures.resize(TESTSIZE);
     m_results.resize((TESTPOWER + 1) * 2);
     for (int i = 0; i < TESTSIZE; i++) {
-        PictureContent * p = new PictureContent(m_canvas, true);
+        PictureContent * p = new PictureContent(true, m_canvas);
         p->loadPixmap(picturePix);
         p->setRotation(-60 + (qrand() % 120));
 #if QT_VERSION >= 0x040500
