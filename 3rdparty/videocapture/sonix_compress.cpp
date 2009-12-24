@@ -108,13 +108,13 @@ void sonix_decompress_init(void)
 	Returns <0 if operation failed.
 
 */
-int sonix_decompress(int width, int height, unsigned char *inp, unsigned char *outp)
+int sonix_decompress(int width, int height, const unsigned char *inp, unsigned char *outp)
 {
 	int row, col;
 	int val;
 	int bitpos;
 	unsigned char code;
-	unsigned char *addr;
+	const unsigned char *addr;
 
 	if (!init_done) {
 		/* do sonix_decompress_init first! */

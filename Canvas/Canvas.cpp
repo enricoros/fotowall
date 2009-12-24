@@ -18,32 +18,33 @@
 #include "Shared/Commands.h"
 #include "Shared/GroupedCommands.h"
 
-#include "Shared/PictureServices/AbstractPictureService.h"
+#include "App/App.h"    // this violates insulation (only for the pic service)
 #include "Frames/FrameFactory.h"
+#include "Shared/PictureServices/AbstractPictureService.h"
 #include "Shared/ColorPickerItem.h"
+#include "Shared/HighlightItem.h"
+#include "Shared/RenderOpts.h"
 #include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"
-#include "HelpItem.h"
-#include "HighlightItem.h"
 #include "PictureContent.h"
 #include "PictureConfig.h"
-#include "PictureSearchItem.h"
 #include "SelectionProperties.h"
 #include "TextContent.h"
 #include "TextConfig.h"
 #include "WebcamContent.h"
 #include "WordcloudContent.h"
-#include "Shared/RenderOpts.h"
 
 #include <QAbstractTextDocumentLayout>
+#include <QBuffer>
+#include <QDate>
 #include <QFile>
+#include <QFileInfo>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsView>
 #include <QImageReader>
 #include <QList>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QNetworkAccessManager>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QTextDocument>
@@ -53,20 +54,23 @@
 #define COLORPICKER_W 200
 #define COLORPICKER_H 150
 
-Canvas::Canvas(QObject * parent)
+Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent)
     : AbstractScene(parent)
+    , m_filePath()
+    , m_fileAbsDir()
     , m_modeInfo(new CanvasModeInfo)
-    , m_networkAccessManager(0)
-    , m_helpItem(0)
     , m_backMode(BackGradient)
     , m_backContent(0)
     , m_backContentRatio(Qt::KeepAspectRatioByExpanding)
     , m_topBarEnabled(false)
     , m_bottomBarEnabled(false)
-    , m_pictureSearch(0)
     , m_forceFieldTimer(0)
+    , m_embeddedPainting(false)
     , m_pendingChanges(false)
 {
+    // init modeinfo
+    m_modeInfo->setScreenDpi(sDpiX, sDpiY);
+
     // create colorpickers
     m_titleColorPicker = new ColorPickerItem(COLORPICKER_W, COLORPICKER_H, 0);
     m_titleColorPicker->setColor(Qt::red);
@@ -135,27 +139,21 @@ Canvas::~Canvas()
 {
     clearContent();
     qDeleteAll(m_highlightItems);
-    delete m_helpItem;
     delete m_titleColorPicker;
     delete m_foreColorPicker;
     delete m_grad1ColorPicker;
     delete m_grad2ColorPicker;
-    delete m_networkAccessManager;
     delete m_forceFieldTimer;
     delete m_modeInfo;
 }
 
 /// Add Content
-static QPoint nearCenter(const QRectF & rect)
-{
-    return rect.center().toPoint() + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
-}
-
-void Canvas::addAutoContent(const QStringList & fileNames)
+void Canvas::addAutoContent(const QStringList & filePaths)
 {
     // simple auto-detection of the content type
-    foreach (const QString & localFile, fileNames) {
+    foreach (const QString & localFile, filePaths) {
         if (QFile::exists(localFile)) {
+            // Note: should use App.h for this, but dup'ed for isolation
             if (localFile.endsWith(".fotowall", Qt::CaseInsensitive))
                 addCanvasViewContent(QStringList() << localFile);
             else
@@ -164,11 +162,12 @@ void Canvas::addAutoContent(const QStringList & fileNames)
     }
 }
 
-void Canvas::addCanvasViewContent(const QStringList & fileNames)
+void Canvas::addCanvasViewContent(const QStringList & fwFilePaths)
 {
-    int offset = -30 * fileNames.size() / 2;
-    QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
-    foreach (const QString & localFile, fileNames) {
+    clearSelection();
+    int offset = -30 * (fwFilePaths.size() - 1) / 2;
+    QPoint pos = visibleCenter() + QPoint(offset, offset);
+    foreach (const QString & localFile, fwFilePaths) {
         if (!QFile::exists(localFile))
             continue;
 
@@ -177,17 +176,20 @@ void Canvas::addCanvasViewContent(const QStringList & fileNames)
         if (!d->loadFromFile(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
-        } else
+        } else {
+            d->setSelected(true);
             pos += QPoint(30, 30);
+        }
     }
 }
 
-QList<PictureContent*> Canvas::addPictureContent(const QStringList & fileNames)
+QList<PictureContent*> Canvas::addPictureContent(const QStringList & picFilePaths)
 {
+    clearSelection();
     QList<PictureContent*> addedPictures;
-    int offset = -30 * fileNames.size() / 2;
-    QPoint pos = nearCenter(sceneRect()) + QPoint(offset, offset);
-    foreach (const QString & localFile, fileNames) {
+    int offset = -30 * (picFilePaths.size() - 1) / 2;
+    QPoint pos = visibleCenter() + QPoint(offset, offset);
+    foreach (const QString & localFile, picFilePaths) {
         if (!QFile::exists(localFile))
             continue;
 
@@ -197,6 +199,7 @@ QList<PictureContent*> Canvas::addPictureContent(const QStringList & fileNames)
             m_content.removeAll(p);
             delete p;
         } else {
+            p->setSelected(true);
             pos += QPoint(30, 30);
             addedPictures << p;
         }
@@ -206,17 +209,26 @@ QList<PictureContent*> Canvas::addPictureContent(const QStringList & fileNames)
 
 TextContent* Canvas::addTextContent()
 {
-    return createText(nearCenter(sceneRect()));
+    clearSelection();
+    TextContent * t = createText(visibleCenter());
+    t->setSelected(true);
+    return t;
 }
 
-WebcamContent* Canvas::addWebcamContent(int input)
+WebcamContent* Canvas::addWebcamContent(int webcamIndex)
 {
-    return createWebcam(input, nearCenter(sceneRect()));
+    clearSelection();
+    WebcamContent * w = createWebcam(webcamIndex, visibleCenter());
+    w->setSelected(true);
+    return w;
 }
 
 void Canvas::addWordcloudContent()
 {
-    createWordcloud(nearCenter(sceneRect()));
+    clearSelection();
+    WordcloudContent * w = createWordcloud(visibleCenter());
+    w->manualInitialization();
+    w->setSelected(true);
 }
 
 void Canvas::addManualContent(AbstractContent * content, const QPoint & pos)
@@ -233,6 +245,18 @@ void Canvas::clearContent()
     // this is not needed, it's here only as extra-safety
     // Q_ASSERT(!m_backContent)
     m_backContent = 0;
+}
+
+QPoint Canvas::visibleCenter() const
+{
+    QPoint center;
+    QGraphicsView * view = mainGraphicsView();
+    if (view) {
+        QPoint viewCenter = view->viewport()->rect().center();
+        center = view->mapToScene(viewCenter).toPoint();
+    } else
+        center = sceneRect().center().toPoint();
+    return center + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
 }
 
 void Canvas::resize(const QSize & size)
@@ -254,8 +278,6 @@ void Canvas::resizeEvent()
     m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
     m_grad2ColorPicker->setPos(sceneWidth() - COLORPICKER_W, sceneHeight() - COLORPICKER_H);
-    if (m_helpItem)
-        m_helpItem->setPos(sceneCenter().toPoint());
     foreach (HighlightItem * highlight, m_highlightItems)
         highlight->reposition(sceneRect());
 
@@ -266,39 +288,38 @@ void Canvas::resizeEvent()
         config->keepInBoundaries(sceneRect());
 }
 
+QString Canvas::filePath() const
+{
+    if (m_filePath.isEmpty())
+        return tr("Unnamed %1").arg(QDate::currentDate().toString()) + ".fotowall";
+    return m_filePath;
+}
+
+void Canvas::setFilePath(const QString & filePath)
+{
+    if (filePath != m_filePath) {
+        // use the right path
+        m_filePath = QDir(filePath).canonicalPath();
+        if (m_filePath.isEmpty())
+            m_filePath = filePath;
+        m_fileAbsDir = QFileInfo(m_filePath).absoluteDir();
+        emit filePathChanged();
+    }
+}
+
+QString Canvas::prettyBaseName() const
+{
+    if (m_filePath.isEmpty())
+        return tr("Unnamed %1").arg(QDate::currentDate().toString()) + ".fotowall";
+    return QFileInfo(m_filePath).baseName();
+}
+
+
 /// Item Interaction
 void Canvas::selectAllContent(bool selected)
 {
     foreach (AbstractContent * content, m_content)
         content->setSelected(selected);
-}
-
-/// Picture Search
-void Canvas::setSearchPicturesVisible(bool visible)
-{
-    // destroy if needed
-    if (!visible && m_pictureSearch) {
-        removeItem(m_pictureSearch);
-        m_pictureSearch->deleteLater();
-        m_pictureSearch = 0;
-        return;
-    }
-
-    // create if needed
-    if (visible && !m_pictureSearch) {
-        if (!m_networkAccessManager)
-            m_networkAccessManager = new QNetworkAccessManager(this);
-        m_pictureSearch = new PictureSearchItem(m_networkAccessManager);
-        m_pictureSearch->setZValue(999999);
-        //m_pictureSearch->setPos(20, 0);
-        addItem(m_pictureSearch);
-        return;
-    }
-}
-
-bool Canvas::searchPicturesVisible() const
-{
-    return m_pictureSearch;
 }
 
 /// Arrangement
@@ -546,35 +567,17 @@ bool Canvas::pendingChanges() const
         highlight->show(); \
     }
 
-void Canvas::showIntroduction()
-{
-    if (m_helpItem)
-        return;
-
-    // help item
-    m_helpItem = new HelpItem();
-    connect(m_helpItem, SIGNAL(closeMe()), this, SLOT(slotCloseIntroduction()));
-    addItem(m_helpItem);
-    m_helpItem->setZValue(10001);
-    m_helpItem->setPos(sceneRect().center().toPoint());
-    m_helpItem->show();
-
-    // blink items
-    if (m_topBarEnabled || m_bottomBarEnabled)
-        HIGHLIGHT(0.0, 0.0, false);
-    if (!m_titleText.isEmpty())
-        HIGHLIGHT(0.5, 0.0, false);
-    if (m_backMode == BackGradient) {
-        HIGHLIGHT(1.0, 0.0, false);
-        HIGHLIGHT(1.0, 1.0, false);
-    }
-}
-
 void Canvas::blinkBackGradients()
 {
     HIGHLIGHT(1.0, 0.0, true);
     HIGHLIGHT(1.0, 1.0, true);
 }
+
+void Canvas::setEmbeddedPainting(bool embedded)
+{
+    m_embeddedPainting = embedded;
+}
+
 
 /// Modes
 CanvasModeInfo * Canvas::modeInfo() const
@@ -582,9 +585,91 @@ CanvasModeInfo * Canvas::modeInfo() const
     return m_modeInfo;
 }
 
-void Canvas::toXml(QDomElement & canvasElement) const
+void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
+{
+    if (hideTools) {
+        clearSelection();
+        foreach(QGraphicsItem *item, m_markerItems)
+            item->hide();
+        foreach(AbstractConfig *conf, m_configs)
+            conf->hide();
+    }
+
+    RenderOpts::HQRendering = true;
+    QGraphicsScene::render(painter, target, source, aspectRatioMode);
+    RenderOpts::HQRendering = false;
+
+    if (hideTools) {
+        foreach(AbstractConfig *conf, m_configs)
+            conf->show();
+        foreach(QGraphicsItem *item, m_markerItems)
+            item->show();
+    }
+}
+
+QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
+{
+    QImage result(iSize, QImage::Format_ARGB32);
+    result.fill(0);
+
+    QPainter painter(&result);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform, true);
+
+    QSize targetSize = sceneSize();
+    targetSize.scale(iSize, aspectRatioMode);
+    int offsetX = (iSize.width() - targetSize.width()) / 2;
+    int offsetY = (iSize.height() - targetSize.height()) / 2;
+
+    QRect targetRect = QRect(offsetX, offsetY, targetSize.width(), targetSize.height());
+    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio, hideTools);
+    painter.end();
+
+    return result;
+}
+
+bool Canvas::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode)
+{
+    // setup printer
+    QPrinter printer;
+    printer.setResolution(printerDpi);
+    printer.setPaperSize(QPrinter::A4);
+
+    // configure printer via the print dialog
+    QPrintDialog printDialog(&printer);
+    if (printDialog.exec() != QDialog::Accepted)
+        return false;
+
+    // TODO: use different ratio modes?
+    QImage image = renderedImage(pixelSize, aspectRatioMode);
+    if (landscape) {
+        // Print in landscape mode, so rotate
+        QMatrix matrix;
+        matrix.rotate(90);
+        image = image.transformed(matrix);
+    }
+
+    // And then print
+    QPainter paint(&printer);
+    paint.drawImage(image.rect(), image);
+    paint.end();
+    return true;
+}
+
+
+/// Load & Save
+void Canvas::saveToXml(QDomElement & canvasElement) const
 {
     QDomDocument doc = canvasElement.ownerDocument();
+
+    // META
+    {
+        QDomElement metaElement = doc.createElement("meta");
+        canvasElement.appendChild(metaElement);
+
+        QDomElement fpElement = doc.createElement("filepath");
+        metaElement.appendChild(fpElement);
+        fpElement.appendChild(doc.createTextNode(m_filePath));
+    }
 
     // MODEINFO
     {
@@ -675,7 +760,7 @@ void Canvas::toXml(QDomElement & canvasElement) const
             // save content
             QDomElement cEl = doc.createElement("dummy-renamed-element");
             contentElement.appendChild(cEl);
-            content->toXml(cEl);
+            content->toXml(cEl, m_fileAbsDir);
 
             // add a flag to the background element
             if (m_backContent == content) {
@@ -685,15 +770,46 @@ void Canvas::toXml(QDomElement & canvasElement) const
         }
     }
 
+    // PREVIEW
+    {
+        // make up the PNG image
+        Canvas * rwCanvas = (Canvas *)this;
+        QImage previewImage = rwCanvas->renderedImage(QSize(48, 48), Qt::KeepAspectRatio, true);
+        if (!previewImage.isNull()) {
+            QBuffer saveData;
+            saveData.open(QIODevice::ReadWrite);
+            previewImage.save(&saveData, "PNG");
+            saveData.close();
+
+            // create a canvas.preview[cdata] element
+            QByteArray encodedData = saveData.buffer().toBase64();
+            QDomElement previewEl = doc.createElement("preview");
+            canvasElement.appendChild(previewEl);
+            previewEl.appendChild(doc.createCDATASection(encodedData));
+        }
+    }
+
     // reset the 'needs saving' flag
     Canvas * rwCanvas = (Canvas *)this;
     rwCanvas->slotResetChanges();
 }
 
-void Canvas::fromXml(QDomElement & canvasElement)
+void Canvas::loadFromXml(QDomElement & canvasElement)
 {
     // remove all content
     clearContent();
+
+    // META
+    {
+        // find the 'meta' element
+        QDomElement metaElement = canvasElement.firstChildElement("meta");
+        if (metaElement.isElement()) {
+            // set file path if not already set (i.e. if loading sub-canvases)
+            QDomElement fpElement = metaElement.firstChildElement("filepath");
+            if (m_filePath.isEmpty())
+                setFilePath(fpElement.text());
+        }
+    }
 
     // MODEINFO
     {
@@ -765,116 +881,48 @@ void Canvas::fromXml(QDomElement & canvasElement)
     // refresh all
     slotResetChanges();
     update();
-    emit geometryChanged();
 }
 
 AbstractContent * Canvas::contentFromXml(QDomElement &contentElement)
 {
-        // create all content
-            qDebug() << contentElement.tagName();
-            // create the right kind of content
-            AbstractContent * content = 0;
-            if (contentElement.tagName() == "picture")
-                content = createPicture(QPoint());
-            else if (contentElement.tagName() == "text")
-                content = createText(QPoint());
-            else if (contentElement.tagName() == "webcam")
-                content = createWebcam(contentElement.attribute("input").toInt(), QPoint());
-            else if (contentElement.tagName() == "embedded-canvas")
-                content = createCanvasView(QPoint());
-            else if (contentElement.tagName() == "wordcloud")
-                content = createWordcloud(QPoint());
-            if (!content) {
-                qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(contentElement.tagName()));
-                return 0;
-            }
-
-            // load item properties, and delete it if something goes wrong
-            if (!content->fromXml(contentElement)) {
-                m_content.removeAll(content);
-                delete content;
-                return 0;
-            }
-
-            // restore the background element of the canvas
-            if (contentElement.firstChildElement("set-as-background").isElement()) {
-                if (m_backContent)
-                    qWarning("Canvas::fromXml: only 1 element with <set-as-background/> allowed");
-                else
-                    setBackContent(content);
-            }
-            return content;
-}
-
-void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
-{
-    if (hideTools) {
-        clearSelection();
-        setSearchPicturesVisible(false);
-        foreach(QGraphicsItem *item, m_markerItems)
-            item->hide();
-        foreach(AbstractConfig *conf, m_configs)
-            conf->hide();
+    // create all content
+    qDebug() << contentElement.tagName();
+    // create the right kind of content
+    AbstractContent * content = 0;
+    if (contentElement.tagName() == "picture")
+        content = createPicture(QPoint());
+    else if (contentElement.tagName() == "text")
+        content = createText(QPoint());
+    else if (contentElement.tagName() == "webcam")
+        content = createWebcam(contentElement.attribute("input").toInt(), QPoint());
+    else if (contentElement.tagName() == "embedded-canvas")
+        content = createCanvasView(QPoint());
+    else if (contentElement.tagName() == "wordcloud")
+        content = createWordcloud(QPoint());
+    if (!content) {
+        qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(contentElement.tagName()));
+        return 0;
     }
 
-    RenderOpts::HQRendering = true;
-    QGraphicsScene::render(painter, target, source, aspectRatioMode);
-    RenderOpts::HQRendering = false;
-
-    if (hideTools) {
-        foreach(AbstractConfig *conf, m_configs)
-            conf->show();
-        foreach(QGraphicsItem *item, m_markerItems)
-            item->show();
-    }
-}
-
-QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode, bool hideTools)
-{
-    QImage result(iSize, QImage::Format_ARGB32);
-    result.fill(0);
-
-    QPainter painter(&result);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform, true);
-
-    QSize targetSize = sceneSize();
-    targetSize.scale(iSize, aspectRatioMode);
-    int offsetX = (iSize.width() - targetSize.width()) / 2;
-    int offsetY = (iSize.height() - targetSize.height()) / 2;
-
-    QRect targetRect = QRect(offsetX, offsetY, targetSize.width(), targetSize.height());
-    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio, hideTools);
-    painter.end();
-
-    return result;
-}
-
-bool Canvas::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode)
-{
-    // setup printer
-    QPrinter printer;
-    printer.setResolution(printerDpi);
-    printer.setPaperSize(QPrinter::A4);
-
-    // configure printer via the print dialog
-    QPrintDialog printDialog(&printer);
-    if (printDialog.exec() != QDialog::Accepted)
-        return false;
-
-    // TODO: use different ratio modes?
-    QImage image = renderedImage(pixelSize, aspectRatioMode);
-    if (landscape) {
-        // Print in landscape mode, so rotate
-        QMatrix matrix;
-        matrix.rotate(90);
-        image = image.transformed(matrix);
+    // load item properties, and delete it if something goes wrong
+    if (!content->fromXml(contentElement, m_fileAbsDir)) {
+        m_content.removeAll(content);
+        delete content;
+        return 0;
     }
 
-    // And then print
-    QPainter paint(&printer);
-    paint.drawImage(image.rect(), image);
-    paint.end();
-    return true;
+    // restore the background element of the canvas
+    if (contentElement.firstChildElement("set-as-background").isElement()) {
+        if (m_backContent)
+            qWarning("Canvas::fromXml: only 1 element with <set-as-background/> allowed");
+        else
+            setBackContent(content);
+    }
+
+    // refresh all
+    slotResetChanges();
+    update();
+    return content;
 }
 
 /// Drag & Drop image files
@@ -898,7 +946,7 @@ void Canvas::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 
         // match local and remote urls against all supported extensions
         foreach (const QUrl & url, event->mimeData()->urls()) {
-            if (url.scheme() == "http" || url.scheme() == "ftp" || !url.toLocalFile().isEmpty()) {
+            if (url.scheme() == "http" || url.scheme() == "ftp" || !url.toString().isEmpty()) {
                 QString urlString = url.toString();
                 foreach (const QString & extension, extensions) {
                     if (urlString.endsWith(extension, Qt::CaseInsensitive)) {
@@ -954,9 +1002,10 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             }
 
             // handle local files
-            if (QFile::exists(url.toLocalFile())) {
+            QString picFilePath = url.toString(QUrl::RemoveScheme);
+            if (QFile::exists(picFilePath)) {
                 PictureContent * p = createPicture(pos);
-                if (!p->loadPhoto(url.toLocalFile(), true, true)) {
+                if (!p->loadPhoto(picFilePath, true, true)) {
                     m_content.removeAll(p);
                     delete p;
                 } else
@@ -967,12 +1016,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 
     // handle as an own content drop event
-    if (event->mimeData()->hasFormat("picturesearch/idx") && m_pictureSearch) {
-
-        // get the picture service
-        AbstractPictureService * pictureService = m_pictureSearch->pictureService();
-        if (!pictureService)
-            return;
+    if (event->mimeData()->hasFormat("picturesearch/idx") && App::pictureService) {
 
         // download each picture
         QPoint insertPos = event->scenePos().toPoint();
@@ -985,11 +1029,11 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             QString title;
             int width = 0;
             int height = 0;
-            if (!pictureService->imageInfo(index, &url, &title, &width, &height))
+            if (!App::pictureService->imageInfo(index, &url, &title, &width, &height))
                 continue;
 
             // get the download
-            QNetworkReply * reply = pictureService->download(index);
+            QNetworkReply * reply = App::pictureService->download(index);
             if (!reply)
                 continue;
 
@@ -1046,7 +1090,7 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
         switch (m_backMode) {
             case BackNone:
                 // draw checkboard to simulate a transparent background
-                if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering)
+                if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering && !m_embeddedPainting)
                     painter->drawTiledPixmap(expRect, m_backTile, QPointF(expRect.left() % 100, expRect.top() % 100));
                 break;
 
@@ -1195,9 +1239,9 @@ TextContent * Canvas::createText(const QPoint & pos)
     return t;
 }
 
-WebcamContent * Canvas::createWebcam(int input, const QPoint & pos)
+WebcamContent * Canvas::createWebcam(int webcamIndex, const QPoint & pos)
 {
-    WebcamContent * w = new WebcamContent(input, this);
+    WebcamContent * w = new WebcamContent(webcamIndex, this);
     initContent(w, pos);
     return w;
 }
@@ -1236,6 +1280,12 @@ void Canvas::deleteConfig(AbstractConfig * config)
         m_configs.removeAll(config);
         config->dispose();
     }
+}
+
+QGraphicsView * Canvas::mainGraphicsView() const
+{
+    QList<QGraphicsView *> vList = views();
+    return vList.isEmpty() ? 0 : vList.first();
 }
 
 /// Slots
@@ -1308,7 +1358,12 @@ void Canvas::slotConfigureContent(const QPoint & scenePoint)
     connect(p, SIGNAL(applyLook(quint32,bool,bool)), this, SLOT(slotApplyLook(quint32,bool,bool)));
     p->show();
     p->setPos(scenePoint - QPoint(10, 10));
-    p->keepInBoundaries(sceneRect().toRect());
+    QGraphicsView * mainView = mainGraphicsView();
+    if (mainView) {
+        QRect bounds = mainView->mapToScene(mainView->viewport()->rect()).boundingRect().toRect();
+        p->keepInBoundaries(bounds);
+    } else
+        p->keepInBoundaries(sceneRect().toRect());
     p->setFocus();
 }
 
@@ -1415,7 +1470,7 @@ void Canvas::slotDeleteContent()
             if (m_backContent == content)
                 setBackContent(0);
 
-            DeleteContentCommand *command = new DeleteContentCommand(content, this);
+            DeleteContentCommand *command = new DeleteContentCommand(content, this, m_fileAbsDir);
             CommandStack::instance().doCommand(command);
             foreach (AbstractConfig * config, m_configs) {
                 if (config->content() == content) {
@@ -1523,15 +1578,6 @@ void Canvas::slotMarkChanges()
 void Canvas::slotResetChanges()
 {
     m_pendingChanges = false;
-}
-
-void Canvas::slotCloseIntroduction()
-{
-    m_helpItem->dispose();
-    m_helpItem = 0;
-    foreach (HighlightItem * highlight, m_highlightItems)
-        highlight->deleteAfterAnimation();
-    m_highlightItems.clear();
 }
 
 void Canvas::slotApplyForce()

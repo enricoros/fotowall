@@ -18,8 +18,9 @@
 #include "Shared/PlugGui/Container.h"
 namespace Ui { class MainWindow; }
 class LikeBack;
-class QMenu;
-class QNetworkReply;
+class QGridLayout;
+class QNetworkAccessManager;
+class PictureSearchWidget;
 class Workflow;
 
 class MainWindow : public PlugGui::Container
@@ -32,43 +33,40 @@ class MainWindow : public PlugGui::Container
     protected:
         // ::Appliance::Container
         QSize sceneViewSize() const;
+        void applianceSetTitle(const QString & title);
         void applianceSetScene(AbstractScene * scene);
         void applianceSetTopbar(const QList<QWidget *> & widgets);
         void applianceSetSidebar(QWidget * widget);
         void applianceSetCentralwidget(QWidget * widget);
         void applianceSetValue(quint32 key, const QVariant & value);
+        void applianceSetFocusToScene();
 
         // ::QWidget
         void closeEvent(QCloseEvent * event);
 
     private:
-        QMenu * createOnlineHelpMenu();
-        void checkForTutorial();
-        void checkForUpdates();
         void createLikeBack();
+        void showLikeBack(int type);
+        void addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment);
+        void removeNavigationWidget(QWidget * widget);
 
         Ui::MainWindow *        ui;
+        QNetworkAccessManager * m_networkAccessManager;
+        QGridLayout *           m_navigationLayout;
+        PictureSearchWidget *   m_pictureSearch;
         LikeBack *              m_likeBack;
-        QAction *               m_aHelpTutorial;
-        QString                 m_website;
         bool                    m_applyingAccelState;
 
     private Q_SLOTS:
         // notifications
+        void slotClosePictureSearch();
+        void slotHelpBarClicked(quint32);
         void slotRenderingSlow();
 
         // help box
-        void on_introButton_clicked();
         void on_lbBug_clicked();
         void on_lbFeature_clicked();
-        void on_lbDislike_clicked();
         void on_lbLike_clicked();
-        void slotHelpWebsite();
-        void slotHelpWebsiteFetched();
-        void slotHelpWebsiteFetchError();
-        void slotHelpTutorial();
-        void slotHelpUpdates();
-        void slotVerifyTutorial(QNetworkReply * reply);
 
         // setup box
         bool on_accelTestButton_clicked();

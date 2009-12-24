@@ -33,38 +33,48 @@ class Workflow : public QObject
         ~Workflow();
 
         // change workflow
-        bool loadCanvas_A(const QString & fileName = QString());
+        bool loadCanvas_A(const QString & fwFilePath = QString());
         void startCanvas_A();
-        void startWordcloud_A();
         void stackSlaveCanvas_A(SingleResourceLoaner *);
+#ifndef NO_WORDCLOUD_APPLIANCE
+        void startWordcloud_A();
         void stackSlaveWordcloud_A(SingleResourceLoaner *);
+#endif
+        void stackHelpAppliance();
+        void popCurrentAppliance();
 
-        //
+        // other utilities
+        QString applianceName() const;
         bool applianceCommand(int command);
         bool requestExit();
 
     private:
         struct Command {
-            enum Type { ResetToLevel, MasterCanvas, MasterWordcloud, SlaveCanvas, SlaveWordcloud };
+            enum Type {
+                ResetToLevel, MasterCanvas, SlaveCanvas
+#ifndef NO_WORDCLOUD_APPLIANCE
+                , MasterWordcloud, SlaveWordcloud
+#endif
+            };
 
             Type type;
             QVariant param;
-            SingleResourceLoaner * res;
+            SingleResourceLoaner * loaner;
 
-            Command(Type type, const QVariant & param = QVariant(), SingleResourceLoaner * res = 0) : type(type), param(param), res(res) {}
+            Command(Type type, const QVariant & param = QVariant(), SingleResourceLoaner * loaner = 0) : type(type), param(param), loaner(loaner) {}
         };
         void scheduleCommand(const Command & command);
         bool processCommand(const Command & command);
 
         struct Node {
             PlugGui::AbstractAppliance * appliance;
-            SingleResourceLoaner * res;
+            SingleResourceLoaner * loaner;
 
-            Node(PlugGui::AbstractAppliance * app, SingleResourceLoaner * res = 0) : appliance(app), res(res) {}
+            Node(PlugGui::AbstractAppliance * app, SingleResourceLoaner * loaner = 0) : appliance(app), loaner(loaner) {}
         };
 
         void pushNode(const Node & node);
-        void popNode(bool discardChanges);
+        bool popNode(bool allowSaving);
         void updateBreadcrumb();
 
         // external objects

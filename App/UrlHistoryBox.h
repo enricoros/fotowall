@@ -31,10 +31,16 @@ class UrlHistoryBox : public GroupBoxWidget
         // get the url for an entry (zero based)
         QUrl urlForEntry(int index) const;
 
+        // change the urls (can be fewer or equal size)
+        void changeUrls(const QList<QUrl> & urls, bool delayPreview);
+
     Q_SIGNALS:
         void urlClicked(const QUrl & url);
+        void urlRemoved(const QUrl & url);
 
     private:
+        QPixmap prettyPixmap(const QImage & image, int angle);
+        void genPreview(PixmapButton *);
         QList<PixmapButton *> m_entries;
         int m_previewIndex;
 

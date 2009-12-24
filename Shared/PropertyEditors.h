@@ -18,6 +18,7 @@
 #include <QObject>
 #include <QAbstractButton>
 #include <QAbstractSlider>
+#include <QComboBox>
 #include <QMetaProperty>
 #include <QPointer>
 #include <QVariant>
@@ -77,5 +78,33 @@ class PE_AbstractButton : public PE_TypeControl<QAbstractButton>
         void slotButtonChecked(bool checked);
         void slotPropertyChanged();
 };
+
+class PE_Combo : public PE_TypeControl<QComboBox>
+{
+    Q_OBJECT
+    public:
+        PE_Combo(QComboBox * combo, QObject * target, const char * propertyName, QObject * parent = 0);
+
+    private Q_SLOTS:
+        void slotComboChanged(int index);
+        void slotPropertyChanged();
+};
+
+// used by all reimpls for being notified when the property changes
+#if QT_VERSION >= 0x040500
+#define PE_LISTEN_TO_PROPERTY(slotName) \
+    if (m_property.hasNotifySignal()) { \
+        QMetaMethod notifySignal = m_property.notifySignal(); \
+        const int nameLength = qstrlen(notifySignal.signature()); \
+        if (nameLength < 255) { \
+            char signalName[256]; \
+            signalName[0] = '0' + QSIGNAL_CODE; \
+            qstrcpy(signalName + 1, notifySignal.signature()); \
+            connect(m_target.data(), signalName, this, SLOT(slotName)); \
+        } \
+    }
+#else
+#define PE_LISTEN_TO_PROPERTY(slotName)
+#endif
 
 #endif

@@ -31,12 +31,13 @@
 #include "Settings.h"
 #include "Workflow.h"
 
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMenu>
 
 
-CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent)
+CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
   : QObject(parent)
   , m_extCanvas(extCanvas)
   , m_dummyWidget(new QWidget)
@@ -46,31 +47,24 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
 {
     // init UI
     ui.setupUi(m_dummyWidget);
-    ui.b1->setDefaultAction(ui.aAddPicture);
-    ui.b2->setDefaultAction(ui.aAddText);
-    ui.b3->setDefaultAction(ui.aAddWebcam);
-    ui.b4->setDefaultAction(ui.aAddWordcloud);
-    ui.b5->setDefaultAction(ui.aAddCanvas);
-    ui.b6->setDefaultAction(ui.aSearchPictures);
-    connect(ui.aAddPicture, SIGNAL(triggered()), this, SLOT(slotAddPicture()));
-    connect(ui.aAddText, SIGNAL(triggered()), this, SLOT(slotAddText()));
-    connect(ui.aAddWebcam, SIGNAL(triggered()), this, SLOT(slotAddWebcam()));
-    connect(ui.aAddCanvas, SIGNAL(triggered()), this, SLOT(slotAddCanvas()));
-    connect(ui.aAddWordcloud, SIGNAL(triggered()), this, SLOT(slotAddWordcloud()));
-    connect(ui.aSearchPictures, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
+    connect(ui.bPicture, SIGNAL(clicked()), this, SLOT(slotAddPicture()));
+    connect(ui.bText, SIGNAL(clicked()), this, SLOT(slotAddText()));
+    connect(ui.bWordcloud, SIGNAL(clicked()), this, SLOT(slotAddWordcloud()));
+    connect(ui.bCanvas, SIGNAL(clicked()), this, SLOT(slotAddCanvas()));
+    connect(ui.bWebsearch, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
     connect(ui.projectCombo, SIGNAL(activated(int)), this, SLOT(slotProjectComboActivated(int)));
-    connect(ui.loadButton, SIGNAL(clicked()), this, SLOT(slotFileLoad()));
     connect(ui.saveButton, SIGNAL(clicked()), this, SLOT(slotFileSave()));
     connect(ui.exportButton, SIGNAL(clicked()), this, SLOT(slotFileExport()));
 
     // configure the appliance
+    windowTitleSet(m_extCanvas->prettyBaseName());
     sceneSet(m_extCanvas);
     topbarAddWidget(ui.addContentBox);
     topbarAddWidget(ui.propertiesBox);
     topbarAddWidget(ui.canvasPropertiesBox);
-    topbarAddWidget(ui.fileWidget, true);
+    topbarAddWidget(ui.fileBox, true);
 
     // populate menus
     ui.arrangeButton->setMenu(createArrangeMenu());
@@ -78,19 +72,25 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObje
     ui.decoButton->setMenu(createDecorationMenu());
 
     // react to canvas
-    m_extCanvas->modeInfo()->setScreenDpi(sDpiX, sDpiY);
-    m_extCanvas->modeInfo()->setPrintDpi(300);
     connect(m_extCanvas, SIGNAL(backConfigChanged()), this, SLOT(slotBackConfigChanged()));
     connect(m_extCanvas, SIGNAL(requestContentEditing(AbstractContent*)), this, SLOT(slotEditContent(AbstractContent*)));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
+    connect(m_extCanvas, SIGNAL(filePathChanged()), this, SLOT(slotFilePathChanged()));
 
     // react to VideoProvider
-    ui.aAddWebcam->setVisible(VideoProvider::instance()->inputCount() > 0);
+    slotVerifyVideoInputs(VideoProvider::instance()->inputCount());
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // set the startup project mode
-    int projectModeIndex = extCanvas->modeInfo()->projectMode();
-    slotProjectComboActivated(projectModeIndex);
+    int pComboIndex = 0;
+    switch (extCanvas->modeInfo()->projectMode()) {
+        case CanvasModeInfo::ModeNormal:    pComboIndex = 0; break;
+        case CanvasModeInfo::ModeCD:        pComboIndex = 3; break;
+        case CanvasModeInfo::ModeDVD:       pComboIndex = 4; break;
+        case CanvasModeInfo::ModeExactSize: pComboIndex = 1; break;
+        case CanvasModeInfo::ModeWallpaper: pComboIndex = 2; break;
+    }
+    slotProjectComboActivated(pComboIndex);
 }
 
 CanvasAppliance::~CanvasAppliance()
@@ -100,7 +100,7 @@ CanvasAppliance::~CanvasAppliance()
     delete ui.addContentBox;
     delete ui.propertiesBox;
     delete ui.canvasPropertiesBox;
-    delete ui.fileWidget;
+    delete ui.fileBox;
     delete m_dummyWidget;
 }
 
@@ -113,31 +113,13 @@ Canvas * CanvasAppliance::takeCanvas()
     return canvas;
 }
 
-bool CanvasAppliance::pendingChanges() const
-{
-    return m_extCanvas ? m_extCanvas->pendingChanges() : false;
-}
-
-bool CanvasAppliance::saveToFile(const QString & __fileName)
-{
-    // ask for file name if not given
-    if (__fileName.isEmpty()) {
-        QString fileName = FotowallFile::getSaveFotowallFile();
-        if (fileName.isNull())
-            return false;
-        return FotowallFile::saveV2(fileName, m_extCanvas);
-    }
-
-    return FotowallFile::saveV2(__fileName, m_extCanvas);
-}
-
 bool CanvasAppliance::applianceCommand(int command)
 {
     switch (command) {
         // No Background
         case App::AC_ClearBackground:
             if (m_extCanvas->backMode() != Canvas::BackNone) {
-                ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("You won't see through the Canvas unless you remove the background gradient.<br><b>Do you want me to clear the background?</b>"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
+                ButtonsDialog query("SwitchTransparent", tr("Transparency"), tr("You won't see through the Canvas unless you clear the background.<br><b>Do you want me to clear it?</b>"), QDialogButtonBox::Yes | QDialogButtonBox::No, true, true);
                 query.setButtonText(QDialogButtonBox::Yes, tr("Yes, thanks"));
                 query.setIcon(QStyle::SP_MessageBoxQuestion);
                 if (query.execute() == QDialogButtonBox::Yes)
@@ -145,15 +127,33 @@ bool CanvasAppliance::applianceCommand(int command)
             }
             return true;
 
-        // Show Introduction
-        case App::AC_ShowIntro:
-            m_extCanvas->showIntroduction();
+        // Close picture Search
+        case App::AC_ClosePicureSearch:
+            ui.bWebsearch->setChecked(false);
             return true;
     }
 
     // unimplemented command
     qWarning("CanvasAppliance::applianceCommand: unimplemented 0x%x", command);
     return false;
+}
+
+bool CanvasAppliance::appliancePendingChanges() const
+{
+    return m_extCanvas ? m_extCanvas->pendingChanges() : false;
+}
+
+bool CanvasAppliance::applianceSave(const QString & __filePath)
+{
+    // ask for file name if not given
+    if (__filePath.isEmpty()) {
+        QString fwFilePath = FotowallFile::getSaveFotowallFile(m_extCanvas->filePath());
+        if (fwFilePath.isNull())
+            return false;
+        return FotowallFile::saveV2(fwFilePath, m_extCanvas);
+    }
+
+    return FotowallFile::saveV2(__filePath, m_extCanvas);
 }
 
 QMenu * CanvasAppliance::createArrangeMenu()
@@ -281,31 +281,9 @@ void CanvasAppliance::setNormalProject()
     configurePrint(false);
 }
 
-void CanvasAppliance::setCDProject()
-{
-    ui.projectCombo->setCurrentIndex(1);
-    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
-    m_extCanvas->modeInfo()->setPrintLandscape(false);
-    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    m_extCanvas->adjustSceneSize();
-    m_extCanvas->setCDMarkers();
-    configurePrint(true);
-}
-
-void CanvasAppliance::setDVDProject()
-{
-    ui.projectCombo->setCurrentIndex(2);
-    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
-    m_extCanvas->modeInfo()->setPrintLandscape(true);
-    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
-    m_extCanvas->adjustSceneSize();
-    m_extCanvas->setDVDMarkers();
-    configurePrint(true);
-}
-
 void CanvasAppliance::setExactSizeProject(bool usePrevious)
 {
-    ui.projectCombo->setCurrentIndex(3);
+    ui.projectCombo->setCurrentIndex(1);
     m_extCanvas->clearMarkers();
     if (!usePrevious || !m_extCanvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
@@ -336,6 +314,42 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
     configurePrint(true);
 }
 
+void CanvasAppliance::setWallpaperProject()
+{
+    QSize wallSize = QApplication::desktop()->screenGeometry().size();
+    QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
+    if (!wallSize.isValid() || screenDpi.x() <= 0 || screenDpi.y() <= 0)
+        return;
+    ui.projectCombo->setCurrentIndex(2);
+    m_extCanvas->clearMarkers();
+    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF((qreal)wallSize.width() / screenDpi.x(), (qreal)wallSize.height() / screenDpi.y()));
+    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeWallpaper);
+    m_extCanvas->adjustSceneSize();
+    configurePrint(false);
+}
+
+void CanvasAppliance::setCDProject()
+{
+    ui.projectCombo->setCurrentIndex(3);
+    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
+    m_extCanvas->modeInfo()->setPrintLandscape(false);
+    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
+    m_extCanvas->adjustSceneSize();
+    m_extCanvas->setCDMarkers();
+    configurePrint(true);
+}
+
+void CanvasAppliance::setDVDProject()
+{
+    ui.projectCombo->setCurrentIndex(4);
+    m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
+    m_extCanvas->modeInfo()->setPrintLandscape(true);
+    m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
+    m_extCanvas->adjustSceneSize();
+    m_extCanvas->setDVDMarkers();
+    configurePrint(true);
+}
+
 void CanvasAppliance::configurePrint(bool enabled)
 {
     ui.exportButton->setText(enabled ? tr("Print") : tr("Export"));
@@ -343,62 +357,78 @@ void CanvasAppliance::configurePrint(bool enabled)
 
 void CanvasAppliance::slotAddCanvas()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
-
-    QStringList fileNames = FotowallFile::getLoadFotowallFiles();
-    if (fileNames.isEmpty())
+    QStringList fwFilePaths = FotowallFile::getLoadFotowallFiles();
+    if (fwFilePaths.isEmpty())
         return;
-    m_extCanvas->addCanvasViewContent(fileNames);
+    m_extCanvas->addCanvasViewContent(fwFilePaths);
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotAddPicture()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
-
     // make up the default load path (stored as 'Fotowall/LoadImagesDir')
     QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
 
     // ask the file name, validate it, store back to settings and load the file
-    QStringList fileNames = QFileDialog::getOpenFileNames(0, tr("Select one or more pictures to add"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()));
-    if (fileNames.isEmpty())
+    QStringList picFilePaths = QFileDialog::getOpenFileNames(0, tr("Add Pictures to the Canvas"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()) /*, 0, QFileDialog::DontResolveSymlinks*/);
+    if (picFilePaths.isEmpty())
         return;
-    App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
+//<<<<<<< HEAD:App/CanvasAppliance.cpp
+    //App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
+    App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
     GroupedCommands *gc = new GroupedCommands();
-    foreach(QString file, fileNames) {
+    foreach(QString file, picFilePaths) {
         NewImageCommand *c = new NewImageCommand(m_extCanvas, file);
         gc->addCommand(c);
     }
     CommandStack::instance().doCommand(gc);
+//=======
+    //App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
+    //m_extCanvas->addPictureContent(picFilePaths);
+    //setFocusToScene();
+//>>>>>>> master:App/CanvasAppliance.cpp
 }
 
 void CanvasAppliance::slotAddText()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
+//<<<<<<< HEAD:App/CanvasAppliance.cpp
+    //// disable any search box
+    //ui.aSearchPictures->setChecked(false);
     NewTextCommand *c = new NewTextCommand(m_extCanvas);
     CommandStack::instance().doCommand(c);
+//=======
+    //m_extCanvas->addTextContent();
+    setFocusToScene();
+//>>>>>>> master:App/CanvasAppliance.cpp
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
-    NewWebcamCommand *c = new NewWebcamCommand(m_extCanvas);
+//<<<<<<< HEAD:App/CanvasAppliance.cpp
+    //// disable any search box
+    //ui.aSearchPictures->setChecked(false);
+    //NewWebcamCommand *c = new NewWebcamCommand(m_extCanvas);
+    //CommandStack::instance().doCommand(c);
+//=======
+    //int webcamIndex = sender()->property("index").toInt();
+    //m_extCanvas->addWebcamContent(webcamIndex);
+    //setFocusToScene();
+//>>>>>>> master:App/CanvasAppliance.cpp
+    int webcamIndex = sender()->property("index").toInt();
+    NewWebcamCommand *c = new NewWebcamCommand(m_extCanvas, webcamIndex);
     CommandStack::instance().doCommand(c);
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotAddWordcloud()
 {
-    // disable any search box
-    ui.aSearchPictures->setChecked(false);
     m_extCanvas->addWordcloudContent();
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotSearchPicturesToggled(bool visible)
 {
-    m_extCanvas->setSearchPicturesVisible(visible);
+    containerValueSet(App::CC_ShowPictureSearch, visible);
 }
 
 
@@ -412,9 +442,10 @@ void CanvasAppliance::slotProjectComboActivated(int index)
 {
     switch (index) {
         case 0: setNormalProject();             break;
-        case 1: setCDProject();                 break;
-        case 2: setDVDProject();                break;
-        case 3: setExactSizeProject(!sender()); break;
+        case 1: setExactSizeProject(!sender()); break;
+        case 2: setWallpaperProject();          break;
+        case 3: setCDProject();                 break;
+        case 4: setDVDProject();                break;
     }
 }
 
@@ -493,12 +524,14 @@ bool CanvasAppliance::slotFileLoad()
 
 bool CanvasAppliance::slotFileSave()
 {
-    return saveToFile();
+    return applianceSave();
 }
 
 bool CanvasAppliance::slotFileExport()
 {
-    return ExportWizard(m_extCanvas, m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeNormal).exec();
+    bool printPreferred = m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeNormal &&
+                          m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeWallpaper;
+    return ExportWizard(m_extCanvas, printPreferred).exec();
 }
 
 void CanvasAppliance::slotEditContent(AbstractContent *content)
@@ -511,7 +544,13 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
+#ifndef NO_WORDCLOUD_APPLIANCE
         App::workflow->stackSlaveWordcloud_A(wc);
+#else
+        Q_UNUSED(wc);
+        ButtonsDialog info("WordcloudMissingInfo", tr("Wordcloud Editor"), tr("The Wordcloud editor will be ready in the Fotowall REVO (1.0) release."), QDialogButtonBox::Ok, true, true);
+        info.execute();
+#endif
         return;
     }
 }
@@ -549,6 +588,8 @@ void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
         delete prevItem->widget();
         delete prevItem;
     }
+    if (!ui.propLayout->isEmpty())
+        qWarning("CanvasAppliance::slotShowPropertiesWidget: problem in the properties layout: not empty (%d)", ui.propLayout->count());
 
     // show the Properties container with new content and title
     if (widget) {
@@ -565,8 +606,27 @@ void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
     }
 }
 
+void CanvasAppliance::slotFilePathChanged()
+{
+    windowTitleSet(m_extCanvas->prettyBaseName());
+}
+
 void CanvasAppliance::slotVerifyVideoInputs(int count)
 {
-    // maybe blink or something?
-    ui.aAddWebcam->setVisible(count > 0);
+    // delete previous buttons
+    qDeleteAll(m_webcamButtons);
+    m_webcamButtons.clear();
+
+    // create new buttons, indexed and connected
+    for (int i = 0; i < count; i++) {
+        PixmapButton * p = new PixmapButton(ui.addContentBox);
+        p->setFixedSize(QSize(50, 50));
+        p->setPixmap(QPixmap(":/data/insert-webcam.png"));
+        p->setHoverPixmap(QPixmap(":/data/insert-overlay-plus.png"));
+        p->setToolTip(tr("Add Webcam"));
+        p->setProperty("index", i);
+        connect(p, SIGNAL(clicked()), this, SLOT(slotAddWebcam()));
+        ui.addWebcamLayout->addWidget(p);
+        m_webcamButtons.append(p);
+    }
 }

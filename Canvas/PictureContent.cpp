@@ -20,11 +20,14 @@
 #include "Frames/Frame.h"
 #include "Shared/CPixmap.h"
 #include "Shared/CroppingDialog.h"
+#include "Shared/PanePropertyEditor.h"
+#include "Shared/PropertyEditors.h"
 #include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
 #include "PictureProperties.h"
 
 #include <QDir>
+#include <QDirIterator>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QGraphicsScene>
@@ -86,7 +89,7 @@ PictureContent::~PictureContent()
     delete m_photo;
 }
 
-bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool setName)
+bool PictureContent::loadPhoto(const QString & picFilePath, bool keepRatio, bool setName)
 {
     dropNetworkConnection();
     delete m_photo;
@@ -97,7 +100,7 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     m_netWidth = 0;
     m_netHeight = 0;
 
-    m_photo = new CPixmap(fileName);
+    m_photo = new CPixmap(picFilePath);
     if (m_photo->isNull()) {
         delete m_photo;
         m_photo = 0;
@@ -105,11 +108,13 @@ bool PictureContent::loadPhoto(const QString & fileName, bool keepRatio, bool se
     }
 
     m_opaquePhoto = !m_photo->hasAlpha();
-    m_fileUrl = fileName;
+    m_fileUrl = QDir(picFilePath).canonicalPath();
+    if (m_fileUrl.isEmpty())
+        m_fileUrl = picFilePath;
     if (keepRatio)
         resetContentsRatio();
     if (setName) {
-        QString string = QFileInfo(fileName).fileName().section('.', 0, 0);
+        QString string = QFileInfo(picFilePath).fileName().section('.', 0, 0);
         string = string.mid(0, 10);
         setFrameText(string + tr("..."));
     }
@@ -241,29 +246,24 @@ void PictureContent::crop()
     }
 }
 
-#include "Shared/PropertyEditors.h"
-#include "Shared/PanePropertyEditor.h"
-QWidget * PictureContent::createPropertyWidget()
+QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
 {
-    PictureProperties * p = new PictureProperties();
-
-    // connect actions
-    new PE_AbstractButton(p->gimpButton, this, "externalEdit", p);
-    new PE_AbstractSlider(p->sOpacity, this, "opacity", p);
-    p->perspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
-    new PE_PaneWidget(p->perspWidget, this, "perspective", p);
+    PictureProperties * pp = __p ? (PictureProperties *)__p : new PictureProperties;
+    AbstractContent::createPropertyWidget(pp);
 
     // properties link
+#ifdef Q_WS_WIN
+    delete pp->gimpButton;
+#else
+    new PE_AbstractButton(pp->gimpButton, this, "externalEdit", pp);
+#endif
 
-    return p;
+    return pp;
 }
 
-bool PictureContent::fromXml(QDomElement & contentElement)
+bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
-    AbstractContent::fromXml(contentElement);
-
-    // load picture properties
-    QString path = contentElement.firstChildElement("path").text();
+    AbstractContent::fromXml(contentElement, baseDir);
 
     // build the afterload effects list
     m_afterLoadEffects.clear();
@@ -287,30 +287,85 @@ bool PictureContent::fromXml(QDomElement & contentElement)
         m_afterLoadEffects.append(fx);
     }
 
+    // load picture properties
+    QString path;
+
+    // try relative file path
+    const QString relPath = contentElement.firstChildElement("relativeFilePath").text();
+    if (!relPath.isEmpty() && baseDir.exists(relPath))
+        path = QDir::cleanPath(baseDir.filePath(relPath));
+
+    // or use absolute path/url
+    if (path.isEmpty())
+        path = contentElement.firstChildElement("fileUrl").text();
+
+    // RETROCOMP <= 0.8
+    if (path.isEmpty())
+        path = contentElement.firstChildElement("path").text();
+
     // load Network image
     if (path.startsWith("http", Qt::CaseInsensitive) || path.startsWith("ftp", Qt::CaseInsensitive))
         return loadFromNetwork(path, 0);
 
+    // look for the file if can't find it anymore
+    if (!QFile::exists(path)) {
+        QString searchFileName = QFileInfo(path).fileName();
+        if (!searchFileName.isEmpty()) {
+
+            // find all replacements from the current basepath
+            qWarning("PictureContent::fromXml: file '%s' not found, scanning for replacements", qPrintable(path));
+            QDirIterator dIt(baseDir, QDirIterator::Subdirectories);
+            QStringList replacements;
+            while (dIt.hasNext()) {
+                dIt.next();
+                if (dIt.fileName() == searchFileName) {
+                    QString replacement = dIt.fileInfo().absoluteFilePath();
+                    replacements.append(replacement);
+                    qWarning("PictureContent::fromXml:    found '%s'", qPrintable(replacement));
+                }
+            }
+
+            // use the first replacement (### 1.0 display a selection dialog)
+            if (!replacements.isEmpty()) {
+                path = replacements.first();
+                qWarning("PictureContent::fromXml:    using '%s'", qPrintable(path));
+            } else
+                qWarning("PictureContent::fromXml:    no replacements found");
+        }
+    }
+
     // load Local image
-    return loadPhoto(path);
+    return loadPhoto(path, false, false);
 }
 
-void PictureContent::toXml(QDomElement & contentElement) const
+void PictureContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
 {
     // save AbstractContent properties and rename to 'picture'
-    AbstractContent::toXml(contentElement);
+    AbstractContent::toXml(contentElement, baseDir);
     contentElement.setTagName("picture");
 
     // save picture properties
     QDomDocument doc = contentElement.ownerDocument();
     QDomElement domElement;
-    QDomText text;
 
     // save image url (whether is a local path or remote url)
-    domElement = doc.createElement("path");
-    contentElement.appendChild(domElement);
-    text = doc.createTextNode(m_fileUrl);
-    domElement.appendChild(text);
+    if (!m_fileUrl.isEmpty() && !m_fileUrl.startsWith("data:")) {
+
+        // if file, save relative path (mandatory for relocating files)
+        if (!m_fileUrl.startsWith("http:", Qt::CaseInsensitive) && !m_fileUrl.startsWith("ftp:", Qt::CaseInsensitive)) {
+            QString relativePath = baseDir.relativeFilePath(m_fileUrl);
+            if (!relativePath.isEmpty()) {
+                domElement = doc.createElement("relativeFilePath");
+                contentElement.appendChild(domElement);
+                domElement.appendChild(doc.createTextNode(relativePath));
+            }
+        }
+
+        // save the url (mostly useful for non-local files)
+        domElement = doc.createElement("fileUrl");
+        contentElement.appendChild(domElement);
+        domElement.appendChild(doc.createTextNode(m_fileUrl));
+    }
 
     // save the effects
     domElement = doc.createElement("effects");
@@ -419,8 +474,9 @@ void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
             }
         }
         // handle local drops
-        if (QFile::exists(url.toLocalFile())) {
-            if (loadPhoto(url.toLocalFile(), true, true)) {
+        QString picFilePath = url.toString();
+        if (QFile::exists(picFilePath)) {
+            if (loadPhoto(picFilePath, true, true)) {
                 event->accept();
                 return;
             }
@@ -441,14 +497,19 @@ void PictureContent::setExternalEdit(bool enabled)
     // start gimp if requested
     if (enabled && !m_watcher) {
         // save the pic to a file
-        QString fileName = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(qrand() % 999999) + ".png";
-        if (!m_photo->save(fileName, "PNG")) {
+        QString tmpFile = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(qrand() % 999999) + ".png";
+        if (!m_photo->save(tmpFile, "PNG")) {
             qWarning("PictureContent::slotGimpEdit: can't save the image");
             return;
         }
 
         // open it with the gimp
-        if (!QProcess::startDetached("gimp", QStringList() << fileName)) {
+#ifdef Q_OS_WIN32
+        QString executable = "gimp.exe";
+#else
+        QString executable = "gimp";
+#endif
+        if (!QProcess::startDetached(executable, QStringList() << tmpFile)) {
             qWarning("PictureContent::slotGimpEdit: can't start The Gimp");
             return;
         }
@@ -456,8 +517,8 @@ void PictureContent::setExternalEdit(bool enabled)
         // start a watcher over it
         delete m_watcher;
         m_watcher = new QFileSystemWatcher(this);
-        m_watcher->setProperty("fullName", fileName);
-        m_watcher->addPath(fileName);
+        m_watcher->setProperty("fullName", tmpFile);
+        m_watcher->addPath(tmpFile);
         connect(m_watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(slotGimpCompressNotifies()));
         return;
     }
@@ -514,10 +575,10 @@ void PictureContent::slotGimpFinished()
     // get the file name and dispose the watcher
     if (!m_watcher)
         return;
-    QString fileName = m_watcher->property("fullName").toString();
+    QString gimpFilePath = m_watcher->property("fullName").toString();
 
     // reload the file
-    CPixmap * newPhoto = new CPixmap(fileName);
+    CPixmap * newPhoto = new CPixmap(gimpFilePath);
     if (newPhoto->isNull()) {
         qWarning("PictureContent::slotGimpFinished: can't load the modified picture");
         delete newPhoto;

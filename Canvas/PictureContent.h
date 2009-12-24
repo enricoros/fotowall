@@ -32,7 +32,7 @@ class PictureContent : public AbstractContent
         PictureContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~PictureContent();
 
-        bool loadPhoto(const QString & fileName, bool keepRatio = false, bool setName = false);
+        bool loadPhoto(const QString & picFilePath, bool keepRatio = false, bool setName = false);
         bool loadFromNetwork(const QString & url, QNetworkReply * reply = 0, const QString & title = QString(), int width = -1, int height = -1);
         bool loadPixmap(const QPixmap & pixmap, const QString & title = QString());
         void addEffect(const PictureEffect & effect);
@@ -41,9 +41,9 @@ class PictureContent : public AbstractContent
 
         // ::AbstractContent
         QString contentName() const { return tr("Picture"); }
-        QWidget * createPropertyWidget();
-        bool fromXml(QDomElement & contentElement);
-        void toXml(QDomElement & contentElement) const;
+        QWidget * createPropertyWidget(ContentProperties * p = 0);
+        bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
         QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;

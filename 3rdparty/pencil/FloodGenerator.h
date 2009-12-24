@@ -3,7 +3,8 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2009 by Enrico Ros                                      *
+ *         2007-2009 Enrico Ros <enrico.ros@gmail.com>                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,29 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __HelpItem_h__
-#define __HelpItem_h__
+#ifndef __FloodGenerator_h__
+#define __FloodGenerator_h__
 
-#include "AbstractDisposeable.h"
-class Frame;
+#include "FloodPoly.h"
 
-class HelpItem : public AbstractDisposeable
-{
-    Q_OBJECT
+class FloodGenerator {
     public:
-        HelpItem(QGraphicsItem * parent = 0);
-        ~HelpItem();
+        // loaders
+        static FloodPoly fromQPainterPath( const QPainterPath & painterPath );
+        static FloodPolys fromSvgPaths( const QString & fileName, const QString & elementId = QString() );
 
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
-
-    Q_SIGNALS:
-        void closeMe();
-
-    private:
-        Frame * m_frame;
+        // generators
+        static FloodPolys starPolys( const FloodPolys & source, double mag = 0.1 );
+        static FloodPolys spreadPolys( const FloodPolys & source, const QRect & outGemetry );
+        static FloodPolys heavyPolys( const FloodPolys & source, double G, double dT );
 };
 
 #endif

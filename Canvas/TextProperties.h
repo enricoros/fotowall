@@ -15,15 +15,14 @@
 #ifndef __TextProperties_h__
 #define __TextProperties_h__
 
-#include <QWidget>
+#include "ContentProperties.h"
 #include "ui_TextProperties.h"
 
-class TextProperties : public QWidget, public Ui::TextProperties {
+class TextProperties : public ContentProperties, public Ui::TextProperties {
     Q_OBJECT
     public:
         friend class TextContent;
-        TextProperties(QWidget *parent = 0);
-        ~TextProperties();
+        TextProperties(QWidget * parent = 0);
 };
 
 #endif

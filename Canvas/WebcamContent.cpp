@@ -23,9 +23,9 @@
 #include <QSvgRenderer>
 #include <QTimer>
 
-WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * parent)
+WebcamContent::WebcamContent(int webcamIndex, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, parent, false)
-    , m_input(input)
+    , m_input(webcamIndex)
     , m_still(false)
     , m_dummyRenderer(0)
     , m_broken(false)
@@ -47,8 +47,8 @@ WebcamContent::WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * 
     addButtonItem(bStill);
 
     // start the video flow
-    if (input >= 0 && input < VideoProvider::instance()->inputCount())
-        VideoProvider::instance()->connectInput(input, this, SLOT(setPixmap(const QPixmap &)));
+    if (webcamIndex >= 0 && webcamIndex < VideoProvider::instance()->inputCount())
+        m_broken = !VideoProvider::instance()->connectInput(webcamIndex, this, SLOT(setPixmap(const QPixmap &)));
     else
         m_broken = true;
 }
@@ -75,18 +75,18 @@ void WebcamContent::setPixmap(const QPixmap & pixmap)
     emit contentChanged();
 }
 
-bool WebcamContent::fromXml(QDomElement & contentElement)
+bool WebcamContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
-    AbstractContent::fromXml(contentElement);
+    AbstractContent::fromXml(contentElement, baseDir);
 
     // load video properties
     // ... nothing to do here...
     return true;
 }
 
-void WebcamContent::toXml(QDomElement & contentElement) const
+void WebcamContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
 {
-    AbstractContent::toXml(contentElement);
+    AbstractContent::toXml(contentElement, baseDir);
     contentElement.setTagName("webcam");
     contentElement.setAttribute("input", m_input);
 

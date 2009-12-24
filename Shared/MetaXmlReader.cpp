@@ -99,10 +99,16 @@ void Reader_1::readWebsites()
         if (isEndElement())
             break;
         if (isStartElement()) {
-            if (name() == QLatin1String("homepage") || name() == QLatin1String("site")) {
+            if (name() == QLatin1String("homepage") || name() == QLatin1String("blog") || name() == QLatin1String("site")) {
                 Website w;
                 w.name = attributes().value("name").toString();
                 w.url = readElementText();
+                if (name() == QLatin1String("homepage"))
+                    w.type = Website::HomePage;
+                else if (name() == QLatin1String("blog") || w.name.contains("blog", Qt::CaseInsensitive))
+                    w.type = Website::Blog;
+                else
+                    w.type = Website::Other;
                 if (name() == QLatin1String("homepage"))
                     websites.prepend(w);
                 else

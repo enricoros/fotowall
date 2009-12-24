@@ -21,6 +21,7 @@
 #include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
 #include "CornerItem.h"
+#include "ContentProperties.h"
 #include "MirrorItem.h"
 
 #include <QApplication>
@@ -36,6 +37,11 @@
 #include <QTimer>
 #include <QUrl>
 #include <math.h>
+#if QT_VERSION >= 0x040600
+#include <QGraphicsBlurEffect>
+#include <QGraphicsDropShadowEffect>
+#endif
+
 
 AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent, bool noRescale)
     : AbstractDisposeable(parent, false /*needed for Hardware3DTest*/)
@@ -50,6 +56,7 @@ AbstractContent::AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent,
 #if QT_VERSION < 0x040600
     , m_rotationAngle(0)
 #endif
+    , m_fxIndex(0)
 {
     // the buffered graphics changes timer
     m_gfxChangeTimer = new QTimer(this);
@@ -213,9 +220,9 @@ quint32 AbstractContent::frameClass() const
 }
 
 #include <QGraphicsTextItem>
-class MyTextItem : public QGraphicsTextItem {
+class FrameTextItem : public QGraphicsTextItem {
     public:
-        MyTextItem(QGraphicsItem * parent = 0)
+        FrameTextItem(QGraphicsItem * parent = 0)
             : QGraphicsTextItem(parent)
         {
         }
@@ -258,7 +265,7 @@ void AbstractContent::setFrameTextEnabled(bool enabled)
 {
     // create the Text Item, if enabled...
     if (enabled && !m_frameTextItem) {
-        m_frameTextItem = new MyTextItem(this);
+        m_frameTextItem = new FrameTextItem(this);
         m_frameTextItem->setTextInteractionFlags(Qt::TextEditorInteraction);
         QFont f("Sans Serif");
         //f.setPointSizeF(7.5);
@@ -364,6 +371,53 @@ qreal AbstractContent::rotation() const
 }
 #endif
 
+void AbstractContent::setFxIndex(int index)
+{
+    if (m_fxIndex == index)
+        return;
+    m_fxIndex = index;
+    // apply graphics effect
+#if QT_VERSION >= 0x040600
+    switch (m_fxIndex) {
+        default:
+            setGraphicsEffect(0);
+            break;
+        case 1: {
+            QGraphicsDropShadowEffect * ds = new QGraphicsDropShadowEffect(this);
+            ds->setColor(Qt::black);
+            ds->setBlurRadius(7);
+            ds->setOffset(1, 1);
+            setGraphicsEffect(ds);
+            } break;
+        case 2: {
+            QGraphicsDropShadowEffect * ds = new QGraphicsDropShadowEffect(this);
+            ds->setColor(Qt::white);
+            ds->setBlurRadius(7);
+            ds->setOffset(1, 1);
+            setGraphicsEffect(ds);
+            } break;
+        case 3: {
+            QGraphicsBlurEffect * b = new QGraphicsBlurEffect(this);
+            b->setBlurRadius(5);
+            b->setBlurHints(QGraphicsBlurEffect::QualityHint);
+            setGraphicsEffect(b);
+            } break;
+        case 4: {
+            QGraphicsBlurEffect * b = new QGraphicsBlurEffect(this);
+            b->setBlurRadius(16);
+            b->setBlurHints(QGraphicsBlurEffect::QualityHint);
+            setGraphicsEffect(b);
+            } break;
+    }
+#endif
+    emit fxIndexChanged();
+}
+
+int AbstractContent::fxIndex() const
+{
+    return m_fxIndex;
+}
+
 void AbstractContent::ensureVisible(const QRectF & rect)
 {
     // keep the center inside the scene rect
@@ -380,7 +434,7 @@ bool AbstractContent::beingTransformed() const
     return m_dirtyTransforming;
 }
 
-bool AbstractContent::fromXml(QDomElement & contentElement)
+bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseDir*/)
 {
     // restore content properties
     QDomElement domElement;
@@ -412,6 +466,10 @@ bool AbstractContent::fromXml(QDomElement & contentElement)
         setOpacity(opacity);
 #endif
 
+    int fxIdx = contentElement.firstChildElement("fxindex").text().toInt();
+    if (fxIdx > 0)
+        setFxIndex(fxIdx);
+
     bool hasText = contentElement.firstChildElement("frame-text-enabled").text().toInt();
     setFrameTextEnabled(hasText);
     if (hasText) {
@@ -439,7 +497,7 @@ bool AbstractContent::fromXml(QDomElement & contentElement)
     return true;
 }
 
-void AbstractContent::toXml(QDomElement & contentElement) const
+void AbstractContent::toXml(QDomElement & contentElement, const QDir & /*baseDir*/) const
 {
     // Save general item properties
     contentElement.setTagName("abstract");
@@ -497,10 +555,16 @@ void AbstractContent::toXml(QDomElement & contentElement) const
     if (opacity() < 1.0) {
         domElement= doc.createElement("opacity");
         contentElement.appendChild(domElement);
-        text = doc.createTextNode(QString::number(opacity()));
-        domElement.appendChild(text);
+        domElement.appendChild(doc.createTextNode(QString::number(opacity())));
     }
 #endif
+
+    // Save the Fx Index
+    if (fxIndex() > 0) {
+        domElement = doc.createElement("fxindex");
+        contentElement.appendChild(domElement);
+        domElement.appendChild(doc.createTextNode(QString::number(fxIndex())));
+    }
 
     // Save the frame class
     valueStr.setNum(frameClass());
@@ -538,7 +602,6 @@ void AbstractContent::toXml(QDomElement & contentElement) const
     domElement = doc.createElement("mirror");
     domElement.setAttribute("state", mirrored());
     contentElement.appendChild(domElement);
-
 }
 
 QPixmap AbstractContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)
@@ -562,9 +625,24 @@ bool AbstractContent::contentOpaque() const
     return false;
 }
 
-QWidget * AbstractContent::createPropertyWidget()
+QWidget * AbstractContent::createPropertyWidget(ContentProperties * __p)
 {
-    return 0;
+    ContentProperties * cp = __p ? __p : new ContentProperties;
+
+    // connect actions
+    connect(cp->cFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
+    connect(cp->cRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
+    connect(cp->cLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
+    connect(cp->cBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
+    connect(cp->cConfigure, SIGNAL(clicked()), this, SLOT(slotConfigure()));
+
+    // properties link
+    new PE_AbstractSlider(cp->cOpacity, this, "opacity", cp);
+    new PE_Combo(cp->cFxCombo, this, "fxIndex", cp);
+    cp->cPerspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
+    new PE_PaneWidget(cp->cPerspWidget, this, "perspective", cp);
+
+    return cp;
 }
 
 QRectF AbstractContent::boundingRect() const
@@ -687,6 +765,7 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     QGraphicsItem::mousePressEvent(event);
     if (event->button() == Qt::RightButton) {
+        scene()->clearSelection();
         setSelected(true);
         emit requestConfig(event->scenePos().toPoint());
     }
@@ -778,9 +857,10 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
 void AbstractContent::slotConfigure()
 {
     ButtonItem * item = dynamic_cast<ButtonItem *>(sender());
-    if (!item)
-        return;
-    emit requestConfig(item->scenePos().toPoint());
+    if (item)
+        emit requestConfig(item->scenePos().toPoint());
+    else
+        emit requestConfig(scenePos().toPoint());
 }
 
 void AbstractContent::slotStackFront()
@@ -812,12 +892,12 @@ void AbstractContent::slotSaveAs()
         defaultSavePath.prepend(s.value("Fotowall/ExportDir").toString() + QDir::separator());
 
     // ask the file name, validate it, store back to settings
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), defaultSavePath, tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
-    if (fileName.isNull())
+    QString imgFilePath = QFileDialog::getSaveFileName(0, tr("Choose the Image file"), defaultSavePath, tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
+    if (imgFilePath.isNull())
         return;
-    s.setValue("Fotowall/ExportDir", QFileInfo(fileName).absolutePath());
-    if (QFileInfo(fileName).suffix().isEmpty())
-        fileName += ".png";
+    s.setValue("Fotowall/ExportDir", QFileInfo(imgFilePath).absolutePath());
+    if (QFileInfo(imgFilePath).suffix().isEmpty())
+        imgFilePath += ".png";
 
     // find out the Transform chain to mirror a rotated item
     QRectF sceneRectF = mapToScene(boundingRect()).boundingRect();
@@ -850,8 +930,8 @@ void AbstractContent::slotSaveAs()
     RenderOpts::HQRendering = prevHQ;
 
     // save image and check errors
-    if (!image.save(fileName) || !QFile::exists(fileName)) {
-        QMessageBox::warning(0, tr("File Error"), tr("Error saving the Object to '%1'").arg(fileName));
+    if (!image.save(imgFilePath) || !QFile::exists(imgFilePath)) {
+        QMessageBox::warning(0, tr("File Error"), tr("Error saving the Object to '%1'").arg(imgFilePath));
         return;
     }
 }
@@ -861,7 +941,7 @@ void AbstractContent::createCorner(Qt::Corner corner, bool noRescale)
     CornerItem * c = new CornerItem(corner, noRescale, this);
     c->setVisible(m_controlsVisible);
     c->setZValue(2.0);
-    c->setToolTip(tr("Drag with Left or Right mouse button.\n - Hold down SHIFT for free resize\n - Hold down CTRL to allow rotation\n - Hold down ALT to snap rotation\n - Double click (with LMB/RMB) to restore the aspect ratio/rotation"));
+    c->setToolTip(tr("Drag with Left or Right mouse button.\n - Hold down SHIFT for free resize\n - Hold down CTRL to rotate only\n - Hold down ALT to snap rotation\n - Double click (with LMB/RMB) to restore the aspect ratio/rotation"));
     m_cornerItems.append(c);
 }
 

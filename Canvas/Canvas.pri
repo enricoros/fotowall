@@ -2,25 +2,22 @@
 # disabled webkit on every platform - Enrico 20090410
 # DEFINES += USE_QTWEBKIT
 # QT += webkit
-# HEADERS += Canvas/BrowserItem.h
-# SOURCES += Canvas/BrowserItem.cpp
+# HEADERS += Shared/BrowserItem.h
+# SOURCES += Shared/BrowserItem.cpp
 HEADERS += \
     Canvas/AbstractConfig.h \
     Canvas/AbstractContent.h \
-    Canvas/AbstractDisposeable.h \
     Canvas/BezierCubicItem.h \
     Canvas/ButtonItem.h \
     Canvas/CanvasModeInfo.h \
     Canvas/CanvasViewContent.h \
     Canvas/Canvas.h \
+    Canvas/ContentProperties.h \
     Canvas/CornerItem.h \
-    Canvas/HelpItem.h \
-    Canvas/HighlightItem.h \
     Canvas/MirrorItem.h \
     Canvas/PictureConfig.h \
     Canvas/PictureContent.h \
     Canvas/PictureProperties.h \
-    Canvas/PictureSearchItem.h \
     Canvas/SelectionProperties.h \
     Canvas/StyledButtonItem.h \
     Canvas/TextConfig.h \
@@ -32,20 +29,17 @@ HEADERS += \
 SOURCES += \
     Canvas/AbstractConfig.cpp \
     Canvas/AbstractContent.cpp \
-    Canvas/AbstractDisposeable.cpp \
     Canvas/BezierCubicItem.cpp \
     Canvas/ButtonItem.cpp \
     Canvas/CanvasModeInfo.cpp \
     Canvas/CanvasViewContent.cpp \
     Canvas/Canvas.cpp \
+    Canvas/ContentProperties.cpp \
     Canvas/CornerItem.cpp \
-    Canvas/HelpItem.cpp \
-    Canvas/HighlightItem.cpp \
     Canvas/MirrorItem.cpp \
     Canvas/PictureConfig.cpp \
     Canvas/PictureContent.cpp \
     Canvas/PictureProperties.cpp \
-    Canvas/PictureSearchItem.cpp \
     Canvas/SelectionProperties.cpp \
     Canvas/StyledButtonItem.cpp \
     Canvas/TextConfig.cpp \
@@ -56,7 +50,7 @@ SOURCES += \
 
 FORMS += \
     Canvas/AbstractConfig.ui \
+    Canvas/ContentProperties.ui \
     Canvas/PictureConfig.ui \
     Canvas/PictureProperties.ui \
-    Canvas/PictureSearchItem.ui \
     Canvas/TextProperties.ui

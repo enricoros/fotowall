@@ -19,6 +19,7 @@
 #include <QList>
 #include <QPixmap>
 #include <QRect>
+class PencilItem;
 
 /**
     \brief The Scene showing the {New Canvas, New Wordcloud, etc..} items.
@@ -42,13 +43,19 @@ class HomeScene : public AbstractScene
     Q_SIGNALS:
         void keyPressed(int qtKey);
         void startCanvas();
+#ifndef NO_WORDCLOUD_APPLIANCE
         void startWordcloud();
+#endif
         void startWizard();
 
     private:
         QList<QGraphicsItem *> m_labels;
         QPixmap m_logoPixmap;
         QRect m_logoRect;
+        PencilItem * m_pencil;
+
+    private Q_SLOTS:
+        void slotCreatePencil();
 };
 
 #endif

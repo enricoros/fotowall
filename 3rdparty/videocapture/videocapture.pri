@@ -1,19 +1,22 @@
 VPATH += $$PWD
 DEPENDPATH += $$PWD
 
-unix:!macx {
+macx: CONFIG += no-webcam
+win32: CONFIG += no-webcam
+
+!contains(CONFIG, no-webcam): {
     DEFINES += HAS_VIDEOCAPTURE
 
     HEADERS += bayer.h \
         sonix_compress.h \
-        VideoDevice_linux.h \
+        VideoDevice.h \
         VideoInput.h
 
     SOURCES += bayer.cpp \
         sonix_compress.cpp \
-        VideoDevice_linux.cpp \
+        VideoDevice.cpp \
         VideoInput.cpp
 } else: {
-#    message("3rdparty/VideoCapture is only available on Linux for now")
+    message("3rdparty/VideoCapture won't be compiled")
     DEFINES -= HAS_VIDEOCAPTURE
 }

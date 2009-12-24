@@ -20,32 +20,33 @@
 class QMenu;
 class AbstractContent;
 class Canvas;
+class PixmapButton;
 
 class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 {
     Q_OBJECT
     public:
-        CanvasAppliance(Canvas * extCanvas, int sDpiX, int sDpiY, QObject * parent = 0);
+        CanvasAppliance(Canvas * extCanvas, QObject * parent = 0);
         ~CanvasAppliance();
 
         // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
         Canvas * takeCanvas();
 
-        bool pendingChanges() const;
-        bool saveToFile(const QString & fileName = QString());
-
         // ::Appliance::AbstractAppliance
         QString applianceName() const { return tr("Canvas"); }
         bool applianceCommand(int command);
+        bool appliancePendingChanges() const;
+        bool applianceSave(const QString & filePath = QString());
 
     private:
         QMenu * createArrangeMenu();
         QMenu * createBackgroundMenu();
         QMenu * createDecorationMenu();
         void setNormalProject();
+        void setExactSizeProject(bool usePrevious);
+        void setWallpaperProject();
         void setCDProject();
         void setDVDProject();
-        void setExactSizeProject(bool usePrevious);
         void configurePrint(bool enabled);
 
     private:
@@ -55,6 +56,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         QActionGroup *              m_gBackModeGroup;
         QActionGroup *              m_gBackRatioGroup;
         QAction *                   m_gBackContentAction;
+        QList<PixmapButton *>       m_webcamButtons;
 
     private Q_SLOTS:
 
@@ -89,6 +91,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         void slotEditContent(AbstractContent * content);
         void slotBackConfigChanged();
         void slotShowPropertiesWidget(QWidget *);
+        void slotFilePathChanged();
 
         // other actions
         void slotVerifyVideoInputs(int count);

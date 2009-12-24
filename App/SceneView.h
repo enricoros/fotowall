@@ -18,13 +18,15 @@
 #include <QGraphicsView>
 #include <QTime>
 class AbstractScene;
-class QVBoxLayout;
+class QGridLayout;
+class QPixmap;
 class RubberBandStyle;
 
 class SceneView : public QGraphicsView
 {
     Q_OBJECT
     Q_PROPERTY(bool openGL READ openGL WRITE setOpenGL)
+    Q_PROPERTY(qreal viewScale READ viewScale WRITE setViewScale NOTIFY viewScaleChanged)
     public:
         SceneView(QWidget * parent = 0);
         ~SceneView();
@@ -39,11 +41,15 @@ class SceneView : public QGraphicsView
         bool openGL() const;
         void setOpenGL(bool enabled);
 
-        // layout widgets inside this
-        void addOverlayWidget(QWidget * widget, bool top = true);
+        // properties
+        qreal viewScale() const;
+        void setViewScale(qreal scale);
 
     Q_SIGNALS:
         void heavyRepaint();
+
+        // properties notifications
+        void viewScaleChanged();
 
     protected:
         // ::QGraphicsView
@@ -51,12 +57,14 @@ class SceneView : public QGraphicsView
         // ::QWidget
         void paintEvent(QPaintEvent * event);
         void resizeEvent(QResizeEvent * event);
+        void wheelEvent(QWheelEvent *event);
 
     private:
+        qreal m_viewScale;
         bool m_openGL;
         AbstractScene * m_abstractScene;
         RubberBandStyle * m_style;
-        QVBoxLayout * m_viewportLayout;
+        QPixmap * m_shadowTile;
         QTime m_paintTime;
         QTimer * m_heavyTimer;
         int m_heavyCounter;

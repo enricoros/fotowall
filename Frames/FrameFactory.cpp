@@ -66,9 +66,9 @@ Frame * FrameFactory::defaultPictureFrame()
     return createFrame(factoryInstance()->m_defaultPicture);
 }
 
-void FrameFactory::addSvgFrame(const QString & fileName)
+void FrameFactory::addSvgFrame(const QString & frameFilePath)
 {
-    factoryInstance()->m_svgMap[ factoryInstance()->m_svgClassIndex++ ] = fileName;
+    factoryInstance()->m_svgMap[ factoryInstance()->m_svgClassIndex++ ] = frameFilePath;
 }
 
 quint32 FrameFactory::defaultPanelClass()
@@ -106,9 +106,9 @@ FrameFactory::FrameFactory()
     QSettings s;
     int values = s.value("frames/count", 0).toInt();
     for (int i = 0; i < values; i++) {
-        QString fileName = s.value(QString("frames/frame%1").arg(i)).toString();
-        if (QFile::exists(fileName))
-            m_svgMap[m_svgClassIndex++] = fileName;
+        QString frameFilePath = s.value(QString("frames/frame%1").arg(i)).toString();
+        if (QFile::exists(frameFilePath))
+            m_svgMap[m_svgClassIndex++] = frameFilePath;
     }
 }
 
@@ -116,14 +116,14 @@ FrameFactory::~FrameFactory()
 {
     QSettings s;
 
-    // store each filename
+    // store each path
     int count = 0;
     QMap<quint32, QString>::iterator it = m_svgMap.begin(), end = m_svgMap.end();
     for (; it != end; ++it) {
-        QString fileName = *it;
-        if (fileName.startsWith(":/"))
+        QString frameFilePath = *it;
+        if (frameFilePath.startsWith(":/"))
             continue;
-        s.setValue(QString("frames/frame%1").arg(count++), fileName);
+        s.setValue(QString("frames/frame%1").arg(count++), frameFilePath);
     }
     // store the count
     if (count)

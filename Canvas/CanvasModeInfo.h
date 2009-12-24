@@ -27,7 +27,9 @@ class CanvasModeInfo
             ModeNormal      = 0,
             ModeCD          = 1,
             ModeDVD         = 2,
-            ModeExactSize   = 3
+            ModeExactSize   = 3,
+            ModeWallpaper   = 4
+            // NOTE: always add new consts to the end, otherwise breaks (prev) XMLs
         };
         CanvasModeInfo();
 

@@ -1,9 +1,13 @@
 # Fotowall input files
-#HEADERS += 3rdparty/gsuggest.h
-#SOURCES += 3rdparty/gsuggest.cpp
+HEADERS += \
+    #3rdparty/gsuggest.h
 
-SOURCES += main.cpp
-RESOURCES += fotowall.qrc
+SOURCES += \
+    #3rdparty/gsuggest.cpp \
+    main.cpp
+
+RESOURCES += \
+    fotowall.qrc
 
 # More input files
 include(App/App.pri)
@@ -12,6 +16,7 @@ include(Frames/Frames.pri)
 include(Shared/Shared.pri)
 include(Wordcloud/Wordcloud.pri)
 include(3rdparty/likebackfrontend/likebackfrontend.pri)
+include(3rdparty/pencil/pencil.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 

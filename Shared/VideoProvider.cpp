@@ -17,7 +17,7 @@
 #include <QPixmap>
 #include <QTimer>
 #if defined(HAS_VIDEOCAPTURE)
-#include "3rdparty/videocapture/VideoDevice_linux.h"
+#include "3rdparty/videocapture/VideoDevice.h"
 #endif
 
 // the global video provider instance
@@ -33,7 +33,7 @@ VideoProvider::VideoProvider()
 {
     // defer video initialization, to offload gui on startup...
     if (!Disable)
-        QTimer::singleShot(1600, this, SLOT(scanDevices()));
+        QTimer::singleShot(500, this, SLOT(initDevices()));
 }
 
 VideoProvider::~VideoProvider()
@@ -47,44 +47,49 @@ int VideoProvider::inputCount() const
     return m_inputs.size();
 }
 
-void VideoProvider::connectInput(int iIdx, QObject * receiver, const char * method)
+bool VideoProvider::connectInput(int iIdx, QObject * receiver, const char * method)
 {
     // safety check
     if (iIdx < 0 || iIdx >= m_inputs.size() || !receiver || !method) {
         qWarning("VideoProvider::connectInput: fail");
-        return;
+        return false;
     }
-
-    // connect input
-    VideoInput * input = m_inputs[iIdx];
-    if (!connect(input, SIGNAL(newPixmap(QPixmap)), receiver, method)) {
-        qWarning("VideoProvider::connectInput: error connecting input %d to %s", iIdx, method);
-        return;
-    }
-
-    // add it to the receivers list (for ref. counting only)
-    input->receivers.append(receiver);
 
     // start the video if we're the first
+    VideoInput * input = m_inputs[iIdx];
     if (!input->active) {
-        // start the video
 #if defined(HAS_VIDEOCAPTURE)
-        input->device->setSize(input->device->maxWidth(), input->device->maxHeight());
-        input->device->startCapturing();
-#else
-        // TODO
+        // try to start the video
+        if (!input->device->setCaptureSize(input->device->maxSize()))
+            qWarning("VideoProvider::connectInput: can't set the capture size. trying anyways..");
+        if (!input->device->startCapturing()) {
+            qWarning("VideoProvider::connectInput: can't start capture, stopping");
+            return false;
+        }
 #endif
 
         // mark as active
         input->active = true;
     }
 
+    // connect input
+    if (!connect(input, SIGNAL(newPixmap(QPixmap)), receiver, method)) {
+        qWarning("VideoProvider::connectInput: error connecting input %d to %s", iIdx, method);
+        return false;
+    }
+
+    // add it to the receivers list (for ref. counting only)
+    input->receivers.append(receiver);
+
     // start the capture timer if needed
     if (!m_snapTimer) {
         m_snapTimer = new QTimer(this);
-        connect(m_snapTimer, SIGNAL(timeout()), this, SLOT(slotCaptureVideoFrames()));
+        connect(m_snapTimer, SIGNAL(timeout()), this, SLOT(slotCaptureFromDevices()));
         m_snapTimer->start(50);
     }
+
+    // tell that everything went good
+    return true;
 }
 
 void VideoProvider::disconnectReceiver(QObject * receiver)
@@ -141,49 +146,34 @@ bool VideoProvider::swapped(int iIdx) const
     return false;
 }
 
-void VideoProvider::scanDevices()
-{
-#if defined(Q_OS_LINUX)
-    QDirIterator dirIt("/dev", QStringList() << "video*", QDir::Files | QDir::System);
-    while (dirIt.hasNext())
-        slotInitVideo(dirIt.next());
-#else
-    qWarning("VideoProvider::scanDevices: not implemented for your system");
-#endif
-}
-
-void VideoProvider::slotInitVideo(const QString & device)
+void VideoProvider::initDevices()
 {
 #if defined(HAS_VIDEOCAPTURE)
-    // create a new capture device and initialize it
-    VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice();
-    capture->setFileName(device);
-    capture->open();
-    if (!capture->isOpen() || capture->inputs() < 1) {
-        delete capture;
-        return;
+    foreach (const VideoCapture::DeviceInfo & info, VideoCapture::VideoDevice::scanDevices()) {
+        // create a new capture device and initialize it
+        VideoCapture::VideoDevice * capture = new VideoCapture::VideoDevice(info);
+        if (!capture->open() || capture->inputCount() < 1) {
+            delete capture;
+            return;
+        }
+        //capture->close();         // leave capture open...
+
+        // setup input
+        capture->setCurrentInput(0);
+
+        // add the internal reference
+        VideoInput * input = new VideoInput();
+        input->channels = capture->inputCount();
+        input->device = capture;
+        m_inputs.append(input);
+
+        // update status
+        emit inputCountChanged(m_inputs.size());
     }
-
-    // setup input
-    //capture->close();         // leave capture open...
-    capture->selectInput(0);
-    // called by selectInput(0);
-    //capture->setInputParameters();
-
-    // if everything's ok setup the device and add it to the internal queue
-    VideoInput * input = new VideoInput();
-    input->device = capture;
-    m_inputs.append(input);
-
-    // update status
-    emit inputCountChanged(m_inputs.size());
-#else
-    // TODO
-    Q_UNUSED(device);
 #endif
 }
 
-void VideoProvider::slotCaptureVideoFrames()
+void VideoProvider::slotCaptureFromDevices()
 {
     // capture from every input to every receiver
     foreach (VideoInput * input, m_inputs) {
@@ -194,15 +184,19 @@ void VideoProvider::slotCaptureVideoFrames()
 
 #if defined(HAS_VIDEOCAPTURE)
         // get frame (and check correctness)
-        if (input->device->getFrame() != EXIT_SUCCESS)
+        if (!input->device->captureFrame())
             continue;
 
         // get the qimage from the frame
         QImage frameImage;
-        input->device->getImage(&frameImage);
+        bool captured = input->device->getLastFrame(&frameImage);
+        if (!captured) {
+            // display the invalid (blue) image anyways
+            //continue;
+        }
 
         // apply mirror, if requested
-        if (input->swapped)
+        if (captured && input->swapped)
             frameImage = frameImage.mirrored(true, false);
 
         // set the pixmap
@@ -214,8 +208,9 @@ void VideoProvider::slotCaptureVideoFrames()
 }
 
 VideoInput::VideoInput()
-    : active(false)
-    , swapped(false)
+  : channels(1)
+  , active(false)
+  , swapped(false)
 {
 }
 

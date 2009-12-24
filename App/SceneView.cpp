@@ -21,9 +21,11 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRectF>
+#include <QScrollBar>
 #include <QStyleOption>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <QWheelEvent>
 
 /// The style used by the SceneView's rubberband selection
 class RubberBandStyle : public QCommonStyle
@@ -54,10 +56,11 @@ class RubberBandStyle : public QCommonStyle
 
 SceneView::SceneView(QWidget * parent)
   : QGraphicsView(parent)
+  , m_viewScale(1.0)
   , m_openGL(false)
   , m_abstractScene(0)
-  , m_style(new RubberBandStyle)
-  , m_viewportLayout(new QVBoxLayout)
+  , m_style(0)
+  , m_shadowTile(0)
   , m_heavyTimer(0)
   , m_heavyCounter(0)
 {
@@ -75,10 +78,8 @@ SceneView::SceneView(QWidget * parent)
     pal.setBrush(QPalette::Base, Qt::NoBrush);
     setPalette(pal);
 
-    // use own style for drawing the RubberBand, and our layout
-    m_viewportLayout->setContentsMargins(0, 4, 0, 4);
-    m_viewportLayout->setSpacing(0);
-    viewport()->setLayout(m_viewportLayout);
+    // use own style for drawing the RubberBand
+    m_style = new RubberBandStyle;
     viewport()->setStyle(m_style);
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
@@ -87,6 +88,7 @@ SceneView::SceneView(QWidget * parent)
 
 SceneView::~SceneView()
 {
+    delete m_shadowTile;
     delete m_style;
 }
 
@@ -104,7 +106,8 @@ void SceneView::setScene(AbstractScene * scene)
     QGraphicsView::setScene(m_abstractScene);
     if (m_abstractScene) {
         connect(m_abstractScene, SIGNAL(destroyed(QObject*)), this, SLOT(slotSceneDestroyed(QObject *)));
-        connect(m_abstractScene, SIGNAL(geometryChanged()), this, SLOT(layoutScene()));
+        connect(m_abstractScene, SIGNAL(sceneSizeChanged()), this, SLOT(layoutScene()));
+        setViewScale(1.0);
         layoutScene();
     }
 }
@@ -144,9 +147,8 @@ void SceneView::setOpenGL(bool enabled)
         return;
     m_openGL = enabled;
 
-    // change viewport widget and transfer style and layout
+    // change viewport widget and transfer style
     QWidget * newViewport = m_openGL ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget();
-    newViewport->setLayout(m_viewportLayout);
     newViewport->setStyle(m_style);
     setViewport(newViewport);
     setViewportUpdateMode(m_openGL ? FullViewportUpdate : MinimalViewportUpdate);
@@ -169,14 +171,26 @@ void SceneView::setOpenGL(bool enabled)
 void SceneView::setOpenGL(bool) {};
 #endif
 
-void SceneView::addOverlayWidget(QWidget * widget, bool top)
+qreal SceneView::viewScale() const
 {
-    Qt::Alignment align = Qt::AlignLeft;
-    if (top)
-        align |= Qt::AlignTop;
-    else
-        align |= Qt::AlignBottom;
-    m_viewportLayout->insertWidget(0, widget, 0, align);
+    return m_viewScale;
+}
+
+void SceneView::setViewScale(qreal scale)
+{
+    if (m_viewScale != scale) {
+        m_viewScale = scale;
+        if (m_viewScale > 0.98 && m_viewScale < 1.02) {
+            m_viewScale = 1.0;
+            setTransform(QTransform());
+        } else {
+            QTransform scaleTransform;
+            scaleTransform.scale(m_viewScale, m_viewScale);
+            setTransform(scaleTransform);
+        }
+        layoutScene();
+        emit viewScaleChanged();
+    }
 }
 
 static void drawVerticalShadow(QPainter * painter, int width, int height)
@@ -195,12 +209,35 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
     QGraphicsView::drawForeground(painter, rect);
 
     // the first time create the Shadow Tile
-    static QPixmap shadowTile;
-    if (shadowTile.isNull()) {
-        shadowTile = QPixmap(64, 8);
-        shadowTile.fill(Qt::transparent);
-        QPainter shadowPainter(&shadowTile);
+    if (!m_shadowTile) {
+        m_shadowTile = new QPixmap(64, 8);
+        m_shadowTile->fill(Qt::transparent);
+        QPainter shadowPainter(m_shadowTile);
         drawVerticalShadow(&shadowPainter, 64, 8);
+    }
+
+    // if scaled, draw untransformed (full shadow tile + zoom)
+    if (m_viewScale != 1.0) {
+        // draw untransformed (we're drawing to the viewport())
+        painter->resetTransform();
+
+        // draw shadow
+        QRect viewportRect = viewport()->contentsRect();
+        int viewportHeight = viewportRect.height();
+        viewportRect.setHeight(8);
+        painter->drawTiledPixmap(viewportRect, *m_shadowTile);
+
+        // draw text
+        QString text = tr("%1%").arg(qRound(m_viewScale * 100));
+        QRect textRect = QFontMetrics(painter->font()).boundingRect(text).adjusted(-2, -1, 2, 1);
+        if (QApplication::isLeftToRight())
+            textRect.moveBottomLeft(QPoint(5, viewportHeight - 5));
+        else
+            textRect.moveBottomRight(QPoint(viewportRect.width() - 5, viewportHeight - 5));
+        painter->fillRect(textRect, palette().color(QPalette::Highlight));
+        painter->setPen(palette().color(QPalette::HighlightedText));
+        painter->drawText(textRect, Qt::AlignCenter, text);
+        return;
     }
 
     // find out if we have a drawing offset (we draw in Scene coords, and scene may be translated)
@@ -208,17 +245,13 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
 
     // blend the shadow tile
     if (rect.top() < (y + 8))
-        painter->drawTiledPixmap(rect.left(), y, rect.width(), 8, shadowTile);
+        painter->drawTiledPixmap(rect.left(), y, rect.width(), 8, *m_shadowTile);
 }
 
 void SceneView::paintEvent(QPaintEvent * event)
 {
     // start the measuring time
-#if 0
-    const bool measureTime = event->rect().size() == viewport()->size();
-#else
     const bool measureTime = true;
-#endif
     if (measureTime)
         m_paintTime.start();
 
@@ -252,6 +285,19 @@ void SceneView::resizeEvent(QResizeEvent * event)
     layoutScene();
 }
 
+void SceneView::wheelEvent(QWheelEvent * event)
+{
+    if (event->modifiers() == Qt::ControlModifier && m_abstractScene && m_abstractScene->sceneSelectable()) {
+        if (event->delta() < 0 && m_viewScale > 0.2)
+            setViewScale(m_viewScale * 0.707106781187);
+        else if (event->delta() > 0 && m_viewScale < 15)
+            setViewScale(m_viewScale * 1.41421356237);
+        event->accept();
+        return;
+    }
+    QGraphicsView::wheelEvent(event);
+}
+
 void SceneView::layoutScene()
 {
     if (!m_abstractScene)
@@ -261,8 +307,10 @@ void SceneView::layoutScene()
     QSize viewportSize = viewport()->contentsRect().size();
     m_abstractScene->resize(viewportSize);
 
-    // change the scrollbars policy
+    // use scrollbars if scene screen size is bigger than viewport's
     QSize sceneSize = m_abstractScene->sceneSize();
+    if (m_viewScale != 1.0)
+        sceneSize *= m_viewScale;
     bool scrollbarsNeeded = (sceneSize.width() > viewportSize.width()) || (sceneSize.height() > viewportSize.height());
     Qt::ScrollBarPolicy sPolicy = scrollbarsNeeded ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
     setVerticalScrollBarPolicy(sPolicy);

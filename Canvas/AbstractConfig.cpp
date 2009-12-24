@@ -85,6 +85,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(slotReflectionToggled(bool)));
 
     // ITEM setup
+    setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
     setWidget(widget);
     static qreal s_propZBase = 99999;
     setZValue(s_propZBase++);
@@ -249,7 +250,7 @@ void AbstractConfig::layoutButtons()
 
 void AbstractConfig::slotAddFrame()
 {
-    QStringList framesPath = QFileDialog::getOpenFileNames(0, tr("Choose frame images"), QString(), tr("Images (*.svg)"));
+    QStringList framesPath = QFileDialog::getOpenFileNames(0, tr("Choose frame images"), QString(), tr("Images (*.svg)") /*, 0, QFileDialog::DontResolveSymlinks*/);
     if (!framesPath.isEmpty()) {
         foreach (QString frame, framesPath)
             FrameFactory::addSvgFrame(frame);

@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PictureSearchItem</class>
- <widget class="QWidget" name="PictureSearchItem">
+ <class>PictureSearchWidget</class>
+ <widget class="QWidget" name="PictureSearchWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>458</width>
-    <height>329</height>
+    <height>306</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Flickr Search</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="verticalSpacing">
@@ -21,7 +18,7 @@
     <number>4</number>
    </property>
    <item row="0" column="0">
-    <widget class="MyLineEdit" name="lineEdit"/>
+    <widget class="DottedLineEdit" name="lineEdit"/>
    </item>
    <item row="0" column="1">
     <widget class="QPushButton" name="searchButton"/>
@@ -144,7 +141,7 @@
     </layout>
    </item>
    <item row="3" column="0" colspan="2">
-    <widget class="MyListWidget" name="listWidget">
+    <widget class="PicturesListWidget" name="listWidget">
      <property name="minimumSize">
       <size>
        <width>450</width>
@@ -181,6 +178,9 @@
      <property name="verticalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
      <property name="gridSize">
       <size>
        <width>105</width>
@@ -196,12 +196,12 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MyListWidget</class>
+   <class>PicturesListWidget</class>
    <extends>QListWidget</extends>
    <header>QListWidget</header>
   </customwidget>
   <customwidget>
-   <class>MyLineEdit</class>
+   <class>DottedLineEdit</class>
    <extends>QLineEdit</extends>
    <header>QLineEdit</header>
   </customwidget>

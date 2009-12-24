@@ -15,7 +15,7 @@
 #ifndef __MirrorItem_h__
 #define __MirrorItem_h__
 
-#include "AbstractDisposeable.h"
+#include "Shared/AbstractDisposeable.h"
 
 /**
     \brief Mirrors a transformed PictureContent

@@ -18,36 +18,25 @@
 #include "Shared/Commands.h"
 
 #include "3rdparty/likebackfrontend/LikeBack.h"
+#include "Shared/BreadCrumbBar.h"
 #include "Shared/ButtonsDialog.h"
-#include "Shared/MetaXmlReader.h"
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "Hardware3DTest.h"
+#include "OnlineServices.h"
+#include "PictureSearchWidget.h"
 #include "SceneView.h"
 #include "Settings.h"
-#include "VersionCheckDialog.h"
 #include "Workflow.h"
 #include "ui_MainWindow.h"
 
 #include <QApplication>
 #include <QCloseEvent>
-#include <QDir>
-#include <QDesktopServices>
 #include <QDesktopWidget>
-#include <QFileDialog>
-#include <QFile>
-#include <QMenu>
-#include <QMessageBox>
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QTimer>
 #include <QVariant>
 
-// current location and 'check string' for the tutorial
-#define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
-#define TUTORIAL_STRING "Peter walks you through how to use Foto"
-#define ENRICOBLOG_STRING "http://www.enricoros.com/blog/tag/fotowall/"
+// const strings
 #define FOTOWALL_FEEDBACK_LANGS "en,it,fr"
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
@@ -56,31 +45,48 @@
 MainWindow::MainWindow(QWidget * parent)
     : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
+    , m_networkAccessManager(new QNetworkAccessManager)
+    , m_navigationLayout(0)
+    , m_pictureSearch(0)
     , m_likeBack(0)
-    , m_aHelpTutorial(0)
     , m_applyingAccelState(false)
 {
     // setup widget
-#if QT_VERSION >= 0x040500
-    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
-#else
-    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() + "   -Limited Edition (Qt 4.4)-");
-#endif
+    applianceSetTitle(QString());
     setWindowIcon(QIcon(":/data/fotowall.png"));
 
     // init ui
     ui->setupUi(this);
-    ui->sceneView->setFocus();
-    ui->onlineHelpButton->setMenu(createOnlineHelpMenu());
-    ui->sceneView->addOverlayWidget(ui->applianceNavBar);
+    ui->topBar->setFixedHeight(App::TopBarHeight);
 #if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
     ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
 #endif
     ui->applianceSidebar->hide();
+    ui->sceneView->setFocus();
     connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
     createLikeBack();
+
+    // create the navigation layout
+    m_navigationLayout = new QGridLayout;
+    m_navigationLayout->setContentsMargins(0, 0, 0, 0);
+    m_navigationLayout->setSpacing(3);
+    ui->navBar->setLayout(m_navigationLayout);
+
+    // create the Workflow navigation bar
+    BreadCrumbBar * workflowBar = new BreadCrumbBar(ui->sceneView);
+    workflowBar->setObjectName(QString::fromUtf8("applianceNavBar"));
+    workflowBar->setClickableLeaves(false);
+    workflowBar->setBackgroundOffset(-1);
+    addNavigationWidget(workflowBar, 0, Qt::AlignLeft);
+
+    // create the Help bar
+    BreadCrumbBar * helpBar = new BreadCrumbBar(ui->sceneView);
+    connect(helpBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotHelpBarClicked(quint32)));
+    helpBar->setBackgroundOffset(1);
+    helpBar->addNode(1, tr(" ? "), 0);
+    addNavigationWidget(helpBar, 0, Qt::AlignRight);
 
     // show (with last geometry)
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
@@ -90,17 +96,23 @@ MainWindow::MainWindow(QWidget * parent)
     } else
         show();
 
+#if QT_VERSION >= 0x040500
+    // re-apply transparency
+    if (App::settings->value("Fotowall/Tranlucent", false).toBool())
+        ui->transpBox->setChecked(true);
+#endif
+
     // start the workflow
-    new Workflow(this, ui->applianceNavBar);
+    new Workflow((PlugGui::Container *)this, workflowBar);
 
-    // check stuff on the net
-    checkForTutorial();
-    checkForUpdates();
+    // create the online services
+    new OnlineServices(m_networkAccessManager);
 
-    // the first time, show the introduction
+#if 0
+    // start with the Help appliance the first time
     if (App::settings->firstTime())
-        on_introButton_clicked();
-
+        App::workflow->stackHelpAppliance();
+#endif
 
     QAction * undo = new QAction(tr("Undo"), this);
     undo->setShortcut(tr("CTRL+Z"));
@@ -123,9 +135,10 @@ MainWindow::~MainWindow()
 
     // delete everything
     delete App::workflow;
+    delete App::onlineServices;
+    delete m_networkAccessManager;
     delete m_likeBack;
     delete ui;
-    // m_aHelpTutorial is deleted by its menu (that's parented to this)
 }
 
 QSize MainWindow::sceneViewSize() const
@@ -133,12 +146,25 @@ QSize MainWindow::sceneViewSize() const
     return ui->sceneView->viewport()->size();
 }
 
+void MainWindow::applianceSetTitle(const QString & title)
+{
+    QString tString = title.isEmpty() ? QString() : title + " - ";
+    tString += QCoreApplication::applicationName() + " ";
+    if (title.isEmpty())
+        tString += "' Alchimia ' ";
+    tString += QCoreApplication::applicationVersion();
+#if QT_VERSION < 0x040500
+    tString += "   -Limited Edition (Qt 4.4)-";
+#endif
+    setWindowTitle(tString);
+}
+
 void MainWindow::applianceSetScene(AbstractScene * scene)
 {
     ui->sceneView->setScene(scene);
 }
 
-static void hideLayoutChildWidges(QLayout * layout)
+static void removeLayoutChildWidges(QLayout * layout)
 {
     while (QLayoutItem * item = layout->takeAt(0)) {
         if (QWidget * oldWidget = item->widget())
@@ -150,8 +176,8 @@ static void hideLayoutChildWidges(QLayout * layout)
 void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
     // clear the topbar layout hiding all widgets
-    hideLayoutChildWidges(ui->applianceLeftBarLayout);
-    hideLayoutChildWidges(ui->applianceRightBarLayout);
+    removeLayoutChildWidges(ui->applianceLeftBarLayout);
+    removeLayoutChildWidges(ui->applianceRightBarLayout);
 
     // add the widgets to the topbar and show them
     foreach (QWidget * widget, widgets) {
@@ -159,6 +185,7 @@ void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
             ui->applianceRightBarLayout->addWidget(widget);
         else
             ui->applianceLeftBarLayout->addWidget(widget);
+        widget->setFixedHeight(App::TopBarHeight);
         widget->setVisible(true);
     }
 }
@@ -166,7 +193,7 @@ void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
 void MainWindow::applianceSetSidebar(QWidget * widget)
 {
     // clear the sidebar layout hiding any widget
-    hideLayoutChildWidges(ui->applianceSidebarLayout);
+    removeLayoutChildWidges(ui->applianceSidebarLayout);
 
     // completely hide the sidebar if no widget
     ui->applianceSidebar->setVisible(widget);
@@ -184,9 +211,43 @@ void MainWindow::applianceSetCentralwidget(QWidget * widget)
         qWarning("MainWindow::applianceSetCentralwidget: unsupported");
 }
 
-void MainWindow::applianceSetValue(quint32 key, const QVariant & /*value*/)
+void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
 {
-    qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
+    if (key == App::CC_ShowPictureSearch) {
+
+        // destroy if needed
+        bool visible = value.toBool();
+        if (!visible && m_pictureSearch) {
+            m_pictureSearch->deleteLater();
+            m_pictureSearch = 0;
+            return;
+        }
+
+        // create if needed
+        if (visible && !m_pictureSearch) {
+            m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
+            connect(m_pictureSearch, SIGNAL(requestClosure()), this, SLOT(slotClosePictureSearch()), Qt::QueuedConnection);
+            m_pictureSearch->setWindowIcon(QIcon(":/data/insert-download.png"));
+            m_pictureSearch->setWindowTitle(tr("Search Web Pictures"));
+            m_pictureSearch->setWindowFlags(Qt::Tool);
+            QPoint newPos = mapToGlobal(ui->sceneView->pos()) + QPoint(-20, 10);
+            if (newPos.x() < 0)
+                newPos.setX(0);
+            m_pictureSearch->move(newPos);
+            m_pictureSearch->layout()->activate();
+            m_pictureSearch->resize(50, 50);
+            m_pictureSearch->show();
+            m_pictureSearch->setFocus();
+            return;
+        }
+
+    } else
+        qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
+}
+
+void MainWindow::applianceSetFocusToScene()
+{
+    ui->sceneView->setFocus(Qt::OtherFocusReason);
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -194,56 +255,22 @@ void MainWindow::closeEvent(QCloseEvent * event)
     event->setAccepted(App::workflow->requestExit());
 }
 
-QMenu * MainWindow::createOnlineHelpMenu()
-{
-    QMenu * menu = new QMenu(this);
-    menu->setSeparatorsCollapsible(false);
-
-    m_aHelpTutorial = new QAction(tr("Tutorial Video (0.2)"), menu);
-    connect(m_aHelpTutorial, SIGNAL(triggered()), this, SLOT(slotHelpTutorial()));
-    menu->addAction(m_aHelpTutorial);
-
-    QAction * aCheckUpdates = new QAction(tr("Check for Updates"), menu);
-    connect(aCheckUpdates, SIGNAL(triggered()), this, SLOT(slotHelpUpdates()));
-    menu->addAction(aCheckUpdates);
-
-    QAction * aFotowallBlog = new QAction(tr("Fotowall's Blog"), menu);
-    connect(aFotowallBlog, SIGNAL(triggered()), this, SLOT(slotHelpWebsite()));
-    menu->addAction(aFotowallBlog);
-
-    return menu;
-}
-
-void MainWindow::checkForTutorial()
-{
-    // hide the tutorial link
-    m_aHelpTutorial->setVisible(false);
-
-    // try to get the tutorial page (note, multiple QNAMs will be deleted on app closure)
-    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(slotVerifyTutorial(QNetworkReply*)));
-    manager->get(QNetworkRequest(TUTORIAL_URL));
-}
-
-void MainWindow::checkForUpdates()
-{
-    // find out the time of the last update check
-    QDate lastCheck = App::settings->value("Fotowall/LastUpdateCheck").toDate();
-    if (lastCheck.isNull()) {
-        App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
-        return;
-    }
-
-    // check for updates 30 days after the last one
-    if (lastCheck.daysTo(QDate::currentDate()) > 30)
-        QTimer::singleShot(2000, this, SLOT(slotHelpUpdates()));
-}
-
 void MainWindow::createLikeBack()
 {
     m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
     m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
     m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
+}
+
+void MainWindow::slotClosePictureSearch()
+{
+    App::workflow->applianceCommand(App::AC_ClosePicureSearch);
+}
+
+void MainWindow::slotHelpBarClicked(quint32 id)
+{
+    if (id == 1)
+        App::workflow->stackHelpAppliance();
 }
 
 void MainWindow::slotRenderingSlow()
@@ -258,90 +285,48 @@ void MainWindow::slotRenderingSlow()
     }
 }
 
-void MainWindow::on_introButton_clicked()
+void MainWindow::showLikeBack(int type)
 {
-    App::workflow->applianceCommand(App::AC_ShowIntro);
+    int usageCount = App::settings->value("Fotowall/UsageCount").toInt();
+    QString usageString = QString::number(usageCount);
+    QString windowString = App::workflow->applianceName();
+    m_likeBack->execCommentDialog((LikeBack::Button)type, QString(), windowString, usageString);
+}
+
+void MainWindow::addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment)
+{
+    // add the widget at the right place in the grid layout
+    if (alignment == Qt::AlignRight)
+        m_navigationLayout->addWidget(widget, row, 1, 1, 1, Qt::AlignRight);
+    else if (alignment & Qt::AlignHCenter)
+        m_navigationLayout->addWidget(widget, row, 0, 1, 2, Qt::AlignLeft);
+    else
+        m_navigationLayout->addWidget(widget, row, 0, 1, 1, Qt::AlignLeft);
+
+    // ensure the widget is shown
+    widget->show();
+}
+
+void MainWindow::removeNavigationWidget(QWidget *widget)
+{
+    widget->hide();
+    m_navigationLayout->removeWidget(widget);
+    widget->setParent(0);
 }
 
 void MainWindow::on_lbLike_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Like);
-}
-
-void MainWindow::on_lbDislike_clicked()
-{
-    m_likeBack->execCommentDialog(LikeBack::Dislike);
+    showLikeBack(LikeBack::Like);
 }
 
 void MainWindow::on_lbFeature_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Feature);
+    showLikeBack(LikeBack::Feature);
 }
 
 void MainWindow::on_lbBug_clicked()
 {
-    m_likeBack->execCommentDialog(LikeBack::Bug);
-}
-
-void MainWindow::slotHelpWebsite()
-{
-    // start a fetch if no URL has been determined
-    if (m_website.isEmpty()) {
-        MetaXml::Connector * conn = new MetaXml::Connector();
-        connect(conn, SIGNAL(fetched()), this, SLOT(slotHelpWebsiteFetched()));
-        connect(conn, SIGNAL(fetchError(const QString &)), this, SLOT(slotHelpWebsiteFetchError()));
-        return;
-    }
-
-    // open the website
-    if (QMessageBox::question(this, tr("Opening Fotowall's author Blog"), tr("This is the blog of the main author of Fotowall.\nYou can find some news while we set up a proper website ;-)\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
-        QDesktopServices::openUrl(QUrl(m_website));
-}
-
-void MainWindow::slotHelpWebsiteFetched()
-{
-    // get the websites from the conn
-    MetaXml::Connector * conn = dynamic_cast<MetaXml::Connector *>(sender());
-    if (conn && !conn->reader()->websites.isEmpty()) {
-        m_website = conn->reader()->websites.first().url;
-        if (!m_website.isEmpty()) {
-            slotHelpWebsite();
-            return;
-        }
-    }
-
-    // catch-all condition: use default url
-    slotHelpWebsiteFetchError();
-}
-
-void MainWindow::slotHelpWebsiteFetchError()
-{
-    m_website = ENRICOBLOG_STRING;
-    slotHelpWebsite();
-}
-
-void MainWindow::slotHelpTutorial()
-{
-    int answer = QMessageBox::question(this, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about Fotowall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
-    if (answer == QMessageBox::Yes)
-        QDesktopServices::openUrl(TUTORIAL_URL);
-}
-
-void MainWindow::slotHelpUpdates()
-{
-    VersionCheckDialog vcd;
-    vcd.exec();
-    App::settings->setValue("Fotowall/LastUpdateCheck", QDate::currentDate());
-}
-
-void MainWindow::slotVerifyTutorial(QNetworkReply * reply)
-{
-    if (reply->error() != QNetworkReply::NoError)
-        return;
-
-    QString htmlCode = reply->readAll();
-    bool tutorialValid = htmlCode.contains(TUTORIAL_STRING, Qt::CaseInsensitive);
-    m_aHelpTutorial->setVisible(tutorialValid);
+    showLikeBack(LikeBack::Bug);
 }
 
 bool MainWindow::on_accelTestButton_clicked()
@@ -499,7 +484,8 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 #endif
 
         // disable appliance background too
-        App::workflow->applianceCommand(App::AC_ClearBackground);
+        if (App::workflow)
+            App::workflow->applianceCommand(App::AC_ClearBackground);
     } else {
         // back to normal (non-alphaed) window
         setAttribute(Qt::WA_TranslucentBackground, false);
@@ -516,9 +502,10 @@ void MainWindow::on_transpBox_toggled(bool transparent)
     }
     // refresh the window
     update();
-#else
-    Q_UNUSED(transparent)
 #endif
+
+    // remember in settings
+    App::settings->setValue("Fotowall/Tranlucent", transparent);
 }
 
 

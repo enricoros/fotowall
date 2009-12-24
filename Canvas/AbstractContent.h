@@ -15,11 +15,13 @@
 #ifndef __AbstractContent_h__
 #define __AbstractContent_h__
 
-#include "AbstractDisposeable.h"
+#include "Shared/AbstractDisposeable.h"
 #include "3rdparty/enricomath.h"
 #include <QDomElement>
+#include <QDir>
 class AbstractConfig;
 class ButtonItem;
+class ContentProperties;
 class CornerItem;
 class Frame;
 class MirrorItem;
@@ -40,6 +42,7 @@ class AbstractContent : public AbstractDisposeable
 #endif
     Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
     Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
+    Q_PROPERTY(int fxIndex READ fxIndex WRITE setFxIndex NOTIFY fxIndexChanged)
     public:
         AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
         virtual ~AbstractContent();
@@ -73,6 +76,8 @@ class AbstractContent : public AbstractDisposeable
         void setRotation(qreal angle);
         qreal rotation() const;
 #endif
+        void setFxIndex(int index);
+        int fxIndex() const;
 
         // misc
         void ensureVisible(const QRectF & viewportRect);
@@ -80,13 +85,13 @@ class AbstractContent : public AbstractDisposeable
 
         // to be reimplemented by subclasses
         virtual QString contentName() const = 0;
-        virtual bool fromXml(QDomElement & contentElement);
-        virtual void toXml(QDomElement & contentElement) const;
+        virtual bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        virtual void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         virtual void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio) = 0;
         virtual QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
         virtual int contentHeightForWidth(int width) const;
         virtual bool contentOpaque() const;
-        virtual QWidget * createPropertyWidget();
+        virtual QWidget * createPropertyWidget(ContentProperties * p = 0);
 
         // ::QGraphicsItem
         QRectF boundingRect() const;
@@ -108,6 +113,7 @@ class AbstractContent : public AbstractDisposeable
 #if QT_VERSION < 0x040600
         void rotationChanged();
 #endif
+        void fxIndexChanged();
 
     protected:
         // may be reimplemented by subclasses
@@ -159,6 +165,7 @@ class AbstractContent : public AbstractDisposeable
 #if QT_VERSION < 0x040600
         double              m_rotationAngle;
 #endif
+        int                 m_fxIndex;
 
     private Q_SLOTS:
         void slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);

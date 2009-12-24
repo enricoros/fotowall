@@ -25,7 +25,7 @@ class AbstractScene : public QGraphicsScene
     public:
         AbstractScene(QObject * parent = 0);
 
-        // ###
+        // tells the views to update their layouts
         void adjustSceneSize();
 
         // scene size
@@ -42,7 +42,7 @@ class AbstractScene : public QGraphicsScene
         virtual bool sceneSelectable() const;
 
     Q_SIGNALS:
-        void geometryChanged();
+        void sceneSizeChanged();
 
     protected:
         QSize m_size;

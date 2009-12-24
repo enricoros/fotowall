@@ -47,7 +47,7 @@ SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWi
         label = new QLabel(tr("%1 objects selected").arg(selection.size()), this);
     QGridLayout * lay = new QGridLayout(this);
     lay->setMargin(0);
-    lay->addWidget(label, 0, 0);
+    lay->addWidget(label, 0, 0, 1, 2);
     ADD_BUTTON(deleteButton, tr("Delete"), SIGNAL(deleteSelection()));
     lay->addWidget(deleteButton, 1, 0);
 
@@ -56,7 +56,7 @@ SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWi
         // TODO emit some signal or call the Collation manager?
         ADD_BUTTON(button, tr("Collate"), SIGNAL(collateSelection()));
         button->setEnabled(false);
-        lay->addWidget(button, 0, 1);
+        lay->addWidget(button, 1, 1);
     }
 }
 

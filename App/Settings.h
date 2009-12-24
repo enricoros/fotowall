@@ -23,15 +23,17 @@
 class Settings : public QSettings
 {
     public:
-        Settings();
+        Settings(bool clearConfig = false);
         ~Settings();
 
         // is this the first time Fotowall is executed
         bool firstTime() const;
+        int usageCount() const;
 
         // the recent load/save history
         QList<QUrl> recentFotowallUrls() const;
         void addRecentFotowallUrl(const QUrl & url);
+        void removeRecentFotowallUrl(const QUrl & url);
 
         // commandline files
         void addCommandlineUrl(const QString & url);

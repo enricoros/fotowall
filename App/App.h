@@ -17,6 +17,8 @@
 
 #include <QObject>
 #include <QUrl>
+class AbstractPictureService;
+class OnlineServices;
 class Settings;
 class Workflow;
 
@@ -28,17 +30,27 @@ class App
         // uniquely instanced objects
         static Settings * settings;
         static Workflow * workflow;
+        static OnlineServices * onlineServices;
+        static AbstractPictureService * pictureService;
+
+        // consts
+        static const int TopBarHeight = 80;
+
+        // commands understood by container
+        enum {
+            CC_ShowPictureSearch    = 0x0001
+        };
 
         // commands understood by appliances
         enum {
-            AC_ClearBackground  = 0x0001,
-            AC_ShowIntro        = 0x0002
+            AC_ClearBackground      = 0x0001,
+            AC_ClosePicureSearch    = 0x0002
         };
 
         // utility functions
         static QString supportedImageFormats();
-        static bool isPictureFile(const QString & fileName);
-        static bool isFotowallFile(const QString & fileName);
+        static bool isPictureFile(const QString & picFilePath);
+        static bool isFotowallFile(const QString & fwFilePath);
         static bool isContentUrl(const QString & url);
         static bool validateFotowallUrl(const QString & url);
 };

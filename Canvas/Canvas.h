@@ -17,11 +17,12 @@
 
 #include "Shared/AbstractScene.h"
 #include <QDataStream>
+#include <QDir>
+#include <QDomElement>
 #include <QPainter>
 #include <QPixmap>
 #include <QRect>
 #include <QTime>
-#include <QDomElement>
 
 class AbstractContent;
 class AbstractConfig;
@@ -32,8 +33,6 @@ class CanvasViewContent;
 class HelpItem;
 class HighlightItem;
 class PictureContent;
-class PictureSearchItem;
-class QNetworkAccessManager;
 class QTimer;
 class TextContent;
 class WebcamContent;
@@ -42,13 +41,14 @@ class WordcloudContent;
 class Canvas : public AbstractScene
 {
     Q_OBJECT
+    Q_PROPERTY(QString filePath READ filePath WRITE setFilePath NOTIFY filePathChanged)
     public:
-        Canvas(QObject * parent = 0);
+        Canvas(int sDpiX, int sDpiY, QObject * parent = 0);
         ~Canvas();
 
         // add/remove content
-        void addAutoContent(const QStringList & fileNames);
-        void addCanvasViewContent(const QStringList & fileNames);
+        void addAutoContent(const QStringList & filePaths);
+        void addCanvasViewContent(const QStringList & fwFilePaths);
         QList<PictureContent*> addPictureContent(const QStringList & fileNames);
         TextContent* addTextContent();
         WebcamContent* addWebcamContent(int input);
@@ -56,17 +56,19 @@ class Canvas : public AbstractScene
         void addManualContent(AbstractContent * content, const QPoint & pos);
         void deleteContent(AbstractContent * content);
         void clearContent();
+        QPoint visibleCenter() const;
 
         // ::AbstractScene
         void resize(const QSize & size);
         void resizeEvent();
 
+        // properties
+        QString filePath() const;
+        void setFilePath(const QString & filePath);
+        QString prettyBaseName() const;
+
         // item interaction
         void selectAllContent(bool selected = true);
-
-        // selectors
-        void setSearchPicturesVisible(bool visible);
-        bool searchPicturesVisible() const;
 
         // arrangement
         void setForceFieldEnabled(bool enabled);
@@ -94,27 +96,29 @@ class Canvas : public AbstractScene
         void setDVDMarkers();
         void clearMarkers();
 
-        // save, restore, load, help
+        // misc
         bool pendingChanges() const;
-        void showIntroduction();
         void blinkBackGradients();
+        void setEmbeddedPainting(bool);
 
         // change size and project mode (CD, DVD, etc)
         CanvasModeInfo * modeInfo() const;
-
-        void toXml(QDomElement & canvasElement) const;
-        void fromXml(QDomElement & canvasElement);
-        AbstractContent * contentFromXml(QDomElement &contentElement);
 
         // render contents, but not the invisible items
         void renderVisible(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
         QImage renderedImage(const QSize & size, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, bool hideTools = true);
         bool printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
 
+        // load & save
+        void saveToXml(QDomElement & canvasElement) const;
+        void loadFromXml(QDomElement & canvasElement);
+        AbstractContent * contentFromXml(QDomElement &contentElement);
+
     Q_SIGNALS:
         void backConfigChanged();
         void requestContentEditing(AbstractContent * content);
         void showPropertiesWidget(QWidget * widget);
+        void filePathChanged();
 
     protected:
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
@@ -131,16 +135,17 @@ class Canvas : public AbstractScene
         CanvasViewContent * createCanvasView(const QPoint & pos);
         PictureContent * createPicture(const QPoint & pos);
         TextContent * createText(const QPoint & pos);
-        WebcamContent * createWebcam(int input, const QPoint & pos);
+        WebcamContent * createWebcam(int webcamIndex, const QPoint & pos);
         WordcloudContent * createWordcloud(const QPoint & pos);
         void deleteConfig(AbstractConfig * config);
+        QGraphicsView * mainGraphicsView() const;
 
+        QString m_filePath;
+        QDir m_fileAbsDir;
         CanvasModeInfo * m_modeInfo;
-        QNetworkAccessManager * m_networkAccessManager;
         QList<AbstractContent *> m_content;
         QList<AbstractConfig *> m_configs;
         QList<HighlightItem *> m_highlightItems;
-        HelpItem * m_helpItem;
         ColorPickerItem * m_titleColorPicker;
         ColorPickerItem * m_foreColorPicker;
         ColorPickerItem * m_grad1ColorPicker;
@@ -154,9 +159,9 @@ class Canvas : public AbstractScene
         QPixmap m_backTile;
         QPixmap m_backCache;
         QList<QGraphicsItem *> m_markerItems;   // used by some modes to show information items, which won't be rendered
-        PictureSearchItem * m_pictureSearch;
         QTimer * m_forceFieldTimer;
         QTime m_forceFieldTime;
+        bool m_embeddedPainting;
         bool m_pendingChanges;
 
     private Q_SLOTS:
@@ -183,7 +188,6 @@ class Canvas : public AbstractScene
 
         void slotMarkChanges();
         void slotResetChanges();
-        void slotCloseIntroduction();
         void slotApplyForce();
 };
 

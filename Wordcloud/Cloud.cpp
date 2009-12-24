@@ -172,6 +172,31 @@ Wordcloud::BusyMode Cloud::busyMode() const
     return m_busyMode;
 }
 
+bool Cloud::loadFromXml(QDomElement & cloudElement)
+{
+    // create all words
+    for (QDomElement we = cloudElement.firstChildElement("word"); !we.isNull(); we = we.nextSiblingElement("word")) {
+        WordItem * wordItem = new WordItem(we);
+        wordItem->show();
+        m_wordItems.append(wordItem);
+        if (m_scene)
+            m_scene->addItem(wordItem);
+    }
+    return true;
+}
+
+void Cloud::saveToXml(QDomElement & cloudElement) const
+{
+    // dump all Words
+    QDomDocument doc = cloudElement.ownerDocument();
+    foreach (WordItem * word, m_wordItems) {
+        // create the Word element
+        QDomElement wordElement = doc.createElement("word");
+        cloudElement.appendChild(wordElement);
+        word->saveToXml(wordElement);
+    }
+}
+
 void Cloud::process()
 {
     // reapply all the properties to the items here

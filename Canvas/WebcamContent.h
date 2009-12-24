@@ -26,13 +26,13 @@ class WebcamContent : public AbstractContent
 {
     Q_OBJECT
     public:
-        WebcamContent(int input, QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        WebcamContent(int webcamIndex, QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~WebcamContent();
 
         // ::AbstractContent
         QString contentName() const { return tr("Webcam"); }
-        bool fromXml(QDomElement & contentElement);
-        void toXml(QDomElement & contentElement) const;
+        bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
         QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;

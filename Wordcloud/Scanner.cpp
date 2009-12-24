@@ -24,9 +24,9 @@
 
 using namespace Wordcloud;
 
-bool Scanner::addFromFile(const QString & fileName)
+bool Scanner::addFromFile(const QString & txtFilePath)
 {
-    QFile file(fileName);
+    QFile file(txtFilePath);
     if (!file.open(QIODevice::ReadOnly))
         return false;
 
@@ -72,13 +72,25 @@ static bool wordFrequencySorter(const Word &w1, const Word &w2)
     return w1.count > w2.count;
 }
 
-WordList Scanner::takeWords()
+WordList Scanner::takeWords(bool cleanList)
 {
     // remove common words, single ones, and sort by frequency
-    if (m_words.size() >= 100)
-        removeWordsBelowCount(2);
-    removeWordsByLanguage(QLocale::Italian);
-    //qSort(m_words.begin(), m_words.end(), wordFrequencySorter);
+    if (cleanList) {
+        removeWordsByLanguage(QLocale::Italian);
+        removeWordsByLanguage(QLocale::English);
+        removeWordsByLanguage(QLocale::French);
+        int count = 2;
+        while (m_words.size() >= 40) {
+            removeWordsBelowCount(count);
+            ++count;
+        }
+        qSort(m_words.begin(), m_words.end(), wordFrequencySorter);
+    }
+
+    // FIXME find out common words (FAKE: use the first..)
+    WordList::iterator wIt = m_words.begin();
+    for (; wIt != m_words.end(); ++wIt)
+        wIt->commonString = wIt->variants.begin().key();
 
     // clear private list and return
     WordList wl = m_words;
@@ -160,14 +172,34 @@ void Scanner::removeWordsByLanguage(QLocale::Language language)
     int regExpCount = 0;
 
     switch (language) {
+        case QLocale::English: {
+            static const char * er[] = {
+                "and", "are", "has", "to", "by", "for", "or", "the", "I", "you",
+                "on", "off", "of", "with"
+            };
+            regExps = er;
+            regExpCount = sizeof(er) / sizeof(const char *);
+            } break;
+
+        case QLocale::French: {
+            static const char * er[] = {
+                "le", "d[ue]", "un", "être", "et", "a", "je", "tu", "il.", "nous", "vous",
+                "me", "te", "[mts]on", "lui", "nous", "ne", "sont", "que", "[sc]e", "qui", "dans",
+                "elle", "au", "le", "pour", "par", "y", "avec",  "si", "là", "ça"
+            };
+            regExps = er;
+            regExpCount = sizeof(er) / sizeof(const char *);
+            } break;
+
         case QLocale::Italian: {
-            const char * r[] = {
+            static const char * r[] = {
                 ".", "a.", "all", "alla", "anche", "anzich.", "che", "ci", "cio.",
                 "come", "con", "cos.", "cui", "da", "da.", "dall.", "degli", "de.",
                 "dell", "della", "delle", "di", "dove", "due", "ed", "far.", "fino",
                 "fra", "gli", "i.", "l.", "loro", "nel", "nell", "nella", "nelle",
                 "non", "per", "pi.", "poi", "pu.", "quale", "quell.", "quest.", "sar.",
-                "s.", "senza", "su.", "sull", "sull.", "tali", "tra", "un", "un.", "uso" };
+                "s.", "senza", "su.", "sull", "sull.", "tali", "tra", "un", "un.", "uso"
+            };
             regExps = r;
             regExpCount = sizeof(r) / sizeof(const char *);
             } break;

@@ -15,11 +15,8 @@
 #include "PictureProperties.h"
 
 PictureProperties::PictureProperties(QWidget *parent)
-  : QWidget(parent)
+  : ContentProperties(parent)
 {
-    setupUi(this);
-}
-
-PictureProperties::~PictureProperties()
-{
+    // inject in the merge widget
+    Ui_PictureProperties::setupUi(cBottomMerge);
 }

@@ -54,9 +54,9 @@ class TextContent : public AbstractContent
     public:
         // ::AbstractContent
         QString contentName() const { return tr("Text"); }
-        QWidget * createPropertyWidget();
-        bool fromXml(QDomElement & contentElement);
-        void toXml(QDomElement & contentElement) const;
+        QWidget * createPropertyWidget(ContentProperties * __p = 0);
+        bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;
         void selectionChanged(bool selected);
@@ -64,6 +64,7 @@ class TextContent : public AbstractContent
         void setControlPoints(const QList<QPointF >& cps);
 
         // ::QGraphicsItem
+        void keyPressEvent(QKeyEvent *event);
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
     private:

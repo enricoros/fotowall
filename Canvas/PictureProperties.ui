@@ -6,201 +6,30 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>255</width>
-    <height>61</height>
+    <width>26</width>
+    <height>25</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
     <number>0</number>
    </property>
-   <property name="spacing">
-    <number>0</number>
-   </property>
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>0</number>
+    <widget class="QToolButton" name="gimpButton">
+     <property name="icon">
+      <iconset resource="../fotowall.qrc">
+       <normaloff>:/data/picture-gimp.png</normaloff>:/data/picture-gimp.png</iconset>
      </property>
-     <item>
-      <widget class="QFrame" name="stackFrame">
-       <property name="styleSheet">
-        <string notr="true">QFrame {
-    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(250, 250, 250, 255), stop:0.500 rgba(200, 200, 200, 255), stop:0.501 rgba(202, 202, 202, 255), stop:1 rgba(230, 230, 230, 255));
-    border: 1px solid rgb(190, 190, 190);
-    border-radius: 4px;
-}
-</string>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QToolButton" name="bFront">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../fotowall.qrc">
-            <normaloff>:/data/action-order-front.png</normaloff>:/data/action-order-front.png</iconset>
-          </property>
-          <property name="autoRaise">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="bRaise">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../fotowall.qrc">
-            <normaloff>:/data/action-order-raise.png</normaloff>:/data/action-order-raise.png</iconset>
-          </property>
-          <property name="autoRaise">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="bLower">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../fotowall.qrc">
-            <normaloff>:/data/action-order-lower.png</normaloff>:/data/action-order-lower.png</iconset>
-          </property>
-          <property name="autoRaise">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="bBack">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../fotowall.qrc">
-            <normaloff>:/data/action-order-back.png</normaloff>:/data/action-order-back.png</iconset>
-          </property>
-          <property name="autoRaise">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QToolButton" name="bDel">
-       <property name="text">
-        <string>Remove</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../fotowall.qrc">
-         <normaloff>:/data/action-delete.png</normaloff>:/data/action-delete.png</iconset>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="1" rowspan="2">
-    <widget class="PaneWidget" name="perspWidget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>61</width>
-       <height>61</height>
-      </size>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Opacity:</string>
-       </property>
-       <property name="buddy">
-        <cstring>sOpacity</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSlider" name="sOpacity">
-       <property name="value">
-        <number>99</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="gimpButton">
-       <property name="icon">
-        <iconset resource="../fotowall.qrc">
-         <normaloff>:/data/picture-gimp.png</normaloff>:/data/picture-gimp.png</iconset>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>16</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>PaneWidget</class>
-   <extends>QWidget</extends>
-   <header>Shared/PanePropertyEditor.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../fotowall.qrc"/>
  </resources>

@@ -20,16 +20,7 @@ PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _targe
 {
     // read initial value and link to property changes
     slotPropertyChanged();
-#if QT_VERSION >= 0x040500
-    if (m_property.hasNotifySignal()) {
-        QMetaMethod notifySignal = m_property.notifySignal();
-        int nameLength = qstrlen(notifySignal.signature());
-        char signalName[nameLength + 2];
-        signalName[0] = '0' + QSIGNAL_CODE;
-        qstrcpy(signalName + 1, notifySignal.signature());
-        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
-    }
-#endif
+    PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
 
     // link to the slider changes
     connect(m_control.data(), SIGNAL(valueChanged(int)), this, SLOT(slotSliderValueChanged(int)));
@@ -55,7 +46,11 @@ void PE_AbstractSlider::slotSliderValueChanged(int intValue)
     // QVariant::Double: remap to the 0..1 range
     else if (m_property.type() == QVariant::Double) {
         if (m_control->maximum() > m_control->minimum()) {
+#if 1 // ### remove this HACK (don't go to 0, for opacity) for 1.0
+            qreal realVal = (qreal)(intValue - m_control->minimum() + 1) / (qreal)(m_control->maximum() - m_control->minimum() + 1);
+#else
             qreal realVal = (qreal)(intValue - m_control->minimum()) / (qreal)(m_control->maximum() - m_control->minimum());
+#endif
             m_property.write(m_target.data(), realVal);
         }
     }
@@ -89,16 +84,7 @@ PE_AbstractButton::PE_AbstractButton(QAbstractButton * _button, QObject * _targe
 {
     // read initial value and link to property changes
     slotPropertyChanged();
-#if QT_VERSION >= 0x040500
-    if (m_property.hasNotifySignal()) {
-        QMetaMethod notifySignal = m_property.notifySignal();
-        int nameLength = qstrlen(notifySignal.signature());
-        char signalName[nameLength + 2];
-        signalName[0] = '0' + QSIGNAL_CODE;
-        qstrcpy(signalName + 1, notifySignal.signature());
-        connect(m_target.data(), signalName, this, SLOT(slotPropertyChanged()));
-    }
-#endif
+    PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
 
     // link to the abstract button checkstate change
     connect(m_control.data(), SIGNAL(toggled(bool)), this, SLOT(slotButtonChecked(bool)));
@@ -123,5 +109,40 @@ void PE_AbstractButton::slotPropertyChanged()
     if (m_control && m_target && (m_property.type() == QVariant::Int || m_property.type() == QVariant::Bool)) {
         bool boolValue = m_property.read(m_target.data()).toBool();
         m_control->setChecked(boolValue);
+    }
+}
+
+
+
+PE_Combo::PE_Combo(QComboBox * _combo, QObject * _target, const char * propertyName, QObject * parent)
+  : PE_TypeControl<QComboBox>(_combo, _target, propertyName, parent)
+{
+    // read initial value and link to property changes
+    slotPropertyChanged();
+    PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
+
+    // link to the abstract button checkstate change
+    connect(m_control.data(), SIGNAL(currentIndexChanged(int)), this, SLOT(slotComboChanged(int)));
+
+    // allow Bool properties only
+    if (m_property.type() != QVariant::Int)
+        qWarning("PE_Combo: unhandled property '%s' of type %d", propertyName, (int)m_property.type());
+    else
+        m_isValid = true;
+}
+
+void PE_Combo::slotComboChanged(int intValue)
+{
+    // set the property to the current state of the button
+    if (m_control && m_target && (m_property.type() == QVariant::Int))
+        m_property.write(m_target.data(), intValue);
+}
+
+void PE_Combo::slotPropertyChanged()
+{
+    // set the button check state as the bool property
+    if (m_control && m_target && (m_property.type() == QVariant::Int)) {
+        int intValue = m_property.read(m_target.data()).toInt();
+        m_control->setCurrentIndex(intValue);
     }
 }

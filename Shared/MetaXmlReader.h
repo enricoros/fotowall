@@ -30,6 +30,7 @@ struct Release {
 };
 
 struct Website {
+    enum Type { HomePage, Blog, Other } type;
     QString name;
     QString url;
 };
@@ -38,13 +39,13 @@ struct Website {
 class Reader_1 : public QXmlStreamReader {
     public:
         Reader_1(const QByteArray & data);
-        void read();
 
         // out data
         QList<Release> releases;
         QList<Website> websites;
 
     private:
+        void read();
         void readReleases();
         Release readRelease();
         void readWebsites();

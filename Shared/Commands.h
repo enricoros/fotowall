@@ -365,9 +365,11 @@ class NewTextCommand : public AbstractCommand {
 class NewWebcamCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
+        int m_webcamIndex;
         WebcamContent *m_content;
     public:
-        NewWebcamCommand(Canvas *canvas) : m_canvas(canvas), m_content(0)
+        NewWebcamCommand(Canvas *canvas, int webcamIndex) : m_canvas(canvas), m_webcamIndex(webcamIndex)
+                                                            , m_content(0)
         {}
 
         bool setContent(AbstractContent *content) {
@@ -384,7 +386,7 @@ class NewWebcamCommand : public AbstractCommand {
 
         void exec() {
             if(m_content == 0)
-                m_content = m_canvas->addWebcamContent(0);
+                m_content = m_canvas->addWebcamContent(m_webcamIndex);
             else
                 m_content->show();
         }
@@ -405,15 +407,16 @@ class DeleteContentCommand : public AbstractCommand {
     private:
         AbstractContent *m_content;
         Canvas *m_canvas;
+        const QDir m_absDir;
         QDomDocument doc;
         QDomElement m_pConfig;
     public:
-        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_content(content)
-                                                                       , m_canvas(canvas)
+        DeleteContentCommand(AbstractContent *content, Canvas *canvas, const QDir &absDir) : m_content(content)
+                                                                       , m_canvas(canvas), m_absDir(absDir)
         { }
         void exec() {
             m_pConfig = doc.createElement("picture");
-            m_content->toXml(m_pConfig);
+            m_content->toXml(m_pConfig, m_absDir);
             m_canvas->deleteContent(m_content);
         }
         void unexec() {

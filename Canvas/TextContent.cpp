@@ -18,13 +18,14 @@
 #include "Shared/CommandStack.h"
 
 #include "Frames/Frame.h"
+#include "Shared/PropertyEditors.h"
 #include "Shared/RenderOpts.h"
 #include "BezierCubicItem.h"
 #include "TextProperties.h"
 
 #include <QDebug>
-#include <QFileInfo>
 #include <QGraphicsScene>
+#include <QKeyEvent>
 #include <QMimeData>
 #include <QPainter>
 #include <QTextDocument>
@@ -130,31 +131,25 @@ void TextContent::setShapeEditing(bool enabled)
     }
 }
 
-QWidget * TextContent::createPropertyWidget()
+QWidget * TextContent::createPropertyWidget(ContentProperties * __p)
 {
-    TextProperties * p = new TextProperties();
+    TextProperties * tp = __p ? (TextProperties *)__p : new TextProperties;
+    AbstractContent::createPropertyWidget(tp);
 
-    // connect actions
-    connect(p->bFront, SIGNAL(clicked()), this, SLOT(slotStackFront()));
-    connect(p->bRaise, SIGNAL(clicked()), this, SLOT(slotStackRaise()));
-    connect(p->bLower, SIGNAL(clicked()), this, SLOT(slotStackLower()));
-    connect(p->bBack, SIGNAL(clicked()), this, SLOT(slotStackBack()));
-    connect(p->bDel, SIGNAL(clicked()), this, SIGNAL(requestRemoval()));
-    connect(p->bShakeLess, SIGNAL(clicked()), this, SLOT(slotShakeLess()));
-    connect(p->bShakeMore, SIGNAL(clicked()), this, SLOT(slotShakeMore()));
+    // remove for 0.9 ### put this back for 1.0
+    delete tp->tShakeLess;
+    delete tp->tShakeMore;
 
     // properties link
-    p->bEditShape->setChecked(isShapeEditing());
-    connect(this, SIGNAL(notifyShapeEditing(bool)), p->bEditShape, SLOT(setChecked(bool)));
-    connect(p->bEditShape, SIGNAL(toggled(bool)), this, SLOT(setShapeEditing(bool)));
-    p->bClearShape->setVisible(hasShape());
-    connect(this, SIGNAL(notifyHasShape(bool)), p->bClearShape, SLOT(setVisible(bool)));
-    connect(p->bClearShape, SIGNAL(clicked()), this, SLOT(clearShape()));
+    new PE_AbstractButton(tp->tEditShape, this, "shapeEditing", tp);
+    tp->tClearShape->setVisible(hasShape()); // link "hasShape" in a custom way
+    connect(this, SIGNAL(notifyHasShape(bool)), tp->tClearShape, SLOT(setVisible(bool)));
+    connect(tp->tClearShape, SIGNAL(clicked()), this, SLOT(clearShape()));
 
-    return p;
+    return tp;
 }
 
-bool TextContent::fromXml(QDomElement & contentElement)
+bool TextContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
     // FIRST load text properties and shape
     // NOTE: order matters here, we don't want to override the size restored later
@@ -192,14 +187,14 @@ bool TextContent::fromXml(QDomElement & contentElement)
     }
 
     // THEN restore the geometry
-    AbstractContent::fromXml(contentElement);
+    AbstractContent::fromXml(contentElement, baseDir);
 
     return true;
 }
 
-void TextContent::toXml(QDomElement & contentElement) const
+void TextContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
 {
-    AbstractContent::toXml(contentElement);
+    AbstractContent::toXml(contentElement, baseDir);
     contentElement.setTagName("text");
 
     // save text properties
@@ -348,6 +343,17 @@ void TextContent::selectionChanged(bool selected)
 
 void TextContent::setControlPoints(const QList<QPointF> & cps) {
     m_shapeEditor->setControlPoints(cps);
+}
+
+void TextContent::keyPressEvent(QKeyEvent * event)
+{
+    // use F2 to edit the text
+    if (event->key() == Qt::Key_F2) {
+        event->accept();
+        emit requestConfig(mapToScene(contentRect().bottomRight()).toPoint());
+        return;
+    }
+    AbstractContent::keyPressEvent(event);
 }
 
 void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)

@@ -12,35 +12,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __AbstractDisposeable_h__
-#define __AbstractDisposeable_h__
+#include "ContentProperties.h"
 
-#include <QtGlobal>
-#if QT_VERSION >= 0x040600
-#include <QGraphicsObject>
-#include <QPropertyAnimation>
-#else
-#include <QObject>
-#include <QGraphicsItem>
-#endif
-
-/**
-    \class AbstractDisposeable
-    Base class of 'disposeable' items (items you can call 'dispose' on them and
-    forget about them.
-*/
-#if QT_VERSION >= 0x040600
-class AbstractDisposeable : public QGraphicsObject
-#else
-class AbstractDisposeable : public QObject, public QGraphicsItem
-#endif
+ContentProperties::ContentProperties(QWidget *parent)
+  : QWidget(parent)
 {
-    public:
-        AbstractDisposeable(QGraphicsItem * parent = 0, bool fadeIn = false);
-        virtual ~AbstractDisposeable() {}
-
-        // reimplement this to add a custom deletion behavior
-        virtual void dispose();
-};
-
+    setupUi(this);
+#if QT_VERSION < 0x040600
+    cFxCombo->hide();
 #endif
+}
+
+ContentProperties::~ContentProperties()
+{
+}

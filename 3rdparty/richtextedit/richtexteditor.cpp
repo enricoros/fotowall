@@ -293,13 +293,7 @@ void ColorAction::setColor(const QColor &color)
 
 void ColorAction::chooseColor()
 {
-    QColor col;
-    // Little hack to prevent a bug when color is black (I can't choose the color in that case !)
-    if(m_color != Qt::black)
-        col = QColorDialog::getColor(m_color, 0);
-    else
-        col = QColorDialog::getColor(Qt::white, 0);
-
+    const QColor col = QColorDialog::getColor(m_color, 0);
     if (col.isValid() && col != m_color) {
         setColor(col);
         emit colorChanged(m_color);
