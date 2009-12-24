@@ -986,7 +986,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             }
 
             // handle local files
-            QString picFilePath = url.toString();
+            QString picFilePath = url.toString(QUrl::RemoveScheme);
             if (QFile::exists(picFilePath)) {
                 PictureContent * p = createPicture(pos);
                 if (!p->loadPhoto(picFilePath, true, true)) {
