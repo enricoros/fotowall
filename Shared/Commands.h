@@ -237,12 +237,15 @@ class NewImageCommand : public AbstractCommand {
         void exec() {
             QStringList paths; paths << m_imagePath;
             QList<PictureContent *> nimage = m_canvas->addPictureContent(paths);
+            qDebug() << "m_image before: " << &m_image;
             CommandStack::instance().changeContent(m_image, nimage[0]);
             m_image = nimage[0];
+            qDebug() << "m_image now: " << &m_image;
         }
         void unexec() {
             m_canvas->deleteContent(m_image);
         }
+
         bool setContent(AbstractContent *content) {
             PictureContent *c = dynamic_cast<PictureContent *>(content);
             if(c) {

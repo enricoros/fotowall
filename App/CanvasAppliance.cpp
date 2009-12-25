@@ -373,47 +373,25 @@ void CanvasAppliance::slotAddPicture()
     QStringList picFilePaths = QFileDialog::getOpenFileNames(0, tr("Add Pictures to the Canvas"), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()) /*, 0, QFileDialog::DontResolveSymlinks*/);
     if (picFilePaths.isEmpty())
         return;
-//<<<<<<< HEAD:App/CanvasAppliance.cpp
-    //App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(fileNames[0]).absolutePath());
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
-    GroupedCommands *gc = new GroupedCommands();
+    //GroupedCommands *gc = new GroupedCommands();
     foreach(QString file, picFilePaths) {
         NewImageCommand *c = new NewImageCommand(m_extCanvas, file);
-        gc->addCommand(c);
+        //gc->addCommand(c);
+        CommandStack::instance().doCommand(c);
     }
-    CommandStack::instance().doCommand(gc);
-//=======
-    //App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
-    //m_extCanvas->addPictureContent(picFilePaths);
-    //setFocusToScene();
-//>>>>>>> master:App/CanvasAppliance.cpp
+    setFocusToScene();
 }
 
 void CanvasAppliance::slotAddText()
 {
-//<<<<<<< HEAD:App/CanvasAppliance.cpp
-    //// disable any search box
-    //ui.aSearchPictures->setChecked(false);
     NewTextCommand *c = new NewTextCommand(m_extCanvas);
     CommandStack::instance().doCommand(c);
-//=======
-    //m_extCanvas->addTextContent();
     setFocusToScene();
-//>>>>>>> master:App/CanvasAppliance.cpp
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
-//<<<<<<< HEAD:App/CanvasAppliance.cpp
-    //// disable any search box
-    //ui.aSearchPictures->setChecked(false);
-    //NewWebcamCommand *c = new NewWebcamCommand(m_extCanvas);
-    //CommandStack::instance().doCommand(c);
-//=======
-    //int webcamIndex = sender()->property("index").toInt();
-    //m_extCanvas->addWebcamContent(webcamIndex);
-    //setFocusToScene();
-//>>>>>>> master:App/CanvasAppliance.cpp
     int webcamIndex = sender()->property("index").toInt();
     NewWebcamCommand *c = new NewWebcamCommand(m_extCanvas, webcamIndex);
     CommandStack::instance().doCommand(c);

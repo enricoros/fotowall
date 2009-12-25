@@ -37,33 +37,37 @@ void CommandStack::addCommand(AbstractCommand *command)
 
 void CommandStack::undoLast()
 {
-    if(m_undoStack.size() == 0) return;
+    if(m_undoStack.isEmpty()) return;
     AbstractCommand * command = m_undoStack.takeLast();
     qDebug() << "undo command " << command->name();
-    command->unexec();
-    m_redoStack.push_back(command);
+    if(command != 0) {
+        command->unexec();
+        m_redoStack.push_back(command);
+    }
 }
 
 void CommandStack::redoLast()
 {
-    if(m_redoStack.size() == 0) return;
+    if(m_redoStack.isEmpty()) return;
     AbstractCommand *command = m_redoStack.takeLast();
     qDebug() << "redo command " << command->name();
-    command->exec();
-    m_undoStack.push_back(command);
+    if(command != 0) {
+        command->exec();
+        m_undoStack.push_back(command);
+    }
 }
 
 void CommandStack::changeContent(AbstractContent *pC, AbstractContent *nC)
 {
     foreach (AbstractCommand *c, m_undoStack) {
         if(c->content() == pC) {
-            qDebug() << "Command " << c->name() << " set content : " << nC << " instead of " << c->content();
+            qDebug() << "Command " << c->name() << " set content : " << nC << " instead of " << pC;
             c->setContent(nC);
         }
     }
     foreach (AbstractCommand *c, m_redoStack) {
         if(c->content() == pC)
-            qDebug() << "Command " << c->name() << " set content : " << nC << " instead of " << c->content();
-        c->setContent(nC);
+            qDebug() << "Command " << c->name() << " set content : " << nC << " instead of " << pC;
+            c->setContent(nC);
     }
 }
