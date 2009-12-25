@@ -168,7 +168,7 @@ void Canvas::addCanvasViewContent(const QStringList & fwFilePaths)
             continue;
 
         // create picture and load the file
-        CanvasViewContent * d = createCanvasView(pos);
+        CanvasViewContent * d = createCanvasView(pos, true);
         if (!d->loadFromFile(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
@@ -189,7 +189,7 @@ void Canvas::addPictureContent(const QStringList & picFilePaths)
             continue;
 
         // create picture and load the file
-        PictureContent * p = createPicture(pos);
+        PictureContent * p = createPicture(pos, true);
         if (!p->loadPhoto(localFile, true, true)) {
             m_content.removeAll(p);
             delete p;
@@ -203,21 +203,21 @@ void Canvas::addPictureContent(const QStringList & picFilePaths)
 void Canvas::addTextContent()
 {
     clearSelection();
-    TextContent * t = createText(visibleCenter());
+    TextContent * t = createText(visibleCenter(), true);
     t->setSelected(true);
 }
 
 void Canvas::addWebcamContent(int webcamIndex)
 {
     clearSelection();
-    WebcamContent * w = createWebcam(webcamIndex, visibleCenter());
+    WebcamContent * w = createWebcam(webcamIndex, visibleCenter(), true);
     w->setSelected(true);
 }
 
 void Canvas::addWordcloudContent()
 {
     clearSelection();
-    WordcloudContent * w = createWordcloud(visibleCenter());
+    WordcloudContent * w = createWordcloud(visibleCenter(), true);
     w->manualInitialization();
     w->setSelected(true);
 }
@@ -871,15 +871,15 @@ void Canvas::loadFromXml(QDomElement & canvasElement)
             // create the right kind of content
             AbstractContent * content = 0;
             if (ce.tagName() == "picture")
-                content = createPicture(QPoint());
+                content = createPicture(QPoint(), false);
             else if (ce.tagName() == "text")
-                content = createText(QPoint());
+                content = createText(QPoint(), false);
             else if (ce.tagName() == "webcam")
-                content = createWebcam(ce.attribute("input").toInt(), QPoint());
+                content = createWebcam(ce.attribute("input").toInt(), QPoint(), false);
             else if (ce.tagName() == "embedded-canvas")
-                content = createCanvasView(QPoint());
+                content = createCanvasView(QPoint(), false);
             else if (ce.tagName() == "wordcloud")
-                content = createWordcloud(QPoint());
+                content = createWordcloud(QPoint(), false);
             if (!content) {
                 qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(ce.tagName()));
                 continue;
@@ -977,7 +977,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
         foreach (const QUrl & url, event->mimeData()->urls()) {
             // handle network images
             if (url.scheme() == "http" || url.scheme() == "ftp") {
-                PictureContent * p = createPicture(pos);
+                PictureContent * p = createPicture(pos, true);
                 if (!p->loadFromNetwork(url.toString(), 0)) {
                     m_content.removeAll(p);
                     delete p;
@@ -988,7 +988,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             // handle local files
             QString picFilePath = url.toString(QUrl::RemoveScheme);
             if (QFile::exists(picFilePath)) {
-                PictureContent * p = createPicture(pos);
+                PictureContent * p = createPicture(pos, true);
                 if (!p->loadPhoto(picFilePath, true, true)) {
                     m_content.removeAll(p);
                     delete p;
@@ -1022,7 +1022,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
                 continue;
 
             // create PictureContent from network
-            PictureContent * p = createPicture(insertPos);
+            PictureContent * p = createPicture(insertPos, true);
             if (!p->loadFromNetwork(url, reply, title, width, height)) {
                 m_content.removeAll(p);
                 delete p;
@@ -1199,16 +1199,16 @@ void Canvas::setBackContent(AbstractContent * content)
     emit backConfigChanged();
 }
 
-CanvasViewContent * Canvas::createCanvasView(const QPoint & pos)
+CanvasViewContent * Canvas::createCanvasView(const QPoint & pos, bool spontaneous)
 {
-    CanvasViewContent * d = new CanvasViewContent(this);
+    CanvasViewContent * d = new CanvasViewContent(spontaneous, this);
     initContent(d, pos);
     return d;
 }
 
-PictureContent * Canvas::createPicture(const QPoint & pos)
+PictureContent * Canvas::createPicture(const QPoint & pos, bool spontaneous)
 {
-    PictureContent * p = new PictureContent(this);
+    PictureContent * p = new PictureContent(spontaneous, this);
     initContent(p, pos);
     connect(p, SIGNAL(flipHorizontally()), this, SLOT(slotFlipHorizontally()));
     connect(p, SIGNAL(flipVertically()), this, SLOT(slotFlipVertically()));
@@ -1216,23 +1216,23 @@ PictureContent * Canvas::createPicture(const QPoint & pos)
     return p;
 }
 
-TextContent * Canvas::createText(const QPoint & pos)
+TextContent * Canvas::createText(const QPoint & pos, bool spontaneous)
 {
-    TextContent * t = new TextContent(this);
+    TextContent * t = new TextContent(spontaneous, this);
     initContent(t, pos);
     return t;
 }
 
-WebcamContent * Canvas::createWebcam(int webcamIndex, const QPoint & pos)
+WebcamContent * Canvas::createWebcam(int webcamIndex, const QPoint & pos, bool spontaneous)
 {
-    WebcamContent * w = new WebcamContent(webcamIndex, this);
+    WebcamContent * w = new WebcamContent(webcamIndex, spontaneous, this);
     initContent(w, pos);
     return w;
 }
 
-WordcloudContent * Canvas::createWordcloud(const QPoint & pos)
+WordcloudContent * Canvas::createWordcloud(const QPoint & pos, bool spontaneous)
 {
-    WordcloudContent * w = new WordcloudContent(this);
+    WordcloudContent * w = new WordcloudContent(spontaneous, this);
     initContent(w, pos);
     return w;
 }

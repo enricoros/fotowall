@@ -17,6 +17,7 @@
 #include <QLibraryInfo>
 #include <QSettings>
 #include <QStyle>
+#include <QTime>
 #include <QTranslator>
 #include <QtPlugin>
 #include "App/App.h"
@@ -52,9 +53,10 @@ int main( int argc, char ** args )
 
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.9");
+    app.setApplicationVersion("0.9.1");
     app.setOrganizationName("Enrico Ros");
-    RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
+
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     // translate fotowall + default-qt messages
     QString locale =  QLocale::system().name();
@@ -66,9 +68,9 @@ int main( int argc, char ** args )
     app.installTranslator(&qtTranslator);
 
     App::settings = new Settings(app.arguments().contains("-clearconfig"));
+    RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
     RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
     VideoProvider::Disable = app.arguments().contains("-novideo");
-    App::settings->setValue("Fotowall/FirstTime", false);
 
     // startup video early.. disabled for production
     //VideoProvider::instance()->inputCount();

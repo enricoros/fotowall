@@ -29,8 +29,8 @@
 #include <QTextFrame>
 #include <QUrl>
 
-TextContent::TextContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent, false)
+TextContent::TextContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
+    : AbstractContent(scene, spontaneous, false, parent)
     , m_text(0)
     , m_textRect(0, 0, 0, 0)
     , m_textMargin(4)

@@ -24,7 +24,7 @@
 #define MIRROR_HEIGHT 100
 
 MirrorItem::MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent)
-    : AbstractDisposeable(parent)
+    : AbstractDisposeable(false, parent)
     , m_source(sourceItem)
     , m_dirty(false)
 {

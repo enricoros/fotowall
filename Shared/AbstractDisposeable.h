@@ -36,7 +36,7 @@ class AbstractDisposeable : public QObject, public QGraphicsItem
 #endif
 {
     public:
-        AbstractDisposeable(QGraphicsItem * parent = 0, bool fadeIn = false);
+        AbstractDisposeable(bool fadeIn, QGraphicsItem * parent = 0);
         virtual ~AbstractDisposeable() {}
 
         // reimplement this to add a custom deletion behavior

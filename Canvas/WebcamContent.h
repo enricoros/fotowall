@@ -26,7 +26,7 @@ class WebcamContent : public AbstractContent
 {
     Q_OBJECT
     public:
-        WebcamContent(int webcamIndex, QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        WebcamContent(int webcamIndex, bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~WebcamContent();
 
         // ::AbstractContent

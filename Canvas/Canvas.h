@@ -128,11 +128,11 @@ class Canvas : public AbstractScene
     private:
         void initContent(AbstractContent * content, const QPoint & pos);
         void setBackContent(AbstractContent * content);
-        CanvasViewContent * createCanvasView(const QPoint & pos);
-        PictureContent * createPicture(const QPoint & pos);
-        TextContent * createText(const QPoint & pos);
-        WebcamContent * createWebcam(int webcamIndex, const QPoint & pos);
-        WordcloudContent * createWordcloud(const QPoint & pos);
+        CanvasViewContent * createCanvasView(const QPoint & pos, bool spontaneous);
+        PictureContent * createPicture(const QPoint & pos, bool spontaneous);
+        TextContent * createText(const QPoint & pos, bool spontaneous);
+        WebcamContent * createWebcam(int webcamIndex, const QPoint & pos, bool spontaneous);
+        WordcloudContent * createWordcloud(const QPoint & pos, bool spontaneous);
         void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
         QGraphicsView * mainGraphicsView() const;

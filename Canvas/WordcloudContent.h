@@ -29,7 +29,7 @@ class WordcloudContent : public AbstractContent, public SingleResourceLoaner
 {
     Q_OBJECT
     public:
-        WordcloudContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        WordcloudContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~WordcloudContent();
 
         void manualInitialization();
