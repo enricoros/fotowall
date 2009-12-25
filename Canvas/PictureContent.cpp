@@ -40,8 +40,8 @@
 #include <QTimer>
 #include <QUrl>
 
-PictureContent::PictureContent(QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, parent, false)
+PictureContent::PictureContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
+    : AbstractContent(scene, spontaneous, false, parent)
     , m_photo(0)
     , m_opaquePhoto(false)
     , m_progress(0)

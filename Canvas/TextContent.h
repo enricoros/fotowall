@@ -29,7 +29,7 @@ class TextContent : public AbstractContent
     Q_PROPERTY(bool shapeEditing READ isShapeEditing WRITE setShapeEditing NOTIFY notifyShapeEditing)
     Q_PROPERTY(QPainterPath shapePath READ shapePath WRITE setShapePath)
     public:
-        TextContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        TextContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~TextContent();
 
     public Q_SLOTS:

@@ -727,7 +727,7 @@ bool VideoDevice::getLastFrame(QImage * qimage) const
     const int W = m_imageBuffer.size.width();
     const int H = m_imageBuffer.size.height();
     if (qimage->width() != W || qimage->height() != H)
-        *qimage = QImage(W, H, QImage::Format_ARGB32);
+        *qimage = QImage(W, H, QImage::Format_RGB32);
 
     //qDebug() << "VideoDevice::getImage: capturing in " << pixelFormatName(m_imageBuffer.pixelformat);
     const char * src = m_imageBuffer.data.constData();
@@ -870,6 +870,7 @@ bool VideoDevice::getLastFrame(QImage * qimage) const
                     crptr = cbptr + (W*H/(halfheight ? 4:2));
                 }
 
+                uint *p = (uint*)qimage->bits();
                 for(int y=0; y<H; y++) {
                     // Decode scanline
                     for(int x=0; x<W; x++) {
@@ -893,8 +894,8 @@ bool VideoDevice::getLastFrame(QImage * qimage) const
                         if (g<0) g=0;   if (g>255) g=255;
                         if (b<0) b=0;   if (b>255) b=255;
 
-                        uint *p = (uint*)qimage->scanLine(y)+x;
-                        *p = qRgba(r,g,b,255);
+                        //uint *p = (uint*)qimage->scanLine(y)+x;
+                        *p++ = qRgba(r,g,b,255);
                     }
                     // Jump to next line
                     if (packed) {

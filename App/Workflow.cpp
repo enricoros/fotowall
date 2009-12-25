@@ -213,7 +213,7 @@ bool Workflow::processCommand(const Workflow::Command & command)
     switch (command.type) {
         case Command::ResetToLevel: {
             int level = qMax(1, command.param.toInt());
-            while (!dynamic_cast<HomeAppliance *>(m_stack.last().appliance) && m_stack.size() > level) {
+            while (m_stack.size() > level && !dynamic_cast<HomeAppliance *>(m_stack.last().appliance)) {
                 // ResetToLevel: save changes on each popped level
                 bool allowSaving = false;
                 const Node & node = m_stack.last();

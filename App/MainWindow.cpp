@@ -289,6 +289,15 @@ void MainWindow::showLikeBack(int type)
 {
     int usageCount = App::settings->value("Fotowall/UsageCount").toInt();
     QString usageString = QString::number(usageCount);
+#if defined(Q_WS_X11)
+    usageString += " x11";
+#elif defined(Q_WS_WIN)
+    usageString += " win";
+#elif defined(Q_WS_MAC)
+    usageString += " mac";
+#else
+    usageString += " undef.";
+#endif
     QString windowString = App::workflow->applianceName();
     m_likeBack->execCommentDialog((LikeBack::Button)type, QString(), windowString, usageString);
 }

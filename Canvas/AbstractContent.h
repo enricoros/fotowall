@@ -44,7 +44,7 @@ class AbstractContent : public AbstractDisposeable
     Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
     Q_PROPERTY(int fxIndex READ fxIndex WRITE setFxIndex NOTIFY fxIndexChanged)
     public:
-        AbstractContent(QGraphicsScene * scene, QGraphicsItem * parent = 0, bool noRescale = false);
+        AbstractContent(QGraphicsScene * scene, bool fadeIn, bool noRescale, QGraphicsItem * parent);
         virtual ~AbstractContent();
 
         // ::AbstractDisposeable

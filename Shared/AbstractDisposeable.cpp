@@ -14,7 +14,7 @@
 
 #include "AbstractDisposeable.h"
 
-AbstractDisposeable::AbstractDisposeable(QGraphicsItem * parent, bool fadeIn)
+AbstractDisposeable::AbstractDisposeable(bool fadeIn, QGraphicsItem *parent)
 #if QT_VERSION >= 0x040600
     : QGraphicsObject(parent)
 #else
@@ -23,13 +23,20 @@ AbstractDisposeable::AbstractDisposeable(QGraphicsItem * parent, bool fadeIn)
 {
     if (fadeIn) {
 #if QT_VERSION >= 0x040600
-        // fade in animation
-        QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
-        ani->setEasingCurve(QEasingCurve::OutCubic);
-        ani->setDuration(300);
-        ani->setStartValue(0.0);
-        ani->setEndValue(1.0);
-        ani->start(QPropertyAnimation::DeleteWhenStopped);
+        // appear
+        QPropertyAnimation * ao = new QPropertyAnimation(this, "opacity");
+        ao->setEasingCurve(QEasingCurve::OutQuad);
+        ao->setDuration(150);
+        ao->setStartValue(0.01);
+        ao->setEndValue(1.0);
+        ao->start(QPropertyAnimation::DeleteWhenStopped);
+        // zoom in
+        QPropertyAnimation * as = new QPropertyAnimation(this, "scale");
+        as->setEasingCurve(QEasingCurve::OutElastic);
+        as->setDuration(500);
+        as->setStartValue(0.2);
+        as->setEndValue(1.0);
+        as->start(QPropertyAnimation::DeleteWhenStopped);
 #endif
         show();
     }

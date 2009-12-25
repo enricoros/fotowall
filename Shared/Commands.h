@@ -423,9 +423,9 @@ class DeleteContentCommand : public AbstractCommand {
             m_canvas->deleteContent(m_content);
         }
         void unexec() {
-            qDebug() << "content  " << m_pConfig.tagName() << " << " << m_pConfig.text();
-            AbstractContent * ncontent = m_canvas->contentFromXml(m_pConfig);
-            CommandStack::instance().changeContent(m_content, ncontent);
+            //qDebug() << "content  " << m_pConfig.tagName() << " << " << m_pConfig.text();
+            //AbstractContent * ncontent = m_canvas->contentFromXml(m_pConfig);
+            //CommandStack::instance().changeContent(m_content, ncontent);
             //m_content = ncontent;
         }
 

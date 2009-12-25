@@ -27,7 +27,7 @@ class CanvasViewContent : public AbstractContent, public SingleResourceLoaner
 {
     Q_OBJECT
     public:
-        CanvasViewContent(QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        CanvasViewContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~CanvasViewContent();
 
         bool loadFromFile(const QString & fwFilePath, bool keepRatio = false, bool setName = false);
