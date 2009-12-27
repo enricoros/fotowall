@@ -257,6 +257,7 @@ QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
 #else
     new PE_AbstractButton(pp->gimpButton, this, "externalEdit", pp);
 #endif
+    connect(pp->cropButton, SIGNAL(clicked()), this, SIGNAL(requestCrop()));
 
     return pp;
 }

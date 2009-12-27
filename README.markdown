@@ -11,12 +11,18 @@ Check out the [home page](http://www.enricoros.com/opensource/fotowall) and the
 ChangeLog
 ---------
 
-In progress for Fotowall "REVO" 1.0 (unreleased):
+
+Fotowall "REVO" 1.0 (Unreleased):
+
+In progress:
 
 * Arnaud's Undo/Redo system
 * Wordcloud editor
 * Arrange Contents
 * Text shaking
+
+* Crop picture button (reqby Rossana)
+
 
 Fotowall "Alchimia" 0.9 (2009-12-08):
 
