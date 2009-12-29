@@ -812,10 +812,24 @@ void QtColorTriangle::drawTrigon(QImage *buf, const QPointF &pa,
     }
 }
 
-/*! \internal
 
-Sets the color of the triangle to \a col.
- */
+#if QT_VERSION >= 0x040600
+#include <QPropertyAnimation>
+#endif
+void QtColorTriangle::animateSetColor(const QColor &col)
+{
+#if QT_VERSION >= 0x040600
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "color", this);
+    ani->setEndValue(col);
+    ani->setEasingCurve(QEasingCurve::OutQuad);
+    ani->setDuration(200);
+    ani->start(QAbstractAnimation::DeleteWhenStopped);
+#else
+    setColor(col);
+#endif
+}
+
+/// Sets the color of the triangle to \a col.
 void QtColorTriangle::setColor(const QColor &col)
 {
     if (col == curColor)
@@ -853,7 +867,8 @@ void QtColorTriangle::setColor(const QColor &col)
     selectorPos = pointFromColor(curColor);
     update();
 
-    emit colorChanged(curColor);
+    // disabled for fotowall (only user interaction emits change)
+    //emit colorChanged(curColor);
 }
 
 /*! \internal

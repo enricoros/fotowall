@@ -72,6 +72,7 @@ struct Vertex;
 class QtColorTriangle : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QColor color READ color WRITE setColor)
 
 public:
     QtColorTriangle(QWidget *parent = 0);
@@ -87,6 +88,7 @@ Q_SIGNALS:
     void colorChanged(const QColor &col);
 
 public Q_SLOTS:
+    void animateSetColor(const QColor &col);
     void setColor(const QColor &col);
 
 protected:

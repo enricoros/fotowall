@@ -73,6 +73,7 @@
 #include <QtGui/QTextEdit>
 #include <QtGui/QDialog>
 
+class QtColorTriangle;
 class QTabWidget;
 class QToolBar;
 
@@ -96,11 +97,13 @@ private slots:
     void tabIndexChanged(int newIndex);
     void richTextChanged();
     void sourceChanged();
+    void slotUpdateActions();
 
 private:
     enum TabIndex { RichTextIndex, SourceIndex };
     enum State { Clean, RichTextChanged, SourceChanged };
     RichTextEditor *m_editor;
+    QtColorTriangle*m_color_tri;
     QTextEdit      *m_text_edit;
     QTabWidget     *m_tab_widget;
     State m_state;
