@@ -17,6 +17,7 @@ include(Shared/Shared.pri)
 include(Wordcloud/Wordcloud.pri)
 include(3rdparty/likebackfrontend/likebackfrontend.pri)
 include(3rdparty/pencil/pencil.pri)
+include(3rdparty/qtcolortriangle/qtcolortriangle.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 
