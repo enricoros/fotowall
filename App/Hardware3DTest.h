@@ -52,7 +52,7 @@ class Hardware3DTest : public QDialog
     private Q_SLOTS:
         void showResults();
         void nextStep();
-        void slotViewRepainted(int durationMs);
+        void slotViewRepainted(qreal duration);
         void slotUseSoftware();
         void slotUseOpenGL();
 };
@@ -70,7 +70,7 @@ class TimedSceneView : public SceneView
         void flushPaints();
 
     Q_SIGNALS:
-        void repainted(int durationMs);
+        void repainted(qreal duration);
 
     protected:
         // ::QWidget

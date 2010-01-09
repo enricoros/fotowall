@@ -26,6 +26,9 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
+#ifdef Q_OS_UNIX
+#include <sys/time.h>
+#endif
 
 
 #define FIXEDSIZE QSize(320, 240)
@@ -50,7 +53,7 @@ Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
 
     // create the timed SceneView
     m_view = new TimedSceneView(this);
-    connect(m_view, SIGNAL(repainted(int)), this, SLOT(slotViewRepainted(int)), Qt::QueuedConnection);
+    connect(m_view, SIGNAL(repainted(qreal)), this, SLOT(slotViewRepainted(qreal)), Qt::QueuedConnection);
     layout()->addWidget(m_view);
 
     // draw a fake contents pixmap
@@ -168,16 +171,18 @@ void Hardware3DTest::showResults()
     }
     p.setBrush(Qt::NoBrush);
 
+    double tyS = DATAPOINT(0, m_results[0]).y();
     p.setPen(Qt::blue);
-    p.drawText(margin + radius, margin - 15, colsWidth, 20, 0, tr("Non-OpenGL"));
+    p.drawText(margin + radius + 10, tyS, colsWidth, 20, 0, tr("Non-OpenGL"));
+    double tyO = DATAPOINT(0, m_results[cols]).y();
     p.setPen(Qt::darkGreen);
-    p.drawText(margin + radius, margin - 15 + 20, colsWidth, 20, 0, tr("OpenGL"));
+    p.drawText(margin + radius + 10, tyO, colsWidth, 20, 0, tr("OpenGL"));
 
     p.setPen(Qt::darkGray);
     p.drawText(margin + radius, margin + radius + rowsHeight + radius, colsWidth, 20, Qt::AlignCenter, tr("samples (%1...%2)").arg(1).arg(TESTSIZE));
     p.translate(margin, margin + radius + rowsHeight);
     p.rotate(-90);
-    p.drawText(0, -20, rowsHeight, 20, Qt::AlignCenter, tr("duration (%1...%2ms)").arg(min).arg(max));
+    p.drawText(0, -20, rowsHeight, 20, Qt::AlignCenter, tr("fps (%1...%2)").arg(min).arg(max));
     p.end();
 
     // display the new widgets
@@ -198,7 +203,7 @@ void Hardware3DTest::showResults()
     QFont boldFont;
     boldFont.setBold(true);
     boldFont.setPointSize(boldFont.pointSize() + 2);
-    if (seriesSum[0] > seriesSum[1]) {
+    if (seriesSum[0] < seriesSum[1]) {
         setWindowTitle(tr("OpenGL Won"));
         b1->setFont(boldFont);
         b1->setFocus();
@@ -256,10 +261,10 @@ void Hardware3DTest::nextStep()
     m_view->measureNextRepaint();
 }
 
-void Hardware3DTest::slotViewRepainted(int durationMs)
+void Hardware3DTest::slotViewRepainted(qreal duration)
 {
     // got the measure
-    m_results[m_resultIdx++] = durationMs;
+    m_results[m_resultIdx++] = 1.0 / qMax(duration, 0.0001);
     nextStep();
 }
 
@@ -305,20 +310,33 @@ void TimedSceneView::flushPaints()
 void TimedSceneView::paintEvent(QPaintEvent * event)
 {
     // start time measurement if needed
+#ifdef Q_OS_UNIX
+    struct timeval tStart, tStop;
+    const bool doMeasure = m_measureRepaint && event->rect().size() == FIXEDSIZE;
+    if (doMeasure)
+        ::gettimeofday(&tStart, 0);
+#else
     QTime * time = 0;
     if (m_measureRepaint && event->rect().size() == FIXEDSIZE) {
         time = new QTime;
         time->start();
     }
+#endif
 
     // do painting
     QGraphicsView::paintEvent(event);
 
     // get measurement results
+#ifdef Q_OS_UNIX
+    if (doMeasure) {
+        ::gettimeofday(&tStop, 0);
+        qreal duration = (qreal)(tStop.tv_sec - tStart.tv_sec) + 0.000001 * (qreal)(tStop.tv_usec - tStart.tv_usec);
+#else
     if (time) {
-        int elapsed = time->elapsed();
+        qreal duration = time->elapsed() / 1000.0;
         delete time;
+#endif
         m_measureRepaint = false;
-        emit repainted(elapsed);
+        emit repainted(duration);
     }
 }
