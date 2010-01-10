@@ -16,12 +16,15 @@
 #define __AbstractScene_h__
 
 #include <QGraphicsScene>
+#include <QPointF>
 #include <QRectF>
 #include <QSize>
 
 class AbstractScene : public QGraphicsScene
 {
     Q_OBJECT
+    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY scenePerspectiveChanged)
+    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY sceneRotationChanged)
     public:
         AbstractScene(QObject * parent = 0);
 
@@ -41,12 +44,24 @@ class AbstractScene : public QGraphicsScene
         // how to view the scene (defaults to true)
         virtual bool sceneSelectable() const;
 
+        // properties
+        void setPerspective(const QPointF & angles);
+        QPointF perspective() const;
+        void setRotation(qreal rotation);
+        qreal rotation() const;
+
     Q_SIGNALS:
         void sceneSizeChanged();
+        void scenePerspectiveChanged();
+        void sceneRotationChanged();
 
     protected:
         QSize m_size;
         QRectF m_rect;
+
+    private:
+        QPointF m_perspectiveAngles;
+        qreal m_rotationAngle;
 };
 
 #endif

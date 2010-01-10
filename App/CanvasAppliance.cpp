@@ -17,9 +17,10 @@
 #include "Canvas/CanvasModeInfo.h"
 #include "Canvas/CanvasViewContent.h"
 #include "Canvas/Canvas.h"
-#include "Canvas/WordcloudContent.h"
 #include "Shared/ButtonsDialog.h"
+#include "Shared/PanePropertyEditor.h"
 #include "Shared/VideoProvider.h"
+#include "Canvas/WordcloudContent.h"
 #include "App.h"
 #include "ExactSizeDialog.h"
 #include "ExportWizard.h"
@@ -31,6 +32,8 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMenu>
+#include <QSlider>
+#include <QWidgetAction>
 
 
 CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
@@ -238,6 +241,28 @@ QMenu * CanvasAppliance::createBackgroundMenu()
      aRatioIgnore->setCheckable(true);
      aRatioIgnore->setActionGroup(m_gBackRatioGroup);
      mScaling->addAction(aRatioIgnore);
+    menu->addSeparator();
+    QMenu * mPerspective = new QMenu(tr("View Perspective"), menu);
+    menu->addMenu(mPerspective);
+    QWidgetAction * aPerspective = new QWidgetAction(mPerspective);
+     PaneWidget * perspWidget = new PaneWidget;
+     perspWidget->setFixedSize(71, 71);
+     perspWidget->setRange(QRectF(-30.0, -30.0, 60.0, 60.0));
+     new PE_PaneWidget(perspWidget, m_extCanvas, "perspective", perspWidget);
+     aPerspective->setDefaultWidget(perspWidget);
+     mPerspective->addAction(aPerspective);
+    QMenu * mRotation = new QMenu(tr("View Rotation"), menu);
+    menu->addMenu(mRotation);
+    QWidgetAction * aRotation = new QWidgetAction(mRotation);
+     QSlider * rotWidget = new QSlider(Qt::Horizontal);
+     rotWidget->setMinimum(-40);
+     rotWidget->setValue(0);
+     rotWidget->setMaximum(40);
+     rotWidget->setMinimumWidth(81 * 2);
+     rotWidget->setProperty("noremap", true);
+     new PE_AbstractSlider(rotWidget, m_extCanvas, "rotation", rotWidget);
+     aRotation->setDefaultWidget(rotWidget);
+     mRotation->addAction(aRotation);
 
     // initially check the action
     slotBackConfigChanged();
