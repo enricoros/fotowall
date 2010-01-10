@@ -106,9 +106,11 @@ void SceneView::setScene(AbstractScene * scene)
     QGraphicsView::setScene(m_abstractScene);
     if (m_abstractScene) {
         connect(m_abstractScene, SIGNAL(destroyed(QObject*)), this, SLOT(slotSceneDestroyed(QObject *)));
-        connect(m_abstractScene, SIGNAL(sceneSizeChanged()), this, SLOT(layoutScene()));
+        connect(m_abstractScene, SIGNAL(sceneSizeChanged()), this, SLOT(slotLayoutScene()));
+        connect(m_abstractScene, SIGNAL(scenePerspectiveChanged()), this, SLOT(slotUpdateViewTransform()));
+        connect(m_abstractScene, SIGNAL(sceneRotationChanged()), this, SLOT(slotUpdateViewTransform()));
         setViewScale(1.0);
-        layoutScene();
+        slotLayoutScene();
     }
 }
 
@@ -180,15 +182,9 @@ void SceneView::setViewScale(qreal scale)
 {
     if (m_viewScale != scale) {
         m_viewScale = scale;
-        if (m_viewScale > 0.98 && m_viewScale < 1.02) {
+        if (m_viewScale > 0.98 && m_viewScale < 1.02)
             m_viewScale = 1.0;
-            setTransform(QTransform());
-        } else {
-            QTransform scaleTransform;
-            scaleTransform.scale(m_viewScale, m_viewScale);
-            setTransform(scaleTransform);
-        }
-        layoutScene();
+        slotUpdateViewTransform();
         emit viewScaleChanged();
     }
 }
@@ -217,7 +213,7 @@ void SceneView::drawForeground(QPainter * painter, const QRectF & rect)
     }
 
     // if scaled, draw untransformed (full shadow tile + zoom)
-    if (m_viewScale != 1.0) {
+    if (!transform().isIdentity()) {
         // draw untransformed (we're drawing to the viewport())
         painter->resetTransform();
 
@@ -282,7 +278,7 @@ void SceneView::paintEvent(QPaintEvent * event)
 void SceneView::resizeEvent(QResizeEvent * event)
 {
     QGraphicsView::resizeEvent(event);
-    layoutScene();
+    slotLayoutScene();
 }
 
 void SceneView::wheelEvent(QWheelEvent * event)
@@ -298,7 +294,7 @@ void SceneView::wheelEvent(QWheelEvent * event)
     QGraphicsView::wheelEvent(event);
 }
 
-void SceneView::layoutScene()
+void SceneView::slotLayoutScene()
 {
     if (!m_abstractScene)
         return;
@@ -309,8 +305,8 @@ void SceneView::layoutScene()
 
     // use scrollbars if scene screen size is bigger than viewport's
     QSize sceneSize = m_abstractScene->sceneSize();
-    if (m_viewScale != 1.0)
-        sceneSize *= m_viewScale;
+    if (!transform().isIdentity())
+        sceneSize = transform().mapRect(m_abstractScene->sceneRect()).size().toSize();
     bool scrollbarsNeeded = (sceneSize.width() > viewportSize.width()) || (sceneSize.height() > viewportSize.height());
     Qt::ScrollBarPolicy sPolicy = scrollbarsNeeded ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
     setVerticalScrollBarPolicy(sPolicy);
@@ -324,6 +320,28 @@ void SceneView::layoutScene()
 
     // update screen
     update();
+}
+
+void SceneView::slotUpdateViewTransform()
+{
+    QTransform viewTransform;
+    if (m_viewScale != 1.0)
+        viewTransform.scale(m_viewScale, m_viewScale);
+    if (m_abstractScene) {
+        const QPointF perspective = m_abstractScene->perspective();
+        const qreal rotation = m_abstractScene->rotation();
+        QPointF offset = m_abstractScene->sceneCenter();
+        viewTransform.translate(offset.x(), offset.y());
+        if (rotation)
+            viewTransform.rotate(rotation, Qt::ZAxis);
+        if (!perspective.isNull()) {
+            viewTransform.rotate(perspective.y(), Qt::XAxis);
+            viewTransform.rotate(perspective.x(), Qt::YAxis);
+        }
+        viewTransform.translate(-offset.x(), -offset.y());
+    }
+    setTransform(viewTransform, false);
+    slotLayoutScene();
 }
 
 void SceneView::slotSceneDestroyed(QObject * object)

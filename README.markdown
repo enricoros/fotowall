@@ -21,6 +21,7 @@ In progress:
 * Arrange Contents
 * Text shaking
 
+* View perspective and rotation (reqby Nicolas Brisset)
 * Crop picture button (reqby Rossana)
 
 

@@ -45,7 +45,9 @@ void PE_AbstractSlider::slotSliderValueChanged(int intValue)
 
     // QVariant::Double: remap to the 0..1 range
     else if (m_property.type() == QVariant::Double) {
-        if (m_control->maximum() > m_control->minimum()) {
+        if (m_control->property("noremap").toBool())
+            m_property.write(m_target.data(), (qreal)intValue);
+        else if (m_control->maximum() > m_control->minimum()) {
 #if 1 // ### remove this HACK (don't go to 0, for opacity) for 1.0
             qreal realVal = (qreal)(intValue - m_control->minimum() + 1) / (qreal)(m_control->maximum() - m_control->minimum() + 1);
 #else
@@ -71,8 +73,12 @@ void PE_AbstractSlider::slotPropertyChanged()
     // QVariant::Double: slider is scrolled from start to stop for the 0..1 property value
     else if (m_property.type() == QVariant::Double) {
         qreal realValue = m_property.read(m_target.data()).toDouble();
-        int intValue = m_control->minimum() + (int)(realValue * (m_control->maximum() - m_control->minimum()));
-        m_control->setValue(intValue);
+        if (m_control->property("noremap").toBool())
+            m_property.write(m_target.data(), (qreal)realValue);
+        else {
+            int intValue = m_control->minimum() + (int)(realValue * (m_control->maximum() - m_control->minimum()));
+            m_control->setValue(intValue);
+        }
     }
 }
 
