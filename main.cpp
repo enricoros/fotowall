@@ -59,7 +59,13 @@ int main( int argc, char ** args )
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     // translate fotowall + default-qt messages
-    QString locale =  QLocale::system().name();
+    QString locale;
+    QStringList arguments = app.arguments();
+    // Check for specified locale, or use the system one.
+    int pos=arguments.indexOf("-locale");
+    if (pos != -1 && pos < arguments.size()-1) locale = arguments.at(pos+1);
+    else locale = QLocale::system().name();
+
     QTranslator translator;
     translator.load(QString(":/translations/fotowall_%1").arg(locale));
     app.installTranslator(&translator);
