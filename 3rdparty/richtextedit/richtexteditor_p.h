@@ -84,7 +84,6 @@ class RichTextEditorDialog : public QDialog
     Q_OBJECT
 public:
     RichTextEditorDialog(QWidget *parent = 0);
-    ~RichTextEditorDialog();
 
     void focusEditor();
 

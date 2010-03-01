@@ -785,10 +785,6 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     m_editor->setFocus();
 }
 
-RichTextEditorDialog::~RichTextEditorDialog()
-{
-}
-
 void RichTextEditorDialog::focusEditor()
 {
     m_editor->selectAll();

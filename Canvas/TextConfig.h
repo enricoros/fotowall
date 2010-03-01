@@ -24,7 +24,6 @@ class TextConfig : public AbstractConfig
     Q_OBJECT
     public:
         TextConfig(TextContent * textContent, QGraphicsItem * parent = 0);
-        ~TextConfig();
 
     private:
         // ::AbstractConfig

@@ -32,10 +32,6 @@ TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
     showOkButton(true);
 }
 
-TextConfig::~TextConfig()
-{
-}
-
 void TextConfig::slotOkClicked()
 {
     m_textContent->setHtml(m_editor->text(Qt::RichText));
