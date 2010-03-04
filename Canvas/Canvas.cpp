@@ -1462,7 +1462,7 @@ void Canvas::slotDeleteContent()
             if (m_backContent == content)
                 setBackContent(0);
 
-            DeleteContentCommand *command = new DeleteContentCommand(content, this, m_fileAbsDir);
+            DeleteContentCommand *command = new DeleteContentCommand(content);
             CommandStack::instance().doCommand(command);
             foreach (AbstractConfig * config, m_configs) {
                 if (config->content() == content) {

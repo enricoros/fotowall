@@ -56,18 +56,3 @@ void CommandStack::redoLast()
         m_undoStack.push_back(command);
     }
 }
-
-void CommandStack::changeContent(AbstractContent *pC, AbstractContent *nC)
-{
-    foreach (AbstractCommand *c, m_undoStack) {
-        if(c->content() == pC) {
-            qDebug() << "Command " << c->name() << " set content : " << nC << " instead of " << pC;
-            c->setContent(nC);
-        }
-    }
-    foreach (AbstractCommand *c, m_redoStack) {
-        if(c->content() == pC)
-            qDebug() << "Command " << c->name() << " set content : " << nC << " instead of " << pC;
-            c->setContent(nC);
-    }
-}

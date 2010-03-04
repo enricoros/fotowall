@@ -399,12 +399,8 @@ void CanvasAppliance::slotAddPicture()
     if (picFilePaths.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
-    //GroupedCommands *gc = new GroupedCommands();
-    foreach(QString file, picFilePaths) {
-        NewImageCommand *c = new NewImageCommand(m_extCanvas, file);
-        //gc->addCommand(c);
-        CommandStack::instance().doCommand(c);
-    }
+    NewImageCommand *c = new NewImageCommand(m_extCanvas, picFilePaths);
+    CommandStack::instance().doCommand(c);
     setFocusToScene();
 }
 
