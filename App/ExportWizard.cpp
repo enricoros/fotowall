@@ -53,6 +53,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     , m_ui(new Ui::ExportWizard)
     , m_canvas(canvas)
     , m_printPreferred(printPreferred)
+    , m_printPdf(false)
     , m_nextId(0)
 {
     // create and init UI
@@ -61,6 +62,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     connect(m_ui->clImage, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     connect(m_ui->clPosteRazor, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     connect(m_ui->clPrint, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
+    connect(m_ui->clPdf, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     connect(m_ui->clSvg, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     m_ui->prWebLabel->setText("<html><body><a href='" POSTERAZOR_WEBSITE_LINK "'>" + m_ui->prWebLabel->text() + "</a></body></html>" );
     connect(m_ui->prWebLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
@@ -88,6 +90,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     connect(m_ui->printWidth, SIGNAL(valueChanged(double)), this, SLOT(slotPrintSizeChanged()));
     connect(m_ui->printHeight, SIGNAL(valueChanged(double)), this, SLOT(slotPrintSizeChanged()));
     connect(m_ui->printDpi, SIGNAL(valueChanged(int)), this, SLOT(slotPrintSizeChanged()));
+    connect(m_ui->pdfChooseFilePath, SIGNAL(clicked()), this, SLOT(slotChoosePdfPath()));
     connect(m_ui->svgChooseFilePath, SIGNAL(clicked()), this, SLOT(slotChooseSvgPath()));
     bool imperial = QLocale::system().measurementSystem() == QLocale::ImperialSystem;
     m_ui->printUnity->setCurrentIndex(imperial ? 2 : 1);
@@ -103,6 +106,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
         m_ui->clImage->setFont(font);
         m_ui->clWallpaper->setFont(font);
         m_ui->clPosteRazor->setFont(font);
+        m_ui->clPdf->setFont(font);
         m_ui->clSvg->setFont(font);
 
         // set the focus to the print button
@@ -253,8 +257,102 @@ void ExportWizard::startPosterazor()
     App::settings->endGroup();
 }
 
+#include <QDebug>
+#include <QPrinter>
+#include <QPageSetupDialog>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
+
+bool ExportWizard::pdf()
+{
+    // setup printer
+    QPrinter pdfPrinter;
+    pdfPrinter.setOutputFormat(QPrinter::PdfFormat);
+    pdfPrinter.setOutputFileName("/tmp/aa.pdf" /*m_ui->pdfChooseFilePath->text()*/);
+
+    QPageSetupDialog pageSetup(&pdfPrinter);
+    if (pageSetup.exec() != QDialog::Accepted)
+        return false;
+
+    return false;
+//    printer.setResolution(printerDpi);
+//    printer.setPaperSize(QPrinter::A3);
+    //printer.setOrientation(landscape ? QPrinter::Landscape : QPrinter::Portrait);
+
+    // configure printer via the print dialog
+    QPrintDialog printDialog(&pdfPrinter);
+    if (printDialog.exec() != QDialog::Accepted)
+        return false;
+    //qWarning() << printerDpi << pdfPrinter.resolution();
+
+
+    // TODO: use different ratio modes?
+    /*QImage image = m_canvas->renderedImage(pixelSize, aspectRatioMode);
+    if (landscape) {
+        // Print in landscape mode, so rotate
+        qWarning("LS!");
+        QMatrix matrix;
+        matrix.rotate(90);
+        image = image.transformed(matrix);
+    }
+
+    // And then print
+    QPainter painter;
+    if (!painter.begin(&pdfPrinter)) {
+        QMessageBox::warning(0, tr("PDF Error"), tr("Error saving to the PDF file, try to chose another one."), QMessageBox::Cancel);
+        return false;
+    }
+    painter.drawImage(image.rect(), image);
+    painter.end();*/
+    return true;
+
+
+
+
+}
+
+bool ExportWizard::printCanvasAsImage(int printerDpi, const QSize & pixelSize, bool landscape,
+                                      Qt::AspectRatioMode aspectRatioMode) const
+{
+    // setup printer
+    QPrinter printer;
+    printer.setResolution(printerDpi);
+//    printer.setPaperSize(QPrinter::A3);
+    //printer.setOrientation(landscape ? QPrinter::Landscape : QPrinter::Portrait);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName("/tmp/nonwritable.pdf");
+
+    // configure printer via the print dialog
+    QPrintDialog printDialog(&printer);
+    if (printDialog.exec() != QDialog::Accepted)
+        return false;
+    qWarning() << printerDpi << printer.resolution();
+
+
+    // TODO: use different ratio modes?
+    QImage image = m_canvas->renderedImage(pixelSize, aspectRatioMode);
+    if (landscape) {
+        // Print in landscape mode, so rotate
+        qWarning("LS!");
+        QMatrix matrix;
+        matrix.rotate(90);
+        image = image.transformed(matrix);
+    }
+
+    // And then print
+    QPainter painter;
+    if (!painter.begin(&printer)) {
+        QMessageBox::warning(0, tr("PDF Error"), tr("Error saving to the PDF file, try to chose another one."), QMessageBox::Cancel);
+        return false;
+    }
+    painter.drawImage(image.rect(), image);
+    painter.end();
+    return true;
+}
+
 void ExportWizard::print()
 {
+    return;
     // update the realsizeinches, just in case..
     slotPrintSizeChanged();
 
@@ -277,7 +375,7 @@ void ExportWizard::print()
     }
 
     // do the printing
-    m_canvas->printAsImage(printDpi, printSize, m_ui->printLandscape->isChecked(), printRatio);
+    printCanvasAsImage(printDpi, printSize, m_ui->printLandscape->isChecked(), printRatio);
 }
 
 void ExportWizard::saveSvg()
@@ -328,6 +426,10 @@ void ExportWizard::setPage(int pageId)
         case PageImage:
             if (m_ui->filePath->text().isEmpty())
                 slotChoosePath();
+            break;
+        case PagePrint:
+            if (m_printPdf && m_ui->pdfFilePath->text().isEmpty())
+                slotChoosePdfPath();
             break;
         case PageSvg:
             if (m_ui->svgFilePath->text().isEmpty())
@@ -381,6 +483,15 @@ void ExportWizard::slotChoosePath()
                                    tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (!savePath.isEmpty())
         m_ui->filePath->setText(savePath);
+}
+
+void ExportWizard::slotChoosePdfPath()
+{
+    QString savePath = getSavePath(m_ui->pdfFilePath->text(), "pdf",
+                                   tr("Choose the PDF file"),
+                                   tr("PDF (*.pdf)"));
+    if (!savePath.isEmpty())
+        m_ui->pdfFilePath->setText(savePath);
 }
 
 void ExportWizard::slotChooseSvgPath()
@@ -448,7 +559,12 @@ void ExportWizard::slotFinished(int code)
             case PageWallpaper: setWallpaper(); break;
             case PageImage: saveImage(); break;
             case PagePosteRazor: startPosterazor(); break;
-            case PagePrint: print(); break;
+            case PagePrint:
+                if (m_printPdf)
+                    pdf();
+                else
+                    print();
+                break;
             case PageSvg: saveSvg(); break;
             default:
                 qWarning("ExportWizard::slotFinished: unhndled end for page %d", currentId());
@@ -459,7 +575,12 @@ void ExportWizard::slotFinished(int code)
 
 void ExportWizard::slotModeButtonClicked()
 {
-    setPage(sender()->property("nextPageId").toInt());
+    int nextPageId = sender()->property("nextPageId").toInt();
+    m_printPdf = nextPageId == 6;
+    m_ui->pdfBox->setVisible(m_printPdf);
+    if (m_printPdf)
+        nextPageId = PagePrint;
+    setPage(nextPageId);
 }
 
 void ExportWizard::slotOpenLink(const QString & address)

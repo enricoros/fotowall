@@ -29,6 +29,7 @@ class ExportWizard : public QWizard {
         void setWallpaper();
         void saveImage();
         void startPosterazor();
+        bool pdf();
         void print();
         void saveSvg();
 
@@ -40,16 +41,21 @@ class ExportWizard : public QWizard {
         int nextId() const;
 
     private:
-        enum PageCode { PageMode = 0, PageWallpaper = 1, PageImage = 2, PagePosteRazor = 3, PagePrint = 4, PageSvg = 5 };
+        enum PageCode { PageMode = 0, PageWallpaper = 1, PageImage = 2,
+            PagePosteRazor = 3, PagePrint = 4, PageSvg = 5 };
+        bool printCanvasAsImage(int printerDpi, const QSize & pixelSize, bool landscape,
+                                Qt::AspectRatioMode aspectRatioMode) const;
         Ui::ExportWizard * m_ui;
         Canvas * m_canvas;
         bool m_printPreferred;
+        bool m_printPdf;
         int m_nextId;
         QSizeF m_printSizeInches;
 
     private slots:
         // contents related
         void slotChoosePath();
+        void slotChoosePdfPath();
         void slotChooseSvgPath();
         void slotImageFromCanvas();
         void slotImageFromDpi();

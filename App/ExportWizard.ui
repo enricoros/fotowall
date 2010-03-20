@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>382</width>
-    <height>361</height>
+    <width>376</width>
+    <height>374</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -95,6 +95,22 @@
      </widget>
     </item>
     <item>
+     <widget class="QCommandLinkButton" name="clPdf">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>PDF</string>
+      </property>
+      <property name="nextPageId" stdset="0">
+       <number>6</number>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QCommandLinkButton" name="clSvg">
       <property name="minimumSize">
        <size>
@@ -103,7 +119,7 @@
        </size>
       </property>
       <property name="text">
-       <string>SVG Vector Image</string>
+       <string>Scalable Vector Graphics</string>
       </property>
       <property name="nextPageId" stdset="0">
        <number>5</number>
@@ -508,14 +524,40 @@
        <item row="3" column="0" colspan="3">
         <widget class="QCheckBox" name="printLandscape">
          <property name="text">
-          <string>Print in landscape mode</string>
+          <string>Landscape paper orientation</string>
          </property>
         </widget>
        </item>
        <item row="4" column="0" colspan="3">
         <widget class="QCheckBox" name="printKeepRatio">
          <property name="text">
-          <string>Keep proportions</string>
+          <string>Keep canvas proportion</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="pdfBox">
+      <property name="title">
+       <string>PDF Options</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>File name:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="pdfFilePath"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pdfChooseFilePath">
+         <property name="text">
+          <string>Choose...</string>
          </property>
         </widget>
        </item>
