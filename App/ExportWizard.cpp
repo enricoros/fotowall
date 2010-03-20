@@ -16,6 +16,7 @@
 
 #include "Canvas/Canvas.h"
 #include "Canvas/CanvasModeInfo.h"
+#include "Shared/RenderOpts.h"
 #include "App.h"
 #include "Settings.h"
 #include "ui_ExportWizard.h"
@@ -351,7 +352,9 @@ bool ExportWizard::printPdf()
 
     // render to PDF
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform, true);
+    RenderOpts::PDFExporting = true;
     m_canvas->renderVisible(&painter, targetRect, m_canvas->sceneRect(), Qt::IgnoreAspectRatio, true);
+    RenderOpts::PDFExporting = false;
     painter.end();
     return true;
 }
