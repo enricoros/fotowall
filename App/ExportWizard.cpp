@@ -458,37 +458,37 @@ QSizeF ExportWizard::canvasNatInches() const
 
 void ExportWizard::initPageSizeNames()
 {
-    m_pageSizeNames[QPrinter::A0] = QPrintDialog::tr("A0");
-    m_pageSizeNames[QPrinter::A1] = QPrintDialog::tr("A1");
-    m_pageSizeNames[QPrinter::A2] = QPrintDialog::tr("A2");
-    m_pageSizeNames[QPrinter::A3] = QPrintDialog::tr("A3");
-    m_pageSizeNames[QPrinter::A4] = QPrintDialog::tr("A4");
-    m_pageSizeNames[QPrinter::A5] = QPrintDialog::tr("A5");
-    m_pageSizeNames[QPrinter::A6] = QPrintDialog::tr("A6");
-    m_pageSizeNames[QPrinter::A7] = QPrintDialog::tr("A7");
-    m_pageSizeNames[QPrinter::A8] = QPrintDialog::tr("A8");
-    m_pageSizeNames[QPrinter::A9] = QPrintDialog::tr("A9");
-    m_pageSizeNames[QPrinter::B0] = QPrintDialog::tr("B0");
-    m_pageSizeNames[QPrinter::B1] = QPrintDialog::tr("B1");
-    m_pageSizeNames[QPrinter::B2] = QPrintDialog::tr("B2");
-    m_pageSizeNames[QPrinter::B3] = QPrintDialog::tr("B3");
-    m_pageSizeNames[QPrinter::B4] = QPrintDialog::tr("B4");
-    m_pageSizeNames[QPrinter::B5] = QPrintDialog::tr("B5");
-    m_pageSizeNames[QPrinter::B6] = QPrintDialog::tr("B6");
-    m_pageSizeNames[QPrinter::B7] = QPrintDialog::tr("B7");
-    m_pageSizeNames[QPrinter::B8] = QPrintDialog::tr("B8");
-    m_pageSizeNames[QPrinter::B9] = QPrintDialog::tr("B9");
-    m_pageSizeNames[QPrinter::B10] = QPrintDialog::tr("B10");
-    m_pageSizeNames[QPrinter::C5E] = QPrintDialog::tr("C5E");
-    m_pageSizeNames[QPrinter::DLE] = QPrintDialog::tr("DLE");
-    m_pageSizeNames[QPrinter::Executive] = QPrintDialog::tr("Executive");
-    m_pageSizeNames[QPrinter::Folio] = QPrintDialog::tr("Folio");
-    m_pageSizeNames[QPrinter::Ledger] = QPrintDialog::tr("Ledger");
-    m_pageSizeNames[QPrinter::Legal] = QPrintDialog::tr("Legal");
-    m_pageSizeNames[QPrinter::Letter] = QPrintDialog::tr("Letter");
-    m_pageSizeNames[QPrinter::Tabloid] = QPrintDialog::tr("Tabloid");
-    m_pageSizeNames[QPrinter::Comm10E] = QPrintDialog::tr("US Common #10 Envelope");
-    m_pageSizeNames[QPrinter::Custom] = QPrintDialog::tr("Custom");
+    m_paperSizeNames[QPrinter::A0] = QPrintDialog::tr("A0");
+    m_paperSizeNames[QPrinter::A1] = QPrintDialog::tr("A1");
+    m_paperSizeNames[QPrinter::A2] = QPrintDialog::tr("A2");
+    m_paperSizeNames[QPrinter::A3] = QPrintDialog::tr("A3");
+    m_paperSizeNames[QPrinter::A4] = QPrintDialog::tr("A4");
+    m_paperSizeNames[QPrinter::A5] = QPrintDialog::tr("A5");
+    m_paperSizeNames[QPrinter::A6] = QPrintDialog::tr("A6");
+    m_paperSizeNames[QPrinter::A7] = QPrintDialog::tr("A7");
+    m_paperSizeNames[QPrinter::A8] = QPrintDialog::tr("A8");
+    m_paperSizeNames[QPrinter::A9] = QPrintDialog::tr("A9");
+    m_paperSizeNames[QPrinter::B0] = QPrintDialog::tr("B0");
+    m_paperSizeNames[QPrinter::B1] = QPrintDialog::tr("B1");
+    m_paperSizeNames[QPrinter::B2] = QPrintDialog::tr("B2");
+    m_paperSizeNames[QPrinter::B3] = QPrintDialog::tr("B3");
+    m_paperSizeNames[QPrinter::B4] = QPrintDialog::tr("B4");
+    m_paperSizeNames[QPrinter::B5] = QPrintDialog::tr("B5");
+    m_paperSizeNames[QPrinter::B6] = QPrintDialog::tr("B6");
+    m_paperSizeNames[QPrinter::B7] = QPrintDialog::tr("B7");
+    m_paperSizeNames[QPrinter::B8] = QPrintDialog::tr("B8");
+    m_paperSizeNames[QPrinter::B9] = QPrintDialog::tr("B9");
+    m_paperSizeNames[QPrinter::B10] = QPrintDialog::tr("B10");
+    m_paperSizeNames[QPrinter::C5E] = QPrintDialog::tr("C5E");
+    m_paperSizeNames[QPrinter::DLE] = QPrintDialog::tr("DLE");
+    m_paperSizeNames[QPrinter::Executive] = QPrintDialog::tr("Executive");
+    m_paperSizeNames[QPrinter::Folio] = QPrintDialog::tr("Folio");
+    m_paperSizeNames[QPrinter::Ledger] = QPrintDialog::tr("Ledger");
+    m_paperSizeNames[QPrinter::Legal] = QPrintDialog::tr("Legal");
+    m_paperSizeNames[QPrinter::Letter] = QPrintDialog::tr("Letter");
+    m_paperSizeNames[QPrinter::Tabloid] = QPrintDialog::tr("Tabloid");
+    m_paperSizeNames[QPrinter::Comm10E] = QPrintDialog::tr("US Common #10 Envelope");
+    m_paperSizeNames[QPrinter::Custom] = QPrintDialog::tr("Custom");
 }
 
 static QString getSavePath(const QString & initialValue, const QString & defaultExt, const QString & title, const QString & type)
@@ -616,16 +616,16 @@ void ExportWizard::slotPdfUpdateGui()
 
     // change paper button text
     QPrinter::PaperSize pNumber = m_pdfPrinter->paperSize();
-    QString paperName = m_pageSizeNames.contains(pNumber) ? m_pageSizeNames[pNumber] : tr("Other");
+    QString paperName = m_paperSizeNames.contains(pNumber) ? m_paperSizeNames[pNumber] : tr("Other");
     m_ui->pdfPageButton->setText(paperName);
-    if (pNumber == QPrinter::Custom) {
+//    if (pNumber == QPrinter::Custom) {
         bool useInches = QLocale::system().measurementSystem() == QLocale::ImperialSystem;
         QSizeF paperSize = m_pdfPrinter->paperSize(useInches ? QPrinter::Inch : QPrinter::Millimeter);
         if (useInches)
             m_ui->pdfPageButton->setText(tr("%1  (%2 x %3 inch)").arg(paperName).arg(paperSize.width()).arg(paperSize.height()));
         else
             m_ui->pdfPageButton->setText(tr("%1  (%2 x %3 cm)").arg(paperName).arg(paperSize.width() / 10).arg(paperSize.height() / 10));
-    }
+//    }
 
     // change resolution text
     m_ui->pdfRes->setValue(m_pdfPrinter->resolution());
