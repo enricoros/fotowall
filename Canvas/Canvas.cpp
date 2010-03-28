@@ -45,8 +45,6 @@
 #include <QList>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QPrinter>
-#include <QPrintDialog>
 #include <QTextDocument>
 #include <QTimer>
 #include <QUrl>
@@ -625,34 +623,6 @@ QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRati
     painter.end();
 
     return result;
-}
-
-bool Canvas::printAsImage(int printerDpi, const QSize & pixelSize, bool landscape, Qt::AspectRatioMode aspectRatioMode)
-{
-    // setup printer
-    QPrinter printer;
-    printer.setResolution(printerDpi);
-    printer.setPaperSize(QPrinter::A4);
-
-    // configure printer via the print dialog
-    QPrintDialog printDialog(&printer);
-    if (printDialog.exec() != QDialog::Accepted)
-        return false;
-
-    // TODO: use different ratio modes?
-    QImage image = renderedImage(pixelSize, aspectRatioMode);
-    if (landscape) {
-        // Print in landscape mode, so rotate
-        QMatrix matrix;
-        matrix.rotate(90);
-        image = image.transformed(matrix);
-    }
-
-    // And then print
-    QPainter paint(&printer);
-    paint.drawImage(image.rect(), image);
-    paint.end();
-    return true;
 }
 
 

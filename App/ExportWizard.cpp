@@ -16,6 +16,7 @@
 
 #include "Canvas/Canvas.h"
 #include "Canvas/CanvasModeInfo.h"
+#include "Shared/RenderOpts.h"
 #include "App.h"
 #include "Settings.h"
 #include "ui_ExportWizard.h"
@@ -24,6 +25,7 @@
 #include "posterazorcore.h"
 #include "wizard.h"
 
+#include <QDebug>
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDir>
@@ -32,9 +34,11 @@
 #include <QFileInfo>
 #include <QLocale>
 #include <QMessageBox>
+#include <QPageSetupDialog>
 #include <QProcess>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QPrintPreviewDialog>
 #include <QSettings>
 #include <QSvgGenerator>
 #include <QTimer>
@@ -54,6 +58,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     , m_canvas(canvas)
     , m_printPreferred(printPreferred)
     , m_nextId(0)
+    , m_pdfPrinter(0)
 {
     // create and init UI
     m_ui->setupUi(this);
@@ -61,6 +66,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     connect(m_ui->clImage, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     connect(m_ui->clPosteRazor, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     connect(m_ui->clPrint, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
+    connect(m_ui->clPdf, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     connect(m_ui->clSvg, SIGNAL(clicked()), this, SLOT(slotModeButtonClicked()));
     m_ui->prWebLabel->setText("<html><body><a href='" POSTERAZOR_WEBSITE_LINK "'>" + m_ui->prWebLabel->text() + "</a></body></html>" );
     connect(m_ui->prWebLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
@@ -78,7 +84,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     m_ui->imgFromDpi->setEnabled(m_printPreferred);
     m_ui->printDpi->setValue(m_canvas->modeInfo()->printDpi());
     m_ui->printLandscape->setChecked(m_canvas->modeInfo()->printLandscape());
-    m_printSizeInches = m_canvas->modeInfo()->fixedSizeInches();
+    m_printSizeInches = canvasNatInches();
 
     // connect buttons
     connect(m_ui->chooseFilePath, SIGNAL(clicked()), this, SLOT(slotChoosePath()));
@@ -88,6 +94,9 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     connect(m_ui->printWidth, SIGNAL(valueChanged(double)), this, SLOT(slotPrintSizeChanged()));
     connect(m_ui->printHeight, SIGNAL(valueChanged(double)), this, SLOT(slotPrintSizeChanged()));
     connect(m_ui->printDpi, SIGNAL(valueChanged(int)), this, SLOT(slotPrintSizeChanged()));
+    connect(m_ui->pdfPageButton, SIGNAL(clicked()), this, SLOT(slotChoosePdfPage()));
+    connect(m_ui->pdfPreviewButton, SIGNAL(clicked()), this, SLOT(slotPdfPreview()));
+    connect(m_ui->pdfRes, SIGNAL(valueChanged(int)), this, SLOT(slotPdfResChanged(int)));
     connect(m_ui->svgChooseFilePath, SIGNAL(clicked()), this, SLOT(slotChooseSvgPath()));
     bool imperial = QLocale::system().measurementSystem() == QLocale::ImperialSystem;
     m_ui->printUnity->setCurrentIndex(imperial ? 2 : 1);
@@ -103,6 +112,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
         m_ui->clImage->setFont(font);
         m_ui->clWallpaper->setFont(font);
         m_ui->clPosteRazor->setFont(font);
+        m_ui->clPdf->setFont(font);
         m_ui->clSvg->setFont(font);
 
         // set the focus to the print button
@@ -118,6 +128,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
 ExportWizard::~ExportWizard()
 {
     delete m_ui;
+    delete m_pdfPrinter;
 }
 
 void ExportWizard::setWallpaper()
@@ -253,7 +264,7 @@ void ExportWizard::startPosterazor()
     App::settings->endGroup();
 }
 
-void ExportWizard::print()
+bool ExportWizard::printPaper()
 {
     // update the realsizeinches, just in case..
     slotPrintSizeChanged();
@@ -276,8 +287,76 @@ void ExportWizard::print()
         }
     }
 
-    // do the printing
-    m_canvas->printAsImage(printDpi, printSize, m_ui->printLandscape->isChecked(), printRatio);
+    // setup printer
+    QPrinter printer;
+    printer.setResolution(printDpi);
+    printer.setPaperSize(QPrinter::A4);
+
+    // configure printer via the print dialog
+    QPrintDialog printDialog(&printer);
+    if (printDialog.exec() != QDialog::Accepted)
+        return false;
+
+    // TODO: use different ratio modes?
+    QImage image = m_canvas->renderedImage(printSize, printRatio);
+    if (m_ui->printLandscape->isChecked()) {
+        // Print in landscape mode, so rotate
+        QMatrix matrix;
+        matrix.rotate(90);
+        image = image.transformed(matrix);
+    }
+
+    // And then print
+    QPainter painter;
+    painter.drawImage(image.rect(), image);
+    painter.end();
+    return true;
+}
+
+bool ExportWizard::printPdf()
+{
+    // get dpi, compute printed size
+    int printDpi = m_pdfPrinter->resolution();
+    QSizeF canvasPrintSize = canvasNatInches() * (qreal)printDpi;
+    Qt::AspectRatioMode printAspect = Qt::KeepAspectRatio;
+
+    // open the painter over the printer
+    QPainter painter;
+    if (!painter.begin(m_pdfPrinter)) {
+        QMessageBox::warning(0, tr("PDF Error"), tr("Error saving to the PDF file, try to chose another one."), QMessageBox::Cancel);
+        return false;
+    }
+    QRect paperRect = painter.viewport();
+    QRect targetRect(0, 0, (int)canvasPrintSize.width(), (int)canvasPrintSize.height());
+
+    // adapt rect Scale
+    switch (m_ui->pdfScaleCombo->currentIndex()) {
+    case 0:     // Original
+        break;
+    case 1: {   // Fit to page
+        QSize targetSize = targetRect.size();
+        targetSize.scale(paperRect.size(), printAspect);
+        targetRect.setSize(targetSize);
+        } break;
+    }
+
+    // adapt Position
+    switch (m_ui->pdfPosCombo->currentIndex()) {
+    case 0:     // Top Left
+        targetRect.moveTopLeft(paperRect.topLeft());
+        break;
+    case 1:     // Center
+        targetRect.moveCenter(paperRect.center());
+        break;
+    }
+
+    // render to PDF
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform, true);
+    RenderOpts::PDFExporting = true;
+    m_canvas->renderVisible(&painter, targetRect, m_canvas->sceneRect(), Qt::IgnoreAspectRatio, true);
+    RenderOpts::PDFExporting = false;
+    painter.end();
+    return true;
 }
 
 void ExportWizard::saveSvg()
@@ -314,7 +393,7 @@ void ExportWizard::setPage(int pageId)
     // adapt buttons
     QList<QWizard::WizardButton> layout;
     layout << QWizard::Stretch << QWizard::BackButton;
-    if (pageId >= PageWallpaper && pageId <= PageSvg)
+    if (pageId >= PageWallpaper && pageId <= PagePdf)
         layout << QWizard::FinishButton;
     layout << QWizard::CancelButton;
     setButtonLayout(layout);
@@ -328,6 +407,20 @@ void ExportWizard::setPage(int pageId)
         case PageImage:
             if (m_ui->filePath->text().isEmpty())
                 slotChoosePath();
+            break;
+        case PagePdf:
+            if (!m_pdfPrinter) {
+                m_pdfPrinter = new QPrinter;
+                m_pdfPrinter->setOutputFormat(QPrinter::PdfFormat);
+                m_pdfPrinter->setResolution(m_canvas->modeInfo()->printDpi());
+                m_pdfPrinter->setPaperSize(canvasNatInches(), QPrinter::Inch);
+                m_pdfPrinter->setPageMargins(0, 0, 0, 0, QPrinter::Inch);
+                //m_pdfPrinter->setOutputFileName("/tmp/aa.pdf");
+                initPageSizeNames();
+                slotPdfUpdateGui();
+            }
+            if (m_pdfPrinter->outputFileName().isEmpty())
+                slotChoosePdfPath();
             break;
         case PageSvg:
             if (m_ui->svgFilePath->text().isEmpty())
@@ -346,12 +439,56 @@ int ExportWizard::nextId() const
         return m_nextId;
 
     // final pages
-    if (pageId >= PageWallpaper && pageId <= PageSvg)
+    if (pageId >= PageWallpaper && pageId <= PagePdf)
         return -1;
 
     // fallback
     qWarning("ExportWizard::nextId: unhandled nextId for page %d", pageId);
     return -1;
+}
+
+QSizeF ExportWizard::canvasNatInches() const
+{
+    if (m_canvas->modeInfo()->fixedSize())
+        return m_canvas->modeInfo()->fixedSizeInches();
+    QSize canvasPixels = m_canvas->sceneSize();
+    QPointF canvasRes = m_canvas->modeInfo()->screenDpi();
+    return QSizeF((qreal)canvasPixels.width() / canvasRes.x(), (qreal)canvasPixels.height() / canvasRes.y());
+}
+
+void ExportWizard::initPageSizeNames()
+{
+    m_paperSizeNames[QPrinter::A0] = QPrintDialog::tr("A0");
+    m_paperSizeNames[QPrinter::A1] = QPrintDialog::tr("A1");
+    m_paperSizeNames[QPrinter::A2] = QPrintDialog::tr("A2");
+    m_paperSizeNames[QPrinter::A3] = QPrintDialog::tr("A3");
+    m_paperSizeNames[QPrinter::A4] = QPrintDialog::tr("A4");
+    m_paperSizeNames[QPrinter::A5] = QPrintDialog::tr("A5");
+    m_paperSizeNames[QPrinter::A6] = QPrintDialog::tr("A6");
+    m_paperSizeNames[QPrinter::A7] = QPrintDialog::tr("A7");
+    m_paperSizeNames[QPrinter::A8] = QPrintDialog::tr("A8");
+    m_paperSizeNames[QPrinter::A9] = QPrintDialog::tr("A9");
+    m_paperSizeNames[QPrinter::B0] = QPrintDialog::tr("B0");
+    m_paperSizeNames[QPrinter::B1] = QPrintDialog::tr("B1");
+    m_paperSizeNames[QPrinter::B2] = QPrintDialog::tr("B2");
+    m_paperSizeNames[QPrinter::B3] = QPrintDialog::tr("B3");
+    m_paperSizeNames[QPrinter::B4] = QPrintDialog::tr("B4");
+    m_paperSizeNames[QPrinter::B5] = QPrintDialog::tr("B5");
+    m_paperSizeNames[QPrinter::B6] = QPrintDialog::tr("B6");
+    m_paperSizeNames[QPrinter::B7] = QPrintDialog::tr("B7");
+    m_paperSizeNames[QPrinter::B8] = QPrintDialog::tr("B8");
+    m_paperSizeNames[QPrinter::B9] = QPrintDialog::tr("B9");
+    m_paperSizeNames[QPrinter::B10] = QPrintDialog::tr("B10");
+    m_paperSizeNames[QPrinter::C5E] = QPrintDialog::tr("C5E");
+    m_paperSizeNames[QPrinter::DLE] = QPrintDialog::tr("DLE");
+    m_paperSizeNames[QPrinter::Executive] = QPrintDialog::tr("Executive");
+    m_paperSizeNames[QPrinter::Folio] = QPrintDialog::tr("Folio");
+    m_paperSizeNames[QPrinter::Ledger] = QPrintDialog::tr("Ledger");
+    m_paperSizeNames[QPrinter::Legal] = QPrintDialog::tr("Legal");
+    m_paperSizeNames[QPrinter::Letter] = QPrintDialog::tr("Letter");
+    m_paperSizeNames[QPrinter::Tabloid] = QPrintDialog::tr("Tabloid");
+    m_paperSizeNames[QPrinter::Comm10E] = QPrintDialog::tr("US Common #10 Envelope");
+    m_paperSizeNames[QPrinter::Custom] = QPrintDialog::tr("Custom");
 }
 
 static QString getSavePath(const QString & initialValue, const QString & defaultExt, const QString & title, const QString & type)
@@ -381,6 +518,22 @@ void ExportWizard::slotChoosePath()
                                    tr("Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)"));
     if (!savePath.isEmpty())
         m_ui->filePath->setText(savePath);
+}
+
+void ExportWizard::slotChoosePdfPage()
+{
+    QPageSetupDialog pageSetup(m_pdfPrinter);
+    if (pageSetup.exec() == QDialog::Accepted)
+        slotPdfUpdateGui();
+}
+
+void ExportWizard::slotChoosePdfPath()
+{
+    QString savePath = getSavePath(m_pdfPrinter->outputFileName(), "pdf",
+                                   tr("Choose the PDF file"),
+                                   tr("PDF (*.pdf)"));
+    if (!savePath.isEmpty())
+        m_pdfPrinter->setOutputFileName(savePath);
 }
 
 void ExportWizard::slotChooseSvgPath()
@@ -428,6 +581,7 @@ void ExportWizard::slotPrintSizeChanged()
     qreal newWidth = m_ui->printWidth->value();
     qreal newHeight = m_ui->printHeight->value();
     qreal newDpi = (qreal)m_ui->printDpi->value();
+    qWarning("SPSC %f %f %f!", newWidth, newHeight, newDpi);
     switch(m_ui->printUnity->currentIndex()) {
         case 0: // pixels/dpi -> inches
             m_printSizeInches = QSizeF(newWidth / newDpi, newHeight / newDpi);
@@ -441,6 +595,42 @@ void ExportWizard::slotPrintSizeChanged()
     }
 }
 
+void ExportWizard::slotPdfPreview()
+{
+    QPrintPreviewDialog *previewDialog = new QPrintPreviewDialog(m_pdfPrinter, this);
+    connect(previewDialog, SIGNAL(paintRequested(QPrinter*)), this, SLOT(printPdf()));
+    previewDialog->exec();
+    delete previewDialog;
+}
+
+void ExportWizard::slotPdfResChanged(int value)
+{
+    if (m_pdfPrinter)
+        m_pdfPrinter->setResolution(value);
+}
+
+void ExportWizard::slotPdfUpdateGui()
+{
+    if (!m_pdfPrinter)
+        return;
+
+    // change paper button text
+    QPrinter::PaperSize pNumber = m_pdfPrinter->paperSize();
+    QString paperName = m_paperSizeNames.contains(pNumber) ? m_paperSizeNames[pNumber] : tr("Other");
+    m_ui->pdfPageButton->setText(paperName);
+//    if (pNumber == QPrinter::Custom) {
+        bool useInches = QLocale::system().measurementSystem() == QLocale::ImperialSystem;
+        QSizeF paperSize = m_pdfPrinter->paperSize(useInches ? QPrinter::Inch : QPrinter::Millimeter);
+        if (useInches)
+            m_ui->pdfPageButton->setText(tr("%1  (%2 x %3 inch)").arg(paperName).arg(paperSize.width()).arg(paperSize.height()));
+        else
+            m_ui->pdfPageButton->setText(tr("%1  (%2 x %3 cm)").arg(paperName).arg(paperSize.width() / 10).arg(paperSize.height() / 10));
+//    }
+
+    // change resolution text
+    m_ui->pdfRes->setValue(m_pdfPrinter->resolution());
+}
+
 void ExportWizard::slotFinished(int code)
 {
     if (code == QDialog::Accepted) {
@@ -448,7 +638,8 @@ void ExportWizard::slotFinished(int code)
             case PageWallpaper: setWallpaper(); break;
             case PageImage: saveImage(); break;
             case PagePosteRazor: startPosterazor(); break;
-            case PagePrint: print(); break;
+            case PagePrint: printPaper(); break;
+            case PagePdf: printPdf(); break;
             case PageSvg: saveSvg(); break;
             default:
                 qWarning("ExportWizard::slotFinished: unhndled end for page %d", currentId());

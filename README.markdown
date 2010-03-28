@@ -149,6 +149,7 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist
 
+* Make the propeties dialog moveable/stay in the current view (reqby Martin Zimmermann)
 * Integrate Marco Bavagnoli updates on the googleimagedownloader
 * Parametric "Random placement", so the image can not be rotated, for example
 * Change all pictures opacity at the same time (workaround for the 'random placement' that changes opacity too)

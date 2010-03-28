@@ -37,6 +37,7 @@ Q_IMPORT_PLUGIN(qtiff)
 bool RenderOpts::LastMirrored = true;
 bool RenderOpts::HQRendering = false;
 bool RenderOpts::ARGBWindow = false;
+bool RenderOpts::PDFExporting = false;
 bool RenderOpts::OpenGLWindow = false;
 bool RenderOpts::OxygenStyleQuirks = false;
 bool VideoProvider::Disable = false;

@@ -23,9 +23,11 @@
 #include "BezierCubicItem.h"
 #include "TextProperties.h"
 
+#include <QAbstractTextDocumentLayout>
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QPainter>
 #include <QTextDocument>
@@ -259,69 +261,71 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::
     //if (shapedPaint && drawHovering)
     //    painter->strokePath(m_shapePath, QPen(Qt::red, 0));
 
-#if 0
-    // standard rich text document drawing
-    QAbstractTextDocumentLayout::PaintContext pCtx;
-    m_text->documentLayout()->draw(painter, pCtx);
-#else
-    // manual drawing
-    QPointF blockPos = shapedPaint ? QPointF(0, 0) : -m_textRect.topLeft();
+    // TEMP - for PDF exporting - standard rich text document drawing
+    if (RenderOpts::PDFExporting) {
+        if (shapedPaint)
+            QMessageBox::information(0, tr("PDF Export Warning"), tr("Shaped text could not be exported in PDF"), QMessageBox::Ok);
+        QAbstractTextDocumentLayout::PaintContext pCtx;
+        m_text->documentLayout()->draw(painter, pCtx);
+    } else {
+        // manual drawing
+        QPointF blockPos = shapedPaint ? QPointF(0, 0) : -m_textRect.topLeft();
 
-    // 1. for each Text Block
-    int blockRectIdx = 0;
-    for (QTextBlock tb = m_text->begin(); tb.isValid(); tb = tb.next()) {
-        if (!tb.isVisible() || blockRectIdx > m_blockRects.size())
-            continue;
-
-        // 1.1. compute text insertion position
-        const QRect & blockRect = m_blockRects[blockRectIdx++];
-        QPointF iPos = shapedPaint ? blockPos : blockPos - blockRect.topLeft();
-        blockPos += QPointF(0, blockRect.height());
-
-        qreal curLen = 8;
-
-        // 1.2. iterate over text fragments
-        for (QTextBlock::iterator tbIt = tb.begin(); !(tbIt.atEnd()); ++tbIt) {
-            QTextFragment frag = tbIt.fragment();
-            if (!frag.isValid())
+        // 1. for each Text Block
+        int blockRectIdx = 0;
+        for (QTextBlock tb = m_text->begin(); tb.isValid(); tb = tb.next()) {
+            if (!tb.isVisible() || blockRectIdx > m_blockRects.size())
                 continue;
 
-            // 1.2.1. setup painter and metrics for text fragment
-            QTextCharFormat format = frag.charFormat();
-            QFont font = format.font();
-            painter->setFont(font);
-            painter->setPen(format.foreground().color());
-            painter->setBrush(Qt::NoBrush);
-            QFontMetrics metrics(font);
+            // 1.1. compute text insertion position
+            const QRect & blockRect = m_blockRects[blockRectIdx++];
+            QPointF iPos = shapedPaint ? blockPos : blockPos - blockRect.topLeft();
+            blockPos += QPointF(0, blockRect.height());
 
-            // 1.2.2. draw each character
-            QString text = frag.text();
-            foreach (const QChar & textChar, text) {
-                const qreal charWidth = metrics.width(textChar);
-                if (shapedPaint) {
-                    // find point on shape and angle
-                    qreal t = m_shapePath.percentAtLength(curLen);
-                    QPointF pt = m_shapePath.pointAtPercent(t);
-                    qreal angle = -m_shapePath.angleAtPercent(t);
-                    if (m_shakeRadius > 0)
-                        pt += QPointF(1 + (qrand() % m_shakeRadius) - m_shakeRadius/2, 1 + (qrand() % (2*m_shakeRadius)) - m_shakeRadius);
+            qreal curLen = 8;
 
-                    // draw rotated letter
-                    painter->save();
-                    painter->translate(pt);
-                    painter->rotate(angle);
-                    painter->drawText(iPos, textChar);
-                    painter->restore();
+            // 1.2. iterate over text fragments
+            for (QTextBlock::iterator tbIt = tb.begin(); !(tbIt.atEnd()); ++tbIt) {
+                QTextFragment frag = tbIt.fragment();
+                if (!frag.isValid())
+                    continue;
 
-                    curLen += charWidth;
-                } else {
-                    painter->drawText(iPos, textChar);
-                    iPos += QPointF(charWidth, 0);
+                // 1.2.1. setup painter and metrics for text fragment
+                QTextCharFormat format = frag.charFormat();
+                QFont font = format.font();
+                painter->setFont(font);
+                painter->setPen(format.foreground().color());
+                painter->setBrush(Qt::NoBrush);
+                QFontMetrics metrics(font);
+
+                // 1.2.2. draw each character
+                QString text = frag.text();
+                foreach (const QChar & textChar, text) {
+                    const qreal charWidth = metrics.width(textChar);
+                    if (shapedPaint) {
+                        // find point on shape and angle
+                        qreal t = m_shapePath.percentAtLength(curLen);
+                        QPointF pt = m_shapePath.pointAtPercent(t);
+                        qreal angle = -m_shapePath.angleAtPercent(t);
+                        if (m_shakeRadius > 0)
+                            pt += QPointF(1 + (qrand() % m_shakeRadius) - m_shakeRadius/2, 1 + (qrand() % (2*m_shakeRadius)) - m_shakeRadius);
+
+                        // draw rotated letter
+                        painter->save();
+                        painter->translate(pt);
+                        painter->rotate(angle);
+                        painter->drawText(iPos, textChar);
+                        painter->restore();
+
+                        curLen += charWidth;
+                    } else {
+                        painter->drawText(iPos, textChar);
+                        iPos += QPointF(charWidth, 0);
+                    }
                 }
             }
         }
     }
-#endif
 
     painter->restore();
 }

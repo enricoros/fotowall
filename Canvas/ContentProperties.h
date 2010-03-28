@@ -23,7 +23,6 @@ class ContentProperties : public QWidget, public Ui::ContentProperties {
     public:
         friend class AbstractContent;
         ContentProperties(QWidget *parent = 0);
-        ~ContentProperties();
 };
 
 #endif

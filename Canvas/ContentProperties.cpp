@@ -22,7 +22,3 @@ ContentProperties::ContentProperties(QWidget *parent)
     cFxCombo->hide();
 #endif
 }
-
-ContentProperties::~ContentProperties()
-{
-}

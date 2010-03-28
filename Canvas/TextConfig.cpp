@@ -25,7 +25,7 @@ TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
 {
     // inject Text Editor
     m_editor = new RichTextEditorDialog();
-    m_editor->setMinimumSize(320, 200);
+    m_editor->setMinimumSize(500, 200);
     m_editor->setText(m_textContent->toHtml());
     m_editor->adjustSize();
     addTab(m_editor, tr("Text"), false, true);
@@ -33,10 +33,6 @@ TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
 
     // show the ok button
     showOkButton(true);
-}
-
-TextConfig::~TextConfig()
-{
 }
 
 void TextConfig::slotOkClicked()

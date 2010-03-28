@@ -70,6 +70,7 @@ QIcon createIconSet(QString iconName)
 
 
 #include "richtexteditor_p.h"
+#include "3rdparty/qtcolortriangle/QtColorTriangle"
  ///#include "htmlhighlighter_p.h"
  ///#include "iconselector_p.h"
  ///#include "ui_addlinkdialog.h"
@@ -83,23 +84,24 @@ QIcon createIconSet(QString iconName)
 #include <QtCore/QPointer>
 
 #include <QtGui/QAction>
-#include <QtGui/QColorDialog>
 #include <QtGui/QComboBox>
+#include <QtGui/QCursor>
+#include <QtGui/QDialogButtonBox>
 #include <QtGui/QFontDatabase>
-#include <QtGui/QTextCursor>
-#include <QtGui/QPainter>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QIcon>
 #include <QtGui/QMenu>
 #include <QtGui/QMoveEvent>
+#include <QtGui/QPainter>
+#include <QtGui/QPushButton>
 #include <QtGui/QTabWidget>
+#include <QtGui/QTextCursor>
 #include <QtGui/QTextDocument>
 #include <QtGui/QTextBlock>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
+#include <QtGui/QWidgetAction>
 
 ///static const char *RichTextDialogC = "RichTextDialog";
 ///static const char *Geometry = "Geometry";
@@ -250,7 +252,7 @@ void HtmlTextEdit::actionTriggered(QAction *action)
 {
     insertPlainText(action->data().toString());
 }
-
+/*
 class ColorAction : public QAction
 {
     Q_OBJECT
@@ -293,13 +295,14 @@ void ColorAction::setColor(const QColor &color)
 
 void ColorAction::chooseColor()
 {
-    const QColor col = QColorDialog::getColor(m_color, 0);
+    const QColor col = QColorTriangleDialog::getColor(m_color, 0, tr("Select Text Color"),
+        QColorDialog::ShowAlphaChannel | QColorDialog::DontUseNativeDialog);
     if (col.isValid() && col != m_color) {
         setColor(col);
         emit colorChanged(m_color);
     }
 }
-
+*/
 class RichTextEditorToolBar : public QToolBar
 {
     Q_OBJECT
@@ -335,8 +338,8 @@ private:
     ///QAction *m_align_right_action;
     ///QAction *m_align_justify_action;
     ///QAction *m_link_action;
-    //QAction *m_image_action;
-    ColorAction *m_color_action;
+    ///QAction *m_image_action;
+    ///ColorAction *m_color_action;
     QComboBox *m_font_size_input;
 
     QFontComboBox *m_font_face_input;   // +fotowall
@@ -363,15 +366,15 @@ RichTextEditorToolBar::RichTextEditorToolBar(RichTextEditor *editor,
     QToolBar(parent),
     ///m_link_action(new QAction(this)),
     ///m_image_action(new QAction(this)),
-    m_color_action(new ColorAction(this)),
+    ///m_color_action(new ColorAction(this)),
     m_font_size_input(new QComboBox),
     m_font_face_input(new QFontComboBox(this)), // +fotowall
     m_editor(editor)
 {
     // Text color button
-    connect(m_color_action, SIGNAL(colorChanged(QColor)),
-            this, SLOT(colorChanged(QColor)));
-    addAction(m_color_action);
+    ///connect(m_color_action, SIGNAL(colorChanged(QColor)),
+    ///        this, SLOT(colorChanged(QColor)));
+    ///addAction(m_color_action);
 
     ///addSeparator();
 
@@ -641,7 +644,7 @@ void RichTextEditorToolBar::updateActions()
     if (fIdx != -1)
         m_font_face_input->setCurrentIndex(fIdx);
 
-    m_color_action->setColor(m_editor->textColor());
+    ///m_color_action->setColor(m_editor->textColor());
 }
 
 RichTextEditor::RichTextEditor(QWidget *parent)
@@ -714,7 +717,7 @@ QString RichTextEditor::text(Qt::TextFormat format) const
 
 RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     QDialog(parent),
-    m_editor(new RichTextEditor()),
+    m_editor(new RichTextEditor),
     m_text_edit(new HtmlTextEdit),
     m_tab_widget(new QTabWidget),
     m_state(Clean)
@@ -732,12 +735,22 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     QToolBar *tool_bar = m_editor->createToolBar(this);
     tool_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
+    m_color_tri = new QtColorTriangle;
+    m_color_tri->setMinimumWidth(160);
+    QPalette triPal;
+    triPal.setBrush(QPalette::Mid, m_editor->palette().color(QPalette::Base).darker(110));
+    m_color_tri->setPalette(triPal);
+    connect(m_color_tri, SIGNAL(colorChanged(QColor)), m_editor, SLOT(setTextColor(QColor)));
+    connect(m_editor, SIGNAL(textChanged()), this, SLOT(slotUpdateActions()));
+    connect(m_editor, SIGNAL(stateChanged()), this, SLOT(slotUpdateActions()));
+
     QWidget *rich_edit = new QWidget;
-    QVBoxLayout *rich_edit_layout = new QVBoxLayout(rich_edit);
+    QGridLayout *rich_edit_layout = new QGridLayout(rich_edit);
     rich_edit_layout->setMargin(0);     // +fotowall
     rich_edit_layout->setSpacing(0);    // +fotowall
-    rich_edit_layout->addWidget(tool_bar);
-    rich_edit_layout->addWidget(m_editor);
+    rich_edit_layout->addWidget(tool_bar, 0, 0, 1, 2);
+    rich_edit_layout->addWidget(m_editor, 1, 0, 1, 1);
+    rich_edit_layout->addWidget(m_color_tri, 1, 1, 1, 1);
 
     QWidget *plain_edit = new QWidget;
     QVBoxLayout *plain_edit_layout = new QVBoxLayout(plain_edit);
@@ -770,10 +783,6 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     m_text_edit->setFrameStyle(QFrame::NoFrame);   // +fotowall
     m_editor->setFocusPolicy(Qt::StrongFocus);
     m_editor->setFocus();
-}
-
-RichTextEditorDialog::~RichTextEditorDialog()
-{
 }
 
 void RichTextEditorDialog::focusEditor()
@@ -855,6 +864,11 @@ void RichTextEditorDialog::richTextChanged()
 void RichTextEditorDialog::sourceChanged()
 {
     m_state = SourceChanged;
+}
+
+void RichTextEditorDialog::slotUpdateActions()
+{
+    m_color_tri->animateSetColor(m_editor->textColor());
 }
 
 #include "richtexteditor.moc"

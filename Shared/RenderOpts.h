@@ -25,6 +25,7 @@ class RenderOpts
 
         // global options
         static bool HQRendering;
+        static bool PDFExporting;
         static bool ARGBWindow;
         static bool OpenGLWindow;
 
