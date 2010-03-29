@@ -2,7 +2,6 @@ HEADERS += \
     App/App.h \
     App/CanvasAppliance.h \
     App/ExactSizeDialog.h \
-    App/ExportWizard.h \
     App/FotowallFile.h \
     App/Hardware3DTest.h \
     App/HelpAppliance.h \
@@ -22,7 +21,6 @@ SOURCES += \
     App/App.cpp \
     App/CanvasAppliance.cpp \
     App/ExactSizeDialog.cpp \
-    App/ExportWizard.cpp \
     App/FotowallFile.cpp \
     App/Hardware3DTest.cpp \
     App/HelpAppliance.cpp \
@@ -41,13 +39,28 @@ SOURCES += \
 FORMS += \
     App/CanvasAppliance.ui \
     App/ExactSizeDialog.ui \
-    App/ExportWizard.ui \
     App/HelpAppliance.ui \
     App/MainWindow.ui \
     App/PictureSearchWidget.ui \
     App/VersionCheckDialog.ui
 
-!contains(DEFINES, NO_WORDCLOUD_APPLIANCE) {
+!contains(CONFIG, no-export): {
+    DEFINES += HAS_EXPORTDIALOG
+    HEADERS += \
+        App/ExportWizard.h
+
+    SOURCES += \
+        App/ExportWizard.cpp
+
+    FORMS += \
+        App/ExportWizard.ui
+} else: {
+    message("ExportWizard (and PosteRazor) won't be compiled")
+    DEFINES -= HAS_EXPORTDIALOG
+}
+
+!contains(CONFIG, no-wordcloud-appliance): {
+    DEFINES += HAS_WORDCLOUD_APPLIANCE
     HEADERS += \
         App/WordcloudAppliance.h \
         App/WordcloudSidebar.h
@@ -59,4 +72,7 @@ FORMS += \
     FORMS += \
         App/WordcloudAppliance.ui \
         App/WordcloudSidebar.ui
+} else: {
+    message("Wordcloud appliance won't be compiled")
+    DEFINES -= HAS_WORDCLOUD_APPLIANCE
 }

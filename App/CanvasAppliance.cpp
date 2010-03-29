@@ -23,7 +23,9 @@
 #include "Canvas/WordcloudContent.h"
 #include "App.h"
 #include "ExactSizeDialog.h"
+#if defined(HAS_EXPORTDIALOG)
 #include "ExportWizard.h"
+#endif
 #include "FotowallFile.h"
 #include "Settings.h"
 #include "Workflow.h"
@@ -55,7 +57,11 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     ui.canvasPropertiesBox->expand();
     connect(ui.projectCombo, SIGNAL(activated(int)), this, SLOT(slotProjectComboActivated(int)));
     connect(ui.saveButton, SIGNAL(clicked()), this, SLOT(slotFileSave()));
+#if defined(HAS_EXPORTDIALOG)
     connect(ui.exportButton, SIGNAL(clicked()), this, SLOT(slotFileExport()));
+#else
+    ui.exportButton->hide();
+#endif
 
     // configure the appliance
     windowTitleSet(m_extCanvas->prettyBaseName());
@@ -316,7 +322,7 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
         }
         QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
         if (screenDpi.x() == screenDpi.y())
-            sizeDialog.ui.screenDpi->setValue(screenDpi.x());
+            sizeDialog.ui.screenDpi->setValue((int)screenDpi.x());
         else
             sizeDialog.ui.screenDpi->setSpecialValueText(QString("%1, %2").arg(screenDpi.x()).arg(screenDpi.y()));
         if (sizeDialog.exec() != QDialog::Accepted)
@@ -513,9 +519,13 @@ bool CanvasAppliance::slotFileSave()
 
 bool CanvasAppliance::slotFileExport()
 {
+#if defined(HAS_EXPORTDIALOG)
     bool printPreferred = m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeNormal &&
                           m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeWallpaper;
     return ExportWizard(m_extCanvas, printPreferred).exec();
+#else
+    return false;
+#endif
 }
 
 void CanvasAppliance::slotEditContent(AbstractContent *content)
@@ -528,7 +538,7 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-#ifndef NO_WORDCLOUD_APPLIANCE
+#ifdef HAS_WORDCLOUD_APPLIANCE
         App::workflow->stackSlaveWordcloud_A(wc);
 #else
         Q_UNUSED(wc);

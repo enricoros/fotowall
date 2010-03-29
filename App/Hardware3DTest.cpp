@@ -171,13 +171,13 @@ void Hardware3DTest::showResults()
 
     double tyS = DATAPOINT(0, m_results[0]).y();
     p.setPen(Qt::blue);
-    p.drawText(margin + radius + 10, tyS, colsWidth, 20, 0, tr("Non-OpenGL"));
+    p.drawText(margin + radius + 10, (int)tyS, (int)colsWidth, 20, 0, tr("Non-OpenGL"));
     double tyO = DATAPOINT(0, m_results[cols]).y();
     p.setPen(Qt::darkGreen);
-    p.drawText(margin + radius + 10, tyO, colsWidth, 20, 0, tr("OpenGL"));
+    p.drawText(margin + radius + 10, (int)tyO, (int)colsWidth, 20, 0, tr("OpenGL"));
 
     p.setPen(Qt::darkGray);
-    p.drawText(margin + radius, margin + radius + rowsHeight + radius, colsWidth, 20, Qt::AlignCenter, tr("samples (%1...%2)").arg(1).arg(TESTSIZE));
+    p.drawText(margin + radius, margin + radius + rowsHeight + radius, (int)colsWidth, 20, Qt::AlignCenter, tr("samples (%1...%2)").arg(1).arg(TESTSIZE));
     p.translate(margin, margin + radius + rowsHeight);
     p.rotate(-90);
     p.drawText(0, -20, rowsHeight, 20, Qt::AlignCenter, tr("fps (%1...%2)").arg(min).arg(max));
@@ -262,7 +262,7 @@ void Hardware3DTest::nextStep()
 void Hardware3DTest::slotViewRepainted(qreal duration)
 {
     // got the measure
-    m_results[m_resultIdx++] = 1.0 / qMax(duration, 0.0001);
+    m_results[m_resultIdx++] = 1.0 / qMax(duration, (qreal)0.0001);
     nextStep();
 }
 

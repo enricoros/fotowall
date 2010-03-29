@@ -36,7 +36,7 @@ class Workflow : public QObject
         bool loadCanvas_A(const QString & fwFilePath = QString());
         void startCanvas_A();
         void stackSlaveCanvas_A(SingleResourceLoaner *);
-#ifndef NO_WORDCLOUD_APPLIANCE
+#ifdef HAS_WORDCLOUD_APPLIANCE
         void startWordcloud_A();
         void stackSlaveWordcloud_A(SingleResourceLoaner *);
 #endif
@@ -52,7 +52,7 @@ class Workflow : public QObject
         struct Command {
             enum Type {
                 ResetToLevel, MasterCanvas, SlaveCanvas
-#ifndef NO_WORDCLOUD_APPLIANCE
+#ifdef HAS_WORDCLOUD_APPLIANCE
                 , MasterWordcloud, SlaveWordcloud
 #endif
             };
