@@ -86,12 +86,16 @@ MainWindow::MainWindow(QWidget * parent)
     addNavigationWidget(helpBar, 0, Qt::AlignRight);
 
     // show (with last geometry)
+#if defined(Q_OS_SYMBIAN)
+    showFullScreen();
+#else
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
         QRect desktopGeometry = QApplication::desktop()->availableGeometry();
         resize(2 * desktopGeometry.width() / 3, 2 * desktopGeometry.height() / 3);
         showMaximized();
     } else
         show();
+#endif
 
 #if QT_VERSION >= 0x040500
     // re-apply transparency

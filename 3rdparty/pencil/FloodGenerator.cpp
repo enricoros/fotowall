@@ -97,7 +97,7 @@ static FloodPolys recursiveParse( QDomElement & element, const QString & element
                 else if ( sName == "stroke" )
                     sPen.setColor( QColor( sValue ) );
                 else if ( sName == "stroke-width" )
-                    sPen.setWidth( sValue.toDouble() );
+                    sPen.setWidth( (int)sValue.toDouble() );
                 else {
                     // suppress debug
                 }
@@ -222,7 +222,7 @@ FloodPolys FloodGenerator::spreadPolys( const FloodPolys & source, const QRect &
     FloodPolys spread;
 
     // precalc params
-    int rad = hypot( outGemetry.width(), outGemetry.height() );
+    int rad = (int)hypot( outGemetry.width(), outGemetry.height() );
     Vector2 center( outGemetry.center().x(), outGemetry.center().y() );
 
     FloodPolys::const_iterator it = source.begin(), end = source.end();

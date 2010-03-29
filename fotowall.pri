@@ -22,10 +22,12 @@ include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 
 # Translations of the core Fotowall files
-TRANSLATIONS += \
-    translations/fotowall_de.ts \
-    translations/fotowall_en.ts \
-    translations/fotowall_fr.ts \
-    translations/fotowall_it.ts \
-    translations/fotowall_pl.ts \
-    translations/fotowall_pt_BR.ts
+!symbian: {
+    TRANSLATIONS += \
+        translations/fotowall_de.ts \
+        translations/fotowall_en.ts \
+        translations/fotowall_fr.ts \
+        translations/fotowall_it.ts \
+        translations/fotowall_pl.ts \
+        translations/fotowall_pt_BR.ts
+}
