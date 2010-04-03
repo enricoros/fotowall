@@ -61,7 +61,7 @@ HomeAppliance::HomeAppliance(QObject *parent)
     m_scene = new HomeScene;
     connect(m_scene, SIGNAL(keyPressed(int)), this, SLOT(slotSceneKeyPressed(int)));
     connect(m_scene, SIGNAL(startCanvas()), this, SLOT(slotStartCanvas()));
-#ifndef NO_WORDCLOUD_APPLIANCE
+#ifdef HAS_WORDCLOUD_APPLIANCE
     connect(m_scene, SIGNAL(startWordcloud()), this, SLOT(slotStartWordcloud()));
 #endif
     connect(m_scene, SIGNAL(startWizard()), this, SLOT(slotStartWizard()));
@@ -143,7 +143,7 @@ void HomeAppliance::slotStartCanvas()
     App::workflow->startCanvas_A();
 }
 
-#ifndef NO_WORDCLOUD_APPLIANCE
+#ifdef HAS_WORDCLOUD_APPLIANCE
 void HomeAppliance::slotStartWordcloud()
 {
     App::workflow->startWordcloud_A();

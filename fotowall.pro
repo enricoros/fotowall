@@ -11,10 +11,10 @@ TEMPLATE = app
 TARGET = fotowall
 INCLUDEPATH += .
 DEPENDPATH += .
-MOC_DIR = .build
-OBJECTS_DIR = .build
-RCC_DIR = .build
-UI_DIR = .build
+MOC_DIR = build
+OBJECTS_DIR = build
+RCC_DIR = build
+UI_DIR = build
 QT = core \
     gui \
     svg \
@@ -22,17 +22,20 @@ QT = core \
     xml
 
 # use OpenGL where available
-contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
+!symbian:contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
     QT += opengl
 }
 
-# disable the Wordcloud appliance (for 0.9 release)
-DEFINES += NO_WORDCLOUD_APPLIANCE
+# disable the Wordcloud appliance
+symbian:CONFIG += no-wordcloud-appliance
+
+# disable the Export Dialog
+symbian:CONFIG += no-export
 
 # Fotowall input files
 include(fotowall.pri)
 # Posterazor input files
-include(3rdparty/posterazor/posterazor.pri)
+!contains(CONFIG, no-export): include(3rdparty/posterazor/posterazor.pri)
 
 # deployment on Linux
 unix {
