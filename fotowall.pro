@@ -26,10 +26,13 @@ QT = core \
 }
 
 # disable the Wordcloud appliance
-symbian:CONFIG += no-wordcloud-appliance
+symbian|simulator:CONFIG += no-wordcloud-appliance
 
 # disable the Export Dialog
-symbian:CONFIG += no-export
+symbian|simulator:CONFIG += no-export
+
+# disable the Webcam source (only stable on linux)
+macx|win32|symbian|simulator: CONFIG += no-webcam
 
 # Fotowall input files
 include(fotowall.pri)
@@ -63,6 +66,14 @@ macx {
     CONFIG += x86 ppc
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.3
+}
+
+# deployment on Symbian
+symbian {
+    TARGET.UID3 = 0xe32c87ed
+    # TARGET.CAPABILITY += AllFiles
+    TARGET.EPOCSTACKSIZE = 0x14000
+    TARGET.EPOCHEAPSIZE = 0x020000 0x800000
 }
 
 # static builds

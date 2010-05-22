@@ -45,11 +45,9 @@ QColor RenderOpts::hiColor;
 
 int main( int argc, char ** args )
 {
-#if !defined(Q_OS_MAC) // raster on OSX == b0rken
-    // use the Raster GraphicsSystem as default on 4.5+
-#if QT_VERSION >= 0x040500
+#if !defined(Q_OS_MAC) && !defined(Q_OS_SYMBIAN)
+    // use the Raster GraphicsSystem (but not on OsX and Symbian)
     QApplication::setGraphicsSystem("raster");
-#endif
 #endif
 
     QApplication app(argc, args);

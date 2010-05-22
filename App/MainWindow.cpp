@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QCloseEvent>
 #include <QDesktopWidget>
+#include <QFont>
 #include <QNetworkAccessManager>
 #include <QVariant>
 
@@ -50,7 +51,16 @@ MainWindow::MainWindow(QWidget * parent)
 {
     // setup widget
     applianceSetTitle(QString());
+#if !defined(Q_OS_SYMBIAN)
     setWindowIcon(QIcon(":/data/fotowall.png"));
+#endif
+
+    // smaller font on symbians
+#if defined(Q_OS_SYMBIAN)
+    QFont smallerFont;
+    smallerFont.setPointSize(8);
+    QApplication::setFont(smallerFont);
+#endif
 
     // init ui
     ui->setupUi(this);

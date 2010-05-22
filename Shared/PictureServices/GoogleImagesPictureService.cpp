@@ -250,6 +250,10 @@ void GoogleImagesPictureService::stopPrefetch(int idx)
 
 bool GoogleImagesPictureService::parseGoogleSearchReply(const QByteArray & data)
 {
+#if defined(Q_OS_SYMBIAN)
+    qWarning("GoogleImagesPictureService::parseGoogleSearchReply: disabled on symbian, doesn't run in the emulator");
+    return false;
+#else
     int missingImages = 99;
 
     // find out the start
@@ -343,6 +347,7 @@ bool GoogleImagesPictureService::parseGoogleSearchReply(const QByteArray & data)
         emit searchResult(photo->idx, pd.desc, pd.width_t, pd.height_t);
     }
     return true;
+#endif
 }
 
 bool GoogleImagesPictureService::startNextThumbnailJobs(int count)
