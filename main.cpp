@@ -33,6 +33,14 @@ Q_IMPORT_PLUGIN(qsvg)
 Q_IMPORT_PLUGIN(qtiff)
 #endif
 
+// lock orientation on symbian
+#if defined(Q_OS_SYMBIAN)
+#include <eikenv.h>
+#include <eikappui.h>
+#include <aknenv.h>
+#include <aknappui.h>
+#endif
+
 // init RenderOpts defaults
 bool RenderOpts::LastMirrored = true;
 bool RenderOpts::HQRendering = false;
@@ -50,6 +58,14 @@ int main( int argc, char ** args )
     QApplication::setGraphicsSystem("raster");
 #endif
 
+    // lock orientation on symbian
+#if defined(Q_OS_SYMBIAN)
+    CAknAppUi* appUi = dynamic_cast<CAknAppUi*> (CEikonEnv::Static()->AppUi());
+    TRAP_IGNORE(
+    if (appUi)
+        appUi->SetOrientationL(CAknAppUi::EAppUiOrientationLandscape);
+    );
+#endif
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
     app.setApplicationVersion("0.9.1");

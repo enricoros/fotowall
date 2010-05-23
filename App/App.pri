@@ -8,7 +8,6 @@ HEADERS += \
     App/HelpItem.h \
     App/HomeAppliance.h \
     App/HomeScene.h \
-    App/MainWindow.h \
     App/OnlineServices.h \
     App/PictureSearchWidget.h \
     App/SceneView.h \
@@ -27,7 +26,6 @@ SOURCES += \
     App/HelpItem.cpp \
     App/HomeAppliance.cpp \
     App/HomeScene.cpp \
-    App/MainWindow.cpp \
     App/OnlineServices.cpp \
     App/PictureSearchWidget.cpp \
     App/SceneView.cpp \
@@ -40,9 +38,18 @@ FORMS += \
     App/CanvasAppliance.ui \
     App/ExactSizeDialog.ui \
     App/HelpAppliance.ui \
-    App/MainWindow.ui \
     App/PictureSearchWidget.ui \
     App/VersionCheckDialog.ui
+
+contains(CONFIG, mobile-form-factor): {
+    HEADERS += App/MainWindow_s60.h
+    SOURCES += App/MainWindow_s60.cpp
+    FORMS += App/MainWindow_s60.ui
+} else: {
+    HEADERS += App/MainWindow.h
+    SOURCES += App/MainWindow.cpp
+    FORMS += App/MainWindow.ui
+}
 
 !contains(CONFIG, no-export): {
     DEFINES += HAS_EXPORTDIALOG

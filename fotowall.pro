@@ -31,6 +31,12 @@ symbian|simulator:CONFIG += no-wordcloud-appliance
 # disable the Export Dialog
 symbian|simulator:CONFIG += no-export
 
+# disable the LikeBack community feedback
+symbian|simulator:CONFIG += no-likeback
+
+# use a smaller form factor
+symbian|simulator:CONFIG += mobile-form-factor
+
 # disable the Webcam source (only stable on linux)
 macx|win32|symbian|simulator: CONFIG += no-webcam
 
@@ -69,11 +75,32 @@ macx {
 }
 
 # deployment on Symbian
-symbian {
+symbian|simulator: {
+    QT += multimedia
+
+    CONFIG += mobility
+
+    MOBILITY = \
+        contacts \
+        messaging \
+        multimedia
+
+    ICON = data/icon-s60.svg
+
+    TARGET.CAPABILITY = \
+        NetworkServices \
+    #    ReadUserData \
+    #    WriteUserData \
+    #    LocalServices \
+    #    UserEnvironment \
+    #    ReadDeviceData \
+    #    WriteDeviceData
+
     TARGET.UID3 = 0xe32c87ed
-    # TARGET.CAPABILITY += AllFiles
     TARGET.EPOCSTACKSIZE = 0x14000
     TARGET.EPOCHEAPSIZE = 0x020000 0x800000
+    # Because landscape orientation lock
+    LIBS += -lcone -leikcore -lavkon
 }
 
 # static builds
