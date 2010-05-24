@@ -25,20 +25,17 @@ QT = core \
     QT += opengl
 }
 
-# disable the Wordcloud appliance
-symbian|simulator:CONFIG += no-wordcloud-appliance
-
-# disable the Export Dialog
-symbian|simulator:CONFIG += no-export
-
-# disable the LikeBack community feedback
-symbian|simulator:CONFIG += no-likeback
-
-# use a smaller form factor
-symbian|simulator:CONFIG += mobile-form-factor
+# enable features for mobile user interfaces
+symbian|simulator: {
+    DEFINES += MOBILE_UI
+    CONFIG += no-wordcloud-appliance
+    CONFIG += no-export
+    CONFIG += no-likeback
+    CONFIG += no-webcam
+}
 
 # disable the Webcam source (only stable on linux)
-macx|win32|symbian|simulator: CONFIG += no-webcam
+macx|win32: CONFIG += no-webcam
 
 # Fotowall input files
 include(fotowall.pri)
@@ -76,16 +73,12 @@ macx {
 
 # deployment on Symbian
 symbian|simulator: {
-    QT += multimedia
+    ICON = data/icon-s60.svg
+
+    # QT += multimedia
 
     CONFIG += mobility
-
-    MOBILITY = \
-        contacts \
-        messaging \
-        multimedia
-
-    ICON = data/icon-s60.svg
+    MOBILITY = contacts messaging multimedia
 
     TARGET.CAPABILITY = \
         NetworkServices \
@@ -99,8 +92,6 @@ symbian|simulator: {
     TARGET.UID3 = 0xe32c87ed
     TARGET.EPOCSTACKSIZE = 0x14000
     TARGET.EPOCHEAPSIZE = 0x020000 0x800000
-    # Because landscape orientation lock
-    LIBS += -lcone -leikcore -lavkon
 }
 
 # static builds

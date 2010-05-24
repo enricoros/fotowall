@@ -22,12 +22,12 @@ class QNetworkAccessManager;
 class PictureSearchWidget;
 class Workflow;
 
-class MainWindow : public PlugGui::Container
+class MainWindowMobile : public PlugGui::Container
 {
     Q_OBJECT
     public:
-        MainWindow(QWidget * parent = 0);
-        ~MainWindow();
+        MainWindowMobile(QWidget * parent = 0);
+        ~MainWindowMobile();
 
     protected:
         // ::Appliance::Container

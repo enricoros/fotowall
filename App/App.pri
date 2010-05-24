@@ -41,7 +41,7 @@ FORMS += \
     App/PictureSearchWidget.ui \
     App/VersionCheckDialog.ui
 
-contains(CONFIG, mobile-form-factor): {
+contains(DEFINES, MOBILE_UI): {
     HEADERS += App/MainWindow_s60.h
     SOURCES += App/MainWindow_s60.cpp
     FORMS += App/MainWindow_s60.ui

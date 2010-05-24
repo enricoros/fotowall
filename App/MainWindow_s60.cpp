@@ -32,7 +32,7 @@
 #include <QNetworkAccessManager>
 #include <QVariant>
 
-MainWindow::MainWindow(QWidget * parent)
+MainWindowMobile::MainWindowMobile(QWidget * parent)
     : PlugGui::Container(parent)
     , ui(new Ui::MainWindow())
     , m_networkAccessManager(new QNetworkAccessManager)
@@ -104,7 +104,7 @@ MainWindow::MainWindow(QWidget * parent)
 #endif
 }
 
-MainWindow::~MainWindow()
+MainWindowMobile::~MainWindowMobile()
 {
     // save window geometry
     if (!isMaximized() && !isFullScreen())
@@ -119,12 +119,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QSize MainWindow::sceneViewSize() const
+QSize MainWindowMobile::sceneViewSize() const
 {
     return ui->sceneView->viewport()->size();
 }
 
-void MainWindow::applianceSetTitle(const QString & title)
+void MainWindowMobile::applianceSetTitle(const QString & title)
 {
     QString tString = title.isEmpty() ? QString() : title + " - ";
     tString += QCoreApplication::applicationName() + " ";
@@ -137,7 +137,7 @@ void MainWindow::applianceSetTitle(const QString & title)
     setWindowTitle(tString);
 }
 
-void MainWindow::applianceSetScene(AbstractScene * scene)
+void MainWindowMobile::applianceSetScene(AbstractScene * scene)
 {
     ui->sceneView->setScene(scene);
 }
@@ -151,7 +151,7 @@ static void removeLayoutChildWidges(QLayout * layout)
     }
 }
 
-void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
+void MainWindowMobile::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
     // clear the topbar layout hiding all widgets
     removeLayoutChildWidges(ui->applianceLeftBarLayout);
@@ -168,7 +168,7 @@ void MainWindow::applianceSetTopbar(const QList<QWidget *> & widgets)
     }
 }
 
-void MainWindow::applianceSetSidebar(QWidget * widget)
+void MainWindowMobile::applianceSetSidebar(QWidget * widget)
 {
     // clear the sidebar layout hiding any widget
     removeLayoutChildWidges(ui->applianceSidebarLayout);
@@ -183,13 +183,13 @@ void MainWindow::applianceSetSidebar(QWidget * widget)
     }
 }
 
-void MainWindow::applianceSetCentralwidget(QWidget * widget)
+void MainWindowMobile::applianceSetCentralwidget(QWidget * widget)
 {
     if (widget)
         qWarning("MainWindow::applianceSetCentralwidget: unsupported");
 }
 
-void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
+void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
 {
     if (key == App::CC_ShowPictureSearch) {
 
@@ -223,28 +223,28 @@ void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
         qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
 }
 
-void MainWindow::applianceSetFocusToScene()
+void MainWindowMobile::applianceSetFocusToScene()
 {
     ui->sceneView->setFocus(Qt::OtherFocusReason);
 }
 
-void MainWindow::closeEvent(QCloseEvent * event)
+void MainWindowMobile::closeEvent(QCloseEvent * event)
 {
     event->setAccepted(App::workflow->requestExit());
 }
 
-void MainWindow::slotClosePictureSearch()
+void MainWindowMobile::slotClosePictureSearch()
 {
     App::workflow->applianceCommand(App::AC_ClosePicureSearch);
 }
 
-void MainWindow::slotHelpBarClicked(quint32 id)
+void MainWindowMobile::slotHelpBarClicked(quint32 id)
 {
     if (id == 1)
         App::workflow->stackHelpAppliance();
 }
 
-void MainWindow::addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment)
+void MainWindowMobile::addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment)
 {
     // add the widget at the right place in the grid layout
     if (alignment == Qt::AlignRight)
@@ -258,7 +258,7 @@ void MainWindow::addNavigationWidget(QWidget * widget, int row, Qt::Alignment al
     widget->show();
 }
 
-void MainWindow::removeNavigationWidget(QWidget *widget)
+void MainWindowMobile::removeNavigationWidget(QWidget *widget)
 {
     widget->hide();
     m_navigationLayout->removeWidget(widget);

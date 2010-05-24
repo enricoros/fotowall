@@ -21,25 +21,14 @@
 #include <QTranslator>
 #include <QtPlugin>
 #include "App/App.h"
+#if defined(MOBILE_UI)
+#include "App/MainWindow_s60.h"
+#else
 #include "App/MainWindow.h"
+#endif
 #include "App/Settings.h"
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
-
-#if defined(STATIC_LINK)
-Q_IMPORT_PLUGIN(qgif)
-Q_IMPORT_PLUGIN(qjpeg)
-Q_IMPORT_PLUGIN(qsvg)
-Q_IMPORT_PLUGIN(qtiff)
-#endif
-
-// lock orientation on symbian
-#if defined(Q_OS_SYMBIAN)
-#include <eikenv.h>
-#include <eikappui.h>
-#include <aknenv.h>
-#include <aknappui.h>
-#endif
 
 // init RenderOpts defaults
 bool RenderOpts::LastMirrored = true;
@@ -58,17 +47,9 @@ int main( int argc, char ** args )
     QApplication::setGraphicsSystem("raster");
 #endif
 
-    // lock orientation on symbian
-#if defined(Q_OS_SYMBIAN)
-    CAknAppUi* appUi = dynamic_cast<CAknAppUi*> (CEikonEnv::Static()->AppUi());
-    TRAP_IGNORE(
-    if (appUi)
-        appUi->SetOrientationL(CAknAppUi::EAppUiOrientationLandscape);
-    );
-#endif
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.9.1");
+    app.setApplicationVersion("1.0");
     app.setOrganizationName("Enrico Ros");
 
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -100,7 +81,11 @@ int main( int argc, char ** args )
         if (App::isContentUrl(args[i]))
             App::settings->addCommandlineUrl(args[i]);
 
+#if defined(MOBILE_UI)
+    MainWindowMobile * mainWindow = new MainWindowMobile;
+#else
     MainWindow * mainWindow = new MainWindow;
+#endif
 
     int mainLoopResult = app.exec();
 
