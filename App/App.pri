@@ -3,7 +3,6 @@ HEADERS += \
     App/CanvasAppliance.h \
     App/ExactSizeDialog.h \
     App/FotowallFile.h \
-    App/Hardware3DTest.h \
     App/HelpAppliance.h \
     App/HelpItem.h \
     App/HomeAppliance.h \
@@ -21,7 +20,6 @@ SOURCES += \
     App/CanvasAppliance.cpp \
     App/ExactSizeDialog.cpp \
     App/FotowallFile.cpp \
-    App/Hardware3DTest.cpp \
     App/HelpAppliance.cpp \
     App/HelpItem.cpp \
     App/HomeAppliance.cpp \
@@ -41,14 +39,25 @@ FORMS += \
     App/PictureSearchWidget.ui \
     App/VersionCheckDialog.ui
 
-contains(DEFINES, MOBILE_UI): {
-    HEADERS += App/MainWindow_s60.h
-    SOURCES += App/MainWindow_s60.cpp
-    FORMS += App/MainWindow_s60.ui
+!contains(CONFIG, mobile-ui): {
+    HEADERS += \
+        App/Hardware3DTest.h \
+        App/MainWindow.h
+
+    SOURCES += \
+        App/Hardware3DTest.cpp \
+        App/MainWindow.cpp
+
+    FORMS += \
+        App/MainWindow.ui
 } else: {
-    HEADERS += App/MainWindow.h
-    SOURCES += App/MainWindow.cpp
-    FORMS += App/MainWindow.ui
+    message("Building the user interface for Mobiles")
+    DEFINES += MOBILE_UI
+    HEADERS += \
+        App/MainWindowMobile.h
+
+    SOURCES += \
+        App/MainWindowMobile.cpp
 }
 
 !contains(CONFIG, no-export): {

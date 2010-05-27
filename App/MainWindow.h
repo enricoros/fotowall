@@ -31,7 +31,7 @@ class MainWindow : public PlugGui::Container
         ~MainWindow();
 
     protected:
-        // ::Appliance::Container
+        // ::PlugGui::Container
         QSize sceneViewSize() const;
         void applianceSetTitle(const QString & title);
         void applianceSetScene(AbstractScene * scene);

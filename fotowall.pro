@@ -27,7 +27,7 @@ QT = core \
 
 # enable features for mobile user interfaces
 symbian|simulator: {
-    DEFINES += MOBILE_UI
+    CONFIG += mobile-ui
     CONFIG += no-wordcloud-appliance
     CONFIG += no-export
     CONFIG += no-likeback

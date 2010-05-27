@@ -12,10 +12,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "App/MainWindow_s60.h"
+#include "App/MainWindowMobile.h"
 
 #include "Shared/BreadCrumbBar.h"
-#include "Shared/ButtonsDialog.h"
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "OnlineServices.h"
@@ -23,79 +22,101 @@
 #include "SceneView.h"
 #include "Settings.h"
 #include "Workflow.h"
-#include "ui_MainWindow_s60.h"
 
 #include <QApplication>
+#include <QBoxLayout>
 #include <QCloseEvent>
 #include <QDesktopWidget>
 #include <QFont>
+#include <QFrame>
 #include <QNetworkAccessManager>
 #include <QVariant>
 
+class NavibarContainer : public QWidget
+{
+public:
+    NavibarContainer(QWidget * parent = 0)
+      : QWidget(parent)
+    {
+        setMinimumHeight(16);
+        setAutoFillBackground(false);
+    }
+};
+
+class TopbarContainer : public QFrame
+{
+public:
+    TopbarContainer(QWidget * parent = 0)
+      : QFrame(parent)
+    {
+        setFrameStyle(QFrame::StyledPanel);
+        setAutoFillBackground(false);
+    }
+};
+
 MainWindowMobile::MainWindowMobile(QWidget * parent)
     : PlugGui::Container(parent)
-    , ui(new Ui::MainWindow())
     , m_networkAccessManager(new QNetworkAccessManager)
-    , m_navigationLayout(0)
     , m_pictureSearch(0)
+    , m_sceneView(0)
+    , m_topbarContainer(0)
 {
     // setup widget
     applianceSetTitle(QString());
-#if !defined(Q_OS_SYMBIAN)
-    setWindowIcon(QIcon(":/data/fotowall.png"));
-#endif
 
-    // smaller font on symbians
-#if defined(Q_OS_SYMBIAN)
-    QFont smallerFont;
-    smallerFont.setPointSize(8);
-    QApplication::setFont(smallerFont);
-#endif
+    // vertical layout
+    QVBoxLayout * mainLayout = new QVBoxLayout(this);
+    mainLayout->setMargin(0);
+    mainLayout->setSpacing(0);
 
-    // init ui
-    ui->setupUi(this);
-    ui->topBar->setFixedHeight(App::TopBarHeight);
-    ui->applianceSidebar->hide();
-    ui->sceneView->setFocus();
-
-    // create the navigation layout
-    m_navigationLayout = new QGridLayout;
-    m_navigationLayout->setContentsMargins(0, 0, 0, 0);
-    m_navigationLayout->setSpacing(3);
-    ui->navBar->setLayout(m_navigationLayout);
+    // container for the navigation bar
+    QWidget * nbContainer = new NavibarContainer(this);
+    mainLayout->addWidget(nbContainer);
+    QLayout * nbLayout = new QHBoxLayout(nbContainer);
+    nbLayout->setMargin(0);
 
     // create the Workflow navigation bar
-    BreadCrumbBar * workflowBar = new BreadCrumbBar(ui->sceneView);
+    BreadCrumbBar * workflowBar = new BreadCrumbBar(nbContainer);
     workflowBar->setObjectName(QString::fromUtf8("applianceNavBar"));
     workflowBar->setClickableLeaves(false);
     workflowBar->setBackgroundOffset(-1);
-    addNavigationWidget(workflowBar, 0, Qt::AlignLeft);
+    nbLayout->addWidget(workflowBar);
+    workflowBar->show();
 
-    // create the Help bar
-    BreadCrumbBar * helpBar = new BreadCrumbBar(ui->sceneView);
+    // create the Help navigation bar
+    /*BreadCrumbBar * helpBar = new BreadCrumbBar(m_sceneView);
     connect(helpBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotHelpBarClicked(quint32)));
     helpBar->setBackgroundOffset(1);
     helpBar->addNode(1, tr(" ? "), 0);
-    addNavigationWidget(helpBar, 0, Qt::AlignRight);
+    helpBar->show();
+    addNavigationWidget(helpBar, 0, Qt::AlignRight);*/
+
+    // the scene view, where applicances will plug into!
+    m_sceneView = new SceneView(this);
+    mainLayout->addWidget(m_sceneView);
+    m_sceneView->setFrameShape(QFrame::NoFrame);
+
+    // the topbar container, populated by the framework
+    m_topbarContainer = new TopbarContainer(this);
+    m_topbarContainer->move(50, 0);
+    m_topbarContainer->setGeometry(50, 0, width() - 100, App::TopBarHeight);
+    m_topbarContainer->setFixedHeight(App::TopBarHeight);
+    m_topbarContainer->show();
+    QHBoxLayout * topbarLayout = new QHBoxLayout(m_topbarContainer);
+    topbarLayout->setMargin(0);
+    topbarLayout->setSpacing(0);
 
     // show (with last geometry)
-#if defined(Q_OS_SYMBIAN)
     showFullScreen();
-#else
-    if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
-        QRect desktopGeometry = QApplication::desktop()->availableGeometry();
-        resize(2 * desktopGeometry.width() / 3, 2 * desktopGeometry.height() / 3);
-        showMaximized();
-    } else
-        show();
-#endif
-
 
     // start the workflow
     new Workflow((PlugGui::Container *)this, workflowBar);
 
     // create the online services
     new OnlineServices(m_networkAccessManager);
+
+    // focus the scene
+    applianceSetFocusToScene();
 
 #if 0
     // start with the Help appliance the first time
@@ -106,22 +127,15 @@ MainWindowMobile::MainWindowMobile(QWidget * parent)
 
 MainWindowMobile::~MainWindowMobile()
 {
-    // save window geometry
-    if (!isMaximized() && !isFullScreen())
-        App::settings->setValue("Fotowall/Geometry", saveGeometry());
-    else
-        App::settings->remove("Fotowall/Geometry");
-
     // delete everything
     delete App::workflow;
     delete App::onlineServices;
     delete m_networkAccessManager;
-    delete ui;
 }
 
 QSize MainWindowMobile::sceneViewSize() const
 {
-    return ui->sceneView->viewport()->size();
+    return m_sceneView->viewport()->size();
 }
 
 void MainWindowMobile::applianceSetTitle(const QString & title)
@@ -131,15 +145,12 @@ void MainWindowMobile::applianceSetTitle(const QString & title)
     if (title.isEmpty())
         tString += "' Alchimia ' ";
     tString += QCoreApplication::applicationVersion();
-#if QT_VERSION < 0x040500
-    tString += "   -Limited Edition (Qt 4.4)-";
-#endif
     setWindowTitle(tString);
 }
 
 void MainWindowMobile::applianceSetScene(AbstractScene * scene)
 {
-    ui->sceneView->setScene(scene);
+    m_sceneView->setScene(scene);
 }
 
 static void removeLayoutChildWidges(QLayout * layout)
@@ -153,40 +164,44 @@ static void removeLayoutChildWidges(QLayout * layout)
 
 void MainWindowMobile::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
-    // clear the topbar layout hiding all widgets
-    removeLayoutChildWidges(ui->applianceLeftBarLayout);
-    removeLayoutChildWidges(ui->applianceRightBarLayout);
+    QLayout * topbarLayout = m_topbarContainer->layout();
 
-    // add the widgets to the topbar and show them
+    // clear the topbar layout hiding all widgets
+    removeLayoutChildWidges(topbarLayout);
+
+    // add the left widgets
+    QList<QWidget *> rightWidgets;
     foreach (QWidget * widget, widgets) {
-        if (widget->property("@rightBar").toBool())
-            ui->applianceRightBarLayout->addWidget(widget);
-        else
-            ui->applianceLeftBarLayout->addWidget(widget);
+        if (widget->property("@rightBar").toBool()) {
+            rightWidgets.append(widget);
+            continue;
+        }
+        topbarLayout->addWidget(widget);
+        widget->setFixedHeight(App::TopBarHeight);
+        widget->setVisible(true);
+    }
+
+    // add the spacer
+    topbarLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding));
+
+    // add the right widgets
+    foreach (QWidget * widget, rightWidgets) {
+        topbarLayout->addWidget(widget);
         widget->setFixedHeight(App::TopBarHeight);
         widget->setVisible(true);
     }
 }
 
-void MainWindowMobile::applianceSetSidebar(QWidget * widget)
+void MainWindowMobile::applianceSetSidebar(QWidget * sidebar)
 {
-    // clear the sidebar layout hiding any widget
-    removeLayoutChildWidges(ui->applianceSidebarLayout);
-
-    // completely hide the sidebar if no widget
-    ui->applianceSidebar->setVisible(widget);
-
-    // if any, add the widget to the sidebar
-    if (widget) {
-        ui->applianceSidebarLayout->addWidget(widget);
-        widget->show();
-    }
+    if (sidebar)
+        qWarning("MainWindowMobile::applianceSetSidebar: not used on mobile");
 }
 
 void MainWindowMobile::applianceSetCentralwidget(QWidget * widget)
 {
     if (widget)
-        qWarning("MainWindow::applianceSetCentralwidget: unsupported");
+        qWarning("MainWindowMobile::applianceSetCentralwidget: not used on mobile");
 }
 
 void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
@@ -205,10 +220,10 @@ void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
         if (visible && !m_pictureSearch) {
             m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
             connect(m_pictureSearch, SIGNAL(requestClosure()), this, SLOT(slotClosePictureSearch()), Qt::QueuedConnection);
-            m_pictureSearch->setWindowIcon(QIcon(":/data/insert-download.png"));
+            //m_pictureSearch->setWindowIcon(QIcon(":/data/insert-download.png"));
             m_pictureSearch->setWindowTitle(tr("Search Web Pictures"));
             m_pictureSearch->setWindowFlags(Qt::Tool);
-            QPoint newPos = mapToGlobal(ui->sceneView->pos()) + QPoint(-20, 10);
+            QPoint newPos = mapToGlobal(m_sceneView->pos()) + QPoint(-20, 10);
             if (newPos.x() < 0)
                 newPos.setX(0);
             m_pictureSearch->move(newPos);
@@ -220,12 +235,12 @@ void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
         }
 
     } else
-        qWarning("MainWindow::applianceSetValue: unknown key 0x%x", key);
+        qWarning("MainWindowMobile::applianceSetValue: unknown key 0x%x", key);
 }
 
 void MainWindowMobile::applianceSetFocusToScene()
 {
-    ui->sceneView->setFocus(Qt::OtherFocusReason);
+    m_sceneView->setFocus(Qt::OtherFocusReason);
 }
 
 void MainWindowMobile::closeEvent(QCloseEvent * event)
@@ -236,31 +251,4 @@ void MainWindowMobile::closeEvent(QCloseEvent * event)
 void MainWindowMobile::slotClosePictureSearch()
 {
     App::workflow->applianceCommand(App::AC_ClosePicureSearch);
-}
-
-void MainWindowMobile::slotHelpBarClicked(quint32 id)
-{
-    if (id == 1)
-        App::workflow->stackHelpAppliance();
-}
-
-void MainWindowMobile::addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment)
-{
-    // add the widget at the right place in the grid layout
-    if (alignment == Qt::AlignRight)
-        m_navigationLayout->addWidget(widget, row, 1, 1, 1, Qt::AlignRight);
-    else if (alignment & Qt::AlignHCenter)
-        m_navigationLayout->addWidget(widget, row, 0, 1, 2, Qt::AlignLeft);
-    else
-        m_navigationLayout->addWidget(widget, row, 0, 1, 1, Qt::AlignLeft);
-
-    // ensure the widget is shown
-    widget->show();
-}
-
-void MainWindowMobile::removeNavigationWidget(QWidget *widget)
-{
-    widget->hide();
-    m_navigationLayout->removeWidget(widget);
-    widget->setParent(0);
 }

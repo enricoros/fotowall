@@ -12,14 +12,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MainWindow_s60_h__
-#define __MainWindow_s60_h__
+#ifndef __MainWindowMobile_h__
+#define __MainWindowMobile_h__
 
 #include "Shared/PlugGui/Container.h"
-namespace Ui { class MainWindow; }
-class QGridLayout;
 class QNetworkAccessManager;
 class PictureSearchWidget;
+class SceneView;
+class TopbarContainer;
 class Workflow;
 
 class MainWindowMobile : public PlugGui::Container
@@ -30,7 +30,7 @@ class MainWindowMobile : public PlugGui::Container
         ~MainWindowMobile();
 
     protected:
-        // ::Appliance::Container
+        // ::PlugGui::Container
         QSize sceneViewSize() const;
         void applianceSetTitle(const QString & title);
         void applianceSetScene(AbstractScene * scene);
@@ -44,18 +44,13 @@ class MainWindowMobile : public PlugGui::Container
         void closeEvent(QCloseEvent * event);
 
     private:
-        void addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment);
-        void removeNavigationWidget(QWidget * widget);
-
-        Ui::MainWindow *        ui;
         QNetworkAccessManager * m_networkAccessManager;
-        QGridLayout *           m_navigationLayout;
         PictureSearchWidget *   m_pictureSearch;
+        SceneView *             m_sceneView;
+        TopbarContainer *       m_topbarContainer;
 
     private Q_SLOTS:
-        // notifications
         void slotClosePictureSearch();
-        void slotHelpBarClicked(quint32);
 };
 
 #endif

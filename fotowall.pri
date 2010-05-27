@@ -22,7 +22,7 @@ include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 
 # Translations of the core Fotowall files
-!symbian: {
+!symbian:!simulator: {
     TRANSLATIONS += \
         translations/fotowall_de.ts \
         translations/fotowall_en.ts \
