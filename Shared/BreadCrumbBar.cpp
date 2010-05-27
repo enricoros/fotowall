@@ -37,9 +37,11 @@ BcLabel::BcLabel(quint32 labelId, QWidget * parent)
   , m_hover(false)
 {
     // shrink font
+#if !defined(MOBILE_UI)
     QFont font;
     font.setPointSize(font.pointSize() - 1);
     setFont(font);
+#endif
 }
 
 void BcLabel::setLast(bool last)
