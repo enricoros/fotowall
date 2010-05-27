@@ -275,6 +275,12 @@ void Canvas::resizeEvent()
         content->ensureVisible(sceneRect());
     foreach (AbstractConfig * config, m_configs)
         config->keepInBoundaries(sceneRect());
+
+    // reblink after mobile relayout
+#if defined(MOBILE_UI)
+    //if (m_backMode == BackGradient && sceneWidth() > 200 && sceneHeight() > 200)
+    //    blinkBackGradients();
+#endif
 }
 
 QString Canvas::filePath() const
@@ -544,7 +550,7 @@ bool Canvas::pendingChanges() const
 }
 
 #define HIGHLIGHT(x, y, del) \
-    { \
+    do { \
         HighlightItem * highlight = new HighlightItem(); \
         if (!del) m_highlightItems.append(highlight); \
         else highlight->deleteAfterAnimation(); \
@@ -552,7 +558,7 @@ bool Canvas::pendingChanges() const
         highlight->setZValue(10000); \
         highlight->setPosF(x, y); \
         highlight->show(); \
-    }
+    } while(0)
 
 void Canvas::blinkBackGradients()
 {
