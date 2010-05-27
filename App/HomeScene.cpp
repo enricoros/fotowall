@@ -228,13 +228,21 @@ void HomeScene::keyPressEvent(QKeyEvent *event)
 void HomeScene::resize(const QSize & size)
 {
     // resize but ensure a minimum size
+#if !defined(MOBILE_UI)
     AbstractScene::resize(size.expandedTo(QSize(600, 200)));
+#else
+    AbstractScene::resize(size);
+#endif
 
     // grid placement
     const int margin = 20;
     const int count = m_labels.size();
     const int width = sceneWidth() - margin * 2;
+#if !defined(MOBILE_UI)
     const int height = sceneHeight() - margin;
+#else
+    const int height = sceneHeight() + 16;
+#endif
     const int rows = (int)sqrt((qreal)count);
     const int cols = (int)ceil((qreal)count / (qreal)rows);
     int rIdx = 0, cIdx = 0;
