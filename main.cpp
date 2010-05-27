@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include <QApplication>
+#include <QFont>
 #include <QLocale>
 #include <QLibraryInfo>
 #include <QSettings>
@@ -22,7 +23,7 @@
 #include <QtPlugin>
 #include "App/App.h"
 #if defined(MOBILE_UI)
-#include "App/MainWindow_s60.h"
+#include "App/MainWindowMobile.h"
 #else
 #include "App/MainWindow.h"
 #endif
@@ -54,6 +55,7 @@ int main( int argc, char ** args )
 
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
+#if !defined(MOBILE_UI)
     // translate fotowall + default-qt messages
     QString locale;
     QStringList arguments = app.arguments();
@@ -68,6 +70,7 @@ int main( int argc, char ** args )
     QTranslator qtTranslator;
     qtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
+#endif
 
     App::settings = new Settings(app.arguments().contains("-clearconfig"));
     RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
@@ -82,7 +85,12 @@ int main( int argc, char ** args )
             App::settings->addCommandlineUrl(args[i]);
 
 #if defined(MOBILE_UI)
+    QFont smallFont = app.font();
+    smallFont.setPointSize(5);
+    app.setFont(smallFont);
+
     MainWindowMobile * mainWindow = new MainWindowMobile;
+    mainWindow->setFont(smallFont);
 #else
     MainWindow * mainWindow = new MainWindow;
 #endif
