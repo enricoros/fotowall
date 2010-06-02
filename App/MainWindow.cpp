@@ -30,7 +30,6 @@
 #include <QApplication>
 #include <QCloseEvent>
 #include <QDesktopWidget>
-#include <QFont>
 #include <QNetworkAccessManager>
 #include <QVariant>
 
