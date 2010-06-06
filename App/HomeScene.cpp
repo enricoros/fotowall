@@ -188,7 +188,7 @@ HomeScene::HomeScene(QObject * parent)
 
 #ifdef HAVE_PENCIL_ITEM
      // create the pencil item the first time
-     if (App::settings->firstTime() || !(qrand() % 20))
+     if (App::settings->firstTime() || !(qrand() % 5))
         QTimer::singleShot(1000, this, SLOT(slotCreatePencil()));
 #endif
 }

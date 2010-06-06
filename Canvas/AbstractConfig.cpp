@@ -90,7 +90,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     static qreal s_propZBase = 99999;
     setZValue(s_propZBase++);
 
-#if QT_VERSION >= 0x040600
+#if !defined(MOBILE_UI) && QT_VERSION >= 0x040600
     // fade in animation
     QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
     ani->setEasingCurve(QEasingCurve::OutCubic);
@@ -109,7 +109,7 @@ AbstractConfig::~AbstractConfig()
 
 void AbstractConfig::dispose()
 {
-#if QT_VERSION >= 0x040600
+#if !defined(MOBILE_UI) && QT_VERSION >= 0x040600
     // fade out animation, then delete
     QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
     connect(ani, SIGNAL(finished()), this, SLOT(deleteLater()));

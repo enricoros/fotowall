@@ -49,7 +49,7 @@ public:
     TopbarContainer(QWidget * parent = 0)
       : QFrame(parent)
     {
-        setFrameStyle(QFrame::StyledPanel);
+        setFrameStyle(QFrame::NoFrame);
         setAutoFillBackground(false);
     }
 };
