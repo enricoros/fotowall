@@ -411,6 +411,7 @@ static bool kde4EnableBlurBehindWindow(WId window, bool enable, const QRegion &r
     } else {
         XDeleteProperty(dpy, window, atom);
     }
+    return true;
 }
 #elif defined(Q_WS_WIN)
 /**
