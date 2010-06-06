@@ -55,11 +55,9 @@ MainWindow::MainWindow(QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->topBar->setFixedHeight(App::TopBarHeight);
-#if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
     ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
-#endif
     ui->applianceSidebar->hide();
     ui->sceneView->setFocus();
     connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
@@ -93,11 +91,9 @@ MainWindow::MainWindow(QWidget * parent)
     } else
         show();
 
-#if QT_VERSION >= 0x040500
     // re-apply transparency
     if (App::settings->value("Fotowall/Tranlucent", false).toBool())
         ui->transpBox->setChecked(true);
-#endif
 
     // start the workflow
     new Workflow((PlugGui::Container *)this, workflowBar);
@@ -140,9 +136,6 @@ void MainWindow::applianceSetTitle(const QString & title)
     if (title.isEmpty())
         tString += "' Alchimia ' ";
     tString += QCoreApplication::applicationVersion();
-#if QT_VERSION < 0x040500
-    tString += "   -Limited Edition (Qt 4.4)-";
-#endif
     setWindowTitle(tString);
 }
 
@@ -475,7 +468,6 @@ static bool dwmEnableBlurBehindWindow(QWidget * widget, bool enable)
 
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
-#if QT_VERSION >= 0x040500
 #if defined(Q_WS_WIN)
     static Qt::WindowFlags initialWindowFlags = windowFlags();
 #endif
@@ -532,7 +524,6 @@ void MainWindow::on_transpBox_toggled(bool transparent)
     }
     // refresh the window
     update();
-#endif
 
     // remember in settings
     App::settings->setValue("Fotowall/Tranlucent", transparent);

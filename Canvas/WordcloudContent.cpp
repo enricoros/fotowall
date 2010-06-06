@@ -92,9 +92,7 @@ void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect,
 {
     Q_UNUSED(ratio)
     if (m_cloud) {
-#if QT_VERSION >= 0x040500
         painter->setOpacity(opacity());
-#endif
         m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
     }
 }

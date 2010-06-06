@@ -263,12 +263,7 @@ QNetworkReply * FlickrPictureService::flickrApiCall(const QString & method, cons
     KeyValueList fullList;
     fullList.append(KeyValue("method", method));
     fullList.append(KeyValue("api_key", m_apiKey));
-#if QT_VERSION >= 0x040500
     fullList.append(params);
-#else
-    foreach (const KeyValue & param, params)
-        fullList.append(param);
-#endif
     url.setQueryItems(fullList);
     return get(url);
 }

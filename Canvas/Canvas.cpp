@@ -365,10 +365,8 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity)
 
         // randomize opacity
         if (opacity) {
-#if QT_VERSION >= 0x040500
             qreal opa = 0.5 + (qreal)(qrand() % 100) / 99.0;
             ANIMATE_PARAM(content, "opacity", 2000, opa);
-#endif
         }
     }
 }

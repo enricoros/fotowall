@@ -91,7 +91,6 @@ class PE_Combo : public PE_TypeControl<QComboBox>
 };
 
 // used by all reimpls for being notified when the property changes
-#if QT_VERSION >= 0x040500
 #define PE_LISTEN_TO_PROPERTY(slotName) \
     if (m_property.hasNotifySignal()) { \
         QMetaMethod notifySignal = m_property.notifySignal(); \
@@ -103,8 +102,5 @@ class PE_Combo : public PE_TypeControl<QComboBox>
             connect(m_target.data(), signalName, this, SLOT(slotName)); \
         } \
     }
-#else
-#define PE_LISTEN_TO_PROPERTY(slotName)
-#endif
 
 #endif

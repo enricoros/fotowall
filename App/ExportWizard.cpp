@@ -249,12 +249,8 @@ void ExportWizard::startPosterazor()
     Controller controller(&posterazor, wizard);
     controller.setImageLoadingAvailable(false);
     controller.setPosterSizeModeAvailable(Types::PosterSizeModePercentual, false);
-#if QT_VERSION >= 0x040500
     QDialog dialog(this, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
-#else
-    QDialog dialog(this, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
-#endif
-	dialog.setWindowTitle(tr("Export poster"));
+    dialog.setWindowTitle(tr("Export poster"));
     dialog.setLayout(new QVBoxLayout);
     dialog.layout()->addWidget(wizard);
     dialog.resize(640, 480);
@@ -374,12 +370,10 @@ void ExportWizard::saveSvg()
     QSvgGenerator generator;
     generator.setFileName(svgFilePath);
     generator.setSize(svgRect.size());
-#if QT_VERSION >= 0x040500
     generator.setResolution(physicalDpiX());
     generator.setViewBox(svgRect);
     generator.setTitle(m_canvas->titleText());
     generator.setDescription(tr("Created with %1").arg(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion()));
-#endif
 
     // paint over the writer
     QPainter painter(&generator);

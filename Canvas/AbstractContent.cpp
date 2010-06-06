@@ -85,13 +85,11 @@ AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noResc
     connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
     addButtonItem(bConf);
 
-#if QT_VERSION >= 0x040500
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag around to change the perspective.\nHold SHIFT to move faster.\nUse CTRL to cancel the transformations."));
     connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotSetPerspective(const QPointF&,Qt::KeyboardModifiers)));
     connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slotClearPerspective()));
     addButtonItem(bPersp);
-#endif
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bDelete->setSelectsParent(false);
@@ -455,11 +453,9 @@ bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseD
     bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
 
-#if QT_VERSION >= 0x040500
     qreal opacity = contentElement.firstChildElement("opacity").text().toDouble();
     if (opacity > 0.0 && opacity < 1.0)
         setOpacity(opacity);
-#endif
 
     int fxIdx = contentElement.firstChildElement("fxindex").text().toInt();
     if (fxIdx > 0)
@@ -546,13 +542,11 @@ void AbstractContent::toXml(QDomElement & contentElement, const QDir & /*baseDir
     domElement.appendChild(text);
 
     // Save the opacity
-#if QT_VERSION >= 0x040500
     if (opacity() < 1.0) {
         domElement= doc.createElement("opacity");
         contentElement.appendChild(domElement);
         domElement.appendChild(doc.createTextNode(QString::number(opacity())));
     }
-#endif
 
     // Save the Fx Index
     if (fxIndex() > 0) {
@@ -816,9 +810,7 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
             case ItemEnabledHasChanged:
             case ItemSelectedHasChanged:
             case ItemParentHasChanged:
-#if QT_VERSION >= 0x040500
             case ItemOpacityHasChanged:
-#endif
                 GFX_CHANGED();
                 break;
 

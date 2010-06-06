@@ -37,7 +37,7 @@ class AbstractContent : public AbstractDisposeable
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
 #endif
-#if QT_VERSION < 0x040600 && QT_VERSION >= 0x040500
+#if QT_VERSION < 0x040600
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
 #endif
     Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
