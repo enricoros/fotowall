@@ -19,17 +19,21 @@
 #include <QSettings>
 #include <QStyle>
 #include <QTime>
-#include <QTranslator>
 #include <QtPlugin>
 #include "App/App.h"
+#include "App/Settings.h"
+#include "Shared/RenderOpts.h"
+#include "Shared/VideoProvider.h"
+
 #if defined(MOBILE_UI)
 #include "App/MainWindowMobile.h"
 #else
 #include "App/MainWindow.h"
 #endif
-#include "App/Settings.h"
-#include "Shared/RenderOpts.h"
-#include "Shared/VideoProvider.h"
+
+#if defined(HAS_TRANSLATIONS)
+#include <QTranslator>
+#endif
 
 // init RenderOpts defaults
 bool RenderOpts::LastMirrored = true;
@@ -43,8 +47,8 @@ QColor RenderOpts::hiColor;
 
 int main( int argc, char ** args )
 {
-#if !defined(Q_OS_MAC) && !defined(Q_OS_SYMBIAN)
-    // use the Raster GraphicsSystem (but not on OsX and Symbian)
+    // use the Raster GraphicsSystem on X11
+#if defined(Q_WS_X11)
     QApplication::setGraphicsSystem("raster");
 #endif
 
@@ -55,7 +59,7 @@ int main( int argc, char ** args )
 
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-#if !defined(MOBILE_UI)
+#if defined(HAS_TRANSLATIONS)
     // translate fotowall + default-qt messages
     QString locale;
     QStringList arguments = app.arguments();

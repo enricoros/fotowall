@@ -56,7 +56,12 @@ void UrlHistoryBox::changeUrls(const QList<QUrl> & urls, bool delayPreview)
         return;
 
     // add buttons
-    for (int i = 0; i < qMin(5, urls.size()); i++) {
+#if defined(MOBILE_UI)
+    const int maxButtons = 3;
+#else
+    const int maxButtons = 5;
+#endif
+    for (int i = 0; i < qMin(maxButtons, urls.size()); i++) {
         const QUrl & url = urls[i];
         PixmapButton * button = new PixmapButton(this);
         connect(button, SIGNAL(clicked()), this, SLOT(slotClicked()));

@@ -135,7 +135,7 @@ void AbstractContent::dispose()
     setMirrored(false);
 
     // little rotate animation
-#if QT_VERSION >= 0x040600
+#if !defined(MOBILE_UI)
     QPropertyAnimation * ani = new QPropertyAnimation(this, "rotation");
     ani->setEasingCurve(QEasingCurve::InQuad);
     ani->setDuration(300);

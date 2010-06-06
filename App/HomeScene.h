@@ -56,6 +56,7 @@ class HomeScene : public AbstractScene
 
     private Q_SLOTS:
         void slotCreatePencil();
+        void slotStartCanvas();
 };
 
 #endif

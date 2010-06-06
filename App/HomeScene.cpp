@@ -29,11 +29,11 @@
 #if QT_VERSION >= 0x040600
 #include <QPropertyAnimation>
 #define ANIMATE_PARAM(object, propName, duration, endValue) \
-    {QPropertyAnimation * ani = new QPropertyAnimation(object, propName, object); \
+    QPropertyAnimation * ani = new QPropertyAnimation(object, propName, object); \
     ani->setEasingCurve(QEasingCurve::OutBack); \
     ani->setDuration(duration); \
     ani->setEndValue(endValue); \
-    ani->start(QPropertyAnimation::DeleteWhenStopped);}
+    ani->start(QPropertyAnimation::DeleteWhenStopped);
 #else
 #define ANIMATE_PARAM(instance, propName, duration, endValue) \
     instance->setProperty(propName, endValue);
@@ -96,24 +96,27 @@ class HomeLabel : public AbstractContent
 
         void hoverEnterEvent(QGraphicsSceneHoverEvent *)
         {
+#if !defined(MOBILE_UI)
             ANIMATE_PARAM(this, "scale", 300, 1.2);
             //ANIMATE_PARAM(this, "rotation", 300, (-20 + (qrand() % 41)));
+#endif
         }
 
         void hoverLeaveEvent(QGraphicsSceneHoverEvent *)
         {
+#if !defined(MOBILE_UI)
             ANIMATE_PARAM(this, "scale", 300, 1.0);
             //ANIMATE_PARAM(this, "rotation", 300, 0.0);
+#endif
         }
 
         void mousePressEvent(QGraphicsSceneMouseEvent * event)
         {
             // use an already existing signal.. FIXME!
             if (event->button() == Qt::LeftButton) {
-#if 0
-                ANIMATE_PARAM(this, "rotation", 400, 300);
-                ANIMATE_PARAM(this, "opacity", 500, 0.0);
-                QTimer::singleShot(300, this, SIGNAL(requestEditing()));
+#if defined(MOBILE_UI)
+                ANIMATE_PARAM(this, "scale", 200, 0.8);
+                connect(ani, SIGNAL(finished()), this, SIGNAL(requestEditing()));
 #else
                 requestEditing();
 #endif
@@ -172,7 +175,7 @@ HomeScene::HomeScene(QObject * parent)
      m_labels.append(newWordcloud);
 
     HomeLabel * newCanvas = new HomeLabel(tr("Create"), QPixmap(":/data/home-newcanvas.png"), this);
-     connect(newCanvas, SIGNAL(requestEditing()), this, SIGNAL(startCanvas()));
+     connect(newCanvas, SIGNAL(requestEditing()), this, SLOT(slotStartCanvas()));
      newCanvas->setZValue(1.0);
      m_labels.append(newCanvas);
 
@@ -293,4 +296,12 @@ void HomeScene::slotCreatePencil()
         addItem(m_pencil);
     }
 #endif
+}
+
+void HomeScene::slotStartCanvas()
+{
+    emit startCanvas();
+
+    // reset the scale of the pressed button
+    sender()->setProperty("scale", (qreal)1.0);
 }

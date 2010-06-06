@@ -22,7 +22,9 @@ include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 
 # Translations of the core Fotowall files
-!symbian:!simulator: {
+!contains(CONFIG, no-translations): {
+    DEFINES += HAS_TRANSLATIONS
+
     TRANSLATIONS += \
         translations/fotowall_de.ts \
         translations/fotowall_en.ts \
@@ -30,4 +32,7 @@ include(3rdparty/videocapture/videocapture.pri)
         translations/fotowall_it.ts \
         translations/fotowall_pl.ts \
         translations/fotowall_pt_BR.ts
+} else: {
+    message("Translations won't be compiled")
+    DEFINES -= HAS_TRANSLATIONS
 }

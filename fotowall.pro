@@ -21,7 +21,7 @@ QT = core \
     xml
 
 # use OpenGL where available
-!symbian:contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
+contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
     QT += opengl
 }
 
@@ -32,6 +32,8 @@ symbian|simulator: {
     CONFIG += no-export
     CONFIG += no-likeback
     CONFIG += no-webcam
+    CONFIG += no-translations
+    QT -= opengl
 }
 
 # disable the Webcam source (only stable on linux)
