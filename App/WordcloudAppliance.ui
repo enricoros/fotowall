@@ -96,9 +96,6 @@
      </disabled>
     </palette>
    </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
    <property name="borderFlags" stdset="0">
     <number>2</number>
    </property>

@@ -38,7 +38,8 @@ class App
 
         // commands understood by container
         enum {
-            CC_ShowPictureSearch    = 0x0001
+            CC_ShowPictureSearch    = 0x0001,
+            CC_HideTopBar           = 0x0002,
         };
 
         // commands understood by appliances

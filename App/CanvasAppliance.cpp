@@ -576,6 +576,11 @@ void CanvasAppliance::slotBackConfigChanged()
 
 void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
 {
+#if defined(MOBILE_UI)
+    // hide the topbar in case of selected content
+    containerValueSet(App::CC_HideTopBar, (bool)(widget ? true : false));
+#endif
+
     // delete current Properties content
     QLayoutItem * prevItem = ui.propLayout->takeAt(0);
     if (prevItem) {

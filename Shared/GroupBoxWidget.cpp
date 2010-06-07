@@ -16,6 +16,7 @@
 #include <QLayout>
 #include <QFontMetrics>
 #include <QPainter>
+#include <QPaintEvent>
 #include <QStyleOptionButton>
 #include <QStyle>
 #include <QTimer>
@@ -51,6 +52,13 @@ GroupBoxWidget::GroupBoxWidget(QWidget * parent)
 
     // using a fixed HSizePolicy we better integrate with auto-layouting
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+
+    // autofill off on mobile (inserted on canvas)
+#if defined(MOBILE_UI)
+    setAutoFillBackground(false);
+#else
+    setAutoFillBackground(true);
+#endif
 
     // hide junk before initial layouting
     hide();
@@ -147,14 +155,20 @@ void GroupBoxWidget::mousePressEvent(QMouseEvent * /*event*/)
     setChecked(!isChecked());
 }
 
-void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
+void GroupBoxWidget::paintEvent(QPaintEvent * event)
 {
     // skip the rest of the painting if no text
     if (m_titleText.isEmpty())
         return;
 
-    // draw hovering
     QPainter p(this);
+
+#if defined(MOBILE_UI)
+    // draw light backgruond
+    p.fillRect(event->rect(), palette().color(QPalette::Window));
+#endif
+
+    // draw hovering
     if (m_hoverValue > 0 && (m_checkValue == 0.0 || m_checkValue == 1.0)) {
         QRadialGradient rg = m_checkValue == 1.0 ? QRadialGradient(0.5, 0.2, 0.8) : QRadialGradient(0.5, 1.0, 1.5);
         QColor startColor(Qt::white);

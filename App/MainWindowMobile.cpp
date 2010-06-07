@@ -97,7 +97,7 @@ MainWindowMobile::MainWindowMobile(QWidget * parent)
     m_sceneView->setFrameShape(QFrame::NoFrame);
 
     // the topbar container, populated by the framework
-    m_topbarContainer = new TopbarContainer(this);
+    m_topbarContainer = new TopbarContainer(m_sceneView);
     m_topbarContainer->move(50, 0);
     m_topbarContainer->setGeometry(50, 0, width() - 100, App::TopBarHeight);
     m_topbarContainer->setFixedHeight(App::TopBarHeight);
@@ -203,7 +203,7 @@ void MainWindowMobile::applianceSetCentralwidget(QWidget * widget)
     if (widget)
         qWarning("MainWindowMobile::applianceSetCentralwidget: not used on mobile");
 }
-
+#include <QPropertyAnimation>
 void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
 {
     if (key == App::CC_ShowPictureSearch) {
@@ -233,6 +233,23 @@ void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
             m_pictureSearch->setFocus();
             return;
         }
+
+    } else if (key == App::CC_HideTopBar) {
+
+        bool hidden = value.toBool();
+
+        QPropertyAnimation * ani = new QPropertyAnimation(m_topbarContainer, "pos", m_topbarContainer);
+        ani->setEndValue(hidden ? QPoint(0, -App::TopBarHeight) : QPoint(0, 0));
+        ani->setEasingCurve(QEasingCurve::OutQuad);
+        ani->setDuration(200);
+        ani->start(QAbstractAnimation::DeleteWhenStopped);
+        if (hidden)
+            connect(ani, SIGNAL(finished()), m_topbarContainer, SLOT(hide()));
+        else
+            m_topbarContainer->show();
+
+        //m_topbarContainer->setVisible(!visible);
+
 
     } else
         qWarning("MainWindowMobile::applianceSetValue: unknown key 0x%x", key);

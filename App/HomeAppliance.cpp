@@ -91,7 +91,9 @@ HomeAppliance::HomeAppliance(QObject *parent)
     m_fileBox->setPalette(brightPal);
     m_fileBox->setAutoFillBackground(true);
     connect(m_fileBox->openButton, SIGNAL(clicked()), this, SLOT(slotOpenFile()));
-    topbarAddWidget(m_fileBox);
+#if defined(MOBILE_UI)
+    topbarAddWidget(m_fileBox, true);
+#endif
 }
 
 HomeAppliance::~HomeAppliance()
