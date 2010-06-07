@@ -212,7 +212,7 @@ void PictureContent::addEffect(const PictureEffect & effect)
         }
     }
     else if(effect.effect == PictureEffect::Opacity)
-        setOpacity(effect.param);
+        setContentOpacity(effect.param);
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
@@ -269,7 +269,7 @@ bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
             }
         }
         else if (fx.effect == PictureEffect::Opacity)
-            setOpacity(fx.param);
+            setContentOpacity(fx.param);
         m_afterLoadEffects.append(fx);
     }
 

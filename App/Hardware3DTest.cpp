@@ -74,7 +74,7 @@ Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
         PictureContent * p = new PictureContent(true, m_canvas);
         p->loadPixmap(picturePix);
         p->setRotation(-60 + (qrand() % 120));
-        p->setOpacity((qreal)(qrand() % 100) / 99.0);
+        p->setContentOpacity((qreal)(qrand() % 100) / 99.0);
         m_canvas->addManualContent(p, QPoint(qrand() % FIXEDSIZE.width(), qrand() % FIXEDSIZE.height()));
         p->hide();
         m_pictures[i] = p;

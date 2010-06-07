@@ -169,7 +169,7 @@ HomeScene::HomeScene(QObject * parent)
 #else
     HomeLabel * newWordcloud = new HomeLabel(tr("coming soon"), QPixmap(":/data/home-newwordcloud.png"), this);
      newWordcloud->setEnabled(false);
-     newWordcloud->setOpacity(0.2);
+     newWordcloud->setContentOpacity(0.2);
 #endif
      newWordcloud->setZValue(0.0);
      m_labels.append(newWordcloud);
@@ -182,7 +182,7 @@ HomeScene::HomeScene(QObject * parent)
     HomeLabel * wizard = new HomeLabel(tr("coming soon"), QPixmap(":/data/home-wizard.png"), this);
      connect(wizard, SIGNAL(requestEditing()), this, SIGNAL(startWizard()));
      wizard->setEnabled(false);
-     wizard->setOpacity(0.2);
+     wizard->setContentOpacity(0.2);
      wizard->setZValue(0.0);
      m_labels.append(wizard);
 
