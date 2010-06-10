@@ -14,6 +14,7 @@
 
 #include "PropertyEditors.h"
 
+#define SYMBIAN_STRANGE_VARIANT (QVariant::Type)135
 
 PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _target, const char * propertyName, QObject * parent)
   : PE_TypeControl<QAbstractSlider>(_slider, _target, propertyName, parent)
@@ -26,7 +27,7 @@ PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _targe
     connect(m_control.data(), SIGNAL(valueChanged(int)), this, SLOT(slotSliderValueChanged(int)));
 
     // allow Int and Double properties only
-    if (m_property.type() != QVariant::Int && m_property.type() != QVariant::Double)
+    if (m_property.type() != QVariant::Int && m_property.type() != QVariant::Double && m_property.type() != SYMBIAN_STRANGE_VARIANT)
         qWarning("PE_AbstractSlider: unhandled property '%s' of type %d", propertyName, (int)m_property.type());
     else
         m_isValid = true;
@@ -44,7 +45,7 @@ void PE_AbstractSlider::slotSliderValueChanged(int intValue)
     }
 
     // QVariant::Double: remap to the 0..1 range
-    else if (m_property.type() == QVariant::Double) {
+    else if (m_property.type() == QVariant::Double || m_property.type() == SYMBIAN_STRANGE_VARIANT) {
         if (m_control->property("noremap").toBool())
             m_property.write(m_target.data(), (qreal)intValue);
         else if (m_control->maximum() > m_control->minimum()) {
@@ -71,7 +72,7 @@ void PE_AbstractSlider::slotPropertyChanged()
     }
 
     // QVariant::Double: slider is scrolled from start to stop for the 0..1 property value
-    else if (m_property.type() == QVariant::Double) {
+    else if (m_property.type() == QVariant::Double || m_property.type() == SYMBIAN_STRANGE_VARIANT) {
         qreal realValue = m_property.read(m_target.data()).toDouble();
         if (m_control->property("noremap").toBool())
             m_property.write(m_target.data(), (qreal)realValue);
