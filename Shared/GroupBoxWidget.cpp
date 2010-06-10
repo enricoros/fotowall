@@ -124,6 +124,7 @@ void GroupBoxWidget::setBorderFlags(int flags)
     update();
 }
 
+#if !defined(MOBILE_UI)
 void GroupBoxWidget::collapse()
 {
     if (!m_collapsed) {
@@ -139,6 +140,7 @@ void GroupBoxWidget::expand()
         updateDesign();
     }
 }
+#endif
 
 void GroupBoxWidget::enterEvent(QEvent *)
 {

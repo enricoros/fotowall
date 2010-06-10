@@ -13,7 +13,8 @@ HEADERS += \
     App/Settings.h \
     App/UrlHistoryBox.h \
     App/VersionCheckDialog.h \
-    App/Workflow.h
+    App/Workflow.h \
+    App/SmartPanel.h
 
 SOURCES += \
     App/App.cpp \
@@ -30,7 +31,8 @@ SOURCES += \
     App/Settings.cpp \
     App/UrlHistoryBox.cpp \
     App/VersionCheckDialog.cpp \
-    App/Workflow.cpp
+    App/Workflow.cpp \
+    App/SmartPanel.cpp
 
 FORMS += \
     App/CanvasAppliance.ui \

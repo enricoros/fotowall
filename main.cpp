@@ -90,7 +90,7 @@ int main( int argc, char ** args )
 
 #if defined(MOBILE_UI)
     QFont smallFont = app.font();
-    smallFont.setPointSize(8);
+    smallFont.setPointSize(6);
     app.setFont(smallFont);
 
     MainWindowMobile * mainWindow = new MainWindowMobile;

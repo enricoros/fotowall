@@ -19,6 +19,7 @@
 class QNetworkAccessManager;
 class PictureSearchWidget;
 class SceneView;
+class SmartPanel;
 class TopbarContainer;
 class Workflow;
 
@@ -41,13 +42,15 @@ class MainWindowMobile : public PlugGui::Container
         void applianceSetFocusToScene();
 
         // ::QWidget
-        void closeEvent(QCloseEvent * event);
+        void closeEvent(QCloseEvent *);
+        void resizeEvent(QResizeEvent *);
 
     private:
         QNetworkAccessManager * m_networkAccessManager;
         PictureSearchWidget *   m_pictureSearch;
         SceneView *             m_sceneView;
         TopbarContainer *       m_topbarContainer;
+        QList<SmartPanel *>     m_smartPanels;
 
     private Q_SLOTS:
         void slotClosePictureSearch();

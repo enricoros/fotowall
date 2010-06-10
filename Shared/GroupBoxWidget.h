@@ -47,8 +47,10 @@ class GroupBoxWidget : public QWidget
         void setBorderFlags(int flags);
 
         // an elegant alternative to show and hide
+#if !defined(MOBILE_UI)
         void collapse();
         void expand();
+#endif
 
     Q_SIGNALS:
         void toggled(bool on);

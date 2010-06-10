@@ -21,6 +21,7 @@
 #include "PictureSearchWidget.h"
 #include "SceneView.h"
 #include "Settings.h"
+#include "SmartPanel.h"
 #include "Workflow.h"
 
 #include <QApplication>
@@ -30,6 +31,7 @@
 #include <QFont>
 #include <QFrame>
 #include <QNetworkAccessManager>
+#include <QPropertyAnimation>
 #include <QVariant>
 
 class NavibarContainer : public QWidget
@@ -98,8 +100,6 @@ MainWindowMobile::MainWindowMobile(QWidget * parent)
 
     // the topbar container, populated by the framework
     m_topbarContainer = new TopbarContainer(m_sceneView);
-    m_topbarContainer->move(50, 0);
-    m_topbarContainer->setGeometry(50, 0, width() - 100, App::TopBarHeight);
     m_topbarContainer->setFixedHeight(App::TopBarHeight);
     m_topbarContainer->show();
     QHBoxLayout * topbarLayout = new QHBoxLayout(m_topbarContainer);
@@ -153,25 +153,35 @@ void MainWindowMobile::applianceSetScene(AbstractScene * scene)
     m_sceneView->setScene(scene);
 }
 
-static void removeLayoutChildWidges(QLayout * layout)
-{
-    while (QLayoutItem * item = layout->takeAt(0)) {
-        if (QWidget * oldWidget = item->widget())
-            oldWidget->setVisible(false);
-        delete item;
-    }
-}
-
 void MainWindowMobile::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
-    QLayout * topbarLayout = m_topbarContainer->layout();
+    // cleat the smartpanels hiding all widgets
+    foreach (SmartPanel * panel, m_smartPanels) {
+        panel->embeddedWidget()->setVisible(false);
+        panel->embeddedWidget()->setParent(0);
+        delete panel;
+    }
+    m_smartPanels.clear();
 
     // clear the topbar layout hiding all widgets
-    removeLayoutChildWidges(topbarLayout);
+    QLayout * topbarLayout = m_topbarContainer->layout();
+    while (QLayoutItem * item = topbarLayout->takeAt(0)) {
+        if (QWidget * embeddedWidget = item->widget())
+            embeddedWidget->setVisible(false);
+        delete item;
+    }
 
     // add the left widgets
     QList<QWidget *> rightWidgets;
     foreach (QWidget * widget, widgets) {
+        if (!widget->property("@noInPanel").toBool()) {
+            SmartPanel * sp = new SmartPanel(widget->property("title").toString(), widget, m_sceneView);
+            m_smartPanels.append(sp);
+            widget->setFixedHeight(App::TopBarHeight);
+            widget->setVisible(true);
+            sp->show();
+            continue;
+        }
         if (widget->property("@rightBar").toBool()) {
             rightWidgets.append(widget);
             continue;
@@ -190,6 +200,9 @@ void MainWindowMobile::applianceSetTopbar(const QList<QWidget *> & widgets)
         widget->setFixedHeight(App::TopBarHeight);
         widget->setVisible(true);
     }
+
+    // reposition items
+    resizeEvent(0);
 }
 
 void MainWindowMobile::applianceSetSidebar(QWidget * sidebar)
@@ -203,7 +216,7 @@ void MainWindowMobile::applianceSetCentralwidget(QWidget * widget)
     if (widget)
         qWarning("MainWindowMobile::applianceSetCentralwidget: not used on mobile");
 }
-#include <QPropertyAnimation>
+
 void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
 {
     if (key == App::CC_ShowPictureSearch) {
@@ -238,8 +251,9 @@ void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
 
         bool hidden = value.toBool();
 
+        int x = m_topbarContainer->x();
         QPropertyAnimation * ani = new QPropertyAnimation(m_topbarContainer, "pos", m_topbarContainer);
-        ani->setEndValue(hidden ? QPoint(0, -App::TopBarHeight) : QPoint(0, 0));
+        ani->setEndValue(hidden ? QPoint(x, -App::TopBarHeight) : QPoint(x, 0));
         ani->setEasingCurve(QEasingCurve::OutQuad);
         ani->setDuration(200);
         ani->start(QAbstractAnimation::DeleteWhenStopped);
@@ -247,9 +261,6 @@ void MainWindowMobile::applianceSetValue(quint32 key, const QVariant & value)
             connect(ani, SIGNAL(finished()), m_topbarContainer, SLOT(hide()));
         else
             m_topbarContainer->show();
-
-        //m_topbarContainer->setVisible(!visible);
-
 
     } else
         qWarning("MainWindowMobile::applianceSetValue: unknown key 0x%x", key);
@@ -263,6 +274,20 @@ void MainWindowMobile::applianceSetFocusToScene()
 void MainWindowMobile::closeEvent(QCloseEvent * event)
 {
     event->setAccepted(App::workflow->requestExit());
+}
+
+void MainWindowMobile::resizeEvent(QResizeEvent *)
+{
+    // resize the topbar container
+    m_topbarContainer->setGeometry(50, 0, width() - 100, App::TopBarHeight);
+
+    // reposition the Smart Panels
+    int baseY = m_sceneView->height();
+    int baseX = 100;
+    foreach (SmartPanel *panel, m_smartPanels) {
+        panel->setBasePos(QPoint(baseX, baseY));
+        baseX += qMin(200, panel->labelWidth()) + 4;
+    }
 }
 
 void MainWindowMobile::slotClosePictureSearch()
