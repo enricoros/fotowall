@@ -15,13 +15,13 @@
 #include "App/MainWindowMobile.h"
 
 #include "Shared/BreadCrumbBar.h"
+#include "Shared/GroupBoxWidget.h"
 #include "Shared/RenderOpts.h"
 #include "App.h"
 #include "OnlineServices.h"
 #include "PictureSearchWidget.h"
 #include "SceneView.h"
 #include "Settings.h"
-#include "SmartPanel.h"
 #include "Workflow.h"
 
 #include <QApplication>
@@ -45,14 +45,19 @@ public:
     }
 };
 
-class TopbarContainer : public QFrame
+class TopbarContainer : public QWidget
 {
 public:
     TopbarContainer(QWidget * parent = 0)
-      : QFrame(parent)
+      : QWidget(parent)
     {
-        setFrameStyle(QFrame::NoFrame);
+        //setFrameStyle(QFrame::NoFrame);
         setAutoFillBackground(false);
+    }
+
+    void mousePressEvent(QMouseEvent *event)
+    {
+        event->ignore();
     }
 };
 
@@ -155,13 +160,13 @@ void MainWindowMobile::applianceSetScene(AbstractScene * scene)
 
 void MainWindowMobile::applianceSetTopbar(const QList<QWidget *> & widgets)
 {
-    // cleat the smartpanels hiding all widgets
-    foreach (SmartPanel * panel, m_smartPanels) {
-        panel->embeddedWidget()->setVisible(false);
-        panel->embeddedWidget()->setParent(0);
-        delete panel;
+    // hide all the current panels
+    foreach (GroupBoxWidget * panel, m_panels) {
+        disconnect(panel, 0, this, 0);
+        panel->hide();
+        panel->setParent(0);
     }
-    m_smartPanels.clear();
+    m_panels.clear();
 
     // clear the topbar layout hiding all widgets
     QLayout * topbarLayout = m_topbarContainer->layout();
@@ -171,34 +176,26 @@ void MainWindowMobile::applianceSetTopbar(const QList<QWidget *> & widgets)
         delete item;
     }
 
-    // add the left widgets
-    QList<QWidget *> rightWidgets;
-    foreach (QWidget * widget, widgets) {
-        if (!widget->property("@noInPanel").toBool()) {
-            SmartPanel * sp = new SmartPanel(widget->property("title").toString(), widget, m_sceneView);
-            m_smartPanels.append(sp);
+    // add the widgets to..
+    QList<QWidget *> reverseWidgets = widgets;
+    while (!reverseWidgets.isEmpty()) {
+        QWidget * widget = reverseWidgets.takeLast();
+        // ..the manually handled topbar, or
+        if (widget->property("@noInPanel").toBool() || !widget->inherits("GroupBoxWidget")) {
+            topbarLayout->addWidget(widget);
             widget->setFixedHeight(App::TopBarHeight);
             widget->setVisible(true);
-            sp->show();
             continue;
         }
-        if (widget->property("@rightBar").toBool()) {
-            rightWidgets.append(widget);
-            continue;
-        }
-        topbarLayout->addWidget(widget);
-        widget->setFixedHeight(App::TopBarHeight);
-        widget->setVisible(true);
-    }
-
-    // add the spacer
-    topbarLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding));
-
-    // add the right widgets
-    foreach (QWidget * widget, rightWidgets) {
-        topbarLayout->addWidget(widget);
-        widget->setFixedHeight(App::TopBarHeight);
-        widget->setVisible(true);
+        // ..enable as containers
+        GroupBoxWidget * g = static_cast<GroupBoxWidget *>(widget);
+        connect(g, SIGNAL(labelSizeChanged()), this, SLOT(slotPanelLabelSizeChanged()));
+        g->setSmartPanel(true);
+        g->setParent(m_sceneView);
+        g->setFixedHeight(App::TopBarHeight);
+        g->setVisible(true);
+        g->show();
+        m_panels.append(g);
     }
 
     // reposition items
@@ -279,18 +276,24 @@ void MainWindowMobile::closeEvent(QCloseEvent * event)
 void MainWindowMobile::resizeEvent(QResizeEvent *)
 {
     // resize the topbar container
-    m_topbarContainer->setGeometry(50, 0, width() - 100, App::TopBarHeight);
+    const int supposedTopWidth = 300;
+    m_topbarContainer->setGeometry((width() - supposedTopWidth) / 2, 0, supposedTopWidth, App::TopBarHeight);
 
     // reposition the Smart Panels
     int baseY = m_sceneView->height();
-    int baseX = 100;
-    foreach (SmartPanel *panel, m_smartPanels) {
+    int baseX = width() > 400 ? 60 : 0;
+    foreach (GroupBoxWidget *panel, m_panels) {
         panel->setBasePos(QPoint(baseX, baseY));
-        baseX += qMin(200, panel->labelWidth()) + 4;
+        baseX += qMin(200, panel->labelWidth()) + 8;
     }
 }
 
 void MainWindowMobile::slotClosePictureSearch()
 {
     App::workflow->applianceCommand(App::AC_ClosePicureSearch);
+}
+
+void MainWindowMobile::slotPanelLabelSizeChanged()
+{
+    resizeEvent(0);
 }

@@ -610,6 +610,8 @@ void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
 #if !defined(MOBILE_UI)
         ui.propertiesBox->collapse();
         ui.canvasPropertiesBox->expand();
+#else
+        ui.propertiesBox->disappear();
 #endif
     }
 }

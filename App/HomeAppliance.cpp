@@ -74,8 +74,10 @@ HomeAppliance::HomeAppliance(QObject *parent)
     if (!recentUrls.isEmpty()) {
         m_historyBox = new UrlHistoryBox(recentUrls);
         m_historyBox->setTitle(tr("RECENT FILES"));
+#if !defined(MOBILE_UI)
         m_historyBox->setBorderFlags(0x0000);
         m_historyBox->setCheckable(false);
+#endif
         m_historyBox->setPalette(brightPal);
         m_historyBox->setAutoFillBackground(true);
         connect(m_historyBox, SIGNAL(urlClicked(const QUrl &)), this, SLOT(slotLoadCanvas(const QUrl &)));
@@ -86,8 +88,10 @@ HomeAppliance::HomeAppliance(QObject *parent)
     // create the File Box
     m_fileBox = new FileBoxWidget;
     m_fileBox->setTitle(tr("OPEN"));
+#if !defined(MOBILE_UI)
     m_fileBox->setBorderFlags(0x0000);
     m_fileBox->setCheckable(false);
+#endif
     m_fileBox->setPalette(brightPal);
     m_fileBox->setAutoFillBackground(true);
     connect(m_fileBox->openButton, SIGNAL(clicked()), this, SLOT(slotOpenFile()));

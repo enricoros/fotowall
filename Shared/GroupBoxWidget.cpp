@@ -22,29 +22,20 @@
 #include <QTimer>
 #include <QVariant>
 
-#if defined(MOBILE_UI) || QT_VERSION < 0x040600
-#define ANIMATE_PARAM(propName, duration, endValue, finalizeLayout) \
-    {setProperty(propName, endValue); if (finalizeLayout) slotFinalizeDesign();}
-#else
-#include <QPropertyAnimation>
-#define ANIMATE_PARAM(propName, duration, endValue, finalizeLayout) \
-    {QPropertyAnimation * ani = new QPropertyAnimation(this, propName, this); \
-    if (finalizeLayout) connect(ani, SIGNAL(finished()), this, SLOT(slotFinalizeDesign())); \
-    ani->setEasingCurve(QEasingCurve::OutQuint); \
-    ani->setDuration(duration); \
-    ani->setEndValue(endValue); \
-    ani->start(QPropertyAnimation::DeleteWhenStopped);}
-#endif
-
 GroupBoxWidget::GroupBoxWidget(QWidget * parent)
   : QWidget(parent)
   , m_redesignTimer(0)
+#if !defined(MOBILE_UI)
   , m_collapsed(false)
   , m_checkable(false)
   , m_checked(true)
   , m_borderFlags(0)
   , m_checkValue(1.0)
   , m_hoverValue(0.0)
+#else
+  , m_smartPanel(false)
+  , m_panelState(0.0)
+#endif
 {
     // setup groupbox text
     m_titleFont = font();
@@ -86,6 +77,26 @@ void GroupBoxWidget::setTitleSize(int titleSize)
     updateDesign();
 }
 
+#if !defined(MOBILE_UI)
+#if QT_VERSION >= 0x040600
+#include <QPropertyAnimation>
+#define ANIMATE_PARAM(propName, duration, endValue, finalizeLayout) \
+    {QPropertyAnimation * ani = new QPropertyAnimation(this, propName, this); \
+    if (finalizeLayout) connect(ani, SIGNAL(finished()), this, SLOT(slotFinalizeDesign())); \
+    ani->setEasingCurve(QEasingCurve::OutQuint); \
+    ani->setDuration(duration); \
+    ani->setEndValue(endValue); \
+    ani->start(QPropertyAnimation::DeleteWhenStopped);}
+#else
+#define ANIMATE_PARAM(propName, duration, endValue, finalizeLayout) \
+    {setProperty(propName, endValue); if (finalizeLayout) slotFinalizeDesign();}
+#endif
+
+int GroupBoxWidget::calcMinWidth() const
+{
+    return qMax(QFontMetrics(m_titleFont).width(m_titleText) + 12, QWidget::sizeHint().width());
+}
+
 bool GroupBoxWidget::isCheckable() const
 {
     return m_checkable;
@@ -124,7 +135,6 @@ void GroupBoxWidget::setBorderFlags(int flags)
     update();
 }
 
-#if !defined(MOBILE_UI)
 void GroupBoxWidget::collapse()
 {
     if (!m_collapsed) {
@@ -140,17 +150,6 @@ void GroupBoxWidget::expand()
         updateDesign();
     }
 }
-#endif
-
-void GroupBoxWidget::enterEvent(QEvent *)
-{
-    ANIMATE_PARAM("hAnim", 400, 1.0, false);
-}
-
-void GroupBoxWidget::leaveEvent(QEvent *)
-{
-    ANIMATE_PARAM("hAnim", 400, 0.0, false);
-}
 
 void GroupBoxWidget::mousePressEvent(QMouseEvent * /*event*/)
 {
@@ -163,15 +162,8 @@ void GroupBoxWidget::paintEvent(QPaintEvent * event)
     if (m_titleText.isEmpty())
         return;
 
-    QPainter p(this);
-
-#if defined(MOBILE_UI)
-    // draw light background
-    p.fillRect(event->rect(), palette().color(QPalette::Window));
-#endif
-
-#if !defined(MOBILE_UI)
     // draw hovering
+    QPainter p(this);
     if (m_hoverValue > 0 && (m_checkValue == 0.0 || m_checkValue == 1.0)) {
         QRadialGradient rg = m_checkValue == 1.0 ? QRadialGradient(0.5, 0.2, 0.8) : QRadialGradient(0.5, 1.0, 1.5);
         QColor startColor(Qt::white);
@@ -189,7 +181,6 @@ void GroupBoxWidget::paintEvent(QPaintEvent * event)
         p.fillRect(0, 0, 1, height(), QColor(230, 230, 230));
     if (m_borderFlags & 0x0002)
         p.fillRect(width() - 1, 0, 1, height(), Qt::white);
-#endif
 
     // precalc text position and move painter
     QStyle * ss = m_checkable ? style() : 0;
@@ -230,6 +221,15 @@ void GroupBoxWidget::paintEvent(QPaintEvent * event)
     p.restore();
 }
 
+void GroupBoxWidget::enterEvent(QEvent *)
+{
+    ANIMATE_PARAM("hAnim", 400, 1.0, false);
+}
+
+void GroupBoxWidget::leaveEvent(QEvent *)
+{
+    ANIMATE_PARAM("hAnim", 400, 0.0, false);
+}
 
 qreal GroupBoxWidget::checkValue() const
 {
@@ -251,11 +251,6 @@ void GroupBoxWidget::setHoverValue(qreal value)
 {
     m_hoverValue = value;
     update();
-}
-
-int GroupBoxWidget::calcMinWidth() const
-{
-    return qMax(QFontMetrics(m_titleFont).width(m_titleText) + 12, QWidget::sizeHint().width());
 }
 
 void GroupBoxWidget::updateDesign()
@@ -316,3 +311,191 @@ void GroupBoxWidget::slotFinalizeDesign()
         setCheckValue(1.0);
     }
 }
+#endif
+
+//
+// Mobile Version customizations
+//
+#if defined(MOBILE_UI)
+#include <QPropertyAnimation>
+#define SP_MARGIN 2
+#define SP_SPACING 2
+
+
+int GroupBoxWidget::calcMinWidth() const
+{
+    return qMax(m_labelRect.width(), QWidget::sizeHint().width());
+}
+
+void GroupBoxWidget::setSmartPanel(bool smart)
+{
+    if (smart != m_smartPanel) {
+        m_smartPanel = smart;
+        updateDesign();
+    }
+}
+
+QPoint GroupBoxWidget::basePos() const
+{
+    return m_basePos;
+}
+
+void GroupBoxWidget::setBasePos(const QPoint &pos)
+{
+    if (m_basePos != pos) {
+        m_basePos = pos;
+        updateDesign();
+    }
+}
+
+int GroupBoxWidget::labelWidth() const
+{
+    return m_labelRect.width();
+}
+
+void GroupBoxWidget::disappear()
+{
+    if (m_panelState >= 0.01)
+        emit panelLowering();
+    m_panelState = 0.0;
+    m_titleText = QString();
+    updateDesign();
+}
+
+qreal GroupBoxWidget::panelState() const
+{
+    return m_panelState;
+}
+
+void GroupBoxWidget::setPanelState(qreal state)
+{
+    if (state != m_panelState) {
+        m_panelState = state;
+        move(m_basePos + QPoint(0, verticalOffset()));
+    }
+}
+
+void GroupBoxWidget::mousePressEvent(QMouseEvent * event)
+{
+    if (!m_smartPanel || m_titleText.isEmpty() || !m_labelRect.contains(event->pos()))
+        return;
+    if (m_panelState <= 0.01) {
+        QPropertyAnimation * ani = new QPropertyAnimation(this, "panelState", this);
+        ani->setEndValue((qreal)1.0);
+        ani->setEasingCurve(QEasingCurve::OutQuad);
+        ani->setDuration(200);
+        ani->start(QAbstractAnimation::DeleteWhenStopped);
+        emit panelRaising();
+    } else {
+        QPropertyAnimation * ani = new QPropertyAnimation(this, "panelState", this);
+        ani->setEndValue((qreal)0.0);
+        ani->setEasingCurve(QEasingCurve::OutQuad);
+        ani->setDuration(200);
+        ani->start(QAbstractAnimation::DeleteWhenStopped);
+        emit panelLowering();
+    }
+}
+
+void GroupBoxWidget::paintEvent(QPaintEvent * event)
+{
+    // skip the rest of the painting if no text
+    if (m_titleText.isEmpty())
+        return;
+
+    QPainter p(this);
+    p.setFont(m_titleFont);
+
+    // compatibility drawing
+    if (!m_smartPanel) {
+        p.fillRect(event->rect(), palette().color(QPalette::Window));
+        p.setPen(Qt::black);
+        p.drawText(QRect(0, 0, width(), m_labelRect.height()), Qt::AlignCenter, m_titleText);
+        return;
+    }
+
+    // draw label
+    QLinearGradient lg(0, 0, 0, height());
+    QColor wColor(200, 200, 200, 200);
+    lg.setColorAt(0.0, wColor.lighter());
+    lg.setColorAt(1.0, wColor);
+#if 1
+    p.setPen(QPen(Qt::white, 0));
+    p.setBrush(lg);
+    QPainterPath path;
+     path.moveTo(m_labelRect.left(), m_labelRect.bottom() + 1);
+     path.lineTo(m_labelRect.left(), 3);
+     path.quadTo(m_labelRect.left(), 0, m_labelRect.left() + 3, 0);
+     path.lineTo(m_labelRect.right() - 4, 0);
+     path.quadTo(m_labelRect.right() - 1, 0, m_labelRect.right() - 1, 3);
+     path.lineTo(m_labelRect.right() - 1, m_labelRect.bottom() + 1);
+    p.drawPath(path);
+#else
+    p.fillRect(m_labelRect, lg);
+#endif
+
+    // draw background
+    if (m_panelState > 0.0) {
+        p.fillRect(1, m_labelRect.bottom() + 1, width() - 1, height() - m_labelRect.bottom() - 1, lg);
+        p.fillRect(0, m_labelRect.bottom() + 1, 1, height() - m_labelRect.bottom() - 1, Qt::white);
+    }
+
+    // draw text
+    p.setPen(Qt::black);
+    p.drawText(m_labelRect, Qt::AlignCenter, m_titleText);
+}
+
+void GroupBoxWidget::updateDesign()
+{
+    // calc text box size
+    QFontMetrics fm(m_titleFont);
+    int textWidth = fm.width(m_titleText) + 32;
+    QRect newLabelRect = QRect(0, 0, textWidth, 20);
+    bool emitLabelChanged = false;
+    if (newLabelRect != m_labelRect) {
+        emitLabelChanged = true;
+        m_labelRect = newLabelRect;
+        setContentsMargins(0, m_labelRect.height() + SP_SPACING, 0, 0);
+        update();
+    }
+
+    // move me
+    move(m_basePos + QPoint(0, verticalOffset()));
+
+
+    // emit label changed
+    if (emitLabelChanged)
+        emit labelSizeChanged();
+
+    // defer and accumulate layout calculations
+    if (!m_redesignTimer) {
+        m_redesignTimer = new QTimer(this);
+        m_redesignTimer->setSingleShot(true);
+        connect(m_redesignTimer, SIGNAL(timeout()), SLOT(slotAnimateDesign()));
+    }
+    m_redesignTimer->start();
+}
+
+int GroupBoxWidget::verticalOffset() const
+{
+    if (!m_panelState)
+        return -m_labelRect.height();
+    if (m_panelState > 0)
+        return -m_labelRect.height() - (int)((qreal)(height() - m_labelRect.height()) * m_panelState);
+    return -(int)((qreal)m_labelRect.height() * (1.0 + m_panelState));
+}
+
+void GroupBoxWidget::slotAnimateDesign()
+{
+    // no animation for the design
+    slotFinalizeDesign();
+
+    // it was hidden in the constructor for not showing junk before initial layouting
+    show();
+}
+
+void GroupBoxWidget::slotFinalizeDesign()
+{
+    setMinimumWidth(calcMinWidth());
+    setMaximumWidth(QWIDGETSIZE_MAX);
+}
+#endif

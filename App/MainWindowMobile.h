@@ -17,9 +17,9 @@
 
 #include "Shared/PlugGui/Container.h"
 class QNetworkAccessManager;
+class GroupBoxWidget;
 class PictureSearchWidget;
 class SceneView;
-class SmartPanel;
 class TopbarContainer;
 class Workflow;
 
@@ -50,10 +50,11 @@ class MainWindowMobile : public PlugGui::Container
         PictureSearchWidget *   m_pictureSearch;
         SceneView *             m_sceneView;
         TopbarContainer *       m_topbarContainer;
-        QList<SmartPanel *>     m_smartPanels;
+        QList<GroupBoxWidget *> m_panels;
 
     private Q_SLOTS:
         void slotClosePictureSearch();
+        void slotPanelLabelSizeChanged();
 };
 
 #endif
