@@ -69,6 +69,9 @@ class GroupBoxWidget : public QWidget
         int labelWidth() const;
 
         void disappear();
+
+        void smartFall();
+        void smartRaise();
 #endif
 
     Q_SIGNALS:

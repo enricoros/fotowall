@@ -362,6 +362,30 @@ void GroupBoxWidget::disappear()
     updateDesign();
 }
 
+void GroupBoxWidget::smartFall()
+{
+    if (m_smartPanel) {
+        if (m_panelState >= 0.01)
+            emit panelLowering();
+        QPropertyAnimation * ani = new QPropertyAnimation(this, "panelState", this);
+        ani->setEndValue((qreal)-1.0);
+        ani->setEasingCurve(QEasingCurve::OutQuad);
+        ani->setDuration(200);
+        ani->start(QAbstractAnimation::DeleteWhenStopped);
+    }
+}
+
+void GroupBoxWidget::smartRaise()
+{
+    if (m_smartPanel) {
+        QPropertyAnimation * ani = new QPropertyAnimation(this, "panelState", this);
+        ani->setEndValue((qreal)0.0);
+        ani->setEasingCurve(QEasingCurve::OutQuad);
+        ani->setDuration(200);
+        ani->start(QAbstractAnimation::DeleteWhenStopped);
+    }
+}
+
 qreal GroupBoxWidget::panelState() const
 {
     return m_panelState;
@@ -418,20 +442,19 @@ void GroupBoxWidget::paintEvent(QPaintEvent * event)
     QColor wColor(200, 200, 200, 200);
     lg.setColorAt(0.0, wColor.lighter());
     lg.setColorAt(1.0, wColor);
-#if 1
-    p.setPen(QPen(Qt::white, 0));
-    p.setBrush(lg);
-    QPainterPath path;
-     path.moveTo(m_labelRect.left(), m_labelRect.bottom() + 1);
-     path.lineTo(m_labelRect.left(), 3);
-     path.quadTo(m_labelRect.left(), 0, m_labelRect.left() + 3, 0);
-     path.lineTo(m_labelRect.right() - 4, 0);
-     path.quadTo(m_labelRect.right() - 1, 0, m_labelRect.right() - 1, 3);
-     path.lineTo(m_labelRect.right() - 1, m_labelRect.bottom() + 1);
-    p.drawPath(path);
-#else
-    p.fillRect(m_labelRect, lg);
-#endif
+    if (m_panelState < 0.99) {
+        p.setPen(QPen(Qt::white, 0));
+        p.setBrush(lg);
+        QPainterPath path;
+         path.moveTo(m_labelRect.left(), m_labelRect.bottom() + 1);
+         path.lineTo(m_labelRect.left(), 3);
+         path.quadTo(m_labelRect.left(), 0, m_labelRect.left() + 3, 0);
+         path.lineTo(m_labelRect.right() - 4, 0);
+         path.quadTo(m_labelRect.right() - 1, 0, m_labelRect.right() - 1, 3);
+         path.lineTo(m_labelRect.right() - 1, m_labelRect.bottom() + 1);
+        p.drawPath(path);
+    } else
+        p.fillRect(m_labelRect, lg);
 
     // draw background
     if (m_panelState > 0.0) {

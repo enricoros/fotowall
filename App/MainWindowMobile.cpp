@@ -90,6 +90,17 @@ MainWindowMobile::MainWindowMobile(QWidget * parent)
     nbLayout->addWidget(workflowBar);
     workflowBar->show();
 
+    nbLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding));
+
+    // create the exit button on the right side
+    BreadCrumbBar * exitBar = new BreadCrumbBar(nbContainer);
+    connect(exitBar, SIGNAL(nodeClicked(quint32)), qApp, SLOT(quit()));
+    exitBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Ignored);
+    exitBar->setBackgroundOffset(1);
+    exitBar->addNode(1, tr("Exit"), 0);
+    nbLayout->addWidget(exitBar);
+    exitBar->show();
+
     // create the Help navigation bar
     /*BreadCrumbBar * helpBar = new BreadCrumbBar(m_sceneView);
     connect(helpBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotHelpBarClicked(quint32)));
@@ -189,6 +200,8 @@ void MainWindowMobile::applianceSetTopbar(const QList<QWidget *> & widgets)
         }
         // ..enable as containers
         GroupBoxWidget * g = static_cast<GroupBoxWidget *>(widget);
+        connect(g, SIGNAL(panelRaising()), this, SLOT(slotHideOtherPanels()));
+        connect(g, SIGNAL(panelLowering()), this, SLOT(slotShowOtherPanels()));
         connect(g, SIGNAL(labelSizeChanged()), this, SLOT(slotPanelLabelSizeChanged()));
         g->setSmartPanel(true);
         g->setParent(m_sceneView);
@@ -291,6 +304,22 @@ void MainWindowMobile::resizeEvent(QResizeEvent *)
 void MainWindowMobile::slotClosePictureSearch()
 {
     App::workflow->applianceCommand(App::AC_ClosePicureSearch);
+}
+
+void MainWindowMobile::slotHideOtherPanels()
+{
+    GroupBoxWidget *lowering = static_cast<GroupBoxWidget *>(sender());
+    foreach (GroupBoxWidget * panel, m_panels)
+        if (panel != lowering)
+            panel->smartFall();
+}
+
+void MainWindowMobile::slotShowOtherPanels()
+{
+    GroupBoxWidget *lowering = static_cast<GroupBoxWidget *>(sender());
+    foreach (GroupBoxWidget * panel, m_panels)
+        if (panel != lowering)
+            panel->smartRaise();
 }
 
 void MainWindowMobile::slotPanelLabelSizeChanged()

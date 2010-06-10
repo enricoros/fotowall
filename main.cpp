@@ -35,6 +35,14 @@
 #include <QTranslator>
 #endif
 
+// Lock Symbian orientation
+#ifdef Q_OS_SYMBIAN
+#include <eikenv.h>
+#include <eikappui.h>
+#include <aknenv.h>
+#include <aknappui.h>
+#endif
+
 // init RenderOpts defaults
 bool RenderOpts::LastMirrored = true;
 bool RenderOpts::HQRendering = false;
@@ -56,6 +64,12 @@ int main( int argc, char ** args )
     app.setApplicationName("Fotowall");
     app.setApplicationVersion("1.0");
     app.setOrganizationName("Enrico Ros");
+
+    // Lock Symbian orientation
+#ifdef Q_OS_SYMBIAN
+    //if (CAknAppUi* appUi = dynamic_cast<CAknAppUi *>(CEikonEnv::Static()->AppUi()))
+    //    appUi->SetOrientationL(CAknAppUi::EAppUiOrientationLandscape);
+#endif
 
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 

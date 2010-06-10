@@ -54,6 +54,8 @@ class MainWindowMobile : public PlugGui::Container
 
     private Q_SLOTS:
         void slotClosePictureSearch();
+        void slotHideOtherPanels();
+        void slotShowOtherPanels();
         void slotPanelLabelSizeChanged();
 };
 
