@@ -226,6 +226,9 @@ void PictureContent::crop()
     if (!m_photo)
         return;
     CroppingDialog dial(m_photo);
+#if defined(MOBILE_UI)
+    dial.showFullScreen();
+#endif
     if (dial.exec() != QDialog::Accepted)
         return;
     QRect cropRect = dial.getCroppingRect();

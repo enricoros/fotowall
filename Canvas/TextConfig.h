@@ -23,7 +23,11 @@ class TextConfig : public AbstractConfig
 {
     Q_OBJECT
     public:
+#if !defined(MOBILE_UI)
         TextConfig(TextContent * textContent, QGraphicsItem * parent = 0);
+#else
+        TextConfig(TextContent * textContent, QWidget * parent = 0);
+#endif
 
     private:
         // ::AbstractConfig

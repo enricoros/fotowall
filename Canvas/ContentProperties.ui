@@ -117,7 +117,7 @@
      <item>
       <widget class="QToolButton" name="cConfigure">
        <property name="toolTip">
-        <string>Delete</string>
+        <string>Configure</string>
        </property>
        <property name="icon">
         <iconset resource="../fotowall.qrc">

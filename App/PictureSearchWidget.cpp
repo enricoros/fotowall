@@ -19,6 +19,7 @@
 #include "Shared/PictureServices/FlickrPictureService.h"
 #include "Shared/PictureServices/GoogleImagesPictureService.h"
 #include "App.h"
+#include <QApplication>
 #include <QBasicTimer>
 #include <QGraphicsScene>
 #include <QGraphicsLinearLayout>
@@ -156,6 +157,14 @@ class DottedLineEdit : public QLineEdit
             normalMode();
             QLineEdit::mousePressEvent(event);
         }
+#if defined(MOBILE_UI)
+        void mouseReleaseEvent(QMouseEvent *)
+        {
+            //QLineEdit::mouseReleaseEvent(event);
+            QEvent event(QEvent::RequestSoftwareInputPanel);
+            QApplication::sendEvent(this, &event);
+        }
+#endif
 
     private:
         void normalMode()

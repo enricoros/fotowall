@@ -15,8 +15,9 @@
 #ifndef __AbstractConfig_h__
 #define __AbstractConfig_h__
 
-#include <QGraphicsProxyWidget>
 #include <QBasicTimer>
+#include <QGraphicsProxyWidget>
+#include <QWidget>
 class AbstractContent;
 class Frame;
 class QAbstractButton;
@@ -24,11 +25,18 @@ class QListWidgetItem;
 class StyledButtonItem;
 namespace Ui { class AbstractConfig; }
 
-
+#if !defined(MOBILE_UI)
 class AbstractConfig : public QGraphicsProxyWidget {
+#else
+class AbstractConfig : public QWidget {
+#endif
     Q_OBJECT
     public:
+#if !defined(MOBILE_UI)
         AbstractConfig(AbstractContent * content, QGraphicsItem * parent = 0);
+#else
+        AbstractConfig(AbstractContent * content, QWidget * parent = 0);
+#endif
         virtual ~AbstractConfig();
 
         void dispose();
@@ -50,13 +58,15 @@ class AbstractConfig : public QGraphicsProxyWidget {
         void showOkButton(bool show);
 
         // ::QGraphicsProxyWidget
+#if !defined(MOBILE_UI)
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
         void resizeEvent(QGraphicsSceneResizeEvent * event);
+#endif
 
     protected Q_SLOTS:
-        virtual void slotOkClicked() {};
+        virtual void slotOkClicked() {}
 
     private:
         void populateFrameList();
@@ -64,8 +74,10 @@ class AbstractConfig : public QGraphicsProxyWidget {
         QPixmap                 m_backPixmap;
         AbstractContent *       m_content;
         Ui::AbstractConfig *    m_commonUi;
+#if !defined(MOBILE_UI)
         StyledButtonItem *      m_closeButton;
         StyledButtonItem *      m_okButton;
+#endif
         Frame *                 m_frame;
 
     private Q_SLOTS:

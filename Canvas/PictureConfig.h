@@ -25,7 +25,11 @@ namespace Ui { class PictureConfig; }
 class PictureConfig : public AbstractConfig {
     Q_OBJECT
     public:
+#if !defined(MOBILE_UI)
         PictureConfig(PictureContent * pictureContent, QGraphicsItem * parent = 0);
+#else
+        PictureConfig(PictureContent * pictureContent, QWidget * parent = 0);
+#endif
         ~PictureConfig();
 
     Q_SIGNALS:
