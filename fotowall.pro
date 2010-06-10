@@ -79,8 +79,8 @@ symbian|simulator: {
 
     # QT += multimedia
 
-    CONFIG += mobility
-    MOBILITY = contacts messaging multimedia
+    #CONFIG += mobility
+    #MOBILITY = contacts messaging multimedia
 
     TARGET.CAPABILITY = \
         NetworkServices \

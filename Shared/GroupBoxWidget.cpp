@@ -21,7 +21,11 @@
 #include <QStyle>
 #include <QTimer>
 #include <QVariant>
-#if QT_VERSION >= 0x040600
+
+#if defined(MOBILE_UI) || QT_VERSION < 0x040600
+#define ANIMATE_PARAM(propName, duration, endValue, finalizeLayout) \
+    {setProperty(propName, endValue); if (finalizeLayout) slotFinalizeDesign();}
+#else
 #include <QPropertyAnimation>
 #define ANIMATE_PARAM(propName, duration, endValue, finalizeLayout) \
     {QPropertyAnimation * ani = new QPropertyAnimation(this, propName, this); \
@@ -30,10 +34,6 @@
     ani->setDuration(duration); \
     ani->setEndValue(endValue); \
     ani->start(QPropertyAnimation::DeleteWhenStopped);}
-#else
-#define ANIMATE_PARAM(propName, duration, endValue, finalizeLayout) \
-    {setProperty(propName, endValue); \
-    if (finalizeLayout) slotFinalizeDesign();}
 #endif
 
 GroupBoxWidget::GroupBoxWidget(QWidget * parent)
@@ -164,10 +164,11 @@ void GroupBoxWidget::paintEvent(QPaintEvent * event)
     QPainter p(this);
 
 #if defined(MOBILE_UI)
-    // draw light backgruond
+    // draw light background
     p.fillRect(event->rect(), palette().color(QPalette::Window));
 #endif
 
+#if !defined(MOBILE_UI)
     // draw hovering
     if (m_hoverValue > 0 && (m_checkValue == 0.0 || m_checkValue == 1.0)) {
         QRadialGradient rg = m_checkValue == 1.0 ? QRadialGradient(0.5, 0.2, 0.8) : QRadialGradient(0.5, 1.0, 1.5);
@@ -186,6 +187,7 @@ void GroupBoxWidget::paintEvent(QPaintEvent * event)
         p.fillRect(0, 0, 1, height(), QColor(230, 230, 230));
     if (m_borderFlags & 0x0002)
         p.fillRect(width() - 1, 0, 1, height(), Qt::white);
+#endif
 
     // precalc text position and move painter
     QStyle * ss = m_checkable ? style() : 0;
