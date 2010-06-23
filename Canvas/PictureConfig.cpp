@@ -20,11 +20,7 @@
 #include <QInputDialog>
 #include <QListWidgetItem>
 
-#if !defined(MOBILE_UI)
-PictureConfig::PictureConfig(PictureContent * pictureContent, QGraphicsItem * parent)
-#else
-PictureConfig::PictureConfig(PictureContent * pictureContent, QWidget * parent)
-#endif
+PictureConfig::PictureConfig(PictureContent * pictureContent, AbstractConfig_PARENT * parent)
     : AbstractConfig(pictureContent, parent)
     , m_pictureUi(new Ui::PictureConfig())
     , m_pictureContent(pictureContent)

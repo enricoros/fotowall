@@ -41,7 +41,7 @@ class HomeAppliance : public QObject, public PlugGui::AbstractAppliance
         void slotRemoveFromHistory(const QUrl & url);
         void slotOpenFile();
         void slotStartCanvas();
-#ifdef HAS_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
         void slotStartWordcloud();
 #endif
         void slotStartWizard();

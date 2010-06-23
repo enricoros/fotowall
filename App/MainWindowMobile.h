@@ -3,7 +3,7 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2010 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

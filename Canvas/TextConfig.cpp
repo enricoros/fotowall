@@ -16,11 +16,7 @@
 #include "3rdparty/richtextedit/richtexteditor_p.h"
 #include "TextContent.h"
 
-#if !defined(MOBILE_UI)
-TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
-#else
-TextConfig::TextConfig(TextContent * textContent, QWidget * parent)
-#endif
+TextConfig::TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent)
     : AbstractConfig(textContent, parent)
     , m_textContent(textContent)
 {

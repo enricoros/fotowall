@@ -227,7 +227,7 @@ void PictureContent::crop()
         return;
     CroppingDialog dial(m_photo);
 #if defined(MOBILE_UI)
-    dial.showFullScreen();
+    dial.showMaximized();
 #endif
     if (dial.exec() != QDialog::Accepted)
         return;

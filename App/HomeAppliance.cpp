@@ -61,7 +61,7 @@ HomeAppliance::HomeAppliance(QObject *parent)
     m_scene = new HomeScene;
     connect(m_scene, SIGNAL(keyPressed(int)), this, SLOT(slotSceneKeyPressed(int)));
     connect(m_scene, SIGNAL(startCanvas()), this, SLOT(slotStartCanvas()));
-#ifdef HAS_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
     connect(m_scene, SIGNAL(startWordcloud()), this, SLOT(slotStartWordcloud()));
 #endif
     connect(m_scene, SIGNAL(startWizard()), this, SLOT(slotStartWizard()));
@@ -95,9 +95,7 @@ HomeAppliance::HomeAppliance(QObject *parent)
     m_fileBox->setPalette(brightPal);
     m_fileBox->setAutoFillBackground(true);
     connect(m_fileBox->openButton, SIGNAL(clicked()), this, SLOT(slotOpenFile()));
-#if defined(MOBILE_UI)
-    topbarAddWidget(m_fileBox, true);
-#endif
+    topbarAddWidget(m_fileBox);
 }
 
 HomeAppliance::~HomeAppliance()
@@ -149,7 +147,7 @@ void HomeAppliance::slotStartCanvas()
     App::workflow->startCanvas_A();
 }
 
-#ifdef HAS_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
 void HomeAppliance::slotStartWordcloud()
 {
     App::workflow->startWordcloud_A();

@@ -20,7 +20,9 @@
 class QTimer;
 
 /**
-  This file is very different from the Desktop to the Mobile version.
+  This file is very different from the Desktop to the Mobile version:
+   - on desktop it's an expanding collapsible fixed-height horizontal container
+   - on mobile it's like a dockable panel that is raised when clicking on the top label
 */
 
 class GroupBoxWidget : public QWidget

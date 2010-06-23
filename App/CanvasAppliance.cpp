@@ -68,7 +68,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     // configure the appliance
     windowTitleSet(m_extCanvas->prettyBaseName());
     sceneSet(m_extCanvas);
-    ui.addContentBox->setProperty("@noInPanel", true);
+    ui.addContentBox->setProperty("@onTopbar", true);
     topbarAddWidget(ui.addContentBox);
     topbarAddWidget(ui.propertiesBox);
     topbarAddWidget(ui.canvasPropertiesBox);
@@ -541,7 +541,7 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-#ifdef HAS_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
         App::workflow->stackSlaveWordcloud_A(wc);
 #else
         Q_UNUSED(wc);

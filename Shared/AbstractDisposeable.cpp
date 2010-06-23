@@ -24,7 +24,7 @@ AbstractDisposeable::AbstractDisposeable(bool fadeIn, QGraphicsItem *parent)
 {
     if (fadeIn) {
 #if QT_VERSION >= 0x040600
-        // appear
+        // fade in
         QPropertyAnimation * ao = new QPropertyAnimation(this, "contentOpacity");
         ao->setEasingCurve(QEasingCurve::OutQuad);
         ao->setDuration(150);

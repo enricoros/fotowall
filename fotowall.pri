@@ -21,7 +21,7 @@ include(3rdparty/qtcolortriangle/qtcolortriangle.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 
-# Translations of the core Fotowall files
+# Include Fotowall translations (of the above components)
 !contains(CONFIG, no-translations): {
     DEFINES += HAS_TRANSLATIONS
 

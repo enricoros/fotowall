@@ -208,7 +208,6 @@ void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
             m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
             connect(m_pictureSearch, SIGNAL(requestClosure()), this, SLOT(slotClosePictureSearch()), Qt::QueuedConnection);
             m_pictureSearch->setWindowIcon(QIcon(":/data/insert-download.png"));
-            m_pictureSearch->setWindowTitle(tr("Search Web Pictures"));
             m_pictureSearch->setWindowFlags(Qt::Tool);
             QPoint newPos = mapToGlobal(ui->sceneView->pos()) + QPoint(-20, 10);
             if (newPos.x() < 0)

@@ -16,8 +16,6 @@
 #define __AbstractConfig_h__
 
 #include <QBasicTimer>
-#include <QGraphicsProxyWidget>
-#include <QWidget>
 class AbstractContent;
 class Frame;
 class QAbstractButton;
@@ -26,17 +24,19 @@ class StyledButtonItem;
 namespace Ui { class AbstractConfig; }
 
 #if !defined(MOBILE_UI)
-class AbstractConfig : public QGraphicsProxyWidget {
+ #include <QGraphicsProxyWidget>
+ #define AbstractConfig_TYPE QGraphicsProxyWidget
+ #define AbstractConfig_PARENT QGraphicsItem
 #else
-class AbstractConfig : public QWidget {
+ #include <QWidget>
+ #define AbstractConfig_TYPE QWidget
+ #define AbstractConfig_PARENT QWidget
 #endif
+
+class AbstractConfig : public AbstractConfig_TYPE {
     Q_OBJECT
     public:
-#if !defined(MOBILE_UI)
-        AbstractConfig(AbstractContent * content, QGraphicsItem * parent = 0);
-#else
-        AbstractConfig(AbstractContent * content, QWidget * parent = 0);
-#endif
+        AbstractConfig(AbstractContent * content, AbstractConfig_PARENT * parent = 0);
         virtual ~AbstractConfig();
 
         void dispose();

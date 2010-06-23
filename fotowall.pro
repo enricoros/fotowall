@@ -20,13 +20,14 @@ QT = core \
     network \
     xml
 
-# use OpenGL where available
+# include OpenGL code paths where available
 contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
     QT += opengl
 }
 
 # enable features for mobile user interfaces
 symbian|simulator: {
+    contains(QT_VERSION, ^4\.5\..*): error("Use at least Qt 4.6 for symbian builds.")
     CONFIG += mobile-ui
     CONFIG += no-wordcloud-appliance
     CONFIG += no-export
@@ -41,7 +42,7 @@ macx|win32: CONFIG += no-webcam
 
 # Fotowall input files
 include(fotowall.pri)
-# Posterazor input files
+# Posterazor input files (included here for separating translations)
 !contains(CONFIG, no-export): include(3rdparty/posterazor/posterazor.pri)
 
 # deployment on Linux
@@ -78,7 +79,6 @@ symbian|simulator: {
     ICON = data/icon-s60.svg
 
     # QT += multimedia
-
     #CONFIG += mobility
     #MOBILITY = contacts messaging multimedia
 

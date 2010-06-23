@@ -16,7 +16,6 @@
 #include <QLayout>
 #include <QFontMetrics>
 #include <QPainter>
-#include <QPaintEvent>
 #include <QStyleOptionButton>
 #include <QStyle>
 #include <QTimer>
@@ -44,11 +43,12 @@ GroupBoxWidget::GroupBoxWidget(QWidget * parent)
     // using a fixed HSizePolicy we better integrate with auto-layouting
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 
-    // autofill off on mobile (inserted on canvas)
-#if defined(MOBILE_UI)
-    setAutoFillBackground(false);
-#else
+#if !defined(MOBILE_UI)
+    // autofill on on desktop (inserted on topbar)
     setAutoFillBackground(true);
+#else
+    // autofill off on mobile (inserted on canvas)
+    setAutoFillBackground(false);
 #endif
 
     // hide junk before initial layouting
@@ -156,7 +156,7 @@ void GroupBoxWidget::mousePressEvent(QMouseEvent * /*event*/)
     setChecked(!isChecked());
 }
 
-void GroupBoxWidget::paintEvent(QPaintEvent * event)
+void GroupBoxWidget::paintEvent(QPaintEvent * /*event*/)
 {
     // skip the rest of the painting if no text
     if (m_titleText.isEmpty())
@@ -318,6 +318,7 @@ void GroupBoxWidget::slotFinalizeDesign()
 //
 #if defined(MOBILE_UI)
 #include <QPropertyAnimation>
+#include <QPaintEvent>
 #define SP_MARGIN 2
 #define SP_SPACING 2
 

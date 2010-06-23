@@ -33,13 +33,8 @@
 #include <QPropertyAnimation>
 #endif
 
-#if !defined(MOBILE_UI)
-AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent)
-    : QGraphicsProxyWidget(parent)
-#else
-AbstractConfig::AbstractConfig(AbstractContent * content, QWidget * parent)
-    : QWidget(parent)
-#endif
+AbstractConfig::AbstractConfig(AbstractContent * content, AbstractConfig_PARENT * parent)
+    : AbstractConfig_TYPE(parent)
     , m_content(content)
     , m_commonUi(new Ui::AbstractConfig())
 #if !defined(MOBILE_UI)

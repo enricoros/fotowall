@@ -125,10 +125,6 @@ class DottedLineEdit : public QLineEdit
             QPalette pal;
             pal.setBrush(QPalette::Base, Qt::transparent);
             setPalette(pal);
-
-            // inital text
-            setText(tr("Type here..."));
-            selectAll();
         }
 
         // ::QWidget
@@ -198,6 +194,8 @@ PictureSearchWidget::PictureSearchWidget(QNetworkAccessManager * extAccessManage
     setContentsMargins(0, 0, 0, 0);
     m_ui->setupUi(this);
     m_ui->listWidget->hide();
+    m_ui->lineEdit->setText(tr("Type here..."));
+    m_ui->lineEdit->selectAll();
     connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
     connect(m_ui->lineEdit, SIGNAL(returnPressed()), m_ui->searchButton, SLOT(click()));
     connect(m_ui->fRadio, SIGNAL(toggled(bool)), this, SLOT(slotProviderChanged()));

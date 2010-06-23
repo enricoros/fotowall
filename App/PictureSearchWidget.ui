@@ -10,6 +10,9 @@
     <height>306</height>
    </rect>
   </property>
+  <property name="windowTitle">
+   <string>Search Web Pictures</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="verticalSpacing">
     <number>0</number>

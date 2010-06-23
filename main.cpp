@@ -13,7 +13,6 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QFont>
 #include <QLocale>
 #include <QLibraryInfo>
 #include <QSettings>
@@ -25,18 +24,25 @@
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
 
-#if defined(MOBILE_UI)
-#include "App/MainWindowMobile.h"
-#else
-#include "App/MainWindow.h"
+#if defined(STATIC_LINK)
+Q_IMPORT_PLUGIN(qgif)
+Q_IMPORT_PLUGIN(qjpeg)
+Q_IMPORT_PLUGIN(qsvg)
+Q_IMPORT_PLUGIN(qtiff)
 #endif
 
 #if defined(HAS_TRANSLATIONS)
 #include <QTranslator>
 #endif
 
-// Lock Symbian orientation
-#ifdef Q_OS_SYMBIAN
+#if defined(MOBILE_UI)
+#include "App/MainWindowMobile.h"
+#include <QFont>
+#else
+#include "App/MainWindow.h"
+#endif
+
+#if defined(Q_OS_SYMBIAN)
 #include <eikenv.h>
 #include <eikappui.h>
 #include <aknenv.h>

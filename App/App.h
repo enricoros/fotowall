@@ -39,7 +39,9 @@ class App
         // commands understood by container
         enum {
             CC_ShowPictureSearch    = 0x0001,
+#if defined(MOBILE_UI)
             CC_HideTopBar           = 0x0002,
+#endif
         };
 
         // commands understood by appliances

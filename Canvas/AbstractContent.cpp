@@ -27,6 +27,7 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsTextItem>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPainter>
@@ -145,7 +146,7 @@ void AbstractContent::dispose()
     m_controlsVisible = false;
 
     // little rotate animation
-#if !defined(MOBILE_UI)
+#if !defined(MOBILE_UI) && QT_VERSION >= 0x040600
     QPropertyAnimation * ani = new QPropertyAnimation(this, "rotation");
     ani->setEasingCurve(QEasingCurve::InQuad);
     ani->setDuration(300);
@@ -222,7 +223,6 @@ quint32 AbstractContent::frameClass() const
     return m_frame ? m_frame->frameClass() : (quint32)Frame::NoFrame;
 }
 
-#include <QGraphicsTextItem>
 class FrameTextItem : public QGraphicsTextItem {
     public:
         FrameTextItem(AbstractContent * content)
