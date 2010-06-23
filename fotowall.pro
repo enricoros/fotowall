@@ -20,18 +20,30 @@ QT = core \
     network \
     xml
 
-# use OpenGL where available
+# include OpenGL code paths where available
 contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
     QT += opengl
 }
 
-# disable the Wordcloud appliance (for 0.9 release)
-DEFINES += NO_WORDCLOUD_APPLIANCE
+# enable features for mobile user interfaces
+symbian|simulator: {
+    contains(QT_VERSION, ^4\.5\..*): error("Use at least Qt 4.6 for symbian builds.")
+    CONFIG += mobile-ui
+    CONFIG += no-wordcloud-appliance
+    CONFIG += no-export
+    CONFIG += no-likeback
+    CONFIG += no-webcam
+    CONFIG += no-translations
+    QT -= opengl
+}
+
+# disable the Webcam source (only stable on linux)
+macx|win32: CONFIG += no-webcam
 
 # Fotowall input files
 include(fotowall.pri)
-# Posterazor input files
-include(3rdparty/posterazor/posterazor.pri)
+# Posterazor input files (included here for separating translations)
+!contains(CONFIG, no-export): include(3rdparty/posterazor/posterazor.pri)
 
 # deployment on Linux
 unix {
@@ -60,6 +72,28 @@ macx {
     CONFIG += x86 ppc
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.3
+}
+
+# deployment on Symbian
+symbian|simulator: {
+    ICON = data/icon-s60.svg
+
+    # QT += multimedia
+    #CONFIG += mobility
+    #MOBILITY = contacts messaging multimedia
+
+    TARGET.CAPABILITY = \
+        NetworkServices \
+    #    ReadUserData \
+    #    WriteUserData \
+    #    LocalServices \
+    #    UserEnvironment \
+    #    ReadDeviceData \
+    #    WriteDeviceData
+
+    TARGET.UID3 = 0xe32c87ed
+    TARGET.EPOCSTACKSIZE = 0x14000
+    TARGET.EPOCHEAPSIZE = 0x020000 0x800000
 }
 
 # static builds

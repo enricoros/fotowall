@@ -21,11 +21,18 @@ include(3rdparty/qtcolortriangle/qtcolortriangle.pri)
 include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 
-# Translations of the core Fotowall files
-TRANSLATIONS += \
-    translations/fotowall_de.ts \
-    translations/fotowall_en.ts \
-    translations/fotowall_fr.ts \
-    translations/fotowall_it.ts \
-    translations/fotowall_pl.ts \
-    translations/fotowall_pt_BR.ts
+# Include Fotowall translations (of the above components)
+!contains(CONFIG, no-translations): {
+    DEFINES += HAS_TRANSLATIONS
+
+    TRANSLATIONS += \
+        translations/fotowall_de.ts \
+        translations/fotowall_en.ts \
+        translations/fotowall_fr.ts \
+        translations/fotowall_it.ts \
+        translations/fotowall_pl.ts \
+        translations/fotowall_pt_BR.ts
+} else: {
+    message("Translations won't be compiled")
+    DEFINES -= HAS_TRANSLATIONS
+}
