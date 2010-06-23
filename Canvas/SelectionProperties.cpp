@@ -48,7 +48,7 @@ SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWi
     QGridLayout * lay = new QGridLayout(this);
     lay->setMargin(0);
     lay->addWidget(label, 0, 0, 1, 2);
-    ADD_BUTTON(deleteButton, tr("Delete"), SIGNAL(deleteSelection()));
+    ADD_BUTTON(deleteButton, tr("Properties"), SIGNAL(deleteSelection()));
     lay->addWidget(deleteButton, 1, 0);
 
     // pure pictures
