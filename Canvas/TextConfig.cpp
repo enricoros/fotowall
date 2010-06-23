@@ -16,7 +16,7 @@
 #include "3rdparty/richtextedit/richtexteditor_p.h"
 #include "TextContent.h"
 
-TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
+TextConfig::TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent)
     : AbstractConfig(textContent, parent)
     , m_textContent(textContent)
 {

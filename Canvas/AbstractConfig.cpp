@@ -33,14 +33,17 @@
 #include <QPropertyAnimation>
 #endif
 
-AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent)
-    : QGraphicsProxyWidget(parent)
+AbstractConfig::AbstractConfig(AbstractContent * content, AbstractConfig_PARENT * parent)
+    : AbstractConfig_TYPE(parent)
     , m_content(content)
     , m_commonUi(new Ui::AbstractConfig())
+#if !defined(MOBILE_UI)
     , m_closeButton(0)
     , m_okButton(0)
+#endif
     , m_frame(FrameFactory::defaultPanelFrame())
 {
+#if !defined(MOBILE_UI)
     // close button
     m_closeButton = new StyledButtonItem(tr(" x "), font(), this);//this, ":/data/button-close.png", ":/data/button-close-hovered.png", ":/data/button-close-pressed.png");
     connect(m_closeButton, SIGNAL(clicked()), this, SIGNAL(requestClose()));
@@ -54,6 +57,9 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
      widget->setPalette(pal);
      pal.setBrush(QPalette::Window, oldColor);
      m_commonUi->tab->setPalette(pal);
+#else
+    m_commonUi->setupUi(this);
+#endif
 
     populateFrameList();
 
@@ -85,12 +91,14 @@ AbstractConfig::AbstractConfig(AbstractContent * content, QGraphicsItem * parent
     connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(slotReflectionToggled(bool)));
 
     // ITEM setup
+#if !defined(MOBILE_UI)
     setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
     setWidget(widget);
     static qreal s_propZBase = 99999;
     setZValue(s_propZBase++);
+#endif
 
-#if QT_VERSION >= 0x040600
+#if !defined(MOBILE_UI) && QT_VERSION >= 0x040600
     // fade in animation
     QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
     ani->setEasingCurve(QEasingCurve::OutCubic);
@@ -109,7 +117,7 @@ AbstractConfig::~AbstractConfig()
 
 void AbstractConfig::dispose()
 {
-#if QT_VERSION >= 0x040600
+#if !defined(MOBILE_UI) && QT_VERSION >= 0x040600
     // fade out animation, then delete
     QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
     connect(ani, SIGNAL(finished()), this, SLOT(deleteLater()));
@@ -130,11 +138,15 @@ AbstractContent * AbstractConfig::content() const
 
 void AbstractConfig::keepInBoundaries(const QRectF & rect)
 {
+#if !defined(MOBILE_UI)
     QRectF r = mapToScene(boundingRect()).boundingRect();
     r.setLeft(qBound(rect.left(), r.left(), rect.right() - r.width()));
     r.setTop(qBound(rect.top(), r.top(), rect.bottom() - r.height()));
     // CHECK SUBPIXELS
     setPos(r.topLeft().toPoint());
+#else
+    Q_UNUSED(rect);
+#endif
 }
 
 void AbstractConfig::addTab(QWidget * widget, const QString & label, bool front, bool setCurrent)
@@ -153,6 +165,7 @@ void AbstractConfig::addTab(QWidget * widget, const QString & label, bool front,
 
 void AbstractConfig::showOkButton(bool show)
 {
+#if !defined(MOBILE_UI)
     if (show) {
         if (!m_okButton) {
             m_okButton = new StyledButtonItem(tr("ok"), font(), this);
@@ -162,8 +175,10 @@ void AbstractConfig::showOkButton(bool show)
         m_okButton->show();
     } else if (m_okButton)
         m_okButton->hide();
+#endif
 }
 
+#if !defined(MOBILE_UI)
 void AbstractConfig::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     QGraphicsProxyWidget::mousePressEvent(event);
@@ -203,6 +218,7 @@ void AbstractConfig::resizeEvent(QGraphicsSceneResizeEvent * event)
     layoutButtons();
     QGraphicsProxyWidget::resizeEvent(event);
 }
+#endif
 
 void AbstractConfig::populateFrameList()
 {
@@ -235,6 +251,7 @@ void AbstractConfig::populateFrameList()
 
 void AbstractConfig::layoutButtons()
 {
+#if !defined(MOBILE_UI)
     // layout the close button
     QRect cRect = boundingRect().toRect().adjusted(12, 12, -12, -12);
     if (QApplication::isLeftToRight()) {
@@ -246,6 +263,7 @@ void AbstractConfig::layoutButtons()
         if (m_okButton)
             m_okButton->setPos(cRect.left() + m_closeButton->boundingRect().width() + 8, cRect.top());
     }
+#endif
 }
 
 void AbstractConfig::slotAddFrame()

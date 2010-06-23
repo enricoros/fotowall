@@ -3,7 +3,7 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2007-2009 by Enrico Ros <enrico.ros@gmail.com>          *
+ *   Copyright (C) 2010 by Enrico Ros <enrico.ros@gmail.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -12,23 +12,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __MainWindow_h__
-#define __MainWindow_h__
+#ifndef __MainWindowMobile_h__
+#define __MainWindowMobile_h__
 
 #include "Shared/PlugGui/Container.h"
-namespace Ui { class MainWindow; }
-class LikeBack;
-class QGridLayout;
 class QNetworkAccessManager;
+class GroupBoxWidget;
 class PictureSearchWidget;
+class SceneView;
+class TopbarContainer;
 class Workflow;
 
-class MainWindow : public PlugGui::Container
+class MainWindowMobile : public PlugGui::Container
 {
     Q_OBJECT
     public:
-        MainWindow(QWidget * parent = 0);
-        ~MainWindow();
+        MainWindowMobile(QWidget * parent = 0);
+        ~MainWindowMobile();
 
     protected:
         // ::PlugGui::Container
@@ -42,36 +42,21 @@ class MainWindow : public PlugGui::Container
         void applianceSetFocusToScene();
 
         // ::QWidget
-        void closeEvent(QCloseEvent * event);
+        void closeEvent(QCloseEvent *);
+        void resizeEvent(QResizeEvent *);
 
     private:
-        void createLikeBack();
-        void showLikeBack(int type);
-        void addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment);
-        void removeNavigationWidget(QWidget * widget);
-
-        Ui::MainWindow *        ui;
         QNetworkAccessManager * m_networkAccessManager;
-        QGridLayout *           m_navigationLayout;
         PictureSearchWidget *   m_pictureSearch;
-        LikeBack *              m_likeBack;
-        bool                    m_applyingAccelState;
+        SceneView *             m_sceneView;
+        TopbarContainer *       m_topbarContainer;
+        QList<GroupBoxWidget *> m_panels;
 
     private Q_SLOTS:
-        // notifications
         void slotClosePictureSearch();
-        void slotHelpBarClicked(quint32);
-        void slotRenderingSlow();
-
-        // help box
-        void on_lbBug_clicked();
-        void on_lbFeature_clicked();
-        void on_lbLike_clicked();
-
-        // setup box
-        bool on_accelTestButton_clicked();
-        void on_accelBox_toggled(bool checked);
-        void on_transpBox_toggled(bool checked);
+        void slotHideOtherPanels();
+        void slotShowOtherPanels();
+        void slotPanelLabelSizeChanged();
 };
 
 #endif

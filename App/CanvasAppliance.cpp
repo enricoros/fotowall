@@ -3,7 +3,7 @@
  *   This file is part of the Fotowall project,                            *
  *       http://www.enricoros.com/opensource/fotowall                      *
  *                                                                         *
- *   Copyright (C) 2009 by Enrico Ros <enrico.ros@gmail.com>               *
+ *   Copyright (C) 2009-2010 by Enrico Ros <enrico.ros@gmail.com>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -23,7 +23,9 @@
 #include "Canvas/WordcloudContent.h"
 #include "App.h"
 #include "ExactSizeDialog.h"
+#if defined(HAS_EXPORTDIALOG)
 #include "ExportWizard.h"
+#endif
 #include "FotowallFile.h"
 #include "Settings.h"
 #include "Workflow.h"
@@ -51,15 +53,22 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     connect(ui.bWordcloud, SIGNAL(clicked()), this, SLOT(slotAddWordcloud()));
     connect(ui.bCanvas, SIGNAL(clicked()), this, SLOT(slotAddCanvas()));
     connect(ui.bWebsearch, SIGNAL(toggled(bool)), this, SLOT(slotSearchPicturesToggled(bool)));
+#if !defined(MOBILE_UI)
     ui.propertiesBox->collapse();
     ui.canvasPropertiesBox->expand();
+#endif
     connect(ui.projectCombo, SIGNAL(activated(int)), this, SLOT(slotProjectComboActivated(int)));
     connect(ui.saveButton, SIGNAL(clicked()), this, SLOT(slotFileSave()));
+#if defined(HAS_EXPORTDIALOG)
     connect(ui.exportButton, SIGNAL(clicked()), this, SLOT(slotFileExport()));
+#else
+    ui.exportButton->hide();
+#endif
 
     // configure the appliance
     windowTitleSet(m_extCanvas->prettyBaseName());
     sceneSet(m_extCanvas);
+    ui.addContentBox->setProperty("@onTopbar", true);
     topbarAddWidget(ui.addContentBox);
     topbarAddWidget(ui.propertiesBox);
     topbarAddWidget(ui.canvasPropertiesBox);
@@ -316,7 +325,7 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
         }
         QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
         if (screenDpi.x() == screenDpi.y())
-            sizeDialog.ui.screenDpi->setValue(screenDpi.x());
+            sizeDialog.ui.screenDpi->setValue((int)screenDpi.x());
         else
             sizeDialog.ui.screenDpi->setSpecialValueText(QString("%1, %2").arg(screenDpi.x()).arg(screenDpi.y()));
         if (sizeDialog.exec() != QDialog::Accepted)
@@ -513,9 +522,13 @@ bool CanvasAppliance::slotFileSave()
 
 bool CanvasAppliance::slotFileExport()
 {
+#if defined(HAS_EXPORTDIALOG)
     bool printPreferred = m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeNormal &&
                           m_extCanvas->modeInfo()->projectMode() != CanvasModeInfo::ModeWallpaper;
     return ExportWizard(m_extCanvas, printPreferred).exec();
+#else
+    return false;
+#endif
 }
 
 void CanvasAppliance::slotEditContent(AbstractContent *content)
@@ -528,7 +541,7 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
 
     // handle Wordcloud
     if (WordcloudContent * wc = dynamic_cast<WordcloudContent *>(content)) {
-#ifndef NO_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
         App::workflow->stackSlaveWordcloud_A(wc);
 #else
         Q_UNUSED(wc);
@@ -566,6 +579,11 @@ void CanvasAppliance::slotBackConfigChanged()
 
 void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
 {
+#if defined(MOBILE_UI)
+    // hide the topbar in case of selected content
+    containerValueSet(App::CC_HideTopBar, (bool)(widget ? true : false));
+#endif
+
     // delete current Properties content
     QLayoutItem * prevItem = ui.propLayout->takeAt(0);
     if (prevItem) {
@@ -577,16 +595,24 @@ void CanvasAppliance::slotShowPropertiesWidget(QWidget * widget)
 
     // show the Properties container with new content and title
     if (widget) {
+#if !defined(MOBILE_UI)
         ui.canvasPropertiesBox->collapse();
+#endif
         widget->setParent(ui.propertiesBox);
         ui.propLayout->addWidget(widget);
         ui.propertiesBox->setTitle(widget->windowTitle());
+#if !defined(MOBILE_UI)
         ui.propertiesBox->expand();
+#endif
     }
     // or show the Canvas container
     else {
+#if !defined(MOBILE_UI)
         ui.propertiesBox->collapse();
         ui.canvasPropertiesBox->expand();
+#else
+        ui.propertiesBox->disappear();
+#endif
     }
 }
 

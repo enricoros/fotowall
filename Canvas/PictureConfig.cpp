@@ -20,7 +20,7 @@
 #include <QInputDialog>
 #include <QListWidgetItem>
 
-PictureConfig::PictureConfig(PictureContent * pictureContent, QGraphicsItem * parent)
+PictureConfig::PictureConfig(PictureContent * pictureContent, AbstractConfig_PARENT * parent)
     : AbstractConfig(pictureContent, parent)
     , m_pictureUi(new Ui::PictureConfig())
     , m_pictureContent(pictureContent)
@@ -91,7 +91,7 @@ void PictureConfig::on_effectsList_itemActivated(QListWidgetItem * item)
     }
     //show opacity dialog
     else if (effect == PictureEffect::Opacity) {
-        int opacity = QInputDialog::getInteger(0, tr("Opacity"), tr("Opacity value.\n\n0: transparent\n100: opaque"), m_pictureContent->opacity()*100, 0, 100);
+        int opacity = QInputDialog::getInteger(0, tr("Opacity"), tr("Opacity value.\n\n0: transparent\n100: opaque"), m_pictureContent->contentOpacity()*100, 0, 100);
         param = (float)opacity/100.f;
     }
     // show autoblend dialog

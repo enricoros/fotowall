@@ -89,9 +89,6 @@
      </disabled>
     </palette>
    </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
    <property name="title" stdset="0">
     <string>ONLINE</string>
    </property>

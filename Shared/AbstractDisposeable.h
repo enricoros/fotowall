@@ -35,12 +35,25 @@ class AbstractDisposeable : public QGraphicsObject
 class AbstractDisposeable : public QObject, public QGraphicsItem
 #endif
 {
+    Q_OBJECT
+    Q_PROPERTY(qreal contentOpacity READ contentOpacity WRITE setContentOpacity NOTIFY contentOpacityChanged)
     public:
         AbstractDisposeable(bool fadeIn, QGraphicsItem * parent = 0);
         virtual ~AbstractDisposeable() {}
 
         // reimplement this to add a custom deletion behavior
         virtual void dispose();
+
+        // properties
+        qreal contentOpacity() const;
+        void setContentOpacity(qreal);
+
+    signals:
+        // property notifies
+        void contentOpacityChanged();
+
+    private:
+        qreal m_contentOpacity;
 };
 
 #endif

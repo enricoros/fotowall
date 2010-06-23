@@ -20,16 +20,18 @@ AbstractDisposeable::AbstractDisposeable(bool fadeIn, QGraphicsItem *parent)
 #else
     : QGraphicsItem(parent)
 #endif
+    , m_contentOpacity(1.0)
 {
     if (fadeIn) {
 #if QT_VERSION >= 0x040600
-        // appear
-        QPropertyAnimation * ao = new QPropertyAnimation(this, "opacity");
+        // fade in
+        QPropertyAnimation * ao = new QPropertyAnimation(this, "contentOpacity");
         ao->setEasingCurve(QEasingCurve::OutQuad);
         ao->setDuration(150);
         ao->setStartValue(0.01);
         ao->setEndValue(1.0);
         ao->start(QPropertyAnimation::DeleteWhenStopped);
+#if !defined(MOBILE_UI)
         // zoom in
         QPropertyAnimation * as = new QPropertyAnimation(this, "scale");
         as->setEasingCurve(QEasingCurve::OutElastic);
@@ -37,6 +39,7 @@ AbstractDisposeable::AbstractDisposeable(bool fadeIn, QGraphicsItem *parent)
         as->setStartValue(0.2);
         as->setEndValue(1.0);
         as->start(QPropertyAnimation::DeleteWhenStopped);
+#endif
 #endif
         show();
     }
@@ -46,7 +49,7 @@ void AbstractDisposeable::dispose()
 {
 #if QT_VERSION >= 0x040600
     // fade out animation, then delete
-    QPropertyAnimation * ani = new QPropertyAnimation(this, "opacity");
+    QPropertyAnimation * ani = new QPropertyAnimation(this, "contentOpacity");
     connect(ani, SIGNAL(finished()), this, SLOT(deleteLater()));
     ani->setEasingCurve(QEasingCurve::OutCubic);
     ani->setDuration(300);
@@ -56,4 +59,18 @@ void AbstractDisposeable::dispose()
     // delete this now
     deleteLater();
 #endif
+}
+
+qreal AbstractDisposeable::contentOpacity() const
+{
+    return m_contentOpacity;
+}
+
+void AbstractDisposeable::setContentOpacity(qreal opacity)
+{
+    if (m_contentOpacity != opacity) {
+        m_contentOpacity = opacity;
+        update();
+        emit contentOpacityChanged();
+    }
 }

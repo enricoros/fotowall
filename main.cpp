@@ -18,10 +18,8 @@
 #include <QSettings>
 #include <QStyle>
 #include <QTime>
-#include <QTranslator>
 #include <QtPlugin>
 #include "App/App.h"
-#include "App/MainWindow.h"
 #include "App/Settings.h"
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
@@ -31,6 +29,24 @@ Q_IMPORT_PLUGIN(qgif)
 Q_IMPORT_PLUGIN(qjpeg)
 Q_IMPORT_PLUGIN(qsvg)
 Q_IMPORT_PLUGIN(qtiff)
+#endif
+
+#if defined(HAS_TRANSLATIONS)
+#include <QTranslator>
+#endif
+
+#if defined(MOBILE_UI)
+#include "App/MainWindowMobile.h"
+#include <QFont>
+#else
+#include "App/MainWindow.h"
+#endif
+
+#if defined(Q_OS_SYMBIAN)
+#include <eikenv.h>
+#include <eikappui.h>
+#include <aknenv.h>
+#include <aknappui.h>
 #endif
 
 // init RenderOpts defaults
@@ -45,20 +61,25 @@ QColor RenderOpts::hiColor;
 
 int main( int argc, char ** args )
 {
-#if !defined(Q_OS_MAC) // raster on OSX == b0rken
-    // use the Raster GraphicsSystem as default on 4.5+
-#if QT_VERSION >= 0x040500
+    // use the Raster GraphicsSystem on X11
+#if defined(Q_WS_X11)
     QApplication::setGraphicsSystem("raster");
-#endif
 #endif
 
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.9.1");
+    app.setApplicationVersion("1.0");
     app.setOrganizationName("Enrico Ros");
+
+    // Lock Symbian orientation
+#ifdef Q_OS_SYMBIAN
+    //if (CAknAppUi* appUi = dynamic_cast<CAknAppUi *>(CEikonEnv::Static()->AppUi()))
+    //    appUi->SetOrientationL(CAknAppUi::EAppUiOrientationLandscape);
+#endif
 
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
+#if defined(HAS_TRANSLATIONS)
     // translate fotowall + default-qt messages
     QString locale;
     QStringList arguments = app.arguments();
@@ -73,6 +94,7 @@ int main( int argc, char ** args )
     QTranslator qtTranslator;
     qtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
+#endif
 
     App::settings = new Settings(app.arguments().contains("-clearconfig"));
     RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
@@ -86,7 +108,16 @@ int main( int argc, char ** args )
         if (App::isContentUrl(args[i]))
             App::settings->addCommandlineUrl(args[i]);
 
+#if defined(MOBILE_UI)
+    QFont smallFont = app.font();
+    smallFont.setPointSize(6);
+    app.setFont(smallFont);
+
+    MainWindowMobile * mainWindow = new MainWindowMobile;
+    mainWindow->setFont(smallFont);
+#else
     MainWindow * mainWindow = new MainWindow;
+#endif
 
     int mainLoopResult = app.exec();
 

@@ -61,7 +61,7 @@ HomeAppliance::HomeAppliance(QObject *parent)
     m_scene = new HomeScene;
     connect(m_scene, SIGNAL(keyPressed(int)), this, SLOT(slotSceneKeyPressed(int)));
     connect(m_scene, SIGNAL(startCanvas()), this, SLOT(slotStartCanvas()));
-#ifndef NO_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
     connect(m_scene, SIGNAL(startWordcloud()), this, SLOT(slotStartWordcloud()));
 #endif
     connect(m_scene, SIGNAL(startWizard()), this, SLOT(slotStartWizard()));
@@ -74,8 +74,10 @@ HomeAppliance::HomeAppliance(QObject *parent)
     if (!recentUrls.isEmpty()) {
         m_historyBox = new UrlHistoryBox(recentUrls);
         m_historyBox->setTitle(tr("RECENT FILES"));
+#if !defined(MOBILE_UI)
         m_historyBox->setBorderFlags(0x0000);
         m_historyBox->setCheckable(false);
+#endif
         m_historyBox->setPalette(brightPal);
         m_historyBox->setAutoFillBackground(true);
         connect(m_historyBox, SIGNAL(urlClicked(const QUrl &)), this, SLOT(slotLoadCanvas(const QUrl &)));
@@ -86,8 +88,10 @@ HomeAppliance::HomeAppliance(QObject *parent)
     // create the File Box
     m_fileBox = new FileBoxWidget;
     m_fileBox->setTitle(tr("OPEN"));
+#if !defined(MOBILE_UI)
     m_fileBox->setBorderFlags(0x0000);
     m_fileBox->setCheckable(false);
+#endif
     m_fileBox->setPalette(brightPal);
     m_fileBox->setAutoFillBackground(true);
     connect(m_fileBox->openButton, SIGNAL(clicked()), this, SLOT(slotOpenFile()));
@@ -143,7 +147,7 @@ void HomeAppliance::slotStartCanvas()
     App::workflow->startCanvas_A();
 }
 
-#ifndef NO_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
 void HomeAppliance::slotStartWordcloud()
 {
     App::workflow->startWordcloud_A();
