@@ -1,18 +1,24 @@
 VPATH += $$PWD
 DEPENDPATH += $$PWD
 
-# Input
-HEADERS += \
-    LikeBack.h \
-    LikeBack_p.h \
-    LikeBackDialog.h
+!contains(CONFIG, no-likeback): {
+    DEFINES += HAS_LIKEBACK
 
-SOURCES += \
-    LikeBack.cpp \
-    LikeBackDialog.cpp
+    HEADERS += \
+        LikeBack.h \
+        LikeBack_p.h \
+        LikeBackDialog.h
 
-FORMS += \
-    LikeBackDialog.ui
+    SOURCES += \
+        LikeBack.cpp \
+        LikeBackDialog.cpp
 
-RESOURCES += \
-    likebackfrontend.qrc
+    FORMS += \
+        LikeBackDialog.ui
+
+    RESOURCES += \
+        likebackfrontend.qrc
+} else: {
+    message("3rdparty/likebackfrontend won't be compiled")
+    DEFINES -= HAS_LIKEBACK
+}

@@ -284,10 +284,8 @@ void Cloud::process()
             QPainterPath wordRealPath = word->path();
 #if QT_VERSION >= 0x040600
             wordRealPath.translate(posX, posY);
-#elif QT_VERSION >= 0x040500
-            wordRealPath = QTransform::fromTranslate(posX, posY).map(wordRealPath);
 #else
-            wordRealPath = QTransform().translate(posX, posY).map(wordRealPath);
+            wordRealPath = QTransform::fromTranslate(posX, posY).map(wordRealPath);
 #endif
 
             bool intersections = false;
@@ -301,10 +299,8 @@ void Cloud::process()
                     QPainterPath placedPath = clItem->path();
 #if QT_VERSION >= 0x040600
                     placedPath.translate(clItem->pos());
-#elif QT_VERSION >= 0x040500
-                    placedPath = QTransform::fromTranslate(clItem->pos().x(), clItem->pos().y()).map(placedPath);
 #else
-                    placedPath = QTransform().translate(clItem->pos().x(), clItem->pos().y()).map(placedPath);
+                    placedPath = QTransform::fromTranslate(clItem->pos().x(), clItem->pos().y()).map(placedPath);
 #endif
                     if (!wordRealPath.intersects(placedPath))
                         continue;

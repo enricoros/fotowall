@@ -83,9 +83,6 @@
      </disabled>
     </palette>
    </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
    <property name="title" stdset="0">
     <string>ADD NEW</string>
    </property>
@@ -301,9 +298,6 @@
      </disabled>
     </palette>
    </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
    <property name="borderFlags" stdset="0">
     <number>0</number>
    </property>
@@ -423,9 +417,6 @@
       </colorrole>
      </disabled>
     </palette>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
    </property>
    <property name="title" stdset="0">
     <string>CANVAS</string>
@@ -618,9 +609,6 @@
       </colorrole>
      </disabled>
     </palette>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
    </property>
    <property name="title" stdset="0">
     <string>FILE</string>

@@ -97,7 +97,7 @@ void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect, Qt
 {
     Q_UNUSED(ratio)
 
-#if 0 && QT_VERSION >= 0x040500
+#if 0
     // delay rendering until the element has been fully shown
     if (opacity() < 1.0)
         return;
@@ -122,18 +122,14 @@ void WebcamContent::drawContent(QPainter * painter, const QRect & targetRect, Qt
     }
 
     // blit if opaque picture
-#if QT_VERSION >= 0x040500
-    // disabled for 4.5 too, since it relies on raster.
+    // disabled, since it relies on raster.
     //painter->setCompositionMode(QPainter::CompositionMode_Source);
-#endif
 
     // draw high-resolution photo when exporting png
     painter->setRenderHint(QPainter::SmoothPixmapTransform, smoothOn);
     painter->drawPixmap(targetRect, *pixmap);
 
-#if QT_VERSION >= 0x040500
     //painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-#endif
 }
 
 QPixmap WebcamContent::toPixmap(const QSize & size, Qt::AspectRatioMode ratio)

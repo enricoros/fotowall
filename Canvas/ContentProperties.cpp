@@ -18,6 +18,9 @@ ContentProperties::ContentProperties(QWidget *parent)
   : QWidget(parent)
 {
     setupUi(this);
+#if defined(MOBILE_UI)
+    cHS1->setStyleSheet(QString());
+#endif
 #if QT_VERSION < 0x040600
     cFxCombo->hide();
 #endif

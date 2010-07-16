@@ -214,10 +214,8 @@ void PictureContent::addEffect(const PictureEffect & effect)
             resizeContents(QRect(-newW/2, -newH/2, newW, newH), true);
         }
     }
-#if QT_VERSION >= 0x040500
     else if(effect.effect == PictureEffect::Opacity)
-        setOpacity(effect.param);
-#endif
+        setContentOpacity(effect.param);
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
@@ -236,6 +234,9 @@ void PictureContent::crop()
     if (!m_photo)
         return;
     CroppingDialog dial(m_photo);
+#if defined(MOBILE_UI)
+    dial.showMaximized();
+#endif
     if (dial.exec() != QDialog::Accepted)
         return;
     QRect cropRect = dial.getCroppingRect();
@@ -281,10 +282,8 @@ bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
                 fx.rect = croppingRect;
             }
         }
-#if QT_VERSION >= 0x040500
         else if (fx.effect == PictureEffect::Opacity)
-            setOpacity(fx.param);
-#endif
+            setContentOpacity(fx.param);
         m_afterLoadEffects.append(fx);
     }
 
@@ -373,12 +372,7 @@ void PictureContent::toXml(QDomElement & contentElement, const QDir & baseDir) c
     contentElement.appendChild(domElement);
     QList<PictureEffect> effectsList = m_afterLoadEffects;
     if (m_photo)
-#if QT_VERSION >= 0x040500
         effectsList.append(m_photo->effects());
-#else
-        foreach(const PictureEffect & effect, m_photo->effects())
-            effectsList.append(effect);
-#endif
     foreach (const PictureEffect & effect, effectsList) {
         QDomElement effectElement = doc.createElement("effect");
         effectElement.setAttribute("type", effect.effect);

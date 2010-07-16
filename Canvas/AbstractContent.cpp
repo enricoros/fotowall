@@ -30,6 +30,7 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsTextItem>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPainter>
@@ -88,7 +89,6 @@ AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noResc
     connect(bConf, SIGNAL(clicked()), this, SLOT(slotConfigure()));
     addButtonItem(bConf);
 
-#if QT_VERSION >= 0x040500
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag around to change the perspective.\nHold SHIFT to move faster.\nUse CTRL to cancel the transformations."));
     connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotSetPerspective(const QPointF&,Qt::KeyboardModifiers)));
@@ -96,7 +96,6 @@ AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noResc
     connect(bPersp, SIGNAL(releaseEvent(QGraphicsSceneMouseEvent *)), this, SLOT(slotReleasePerspective(QGraphicsSceneMouseEvent *)));
     connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slotClearPerspective()));
     addButtonItem(bPersp);
-#endif
 
     ButtonItem * bDelete = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-delete.png"), this);
     bDelete->setSelectsParent(false);
@@ -141,8 +140,18 @@ void AbstractContent::dispose()
     // fade out mirror too
     setMirrored(false);
 
+    // unselect if selected
+    setSelected(false);
+
+    // pre-remove controls
+    qDeleteAll(m_cornerItems);
+    m_cornerItems.clear();
+    qDeleteAll(m_controlItems);
+    m_controlItems.clear();
+    m_controlsVisible = false;
+
     // little rotate animation
-#if QT_VERSION >= 0x040600
+#if !defined(MOBILE_UI) && QT_VERSION >= 0x040600
     QPropertyAnimation * ani = new QPropertyAnimation(this, "rotation");
     ani->setEasingCurve(QEasingCurve::InQuad);
     ani->setDuration(300);
@@ -219,20 +228,18 @@ quint32 AbstractContent::frameClass() const
     return m_frame ? m_frame->frameClass() : (quint32)Frame::NoFrame;
 }
 
-#include <QGraphicsTextItem>
 class FrameTextItem : public QGraphicsTextItem {
     public:
-        FrameTextItem(QGraphicsItem * parent = 0)
-            : QGraphicsTextItem(parent)
+        FrameTextItem(AbstractContent * content)
+            : QGraphicsTextItem(content)
+            , m_content(content)
         {
         }
 
         void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 )
         {
-            painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::HighQualityAntialiasing, true);
+            painter->setOpacity(m_content->contentOpacity());
             QGraphicsTextItem::paint(painter, option, widget);
-            painter->restore();
         }
 
         // prevent the TextItem from listening to global shortcuts
@@ -259,6 +266,9 @@ class FrameTextItem : public QGraphicsTextItem {
             QGraphicsTextItem::focusOutEvent(event);
             qApp->removeEventFilter(this);
         }
+
+    private:
+        AbstractContent * m_content;
 };
 
 void AbstractContent::setFrameTextEnabled(bool enabled)
@@ -460,11 +470,9 @@ bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseD
     bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
 
-#if QT_VERSION >= 0x040500
     qreal opacity = contentElement.firstChildElement("opacity").text().toDouble();
     if (opacity > 0.0 && opacity < 1.0)
-        setOpacity(opacity);
-#endif
+        setContentOpacity(opacity);
 
     int fxIdx = contentElement.firstChildElement("fxindex").text().toInt();
     if (fxIdx > 0)
@@ -551,13 +559,11 @@ void AbstractContent::toXml(QDomElement & contentElement, const QDir & /*baseDir
     domElement.appendChild(text);
 
     // Save the opacity
-#if QT_VERSION >= 0x040500
-    if (opacity() < 1.0) {
+    if (contentOpacity() < 1.0) {
         domElement= doc.createElement("opacity");
         contentElement.appendChild(domElement);
-        domElement.appendChild(doc.createTextNode(QString::number(opacity())));
+        domElement.appendChild(doc.createTextNode(QString::number(contentOpacity())));
     }
-#endif
 
     // Save the Fx Index
     if (fxIndex() > 0) {
@@ -637,7 +643,7 @@ QWidget * AbstractContent::createPropertyWidget(ContentProperties * __p)
     connect(cp->cConfigure, SIGNAL(clicked()), this, SLOT(slotConfigure()));
 
     // properties link
-    new PE_AbstractSlider(cp->cOpacity, this, "opacity", cp);
+    new PE_AbstractSlider(cp->cOpacity, this, "contentOpacity", cp);
     new PE_Combo(cp->cFxCombo, this, "fxIndex", cp);
     cp->cPerspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
     new PE_PaneWidget(cp->cPerspWidget, this, "perspective", cp);
@@ -661,6 +667,11 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     // find out whether to draw the selection
     const bool drawSelection = RenderOpts::HQRendering ? false : isSelected();
 
+    // change opacity
+    qreal opacity = contentOpacity();
+    if (opacity < 1.0)
+        painter->setOpacity(opacity);
+
     if (m_frame) {
         // draw the Frame
         m_frame->drawFrame(painter, m_frameRect.toRect(), drawSelection, contentOpaque());
@@ -679,6 +690,10 @@ void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     const QRect tcRect = QRect(0, 0, m_contentRect.width(), m_contentRect.height());
     painter->translate(m_contentRect.topLeft());
     drawContent(painter, tcRect, Qt::IgnoreAspectRatio);
+
+    // restore opacity
+    if (opacity < 1.0)
+        painter->setOpacity(1.0);
 
     // overlay a selection
     if (drawSelection && !m_frame) {
@@ -831,9 +846,7 @@ QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant &
             case ItemEnabledHasChanged:
             case ItemSelectedHasChanged:
             case ItemParentHasChanged:
-#if QT_VERSION >= 0x040500
             case ItemOpacityHasChanged:
-#endif
                 GFX_CHANGED();
                 break;
 

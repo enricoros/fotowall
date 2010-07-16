@@ -90,13 +90,9 @@ void WordcloudContent::toXml(QDomElement & contentElement, const QDir & baseDir)
 
 void WordcloudContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio)
 {
-    Q_UNUSED(ratio)
-    if (m_cloud) {
-#if QT_VERSION >= 0x040500
-        painter->setOpacity(opacity());
-#endif
+    Q_UNUSED(ratio);
+    if (m_cloud)
         m_cloudScene->render(painter, targetRect, m_cloudScene->sceneRect(), Qt::KeepAspectRatio);
-    }
 }
 
 QVariant WordcloudContent::takeResource()

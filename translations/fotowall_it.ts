@@ -102,7 +102,7 @@
         <translation>Modifica le proprietà...</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Drag around to change the perspective.
 Hold SHIFT to move faster.
 Use CTRL to cancel the transformations.</source>
@@ -111,12 +111,12 @@ Tieni premuto SHIFT per accelerare il movimento.
 Premi CTRL per ripristinare la prospettiva.</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Remove</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location line="+777"/>
+        <location line="+771"/>
         <source>Unnamed %1.png</source>
         <translation>Senza nome %1.png</translation>
     </message>
@@ -165,13 +165,13 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+285"/>
+        <location filename="../Canvas/Canvas.cpp" line="+283"/>
         <location line="+19"/>
         <source>Unnamed %1</source>
         <translation>Senza nome %1</translation>
     </message>
     <message>
-        <location line="+220"/>
+        <location line="+218"/>
         <source>Back</source>
         <translation>Retro</translation>
     </message>
@@ -181,7 +181,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation>Fronte</translation>
     </message>
     <message>
-        <location line="+755"/>
+        <location line="+727"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
@@ -199,7 +199,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>CanvasAppliance</name>
     <message>
-        <location filename="../App/CanvasAppliance.cpp" line="+122"/>
+        <location filename="../App/CanvasAppliance.cpp" line="+121"/>
         <source>Transparency</source>
         <translation>Trasparenza</translation>
     </message>
@@ -214,7 +214,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation>Si, grazie</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+39"/>
         <source>Random Placement</source>
         <translation>Disposizione Casuale</translation>
     </message>
@@ -289,7 +289,17 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation>Ignora le proporzioni</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+7"/>
+        <source>View Perspective</source>
+        <translation>Prospettiva della Vista</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>View Rotation</source>
+        <translation>Angolo della Vista</translation>
+    </message>
+    <message>
+        <location line="+21"/>
         <source>Top bar</source>
         <translation>Barra Sopra</translation>
     </message>
@@ -458,9 +468,8 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>ColorAction</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+277"/>
         <source>Text Color</source>
-        <translation>Colore del Testo</translation>
+        <translation type="obsolete">Colore del Testo</translation>
     </message>
 </context>
 <context>
@@ -512,9 +521,8 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>DottedLineEdit</name>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
         <source>Type here...</source>
-        <translation>Scrivi qui...</translation>
+        <translation type="obsolete">Scrivi qui...</translation>
     </message>
 </context>
 <context>
@@ -573,7 +581,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../App/ExportWizard.cpp" line="+154"/>
+        <location filename="../App/ExportWizard.cpp" line="+165"/>
         <source>Wallpaper Error</source>
         <translation>Errore nello Sfondo</translation>
     </message>
@@ -598,18 +606,18 @@ Apri le Impostazioni del Desktop e seleziona il file:
     </message>
     <message>
         <location line="+17"/>
-        <location line="+100"/>
+        <location line="+164"/>
         <source>No file selected !</source>
         <translation>Nessun file selezionato !</translation>
     </message>
     <message>
-        <location line="-100"/>
-        <location line="+100"/>
+        <location line="-164"/>
+        <location line="+164"/>
         <source>You need to choose a file path for saving.</source>
         <translation>Devi scegliere il nome del file su cui salvare.</translation>
     </message>
     <message>
-        <location line="-71"/>
+        <location line="-135"/>
         <source>Done</source>
         <translation>Fatto</translation>
     </message>
@@ -629,17 +637,27 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <translation>Errore salvando il rendering sul file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+25"/>
         <source>Export poster</source>
         <translation>Stampa Poster</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+69"/>
+        <source>PDF Error</source>
+        <translation>Errore PDF</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Error saving to the PDF file, try to chose another one.</source>
+        <translation>Errore durante il salvataggio del file PDF, prova a cambiare il nome del file.</translation>
+    </message>
+    <message>
+        <location line="+54"/>
         <source>Created with %1</source>
         <translation>Creato da %1</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+117"/>
         <source>Unnamed %1.%2</source>
         <translation>Senza nome %1.%2</translation>
     </message>
@@ -654,6 +672,16 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
+        <location line="+15"/>
+        <source>Choose the PDF file</source>
+        <translation>Scegli il File PDF</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>PDF (*.pdf)</source>
+        <translation>PDF (*.pdf)</translation>
+    </message>
+    <message>
         <location line="+8"/>
         <source>Choose the SVG file</source>
         <translation>Scegli il File SVG</translation>
@@ -662,6 +690,21 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <location line="+1"/>
         <source>SVG (*.svg)</source>
         <translation>SVG (*.svg)</translation>
+    </message>
+    <message>
+        <location line="+76"/>
+        <source>Other</source>
+        <translation>Altro</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>%1  (%2 x %3 inch)</source>
+        <translation>%1  (%2 x %3 pollici)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>%1  (%2 x %3 cm)</source>
+        <translation>%1  (%2 x %3 cm)</translation>
     </message>
     <message>
         <location filename="../App/ExportWizard.ui"/>
@@ -834,14 +877,12 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <translation>Dpi:</translation>
     </message>
     <message>
-        <location/>
         <source>Print in landscape mode</source>
-        <translation>Stampa in orizzontale</translation>
+        <translation type="obsolete">Stampa in orizzontale</translation>
     </message>
     <message>
-        <location/>
         <source>Keep proportions</source>
-        <translation>Mantieni le proporzioni</translation>
+        <translation type="obsolete">Mantieni le proporzioni</translation>
     </message>
     <message>
         <location/>
@@ -872,6 +913,96 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <location/>
         <source>From Printing Dpi</source>
         <translation>Reimposta a Dpi Stampa</translation>
+    </message>
+    <message>
+        <location/>
+        <source>PDF</source>
+        <translation>PDF</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Scalable Vector Graphics</source>
+        <translation>Grafica Vettoriale Scalabile (SVG)</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Landscape paper orientation</source>
+        <translation>Carta orizzontale</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Keep canvas proportion</source>
+        <translation>Mantieni la proporzione</translation>
+    </message>
+    <message>
+        <location/>
+        <source>PDF Export</source>
+        <translation>Esporta PDF</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Export to PDF file.</source>
+        <translation>Esporta su file PDF (Portable Document Format).</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Output Options</source>
+        <translation>Opzioni di Esportazione</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Paper Size:</source>
+        <translation>Dimensione Foglio:</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Choose</source>
+        <translation>Scegli</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Scale:</source>
+        <translation>Scala:</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Original</source>
+        <translation>Originale</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Fit the page</source>
+        <translation>Riempi la pagina</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Position:</source>
+        <translation>Posizione:</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Top Left</source>
+        <translation>In Alto a Sinistra</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Center</source>
+        <translation>Centrato</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Resolution:</source>
+        <translation>Definizione:</translation>
+    </message>
+    <message>
+        <location/>
+        <source> dpi</source>
+        <translation> dpi</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Preview ...</source>
+        <translation>Anteprima ...</translation>
     </message>
 </context>
 <context>
@@ -908,17 +1039,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Hardware3DTest</name>
     <message>
-        <location filename="../App/Hardware3DTest.cpp" line="+45"/>
+        <location filename="../App/Hardware3DTest.cpp" line="+48"/>
         <source>OpenGL Test</source>
         <translation>Test OpenGL</translation>
     </message>
     <message>
-        <location line="+127"/>
+        <location line="+126"/>
         <source>Non-OpenGL</source>
         <translation>Non-OpenGL</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>OpenGL</source>
         <translation>OpenGL</translation>
     </message>
@@ -929,8 +1060,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+3"/>
+        <source>fps (%1...%2)</source>
+        <translation>fps (%1...%2)</translation>
+    </message>
+    <message>
         <source>duration (%1...%2ms)</source>
-        <translation>durata (%1...%2ms)</translation>
+        <translation type="obsolete">durata (%1...%2ms)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1072,13 +1207,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HomeScene</name>
     <message>
-        <location filename="../App/HomeScene.cpp" line="+162"/>
+        <location filename="../App/HomeScene.cpp" line="+164"/>
         <source>Wordcloud</source>
         <translation>Wordcloud</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+14"/>
+        <location line="+12"/>
         <source>coming soon</source>
         <translation>non disponibile</translation>
     </message>
@@ -1091,7 +1226,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HtmlTextEdit</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="-58"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+221"/>
         <source>Insert HTML entity</source>
         <translation>Inserisci oggetto HTML</translation>
     </message>
@@ -1213,22 +1348,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../App/MainWindow.cpp" line="+289"/>
+        <location filename="../App/MainWindow.cpp" line="+353"/>
         <source>OpenGL</source>
         <translation>OpenGL</translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+124"/>
         <source>Transparency</source>
         <translation>Trasparenza</translation>
     </message>
     <message>
-        <location line="-306"/>
+        <location line="-394"/>
         <source> ? </source>
         <translation> ? </translation>
     </message>
     <message>
-        <location line="+182"/>
+        <location line="+241"/>
         <source>Accelerated Rendering</source>
         <translation>Rendering Accelerato</translation>
     </message>
@@ -1248,7 +1383,7 @@ p, li { white-space: pre-wrap; }
         <translation>Prova OpenGL</translation>
     </message>
     <message>
-        <location line="+92"/>
+        <location line="+121"/>
         <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
         <translation>Questa funzione richiede il compositing attivo (compiz o kwin4) su Linux.&lt;br&gt;Se vedi uno sfondo nero significa che la trasparenza non è supportata sul tuo sistema.</translation>
     </message>
@@ -1368,8 +1503,8 @@ Vuoi aprire la pagina web?</translation>
         <translation>Seppia</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <location line="+44"/>
+        <location line="+2"/>
+        <location line="+42"/>
         <source>Opacity</source>
         <translation>Trasparenza</translation>
     </message>
@@ -1385,7 +1520,7 @@ Vuoi aprire la pagina web?</translation>
 100: opaco</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Auto Blending</source>
         <translation>Fusione</translation>
     </message>
@@ -1518,7 +1653,12 @@ Vuoi aprire la pagina web?</translation>
         <translation>Icone</translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+194"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+188"/>
+        <source>Type here...</source>
+        <translation>Scrivi qui...</translation>
+    </message>
+    <message>
+        <location line="+139"/>
         <source>Cancel</source>
         <translation>Annulla</translation>
     </message>
@@ -1526,6 +1666,11 @@ Vuoi aprire la pagina web?</translation>
         <location line="+41"/>
         <source>Search</source>
         <translation>Cerca</translation>
+    </message>
+    <message>
+        <location filename="../App/PictureSearchWidget.ui"/>
+        <source>Search Web Pictures</source>
+        <translation>Cerca Immagini nel Web</translation>
     </message>
 </context>
 <context>
@@ -1584,9 +1729,167 @@ Vuoi aprire la pagina web?</translation>
     </message>
 </context>
 <context>
+    <name>QPrintDialog</name>
+    <message>
+        <location filename="../App/ExportWizard.cpp" line="-166"/>
+        <source>A0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B10</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>C5E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>DLE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Executive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Folio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ledger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Legal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Letter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Tabloid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>US Common #10 Envelope</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+533"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+542"/>
         <source>Source</source>
         <translation>Sorgente</translation>
     </message>
@@ -1599,7 +1902,7 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location line="-342"/>
+        <location line="-350"/>
         <source>Bold</source>
         <translation>Grassetto</translation>
     </message>
@@ -1642,7 +1945,7 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../App/SceneView.cpp" line="+267"/>
+        <location filename="../App/SceneView.cpp" line="+227"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
@@ -1666,8 +1969,12 @@ Vuoi aprire la pagina web?</translation>
     </message>
     <message>
         <location line="+4"/>
+        <source>Properties</source>
+        <translation>Proprietà</translation>
+    </message>
+    <message>
         <source>Delete</source>
-        <translation>Cancella</translation>
+        <translation type="obsolete">Cancella</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1686,14 +1993,24 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../Canvas/TextContent.cpp" line="+42"/>
+        <location filename="../Canvas/TextContent.cpp" line="+44"/>
         <source>Right click to Edit the text</source>
         <translation>Premi il tasto destro per cambiare il testo</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+13"/>
         <source>right click to edit...</source>
         <translation>clic con il destro per modificare...</translation>
+    </message>
+    <message>
+        <location line="+202"/>
+        <source>PDF Export Warning</source>
+        <translation>Avviso esportazione PDF</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Shaped text could not be exported in PDF</source>
+        <translation>Il testo con forma non può essere esportato in PDF</translation>
     </message>
     <message>
         <location filename="../Canvas/TextContent.h" line="+53"/>

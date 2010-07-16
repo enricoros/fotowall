@@ -198,10 +198,8 @@ void WordItem::regeneratePath()
     QPointF pathCenter = path.boundingRect().center();
 #if QT_VERSION >= 0x040600
     path.translate(-pathCenter);
-#elif QT_VERSION >= 0x040500
-    path = QTransform::fromTranslate(-pathCenter.x(), -pathCenter.y()).map(path);
 #else
-    path = QTransform().translate(-pathCenter.x(), -pathCenter.y()).map(path);
+    path = QTransform::fromTranslate(-pathCenter.x(), -pathCenter.y()).map(path);
 #endif
 
     // update constants

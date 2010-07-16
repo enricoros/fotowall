@@ -25,7 +25,7 @@ namespace Ui { class PictureConfig; }
 class PictureConfig : public AbstractConfig {
     Q_OBJECT
     public:
-        PictureConfig(PictureContent * pictureContent, QGraphicsItem * parent = 0);
+        PictureConfig(PictureContent * pictureContent, AbstractConfig_PARENT * parent = 0);
         ~PictureConfig();
 
     Q_SIGNALS:

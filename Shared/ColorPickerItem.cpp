@@ -126,7 +126,7 @@ QRectF ColorPickerItem::boundingRect() const
 void ColorPickerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     if (m_isAnimated) {
-#if 1
+#if !defined(MOBILE_UI)
         // HACK - hide when small
         if (m_scale < 0.01)
             return;
@@ -140,20 +140,31 @@ void ColorPickerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     if (m_hueSatPixmap.size() != m_hueSatRect.size())
         regenHueSatPixmap();
     if (m_isAnimated) {
-        // when large: draw color spectrum
+        // when enlarging: draw color spectrum
         qreal pixOpacity = 0.5 + m_scale * 0.4;
-        if (pixOpacity > 0.01) {
+        if (pixOpacity > 0.5) {
             painter->setOpacity(pixOpacity);
             painter->drawPixmap(m_hueSatRect.topLeft(), m_hueSatPixmap);
         }
-        // when small: draw static color
+        // when shrinking: overlay static color
         qreal colOpacity = 1.0 - m_scale;
         if (colOpacity > 0.1) {
+            QRect totalRect = m_hueSatRect;
+            totalRect.setRight(m_valRect.right());
+#if !defined(MOBILE_UI)
             painter->setPen(Qt::NoPen);
+#else
+            painter->setPen(QPen(QColor(0,0,0,128), 0));
+#endif
             painter->setBrush(color());
             painter->setOpacity(colOpacity);
-            painter->drawRect(m_hueSatRect);
+            painter->drawRect(totalRect);
         }
+        // when small: stop drawing here
+#if defined(MOBILE_UI)
+        if (!m_scale)
+            return;
+#endif
         painter->setOpacity(1.0);
     } else {
         painter->drawPixmap(m_hueSatRect.topLeft(), m_hueSatPixmap);

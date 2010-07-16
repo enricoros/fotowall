@@ -21,7 +21,7 @@
 #define VECTOR_CHECK_MATH
 
 #ifndef M_PI
-#define M_PI 3.141592653589793238462643 
+#define M_PI 3.141592653589793238462643
 #endif // !M_PI
 
 class Vector2;
@@ -286,7 +286,7 @@ class Matrix3
 #include <math.h>
 #include <stdio.h>
 
-#if defined(Q_OS_WIN32) || defined(Q_OS_MAC) || defined(Q_OS_SYMBIAN)
+#if !defined(Q_CC_GNU) || defined(Q_OS_WIN32)
 //sincos is not defined in win32 and MAC
 static inline void sincos(double th, double *s, double *c)
 {

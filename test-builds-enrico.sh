@@ -14,8 +14,11 @@ function build {
 }
 
 function build_dr {
-    build $* CONFIG+=debug
-    build $* CONFIG+=release
+    QTVER=`$* -v | grep Qt | awk -F\  '{print $4}'`
+    build $1 CONFIG+=debug
+    mv fotowall fotowall-$QTVER-d
+    build $1 CONFIG+=release
+    mv fotowall fotowall-$QTVER-r
 }
 
 echo "===== Testing compilers ====="
@@ -24,7 +27,6 @@ if [ "$1" != "" ]; then
     build $*
     exit
 fi
-build_dr /dati/qt/4.4.2/bin/qmake
 build_dr /dati/qt/4.5.3/bin/qmake
-build_dr /dati/qt/4.6.git-dev-32/bin/qmake
 build_dr qmake
+build_dr /dati/qt/4.7/bin/qmake

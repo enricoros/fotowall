@@ -1,14 +1,13 @@
 HEADERS += \
     Shared/PlugGui/AbstractAppliance.h \
     Shared/PlugGui/Container.h \
-    Shared/PlugGui/Stacker.h \
+    #Shared/PlugGui/Stacker.h \
     Shared/PictureServices/AbstractPictureService.h \
     Shared/PictureServices/FlickrPictureService.h \
     Shared/PictureServices/GoogleImagesPictureService.h \
     Shared/AbstractDisposeable.h \
     Shared/AbstractScene.h \
     Shared/AbstractResourceProvider.h \
-    Shared/BlinkingToolButton.h \
     Shared/BreadCrumbBar.h \
     Shared/ButtonsDialog.h \
     Shared/CPixmap.h \
@@ -35,13 +34,12 @@ HEADERS += \
 SOURCES += \
     Shared/PlugGui/AbstractAppliance.cpp \
     Shared/PlugGui/Container.cpp \
-    Shared/PlugGui/Stacker.cpp \
+    #Shared/PlugGui/Stacker.cpp \
     Shared/PictureServices/AbstractPictureService.cpp \
     Shared/PictureServices/FlickrPictureService.cpp \
     Shared/PictureServices/GoogleImagesPictureService.cpp \
     Shared/AbstractDisposeable.cpp \
     Shared/AbstractScene.cpp \
-    Shared/BlinkingToolButton.cpp \
     Shared/BreadCrumbBar.cpp \
     Shared/ButtonsDialog.cpp \
     Shared/CPixmap.cpp \
@@ -63,3 +61,11 @@ SOURCES += \
 FORMS += \
     Shared/CroppingDialog.ui \
     Shared/GlowEffectDialog.ui
+
+!contains(CONFIG, mobile-ui): {
+    HEADERS += \
+        Shared/BlinkingToolButton.h
+
+    SOURCES += \
+        Shared/BlinkingToolButton.cpp
+}

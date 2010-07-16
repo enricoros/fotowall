@@ -58,11 +58,9 @@ MainWindow::MainWindow(QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->topBar->setFixedHeight(App::TopBarHeight);
-#if QT_VERSION >= 0x040500
     ui->transpBox->setEnabled(true);
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
     ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
-#endif
     ui->applianceSidebar->hide();
     ui->sceneView->setFocus();
     connect(ui->sceneView, SIGNAL(heavyRepaint()), this, SLOT(slotRenderingSlow()));
@@ -100,11 +98,9 @@ MainWindow::MainWindow(QWidget * parent)
         show();
 #endif
 
-#if QT_VERSION >= 0x040500
     // re-apply transparency
     if (App::settings->value("Fotowall/Tranlucent", false).toBool())
         ui->transpBox->setChecked(true);
-#endif
 
     // start the workflow
     new Workflow((PlugGui::Container *)this, workflowBar);
@@ -157,9 +153,6 @@ void MainWindow::applianceSetTitle(const QString & title)
     if (title.isEmpty())
         tString += "' Alchimia ' ";
     tString += QCoreApplication::applicationVersion();
-#if QT_VERSION < 0x040500
-    tString += "   -Limited Edition (Qt 4.4)-";
-#endif
     setWindowTitle(tString);
 }
 
@@ -232,7 +225,6 @@ void MainWindow::applianceSetValue(quint32 key, const QVariant & value)
             m_pictureSearch = new PictureSearchWidget(m_networkAccessManager);
             connect(m_pictureSearch, SIGNAL(requestClosure()), this, SLOT(slotClosePictureSearch()), Qt::QueuedConnection);
             m_pictureSearch->setWindowIcon(QIcon(":/data/insert-download.png"));
-            m_pictureSearch->setWindowTitle(tr("Search Web Pictures"));
             m_pictureSearch->setWindowFlags(Qt::Tool);
             QPoint newPos = mapToGlobal(ui->sceneView->pos()) + QPoint(-20, 10);
             if (newPos.x() < 0)
@@ -407,7 +399,37 @@ void MainWindow::on_accelBox_toggled(bool checked)
     RenderOpts::OpenGLWindow = ui->sceneView->openGL();
 }
 
-#ifdef Q_WS_WIN
+#if defined(Q_WS_X11)
+/**
+  Blur behind windows (on KDE4.5+)
+
+  Uses a feature done for Plasma 4.5+ for hinting the window manager to draw
+  blur behind the window.
+*/
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <QX11Info>
+static bool kde4EnableBlurBehindWindow(WId window, bool enable, const QRegion &region = QRegion())
+{
+    Display *dpy = QX11Info::display();
+    Atom atom = XInternAtom(dpy, "_KDE_NET_WM_BLUR_BEHIND_REGION", False);
+
+    if (enable) {
+        QVector<QRect> rects = region.rects();
+        QVector<quint32> data;
+        for (int i = 0; i < rects.count(); i++) {
+            const QRect r = rects[i];
+            data << r.x() << r.y() << r.width() << r.height();
+        }
+
+        XChangeProperty(dpy, window, atom, XA_CARDINAL, 32, PropModeReplace,
+                        reinterpret_cast<const unsigned char *>(data.constData()), data.size());
+    } else {
+        XDeleteProperty(dpy, window, atom);
+    }
+    return true;
+}
+#elif defined(Q_WS_WIN)
 /**
   Blur behind windows (on Windows Vista/7)
 
@@ -463,12 +485,11 @@ static bool dwmEnableBlurBehindWindow(QWidget * widget, bool enable)
 
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
-#if QT_VERSION >= 0x040500
-#ifdef Q_OS_WIN
+#if defined(Q_WS_WIN)
     static Qt::WindowFlags initialWindowFlags = windowFlags();
 #endif
     if (transparent) {
-#ifdef Q_OS_LINUX
+#if defined(Q_WS_X11)
         // one-time warning
         ButtonsDialog warning("EnableTransparency", tr("Transparency"), tr("This feature requires compositing (compiz or kwin4) to work on Linux.<br>If you see a black background then transparency is not supported on your system."), QDialogButtonBox::Ok, true, true);
         warning.setIcon(QStyle::SP_MessageBoxInformation);
@@ -487,8 +508,10 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         // hint the render that we're transparent now
         RenderOpts::ARGBWindow = true;
 
-#ifdef Q_OS_WIN
-        // enable blur behind on Vista/7
+        // enable blur behind
+#if defined(Q_WS_X11)
+        kde4EnableBlurBehindWindow(winId(), true);
+#elif defined(Q_WS_WIN)
         if (!dwmEnableBlurBehindWindow(this, true)) {
             // if blur fails, use a frameless window that's needed on XP for transparency
             setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
@@ -504,7 +527,10 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         setAttribute(Qt::WA_TranslucentBackground, false);
         setAttribute(Qt::WA_NoSystemBackground, false);
 
-#ifdef Q_OS_WIN
+	// disable blur behind
+#if defined(Q_WS_X11)
+        kde4EnableBlurBehindWindow(winId(), false);
+#elif defined(Q_WS_WIN)
         // disable no-border on windows
         setWindowFlags(initialWindowFlags);
         show();
@@ -515,7 +541,6 @@ void MainWindow::on_transpBox_toggled(bool transparent)
     }
     // refresh the window
     update();
-#endif
 
     // remember in settings
     App::settings->setValue("Fotowall/Tranlucent", transparent);

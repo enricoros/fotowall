@@ -24,7 +24,7 @@
 #include "HelpAppliance.h"
 #include "HomeAppliance.h"
 #include "Settings.h"
-#ifdef HAS_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
 #include "WordcloudAppliance.h"
 #endif
 
@@ -109,7 +109,7 @@ void Workflow::stackSlaveCanvas_A(SingleResourceLoaner * resource)
     scheduleCommand(Command(Command::SlaveCanvas, QVariant(), resource));
 }
 
-#ifdef HAS_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
 void Workflow::startWordcloud_A()
 {
     // schedule wordcloud creation
@@ -267,7 +267,7 @@ bool Workflow::processCommand(const Workflow::Command & command)
             }
             } return true;
 
-#ifdef HAS_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
         case Command::MasterWordcloud: {
             Wordcloud::Cloud * cloud = new Wordcloud::Cloud(this);
 
@@ -325,7 +325,7 @@ bool Workflow::popNode(bool allowSave)
                 node.loaner->returnResource(qVariantFromValue((void *)canvas));
             else
                 delete canvas;
-#ifdef HAS_WORDCLOUD_APPLIANCE
+#if defined(HAS_WORDCLOUD_APPLIANCE)
         } else if (WordcloudAppliance * wApp = dynamic_cast<WordcloudAppliance *>(node.appliance)) {
             Wordcloud::Cloud * cloud = wApp->takeCloud();
             if (node.loaner)

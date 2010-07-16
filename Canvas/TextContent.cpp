@@ -48,9 +48,7 @@ TextContent::TextContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem
 
     // create a text document
     m_text = new QTextDocument(this);
-#if QT_VERSION >= 0x040500
     m_textMargin = m_text->documentMargin();
-#endif
 
     // template text
     QFont font;

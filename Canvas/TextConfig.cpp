@@ -19,7 +19,7 @@
 #include "Shared/Commands.h"
 #include "Shared/CommandStack.h"
 
-TextConfig::TextConfig(TextContent * textContent, QGraphicsItem * parent)
+TextConfig::TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent)
     : AbstractConfig(textContent, parent)
     , m_textContent(textContent)
 {

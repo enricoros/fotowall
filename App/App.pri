@@ -3,12 +3,10 @@ HEADERS += \
     App/CanvasAppliance.h \
     App/ExactSizeDialog.h \
     App/FotowallFile.h \
-    App/Hardware3DTest.h \
     App/HelpAppliance.h \
     App/HelpItem.h \
     App/HomeAppliance.h \
     App/HomeScene.h \
-    App/MainWindow.h \
     App/OnlineServices.h \
     App/PictureSearchWidget.h \
     App/SceneView.h \
@@ -22,12 +20,10 @@ SOURCES += \
     App/CanvasAppliance.cpp \
     App/ExactSizeDialog.cpp \
     App/FotowallFile.cpp \
-    App/Hardware3DTest.cpp \
     App/HelpAppliance.cpp \
     App/HelpItem.cpp \
     App/HomeAppliance.cpp \
     App/HomeScene.cpp \
-    App/MainWindow.cpp \
     App/OnlineServices.cpp \
     App/PictureSearchWidget.cpp \
     App/SceneView.cpp \
@@ -40,9 +36,29 @@ FORMS += \
     App/CanvasAppliance.ui \
     App/ExactSizeDialog.ui \
     App/HelpAppliance.ui \
-    App/MainWindow.ui \
     App/PictureSearchWidget.ui \
     App/VersionCheckDialog.ui
+
+!contains(CONFIG, mobile-ui): {
+    HEADERS += \
+        App/Hardware3DTest.h \
+        App/MainWindow.h
+
+    SOURCES += \
+        App/Hardware3DTest.cpp \
+        App/MainWindow.cpp
+
+    FORMS += \
+        App/MainWindow.ui
+} else: {
+    message("Building the user interface for Mobiles")
+    DEFINES += MOBILE_UI
+    HEADERS += \
+        App/MainWindowMobile.h
+
+    SOURCES += \
+        App/MainWindowMobile.cpp
+}
 
 !contains(CONFIG, no-export): {
     DEFINES += HAS_EXPORTDIALOG
@@ -76,3 +92,4 @@ FORMS += \
     message("Wordcloud appliance won't be compiled")
     DEFINES -= HAS_WORDCLOUD_APPLIANCE
 }
+
