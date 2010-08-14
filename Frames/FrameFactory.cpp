@@ -71,6 +71,10 @@ void FrameFactory::addSvgFrame(const QString & frameFilePath)
     factoryInstance()->m_svgMap[ factoryInstance()->m_svgClassIndex++ ] = frameFilePath;
 }
 
+void FrameFactory::removeFrame(const quint32 frameClass) {
+    factoryInstance()->m_svgMap.remove(frameClass);
+}
+
 quint32 FrameFactory::defaultPanelClass()
 {
     return factoryInstance()->m_defaultPanel;
