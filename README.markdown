@@ -149,7 +149,9 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist
 
-* Make the propeties dialog moveable/stay in the current view (reqby Martin Zimmermann)
+* Add the possibility to create a template ("like specify the elements you can readily replace (like photos and design elements)
+ and specify those that are permanent.. this would be very useful for album layouting.") - assigned to Arnaud TANGUY
+* Make the propeties dialog moveable/stay in the current view (reqby Martin Zimmermann, and many French users)
 * Integrate Marco Bavagnoli updates on the googleimagedownloader
 * Parametric "Random placement", so the image can not be rotated, for example
 * Change all pictures opacity at the same time (workaround for the 'random placement' that changes opacity too)
