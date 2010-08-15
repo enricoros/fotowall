@@ -80,6 +80,9 @@ AbstractConfig::AbstractConfig(AbstractContent * content, AbstractConfig_PARENT 
     // read other properties
     m_commonUi->reflection->setChecked(m_content->mirrored());
     m_commonUi->contentLocked->setChecked(m_content->locked());
+    m_commonUi->fixedPosition->setChecked(m_content->fixedPosition());
+    m_commonUi->fixedRotation->setChecked(m_content->fixedRotation());
+    m_commonUi->fixedPerspective->setChecked(m_content->fixedPerspective());
 
     connect(m_commonUi->front, SIGNAL(clicked()), m_content, SLOT(slotStackFront()));
     connect(m_commonUi->raise, SIGNAL(clicked()), m_content, SLOT(slotStackRaise()));
@@ -88,7 +91,12 @@ AbstractConfig::AbstractConfig(AbstractContent * content, AbstractConfig_PARENT 
     connect(m_commonUi->save, SIGNAL(clicked()), m_content, SLOT(slotSaveAs()));
     connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(requestBackgrounding()));
     connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(requestRemoval()));
+
     connect(m_commonUi->contentLocked, SIGNAL(stateChanged(int)), m_content, SLOT(slotSetLocked(int)));
+    connect(m_commonUi->fixedPosition, SIGNAL(stateChanged(int)), m_content, SLOT(slotSetFixedPosition(int)));
+    connect(m_commonUi->fixedRotation, SIGNAL(stateChanged(int)), m_content, SLOT(slotSetFixedRotation(int)));
+    connect(m_commonUi->fixedPerspective, SIGNAL(stateChanged(int)), m_content, SLOT(slotSetFixedPerspective(int)));
+
     connect(m_commonUi->newFrame, SIGNAL(clicked()), this, SLOT(slotAddFrame()));
     connect(m_commonUi->removeFrame, SIGNAL(clicked()), this, SLOT(slotRemoveFrame()));
     connect(m_commonUi->lookApplyAll, SIGNAL(clicked()), this, SLOT(slotLookApplyAll()));

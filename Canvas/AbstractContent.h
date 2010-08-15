@@ -77,6 +77,9 @@ class AbstractContent : public AbstractDisposeable
         int fxIndex() const;
 
         bool locked();
+        bool fixedPosition();
+        bool fixedRotation();
+        bool fixedPerspective();
 
         // misc
         void ensureVisible(const QRectF & viewportRect);
@@ -129,12 +132,16 @@ class AbstractContent : public AbstractDisposeable
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void keyPressEvent(QKeyEvent * event);
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
     protected Q_SLOTS:
         void slotConfigure();
         void slotSetLocked(int);
+        void slotSetFixedPosition(int);
+        void slotSetFixedRotation(int);
+        void slotSetFixedPerspective(int);
         void slotStackFront();
         void slotStackRaise();
         void slotStackLower();
@@ -163,6 +170,8 @@ class AbstractContent : public AbstractDisposeable
         int                 m_fxIndex;
 
         bool                m_locked;
+        bool                m_fixedPosition;
+        bool                m_fixedRotation, m_fixedPerspective;
 
 
     private Q_SLOTS:

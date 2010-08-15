@@ -127,19 +127,6 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0" colspan="5">
           <widget class="QLabel" name="label_2">
@@ -230,21 +217,8 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0" colspan="3">
+        <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0,0,0">
+         <item row="0" column="0" colspan="6">
           <widget class="QLabel" name="label_4">
            <property name="font">
             <font>
@@ -254,6 +228,37 @@
            </property>
            <property name="text">
             <string>Position</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="contentLocked">
+           <property name="toolTip">
+            <string>The content position and transformations are locked. Useful to create templates with fixed elements.</string>
+           </property>
+           <property name="text">
+            <string>Locked</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QCheckBox" name="fixedPosition">
+           <property name="text">
+            <string>Position fixed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QCheckBox" name="fixedRotation">
+           <property name="text">
+            <string>Rotation fixed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QCheckBox" name="fixedPerspective">
+           <property name="text">
+            <string>Perspective fixed</string>
            </property>
           </widget>
          </item>
@@ -273,28 +278,60 @@
            </property>
           </spacer>
          </item>
-         <item row="1" column="2">
-          <spacer name="horizontalSpacer_9">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="contentLocked">
-           <property name="toolTip">
-            <string>The content position and transformations are locked. Useful to create templates with fixed elements.</string>
-           </property>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Locked</string>
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apparence&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="0" column="1">
+            <widget class="QCheckBox" name="reflection">
+             <property name="text">
+              <string>Show Reflection</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="2">
+            <spacer name="horizontalSpacer_10">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -302,7 +339,7 @@
      </widget>
      <widget class="QWidget" name="tabApparences">
       <attribute name="title">
-       <string>Apparences</string>
+       <string>Frames</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
@@ -316,7 +353,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Looks</string>
+            <string>Frames</string>
            </property>
           </widget>
          </item>
@@ -425,13 +462,6 @@
          </property>
          <property name="viewMode">
           <enum>QListView::IconMode</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="reflection">
-         <property name="text">
-          <string>Show Reflection</string>
          </property>
         </widget>
        </item>

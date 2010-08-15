@@ -56,6 +56,8 @@ AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noResc
 #endif
     , m_fxIndex(0)
     , m_locked(false)
+    , m_fixedPosition(false)
+    , m_fixedRotation(false), m_fixedPerspective(false)
 {
     // the buffered graphics changes timer
     m_gfxChangeTimer = new QTimer(this);
@@ -349,7 +351,7 @@ bool AbstractContent::mirrored() const
 
 void AbstractContent::setPerspective(const QPointF & angles)
 {
-    if (locked()) return;
+    if (locked() || m_fixedPerspective) return;
     if (angles != m_perspectiveAngles) {
         m_perspectiveAngles = angles;
         applyTransforms();
@@ -365,6 +367,7 @@ QPointF AbstractContent::perspective() const
 #if QT_VERSION < 0x040600
 void AbstractContent::setRotation(qreal angle)
 {
+    if (m_fixedRotation) return;
     if (m_rotationAngle != angle) {
         m_rotationAngle = angle;
         applyTransforms();
@@ -429,6 +432,18 @@ bool AbstractContent::locked()
 {
     return m_locked;
 }
+bool AbstractContent::fixedPosition()
+{
+    return m_fixedPosition;
+}
+bool AbstractContent::fixedRotation()
+{
+    return m_fixedRotation;
+}
+bool AbstractContent::fixedPerspective()
+{
+    return m_fixedPerspective;
+}
 
 void AbstractContent::ensureVisible(const QRectF & rect)
 {
@@ -472,9 +487,22 @@ bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseD
     bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
 
+    bool locked = false, fixedPosition = false, fixedRotation =false, fixedPerspective = false;
     QDomElement lockedElement = contentElement.firstChildElement("locked");
     if (!lockedElement.isNull())
-        m_locked = lockedElement.text().toInt();
+        locked = lockedElement.text().toInt();
+
+    QDomElement fixedPositionElement = contentElement.firstChildElement("fixedPosition");
+    if (!fixedPositionElement.isNull())
+        fixedPosition = fixedPositionElement.text().toInt();
+
+    QDomElement fixedRotationElement = contentElement.firstChildElement("fixedRotation");
+    if (!fixedRotationElement.isNull())
+        fixedRotation = fixedRotationElement.text().toInt();
+
+    QDomElement fixedPerspectiveElement = contentElement.firstChildElement("fixedPerspective");
+    if (!fixedPerspectiveElement.isNull())
+        fixedPerspective = fixedPerspectiveElement.text().toInt();
 
     qreal opacity = contentElement.firstChildElement("opacity").text().toDouble();
     if (opacity > 0.0 && opacity < 1.0)
@@ -507,6 +535,11 @@ bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseD
     }
     domElement = contentElement.firstChildElement("mirror");
     setMirrored(domElement.attribute("state").toInt());
+
+    m_locked = locked;
+    m_fixedPosition = fixedPosition;
+    m_fixedRotation = fixedRotation;
+    m_fixedPerspective = fixedPerspective;
 
     return true;
 }
@@ -567,6 +600,24 @@ void AbstractContent::toXml(QDomElement & contentElement, const QDir & /*baseDir
     domElement = doc.createElement("locked");
     contentElement.appendChild(domElement);
     valueStr.setNum(m_locked);
+    text =  doc.createTextNode(valueStr);
+    domElement.appendChild(text);
+
+    domElement = doc.createElement("fixedPosition");
+    contentElement.appendChild(domElement);
+    valueStr.setNum(m_fixedPosition);
+    text =  doc.createTextNode(valueStr);
+    domElement.appendChild(text);
+
+    domElement = doc.createElement("fixedRotation");
+    contentElement.appendChild(domElement);
+    valueStr.setNum(m_fixedRotation);
+    text =  doc.createTextNode(valueStr);
+    domElement.appendChild(text);
+
+    domElement = doc.createElement("fixedPerspective");
+    contentElement.appendChild(domElement);
+    valueStr.setNum(m_fixedPerspective);
     text =  doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
@@ -792,6 +843,15 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
     }
 }
 
+void AbstractContent::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+    if (m_fixedPosition) event->ignore();
+    else {
+        QGraphicsItem::mouseMoveEvent(event);
+        event->accept();
+    }
+}
+
 void AbstractContent::keyPressEvent(QKeyEvent * event)
 {
     // discard key events for unselectable items
@@ -801,13 +861,16 @@ void AbstractContent::keyPressEvent(QKeyEvent * event)
     }
     event->accept();
     int step = (event->modifiers() & Qt::ShiftModifier) ? 50 : (event->modifiers() & Qt::ControlModifier ? 1 : 10);
+    if (!m_fixedPosition) {
+        switch (event->key()) {
+            // cursor keys: 10px, 50 if Shift pressed, 1 if Control pressed
+            case Qt::Key_Left:      setPos(pos() - QPointF(step, 0));   break;
+            case Qt::Key_Up:        setPos(pos() - QPointF(0, step));   break;
+            case Qt::Key_Right:     setPos(pos() + QPointF(step, 0));   break;
+            case Qt::Key_Down:      setPos(pos() + QPointF(0, step));   break;
+        }
+    }
     switch (event->key()) {
-        // cursor keys: 10px, 50 if Shift pressed, 1 if Control pressed
-        case Qt::Key_Left:      setPos(pos() - QPointF(step, 0));   break;
-        case Qt::Key_Up:        setPos(pos() - QPointF(0, step));   break;
-        case Qt::Key_Right:     setPos(pos() + QPointF(step, 0));   break;
-        case Qt::Key_Down:      setPos(pos() + QPointF(0, step));   break;
-
         // deletion
         case Qt::Key_Delete: emit requestRemoval(); break;
 
@@ -905,6 +968,30 @@ void AbstractContent::slotSetLocked(int state) {
 
         }
     }
+}
+
+void AbstractContent::slotSetFixedPosition(int state)
+{
+    if (state == Qt::Checked)
+        m_fixedPosition = true;
+    else
+        m_fixedPosition = false;
+}
+
+void AbstractContent::slotSetFixedRotation(int state)
+{
+    if (state == Qt::Checked)
+        m_fixedRotation = true;
+    else
+        m_fixedRotation = false;
+}
+
+void AbstractContent::slotSetFixedPerspective(int state)
+{
+    if (state == Qt::Checked)
+        m_fixedPerspective = true;
+    else
+        m_fixedPerspective = false;
 }
 
 void AbstractContent::slotStackFront()
