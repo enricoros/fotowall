@@ -1439,12 +1439,12 @@ Voulez vous ouvrir la page web ?</translation>
     <message>
         <location line="-56"/>
         <source>Flip horizontally</source>
-        <translation>Retourner horizontallement</translation>
+        <translation>Retourner horizontalement</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Flip vertically</source>
-        <translation>Retourner verticallement</translation>
+        <translation>Retourner verticalement</translation>
     </message>
     <message>
         <location filename="../Canvas/PictureContent.h" line="+42"/>

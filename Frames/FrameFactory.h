@@ -32,6 +32,7 @@ class FrameFactory
 
         // add new types
         static void addSvgFrame(const QString & frameFilePath);
+        static void removeFrame(const quint32 frameClass);
 
         // change the default class
         static quint32 defaultPanelClass();

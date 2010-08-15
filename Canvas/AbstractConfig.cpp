@@ -20,6 +20,8 @@
 #include "StyledButtonItem.h"
 #include "ui_AbstractConfig.h"
 
+#include <QSettings>
+
 #include <QGraphicsSceneMouseEvent>
 #include <QFileDialog>
 #include <QListWidgetItem>
@@ -86,6 +88,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, AbstractConfig_PARENT 
     connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(requestBackgrounding()));
     connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(requestRemoval()));
     connect(m_commonUi->newFrame, SIGNAL(clicked()), this, SLOT(slotAddFrame()));
+    connect(m_commonUi->removeFrame, SIGNAL(clicked()), this, SLOT(slotRemoveFrame()));
     connect(m_commonUi->lookApplyAll, SIGNAL(clicked()), this, SLOT(slotLookApplyAll()));
     connect(m_commonUi->framesList, SIGNAL(itemSelectionChanged()), this, SLOT(slotFrameSelectionChanged()));
     connect(m_commonUi->reflection, SIGNAL(toggled(bool)), this, SLOT(slotReflectionToggled(bool)));
@@ -274,6 +277,15 @@ void AbstractConfig::slotAddFrame()
             FrameFactory::addSvgFrame(frame);
         populateFrameList();
     }
+}
+
+void AbstractConfig::slotRemoveFrame()
+{
+    QList<QListWidgetItem *> selectedFrames = m_commonUi->framesList->selectedItems();
+    foreach (QListWidgetItem *item, selectedFrames) {
+            FrameFactory::removeFrame(item->data(Qt::UserRole).toInt());
+    }
+    populateFrameList();
 }
 
 void AbstractConfig::slotLookApplyAll()
