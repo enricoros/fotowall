@@ -33,6 +33,7 @@ class CornerItem : public QGraphicsItem
         void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+        void setHidden(bool state);
 
     private:
         enum Operation {
@@ -51,6 +52,7 @@ class CornerItem : public QGraphicsItem
         double m_startRatio;
         qreal m_startRotation;
         QRect m_startContentRect;
+        bool m_hidden;
 };
 
 #endif
