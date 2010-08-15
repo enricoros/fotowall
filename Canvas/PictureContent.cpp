@@ -470,7 +470,9 @@ void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
 
 void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
-    emit requestBackgrounding();
+    if (!locked()) {
+        emit requestBackgrounding();
+    }
 }
 
 void PictureContent::setExternalEdit(bool enabled)

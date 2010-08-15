@@ -55,6 +55,7 @@ AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noResc
     , m_rotationAngle(0)
 #endif
     , m_fxIndex(0)
+    , m_locked(false)
 {
     // the buffered graphics changes timer
     m_gfxChangeTimer = new QTimer(this);
@@ -348,6 +349,7 @@ bool AbstractContent::mirrored() const
 
 void AbstractContent::setPerspective(const QPointF & angles)
 {
+    if (locked()) return;
     if (angles != m_perspectiveAngles) {
         m_perspectiveAngles = angles;
         applyTransforms();
@@ -423,6 +425,11 @@ int AbstractContent::fxIndex() const
     return m_fxIndex;
 }
 
+bool AbstractContent::locked()
+{
+    return m_locked;
+}
+
 void AbstractContent::ensureVisible(const QRectF & rect)
 {
     // keep the center inside the scene rect
@@ -464,6 +471,10 @@ bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseD
 
     bool visible = contentElement.firstChildElement("visible").text().toInt();
     setVisible(visible);
+
+    QDomElement lockedElement = contentElement.firstChildElement("locked");
+    if (!lockedElement.isNull())
+        m_locked = lockedElement.text().toInt();
 
     qreal opacity = contentElement.firstChildElement("opacity").text().toDouble();
     if (opacity > 0.0 && opacity < 1.0)
@@ -551,6 +562,12 @@ void AbstractContent::toXml(QDomElement & contentElement, const QDir & /*baseDir
     contentElement.appendChild(domElement);
     valueStr.setNum(isVisible());
     text = doc.createTextNode(valueStr);
+    domElement.appendChild(text);
+
+    domElement = doc.createElement("locked");
+    contentElement.appendChild(domElement);
+    valueStr.setNum(m_locked);
+    text =  doc.createTextNode(valueStr);
     domElement.appendChild(text);
 
     // Save the opacity
@@ -653,8 +670,10 @@ QRectF AbstractContent::boundingRect() const
 
 void AbstractContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
 {
-    // emitting the edit request by default. some subclasses request backgrounding
-    emit requestEditing();
+    if (!m_locked) {
+        // emitting the edit request by default. some subclasses request backgrounding
+        emit requestEditing();
+    }
 }
 
 void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
@@ -754,7 +773,8 @@ void AbstractContent::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 
 void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
-    event->accept();
+    if (m_locked == true) event->ignore();
+    else event->accept();
 }
 
 void AbstractContent::dropEvent(QGraphicsSceneDragDropEvent * event)
@@ -775,7 +795,7 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
 void AbstractContent::keyPressEvent(QKeyEvent * event)
 {
     // discard key events for unselectable items
-    if (!(flags() & ItemIsSelectable)) {
+    if (!(flags() & ItemIsSelectable) || locked()) {
         event->ignore();
         return;
     }
@@ -801,6 +821,7 @@ void AbstractContent::keyPressEvent(QKeyEvent * event)
 
 QVariant AbstractContent::itemChange(GraphicsItemChange change, const QVariant & value)
 {
+    if (locked()) return pos();
     // keep the AbstractContent's center inside the scene rect..
     if (change == ItemPositionChange && scene()) {
         QPointF newPos = value.toPointF();
@@ -859,6 +880,31 @@ void AbstractContent::slotConfigure()
         emit requestConfig(item->scenePos().toPoint());
     else
         emit requestConfig(scenePos().toPoint());
+}
+
+void AbstractContent::slotSetLocked(int state) {
+    // Hide the controls when locked
+    if (state == Qt::Checked) {
+        m_locked = true;
+        foreach(ButtonItem *controlItem, m_controlItems) {
+            controlItem->setHidden(true);
+        }
+        foreach(CornerItem *cornerItem, m_cornerItems) {
+            cornerItem->setHidden(true);
+
+        }
+    }
+    else {
+        m_locked = false;
+        foreach(ButtonItem *controlItem, m_controlItems) {
+            controlItem->setHidden(false);
+
+        }
+        foreach(CornerItem *cornerItem, m_cornerItems) {
+            cornerItem->setHidden(false);
+
+        }
+    }
 }
 
 void AbstractContent::slotStackFront()

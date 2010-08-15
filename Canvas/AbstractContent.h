@@ -76,6 +76,8 @@ class AbstractContent : public AbstractDisposeable
         void setFxIndex(int index);
         int fxIndex() const;
 
+        bool locked();
+
         // misc
         void ensureVisible(const QRectF & viewportRect);
         bool beingTransformed() const;
@@ -132,6 +134,7 @@ class AbstractContent : public AbstractDisposeable
 
     protected Q_SLOTS:
         void slotConfigure();
+        void slotSetLocked(int);
         void slotStackFront();
         void slotStackRaise();
         void slotStackLower();
@@ -158,6 +161,9 @@ class AbstractContent : public AbstractDisposeable
         double              m_rotationAngle;
 #endif
         int                 m_fxIndex;
+
+        bool                m_locked;
+
 
     private Q_SLOTS:
         void slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);

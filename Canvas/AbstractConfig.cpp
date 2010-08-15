@@ -79,6 +79,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, AbstractConfig_PARENT 
 
     // read other properties
     m_commonUi->reflection->setChecked(m_content->mirrored());
+    m_commonUi->contentLocked->setChecked(m_content->locked());
 
     connect(m_commonUi->front, SIGNAL(clicked()), m_content, SLOT(slotStackFront()));
     connect(m_commonUi->raise, SIGNAL(clicked()), m_content, SLOT(slotStackRaise()));
@@ -87,6 +88,7 @@ AbstractConfig::AbstractConfig(AbstractContent * content, AbstractConfig_PARENT 
     connect(m_commonUi->save, SIGNAL(clicked()), m_content, SLOT(slotSaveAs()));
     connect(m_commonUi->background, SIGNAL(clicked()), m_content, SIGNAL(requestBackgrounding()));
     connect(m_commonUi->del, SIGNAL(clicked()), m_content, SIGNAL(requestRemoval()));
+    connect(m_commonUi->contentLocked, SIGNAL(stateChanged(int)), m_content, SLOT(slotSetLocked(int)));
     connect(m_commonUi->newFrame, SIGNAL(clicked()), this, SLOT(slotAddFrame()));
     connect(m_commonUi->removeFrame, SIGNAL(clicked()), this, SLOT(slotRemoveFrame()));
     connect(m_commonUi->lookApplyAll, SIGNAL(clicked()), this, SLOT(slotLookApplyAll()));

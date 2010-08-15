@@ -29,6 +29,7 @@ CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * par
     , m_opMask(rotateOnly ? Rotate | FixRotate : AllowAll)
     , m_side(8)
     , m_operation(Off)
+    , m_hidden(false)
 {
     setAcceptsHoverEvents(true);
 }
@@ -170,6 +171,7 @@ void CornerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
 void CornerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
+    if (m_hidden) return;
     if (RenderOpts::HQRendering)
         return;
 
@@ -182,4 +184,10 @@ void CornerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
     } else
         color.setAlpha(128);
     painter->fillRect(boundingRect(), color);
+}
+
+void CornerItem::setHidden(bool state)
+{
+    m_hidden = state;
+    update();
 }
