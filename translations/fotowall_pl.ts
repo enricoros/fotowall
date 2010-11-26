@@ -193,7 +193,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location line="+0"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
-        <translation>Cała %1 wybrana zawartość zostanie usunięta, czy chcesz kontynuować?</translation>
+        <translation>Wybrana zawartość (%1) zostanie usunięta. Czy chcesz kontynuować ?</translation>
     </message>
 </context>
 <context>
@@ -206,7 +206,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location line="+0"/>
         <source>You won&apos;t see through the Canvas unless you clear the background.&lt;br&gt;&lt;b&gt;Do you want me to clear it?&lt;/b&gt;</source>
-        <translation>Nie zobaczysz płutna chyba, że wyczyścisz tło.&lt;br&gt;&lt;b&gt;Chcesz je wyczyścić?&lt;/b&gt;</translation>
+        <translation>Proszę wpisz je tu &lt;b&gt;%1&lt;/b&gt; (możesz uzyć &lt;a href=&quot;%3&quot;&gt;automatu tłumaczącego&lt;/a&gt; stąd).&lt;br/&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -321,7 +321,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location line="+18"/>
         <source>Add Pictures to the Canvas</source>
-        <translation>Dodaj zdjęcia do płutna</translation>
+        <translation>Dodaj zdjęcia do płótna</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -356,7 +356,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location filename="../App/CanvasAppliance.h" line="+36"/>
         <source>Canvas</source>
-        <translation>Płutno</translation>
+        <translation>Płótno</translation>
     </message>
 </context>
 <context>
@@ -364,7 +364,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location filename="../App/CanvasAppliance.ui"/>
         <source>ADD NEW</source>
-        <translation>DOADJ NOWE</translation>
+        <translation>DODAJ NOWE</translation>
     </message>
     <message>
         <location/>
@@ -384,7 +384,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location/>
         <source>Add Canvas</source>
-        <translation>Dodaj płutno</translation>
+        <translation>Dodaj płótno</translation>
     </message>
     <message>
         <location/>
@@ -394,7 +394,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location/>
         <source>CANVAS</source>
-        <translation>PŁUTNO</translation>
+        <translation>PŁÓTNO</translation>
     </message>
     <message>
         <location/>
@@ -452,7 +452,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location filename="../Canvas/CanvasViewContent.h" line="+36"/>
         <source>Canvas View</source>
-        <translation>Widok płutna</translation>
+        <translation>Widok płótna</translation>
     </message>
 </context>
 <context>
@@ -557,12 +557,12 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location/>
         <source>Screen Dpi:</source>
-        <translation>Ekran Dpi:</translation>
+        <translation>Dpi Ekranu:</translation>
     </message>
     <message>
         <location/>
         <source>Printer Dpi:</source>
-        <translation>Drukarka Dpi:</translation>
+        <translation>Dpi Drukarki:</translation>
     </message>
     <message>
         <location/>
@@ -666,12 +666,12 @@ Przejdź do ustawień pulpitu i wybierz plik:
     <message>
         <location filename="../App/ExportWizard.ui"/>
         <source>Export Wizard</source>
-        <translation>Eksportuj asystenta</translation>
+        <translation>Asystent Eksportu</translation>
     </message>
     <message>
         <location/>
         <source>Export</source>
-        <translation>Exportuj</translation>
+        <translation>Eksportuj</translation>
     </message>
     <message>
         <location/>
@@ -866,7 +866,7 @@ Przejdź do ustawień pulpitu i wybierz plik:
     <message>
         <location/>
         <source>Reset to Canvas</source>
-        <translation>Przywróc do płutna</translation>
+        <translation>Dodaj zdjęcia do płótna</translation>
     </message>
     <message>
         <location/>
@@ -1575,12 +1575,12 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location line="+0"/>
         <source>Add Fotowall files to the Canvas</source>
-        <translation>Dodaj pliki Fotowall do płutna</translation>
+        <translation>Dodaj pliki Fotowall do płótna</translation>
     </message>
     <message>
         <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+110"/>
         <source>Camera %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kamera %1</translation>
     </message>
 </context>
 <context>
@@ -1780,12 +1780,12 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location filename="../Canvas/WebcamContent.cpp" line="+35"/>
         <source>This is a mirror ;-)</source>
-        <translation>To jest serwer;-)</translation>
+        <translation>To jest lusterko;-)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Mirror Video</source>
-        <translation>Serwer Wideo</translation>
+        <translation>Wideo lustrzane</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1893,7 +1893,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location filename="../App/Workflow.cpp" line="+169"/>
         <source>Closing Fotowall...</source>
-        <translation>Zamykanie Fotowall...</translation>
+        <translation>Zamykanie Forowall...</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1931,12 +1931,12 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location line="+43"/>
         <source>Closing File</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamykanie pliku</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chcesz zapisać zmiany?</translation>
     </message>
 </context>
 </TS>
