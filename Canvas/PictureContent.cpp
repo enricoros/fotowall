@@ -242,7 +242,7 @@ QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
     AbstractContent::createPropertyWidget(pp);
 
     // properties link
-#ifdef Q_WS_WIN
+#if defined(Q_OS_WIN) || defined(Q_OS_OS2)
     delete pp->gimpButton;
 #else
     new PE_AbstractButton(pp->gimpButton, this, "externalEdit", pp);
@@ -488,7 +488,7 @@ void PictureContent::setExternalEdit(bool enabled)
         }
 
         // open it with the gimp
-#ifdef Q_OS_WIN32
+#if defined(Q_OS_WIN) || defined(Q_OS_OS2)
         QString executable = "gimp.exe";
 #else
         QString executable = "gimp";

@@ -73,7 +73,7 @@ ExportWizard::ExportWizard(Canvas *canvas, bool printPreferred)
     m_ui->prTutorialLabel->setText("<html><body><a href='" POSTERAZOR_TUTORIAL_LINK "'>" + m_ui->prTutorialLabel->text() + "</a></body></html>" );
     connect(m_ui->prTutorialLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotOpenLink(const QString &)));
 
-#if !defined(Q_OS_WIN) && !defined(Q_OS_LINUX)
+#if !defined(Q_OS_WIN) && !defined(Q_OS_LINUX) && !defined(Q_OS_OS2)
 #warning "Implement background change for this OS"
     m_ui->clWallpaper->hide();
 #endif
@@ -137,7 +137,7 @@ void ExportWizard::setWallpaper()
     QString wFilePath;
     int fileNumber = 0;
     while (wFilePath.isEmpty() || QFile::exists(wFilePath))
-#if defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) || defined(Q_OS_OS2)
         wFilePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".bmp";
 #else
         wFilePath = QDir::toNativeSeparators(QDir::homePath()) + QDir::separator() + "fotowall-background" + QString::number(++fileNumber) + ".jpg";
@@ -157,7 +157,7 @@ void ExportWizard::setWallpaper()
         image = m_canvas->renderedImage(sceneSize);
 
     // save the right kind of image into the home dir
-#if defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) || defined(Q_OS_OS2)
     if (!image.save(wFilePath, "BMP")) {
 #else
     if (!image.save(wFilePath, "JPG", 100)) {
