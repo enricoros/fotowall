@@ -4,17 +4,17 @@
 <context>
     <name>AbstractConfig</name>
     <message>
-        <location filename="../Canvas/AbstractConfig.cpp" line="+45"/>
+        <location filename="../Canvas/AbstractConfig.cpp" line="+48"/>
         <source> x </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+113"/>
+        <location line="+123"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+100"/>
         <source>Choose frame images</source>
         <translation type="unfinished"></translation>
     </message>
@@ -97,24 +97,24 @@
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../Canvas/AbstractContent.cpp" line="+84"/>
+        <location filename="../Canvas/AbstractContent.cpp" line="+85"/>
         <source>Change properties...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Drag around to change the perspective.
 Hold SHIFT to move faster.
 Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+777"/>
+        <location line="+791"/>
         <source>Unnamed %1.png</source>
         <translation type="unfinished"></translation>
     </message>
@@ -159,13 +159,13 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+285"/>
+        <location filename="../Canvas/Canvas.cpp" line="+289"/>
         <location line="+19"/>
         <source>Unnamed %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+220"/>
+        <location line="+218"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
@@ -175,12 +175,12 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+755"/>
+        <location line="+727"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+167"/>
         <source>Delete content</source>
         <translation type="unfinished"></translation>
     </message>
@@ -193,7 +193,7 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>CanvasAppliance</name>
     <message>
-        <location filename="../App/CanvasAppliance.cpp" line="+122"/>
+        <location filename="../App/CanvasAppliance.cpp" line="+130"/>
         <source>Transparency</source>
         <translation type="unfinished"></translation>
     </message>
@@ -208,7 +208,7 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+39"/>
         <source>Random Placement</source>
         <translation type="unfinished"></translation>
     </message>
@@ -283,7 +283,17 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+7"/>
+        <source>View Perspective</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>View Rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
         <source>Top bar</source>
         <translation type="unfinished"></translation>
     </message>
@@ -333,7 +343,7 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+45"/>
         <source>Wordcloud Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -343,7 +353,7 @@ Use CTRL to cancel the transformations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+88"/>
         <source>Add Webcam</source>
         <translation type="unfinished"></translation>
     </message>
@@ -450,22 +460,9 @@ Use CTRL to cancel the transformations.</source>
     </message>
 </context>
 <context>
-    <name>ColorAction</name>
-    <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+277"/>
-        <source>Text Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>ContentProperties</name>
     <message>
         <location filename="../Canvas/ContentProperties.ui"/>
-        <source>Delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Opacity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -494,20 +491,17 @@ Use CTRL to cancel the transformations.</source>
         <source>Strong Blur</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location/>
+        <source>Configure</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CroppingDialog</name>
     <message>
         <location filename="../Shared/CroppingDialog.ui"/>
         <source>Cropping</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DottedLineEdit</name>
-    <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+129"/>
-        <source>Type here...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -567,7 +561,7 @@ Use CTRL to cancel the transformations.</source>
 <context>
     <name>ExportWizard</name>
     <message>
-        <location filename="../App/ExportWizard.cpp" line="+154"/>
+        <location filename="../App/ExportWizard.cpp" line="+165"/>
         <source>Wallpaper Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -590,18 +584,18 @@ Go to the Desktop Settings and select the file:
     </message>
     <message>
         <location line="+17"/>
-        <location line="+100"/>
+        <location line="+164"/>
         <source>No file selected !</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-100"/>
-        <location line="+100"/>
+        <location line="-164"/>
+        <location line="+164"/>
         <source>You need to choose a file path for saving.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-71"/>
+        <location line="-135"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
@@ -621,17 +615,27 @@ Go to the Desktop Settings and select the file:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+25"/>
         <source>Export poster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+69"/>
+        <source>PDF Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Error saving to the PDF file, try to chose another one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+54"/>
         <source>Created with %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+117"/>
         <source>Unnamed %1.%2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -646,6 +650,16 @@ Go to the Desktop Settings and select the file:
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+15"/>
+        <source>Choose the PDF file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>PDF (*.pdf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+8"/>
         <source>Choose the SVG file</source>
         <translation type="unfinished"></translation>
@@ -653,6 +667,21 @@ Go to the Desktop Settings and select the file:
     <message>
         <location line="+1"/>
         <source>SVG (*.svg)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+76"/>
+        <source>Other</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>%1  (%2 x %3 inch)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>%1  (%2 x %3 cm)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -837,16 +866,6 @@ Go to the Desktop Settings and select the file:
     </message>
     <message>
         <location/>
-        <source>Print in landscape mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
-        <source>Keep proportions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location/>
         <source>Export to the Scalable Vector Graphics image format.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -863,6 +882,96 @@ Go to the Desktop Settings and select the file:
     <message>
         <location/>
         <source>From Printing Dpi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>PDF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Scalable Vector Graphics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Landscape paper orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Keep canvas proportion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>PDF Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Export to PDF file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Output Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Paper Size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Choose</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Scale:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Original</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Fit the page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Position:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Top Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Resolution:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source> dpi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Preview ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -895,17 +1004,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Hardware3DTest</name>
     <message>
-        <location filename="../App/Hardware3DTest.cpp" line="+45"/>
+        <location filename="../App/Hardware3DTest.cpp" line="+48"/>
         <source>OpenGL Test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+127"/>
+        <location line="+126"/>
         <source>Non-OpenGL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>OpenGL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -916,7 +1025,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+3"/>
-        <source>duration (%1...%2ms)</source>
+        <source>fps (%1...%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1019,7 +1128,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+14"/>
         <source>OPEN</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1032,13 +1141,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HomeScene</name>
     <message>
-        <location filename="../App/HomeScene.cpp" line="+162"/>
+        <location filename="../App/HomeScene.cpp" line="+167"/>
         <source>Wordcloud</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+14"/>
+        <location line="+12"/>
         <source>coming soon</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1051,7 +1160,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HtmlTextEdit</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="-58"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+221"/>
         <source>Insert HTML entity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1172,22 +1281,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../App/MainWindow.cpp" line="+289"/>
+        <location filename="../App/MainWindow.cpp" line="+353"/>
         <source>OpenGL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+124"/>
         <source>Transparency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-306"/>
+        <location line="-394"/>
         <source> ? </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+182"/>
+        <location line="+241"/>
         <source>Accelerated Rendering</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1207,7 +1316,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+92"/>
+        <location line="+121"/>
         <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1224,6 +1333,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <location/>
         <source>Test GL</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MainWindowMobile</name>
+    <message>
+        <location filename="../App/MainWindowMobile.cpp" line="+100"/>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+147"/>
+        <source>Search Web Pictures</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1324,8 +1446,8 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <location line="+44"/>
+        <location line="+2"/>
+        <location line="+42"/>
         <source>Opacity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1338,7 +1460,7 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Auto Blending</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1468,13 +1590,23 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+194"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+188"/>
+        <source>Type here...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+139"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../App/PictureSearchWidget.ui"/>
+        <source>Search Web Pictures</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1534,9 +1666,167 @@ Do you want to open the web page?</source>
     </message>
 </context>
 <context>
+    <name>QPrintDialog</name>
+    <message>
+        <location filename="../App/ExportWizard.cpp" line="-166"/>
+        <source>A0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B10</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>C5E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>DLE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Executive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Folio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ledger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Legal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Letter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Tabloid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>US Common #10 Envelope</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+532"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+541"/>
         <source>Visual Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1549,7 +1839,7 @@ Do you want to open the web page?</source>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location line="-343"/>
+        <location line="-351"/>
         <source>Bold</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1592,7 +1882,7 @@ Do you want to open the web page?</source>
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../App/SceneView.cpp" line="+267"/>
+        <location filename="../App/SceneView.cpp" line="+227"/>
         <source>%1%</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1636,13 +1926,23 @@ Do you want to open the web page?</source>
 <context>
     <name>TextContent</name>
     <message>
-        <location filename="../Canvas/TextContent.cpp" line="+42"/>
+        <location filename="../Canvas/TextContent.cpp" line="+44"/>
         <source>Right click to Edit the text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+13"/>
         <source>right click to edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+202"/>
+        <source>PDF Export Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Shaped text could not be exported in PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1662,7 +1962,7 @@ Do you want to open the web page?</source>
 <context>
     <name>UrlHistoryBox</name>
     <message>
-        <location filename="../App/UrlHistoryBox.cpp" line="+152"/>
+        <location filename="../App/UrlHistoryBox.cpp" line="+157"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>

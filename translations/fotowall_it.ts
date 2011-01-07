@@ -4,17 +4,17 @@
 <context>
     <name>AbstractConfig</name>
     <message>
-        <location filename="../Canvas/AbstractConfig.cpp" line="+45"/>
+        <location filename="../Canvas/AbstractConfig.cpp" line="+48"/>
         <source> x </source>
         <translation> x </translation>
     </message>
     <message>
-        <location line="+113"/>
+        <location line="+123"/>
         <source>ok</source>
         <translation>ok</translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+100"/>
         <source>Choose frame images</source>
         <translation>Scegli una Cornice</translation>
     </message>
@@ -97,7 +97,7 @@
 <context>
     <name>AbstractContent</name>
     <message>
-        <location filename="../Canvas/AbstractContent.cpp" line="+84"/>
+        <location filename="../Canvas/AbstractContent.cpp" line="+85"/>
         <source>Change properties...</source>
         <translation>Modifica le proprietà...</translation>
     </message>
@@ -116,7 +116,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location line="+771"/>
+        <location line="+791"/>
         <source>Unnamed %1.png</source>
         <translation>Senza nome %1.png</translation>
     </message>
@@ -165,7 +165,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+283"/>
+        <location filename="../Canvas/Canvas.cpp" line="+289"/>
         <location line="+19"/>
         <source>Unnamed %1</source>
         <translation>Senza nome %1</translation>
@@ -186,7 +186,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation>%1</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+167"/>
         <source>Delete content</source>
         <translation>Cancella</translation>
     </message>
@@ -199,7 +199,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
 <context>
     <name>CanvasAppliance</name>
     <message>
-        <location filename="../App/CanvasAppliance.cpp" line="+121"/>
+        <location filename="../App/CanvasAppliance.cpp" line="+130"/>
         <source>Transparency</source>
         <translation>Trasparenza</translation>
     </message>
@@ -349,7 +349,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation>Inserire il titolo</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+45"/>
         <source>Wordcloud Editor</source>
         <translation>Editor del Wordcloud</translation>
     </message>
@@ -359,7 +359,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <translation>L&apos;editor del Wordcloud sarà disponibile dalla versione REVO (1.0).</translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+88"/>
         <source>Add Webcam</source>
         <translation>Aggiungi Webcam</translation>
     </message>
@@ -466,21 +466,9 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     </message>
 </context>
 <context>
-    <name>ColorAction</name>
-    <message>
-        <source>Text Color</source>
-        <translation type="obsolete">Colore del Testo</translation>
-    </message>
-</context>
-<context>
     <name>ContentProperties</name>
     <message>
         <location filename="../Canvas/ContentProperties.ui"/>
-        <source>Delete</source>
-        <translation>Cancella</translation>
-    </message>
-    <message>
-        <location/>
         <source>Opacity</source>
         <translation>Trasparenza</translation>
     </message>
@@ -509,6 +497,11 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <source>Strong Blur</source>
         <translation>Sfumato Forte</translation>
     </message>
+    <message>
+        <location/>
+        <source>Configure</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CroppingDialog</name>
@@ -516,13 +509,6 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <location filename="../Shared/CroppingDialog.ui"/>
         <source>Cropping</source>
         <translation>Ritaglio</translation>
-    </message>
-</context>
-<context>
-    <name>DottedLineEdit</name>
-    <message>
-        <source>Type here...</source>
-        <translation type="obsolete">Scrivi qui...</translation>
     </message>
 </context>
 <context>
@@ -877,14 +863,6 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <translation>Dpi:</translation>
     </message>
     <message>
-        <source>Print in landscape mode</source>
-        <translation type="obsolete">Stampa in orizzontale</translation>
-    </message>
-    <message>
-        <source>Keep proportions</source>
-        <translation type="obsolete">Mantieni le proporzioni</translation>
-    </message>
-    <message>
         <location/>
         <source>SVG Vector Image</source>
         <translation>Immagine Vettoriale SVG</translation>
@@ -1064,10 +1042,6 @@ p, li { white-space: pre-wrap; }
         <translation>fps (%1...%2)</translation>
     </message>
     <message>
-        <source>duration (%1...%2ms)</source>
-        <translation type="obsolete">durata (%1...%2ms)</translation>
-    </message>
-    <message>
         <location line="+10"/>
         <source>Use OpenGL</source>
         <translation>Usa OpenGL</translation>
@@ -1194,7 +1168,7 @@ p, li { white-space: pre-wrap; }
         <translation>LAVORI RECENTI</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+14"/>
         <source>OPEN</source>
         <translation>APRI</translation>
     </message>
@@ -1207,7 +1181,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HomeScene</name>
     <message>
-        <location filename="../App/HomeScene.cpp" line="+164"/>
+        <location filename="../App/HomeScene.cpp" line="+167"/>
         <source>Wordcloud</source>
         <translation>Wordcloud</translation>
     </message>
@@ -1401,6 +1375,19 @@ p, li { white-space: pre-wrap; }
         <location/>
         <source>Test GL</source>
         <translation>Prova OpenGL</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindowMobile</name>
+    <message>
+        <location filename="../App/MainWindowMobile.cpp" line="+100"/>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+147"/>
+        <source>Search Web Pictures</source>
+        <translation type="unfinished">Cerca Immagini nel Web</translation>
     </message>
 </context>
 <context>
@@ -1969,12 +1956,8 @@ Vuoi aprire la pagina web?</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>Properties</source>
-        <translation>Proprietà</translation>
-    </message>
-    <message>
         <source>Delete</source>
-        <translation type="obsolete">Cancella</translation>
+        <translation type="unfinished">Cancella</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2029,7 +2012,7 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>UrlHistoryBox</name>
     <message>
-        <location filename="../App/UrlHistoryBox.cpp" line="+152"/>
+        <location filename="../App/UrlHistoryBox.cpp" line="+157"/>
         <source>Open</source>
         <translation>Apri</translation>
     </message>
