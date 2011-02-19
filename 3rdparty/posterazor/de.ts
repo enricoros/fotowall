@@ -47,8 +47,8 @@
     <message>
         <location line="+9"/>
         <source>Load an image by clicking the button with the open icon and selecting an image file, or by drag &amp; dropping an image file on the PosteRazor. The drag &amp; drop also works during the other steps.
-After loading the image, the most important informations are listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
-        <comment>Wizard step 1. Place holders: %1 = &apos;Image informations&apos; (will be automatically inserted)</comment>
+After loading the image, the most important information is listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
+        <comment>Wizard step 1. Place holders: %1 = &apos;Image information&apos; (will be automatically inserted)</comment>
         <translation type="unfinished">Laden Sie ein Ausgangsbild, indem sie auf das &apos;öffnen&apos;-Symbol klicken und eine Datei wählen, oder indem Sie eine Datei auf den PosteRazor fallen lassen (Drag &amp; Drop). Die Drag &amp; Drop-Funktion des Ausgangsbildes ist in allen Assistenten-Schritten vorhanden.
 Nach dem Laden eines Bildes werden in dem Feld &lt;b&gt;%1&lt;/b&gt; die wichtigsten Angaben aufgelistet.</translation>
     </message>
@@ -128,7 +128,7 @@ Der PosteRazor merkt sich jede Eingabe und Auswahl bis zur nächsten Benutzung d
     <message>
         <location filename="wizard.cpp" line="+90"/>
         <location filename="wizardcontroller.cpp" line="+93"/>
-        <source>Image Informations</source>
+        <source>Image Information</source>
         <translation type="unfinished">Bildinformationen</translation>
     </message>
     <message>
@@ -397,7 +397,7 @@ Soll sie überschrieben werden?</translation>
     </message>
     <message>
         <location/>
-        <source>Image Informations</source>
+        <source>Image Information</source>
         <translation type="unfinished">Bildinformationen</translation>
     </message>
     <message>

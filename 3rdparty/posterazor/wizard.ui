@@ -215,7 +215,7 @@
           <item>
            <widget class="QGroupBox" name="m_imageInfoGroup">
             <property name="title">
-             <string>Image Informations</string>
+             <string>Image Information</string>
             </property>
             <layout class="QGridLayout" name="_3">
              <property name="margin">
