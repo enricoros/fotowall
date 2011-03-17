@@ -168,21 +168,21 @@ bool Workflow::requestExit()
         // build the closure dialog
         ButtonsDialog quitAsk("Workflow-Exit", tr("Closing Fotowall..."));
         quitAsk.setMinimumWidth(350);
-        quitAsk.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
+        quitAsk.setButtonText(QDialogButtonBox::No, tr("Cancel"));
         if (requiringSave) {
             quitAsk.setMessage(tr("Are you sure you want to quit and lose your changes?"));
             quitAsk.setButtonText(QDialogButtonBox::Save, tr("Save"));
             quitAsk.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
-            quitAsk.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::Cancel);
+            quitAsk.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::No);
         } else {
             quitAsk.setMessage(tr("Are you sure you want to quit?"));
             quitAsk.setButtonText(QDialogButtonBox::Close, tr("Quit"));
-            quitAsk.setButtons(QDialogButtonBox::Close | QDialogButtonBox::Cancel);
+            quitAsk.setButtons(QDialogButtonBox::Close | QDialogButtonBox::No);
         }
 
         // react to the dialog's answer
         QDialogButtonBox::StandardButton button = quitAsk.execute();
-        if (button == QDialogButtonBox::Cancel)
+        if (button == QDialogButtonBox::No)
             return false;
         if (button == QDialogButtonBox::Save)
             allowSaving = true;
@@ -221,15 +221,15 @@ bool Workflow::processCommand(const Workflow::Command & command)
                     // build the closure dialog
                     ButtonsDialog saveDlg("Workflow-ResetToLevel", tr("Closing File"));
                     saveDlg.setMinimumWidth(350);
-                    saveDlg.setButtonText(QDialogButtonBox::Cancel, tr("Cancel"));
+                    saveDlg.setButtonText(QDialogButtonBox::No, tr("Cancel"));
                     saveDlg.setMessage(tr("Do you want to save your changes?"));
                     saveDlg.setButtonText(QDialogButtonBox::Save, tr("Save"));
                     saveDlg.setButtonText(QDialogButtonBox::Close, tr("Don't Save"));
-                    saveDlg.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::Cancel);
+                    saveDlg.setButtons(QDialogButtonBox::Save | QDialogButtonBox::Close | QDialogButtonBox::No);
 
                     // react to the dialog's answer
                     QDialogButtonBox::StandardButton button = saveDlg.execute();
-                    if (button == QDialogButtonBox::Cancel)
+                    if (button == QDialogButtonBox::No)
                         return false;
                     if (button == QDialogButtonBox::Save)
                         allowSaving = true;
