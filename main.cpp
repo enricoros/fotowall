@@ -68,7 +68,7 @@ int main( int argc, char ** args )
 
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("1.0");
+    app.setApplicationVersion("0.98-beta");
     app.setOrganizationName("Enrico Ros");
 
     // Lock Symbian orientation

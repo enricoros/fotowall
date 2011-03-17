@@ -1590,7 +1590,7 @@ Do you want to open the web page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+188"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+197"/>
         <source>Type here...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2141,7 +2141,7 @@ Do you want to open the web page?</source>
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+169"/>
+        <location filename="../App/Workflow.cpp" line="+176"/>
         <source>Closing Fotowall...</source>
         <translation type="unfinished"></translation>
     </message>

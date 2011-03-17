@@ -1640,7 +1640,7 @@ Se trata de Fotowall 0.2 una versión bastante antigua.
         <translation>Icono</translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+327"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+336"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
@@ -2191,7 +2191,7 @@ Se trata de Fotowall 0.2 una versión bastante antigua.
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+169"/>
+        <location filename="../App/Workflow.cpp" line="+176"/>
         <source>Closing Fotowall...</source>
         <translation>Cerrando Fotowall...</translation>
     </message>

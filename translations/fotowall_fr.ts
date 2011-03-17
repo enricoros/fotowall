@@ -1637,7 +1637,7 @@ Voulez vous ouvrir la page web ?</translation>
         <translation>Icône</translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+188"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+197"/>
         <source>Type here...</source>
         <translation type="unfinished">Tapez ici...</translation>
     </message>
@@ -2189,7 +2189,7 @@ Voulez vous ouvrir la page web ?</translation>
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+169"/>
+        <location filename="../App/Workflow.cpp" line="+176"/>
         <source>Closing Fotowall...</source>
         <translation>Fermeture de Fotowall...</translation>
     </message>
