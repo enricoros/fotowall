@@ -151,7 +151,7 @@ void MainWindow::applianceSetTitle(const QString & title)
     QString tString = title.isEmpty() ? QString() : title + " - ";
     tString += QCoreApplication::applicationName() + " ";
     if (title.isEmpty())
-        tString += "' Alchimia ' ";
+        tString += "'REVO' ";
     tString += QCoreApplication::applicationVersion();
     setWindowTitle(tString);
 }

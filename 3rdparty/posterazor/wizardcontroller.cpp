@@ -195,9 +195,9 @@ QString WizardController::stepHelp(WizardSteps step)
     case WizardStepInputImage:
         result = QCoreApplication::translate("Help",
             "Load an image by clicking the button with the open icon and selecting an image file, or by drag & dropping an image file on the PosteRazor. The drag & drop also works during the other steps.\n"
-            "After loading the image, the most important informations are listed in the <b>%1</b> fields.",
-            "Wizard step 1. Place holders: %1 = 'Image informations' (will be automatically inserted)")
-            .arg(Types::cleanString(QCoreApplication::translate("Main window", "Image Informations")));
+            "After loading the image, the most important information is listed in the <b>%1</b> fields.",
+            "Wizard step 1. Place holders: %1 = 'Image information' (will be automatically inserted)")
+            .arg(Types::cleanString(QCoreApplication::translate("Main window", "Image Information")));
         break;
     case WizardStepPaperSize:
         result = QCoreApplication::translate("Help",

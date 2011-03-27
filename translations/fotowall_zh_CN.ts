@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it">
+<TS version="2.0" language="zh_CN" sourcelanguage="en">
 <context>
     <name>AbstractConfig</name>
     <message>
@@ -11,87 +11,87 @@
     <message>
         <location line="+123"/>
         <source>ok</source>
-        <translation>ok</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Choose frame images</source>
-        <translation>Scegli una Cornice</translation>
+        <translation>选择边框图片</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Images (*.svg)</source>
-        <translation>Cornici Plasma (*.svg)</translation>
+        <translation>图片文件 (*.svg)</translation>
     </message>
     <message>
         <location filename="../Canvas/AbstractConfig.ui"/>
         <source>General</source>
-        <translation>Generale</translation>
+        <translation>基本</translation>
     </message>
     <message>
         <location/>
         <source>Stacking</source>
-        <translation>Ordine</translation>
+        <translation>层叠顺序</translation>
     </message>
     <message>
         <location/>
         <source>To Front</source>
-        <translation>In Cima</translation>
+        <translation>置顶</translation>
     </message>
     <message>
         <location/>
         <source>Raise</source>
-        <translation>Solleva</translation>
+        <translation>向上</translation>
     </message>
     <message>
         <location/>
         <source>Lower</source>
-        <translation>Affonda</translation>
+        <translation>向下</translation>
     </message>
     <message>
         <location/>
         <source>To Back</source>
-        <translation>In Fondo</translation>
+        <translation>置底</translation>
     </message>
     <message>
         <location/>
         <source>Operations</source>
-        <translation>Operazioni</translation>
+        <translation>操作</translation>
     </message>
     <message>
         <location/>
         <source>To Background</source>
-        <translation>Come Sfondo</translation>
+        <translation>作为背景</translation>
     </message>
     <message>
         <location/>
         <source>Save</source>
-        <translation>Salva</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location/>
         <source>Remove</source>
-        <translation>Elimina</translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location/>
         <source>Looks</source>
-        <translation>Aspetto</translation>
+        <translation>外观</translation>
     </message>
     <message>
         <location/>
         <source>new frame</source>
-        <translation>nuova cornice</translation>
+        <translation>新建边框</translation>
     </message>
     <message>
         <location/>
         <source>apply to all</source>
-        <translation>applica a tutti</translation>
+        <translation>应用到所有</translation>
     </message>
     <message>
         <location/>
         <source>Show Reflection</source>
-        <translation>Mostra il riflesso</translation>
+        <translation>镜面效果</translation>
     </message>
 </context>
 <context>
@@ -99,46 +99,46 @@
     <message>
         <location filename="../Canvas/AbstractContent.cpp" line="+85"/>
         <source>Change properties...</source>
-        <translation>Modifica le proprietà...</translation>
+        <translation>修改属性...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Drag around to change the perspective.
 Hold SHIFT to move faster.
 Use CTRL to cancel the transformations.</source>
-        <translation>Trascina per modificare la prospettiva.
-Tieni premuto SHIFT per accelerare il movimento.
-Premi CTRL per ripristinare la prospettiva.</translation>
+        <translation>拖拽以改变透视角度。
+按住 SHIFT 可以加速移动。
+CTRL 用来取消形变。</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Remove</source>
-        <translation>Elimina</translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location line="+791"/>
         <source>Unnamed %1.png</source>
-        <translation>Senza nome %1.png</translation>
+        <translation>未命名 %1.png</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose the Image file</source>
-        <translation>Scegli un&apos;immagine</translation>
+        <translation>选择图像文件</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
-        <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+        <translation>图像文件 (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>File Error</source>
-        <translation>Errore nel File</translation>
+        <translation>文件错误</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error saving the Object to &apos;%1&apos;</source>
-        <translation>Non è stato possibile salvare l&apos;Oggetto in &apos;%1&apos;</translation>
+        <translation>保存 &quot;%1&quot; 失败</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -147,11 +147,11 @@ Premi CTRL per ripristinare la prospettiva.</translation>
  - Hold down CTRL to rotate only
  - Hold down ALT to snap rotation
  - Double click (with LMB/RMB) to restore the aspect ratio/rotation</source>
-        <translation>Trascina con i pulsanti Sinistro o Destro del mouse.
- - Tieni premuto SHIFT per il ridimensionamento libero
- - Tieni premuto CTRL per ruotare solamente
- - Tieni premuto ALT per ruotare per passi
- - Doppio click (con il tasto Sinistro/Destro) per ripristinare l&apos;aspetto/la rotazione</translation>
+        <translation>用鼠标左键或右键进行拖拽。
+ - 按住 SHIFT 用以自由变换大小
+ - 按住 CTRL 仅做旋转
+ - 按住 ALT 可以做固定角度的旋转
+ - 左键双击重置宽高比，右键双击摆正旋转角度</translation>
     </message>
 </context>
 <context>
@@ -159,7 +159,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../Shared/ButtonsDialog.cpp" line="+54"/>
         <source>ask again next time</source>
-        <translation>mostra di nuovo questo avviso</translation>
+        <translation>下次仍然提示</translation>
     </message>
 </context>
 <context>
@@ -168,17 +168,17 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <location filename="../Canvas/Canvas.cpp" line="+289"/>
         <location line="+19"/>
         <source>Unnamed %1</source>
-        <translation>Senza nome %1</translation>
+        <translation>未命名 %1</translation>
     </message>
     <message>
         <location line="+218"/>
         <source>Back</source>
-        <translation>Retro</translation>
+        <translation>置底</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Front</source>
-        <translation>Fronte</translation>
+        <translation>置顶</translation>
     </message>
     <message>
         <location line="+727"/>
@@ -188,12 +188,12 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location line="+167"/>
         <source>Delete content</source>
-        <translation>Cancella</translation>
+        <translation>删除内容</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
-        <translation>I %1 oggetti selezionati saranno cancellati, vuoi procedere?</translation>
+        <translation>%1 的所有选中内容都将被删除，您确定要继续么？</translation>
     </message>
 </context>
 <context>
@@ -201,172 +201,172 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../App/CanvasAppliance.cpp" line="+130"/>
         <source>Transparency</source>
-        <translation>Trasparenza</translation>
+        <translation>透明度</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>You won&apos;t see through the Canvas unless you clear the background.&lt;br&gt;&lt;b&gt;Do you want me to clear it?&lt;/b&gt;</source>
-        <translation>Non vedrai in trasparenza con lo sfondo attuale.&lt;br&gt;&lt;b&gt;Vuoi impostare lo sfondo trasparente?&lt;/b&gt;</translation>
+        <translation>如果不清除背景，您就无法让画布变成透明的。&lt;br&gt;&lt;b&gt;要不让我帮您清除一下背景？&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Yes, thanks</source>
-        <translation>Si, grazie</translation>
+        <translation>好的，谢谢</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Random Placement</source>
-        <translation>Disposizione Casuale</translation>
+        <translation>随机摆放</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Shaped Placement</source>
-        <translation>Disposizione a Forma</translation>
+        <translation>成形摆放</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Color Collage</source>
-        <translation>Collage a Colori</translation>
+        <translation>色彩拼贴</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enable force field</source>
-        <translation>Abilita la repulsione</translation>
+        <translation>启用力场</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>None</source>
-        <translation>Nessuno</translation>
+        <translation>空</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Transparency can be saved to PNG images only.</source>
-        <translation>Le immagini trasparenti possono essere salvate solo in PNG.</translation>
+        <translation>透明度只能在保存为 PNG 图像时有效。</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Black</source>
-        <translation>Nero</translation>
+        <translation>黑色</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>White</source>
-        <translation>Bianco</translation>
+        <translation>白色</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Gradient</source>
-        <translation>Gradiente</translation>
+        <translation>渐变</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Content</source>
-        <translation>Contenuto</translation>
+        <translation>使用内容</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Double click on any content to put it on background.</source>
-        <translation>Fai doppio clic su qualsiasi contenuto per impostarlo come sfondo.</translation>
+        <translation>双击任何内容使其成为背景。</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Content Aspect Ratio</source>
-        <translation>Proporzioni dello Sfondo</translation>
+        <translation>内容宽高比</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Keep proportions by expanding</source>
-        <translation>Mantieni le proporzioni espandendo</translation>
+        <translation>保持比例并填满</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Keep proportions</source>
-        <translation>Mantieni le proporzioni</translation>
+        <translation>保持比例</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Ignore proportions</source>
-        <translation>Ignora le proporzioni</translation>
+        <translation>拉伸以填满</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>View Perspective</source>
-        <translation>Prospettiva della Vista</translation>
+        <translation>查看透视角度</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>View Rotation</source>
-        <translation>Angolo della Vista</translation>
+        <translation>查看旋转角度</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Top bar</source>
-        <translation>Barra Sopra</translation>
+        <translation>上边边</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Bottom bar</source>
-        <translation>Barra Sotto</translation>
+        <translation>下边边</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set title...</source>
-        <translation>Imposta il Titolo...</translation>
+        <translation>设置标题...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear title</source>
-        <translation>Cancella il Titolo</translation>
+        <translation>清除标题</translation>
     </message>
     <message>
         <location line="+87"/>
         <source>Print</source>
-        <translation>Stampa</translation>
+        <translation>打印</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Export</source>
-        <translation>Esporta</translation>
+        <translation>导出</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Add Pictures to the Canvas</source>
-        <translation>Aggiungi Immagini</translation>
+        <translation>添加图片</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Images (%1)</source>
-        <translation>Immagini (%1)</translation>
+        <translation>图片文件 (%1)</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Title</source>
-        <translation>Titolo</translation>
+        <translation>标题</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Insert the title</source>
-        <translation>Inserire il titolo</translation>
+        <translation>请输入标题</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Wordcloud Editor</source>
-        <translation>Editor del Wordcloud</translation>
+        <translation>云字框编辑器</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The Wordcloud editor will be ready in the Fotowall REVO (1.0) release.</source>
-        <translation>L&apos;editor del Wordcloud sarà disponibile dalla versione REVO (1.0).</translation>
+        <translation>使用云字框，敬请期待 Fotowall REVO (1.0) 的发布。</translation>
     </message>
     <message>
         <location line="+88"/>
         <source>Add Webcam</source>
-        <translation>Aggiungi Webcam</translation>
+        <translation>使用网络摄像头</translation>
     </message>
     <message>
         <location filename="../App/CanvasAppliance.h" line="+36"/>
         <source>Canvas</source>
-        <translation>Tela</translation>
+        <translation>画布</translation>
     </message>
 </context>
 <context>
@@ -374,87 +374,87 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../App/CanvasAppliance.ui"/>
         <source>ADD NEW</source>
-        <translation>AGGIUNGI NUOVO</translation>
+        <translation>新添加</translation>
     </message>
     <message>
         <location/>
         <source>Add Picture</source>
-        <translation>Aggiungi Immagine</translation>
+        <translation>添加图片</translation>
     </message>
     <message>
         <location/>
         <source>Add Text</source>
-        <translation>Aggiungi Testo</translation>
+        <translation>添加文字</translation>
     </message>
     <message>
         <location/>
         <source>Add Wordcloud</source>
-        <translation>Aggiungi Wordcloud</translation>
+        <translation>添加云字框</translation>
     </message>
     <message>
         <location/>
         <source>Add Canvas</source>
-        <translation>Aggiungi Tela</translation>
+        <translation>添加画布</translation>
     </message>
     <message>
         <location/>
         <source>Search Web Pictures</source>
-        <translation>Cerca Immagini nel Web</translation>
+        <translation>搜索网上的图片</translation>
     </message>
     <message>
         <location/>
         <source>CANVAS</source>
-        <translation>TELA</translation>
+        <translation>画布</translation>
     </message>
     <message>
         <location/>
         <source>Screen</source>
-        <translation>Schermo</translation>
+        <translation>屏幕</translation>
     </message>
     <message>
         <location/>
         <source>Exact Size...</source>
-        <translation>Dimensione Esatta...</translation>
+        <translation>自定大小...</translation>
     </message>
     <message>
         <location/>
         <source>CD Cover</source>
-        <translation>Copertina CD</translation>
+        <translation>光盘印花</translation>
     </message>
     <message>
         <location/>
         <source>DVD Cover</source>
-        <translation>Copertina DVD</translation>
+        <translation>DVD 包装</translation>
     </message>
     <message>
         <location/>
         <source>Decorations</source>
-        <translation>Decorazioni</translation>
+        <translation>装饰</translation>
     </message>
     <message>
         <location/>
         <source>Background</source>
-        <translation>Sfondo</translation>
+        <translation>背景</translation>
     </message>
     <message>
         <location/>
         <source>Arrange</source>
-        <translation>Disponi</translation>
+        <translation>自动排列</translation>
     </message>
     <message>
         <location/>
         <source>FILE</source>
-        <translation>FILE</translation>
+        <translation>文件</translation>
     </message>
     <message>
         <location/>
         <source>Save</source>
-        <translation>Salva</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location/>
         <source>Desktop</source>
-        <translation>Desktop</translation>
+        <translation>桌面</translation>
     </message>
 </context>
 <context>
@@ -462,7 +462,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../Canvas/CanvasViewContent.h" line="+36"/>
         <source>Canvas View</source>
-        <translation>Vista Tela</translation>
+        <translation>画布视图</translation>
     </message>
 </context>
 <context>
@@ -470,37 +470,37 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../Canvas/ContentProperties.ui"/>
         <source>Opacity</source>
-        <translation>Trasparenza</translation>
+        <translation>透明度</translation>
     </message>
     <message>
         <location/>
         <source>No Fx</source>
-        <translation>Nessuno</translation>
+        <translation>无特效</translation>
     </message>
     <message>
         <location/>
         <source>Black Shadow</source>
-        <translation>Ombra Nera</translation>
+        <translation>黑色阴影</translation>
     </message>
     <message>
         <location/>
         <source>White Shadow</source>
-        <translation>Ombra Bianca</translation>
+        <translation>白色阴影</translation>
     </message>
     <message>
         <location/>
         <source>Soft Blur</source>
-        <translation>Sfumato Lieve</translation>
+        <translation>轻度模糊</translation>
     </message>
     <message>
         <location/>
         <source>Strong Blur</source>
-        <translation>Sfumato Forte</translation>
+        <translation>重度模糊</translation>
     </message>
     <message>
         <location/>
         <source>Configure</source>
-        <translation type="unfinished"></translation>
+        <translation>配置</translation>
     </message>
 </context>
 <context>
@@ -508,7 +508,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../Shared/CroppingDialog.ui"/>
         <source>Cropping</source>
-        <translation>Ritaglio</translation>
+        <translation>剪裁</translation>
     </message>
 </context>
 <context>
@@ -516,52 +516,52 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../App/ExactSizeDialog.ui"/>
         <source>Choose size</source>
-        <translation>Dimensione</translation>
+        <translation>选择大小</translation>
     </message>
     <message>
         <location/>
         <source>&lt;b&gt;Exact Size&lt;/b&gt; mode&lt;br&gt;The content has &lt;i&gt;the same size&lt;/i&gt; on screen and on printer.</source>
-        <translation>Modo &lt;b&gt;Dimensione Esatta&lt;/b&gt;&lt;br&gt;L&apos;area di lavoro ha &lt;i&gt;la stessa dimensione&lt;/i&gt; sullo schermo e sulla stampa.</translation>
+        <translation>&lt;b&gt;自定大小&lt;/b&gt;模式&lt;br&gt;不管显示或打印都有&lt;i&gt;一样的大小&lt;/i&gt;。</translation>
     </message>
     <message>
         <location/>
         <source>Height:</source>
-        <translation>Altezza:</translation>
+        <translation>高度:</translation>
     </message>
     <message>
         <location/>
         <source>cm</source>
-        <translation>cm</translation>
+        <translation>厘米</translation>
     </message>
     <message>
         <location/>
         <source>inches</source>
-        <translation>pollici</translation>
+        <translation>英寸</translation>
     </message>
     <message>
         <location/>
         <source>Width:</source>
-        <translation>Larghezza:</translation>
+        <translation>宽度:</translation>
     </message>
     <message>
         <location/>
         <source>Dot Per Inch</source>
-        <translation>Punti per Pollice</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Printer Dpi:</source>
-        <translation>Dpi Stampante:</translation>
+        <translation>一英寸折合多少像素点</translation>
     </message>
     <message>
         <location/>
         <source>Screen Dpi:</source>
-        <translation>Dpi schermo:</translation>
+        <translation>屏幕 DPI:</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Printer Dpi:</source>
+        <translation>打印机 DPI:</translation>
     </message>
     <message>
         <location/>
         <source>Print in landscape mode</source>
-        <translation>Stampa in orizzontale</translation>
+        <translation>横向打印</translation>
     </message>
 </context>
 <context>
@@ -569,223 +569,243 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../App/ExportWizard.cpp" line="+165"/>
         <source>Wallpaper Error</source>
-        <translation>Errore nello Sfondo</translation>
+        <translation>壁纸错误</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Can&apos;t save the image to disk.</source>
-        <translation>Non riesco a salvare l&apos;immagine sul disco.</translation>
+        <translation>无法将图像保存至磁盘。</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Manual Wallpaper Change</source>
-        <translation>Cambiamento Manuale</translation>
+        <translation>手动更换壁纸</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>KDE4 doesn&apos;t yet support changing wallpaper automatically.
 Go to the Desktop Settings and select the file:
   %1</source>
-        <translation>KDE4 non supporta ancora il cambiamento automatico dello sfondo.
-Apri le Impostazioni del Desktop e seleziona il file:
+        <translation>KDE4 还不支持自动更换壁纸。
+请自行在“桌面设置”中选择设个文件:
   %1</translation>
     </message>
     <message>
         <location line="+17"/>
         <location line="+164"/>
         <source>No file selected !</source>
-        <translation>Nessun file selezionato !</translation>
+        <translation>没有选择文件！</translation>
     </message>
     <message>
         <location line="-164"/>
         <location line="+164"/>
         <source>You need to choose a file path for saving.</source>
-        <translation>Devi scegliere il nome del file su cui salvare.</translation>
+        <translation>您需要选择一个保存路径。</translation>
     </message>
     <message>
         <location line="-135"/>
         <source>Done</source>
-        <translation>Fatto</translation>
+        <translation>完成</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The target image is %1 bytes long</source>
-        <translation>L&apos;immagine di destinazione ha %1 byte</translation>
+        <translation>成功保存 %1 个字节的图像</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rendering Error</source>
-        <translation>Errore nel Rendering</translation>
+        <translation>渲染错误</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
-        <translation>Errore salvando il rendering sul file &apos;%1&apos;</translation>
+        <translation>保存“%1”时出错</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Export poster</source>
-        <translation>Stampa Poster</translation>
+        <translation>导出海报</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>PDF Error</source>
-        <translation>Errore PDF</translation>
+        <translation>PDF 错误</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error saving to the PDF file, try to chose another one.</source>
-        <translation>Errore durante il salvataggio del file PDF, prova a cambiare il nome del file.</translation>
+        <translation>保存 PDF 文件时出错，请选择其他方式。</translation>
     </message>
     <message>
         <location line="+54"/>
         <source>Created with %1</source>
-        <translation>Creato da %1</translation>
+        <translation>%1 成功创建了图像</translation>
     </message>
     <message>
         <location line="+117"/>
         <source>Unnamed %1.%2</source>
-        <translation>Senza nome %1.%2</translation>
+        <translation>未命名 %1.%2</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Choose the Image file</source>
-        <translation>Scegli un&apos;immagine</translation>
+        <translation>选择图像文件</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
-        <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+        <translation>图像文件 (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Choose the PDF file</source>
-        <translation>Scegli il File PDF</translation>
+        <translation>选择 PDF 文件</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>PDF (*.pdf)</source>
-        <translation>PDF (*.pdf)</translation>
+        <translation>PDF 文件 (*.pdf)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Choose the SVG file</source>
-        <translation>Scegli il File SVG</translation>
+        <translation>选择 SVG 文件</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>SVG (*.svg)</source>
-        <translation>SVG (*.svg)</translation>
+        <translation>SVG 文件 (*.svg)</translation>
     </message>
     <message>
         <location line="+76"/>
         <source>Other</source>
-        <translation>Altro</translation>
+        <translation>其他</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>%1  (%2 x %3 inch)</source>
-        <translation>%1  (%2 x %3 pollici)</translation>
+        <translation>%1  (%2 x %3 英寸)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>%1  (%2 x %3 cm)</source>
-        <translation>%1  (%2 x %3 cm)</translation>
+        <translation>%1  (%2 x %3 厘米)</translation>
     </message>
     <message>
         <location filename="../App/ExportWizard.ui"/>
         <source>Export Wizard</source>
-        <translation>Procedura Guidata di Esportazione</translation>
+        <translation>导出向导</translation>
     </message>
     <message>
         <location/>
         <source>Export</source>
-        <translation>Esporta</translation>
+        <translation>导出</translation>
     </message>
     <message>
         <location/>
         <source>Select the target.</source>
-        <translation>Scegli la destinazione.</translation>
+        <translation>请选择导出成神马东东。</translation>
     </message>
     <message>
         <location/>
         <source>Wallpaper</source>
-        <translation>Sfondo del Computer</translation>
+        <translation>壁纸</translation>
     </message>
     <message>
         <location/>
         <source>Image</source>
-        <translation>Immagine</translation>
+        <translation>图像</translation>
     </message>
     <message>
         <location/>
         <source>Poster with PosteRazor</source>
-        <translation>Poster con PosteRazor</translation>
+        <translation>PosteRazor 海报</translation>
     </message>
     <message>
         <location/>
         <source>Print</source>
-        <translation>Stampa</translation>
+        <translation>打印出来</translation>
+    </message>
+    <message>
+        <location/>
+        <source>SVG Vector Image</source>
+        <translation>SVG 矢量图形</translation>
     </message>
     <message>
         <location/>
         <source>Click the Finish button to change your wallpaper.</source>
-        <translation>Premi il bottone Fine per cambiare il tuo sfondo.</translation>
+        <translation>请点击完成按钮来更换您的壁纸。</translation>
     </message>
     <message>
         <location/>
         <source>Scale Mode</source>
-        <translation>Scalatura</translation>
+        <translation>缩放模式</translation>
     </message>
     <message>
         <location/>
         <source>Zoomed</source>
-        <translation>Zoom</translation>
+        <translation>等比缩放，以填满</translation>
     </message>
     <message>
         <location/>
         <source>Scaled, keep proportions</source>
-        <translation>Adatta, mantieni le proporzioni</translation>
+        <translation>等比缩放</translation>
     </message>
     <message>
         <location/>
         <source>Scaled</source>
-        <translation>Adatta</translation>
+        <translation>拉伸以填满</translation>
     </message>
     <message>
         <location/>
         <source>Original Size</source>
-        <translation>Dimensione Attuale</translation>
+        <translation>原始大小</translation>
     </message>
     <message>
         <location/>
         <source>Your work will be saved to a picture. Please fill the following options and click Finish.</source>
-        <translation>Il tuo lavoro sarà salvato su un&apos;immagine. Riempi le caselle seguenti e fai clic su Fine.</translation>
+        <translation>您的大作将被保存为一张图片。请填写一下选项，然后点击“完成”。</translation>
     </message>
     <message>
         <location/>
         <source>File properties</source>
-        <translation>Proprietà del File</translation>
+        <translation>文件属性</translation>
     </message>
     <message>
         <location/>
         <source>Output file:</source>
-        <translation>File di destinazione:</translation>
+        <translation>输出文件:</translation>
     </message>
     <message>
         <location/>
         <source>Choose...</source>
-        <translation>Scegli...</translation>
+        <translation>选择...</translation>
     </message>
     <message>
         <location/>
         <source>Size and Orientation</source>
-        <translation>Dimensione ed Orientazione</translation>
+        <translation>大小与方向</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Width:</source>
+        <translation>宽度:</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Height:</source>
+        <translation>高度:</translation>
     </message>
     <message>
         <location/>
         <source>Landscape</source>
-        <translation>Orizzontale</translation>
+        <translation>横向</translation>
+    </message>
+    <message>
+        <location/>
+        <source>as you see it (includes tools, lines, etc)</source>
+        <translation>看着啥样就啥样（包括工具，线条等）</translation>
     </message>
     <message>
         <location/>
@@ -795,192 +815,172 @@ Apri le Impostazioni del Desktop e seleziona il file:
     <message>
         <location/>
         <source>Print Posters at home.</source>
-        <translation>Stampa Poster a casa tua.</translation>
+        <translation>在家里打印海报。</translation>
     </message>
     <message>
         <location/>
         <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
-        <translation>Il PosteRazor ritaglia un&apos;immagine in pezzi che poi possono essere stampati ed incollati per create un poster.</translation>
+        <translation>PosteRazor 会将栅格化的图像切成很多小片，以便之后可以打印、组装成海报。</translation>
     </message>
     <message>
         <location/>
         <source>PosteRazor home (external website)</source>
-        <translation>Homepage di PosteRazor (sito web esterno)</translation>
+        <translation>PosteRazor 之家（外部网站）</translation>
     </message>
     <message>
         <location/>
         <source>Click Finish to start PosteRazor</source>
-        <translation>Clicca Fine per lanciare PosteRazor</translation>
+        <translation>请点击“完成”，启动 PosteRazor</translation>
     </message>
     <message>
         <location/>
         <source>How to use PosteRazor (external tutorial video)</source>
-        <translation>Come usare PosteRazor (istruzione video esterna)</translation>
+        <translation>如何使用 PosteRazor（外部教程视频）</translation>
     </message>
     <message>
         <location/>
         <source>Print Picture</source>
-        <translation>Stampa Immagine</translation>
+        <translation>打印图片</translation>
     </message>
     <message>
         <location/>
         <source>Select the paper options and click Finish to print.</source>
-        <translation>Scegli le impostazioni della carta e fai clic su Fine per stampare.</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Height:</source>
-        <translation>Altezza:</translation>
+        <translation>请选择纸张选项，然后点击“完成”开始打印。</translation>
     </message>
     <message>
         <location/>
         <source>pixels</source>
-        <translation>pixel</translation>
+        <translation>像素</translation>
     </message>
     <message>
         <location/>
         <source>cm</source>
-        <translation>cm</translation>
+        <translation>厘米</translation>
     </message>
     <message>
         <location/>
         <source>inches</source>
-        <translation>pollici</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Width:</source>
-        <translation>Larghezza:</translation>
+        <translation>英寸</translation>
     </message>
     <message>
         <location/>
         <source>Dot Per Inch</source>
-        <translation>Punti per Pollice</translation>
+        <translation>一英寸折合多少像素点</translation>
     </message>
     <message>
         <location/>
         <source>Dpi:</source>
-        <translation>Dpi:</translation>
-    </message>
-    <message>
-        <location/>
-        <source>SVG Vector Image</source>
-        <translation>Immagine Vettoriale SVG</translation>
-    </message>
-    <message>
-        <location/>
-        <source>as you see it (includes tools, lines, etc)</source>
-        <translation>come la vedi (compresi strumenti, linee, etc)</translation>
+        <translation>DPI:</translation>
     </message>
     <message>
         <location/>
         <source>Export to the Scalable Vector Graphics image format.</source>
-        <translation>Esporta nel formato Grafico Vettoriale Scalabile (SVG).</translation>
+        <translation>导出为“可缩放矢量图形”图像格式。</translation>
     </message>
     <message>
         <location/>
         <source>Pixel</source>
-        <translation>Pixel</translation>
+        <translation>像素</translation>
     </message>
     <message>
         <location/>
         <source>Reset to Canvas</source>
-        <translation>Reimposta a Tela</translation>
+        <translation>重置为画布</translation>
     </message>
     <message>
         <location/>
         <source>From Printing Dpi</source>
-        <translation>Reimposta a Dpi Stampa</translation>
+        <translation>从打印 DPI</translation>
     </message>
     <message>
         <location/>
         <source>PDF</source>
-        <translation>PDF</translation>
+        <translation>PDF 文件</translation>
     </message>
     <message>
         <location/>
         <source>Scalable Vector Graphics</source>
-        <translation>Grafica Vettoriale Scalabile (SVG)</translation>
+        <translation>SVG（可缩放矢量图形）</translation>
     </message>
     <message>
         <location/>
         <source>Landscape paper orientation</source>
-        <translation>Carta orizzontale</translation>
+        <translation>横向纸张</translation>
     </message>
     <message>
         <location/>
         <source>Keep canvas proportion</source>
-        <translation>Mantieni la proporzione</translation>
+        <translation>保持画布比例</translation>
     </message>
     <message>
         <location/>
         <source>PDF Export</source>
-        <translation>Esporta PDF</translation>
+        <translation>导出 PDF</translation>
     </message>
     <message>
         <location/>
         <source>Export to PDF file.</source>
-        <translation>Esporta su file PDF (Portable Document Format).</translation>
+        <translation>导出到 PDF 文件。</translation>
     </message>
     <message>
         <location/>
         <source>Output Options</source>
-        <translation>Opzioni di Esportazione</translation>
+        <translation>输出选项</translation>
     </message>
     <message>
         <location/>
         <source>Paper Size:</source>
-        <translation>Dimensione Foglio:</translation>
+        <translation>纸张大小:</translation>
     </message>
     <message>
         <location/>
         <source>Choose</source>
-        <translation>Scegli</translation>
+        <translation>选择</translation>
     </message>
     <message>
         <location/>
         <source>Scale:</source>
-        <translation>Scala:</translation>
+        <translation>缩放:</translation>
     </message>
     <message>
         <location/>
         <source>Original</source>
-        <translation>Originale</translation>
+        <translation>原始比例</translation>
     </message>
     <message>
         <location/>
         <source>Fit the page</source>
-        <translation>Riempi la pagina</translation>
+        <translation>适合纸张大小</translation>
     </message>
     <message>
         <location/>
         <source>Position:</source>
-        <translation>Posizione:</translation>
+        <translation>位置:</translation>
     </message>
     <message>
         <location/>
         <source>Top Left</source>
-        <translation>In Alto a Sinistra</translation>
+        <translation>左上</translation>
     </message>
     <message>
         <location/>
         <source>Center</source>
-        <translation>Centrato</translation>
+        <translation>居中</translation>
     </message>
     <message>
         <location/>
         <source>Resolution:</source>
-        <translation>Definizione:</translation>
+        <translation>分辨率:</translation>
     </message>
     <message>
         <location/>
         <source> dpi</source>
-        <translation> dpi</translation>
+        <translation>DPI</translation>
     </message>
     <message>
         <location/>
         <source>Preview ...</source>
-        <translation>Anteprima ...</translation>
+        <translation>预览...</translation>
     </message>
 </context>
 <context>
@@ -988,7 +988,7 @@ Apri le Impostazioni del Desktop e seleziona il file:
     <message>
         <location filename="../App/HomeAppliance.cpp" line="+45"/>
         <source>Open</source>
-        <translation>Apri</translation>
+        <translation>打开</translation>
     </message>
 </context>
 <context>
@@ -996,7 +996,7 @@ Apri le Impostazioni del Desktop e seleziona il file:
     <message>
         <location filename="../Shared/GlowEffectDialog.ui"/>
         <source>Glow effect</source>
-        <translation>Effetto luminescenza</translation>
+        <translation>发光效果</translation>
     </message>
     <message>
         <location/>
@@ -1006,12 +1006,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Scroll &lt;/span&gt;wheel to change the radius. &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Click&lt;/span&gt; on the picture to get a preview.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Usa la rotella &lt;/span&gt;per cambiare il raggio. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fai Clic&lt;/span&gt; sull&apos;immagine per avere un&apos;anteprima.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;b&gt;滚动&lt;/b&gt;滚轮改变半径。&lt;br /&gt;&lt;b&gt;点击&lt;/b&gt;图片来预览。</translation>
     </message>
 </context>
 <context>
@@ -1019,12 +1014,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/Hardware3DTest.cpp" line="+48"/>
         <source>OpenGL Test</source>
-        <translation>Test OpenGL</translation>
+        <translation>OpenGL 测试</translation>
     </message>
     <message>
         <location line="+126"/>
         <source>Non-OpenGL</source>
-        <translation>Non-OpenGL</translation>
+        <translation>非 OpenGL</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1034,32 +1029,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+3"/>
         <source>samples (%1...%2)</source>
-        <translation>campioni (%1...%2)</translation>
+        <translation>例子 (%1...%2)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>fps (%1...%2)</source>
-        <translation>fps (%1...%2)</translation>
+        <translation>FPS (%1...%2)</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use OpenGL</source>
-        <translation>Usa OpenGL</translation>
+        <translation>使用 OpenGL</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Don&apos;t use OpenGL</source>
-        <translation>Non usare OpenGL</translation>
+        <translation>不要使用 OpenGL</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>OpenGL Won</source>
-        <translation>OpenGL ha Vinto</translation>
+        <translation>OpenGL 胜出</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>OpenGL Lost</source>
-        <translation>OpenGL ha Perso</translation>
+        <translation>OpenGL 更糟糕</translation>
     </message>
 </context>
 <context>
@@ -1067,7 +1062,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/HelpAppliance.h" line="+30"/>
         <source>Help</source>
-        <translation>Aiuto</translation>
+        <translation>帮助</translation>
     </message>
 </context>
 <context>
@@ -1075,27 +1070,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/HelpAppliance.ui"/>
         <source>Fotowall&apos;s Website</source>
-        <translation>Sito Web</translation>
+        <translation>Fotowall 网站</translation>
     </message>
     <message>
         <location/>
         <source>Video Tutorial (0.2)</source>
-        <translation>Video Introduttivo (0.2)</translation>
+        <translation>视频教程 (0.2)</translation>
     </message>
     <message>
         <location/>
         <source>Check for Updates</source>
-        <translation>Controlla Aggiornamenti</translation>
+        <translation>检查更新</translation>
     </message>
     <message>
         <location/>
         <source>Fotowall&apos;s Blog</source>
-        <translation>Blog di Fotowall</translation>
+        <translation>Fotowall 博客</translation>
     </message>
     <message>
         <location/>
         <source>ONLINE</source>
-        <translation>ONLINE</translation>
+        <translation>在线</translation>
     </message>
 </context>
 <context>
@@ -1135,26 +1130,26 @@ p, li { white-space: pre-wrap; }
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;
       &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-        Benvenuto
+        欢迎使用
       &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
    &lt;/span&gt;
    &lt;br /&gt;
    &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;
-      &lt;b&gt;Giocare&lt;/b&gt; con &lt;b&gt;Fotowall&lt;/b&gt; è facile!
+      &lt;b&gt;Fotowall&lt;/b&gt; 易于&lt;b&gt;使用&lt;/b&gt;
    &lt;/div&gt;
    &lt;ul&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; aggiungi i contenuti&lt;/b&gt; con i bottoni &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;AGGIUNGI NUOVO&lt;/span&gt;&lt;/i&gt; o &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;trascinali&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt; muovi i contenuti &lt;/b&gt; e &lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt; girali&lt;/b&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt; &lt;i&gt;trascinando gli angoli&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;fai clic con il tasto destro&lt;/span&gt;&lt;/i&gt; o &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;usa la barra in alto&lt;/span&gt;&lt;/i&gt; per &lt;b&gt;cambiare le proprietà&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;fai doppio clic sui contenuti&lt;/i&gt;&lt;/span&gt; per &lt;b&gt;aprire l&apos;editor&lt;/b&gt; oppure impostarli come &lt;b&gt;sfondo&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;...e ti invitiamo a scoprire il resto da solo/a!&lt;/li&gt;
+      &lt;li&gt;用&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;新添加&lt;/span&gt;&lt;/i&gt;按钮或是&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;删除&lt;/span&gt;&lt;/i&gt;按钮来&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt;添加内容&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;通过&lt;i&gt;拖拽图像的四个角&lt;/i&gt;来&lt;/span&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt;移动内容&lt;/b&gt;以及&lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt;旋转&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;右键点击图片&lt;/span&gt;&lt;/i&gt;或是&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;使用工具栏&lt;/span&gt;&lt;/i&gt;来&lt;b&gt;修改属性&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;双击任何内容&lt;/i&gt;&lt;/span&gt;来&lt;b&gt;打开编辑器&lt;/b&gt;或是设置为&lt;b&gt;背景&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;……剩下的就交给你来发现啦！&lt;/li&gt;
    &lt;/ul&gt;
    &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;
-      Mi raccomando di condividere le tue creazioni con i tuoi migliori amici ;-)
+      记着跟你的朋友们分享你的佳作哦 ;-)
    &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
    &lt;br/&gt;
    &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall è LGPL, creato da Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
+      Fotowall 遵循 LGPL。作者 Enrico Ros &lt;enrico.ros@gmail.com&gt; 于 2009 年。
    &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</translation>
@@ -1165,17 +1160,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/HomeAppliance.cpp" line="+31"/>
         <source>RECENT FILES</source>
-        <translation>LAVORI RECENTI</translation>
+        <translation>最近的文件</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>OPEN</source>
-        <translation>APRI</translation>
+        <translation>打开</translation>
     </message>
     <message>
         <location filename="../App/HomeAppliance.h" line="+31"/>
         <source>Home</source>
-        <translation>Home</translation>
+        <translation>起始页</translation>
     </message>
 </context>
 <context>
@@ -1183,18 +1178,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/HomeScene.cpp" line="+167"/>
         <source>Wordcloud</source>
-        <translation>Wordcloud</translation>
+        <translation>云字框</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+12"/>
         <source>coming soon</source>
-        <translation>non disponibile</translation>
+        <translation>敬请期待</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Create</source>
-        <translation>Crea</translation>
+        <translation>创建</translation>
     </message>
 </context>
 <context>
@@ -1202,7 +1197,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+221"/>
         <source>Insert HTML entity</source>
-        <translation>Inserisci oggetto HTML</translation>
+        <translation>插入 HTML 片段</translation>
     </message>
 </context>
 <context>
@@ -1211,112 +1206,111 @@ p, li { white-space: pre-wrap; }
         <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+166"/>
         <source>Please, write it in &lt;b&gt;%1&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
         <comment>Feedback dialog text, message with one accepted language for the comments</comment>
-        <translation>Perfavore, scrivi in &lt;b&gt;%1&lt;/b&gt; (se vuoi puoi usare un &lt;a href=&quot;%3&quot;&gt;traduttore online&lt;/a&gt; a questo scopo).&lt;br/&gt;</translation>
+        <translation>请用 &lt;b&gt;%1&lt;/b&gt; 书写（您或许想用一个&lt;a href=&quot;%3&quot;&gt;在线翻译工具&lt;/a&gt;）。&lt;br/&gt;</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Please, write it in &lt;b&gt;%1 or %2&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
         <comment>Feedback dialog text, message with list of accepted languages for the comments</comment>
-        <translation>Perfavore, scrivi in &lt;b&gt;%1 o %2&lt;/b&gt; (se vuoi puoi usare un &lt;a href=&quot;%3&quot;&gt;traduttore online&lt;/a&gt; a questo scopo).&lt;br/&gt;</translation>
+        <translation>请用 &lt;b&gt;%1 或 %2&lt;/b&gt; 书写（您或许想用一个&lt;a href=&quot;%3&quot;&gt;在线翻译工具&lt;/a&gt;）。&lt;br/&gt;</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>To make the comments you send more useful in improving this application, try to send the same amount of positive and negative comments.&lt;br/&gt;</source>
         <comment>Feedback dialog text, message to remind to balance the likes and dislikes</comment>
-        <translation>Per aumentare l&apos;utilità dei tuoi commenti, cerca di darci una quantità simile di commenti positivi e negativi.&lt;br/&gt;</translation>
+        <translation>为了让您发送的意见能更有效的改善这个应用程序，您不光可以骂我们做的烂，也别忘了夸两句哦。&lt;br /&gt;</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Please, do not ask for new features: this kind of request will be ignored.&lt;br/&gt;</source>
         <comment>Feedback dialog text, text to disallow feature requests</comment>
-        <translation>Perfavore, non richiedere nuove aggiunte: questo tipo di richieste saranno ignorate.&lt;br/&gt;</translation>
+        <translation>请不要在这里写您希望见到的新功能——这类请求都会被忽略。&lt;br /&gt;</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&lt;p&gt;You can provide the developers a brief description of your opinions about %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</source>
         <comment>Feedback dialog text, %1=Application name,%2=message with list of accepted languages for the comment,%3=optional text to remind to balance the likes and dislikes,%4=optional text to disallow feature requests.</comment>
-        <translation>&lt;p&gt;Puoi far arrivare agli sviluppatori alcune tue opinioni riguardo %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;您可以把您关于 %1 的观点简要地描述给开发人员。&lt;br/&gt;%2 %3%4&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Wrong Email</source>
-        <translation>Email Errata</translation>
+        <translation>非法的 Email</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The email address you have entered is not valid, and cannot be used: &apos;%1&apos;</source>
-        <translation>L&apos;indirizzo email che hai inserito non è valido e pertanto non può essere usato: &apos;%1&apos;</translation>
+        <translation>您输入的 email 地址不合法：“%1”</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Comment Sent</source>
         <comment>Dialog box title</comment>
-        <translation>Commento Inviato</translation>
+        <translation>意见已发送</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&lt;p&gt;Your comment has been sent successfully. It will help us improve the application!&lt;/p&gt;&lt;p&gt;Thanks for your time.&lt;/p&gt;</source>
         <comment>Dialog box text</comment>
-        <translation>&lt;p&gt;Abbiamo inviato il tuo commento. Ci aiuterà a migliorare il programma!&lt;/p&gt;&lt;p&gt;Grazie dell&apos;aiuto.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;您的意见已经成功发送，我们会努力改善这个应用程序！&lt;/p&gt;&lt;p&gt;感谢您的时间。&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Comment Sending Error</source>
         <comment>Dialog box title</comment>
-        <translation>Errore Inviando il Commento</translation>
+        <translation>意见发送失败</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&lt;p&gt;There has been an error while trying to send the comment.&lt;/p&gt;&lt;p&gt;Please, try again later.&lt;/p&gt;</source>
         <comment>Dialog box text</comment>
-        <translation>&lt;p&gt;C&apos;è stato un problema con l&apos;invio del commento.&lt;/p&gt;&lt;p&gt;Perfavore, riprova più tardi.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;啊哦，发送意见的时候，出了个小问题。&lt;/p&gt;&lt;p&gt;请稍后重试。&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../3rdparty/likebackfrontend/LikeBackDialog.ui"/>
         <source>Send a Comment to the Developers</source>
-        <translation>Invia un Commento agli Sviluppatori</translation>
+        <translation>讲意见发给开发人员</translation>
     </message>
     <message>
         <location/>
         <source>Your comment is about:</source>
-        <translation>Il tuo commento riguarda:</translation>
+        <translation>您的意见是关于:</translation>
     </message>
     <message>
         <location/>
         <source>Something you like</source>
-        <translation>Qualcosa che ti piace</translation>
+        <translation>您喜欢的部分</translation>
     </message>
     <message>
         <location/>
         <source>Something you dislike</source>
-        <translation>Qualcosa che non ti piace</translation>
+        <translation>您不喜欢的部分</translation>
     </message>
     <message>
         <location/>
         <source>An improper behavior of the application</source>
-        <translation>Un errore o un bug</translation>
+        <translation>应用程序不合适的操作</translation>
     </message>
     <message>
         <location/>
         <source>A new feature you desire</source>
-        <translation>Un&apos;aggiunta che vorresti</translation>
+        <translation>您期望的新功能</translation>
     </message>
     <message>
         <location/>
         <source>Your comment:</source>
-        <translation>Commento:</translation>
+        <translation>您的意见:</translation>
     </message>
     <message>
         <location/>
         <source>Specify an email address to be contacted back:</source>
-        <translation>Indica un indirizzo mail dove puoi essere contattato:</translation>
+        <translation>请留下您的 email 地址，以便我们联系您:</translation>
     </message>
     <message>
         <location/>
         <source>&lt;html&gt;Specifying an email address will allow the developers to ask you for more information on your report, or to tell you when your feature will be implemented.&lt;br/&gt;
 &lt;b&gt;Your email address will not be used for anything else but this report.&lt;/b&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Indicando l&apos;indirizzo email consentirai agli sviluppatori di richiederti maggiori informazioni riguardo il tuo commento, o per indicarti quando sarà stata fatta l&apos;aggiunta che hai richiesto.&lt;br/&gt;
-&lt;b&gt;Il tuo indirizzo email non sarà usato per altri scopi al di fuori di questa segnalazione.&lt;/b&gt;&lt;/html&gt;</translation>
+        <translation>这样开发人员就可以问您关于报告的更多的信息，或者通知您期望的新功能何时能完成。&lt;br /&gt;&lt;b&gt;您的 email 地址不会被用作除了本报告之外的任何地方&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -1329,7 +1323,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+124"/>
         <source>Transparency</source>
-        <translation>Trasparenza</translation>
+        <translation>透明度</translation>
     </message>
     <message>
         <location line="-394"/>
@@ -1339,42 +1333,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+241"/>
         <source>Accelerated Rendering</source>
-        <translation>Rendering Accelerato</translation>
+        <translation>加速渲染</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>OpenGL accelerates graphics. However it&apos;s not supported by every system.&lt;br&gt;&lt;b&gt;Do you want to do an acceleration test?&lt;/b&gt;</source>
-        <translation>OpenGL accelera la grafica. Purtroppo però non è supportato da ogni sistema.&lt;br&gt;&lt;b&gt;Vuoi fare una prova di accelerazione?&lt;b&gt;</translation>
+        <translation>OpenGL 可以加速图形显示。然而并不是所有的系统都支持。&lt;br&gt;&lt;b&gt;您想执行一个加速测试吗？&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>OpenGL accelerates graphics, but it doesn&apos;t work on some systems.&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, don&apos;t enable OpenGL next time</source>
-        <translation>OpenGL accelera la grafica, ma non funziona su tutti i sistemi.&lt;br&gt; - se pare più lento, assicurati che i tuoi driver video accelerino OpenGL&lt;br&gt; - se Fotowall smette di funzionare dopo essere passati ad OpenGL, non usate più questa funzione la prossima volta</translation>
+        <translation>OpenGL 可以加速图形显示，但是某些系统不支持。&lt;br&gt; - 如果您感觉更慢了，请确认您的驱动程序可以加速 OpenGL&lt;br&gt; - 如果选用 OpenGL 后 Fotowall 挂掉了，那下一次就别用 OpenGL 了</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Test OpenGL</source>
-        <translation>Prova OpenGL</translation>
+        <translation>测试 OpenGL</translation>
     </message>
     <message>
         <location line="+121"/>
         <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
-        <translation>Questa funzione richiede il compositing attivo (compiz o kwin4) su Linux.&lt;br&gt;Se vedi uno sfondo nero significa che la trasparenza non è supportata sul tuo sistema.</translation>
+        <translation>在 Linux 上，这个功能需要窗口混合器（compiz 或 kwin4）才能工作。&lt;br&gt;如果您看到一个黑色的背景，那就意味着您的系统不支持透明。</translation>
     </message>
     <message>
         <location filename="../App/MainWindow.ui"/>
         <source>SETUP</source>
-        <translation>SETUP</translation>
+        <translation>设置</translation>
     </message>
     <message>
         <location/>
         <source>Transparent Window</source>
-        <translation>Finestra Trasparente</translation>
+        <translation>透明窗口</translation>
     </message>
     <message>
         <location/>
         <source>Test GL</source>
-        <translation>Prova OpenGL</translation>
+        <translation>测试 GL</translation>
     </message>
 </context>
 <context>
@@ -1382,12 +1376,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/MainWindowMobile.cpp" line="+100"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>退出</translation>
     </message>
     <message>
         <location line="+147"/>
         <source>Search Web Pictures</source>
-        <translation type="unfinished">Cerca Immagini nel Web</translation>
+        <translation>搜索互联网图片</translation>
     </message>
 </context>
 <context>
@@ -1395,12 +1389,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../Shared/MetaXmlReader.cpp" line="+170"/>
         <source>Network Error</source>
-        <translation>Errore di Rete</translation>
+        <translation>网络错误</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Network Timeout</source>
-        <translation>Timeout di Rete</translation>
+        <translation>网络超时</translation>
     </message>
 </context>
 <context>
@@ -1408,28 +1402,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/OnlineServices.cpp" line="+109"/>
         <source>Opening Fotowall&apos;s author Blog</source>
-        <translation>Apertura del Blog dell&apos;autore di Fotowall</translation>
+        <translation>打开 Fotowall 作者的博客</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>This is the blog of the main author of Fotowall.
 Do you want to open the web page?</source>
-        <translation>Questo è il blog dell&apos;autore di Fotowall.
-Vuoi aprire la pagina web?</translation>
+        <translation>这是 Fotowall 主要作者的博客。
+您想打开这个页面吗？</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Opening the Web Tutorial</source>
-        <translation>Apertura del Tutorial da Web</translation>
+        <translation>打开网上教程</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 It&apos;s about Fotowall 0.2 a rather old version.
 Do you want to open the web page?</source>
-        <translation>Il Tutorial è stato creato da Peter Upfold per Fosswire.
-Riguarda Fotowall 0.2, una delle prime versioni.
-Vuoi aprire la pagina web?</translation>
+        <translation>这个教程在 Fosswire，由 Peter Upfold 提供。
+教程讲的是一个比较老的 Fotowall 版本 0.2。
+您想打开这个页面吗？</translation>
     </message>
 </context>
 <context>
@@ -1437,63 +1431,63 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/PictureConfig.cpp" line="+32"/>
         <source>Picture</source>
-        <translation>Immagine</translation>
+        <translation>图片</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No effects</source>
-        <translation>Elimina Effetti</translation>
+        <translation>无特效</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Invert colors</source>
-        <translation>Negativo</translation>
+        <translation>反色</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Invert the colors of the picture</source>
-        <translation>Inverti i colori dell&apos;immagine</translation>
+        <translation>把图片的颜色反转</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Auto Blend</source>
-        <translation>Fusione</translation>
+        <translation>自动混合</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Change dark pixels to transparent, leaving bright ones only</source>
-        <translation>Rende trasparenti i toni scuri, lasciando solo quelli chiari</translation>
+        <translation>把深色的像素变成透明的，只留下亮的</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>NVG</source>
-        <translation>Visione Notturna</translation>
+        <translation>NVG</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set the colors to levels of gray</source>
-        <translation>Scala di grigi</translation>
+        <translation>把颜色换成不同深度的灰色</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Black and White</source>
-        <translation>Bianco e Nero</translation>
+        <translation>黑白</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Glow effect</source>
-        <translation>Effetto luminescenza</translation>
+        <translation>发光效果</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Sepia</source>
-        <translation>Seppia</translation>
+        <translation>老照片</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+42"/>
         <source>Opacity</source>
-        <translation>Trasparenza</translation>
+        <translation>半透明</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1501,15 +1495,15 @@ Vuoi aprire la pagina web?</translation>
 
 0: transparent
 100: opaque</source>
-        <translation>Valore di opacità.
+        <translation>半透明值。
 
-0: trasparente
-100: opaco</translation>
+0: 完全透明
+100: 完全不透明</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Auto Blending</source>
-        <translation>Fusione</translation>
+        <translation>自动混合</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1517,40 +1511,40 @@ Vuoi aprire la pagina web?</translation>
 
 0: weak
 100: strong</source>
-        <translation>Intensità.
+        <translation>力度值。
 
-0: debole
-100: forte</translation>
+0: 轻
+100: 重</translation>
     </message>
     <message>
         <location filename="../Canvas/PictureConfig.ui"/>
         <source>Transform</source>
-        <translation>Trasforma</translation>
+        <translation>形变</translation>
     </message>
     <message>
         <location/>
         <source>Invert</source>
-        <translation>Inverti</translation>
+        <translation>上下翻转</translation>
     </message>
     <message>
         <location/>
         <source>Flip</source>
-        <translation>Speculare</translation>
+        <translation>左右翻转</translation>
     </message>
     <message>
         <location/>
         <source>Crop</source>
-        <translation>Ritaglia</translation>
+        <translation>剪裁</translation>
     </message>
     <message>
         <location/>
         <source>Effects</source>
-        <translation>Effetti</translation>
+        <translation>特效</translation>
     </message>
     <message>
         <location/>
         <source>apply to all</source>
-        <translation>applica a tutti</translation>
+        <translation>应用到所有</translation>
     </message>
 </context>
 <context>
@@ -1564,17 +1558,17 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location line="-56"/>
         <source>Flip horizontally</source>
-        <translation>Inversione orizzontale</translation>
+        <translation>横向翻转</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Flip vertically</source>
-        <translation>Iversione verticale</translation>
+        <translation>纵向翻转</translation>
     </message>
     <message>
         <location filename="../Canvas/PictureContent.h" line="+42"/>
         <source>Picture</source>
-        <translation>Immagine</translation>
+        <translation>图片</translation>
     </message>
 </context>
 <context>
@@ -1587,77 +1581,77 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location/>
         <source>Google Images</source>
-        <translation>Google Immagini</translation>
+        <translation>Google 图片</translation>
     </message>
     <message>
         <location/>
         <source>Any Content</source>
-        <translation>Qualsiasi</translation>
+        <translation>任何内容</translation>
     </message>
     <message>
         <location/>
         <source>News</source>
-        <translation>Notizie</translation>
+        <translation>新闻</translation>
     </message>
     <message>
         <location/>
         <source>Faces</source>
-        <translation>Facce</translation>
+        <translation>人像</translation>
     </message>
     <message>
         <location/>
         <source>Photos</source>
-        <translation>Foto</translation>
+        <translation>照片</translation>
     </message>
     <message>
         <location/>
         <source>Clipart</source>
-        <translation>Clipart</translation>
+        <translation>剪贴画</translation>
     </message>
     <message>
         <location/>
         <source>Lineart</source>
-        <translation>Lineart</translation>
+        <translation>素描</translation>
     </message>
     <message>
         <location/>
         <source>Any Size</source>
-        <translation>Qualsiasi</translation>
+        <translation>任何大小</translation>
     </message>
     <message>
         <location/>
         <source>Medium</source>
-        <translation>Medie</translation>
+        <translation>中尺寸</translation>
     </message>
     <message>
         <location/>
         <source>Large</source>
-        <translation>Grandi</translation>
+        <translation>大尺寸</translation>
     </message>
     <message>
         <location/>
         <source>Icon</source>
-        <translation>Icone</translation>
+        <translation>图标</translation>
     </message>
     <message>
         <location filename="../App/PictureSearchWidget.cpp" line="+197"/>
         <source>Type here...</source>
-        <translation>Scrivi qui...</translation>
+        <translation>请输入...</translation>
     </message>
     <message>
         <location line="+139"/>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Search</source>
-        <translation>Cerca</translation>
+        <translation>搜索</translation>
     </message>
     <message>
         <location filename="../App/PictureSearchWidget.ui"/>
         <source>Search Web Pictures</source>
-        <translation>Cerca Immagini nel Web</translation>
+        <translation>搜索互联网图片</translation>
     </message>
 </context>
 <context>
@@ -1665,54 +1659,54 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/FotowallFile.cpp" line="+59"/>
         <source>Loading error</source>
-        <translation>Errore di Caricamento</translation>
+        <translation>加载错误</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Unable to load the Fotowall file %1</source>
-        <translation>Impossibile caricare il file Fotowall %1</translation>
+        <translation>无法加载 Fotowall 文件 %1</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Parsing error</source>
-        <translation>Errore di lettura</translation>
+        <translation>解析错误</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Unable to parse the Fotowall file %1. The error was: %2</source>
-        <translation>Impossibile comprendere il file %1. Errore: %2</translation>
+        <translation>无法解析 Fotowall 文件 %1。错误是: %2</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>File Error</source>
-        <translation>Errore nel File</translation>
+        <translation>文件错误</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error saving to the Fotowall file &apos;%1&apos;</source>
-        <translation>Errore durante il salvataggio sul fle Fotowall &apos;%1&apos;</translation>
+        <translation>保存 Fotowall 文件 &quot;%1&quot; 失败</translation>
     </message>
     <message>
         <location line="+20"/>
         <location line="+32"/>
         <source>Select the Fotowall file</source>
-        <translation>Scegli il file Fotowall</translation>
+        <translation>请选择 Fotowall 文件</translation>
     </message>
     <message>
         <location line="-32"/>
         <location line="+15"/>
         <source>Fotowall (*.fotowall)</source>
-        <translation>Fotowall (*.fotowall)</translation>
+        <translation>Fotowall 文件 (*.fotowall)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Add Fotowall files to the Canvas</source>
-        <translation>Aggiungi file Fotowall alla Tela</translation>
+        <translation>降 Fotowall 文件添加到画布</translation>
     </message>
     <message>
         <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+110"/>
         <source>Camera %1</source>
-        <translation>Camera %1</translation>
+        <translation>相机 %1</translation>
     </message>
 </context>
 <context>
@@ -1720,188 +1714,188 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/ExportWizard.cpp" line="-166"/>
         <source>A0</source>
-        <translation type="unfinished"></translation>
+        <translation>A0</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A1</source>
-        <translation type="unfinished"></translation>
+        <translation>A1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A2</source>
-        <translation type="unfinished"></translation>
+        <translation>A2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A3</source>
-        <translation type="unfinished"></translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A4</source>
-        <translation type="unfinished"></translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A5</source>
-        <translation type="unfinished"></translation>
+        <translation>A5</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A6</source>
-        <translation type="unfinished"></translation>
+        <translation>A6</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A7</source>
-        <translation type="unfinished"></translation>
+        <translation>A7</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A8</source>
-        <translation type="unfinished"></translation>
+        <translation>A8</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A9</source>
-        <translation type="unfinished"></translation>
+        <translation>A9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B0</source>
-        <translation type="unfinished"></translation>
+        <translation>B0</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B1</source>
-        <translation type="unfinished"></translation>
+        <translation>B1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B2</source>
-        <translation type="unfinished"></translation>
+        <translation>B2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B3</source>
-        <translation type="unfinished"></translation>
+        <translation>B3</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B4</source>
-        <translation type="unfinished"></translation>
+        <translation>B4</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B5</source>
-        <translation type="unfinished"></translation>
+        <translation>B5</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B6</source>
-        <translation type="unfinished"></translation>
+        <translation>B6</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B7</source>
-        <translation type="unfinished"></translation>
+        <translation>B7</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B8</source>
-        <translation type="unfinished"></translation>
+        <translation>B8</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B9</source>
-        <translation type="unfinished"></translation>
+        <translation>B9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B10</source>
-        <translation type="unfinished"></translation>
+        <translation>B10</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C5E</source>
-        <translation type="unfinished"></translation>
+        <translation>C5E</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>DLE</source>
-        <translation type="unfinished"></translation>
+        <translation>DLE</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Executive</source>
-        <translation type="unfinished"></translation>
+        <translation>Executive</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Folio</source>
-        <translation type="unfinished"></translation>
+        <translation>对开</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ledger</source>
-        <translation type="unfinished"></translation>
+        <translation>账簿</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Legal</source>
-        <translation type="unfinished"></translation>
+        <translation>法律文书</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Letter</source>
-        <translation type="unfinished"></translation>
+        <translation>信纸</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tabloid</source>
-        <translation type="unfinished"></translation>
+        <translation>小报</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>US Common #10 Envelope</source>
-        <translation type="unfinished"></translation>
+        <translation>美国普通10号信封</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义</translation>
     </message>
 </context>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+542"/>
-        <source>Source</source>
-        <translation>Sorgente</translation>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+541"/>
+        <source>Visual Editor</source>
+        <translation>可视化编辑器</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Visual Editor</source>
-        <translation>Editor Visuale</translation>
+        <location line="+1"/>
+        <source>Source</source>
+        <translation>源码</translation>
     </message>
 </context>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location line="-350"/>
+        <location line="-351"/>
         <source>Bold</source>
-        <translation>Grassetto</translation>
+        <translation>粗体</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>CTRL+B</source>
-        <translation>CTRL+G</translation>
+        <translation>CTRL+B</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Italic</source>
-        <translation>Italico</translation>
+        <translation>斜体</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1911,22 +1905,22 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location line="+5"/>
         <source>Underline</source>
-        <translation>Sottolineato</translation>
+        <translation>下划线</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>CTRL+U</source>
-        <translation>CTRL+S</translation>
+        <translation>CTRL+U</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Superscript</source>
-        <translation>Apice</translation>
+        <translation>上标</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Subscript</source>
-        <translation>Pedice</translation>
+        <translation>下标</translation>
     </message>
 </context>
 <context>
@@ -1942,27 +1936,27 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/SelectionProperties.cpp" line="+35"/>
         <source>SELECTION</source>
-        <translation>SELEZIONE</translation>
+        <translation>选择</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>%1 pictures selected</source>
-        <translation>%1 immagini selezionate</translation>
+        <translation>选择了 %1 张图片</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>%1 objects selected</source>
-        <translation>%1 oggetti selezionati</translation>
+        <translation>选择了 %1 个对象</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Cancella</translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Collate</source>
-        <translation>Incolla</translation>
+        <translation>整理</translation>
     </message>
 </context>
 <context>
@@ -1970,7 +1964,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/TextConfig.cpp" line="+28"/>
         <source>Text</source>
-        <translation>Testo</translation>
+        <translation>文本</translation>
     </message>
 </context>
 <context>
@@ -1978,27 +1972,27 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/TextContent.cpp" line="+44"/>
         <source>Right click to Edit the text</source>
-        <translation>Premi il tasto destro per cambiare il testo</translation>
+        <translation>右键点击编辑文本</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>right click to edit...</source>
-        <translation>clic con il destro per modificare...</translation>
+        <translation>点右键来编辑...</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>PDF Export Warning</source>
-        <translation>Avviso esportazione PDF</translation>
+        <translation>PDF 导出警告</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Shaped text could not be exported in PDF</source>
-        <translation>Il testo con forma non può essere esportato in PDF</translation>
+        <translation>无法将变形的文本导出到 PDF</translation>
     </message>
     <message>
         <location filename="../Canvas/TextContent.h" line="+53"/>
         <source>Text</source>
-        <translation>Testo</translation>
+        <translation>文本</translation>
     </message>
 </context>
 <context>
@@ -2006,7 +2000,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/TextProperties.ui"/>
         <source>Edit Shape</source>
-        <translation>Forma</translation>
+        <translation>编辑形状</translation>
     </message>
 </context>
 <context>
@@ -2014,22 +2008,22 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/UrlHistoryBox.cpp" line="+157"/>
         <source>Open</source>
-        <translation>Apri</translation>
+        <translation>打开</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Remove From History</source>
-        <translation>Rimuovi dai Lavori Recenti</translation>
+        <translation>从历史删除</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File</source>
-        <translation>File</translation>
+        <translation>文件</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete File</source>
-        <translation>Cancella File</translation>
+        <translation>删除文件</translation>
     </message>
 </context>
 <context>
@@ -2037,12 +2031,12 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/VersionCheckDialog.cpp" line="+30"/>
         <source>checking</source>
-        <translation>controllo</translation>
+        <translation>正在检查</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>XML Error</source>
-        <translation>Errore XML</translation>
+        <translation>XML 错误</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2052,27 +2046,27 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location line="+4"/>
         <source>Download</source>
-        <translation>Scarica</translation>
+        <translation>下载</translation>
     </message>
     <message>
         <location filename="../App/VersionCheckDialog.ui"/>
         <source>Version Check</source>
-        <translation>Controllo Versione</translation>
+        <translation>版本检查</translation>
     </message>
     <message>
         <location/>
         <source>Checking for latest version</source>
-        <translation>Ultima versione presente</translation>
+        <translation>正在检查最新版本</translation>
     </message>
     <message>
         <location/>
         <source>Installed Version</source>
-        <translation>Versione installata</translation>
+        <translation>已安装的版本</translation>
     </message>
     <message>
         <location/>
         <source>Available Version</source>
-        <translation>Versione Disponibile</translation>
+        <translation>可用的版本呢</translation>
     </message>
 </context>
 <context>
@@ -2080,22 +2074,22 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/WebcamContent.cpp" line="+35"/>
         <source>This is a mirror ;-)</source>
-        <translation>Specchio ;-)</translation>
+        <translation>这是一个镜子，木哈哈</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Mirror Video</source>
-        <translation>Inverti il Video</translation>
+        <translation>左右翻转</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Still picture</source>
-        <translation>Fermo Immagine</translation>
+        <translation>静止的图像</translation>
     </message>
     <message>
         <location filename="../Canvas/WebcamContent.h" line="+33"/>
         <source>Webcam</source>
-        <translation>Webcam</translation>
+        <translation>网络摄像头</translation>
     </message>
 </context>
 <context>
@@ -2103,12 +2097,12 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Wordcloud/Cloud.cpp" line="+238"/>
         <source>Placing Words...</source>
-        <translation>Disposizione delle Parole...</translation>
+        <translation>正在放置文字...</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -2116,7 +2110,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Wordcloud/Scanner.cpp" line="+118"/>
         <source>Word</source>
-        <translation>Parola</translation>
+        <translation>字</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2129,7 +2123,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/WordcloudAppliance.h" line="+38"/>
         <source>Wordcloud</source>
-        <translation>Wordcloud</translation>
+        <translation>云字框</translation>
     </message>
 </context>
 <context>
@@ -2137,17 +2131,17 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/WordcloudContent.cpp" line="+47"/>
         <source>Create a Wordcloud from a text file</source>
-        <translation>Crea Wordcloud da un File di Testo</translation>
+        <translation>从文本文件创建云字框</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Welcome to Wordcloud. Change options on the sidebar.</source>
-        <translation>Benvenuto in Wordcloud. Cambia le impostazioni nella barra laterale.</translation>
+        <translation>欢迎使用云字框。请在边栏修改选项。</translation>
     </message>
     <message>
         <location filename="../Canvas/WordcloudContent.h" line="+38"/>
         <source>Wordcloud</source>
-        <translation>Wordcloud</translation>
+        <translation>云字框</translation>
     </message>
 </context>
 <context>
@@ -2155,37 +2149,37 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/WordcloudSidebar.ui"/>
         <source>Regen</source>
-        <translation>Rigenera</translation>
+        <translation>重新生成</translation>
     </message>
     <message>
         <location/>
         <source>Randomize</source>
-        <translation>Casuale</translation>
+        <translation>随机化</translation>
     </message>
     <message>
         <location/>
         <source>Color Scheme</source>
-        <translation>Schema Colore</translation>
+        <translation>颜色方案</translation>
     </message>
     <message>
         <location/>
         <source>Dark Red</source>
-        <translation>Rosso Scuro</translation>
+        <translation>深红</translation>
     </message>
     <message>
         <location/>
         <source>Scheme1</source>
-        <translation>Schema1</translation>
+        <translation>方案1</translation>
     </message>
     <message>
         <location/>
         <source>Font</source>
-        <translation>Font</translation>
+        <translation>字体</translation>
     </message>
     <message>
         <location/>
         <source>Scheme2</source>
-        <translation>Schema2</translation>
+        <translation>方案2</translation>
     </message>
 </context>
 <context>
@@ -2193,50 +2187,50 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/Workflow.cpp" line="+176"/>
         <source>Closing Fotowall...</source>
-        <translation>Uscita da Fotowall...</translation>
+        <translation>正在关闭 Fotowall...</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+53"/>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location line="-51"/>
         <source>Are you sure you want to quit and lose your changes?</source>
-        <translation>Sei sicuro di voler uscire e perdere le tue modifiche?</translation>
+        <translation>退出将丢掉您的改动，确定要这样做吗？</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+52"/>
         <source>Save</source>
-        <translation>Salva</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location line="-51"/>
         <location line="+52"/>
         <source>Don&apos;t Save</source>
-        <translation>Non Salvare</translation>
+        <translation>不要保存</translation>
     </message>
     <message>
         <location line="-49"/>
         <source>Are you sure you want to quit?</source>
-        <translation>Sei sicuro di voler uscire?</translation>
+        <translation>您确定要退出吗？</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit</source>
-        <translation>Esci</translation>
+        <translation>退出</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Closing File</source>
-        <translation>Chiusura File</translation>
+        <translation>关闭文件</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Do you want to save your changes?</source>
-        <translation>Vuoi salvare i tuoi cambiamenti?</translation>
+        <translation>要保存您的改动吗？</translation>
     </message>
 </context>
 </TS>

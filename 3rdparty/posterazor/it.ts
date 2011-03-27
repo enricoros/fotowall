@@ -47,8 +47,8 @@
     <message>
         <location line="+9"/>
         <source>Load an image by clicking the button with the open icon and selecting an image file, or by drag &amp; dropping an image file on the PosteRazor. The drag &amp; drop also works during the other steps.
-After loading the image, the most important informations are listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
-        <comment>Wizard step 1. Place holders: %1 = &apos;Image informations&apos; (will be automatically inserted)</comment>
+After loading the image, the most important information is listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
+        <comment>Wizard step 1. Place holders: %1 = &apos;Image information&apos; (will be automatically inserted)</comment>
         <translation>Carica l&apos;immagine premendo il bottone con l&apos;icona a forma di cartella e seleziona l&apos;immagine di origine. L&apos;immagine può essere anche trascinata all&apos;interno della finestra tramite drag &amp; drop. La procedura di drag &amp; drop funziona anche nei successivi passaggi.
 Dopo il caricamento dell&apos;immagine, le informazioni di dettaglio sono elencate nella casella &lt;b&gt;%1&lt;/b&gt;.</translation>
     </message>
@@ -128,7 +128,7 @@ Tutte le impostazioni e le scelte effettuate dall&apos;utente sono registrate da
     <message>
         <location filename="wizard.cpp" line="+90"/>
         <location filename="wizardcontroller.cpp" line="+93"/>
-        <source>Image Informations</source>
+        <source>Image Information</source>
         <translation>Informazioni sull&apos;immagine</translation>
     </message>
     <message>
@@ -397,7 +397,7 @@ Vuoi sovrascriverlo?</translation>
     </message>
     <message>
         <location/>
-        <source>Image Informations</source>
+        <source>Image Information</source>
         <translation>Informazioni immagine</translation>
     </message>
     <message>
