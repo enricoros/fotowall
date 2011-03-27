@@ -26,8 +26,10 @@ include(3rdparty/videocapture/videocapture.pri)
     DEFINES += HAS_TRANSLATIONS
 
     TRANSLATIONS += \
+        translations/fotowall_zh_CN.ts \
         translations/fotowall_de.ts \
         translations/fotowall_en.ts \
+        translations/fotowall_es.ts \
         translations/fotowall_fr.ts \
         translations/fotowall_it.ts \
         translations/fotowall_pl.ts \

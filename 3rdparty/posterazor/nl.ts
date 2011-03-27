@@ -47,8 +47,8 @@
     <message>
         <location line="+9"/>
         <source>Load an image by clicking the button with the open icon and selecting an image file, or by drag &amp; dropping an image file on the PosteRazor. The drag &amp; drop also works during the other steps.
-After loading the image, the most important informations are listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
-        <comment>Wizard step 1. Place holders: %1 = &apos;Image informations&apos; (will be automatically inserted)</comment>
+After loading the image, the most important information is listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
+        <comment>Wizard step 1. Place holders: %1 = &apos;Image information&apos; (will be automatically inserted)</comment>
         <translation type="unfinished">Kies een afbeelding door op het icoon van de open map te klikken en te zoeken naar de plaats van de afbeelding, of maak gebruik van &quot;Drag and Drop&quot;. Sleep dan het afbeeldingbestand naar de PosteRazor. Dit &quot;Drag and Drop&quot; principe werkt ook bij de andere functies binnen PosteRazor.
 Veel bestands- en grafische formaten kunnen worden gebruikt. Na het kiezen van het invoerbestand worden de belangrijkste gegevens getoond in het &lt;b&gt;%1&lt;/b&gt; venster.</translation>
     </message>
@@ -128,7 +128,7 @@ PosteRazor houdt elke instelling en selectie vast en onthoudt ze tot een volgend
     <message>
         <location filename="wizard.cpp" line="+90"/>
         <location filename="wizardcontroller.cpp" line="+93"/>
-        <source>Image Informations</source>
+        <source>Image Information</source>
         <translation type="unfinished">Afbeeldinginformatie</translation>
     </message>
     <message>
@@ -398,7 +398,7 @@ Moet dit worden overschreven?</translation>
     </message>
     <message>
         <location/>
-        <source>Image Informations</source>
+        <source>Image Information</source>
         <translation type="unfinished">Afbeeldinginformatie</translation>
     </message>
     <message>

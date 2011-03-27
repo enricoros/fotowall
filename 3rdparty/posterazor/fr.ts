@@ -47,10 +47,10 @@
     <message>
         <location line="+9"/>
         <source>Load an image by clicking the button with the open icon and selecting an image file, or by drag &amp; dropping an image file on the PosteRazor. The drag &amp; drop also works during the other steps.
-After loading the image, the most important informations are listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
-        <comment>Wizard step 1. Place holders: %1 = &apos;Image informations&apos; (will be automatically inserted)</comment>
+After loading the image, the most important information is listed in the &lt;b&gt;%1&lt;/b&gt; fields.</source>
+        <comment>Wizard step 1. Place holders: %1 = &apos;Image information&apos; (will be automatically inserted)</comment>
         <translation type="unfinished">Chargez une image en cliquant sur l&apos;icône en forme de dossier. Choisissez le fichier en naviguant dans vos dossiers ou glissez-déposez l&apos;image dans la fenêtre. Le glissé-déposé marche aussi dans les autres étapes de l&apos;assistant.
-Après avoir chargé l&apos;image, les informations pratiques (taille, couleur, résolution) sont affichées dans la rubrique &lt;b&gt;%1&lt;/b&gt;.</translation>
+Après avoir chargé l&apos;image, les information pratiques (taille, couleur, résolution) sont affichées dans la rubrique &lt;b&gt;%1&lt;/b&gt;.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -128,8 +128,8 @@ Toutes les valeurs et choix sont conservés au prochain lancement de l&apos;appl
     <message>
         <location filename="wizard.cpp" line="+90"/>
         <location filename="wizardcontroller.cpp" line="+93"/>
-        <source>Image Informations</source>
-        <translation type="unfinished">Informations</translation>
+        <source>Image Information</source>
+        <translation type="unfinished">Information</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -398,8 +398,8 @@ Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location/>
-        <source>Image Informations</source>
-        <translation type="unfinished">Informations</translation>
+        <source>Image Information</source>
+        <translation type="unfinished">Information</translation>
     </message>
     <message>
         <location/>

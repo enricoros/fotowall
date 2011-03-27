@@ -155,11 +155,11 @@ void PixmapButton::paintEvent(QPaintEvent *)
         p.drawEllipse(rect.adjusted(0.5, 0.5, -0.5, -0.5));
         p.setPen(palette().color(QPalette::HighlightedText));
         p.setFont(m_hoverFont);
-#ifdef Q_WS_WIN
-        p.drawText(rect.toRect().adjusted(0, -1, 0, -1), Qt::AlignCenter, m_hoverText);
-#else
-        p.drawText(rect.toRect(), Qt::AlignCenter, m_hoverText);
+        p.drawText(rect.toRect()
+#if defined(Q_OS_WIN) || defined(Q_OS_OS2)
+                   .adjusted(0, -1, 0, -1)
 #endif
+                   , Qt::AlignCenter, m_hoverText);
 #endif
     }
 

@@ -1,9 +1,9 @@
-# Check Qt >= 4.5
-contains(QT_VERSION, ^4\.[0-4]\..*) {
+# Check Qt >= 4.6
+contains(QT_VERSION, ^4\\.[0-5]\\..*) {
     message("Cannot build Fotowall with Qt version $$QT_VERSION .")
-    error("Use at least Qt 4.5.")
+    error("Use at least Qt 4.6.")
 }
-contains(QT_VERSION, ^4\.5\..*): message("Some features are not available with Qt $$QT_VERSION . Use Qt 4.6 or later.")
+contains(QT_VERSION, ^4\\.6\\..*): message("Some features are not available with Qt $$QT_VERSION . Use Qt 4.7 or later.")
 
 # Project Options
 TEMPLATE = app
@@ -27,7 +27,7 @@ contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, o
 
 # enable features for mobile user interfaces
 symbian|simulator: {
-    contains(QT_VERSION, ^4\.5\..*): error("Use at least Qt 4.6 for symbian builds.")
+    contains(QT_VERSION, ^4\\.6\\..*): error("Use at least Qt 4.7 for symbian builds.")
     CONFIG += mobile-ui
     CONFIG += no-wordcloud-appliance
     CONFIG += no-export

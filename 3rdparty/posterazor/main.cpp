@@ -88,7 +88,7 @@ int main (int argc, char **argv)
     PosteRazorCore posteRazorCore(&imageLoader);
     Controller controller(&posteRazorCore, &dialog);
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) || defined(Q_OS_OS2)
     // PosteRazor 1 also used just an .ini file. This lets
     // PosteRazor easily become "portable app" (e.g. on USB stick)
     QSettings::setDefaultFormat(QSettings::IniFormat);

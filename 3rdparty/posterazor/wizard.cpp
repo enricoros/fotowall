@@ -87,7 +87,7 @@ void Wizard::changeEvent(QEvent *event)
 
 void Wizard::retranslateUi()
 {
-    m_imageInfoGroup->setTitle(                     QCoreApplication::translate("Main window", "Image Informations"));
+    m_imageInfoGroup->setTitle(                     QCoreApplication::translate("Main window", "Image Information"));
     m_imageInformationColorTypeLabel->setText(      QCoreApplication::translate("Main window", "Color type:"));
     m_imageInformationResolutionLabel->setText(     QCoreApplication::translate("Main window", "Resolution:"));
     m_imageInformationSizeInPixelsLabel->setText(   QCoreApplication::translate("Main window", "Size (in pixels):"));

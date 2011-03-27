@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it">
+<TS version="2.0" language="es_ES">
 <context>
     <name>AbstractConfig</name>
     <message>
         <location filename="../Canvas/AbstractConfig.cpp" line="+48"/>
         <source> x </source>
-        <translation> x </translation>
+        <translation>(sp)x(sp)</translation>
     </message>
     <message>
         <location line="+123"/>
@@ -16,82 +16,82 @@
     <message>
         <location line="+100"/>
         <source>Choose frame images</source>
-        <translation>Scegli una Cornice</translation>
+        <translation>Seleccione las imágenes del marco</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Images (*.svg)</source>
-        <translation>Cornici Plasma (*.svg)</translation>
+        <translation>Imágenes (*.svg)</translation>
     </message>
     <message>
         <location filename="../Canvas/AbstractConfig.ui"/>
         <source>General</source>
-        <translation>Generale</translation>
+        <translation>General</translation>
     </message>
     <message>
         <location/>
         <source>Stacking</source>
-        <translation>Ordine</translation>
+        <translation>Apilado</translation>
     </message>
     <message>
         <location/>
         <source>To Front</source>
-        <translation>In Cima</translation>
+        <translation>Al frente</translation>
     </message>
     <message>
         <location/>
         <source>Raise</source>
-        <translation>Solleva</translation>
+        <translation>Subir</translation>
     </message>
     <message>
         <location/>
         <source>Lower</source>
-        <translation>Affonda</translation>
+        <translation>Inferior</translation>
     </message>
     <message>
         <location/>
         <source>To Back</source>
-        <translation>In Fondo</translation>
+        <translation>Al fondo</translation>
     </message>
     <message>
         <location/>
         <source>Operations</source>
-        <translation>Operazioni</translation>
+        <translation>Operaciones</translation>
     </message>
     <message>
         <location/>
         <source>To Background</source>
-        <translation>Come Sfondo</translation>
+        <translation>Al fondo de pantalla</translation>
     </message>
     <message>
         <location/>
         <source>Save</source>
-        <translation>Salva</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <location/>
         <source>Remove</source>
-        <translation>Elimina</translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <location/>
         <source>Looks</source>
-        <translation>Aspetto</translation>
+        <translation>Mirar</translation>
     </message>
     <message>
         <location/>
         <source>new frame</source>
-        <translation>nuova cornice</translation>
+        <translation>nuevo marco</translation>
     </message>
     <message>
         <location/>
         <source>apply to all</source>
-        <translation>applica a tutti</translation>
+        <translation>aplicar a todo</translation>
     </message>
     <message>
         <location/>
         <source>Show Reflection</source>
-        <translation>Mostra il riflesso</translation>
+        <translation>Mostrar Reflejo</translation>
     </message>
 </context>
 <context>
@@ -99,46 +99,46 @@
     <message>
         <location filename="../Canvas/AbstractContent.cpp" line="+85"/>
         <source>Change properties...</source>
-        <translation>Modifica le proprietà...</translation>
+        <translation>Cambiar propiedades...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Drag around to change the perspective.
 Hold SHIFT to move faster.
 Use CTRL to cancel the transformations.</source>
-        <translation>Trascina per modificare la prospettiva.
-Tieni premuto SHIFT per accelerare il movimento.
-Premi CTRL per ripristinare la prospettiva.</translation>
+        <translation>Arrastre alrededor para cambiar la perspectiva.
+Mantenga presionada la tecla SHIFT para moverse más rápido.
+Utilice la tecla CTRL para cancelar las trasnformaciones.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Remove</source>
-        <translation>Elimina</translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <location line="+791"/>
         <source>Unnamed %1.png</source>
-        <translation>Senza nome %1.png</translation>
+        <translation>Sin nombre %1.png</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose the Image file</source>
-        <translation>Scegli un&apos;immagine</translation>
+        <translation>Seleccionar el archivo de Imágen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
-        <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+        <translation>Imágenes (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>File Error</source>
-        <translation>Errore nel File</translation>
+        <translation>Error de Archivo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error saving the Object to &apos;%1&apos;</source>
-        <translation>Non è stato possibile salvare l&apos;Oggetto in &apos;%1&apos;</translation>
+        <translation>Error guardando el Objeto a &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -147,11 +147,11 @@ Premi CTRL per ripristinare la prospettiva.</translation>
  - Hold down CTRL to rotate only
  - Hold down ALT to snap rotation
  - Double click (with LMB/RMB) to restore the aspect ratio/rotation</source>
-        <translation>Trascina con i pulsanti Sinistro o Destro del mouse.
- - Tieni premuto SHIFT per il ridimensionamento libero
- - Tieni premuto CTRL per ruotare solamente
- - Tieni premuto ALT per ruotare per passi
- - Doppio click (con il tasto Sinistro/Destro) per ripristinare l&apos;aspetto/la rotazione</translation>
+        <translation>Arrastre con el botón Izquierdo o Derecho del ratón (mouse).
+ - Mantenga presionada la tecla SHIFT para congelar el redimensionado
+ - Mantenga presionada la tecla CTRL para sólo rotar
+ - Mantenga presionada la tecla ALT para rotación de complemento
+ - Doble click (con botón Dercho o Izquierdo) para restaurar la relación de aspecto o rotación</translation>
     </message>
 </context>
 <context>
@@ -159,7 +159,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../Shared/ButtonsDialog.cpp" line="+54"/>
         <source>ask again next time</source>
-        <translation>mostra di nuovo questo avviso</translation>
+        <translation>vuelve a preguntar la próxima vez</translation>
     </message>
 </context>
 <context>
@@ -168,17 +168,17 @@ Premi CTRL per ripristinare la prospettiva.</translation>
         <location filename="../Canvas/Canvas.cpp" line="+289"/>
         <location line="+19"/>
         <source>Unnamed %1</source>
-        <translation>Senza nome %1</translation>
+        <translation>SinNombre %1</translation>
     </message>
     <message>
         <location line="+218"/>
         <source>Back</source>
-        <translation>Retro</translation>
+        <translation>Atrás</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Front</source>
-        <translation>Fronte</translation>
+        <translation>Frente</translation>
     </message>
     <message>
         <location line="+727"/>
@@ -188,12 +188,12 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location line="+167"/>
         <source>Delete content</source>
-        <translation>Cancella</translation>
+        <translation>Borrar contenido</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>All the %1 selected content will be deleted, do you want to continue ?</source>
-        <translation>I %1 oggetti selezionati saranno cancellati, vuoi procedere?</translation>
+        <translation>Todo el contenido seleccionado de %1 será borrado, desea continuar?</translation>
     </message>
 </context>
 <context>
@@ -201,172 +201,172 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../App/CanvasAppliance.cpp" line="+130"/>
         <source>Transparency</source>
-        <translation>Trasparenza</translation>
+        <translation>Transparencia</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>You won&apos;t see through the Canvas unless you clear the background.&lt;br&gt;&lt;b&gt;Do you want me to clear it?&lt;/b&gt;</source>
-        <translation>Non vedrai in trasparenza con lo sfondo attuale.&lt;br&gt;&lt;b&gt;Vuoi impostare lo sfondo trasparente?&lt;/b&gt;</translation>
+        <translation>No podrá ver a través del Lienzo a menos que se borre el fondo&lt;br&gt;&lt;b&gt;¿Quieres que te lo quite?&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Yes, thanks</source>
-        <translation>Si, grazie</translation>
+        <translation>Si, gracias</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Random Placement</source>
-        <translation>Disposizione Casuale</translation>
+        <translation>Colocar Aleatoriamente</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Shaped Placement</source>
-        <translation>Disposizione a Forma</translation>
+        <translation>Forma de Colocación</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Color Collage</source>
-        <translation>Collage a Colori</translation>
+        <translation>Color del Collage</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enable force field</source>
-        <translation>Abilita la repulsione</translation>
+        <translation>Habilitar el campo de fuerza</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>None</source>
-        <translation>Nessuno</translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Transparency can be saved to PNG images only.</source>
-        <translation>Le immagini trasparenti possono essere salvate solo in PNG.</translation>
+        <translation>La transparencia se pueden guardar en imágenes PNG solamente.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Black</source>
-        <translation>Nero</translation>
+        <translation>Negro</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>White</source>
-        <translation>Bianco</translation>
+        <translation>Blanco</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Gradient</source>
-        <translation>Gradiente</translation>
+        <translation>Degradado</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Content</source>
-        <translation>Contenuto</translation>
+        <translation>Contenido</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Double click on any content to put it on background.</source>
-        <translation>Fai doppio clic su qualsiasi contenuto per impostarlo come sfondo.</translation>
+        <translation>Haga doble clic en el contenido para ponerlo en el fondo.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Content Aspect Ratio</source>
-        <translation>Proporzioni dello Sfondo</translation>
+        <translation>Aspecto en Relación al Contenido</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Keep proportions by expanding</source>
-        <translation>Mantieni le proporzioni espandendo</translation>
+        <translation>Mantener las proporciones al ampliar</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Keep proportions</source>
-        <translation>Mantieni le proporzioni</translation>
+        <translation>Mantener las proporciones</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Ignore proportions</source>
-        <translation>Ignora le proporzioni</translation>
+        <translation>Ignorar Proporciones</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>View Perspective</source>
-        <translation>Prospettiva della Vista</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>View Rotation</source>
-        <translation>Angolo della Vista</translation>
-    </message>
-    <message>
-        <location line="+21"/>
+        <location line="+37"/>
         <source>Top bar</source>
-        <translation>Barra Sopra</translation>
+        <translation>Barra superior</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Bottom bar</source>
-        <translation>Barra Sotto</translation>
+        <translation>Barra inferior</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set title...</source>
-        <translation>Imposta il Titolo...</translation>
+        <translation>Establecer el título...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear title</source>
-        <translation>Cancella il Titolo</translation>
+        <translation>Borrar título</translation>
     </message>
     <message>
         <location line="+87"/>
         <source>Print</source>
-        <translation>Stampa</translation>
+        <translation>Imprimir</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Export</source>
-        <translation>Esporta</translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Add Pictures to the Canvas</source>
-        <translation>Aggiungi Immagini</translation>
+        <translation>Agregar Imágenes al Lienzo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Images (%1)</source>
-        <translation>Immagini (%1)</translation>
+        <translation>Imágenes (%1)</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Title</source>
-        <translation>Titolo</translation>
+        <translation>Título</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Insert the title</source>
-        <translation>Inserire il titolo</translation>
+        <translation>Ingrese el título</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Wordcloud Editor</source>
-        <translation>Editor del Wordcloud</translation>
+        <translation>Editor de Texto</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The Wordcloud editor will be ready in the Fotowall REVO (1.0) release.</source>
-        <translation>L&apos;editor del Wordcloud sarà disponibile dalla versione REVO (1.0).</translation>
+        <translation>El editor de texto estará listo en la versiónl Fotowall REVOl (1.0) .</translation>
     </message>
     <message>
         <location line="+88"/>
         <source>Add Webcam</source>
-        <translation>Aggiungi Webcam</translation>
+        <translation>Agregar Cámara Web</translation>
     </message>
     <message>
         <location filename="../App/CanvasAppliance.h" line="+36"/>
         <source>Canvas</source>
-        <translation>Tela</translation>
+        <translation>Lienzo</translation>
+    </message>
+    <message>
+        <location filename="../App/CanvasAppliance.cpp" line="-382"/>
+        <source>View Perspective</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>View Rotation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -374,87 +374,87 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../App/CanvasAppliance.ui"/>
         <source>ADD NEW</source>
-        <translation>AGGIUNGI NUOVO</translation>
+        <translation>AGREGAR NUEVO</translation>
     </message>
     <message>
         <location/>
         <source>Add Picture</source>
-        <translation>Aggiungi Immagine</translation>
+        <translation>Agregar Imagen</translation>
     </message>
     <message>
         <location/>
         <source>Add Text</source>
-        <translation>Aggiungi Testo</translation>
+        <translation>Agregar texto</translation>
     </message>
     <message>
         <location/>
         <source>Add Wordcloud</source>
-        <translation>Aggiungi Wordcloud</translation>
+        <translation>Agregar Editor de texto</translation>
     </message>
     <message>
         <location/>
         <source>Add Canvas</source>
-        <translation>Aggiungi Tela</translation>
+        <translation>Agregar Lienzo</translation>
     </message>
     <message>
         <location/>
         <source>Search Web Pictures</source>
-        <translation>Cerca Immagini nel Web</translation>
+        <translation>Buscar Imagenes en la Web</translation>
     </message>
     <message>
         <location/>
         <source>CANVAS</source>
-        <translation>TELA</translation>
+        <translation>LIENZO</translation>
     </message>
     <message>
         <location/>
         <source>Screen</source>
-        <translation>Schermo</translation>
+        <translation>Pantalla</translation>
     </message>
     <message>
         <location/>
         <source>Exact Size...</source>
-        <translation>Dimensione Esatta...</translation>
+        <translation>Tamaño Exacto...</translation>
     </message>
     <message>
         <location/>
         <source>CD Cover</source>
-        <translation>Copertina CD</translation>
+        <translation>Cubierta de CD</translation>
     </message>
     <message>
         <location/>
         <source>DVD Cover</source>
-        <translation>Copertina DVD</translation>
+        <translation>Cubierta de DVD</translation>
     </message>
     <message>
         <location/>
         <source>Decorations</source>
-        <translation>Decorazioni</translation>
+        <translation>Decoraciones</translation>
     </message>
     <message>
         <location/>
         <source>Background</source>
-        <translation>Sfondo</translation>
+        <translation>Fondo</translation>
     </message>
     <message>
         <location/>
         <source>Arrange</source>
-        <translation>Disponi</translation>
+        <translation>Organizar</translation>
     </message>
     <message>
         <location/>
         <source>FILE</source>
-        <translation>FILE</translation>
+        <translation>ARCHIVO</translation>
     </message>
     <message>
         <location/>
         <source>Save</source>
-        <translation>Salva</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <location/>
         <source>Desktop</source>
-        <translation>Desktop</translation>
+        <translation>Escritorio</translation>
     </message>
 </context>
 <context>
@@ -462,7 +462,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../Canvas/CanvasViewContent.h" line="+36"/>
         <source>Canvas View</source>
-        <translation>Vista Tela</translation>
+        <translation>Vista de Lienzo</translation>
     </message>
 </context>
 <context>
@@ -470,32 +470,32 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../Canvas/ContentProperties.ui"/>
         <source>Opacity</source>
-        <translation>Trasparenza</translation>
+        <translation>Opacidad</translation>
     </message>
     <message>
         <location/>
         <source>No Fx</source>
-        <translation>Nessuno</translation>
+        <translation>No Fx</translation>
     </message>
     <message>
         <location/>
         <source>Black Shadow</source>
-        <translation>Ombra Nera</translation>
+        <translation>Sombra Negra</translation>
     </message>
     <message>
         <location/>
         <source>White Shadow</source>
-        <translation>Ombra Bianca</translation>
+        <translation>Sombra Blanca</translation>
     </message>
     <message>
         <location/>
         <source>Soft Blur</source>
-        <translation>Sfumato Lieve</translation>
+        <translation>Desenfoque Suave</translation>
     </message>
     <message>
         <location/>
         <source>Strong Blur</source>
-        <translation>Sfumato Forte</translation>
+        <translation>Desenfoque Fuerte</translation>
     </message>
     <message>
         <location/>
@@ -508,7 +508,7 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../Shared/CroppingDialog.ui"/>
         <source>Cropping</source>
-        <translation>Ritaglio</translation>
+        <translation>Recortando</translation>
     </message>
 </context>
 <context>
@@ -516,17 +516,17 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../App/ExactSizeDialog.ui"/>
         <source>Choose size</source>
-        <translation>Dimensione</translation>
+        <translation>Seleccione el tamaño</translation>
     </message>
     <message>
         <location/>
         <source>&lt;b&gt;Exact Size&lt;/b&gt; mode&lt;br&gt;The content has &lt;i&gt;the same size&lt;/i&gt; on screen and on printer.</source>
-        <translation>Modo &lt;b&gt;Dimensione Esatta&lt;/b&gt;&lt;br&gt;L&apos;area di lavoro ha &lt;i&gt;la stessa dimensione&lt;/i&gt; sullo schermo e sulla stampa.</translation>
+        <translation>&lt;b&gt;Tamaño Exacto&lt;/b&gt;Modo&lt;br&gt;El contenido ha &lt;i&gt; el mismo tamaño&lt;/i&gt;en pantalla y en la impresora.</translation>
     </message>
     <message>
         <location/>
         <source>Height:</source>
-        <translation>Altezza:</translation>
+        <translation>Altura:</translation>
     </message>
     <message>
         <location/>
@@ -536,32 +536,32 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location/>
         <source>inches</source>
-        <translation>pollici</translation>
+        <translation>pulgadas</translation>
     </message>
     <message>
         <location/>
         <source>Width:</source>
-        <translation>Larghezza:</translation>
+        <translation>Ancho:</translation>
     </message>
     <message>
         <location/>
         <source>Dot Per Inch</source>
-        <translation>Punti per Pollice</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Printer Dpi:</source>
-        <translation>Dpi Stampante:</translation>
+        <translation>Puntos Por Pulgada</translation>
     </message>
     <message>
         <location/>
         <source>Screen Dpi:</source>
-        <translation>Dpi schermo:</translation>
+        <translation>Pantalla PPP:</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Printer Dpi:</source>
+        <translation>Inpresora PPP:</translation>
     </message>
     <message>
         <location/>
         <source>Print in landscape mode</source>
-        <translation>Stampa in orizzontale</translation>
+        <translation>Impresión en modo horizontal</translation>
     </message>
 </context>
 <context>
@@ -569,108 +569,88 @@ Premi CTRL per ripristinare la prospettiva.</translation>
     <message>
         <location filename="../App/ExportWizard.cpp" line="+165"/>
         <source>Wallpaper Error</source>
-        <translation>Errore nello Sfondo</translation>
+        <translation> Error en el Fondo de pantalla</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Can&apos;t save the image to disk.</source>
-        <translation>Non riesco a salvare l&apos;immagine sul disco.</translation>
+        <translation>No se puede guardar la imagen en el disco.</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Manual Wallpaper Change</source>
-        <translation>Cambiamento Manuale</translation>
+        <translation>Cambiar Manualmente el fondo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>KDE4 doesn&apos;t yet support changing wallpaper automatically.
 Go to the Desktop Settings and select the file:
   %1</source>
-        <translation>KDE4 non supporta ancora il cambiamento automatico dello sfondo.
-Apri le Impostazioni del Desktop e seleziona il file:
-  %1</translation>
+        <translation>KDE4 todavía no admiten el cambio de fondos de escritorio de forma automática.
+Vaya a la Configuración del Escritorio y seleccione el archivo:
+   %1</translation>
     </message>
     <message>
         <location line="+17"/>
         <location line="+164"/>
         <source>No file selected !</source>
-        <translation>Nessun file selezionato !</translation>
+        <translation>No hay archivo seleccionado !</translation>
     </message>
     <message>
         <location line="-164"/>
         <location line="+164"/>
         <source>You need to choose a file path for saving.</source>
-        <translation>Devi scegliere il nome del file su cui salvare.</translation>
+        <translation>Necesita elegir una ruta de archivo para guardar.</translation>
     </message>
     <message>
         <location line="-135"/>
         <source>Done</source>
-        <translation>Fatto</translation>
+        <translation>Hecho</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The target image is %1 bytes long</source>
-        <translation>L&apos;immagine di destinazione ha %1 byte</translation>
+        <translation>La imagen de destino es de %1 bytes</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rendering Error</source>
-        <translation>Errore nel Rendering</translation>
+        <translation>Representación de error</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error rendering to the file &apos;%1&apos;</source>
-        <translation>Errore salvando il rendering sul file &apos;%1&apos;</translation>
+        <translation>Error de representación a &quot;%1&quot; el archivo</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Export poster</source>
-        <translation>Stampa Poster</translation>
+        <translation>Exportar Afiche</translation>
     </message>
     <message>
-        <location line="+69"/>
-        <source>PDF Error</source>
-        <translation>Errore PDF</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Error saving to the PDF file, try to chose another one.</source>
-        <translation>Errore durante il salvataggio del file PDF, prova a cambiare il nome del file.</translation>
-    </message>
-    <message>
-        <location line="+54"/>
+        <location line="+123"/>
         <source>Created with %1</source>
-        <translation>Creato da %1</translation>
+        <translation>Creado con el %1</translation>
     </message>
     <message>
         <location line="+117"/>
         <source>Unnamed %1.%2</source>
-        <translation>Senza nome %1.%2</translation>
+        <translation>Sin nombre %1 %2</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Choose the Image file</source>
-        <translation>Scegli un&apos;immagine</translation>
+        <translation>Seleccione el archivo de imagen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Images (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</source>
-        <translation>Immagini (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
+        <translation>Imagenes (*.jpeg *.jpg *.png *.bmp *.tif *.tiff)</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>Choose the PDF file</source>
-        <translation>Scegli il File PDF</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>PDF (*.pdf)</source>
-        <translation>PDF (*.pdf)</translation>
-    </message>
-    <message>
-        <location line="+8"/>
+        <location line="+24"/>
         <source>Choose the SVG file</source>
-        <translation>Scegli il File SVG</translation>
+        <translation>Seleccione el archivo SVG</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -678,164 +658,164 @@ Apri le Impostazioni del Desktop e seleziona il file:
         <translation>SVG (*.svg)</translation>
     </message>
     <message>
-        <location line="+76"/>
-        <source>Other</source>
-        <translation>Altro</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>%1  (%2 x %3 inch)</source>
-        <translation>%1  (%2 x %3 pollici)</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>%1  (%2 x %3 cm)</source>
-        <translation>%1  (%2 x %3 cm)</translation>
-    </message>
-    <message>
         <location filename="../App/ExportWizard.ui"/>
         <source>Export Wizard</source>
-        <translation>Procedura Guidata di Esportazione</translation>
+        <translation>Asistente para exportación</translation>
     </message>
     <message>
         <location/>
         <source>Export</source>
-        <translation>Esporta</translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <location/>
         <source>Select the target.</source>
-        <translation>Scegli la destinazione.</translation>
+        <translation>Seleccione el destino.</translation>
     </message>
     <message>
         <location/>
         <source>Wallpaper</source>
-        <translation>Sfondo del Computer</translation>
+        <translation>Fondos</translation>
     </message>
     <message>
         <location/>
         <source>Image</source>
-        <translation>Immagine</translation>
+        <translation>Imagen</translation>
     </message>
     <message>
         <location/>
         <source>Poster with PosteRazor</source>
-        <translation>Poster con PosteRazor</translation>
+        <translation>Afiche con PosteRazor</translation>
     </message>
     <message>
         <location/>
         <source>Print</source>
-        <translation>Stampa</translation>
+        <translation>Imprimir</translation>
+    </message>
+    <message>
+        <location/>
+        <source>SVG Vector Image</source>
+        <translation>Imágenes vectoriales SVG</translation>
     </message>
     <message>
         <location/>
         <source>Click the Finish button to change your wallpaper.</source>
-        <translation>Premi il bottone Fine per cambiare il tuo sfondo.</translation>
+        <translation>Haga clic en el botón Finalizar para cambiar el papel tapiz.</translation>
     </message>
     <message>
         <location/>
         <source>Scale Mode</source>
-        <translation>Scalatura</translation>
+        <translation>Modo de Escala</translation>
     </message>
     <message>
         <location/>
         <source>Zoomed</source>
-        <translation>Zoom</translation>
+        <translation>Ampliado</translation>
     </message>
     <message>
         <location/>
         <source>Scaled, keep proportions</source>
-        <translation>Adatta, mantieni le proporzioni</translation>
+        <translation>Escalado, mantener las proporciones</translation>
     </message>
     <message>
         <location/>
         <source>Scaled</source>
-        <translation>Adatta</translation>
+        <translation>Escalado</translation>
     </message>
     <message>
         <location/>
         <source>Original Size</source>
-        <translation>Dimensione Attuale</translation>
+        <translation>Tamaño Original</translation>
     </message>
     <message>
         <location/>
         <source>Your work will be saved to a picture. Please fill the following options and click Finish.</source>
-        <translation>Il tuo lavoro sarà salvato su un&apos;immagine. Riempi le caselle seguenti e fai clic su Fine.</translation>
+        <translation>Su trabajo se guardará en una imagen. Por favor, complete las siguientes opciones y haga clic en Finalizar.</translation>
     </message>
     <message>
         <location/>
         <source>File properties</source>
-        <translation>Proprietà del File</translation>
+        <translation>Propiedades del archivo</translation>
     </message>
     <message>
         <location/>
         <source>Output file:</source>
-        <translation>File di destinazione:</translation>
+        <translation>Archivo de salida:</translation>
     </message>
     <message>
         <location/>
         <source>Choose...</source>
-        <translation>Scegli...</translation>
+        <translation>Seleccione...</translation>
     </message>
     <message>
         <location/>
         <source>Size and Orientation</source>
-        <translation>Dimensione ed Orientazione</translation>
+        <translation>Tamaño y Orientación</translation>
     </message>
     <message>
         <location/>
-        <source>Landscape</source>
-        <translation>Orizzontale</translation>
-    </message>
-    <message>
-        <location/>
-        <source>PosteRazor</source>
-        <translation>PosteRazor</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Print Posters at home.</source>
-        <translation>Stampa Poster a casa tua.</translation>
-    </message>
-    <message>
-        <location/>
-        <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
-        <translation>Il PosteRazor ritaglia un&apos;immagine in pezzi che poi possono essere stampati ed incollati per create un poster.</translation>
-    </message>
-    <message>
-        <location/>
-        <source>PosteRazor home (external website)</source>
-        <translation>Homepage di PosteRazor (sito web esterno)</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Click Finish to start PosteRazor</source>
-        <translation>Clicca Fine per lanciare PosteRazor</translation>
-    </message>
-    <message>
-        <location/>
-        <source>How to use PosteRazor (external tutorial video)</source>
-        <translation>Come usare PosteRazor (istruzione video esterna)</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Print Picture</source>
-        <translation>Stampa Immagine</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Select the paper options and click Finish to print.</source>
-        <translation>Scegli le impostazioni della carta e fai clic su Fine per stampare.</translation>
+        <source>Width:</source>
+        <translation>Ancho:</translation>
     </message>
     <message>
         <location/>
         <source>Height:</source>
-        <translation>Altezza:</translation>
+        <translation>Altura:</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Landscape</source>
+        <translation>Paisaje</translation>
+    </message>
+    <message>
+        <location/>
+        <source>as you see it (includes tools, lines, etc)</source>
+        <translation>Como puede ver (incluye herramientas, líneas, etc)</translation>
+    </message>
+    <message>
+        <location/>
+        <source>PosteRazor</source>
+        <translation>Utilidad PosteRazor</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Print Posters at home.</source>
+        <translation>Imprimir Posters en casa.</translation>
+    </message>
+    <message>
+        <location/>
+        <source>The PosteRazor cuts a raster image into pieces which can afterwards be printed out and assembled to a poster.</source>
+        <translation>El PosteRazor corta una imagen de trama en piezas que luego se pueden imprimir y montar a un cartel.</translation>
+    </message>
+    <message>
+        <location/>
+        <source>PosteRazor home (external website)</source>
+        <translation>Inicio PosteRazor (página web externa)</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click Finish to start PosteRazor</source>
+        <translation>Haga clic en Finalizar para iniciar PosteRazor</translation>
+    </message>
+    <message>
+        <location/>
+        <source>How to use PosteRazor (external tutorial video)</source>
+        <translation>Cómo utilizar PosteRazor (vídeotutorial externo)</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Print Picture</source>
+        <translation>Imprimir Imagen</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Select the paper options and click Finish to print.</source>
+        <translation>Seleccione las opciones de papel y haga clic en Finalizar para imprimir.</translation>
     </message>
     <message>
         <location/>
         <source>pixels</source>
-        <translation>pixel</translation>
+        <translation>píxeles</translation>
     </message>
     <message>
         <location/>
@@ -845,37 +825,22 @@ Apri le Impostazioni del Desktop e seleziona il file:
     <message>
         <location/>
         <source>inches</source>
-        <translation>pollici</translation>
-    </message>
-    <message>
-        <location/>
-        <source>Width:</source>
-        <translation>Larghezza:</translation>
+        <translation>pulgadas</translation>
     </message>
     <message>
         <location/>
         <source>Dot Per Inch</source>
-        <translation>Punti per Pollice</translation>
+        <translation>Puntos Por Pulgada</translation>
     </message>
     <message>
         <location/>
         <source>Dpi:</source>
-        <translation>Dpi:</translation>
-    </message>
-    <message>
-        <location/>
-        <source>SVG Vector Image</source>
-        <translation>Immagine Vettoriale SVG</translation>
-    </message>
-    <message>
-        <location/>
-        <source>as you see it (includes tools, lines, etc)</source>
-        <translation>come la vedi (compresi strumenti, linee, etc)</translation>
+        <translation>Ppp:</translation>
     </message>
     <message>
         <location/>
         <source>Export to the Scalable Vector Graphics image format.</source>
-        <translation>Esporta nel formato Grafico Vettoriale Scalabile (SVG).</translation>
+        <translation>Exportar al formato de imagen de gráficos vectoriales escalables.</translation>
     </message>
     <message>
         <location/>
@@ -885,102 +850,137 @@ Apri le Impostazioni del Desktop e seleziona il file:
     <message>
         <location/>
         <source>Reset to Canvas</source>
-        <translation>Reimposta a Tela</translation>
+        <translation>Restablecer el Lienzo</translation>
     </message>
     <message>
         <location/>
         <source>From Printing Dpi</source>
-        <translation>Reimposta a Dpi Stampa</translation>
+        <translation>Imprimir Desde Ppp</translation>
     </message>
     <message>
         <location/>
         <source>PDF</source>
-        <translation>PDF</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Scalable Vector Graphics</source>
-        <translation>Grafica Vettoriale Scalabile (SVG)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Landscape paper orientation</source>
-        <translation>Carta orizzontale</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Keep canvas proportion</source>
-        <translation>Mantieni la proporzione</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>PDF Export</source>
-        <translation>Esporta PDF</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Export to PDF file.</source>
-        <translation>Esporta su file PDF (Portable Document Format).</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Output Options</source>
-        <translation>Opzioni di Esportazione</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Paper Size:</source>
-        <translation>Dimensione Foglio:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Choose</source>
-        <translation>Scegli</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Scale:</source>
-        <translation>Scala:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Original</source>
-        <translation>Originale</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Fit the page</source>
-        <translation>Riempi la pagina</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Position:</source>
-        <translation>Posizione:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Top Left</source>
-        <translation>In Alto a Sinistra</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Center</source>
-        <translation>Centrato</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Resolution:</source>
-        <translation>Definizione:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source> dpi</source>
-        <translation> dpi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location/>
         <source>Preview ...</source>
-        <translation>Anteprima ...</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../App/ExportWizard.cpp" line="-215"/>
+        <source>PDF Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Error saving to the PDF file, try to chose another one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+205"/>
+        <source>Choose the PDF file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>PDF (*.pdf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+85"/>
+        <source>Other</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>%1  (%2 x %3 inch)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>%1  (%2 x %3 cm)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -988,7 +988,7 @@ Apri le Impostazioni del Desktop e seleziona il file:
     <message>
         <location filename="../App/HomeAppliance.cpp" line="+45"/>
         <source>Open</source>
-        <translation>Apri</translation>
+        <translation>Abrir</translation>
     </message>
 </context>
 <context>
@@ -996,7 +996,7 @@ Apri le Impostazioni del Desktop e seleziona il file:
     <message>
         <location filename="../Shared/GlowEffectDialog.ui"/>
         <source>Glow effect</source>
-        <translation>Effetto luminescenza</translation>
+        <translation>Efecto de brillo</translation>
     </message>
     <message>
         <location/>
@@ -1010,8 +1010,8 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Usa la rotella &lt;/span&gt;per cambiare il raggio. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fai Clic&lt;/span&gt; sull&apos;immagine per avere un&apos;anteprima.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Desplácese &lt;/span&gt;para cambiar el radio. &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Haga clic&lt;/span&gt; en la imagen para obtener una vista previa.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1019,12 +1019,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/Hardware3DTest.cpp" line="+48"/>
         <source>OpenGL Test</source>
-        <translation>Test OpenGL</translation>
+        <translation>Prueba OpenGL</translation>
     </message>
     <message>
         <location line="+126"/>
         <source>Non-OpenGL</source>
-        <translation>Non-OpenGL</translation>
+        <translation>No OpenGL</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1034,32 +1034,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+3"/>
         <source>samples (%1...%2)</source>
-        <translation>campioni (%1...%2)</translation>
+        <translation>ejemplos (%1...%2)</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>fps (%1...%2)</source>
-        <translation>fps (%1...%2)</translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>Use OpenGL</source>
-        <translation>Usa OpenGL</translation>
+        <translation>Usar OpenGL</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Don&apos;t use OpenGL</source>
-        <translation>Non usare OpenGL</translation>
+        <translation>No usar OpenGL</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>OpenGL Won</source>
-        <translation>OpenGL ha Vinto</translation>
+        <translation>OpenGL Ganó</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>OpenGL Lost</source>
-        <translation>OpenGL ha Perso</translation>
+        <translation>OpenGL Perdió</translation>
+    </message>
+    <message>
+        <location line="-26"/>
+        <source>fps (%1...%2)</source>
+        <translation>fps (%1...%2)</translation>
     </message>
 </context>
 <context>
@@ -1067,7 +1067,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/HelpAppliance.h" line="+30"/>
         <source>Help</source>
-        <translation>Aiuto</translation>
+        <translation>Ayuda</translation>
     </message>
 </context>
 <context>
@@ -1075,27 +1075,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/HelpAppliance.ui"/>
         <source>Fotowall&apos;s Website</source>
-        <translation>Sito Web</translation>
+        <translation>Sitio Web de Fotowall</translation>
     </message>
     <message>
         <location/>
         <source>Video Tutorial (0.2)</source>
-        <translation>Video Introduttivo (0.2)</translation>
+        <translation>Video Tutorial (0.2)</translation>
     </message>
     <message>
         <location/>
         <source>Check for Updates</source>
-        <translation>Controlla Aggiornamenti</translation>
+        <translation>Buscar actualizaciones</translation>
     </message>
     <message>
         <location/>
         <source>Fotowall&apos;s Blog</source>
-        <translation>Blog di Fotowall</translation>
+        <translation>Blog de Fotowall</translation>
     </message>
     <message>
         <location/>
         <source>ONLINE</source>
-        <translation>ONLINE</translation>
+        <translation>LINEA</translation>
     </message>
 </context>
 <context>
@@ -1130,31 +1130,31 @@ p, li { white-space: pre-wrap; }
    &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//ES&quot;&gt;
 &lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
 &lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;
       &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-        Benvenuto
+        Bienvenido
       &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
    &lt;/span&gt;
    &lt;br /&gt;
    &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;
-      &lt;b&gt;Giocare&lt;/b&gt; con &lt;b&gt;Fotowall&lt;/b&gt; è facile!
+      &lt;b&gt;Jugar&lt;/b&gt; con &lt;b&gt;Fotowall&lt;/b&gt; es sencillo
    &lt;/div&gt;
    &lt;ul&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; aggiungi i contenuti&lt;/b&gt; con i bottoni &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;AGGIUNGI NUOVO&lt;/span&gt;&lt;/i&gt; o &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;trascinali&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt; muovi i contenuti &lt;/b&gt; e &lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt; girali&lt;/b&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt; &lt;i&gt;trascinando gli angoli&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;fai clic con il tasto destro&lt;/span&gt;&lt;/i&gt; o &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;usa la barra in alto&lt;/span&gt;&lt;/i&gt; per &lt;b&gt;cambiare le proprietà&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;fai doppio clic sui contenuti&lt;/i&gt;&lt;/span&gt; per &lt;b&gt;aprire l&apos;editor&lt;/b&gt; oppure impostarli come &lt;b&gt;sfondo&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;...e ti invitiamo a scoprire il resto da solo/a!&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; adicione contenidos &lt;/b&gt; usando el botón &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;ADICIONAR NUEVO&lt;/span&gt;&lt;/i&gt; o &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;arrastrelo y sueltelo acá&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt; mueva contenidos alrededor &lt;/b&gt; and &lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt; rotelos&lt;/b&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;sólo &lt;i&gt;arrastrando las esquinas&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;click derecho sobre los objetos&lt;/span&gt;&lt;/i&gt; o &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;use la barra superior&lt;/span&gt;&lt;/i&gt; para &lt;b&gt;modificar sus propiedades&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;haga doble click en cualquier contenido&lt;/i&gt;&lt;/span&gt; para &lt;b&gt;abrir el editor&lt;/b&gt; o establecerlo como &lt;b&gt;fondo de pantalla (tapíz)&lt;/b&gt;&lt;/li&gt;
+      &lt;li&gt;...y dejaremos que tu descubras el resto!&lt;/li&gt;
    &lt;/ul&gt;
    &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;
-      Mi raccomando di condividere le tue creazioni con i tuoi migliori amici ;-)
+      Asegurate de compartir con tus amigos tus mejores trabajos ;-)
    &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
    &lt;br/&gt;
    &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall è LGPL, creato da Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
+      Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
    &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</translation>
@@ -1165,17 +1165,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/HomeAppliance.cpp" line="+31"/>
         <source>RECENT FILES</source>
-        <translation>LAVORI RECENTI</translation>
+        <translation>ARCHIVOS RECIENTES</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>OPEN</source>
-        <translation>APRI</translation>
+        <translation>ABRIR</translation>
     </message>
     <message>
         <location filename="../App/HomeAppliance.h" line="+31"/>
         <source>Home</source>
-        <translation>Home</translation>
+        <translation>Inicio</translation>
     </message>
 </context>
 <context>
@@ -1183,18 +1183,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/HomeScene.cpp" line="+167"/>
         <source>Wordcloud</source>
-        <translation>Wordcloud</translation>
+        <translation>Editor de texto</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+12"/>
         <source>coming soon</source>
-        <translation>non disponibile</translation>
+        <translation>muy pronto</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Create</source>
-        <translation>Crea</translation>
+        <translation>Crear</translation>
     </message>
 </context>
 <context>
@@ -1202,7 +1202,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+221"/>
         <source>Insert HTML entity</source>
-        <translation>Inserisci oggetto HTML</translation>
+        <translation>Insertar marca HTML</translation>
     </message>
 </context>
 <context>
@@ -1211,112 +1211,112 @@ p, li { white-space: pre-wrap; }
         <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+166"/>
         <source>Please, write it in &lt;b&gt;%1&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
         <comment>Feedback dialog text, message with one accepted language for the comments</comment>
-        <translation>Perfavore, scrivi in &lt;b&gt;%1&lt;/b&gt; (se vuoi puoi usare un &lt;a href=&quot;%3&quot;&gt;traduttore online&lt;/a&gt; a questo scopo).&lt;br/&gt;</translation>
+        <translation>Por favor, escríbalo en &lt;b&gt;%1&lt;/b&gt; (es posible que desee utilizar un &lt;a href=&quot;%3&quot;&gt; herramienta de traducción en línea &lt;/a&gt; para esto). &lt;br/&gt;</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Please, write it in &lt;b&gt;%1 or %2&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
         <comment>Feedback dialog text, message with list of accepted languages for the comments</comment>
-        <translation>Perfavore, scrivi in &lt;b&gt;%1 o %2&lt;/b&gt; (se vuoi puoi usare un &lt;a href=&quot;%3&quot;&gt;traduttore online&lt;/a&gt; a questo scopo).&lt;br/&gt;</translation>
+        <translation>Por favor, escríbalo en &lt;b&gt;%1 o %2&lt;/b&gt; (es posible que desee utilizar una &lt;a href=&quot;%3&quot;&gt; herramienta de traducción en línea &lt;/a&gt; para esto). &lt;br/&gt;</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>To make the comments you send more useful in improving this application, try to send the same amount of positive and negative comments.&lt;br/&gt;</source>
         <comment>Feedback dialog text, message to remind to balance the likes and dislikes</comment>
-        <translation>Per aumentare l&apos;utilità dei tuoi commenti, cerca di darci una quantità simile di commenti positivi e negativi.&lt;br/&gt;</translation>
+        <translation>Para que los comentarios que usted envíe sean más útiles para mejorar esta aplicación, intenta enviar la misma cantidad de comentarios positivos y negativos.&lt;br/&gt;</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Please, do not ask for new features: this kind of request will be ignored.&lt;br/&gt;</source>
         <comment>Feedback dialog text, text to disallow feature requests</comment>
-        <translation>Perfavore, non richiedere nuove aggiunte: questo tipo di richieste saranno ignorate.&lt;br/&gt;</translation>
+        <translation>Por favor, no pregunte por las nuevas características: este tipo de petición no se tendrá en cuenta.&lt;br/&gt;</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&lt;p&gt;You can provide the developers a brief description of your opinions about %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</source>
         <comment>Feedback dialog text, %1=Application name,%2=message with list of accepted languages for the comment,%3=optional text to remind to balance the likes and dislikes,%4=optional text to disallow feature requests.</comment>
-        <translation>&lt;p&gt;Puoi far arrivare agli sviluppatori alcune tue opinioni riguardo %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Puede proporcionar a los creadores una breve descripción de sus opiniones sobre %1.&lt;br/&gt;%2 %3%4&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Wrong Email</source>
-        <translation>Email Errata</translation>
+        <translation>Correo electrónico incorrecto</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The email address you have entered is not valid, and cannot be used: &apos;%1&apos;</source>
-        <translation>L&apos;indirizzo email che hai inserito non è valido e pertanto non può essere usato: &apos;%1&apos;</translation>
+        <translation>La dirección de correo electrónico que introdujo no es válida, y no se pueden utilizar: &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Comment Sent</source>
         <comment>Dialog box title</comment>
-        <translation>Commento Inviato</translation>
+        <translation>Comentario enviado</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&lt;p&gt;Your comment has been sent successfully. It will help us improve the application!&lt;/p&gt;&lt;p&gt;Thanks for your time.&lt;/p&gt;</source>
         <comment>Dialog box text</comment>
-        <translation>&lt;p&gt;Abbiamo inviato il tuo commento. Ci aiuterà a migliorare il programma!&lt;/p&gt;&lt;p&gt;Grazie dell&apos;aiuto.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Tu comentario ha sido enviado con éxito. Nos ayudará a mejorar la aplicación&lt;/p&gt;&lt;p&gt; Gracias por su tiempo.&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Comment Sending Error</source>
         <comment>Dialog box title</comment>
-        <translation>Errore Inviando il Commento</translation>
+        <translation>Error al enviar el comentario</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&lt;p&gt;There has been an error while trying to send the comment.&lt;/p&gt;&lt;p&gt;Please, try again later.&lt;/p&gt;</source>
         <comment>Dialog box text</comment>
-        <translation>&lt;p&gt;C&apos;è stato un problema con l&apos;invio del commento.&lt;/p&gt;&lt;p&gt;Perfavore, riprova più tardi.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Se ha producido un error al intentar enviar el comentario.&lt;/p&gt;&lt;p&gt;Por favor, inténtelo de nuevo más tarde.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../3rdparty/likebackfrontend/LikeBackDialog.ui"/>
         <source>Send a Comment to the Developers</source>
-        <translation>Invia un Commento agli Sviluppatori</translation>
+        <translation>Enviar un comentario al los creadores</translation>
     </message>
     <message>
         <location/>
         <source>Your comment is about:</source>
-        <translation>Il tuo commento riguarda:</translation>
+        <translation>Su comentario es sobre:</translation>
     </message>
     <message>
         <location/>
         <source>Something you like</source>
-        <translation>Qualcosa che ti piace</translation>
+        <translation>Algo que a usted le gusta</translation>
     </message>
     <message>
         <location/>
         <source>Something you dislike</source>
-        <translation>Qualcosa che non ti piace</translation>
+        <translation>Algo que a usted no le gusta</translation>
     </message>
     <message>
         <location/>
         <source>An improper behavior of the application</source>
-        <translation>Un errore o un bug</translation>
+        <translation>Un comportamiento incorrecto de la aplicación</translation>
     </message>
     <message>
         <location/>
         <source>A new feature you desire</source>
-        <translation>Un&apos;aggiunta che vorresti</translation>
+        <translation>Una nueva característica que usted desea</translation>
     </message>
     <message>
         <location/>
         <source>Your comment:</source>
-        <translation>Commento:</translation>
+        <translation>Su comentario:</translation>
     </message>
     <message>
         <location/>
         <source>Specify an email address to be contacted back:</source>
-        <translation>Indica un indirizzo mail dove puoi essere contattato:</translation>
+        <translation>Especifique una dirección de correo electrónico para ser contactado de nuevo:</translation>
     </message>
     <message>
         <location/>
         <source>&lt;html&gt;Specifying an email address will allow the developers to ask you for more information on your report, or to tell you when your feature will be implemented.&lt;br/&gt;
 &lt;b&gt;Your email address will not be used for anything else but this report.&lt;/b&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Indicando l&apos;indirizzo email consentirai agli sviluppatori di richiederti maggiori informazioni riguardo il tuo commento, o per indicarti quando sarà stata fatta l&apos;aggiunta che hai richiesto.&lt;br/&gt;
-&lt;b&gt;Il tuo indirizzo email non sarà usato per altri scopi al di fuori di questa segnalazione.&lt;/b&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;Especificar una dirección de correo electrónico permitirá a los creadores pedir más información de su solicitud, o para saber cuando su solicitud se llevará a cabo.&lt;br/&gt;
+&lt;b&gt;Su dirección de correo electrónico no será utilizada para otra cosa que esta solicitud.&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1329,7 +1329,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+124"/>
         <source>Transparency</source>
-        <translation>Trasparenza</translation>
+        <translation>Transparencia</translation>
     </message>
     <message>
         <location line="-394"/>
@@ -1339,42 +1339,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+241"/>
         <source>Accelerated Rendering</source>
-        <translation>Rendering Accelerato</translation>
+        <translation>Representacion Acelerada</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>OpenGL accelerates graphics. However it&apos;s not supported by every system.&lt;br&gt;&lt;b&gt;Do you want to do an acceleration test?&lt;/b&gt;</source>
-        <translation>OpenGL accelera la grafica. Purtroppo però non è supportato da ogni sistema.&lt;br&gt;&lt;b&gt;Vuoi fare una prova di accelerazione?&lt;b&gt;</translation>
+        <translation>OpenGL acelera gráficos. Sin embargo no es apoyado por todos los sistemas.&lt;br&gt;&lt;b&gt;¿Quieres hacer una prueba de aceleración?&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>OpenGL accelerates graphics, but it doesn&apos;t work on some systems.&lt;br&gt; - if it feels slower, make sure that your driver accelerates OpenGL&lt;br&gt; - if Fotowall stops responding after switching to OpenGL, don&apos;t enable OpenGL next time</source>
-        <translation>OpenGL accelera la grafica, ma non funziona su tutti i sistemi.&lt;br&gt; - se pare più lento, assicurati che i tuoi driver video accelerino OpenGL&lt;br&gt; - se Fotowall smette di funzionare dopo essere passati ad OpenGL, non usate più questa funzione la prossima volta</translation>
+        <translation>OpenGL acelera gráficos, pero no funciona en algunos sistemas.&lt;br&gt; - si se siente más lento, asegúrese de que el conductor acelera OpenGL &lt;br&gt; - si Fotowall deja de responder después de cambiar a OpenGL, no habilite OpenGL la proxima vez</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Test OpenGL</source>
-        <translation>Prova OpenGL</translation>
+        <translation>Probar OpenGL</translation>
     </message>
     <message>
         <location line="+121"/>
         <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
-        <translation>Questa funzione richiede il compositing attivo (compiz o kwin4) su Linux.&lt;br&gt;Se vedi uno sfondo nero significa che la trasparenza non è supportata sul tuo sistema.</translation>
+        <translation>Esta función requiere de composición (compiz o KWin4) para trabajar en Linux.&lt;br&gt; Si usted ve un fondo negro a continuación, la transparencia no es compatible con su sistema.</translation>
     </message>
     <message>
         <location filename="../App/MainWindow.ui"/>
         <source>SETUP</source>
-        <translation>SETUP</translation>
+        <translation>INSTALACION</translation>
     </message>
     <message>
         <location/>
         <source>Transparent Window</source>
-        <translation>Finestra Trasparente</translation>
+        <translation>Ventana Transparente</translation>
     </message>
     <message>
         <location/>
         <source>Test GL</source>
-        <translation>Prova OpenGL</translation>
+        <translation>Probar GL</translation>
     </message>
 </context>
 <context>
@@ -1382,12 +1382,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/MainWindowMobile.cpp" line="+100"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Salir</translation>
     </message>
     <message>
         <location line="+147"/>
         <source>Search Web Pictures</source>
-        <translation type="unfinished">Cerca Immagini nel Web</translation>
+        <translation>Buscar Imagenes en la Web</translation>
     </message>
 </context>
 <context>
@@ -1395,12 +1395,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../Shared/MetaXmlReader.cpp" line="+170"/>
         <source>Network Error</source>
-        <translation>Errore di Rete</translation>
+        <translation>Error de red</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Network Timeout</source>
-        <translation>Timeout di Rete</translation>
+        <translation>Tiempo de espera de red</translation>
     </message>
 </context>
 <context>
@@ -1408,28 +1408,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../App/OnlineServices.cpp" line="+109"/>
         <source>Opening Fotowall&apos;s author Blog</source>
-        <translation>Apertura del Blog dell&apos;autore di Fotowall</translation>
+        <translation>Abrir el blog del autor de Fotowall</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>This is the blog of the main author of Fotowall.
 Do you want to open the web page?</source>
-        <translation>Questo è il blog dell&apos;autore di Fotowall.
-Vuoi aprire la pagina web?</translation>
+        <translation>Este es el blog del autor principal de Fotowall.
+¿Quieres abrir la página web?</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Opening the Web Tutorial</source>
-        <translation>Apertura del Tutorial da Web</translation>
+        <translation>Abrir la Web del Tutorial</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The Tutorial is provided on Fosswire by Peter Upfold.
 It&apos;s about Fotowall 0.2 a rather old version.
 Do you want to open the web page?</source>
-        <translation>Il Tutorial è stato creato da Peter Upfold per Fosswire.
-Riguarda Fotowall 0.2, una delle prime versioni.
-Vuoi aprire la pagina web?</translation>
+        <translation>El tutorial se proporciona en la web  Fosswire por Peter Upfold.
+Se trata de Fotowall 0.2 una versión bastante antigua.
+¿Quieres abrir la página web?</translation>
     </message>
 </context>
 <context>
@@ -1437,63 +1437,63 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/PictureConfig.cpp" line="+32"/>
         <source>Picture</source>
-        <translation>Immagine</translation>
+        <translation>Imagen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No effects</source>
-        <translation>Elimina Effetti</translation>
+        <translation>Sin efectos</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Invert colors</source>
-        <translation>Negativo</translation>
+        <translation>Invertir los colores</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Invert the colors of the picture</source>
-        <translation>Inverti i colori dell&apos;immagine</translation>
+        <translation>Invertir los colores de la imagen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Auto Blend</source>
-        <translation>Fusione</translation>
+        <translation>Automezclar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Change dark pixels to transparent, leaving bright ones only</source>
-        <translation>Rende trasparenti i toni scuri, lasciando solo quelli chiari</translation>
+        <translation>Cambiar píxeles oscuros a transparente, dejando sólo los brillantes</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>NVG</source>
-        <translation>Visione Notturna</translation>
+        <translation>NVG</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set the colors to levels of gray</source>
-        <translation>Scala di grigi</translation>
+        <translation>Ajustar los colores a escala de grises</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Black and White</source>
-        <translation>Bianco e Nero</translation>
+        <translation>Negro y Blanco</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Glow effect</source>
-        <translation>Effetto luminescenza</translation>
+        <translation>Efecto de brillo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Sepia</source>
-        <translation>Seppia</translation>
+        <translation>Sepia</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+42"/>
         <source>Opacity</source>
-        <translation>Trasparenza</translation>
+        <translation>Opacidad</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1501,15 +1501,15 @@ Vuoi aprire la pagina web?</translation>
 
 0: transparent
 100: opaque</source>
-        <translation>Valore di opacità.
+        <translation>Valor de opacidad.
 
-0: trasparente
-100: opaco</translation>
+0: transparente
+100: opaca</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Auto Blending</source>
-        <translation>Fusione</translation>
+        <translation>Mezcla automática</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1517,40 +1517,40 @@ Vuoi aprire la pagina web?</translation>
 
 0: weak
 100: strong</source>
-        <translation>Intensità.
+        <translation>Valor de la fuerza.
 
-0: debole
-100: forte</translation>
+0: débil
+100: fuerte</translation>
     </message>
     <message>
         <location filename="../Canvas/PictureConfig.ui"/>
         <source>Transform</source>
-        <translation>Trasforma</translation>
+        <translation>Transformar</translation>
     </message>
     <message>
         <location/>
         <source>Invert</source>
-        <translation>Inverti</translation>
+        <translation>Invertir</translation>
     </message>
     <message>
         <location/>
         <source>Flip</source>
-        <translation>Speculare</translation>
+        <translation>Voltear</translation>
     </message>
     <message>
         <location/>
         <source>Crop</source>
-        <translation>Ritaglia</translation>
+        <translation>Cortar</translation>
     </message>
     <message>
         <location/>
         <source>Effects</source>
-        <translation>Effetti</translation>
+        <translation>Efectos</translation>
     </message>
     <message>
         <location/>
         <source>apply to all</source>
-        <translation>applica a tutti</translation>
+        <translation>Aplicar a todo</translation>
     </message>
 </context>
 <context>
@@ -1564,17 +1564,17 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location line="-56"/>
         <source>Flip horizontally</source>
-        <translation>Inversione orizzontale</translation>
+        <translation>Voltear horizontalmente</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Flip vertically</source>
-        <translation>Iversione verticale</translation>
+        <translation>Voltear verticalmente</translation>
     </message>
     <message>
         <location filename="../Canvas/PictureContent.h" line="+42"/>
         <source>Picture</source>
-        <translation>Immagine</translation>
+        <translation>Imagen</translation>
     </message>
 </context>
 <context>
@@ -1587,27 +1587,27 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location/>
         <source>Google Images</source>
-        <translation>Google Immagini</translation>
+        <translation>Imagenes de Google</translation>
     </message>
     <message>
         <location/>
         <source>Any Content</source>
-        <translation>Qualsiasi</translation>
+        <translation>Cualquier contenido</translation>
     </message>
     <message>
         <location/>
         <source>News</source>
-        <translation>Notizie</translation>
+        <translation>Noticias</translation>
     </message>
     <message>
         <location/>
         <source>Faces</source>
-        <translation>Facce</translation>
+        <translation>Caras</translation>
     </message>
     <message>
         <location/>
         <source>Photos</source>
-        <translation>Foto</translation>
+        <translation>Fotos</translation>
     </message>
     <message>
         <location/>
@@ -1622,42 +1622,42 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location/>
         <source>Any Size</source>
-        <translation>Qualsiasi</translation>
+        <translation>Cualquier Tamaño</translation>
     </message>
     <message>
         <location/>
         <source>Medium</source>
-        <translation>Medie</translation>
+        <translation>Mediano</translation>
     </message>
     <message>
         <location/>
         <source>Large</source>
-        <translation>Grandi</translation>
+        <translation>Grande</translation>
     </message>
     <message>
         <location/>
         <source>Icon</source>
-        <translation>Icone</translation>
+        <translation>Icono</translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+197"/>
-        <source>Type here...</source>
-        <translation>Scrivi qui...</translation>
-    </message>
-    <message>
-        <location line="+139"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+336"/>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Search</source>
-        <translation>Cerca</translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <location filename="../App/PictureSearchWidget.ui"/>
         <source>Search Web Pictures</source>
-        <translation>Cerca Immagini nel Web</translation>
+        <translation>Buscar Imagenes en la Web</translation>
+    </message>
+    <message>
+        <location filename="../App/PictureSearchWidget.cpp" line="-180"/>
+        <source>Type here...</source>
+        <translation>Escribe acá ...</translation>
     </message>
 </context>
 <context>
@@ -1665,38 +1665,38 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/FotowallFile.cpp" line="+59"/>
         <source>Loading error</source>
-        <translation>Errore di Caricamento</translation>
+        <translation>Error al cargar</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Unable to load the Fotowall file %1</source>
-        <translation>Impossibile caricare il file Fotowall %1</translation>
+        <translation>No se puede cargar el archivo  Fotowall %1</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Parsing error</source>
-        <translation>Errore di lettura</translation>
+        <translation>Error al analizar</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Unable to parse the Fotowall file %1. The error was: %2</source>
-        <translation>Impossibile comprendere il file %1. Errore: %2</translation>
+        <translation>No se puede analizar el archivo  Fotowall %1. El error fue: %2</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>File Error</source>
-        <translation>Errore nel File</translation>
+        <translation>Error de archivo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error saving to the Fotowall file &apos;%1&apos;</source>
-        <translation>Errore durante il salvataggio sul fle Fotowall &apos;%1&apos;</translation>
+        <translation>Error al guardar  en el archivo Fotowall &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+20"/>
         <location line="+32"/>
         <source>Select the Fotowall file</source>
-        <translation>Scegli il file Fotowall</translation>
+        <translation>Seleccione el archivo Fotowall</translation>
     </message>
     <message>
         <location line="-32"/>
@@ -1707,12 +1707,12 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location line="+0"/>
         <source>Add Fotowall files to the Canvas</source>
-        <translation>Aggiungi file Fotowall alla Tela</translation>
+        <translation>Agregar archivos Fotowall al Lienzo</translation>
     </message>
     <message>
         <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+110"/>
         <source>Camera %1</source>
-        <translation>Camera %1</translation>
+        <translation>Cámara %1</translation>
     </message>
 </context>
 <context>
@@ -1876,32 +1876,32 @@ Vuoi aprire la pagina web?</translation>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+542"/>
-        <source>Source</source>
-        <translation>Sorgente</translation>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+541"/>
+        <source>Visual Editor</source>
+        <translation>Editor Visual</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Visual Editor</source>
-        <translation>Editor Visuale</translation>
+        <location line="+1"/>
+        <source>Source</source>
+        <translation>Fuente</translation>
     </message>
 </context>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location line="-350"/>
+        <location line="-351"/>
         <source>Bold</source>
-        <translation>Grassetto</translation>
+        <translation>Negrilla</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>CTRL+B</source>
-        <translation>CTRL+G</translation>
+        <translation>CTRL+B</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Italic</source>
-        <translation>Italico</translation>
+        <translation>Cursiva</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1911,22 +1911,22 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location line="+5"/>
         <source>Underline</source>
-        <translation>Sottolineato</translation>
+        <translation>Subrayar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>CTRL+U</source>
-        <translation>CTRL+S</translation>
+        <translation>CTRL+U</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Superscript</source>
-        <translation>Apice</translation>
+        <translation>Superindice</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Subscript</source>
-        <translation>Pedice</translation>
+        <translation>Subindice</translation>
     </message>
 </context>
 <context>
@@ -1942,27 +1942,27 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/SelectionProperties.cpp" line="+35"/>
         <source>SELECTION</source>
-        <translation>SELEZIONE</translation>
+        <translation>SELECCIÓN</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>%1 pictures selected</source>
-        <translation>%1 immagini selezionate</translation>
+        <translation>%1 imágenes seleccionadas</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>%1 objects selected</source>
-        <translation>%1 oggetti selezionati</translation>
+        <translation>%1 objetos seleccionados</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Cancella</translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Collate</source>
-        <translation>Incolla</translation>
+        <translation>Comparar</translation>
     </message>
 </context>
 <context>
@@ -1970,7 +1970,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/TextConfig.cpp" line="+28"/>
         <source>Text</source>
-        <translation>Testo</translation>
+        <translation>Texto</translation>
     </message>
 </context>
 <context>
@@ -1978,27 +1978,27 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/TextContent.cpp" line="+44"/>
         <source>Right click to Edit the text</source>
-        <translation>Premi il tasto destro per cambiare il testo</translation>
+        <translation>Haga clic derecho para editar el texto</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>right click to edit...</source>
-        <translation>clic con il destro per modificare...</translation>
-    </message>
-    <message>
-        <location line="+202"/>
-        <source>PDF Export Warning</source>
-        <translation>Avviso esportazione PDF</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Shaped text could not be exported in PDF</source>
-        <translation>Il testo con forma non può essere esportato in PDF</translation>
+        <translation>clic derecho para editar ...</translation>
     </message>
     <message>
         <location filename="../Canvas/TextContent.h" line="+53"/>
         <source>Text</source>
-        <translation>Testo</translation>
+        <translation>Texto</translation>
+    </message>
+    <message>
+        <location filename="../Canvas/TextContent.cpp" line="+202"/>
+        <source>PDF Export Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Shaped text could not be exported in PDF</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2006,7 +2006,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/TextProperties.ui"/>
         <source>Edit Shape</source>
-        <translation>Forma</translation>
+        <translation>Editar Forma</translation>
     </message>
 </context>
 <context>
@@ -2014,22 +2014,22 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/UrlHistoryBox.cpp" line="+157"/>
         <source>Open</source>
-        <translation>Apri</translation>
+        <translation>Abrir</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Remove From History</source>
-        <translation>Rimuovi dai Lavori Recenti</translation>
+        <translation>Eliminar del historial</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File</source>
-        <translation>File</translation>
+        <translation>Archivo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete File</source>
-        <translation>Cancella File</translation>
+        <translation>Eliminar Archivo</translation>
     </message>
 </context>
 <context>
@@ -2037,12 +2037,12 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/VersionCheckDialog.cpp" line="+30"/>
         <source>checking</source>
-        <translation>controllo</translation>
+        <translation>Comprobar</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>XML Error</source>
-        <translation>Errore XML</translation>
+        <translation>Error XML</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2052,27 +2052,27 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location line="+4"/>
         <source>Download</source>
-        <translation>Scarica</translation>
+        <translation>Descargar</translation>
     </message>
     <message>
         <location filename="../App/VersionCheckDialog.ui"/>
         <source>Version Check</source>
-        <translation>Controllo Versione</translation>
+        <translation>Verifivar la versión</translation>
     </message>
     <message>
         <location/>
         <source>Checking for latest version</source>
-        <translation>Ultima versione presente</translation>
+        <translation>Revisar versión más reciente</translation>
     </message>
     <message>
         <location/>
         <source>Installed Version</source>
-        <translation>Versione installata</translation>
+        <translation>Versión Instalada</translation>
     </message>
     <message>
         <location/>
         <source>Available Version</source>
-        <translation>Versione Disponibile</translation>
+        <translation>Versión Disponible</translation>
     </message>
 </context>
 <context>
@@ -2080,22 +2080,22 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/WebcamContent.cpp" line="+35"/>
         <source>This is a mirror ;-)</source>
-        <translation>Specchio ;-)</translation>
+        <translation>Este es un espejo ;-)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Mirror Video</source>
-        <translation>Inverti il Video</translation>
+        <translation>Video Espejo</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Still picture</source>
-        <translation>Fermo Immagine</translation>
+        <translation>Imagen Fija</translation>
     </message>
     <message>
         <location filename="../Canvas/WebcamContent.h" line="+33"/>
         <source>Webcam</source>
-        <translation>Webcam</translation>
+        <translation>Cámara Web</translation>
     </message>
 </context>
 <context>
@@ -2103,12 +2103,12 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Wordcloud/Cloud.cpp" line="+238"/>
         <source>Placing Words...</source>
-        <translation>Disposizione delle Parole...</translation>
+        <translation>Poner palabras...</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation>Cancelar</translation>
     </message>
 </context>
 <context>
@@ -2116,7 +2116,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Wordcloud/Scanner.cpp" line="+118"/>
         <source>Word</source>
-        <translation>Parola</translation>
+        <translation>Palabra</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2129,7 +2129,7 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/WordcloudAppliance.h" line="+38"/>
         <source>Wordcloud</source>
-        <translation>Wordcloud</translation>
+        <translation>Etiqueta</translation>
     </message>
 </context>
 <context>
@@ -2137,17 +2137,17 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../Canvas/WordcloudContent.cpp" line="+47"/>
         <source>Create a Wordcloud from a text file</source>
-        <translation>Crea Wordcloud da un File di Testo</translation>
+        <translation>Crear una etiqueta desde un archiov de texto</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Welcome to Wordcloud. Change options on the sidebar.</source>
-        <translation>Benvenuto in Wordcloud. Cambia le impostazioni nella barra laterale.</translation>
+        <translation>Bienvenido a Wordcloud. Cambiar las opciones de la barra lateral.</translation>
     </message>
     <message>
         <location filename="../Canvas/WordcloudContent.h" line="+38"/>
         <source>Wordcloud</source>
-        <translation>Wordcloud</translation>
+        <translation>Etiqueta</translation>
     </message>
 </context>
 <context>
@@ -2155,37 +2155,37 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/WordcloudSidebar.ui"/>
         <source>Regen</source>
-        <translation>Rigenera</translation>
+        <translation>Regen</translation>
     </message>
     <message>
         <location/>
         <source>Randomize</source>
-        <translation>Casuale</translation>
+        <translation>Aleatoriamente</translation>
     </message>
     <message>
         <location/>
         <source>Color Scheme</source>
-        <translation>Schema Colore</translation>
+        <translation>Combinación de colores</translation>
     </message>
     <message>
         <location/>
         <source>Dark Red</source>
-        <translation>Rosso Scuro</translation>
+        <translation>Rojo oscuro</translation>
     </message>
     <message>
         <location/>
         <source>Scheme1</source>
-        <translation>Schema1</translation>
+        <translation>Esquema 1</translation>
     </message>
     <message>
         <location/>
         <source>Font</source>
-        <translation>Font</translation>
+        <translation>Fuente</translation>
     </message>
     <message>
         <location/>
         <source>Scheme2</source>
-        <translation>Schema2</translation>
+        <translation>Esquema 2</translation>
     </message>
 </context>
 <context>
@@ -2193,50 +2193,50 @@ Vuoi aprire la pagina web?</translation>
     <message>
         <location filename="../App/Workflow.cpp" line="+176"/>
         <source>Closing Fotowall...</source>
-        <translation>Uscita da Fotowall...</translation>
+        <translation>Cerrando Fotowall...</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+53"/>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location line="-51"/>
         <source>Are you sure you want to quit and lose your changes?</source>
-        <translation>Sei sicuro di voler uscire e perdere le tue modifiche?</translation>
+        <translation>Está seguro que desea salir y perder todos los cambios?</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+52"/>
         <source>Save</source>
-        <translation>Salva</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <location line="-51"/>
         <location line="+52"/>
         <source>Don&apos;t Save</source>
-        <translation>Non Salvare</translation>
+        <translation>No Guardar</translation>
     </message>
     <message>
         <location line="-49"/>
         <source>Are you sure you want to quit?</source>
-        <translation>Sei sicuro di voler uscire?</translation>
+        <translation>Está seguro que desea salir?</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit</source>
-        <translation>Esci</translation>
+        <translation>Salir</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Closing File</source>
-        <translation>Chiusura File</translation>
+        <translation>Cerrando el archivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Do you want to save your changes?</source>
-        <translation>Vuoi salvare i tuoi cambiamenti?</translation>
+        <translation>Desea guardar los cambios?</translation>
     </message>
 </context>
 </TS>
