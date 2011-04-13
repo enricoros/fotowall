@@ -26,7 +26,6 @@ class QImage;
 // check which backends to enable, based on the environment
 #if defined(Q_OS_LINUX)
 
-    #define VD_BUILD_LINUX                      ///< build V4L code
     // this is here to detect wether V4L2 is present
     #include <asm/types.h>
     #undef __STRICT_ANSI__
@@ -41,9 +40,9 @@ class QImage;
     #endif
     #include <linux/fs.h>
     #include <linux/kernel.h>
-    #include <linux/videodev.h>
+    #include <linux/videodev2.h>
     #ifdef V4L2_CAP_VIDEO_CAPTURE
-        #define VD_BUILD_LINUX_TWO              ///< build V4L2 code too
+    #define VD_BUILD_LINUX_V4L2                 ///< build V4L2 code path
     #endif
 
 #elif defined(Q_WS_WIN)
@@ -201,15 +200,12 @@ class VideoDevice {
         ImageBuffer m_imageBuffer;
         bool m_capturing;
 
-#if defined(VD_BUILD_LINUX)
+#if defined(VD_BUILD_LINUX_V4L2)
         // Video 4 Linux data
         int m_videoFileDescriptor;
         enum Driver {
             LINUX_DRIVER_NONE,
-            LINUX_DRIVER_V4L
-#if defined(VD_BUILD_LINUX_TWO)
-           ,LINUX_DRIVER_V4L2
-#endif
+            LINUX_DRIVER_V4L2
         } m_linuxDriver;
         enum IOMethod {
             IO_METHOD_NONE,
