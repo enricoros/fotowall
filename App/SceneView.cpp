@@ -16,6 +16,7 @@
 
 #include "Shared/AbstractScene.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QCommonStyle>
 #include <QPainter>
@@ -81,6 +82,12 @@ SceneView::SceneView(QWidget * parent)
     // use own style for drawing the RubberBand
     m_style = new RubberBandStyle;
     viewport()->setStyle(m_style);
+
+    // general actions
+    QAction * pasteAction = new QAction(tr("Paste"), this);
+    pasteAction->setShortcut(tr("CTRL+V"));
+    addAction(pasteAction);
+    connect(pasteAction, SIGNAL(triggered()), this, SLOT(slotPasteActionTriggered()));
 
     // can't activate the cache mode by default, since it inhibits dynamical background picture changing
     //setCacheMode(CacheBackground);
@@ -342,6 +349,12 @@ void SceneView::slotUpdateViewTransform()
     }
     setTransform(viewTransform, false);
     slotLayoutScene();
+}
+
+void SceneView::slotPasteActionTriggered()
+{
+    if (m_abstractScene)
+        m_abstractScene->pasteFromClipboard();
 }
 
 void SceneView::slotSceneDestroyed(QObject * object)
