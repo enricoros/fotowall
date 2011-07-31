@@ -893,7 +893,14 @@ void Canvas::pasteFromClipboard()
     if (text.trimmed().isEmpty())
         return;
 
-    TextContent * t = createText(sceneCenter().toPoint(), true);
+    QPoint pos = sceneCenter().toPoint();
+    QGraphicsView * view = mainGraphicsView();
+    if (view) {
+        QPoint viewPoint = view->mapFromGlobal(QCursor::pos());
+        pos = view->mapToScene(viewPoint).toPoint();
+    }
+
+    TextContent * t = createText(pos, true);
     t->setPlainText(text);
 }
 
