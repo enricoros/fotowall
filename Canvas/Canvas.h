@@ -115,6 +115,7 @@ class Canvas : public AbstractScene
         void filePathChanged();
 
     protected:
+        void pasteFromClipboard();
         void dragEnterEvent( QGraphicsSceneDragDropEvent * event );
         void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
         void dropEvent( QGraphicsSceneDragDropEvent * event );

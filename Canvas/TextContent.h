@@ -34,6 +34,7 @@ class TextContent : public AbstractContent
     public Q_SLOTS:
         QString toHtml() const;
         void setHtml(const QString & htmlCode);
+        void setPlainText(const QString & plainText);
 
         bool hasShape() const;
         void clearShape();

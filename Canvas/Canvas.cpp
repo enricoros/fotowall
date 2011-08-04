@@ -31,7 +31,10 @@
 #include "WordcloudContent.h"
 
 #include <QAbstractTextDocumentLayout>
+#include <QApplication>
+#include <QAction>
 #include <QBuffer>
+#include <QClipboard>
 #include <QDate>
 #include <QFile>
 #include <QFileInfo>
@@ -884,6 +887,23 @@ void Canvas::loadFromXml(QDomElement & canvasElement)
 
 
 /// Drag & Drop image files
+void Canvas::pasteFromClipboard()
+{
+    QString text = QApplication::clipboard()->text();
+    if (text.trimmed().isEmpty())
+        return;
+
+    QPoint pos = sceneCenter().toPoint();
+    QGraphicsView * view = mainGraphicsView();
+    if (view) {
+        QPoint viewPoint = view->mapFromGlobal(QCursor::pos());
+        pos = view->mapToScene(viewPoint).toPoint();
+    }
+
+    TextContent * t = createText(pos, true);
+    t->setPlainText(text);
+}
+
 void Canvas::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
     // dispatch to children but accept it only for image files
