@@ -44,6 +44,9 @@ class AbstractScene : public QGraphicsScene
         // how to view the scene (defaults to true)
         virtual bool sceneSelectable() const;
 
+        // notifications
+        virtual void pasteFromClipboard() {}
+
         // properties
         void setPerspective(const QPointF & angles);
         QPointF perspective() const;

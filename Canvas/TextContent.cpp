@@ -57,8 +57,7 @@ TextContent::TextContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem
 #endif
     font.setPointSize(16);
     m_text->setDefaultFont(font);
-    m_text->setPlainText(tr("right click to edit..."));
-    setHtml(m_text->toHtml());
+    setPlainText(tr("right click to edit..."));
 
     // shape editor
     m_shapeEditor = new BezierCubicItem(this);
@@ -84,6 +83,12 @@ void TextContent::setHtml(const QString & htmlCode)
 {
     m_text->setHtml(htmlCode);
     updateTextConstraints();
+}
+
+void TextContent::setPlainText(const QString & plainText)
+{
+    m_text->setPlainText(plainText);
+    setHtml(m_text->toHtml());
 }
 
 bool TextContent::hasShape() const

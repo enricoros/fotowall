@@ -74,6 +74,8 @@ class SceneView : public QGraphicsView
         void slotLayoutScene();
         // update the view for scale and scene transform
         void slotUpdateViewTransform();
+        // paste action
+        void slotPasteActionTriggered();
         // dereference deleted AbstractScenes
         void slotSceneDestroyed(QObject *);
 };

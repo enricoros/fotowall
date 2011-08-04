@@ -16,7 +16,7 @@ Fotowall "REVO" 1.0 (Unreleased):
 
 In progress:
 
-* Arnaud's Undo/Redo system
+* Arnaud's Undo/Redo system (~60%)
 * Wordcloud editor
 * Arrange Contents
 * Text shaking
@@ -201,7 +201,9 @@ improvement and the code is kept clean and small.
 * scene matrix (global perspective)
 * regional links to web resources
  - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
- - french: ubuntu-fr ?
+ - french: http://forum.ubuntu-fr.org/viewtopic.php?id=308200
+           http://geenux.wordpress.com/tag/fotowall/  (Arnaud Tanguy's blog) 
+           http://benoit.balon.free.fr/?tag=fotowall  (Benoît Bâlon's blog)
 * missing relicences
  - 3rdparty/richtextedit/richtexteditor*: redo 'cause non free
 
