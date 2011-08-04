@@ -19,6 +19,10 @@ QT = core \
     svg \
     network \
     xml
+# I had to add this in order to build with Fedora15. No idea why...
+unix {
+    LIBS+=-lX11
+}
 
 # include OpenGL code paths where available
 contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
