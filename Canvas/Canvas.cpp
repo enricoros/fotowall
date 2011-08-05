@@ -853,38 +853,8 @@ void Canvas::loadFromXml(QDomElement & canvasElement)
 
         // create all content
         for (QDomElement ce = contentElement.firstChildElement(); !ce.isNull(); ce = ce.nextSiblingElement()) {
+            addContentFromXml(ce);
 
-            // create the right kind of content
-            AbstractContent * content = 0;
-            if (ce.tagName() == "picture")
-                content = createPicture(QPoint(), false);
-            else if (ce.tagName() == "text")
-                content = createText(QPoint(), false);
-            else if (ce.tagName() == "webcam")
-                content = createWebcam(ce.attribute("input").toInt(), QPoint(), false);
-            else if (ce.tagName() == "embedded-canvas")
-                content = createCanvasView(QPoint(), false);
-            else if (ce.tagName() == "wordcloud")
-                content = createWordcloud(QPoint(), false);
-            if (!content) {
-                qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(ce.tagName()));
-                continue;
-            }
-
-            // load item properties, and delete it if something goes wrong
-            if (!content->fromXml(ce, m_fileAbsDir)) {
-                m_content.removeAll(content);
-                delete content;
-                continue;
-            }
-
-            // restore the background element of the canvas
-            if (ce.firstChildElement("set-as-background").isElement()) {
-                if (m_backContent)
-                    qWarning("Canvas::fromXml: only 1 element with <set-as-background/> allowed");
-                else
-                    setBackContent(content);
-            }
         }
     }
 
@@ -1208,6 +1178,43 @@ CanvasViewContent * Canvas::createCanvasView(const QPoint & pos, bool spontaneou
     return d;
 }
 
+AbstractContent * Canvas::addContentFromXml(QDomElement &contentElt)
+{
+    // create the right kind of content
+    AbstractContent * content = 0;
+    qDebug() << contentElt.tagName();
+    if (contentElt.tagName() == "picture")
+        content = createPicture(QPoint(), false);
+    else if (contentElt.tagName() == "text")
+        content = createText(QPoint(), false);
+    else if (contentElt.tagName() == "webcam")
+        content = createWebcam(contentElt.attribute("input").toInt(), QPoint(), false);
+    else if (contentElt.tagName() == "embedded-canvas")
+        content = createCanvasView(QPoint(), false);
+    else if (contentElt.tagName() == "wordcloud")
+        content = createWordcloud(QPoint(), false);
+    if (!content) {
+        qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(contentElt.tagName()));
+        return NULL;
+    }
+
+    // load item properties, and delete it if something goes wrong
+    if (!content->fromXml(contentElt, m_fileAbsDir)) {
+        m_content.removeAll(content);
+        delete content;
+        return NULL;
+    }
+
+    // restore the background element of the canvas
+    if (contentElt.firstChildElement("set-as-background").isElement()) {
+        if (m_backContent)
+            qWarning("Canvas::fromXml: only 1 element with <set-as-background/> allowed");
+        else
+            setBackContent(content);
+    }
+    return content;
+}
+
 PictureContent * Canvas::createPicture(const QPoint & pos, bool spontaneous)
 {
     PictureContent * p = new PictureContent(spontaneous, this);
@@ -1466,7 +1473,7 @@ void Canvas::slotDeleteContent()
             if (m_backContent == content)
                 setBackContent(0);
 
-            DeleteContentCommand *command = new DeleteContentCommand(content);
+            DeleteContentCommand *command = new DeleteContentCommand(content, this);
             CommandStack::instance().doCommand(command);
             foreach (AbstractConfig * config, m_configs) {
                 if (config->content() == content) {

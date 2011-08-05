@@ -27,6 +27,7 @@
 #include "Frames/FrameFactory.h"
 #include <QStringList>
 #include <QUrl>
+#include <QDebug>
 
 class EffectCommand : public AbstractCommand {
     private:
@@ -324,14 +325,23 @@ class NewWebcamCommand : public AbstractCommand {
 class DeleteContentCommand : public AbstractCommand {
     private:
         AbstractContent *m_content;
+        Canvas *m_canvas;
+        QDomElement m_contentElt;
     public:
-        DeleteContentCommand(AbstractContent *content) : m_content(content)
+        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_content(content), m_canvas(canvas)
         {}
         void exec() {
-            m_content->hide();
+            // Get the content xml info, in order to recreate it correctly
+            QDir t = QDir::currentPath();
+            QDomDocument doc;
+            m_contentElt = doc.createElement("content");
+            m_content->toXml(m_contentElt, t);
+            delete m_content; m_content=0;
         }
         void unexec() {
-            m_content->show();
+            if(m_content==0) {
+                m_content = m_canvas->addContentFromXml(m_contentElt);
+            }
         }
         QString name() {
             return tr("Delete content");

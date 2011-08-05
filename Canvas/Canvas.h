@@ -111,6 +111,7 @@ class Canvas : public AbstractScene
         // load & save
         void saveToXml(QDomElement & canvasElement) const;
         void loadFromXml(QDomElement & canvasElement);
+        AbstractContent * addContentFromXml(QDomElement &contentElt);
 
     Q_SIGNALS:
         void backConfigChanged();
