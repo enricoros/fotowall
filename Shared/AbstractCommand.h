@@ -23,12 +23,15 @@ class AbstractContent;
 /* This class is used to implement the command pattern.
  * It provides pure virtual function to do/undo an action. */
 class AbstractCommand : public QObject {
+    AbstractContent *m_content;
     public:
-        virtual bool setContent(AbstractContent *) {
+        AbstractCommand() { m_content = 0; }
+        virtual bool setContent(AbstractContent *content) {
+            m_content = content;
             return true;
         }
-        virtual AbstractContent *content() const {
-            return 0;
+        virtual AbstractContent * content() const {
+            return m_content;
         }
         virtual void exec() = 0;
         virtual void unexec() = 0;

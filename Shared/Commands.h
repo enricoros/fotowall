@@ -276,6 +276,9 @@ class NewTextCommand : public AbstractCommand {
             //m_canvas->removeContent(c);
             m_content->hide();
         }
+        AbstractContent *content() {
+            return m_content;
+        }
         QString name() {
             return tr("Add text");
         }
@@ -329,14 +332,18 @@ class DeleteContentCommand : public AbstractCommand {
         QDomElement m_contentElt;
     public:
         DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_content(content), m_canvas(canvas)
-        {}
+        { qDebug() << "constructor adress: " << content;
+        if(m_content==content) {qDebug()<<"ok";}}
         void exec() {
             // Get the content xml info, in order to recreate it correctly
             QDir t = QDir::currentPath();
             QDomDocument doc;
             m_contentElt = doc.createElement("content");
             m_content->toXml(m_contentElt, t);
-            delete m_content; m_content=0;
+            qDebug() << "adress: " << m_content;
+            m_canvas->deleteContent(m_content);
+            m_content=0;
+            // FIXME: segfault when undoing stuff done before deleting it. Obviously because the previous image is deleted, so it segfault because the pointer in the stack still points to the old image. Need to update it when recreating...
         }
         void unexec() {
             if(m_content==0) {
