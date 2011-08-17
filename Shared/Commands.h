@@ -30,6 +30,7 @@
 #include <QUrl>
 #include <QDebug>
 
+//DONE
 class EffectCommand : public AbstractCommand {
     private:
         PictureContent *m_content;
@@ -40,6 +41,7 @@ class EffectCommand : public AbstractCommand {
         EffectCommand(PictureContent *content, const PictureEffect &effect) : m_content(content)
                                                                             , m_newEffect(effect)
         {
+            m_oldContent = content;
             m_previousEffects = content->effects();
             m_previousSize = content->contentRect();
         }
@@ -55,7 +57,12 @@ class EffectCommand : public AbstractCommand {
                 m_content->addEffect(effect);
             }
         }
-        QString name() {
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+            if(m_content == oldContent) {
+                m_content = dynamic_cast<PictureContent *> (newContent);
+            }
+        }
+        QString name() const {
             return tr("New effects");
         }
 };
@@ -69,6 +76,7 @@ class TextCommand : public AbstractCommand {
     public:
         TextCommand(TextContent *content, QString newText) : m_content(content), m_newText (newText)
         {
+            m_oldContent = m_content;
             m_previousText = content->toHtml();
         }
         void exec() {
@@ -77,7 +85,7 @@ class TextCommand : public AbstractCommand {
         void unexec() {
             m_content->setHtml(m_previousText);
         }
-        QString name() {
+        QString name() const {
             return tr("Text changed");
         }
 };
@@ -99,7 +107,7 @@ class TransformCommand : public AbstractCommand {
         void unexec() {
             m_content->setTransform(m_previous);
         }
-        QString name() {
+        QString name() const {
             return tr("Transformation");
         }
 };
@@ -125,7 +133,7 @@ class RotateAndResizeCommand : public AbstractCommand {
             m_content->setRotation(m_pAngle);
             m_content->resizeContents(m_pRect);
         }
-        QString name() {
+        QString name() const {
             return tr("Rotation and Resize");
         }
 };
@@ -143,7 +151,7 @@ class MotionCommand : public AbstractCommand {
         {}
         void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
             if(m_content == oldContent) {
-                qDebug() << "MotionCommand: Replacing content... Oh Yeah!";
+                qDebug() << "\tMotionCommand: Replacing content... Oh Yeah!";
                 m_content = newContent;
             }
         }
@@ -153,10 +161,10 @@ class MotionCommand : public AbstractCommand {
         void unexec() {
             m_content->setPos(m_previous);
         }
-        QString name() {
+        QString name() const {
             return tr("Move");
         }
-        QString description() {
+        QString description() const {
             QString previousStr = QString::number(m_previous.x())+QString::number(m_previous.y());
             QString newMotionStr = QString::number(m_newMotion.x())+QString::number(m_newMotion.y());
             return tr("Moved from %1 to %2").arg(previousStr, newMotionStr);
@@ -164,7 +172,7 @@ class MotionCommand : public AbstractCommand {
 };
 
 
-/* This command manages creation (and hidding when undo) of new image content */
+/* This command manages creation (and hidding when unexec) of new image content */
 class NewImageCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
@@ -191,10 +199,10 @@ class NewImageCommand : public AbstractCommand {
             }
             //m_canvas->removeContents(m_images);
         }
-        QString name() {
+        QString name() const {
             return tr("Add images");
         }
-        QString description() {
+        QString description() const {
             QString desc;
             foreach (QString path, m_imagesPath) {
                desc += path += "\n";
@@ -231,10 +239,10 @@ class NewImageCommand : public AbstractCommand {
             }
             //m_canvas->removeContents(m_images);
         }
-        QString name() {
+        QString name() const {
             return tr("Add network images");
         }
-        QString description() {
+        QString description() const {
             QString desc;
             foreach(QUrl url, m_imagesPath) {
                 desc += url.toString() += "\n";
@@ -259,19 +267,19 @@ class NewFlickrImageCommand : public AbstractCommand {
             // the stack would contains commands using the old deleted item...
             m_image->hide();
         }
-        QString name() {
+        QString name() const {
             return tr("Add Flickr image '%1'").arg(m_image->frameText());
         }
 };*/
 
-/* This command manages creation (and hidding when undo) of new text content */
+/* This command manages creation (and hidding when unexec) of new text content */
 class NewTextCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
         TextContent *m_content;
     public:
         NewTextCommand(Canvas *canvas) : m_canvas(canvas), m_content(0)
-        {}
+        { m_oldContent = m_content; }
         void exec() {
             if(m_content == 0)
                 m_content = m_canvas->addTextContent();
@@ -286,12 +294,12 @@ class NewTextCommand : public AbstractCommand {
         AbstractContent *content() {
             return m_content;
         }
-        QString name() {
+        QString name() const {
             return tr("Add text");
         }
 };
 
-/* This command manages creation (and hidding when undo) of new webcam content */
+/* This command manages creation (and hidding when unexec) of new webcam content */
 class NewWebcamCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
@@ -326,20 +334,20 @@ class NewWebcamCommand : public AbstractCommand {
             //m_canvas->removeContent(c);
         }
 
-        QString name() {
+        QString name() const {
             return tr("Add webcam");
         }
 };
 
+//DONE
 class DeleteContentCommand : public AbstractCommand {
     private:
-        AbstractContent *m_oldContent;
-        AbstractContent *m_content;
         Canvas *m_canvas;
         QDomElement m_contentElt;
     public:
-        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_oldContent(content), m_content(content), m_canvas(canvas)
-        { }
+        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_canvas(canvas)
+        {m_oldContent = content; m_content = content; }
+
         void exec() {
             // Saves the adress of the current content to be able to replace it by the new one in the stack later.
             m_oldContent = m_content;
@@ -354,6 +362,7 @@ class DeleteContentCommand : public AbstractCommand {
             // FIXME: segfault when undoing stuff done before deleting it. Obviously because the previous image is deleted, so it segfault because the pointer in the stack still points to the old image. Need to update it when recreating...
 
         }
+
         void unexec() {
             if(m_content==0) {
                 qDebug() << "DeleteContent: Content is deleted, recreate it";
@@ -365,24 +374,23 @@ class DeleteContentCommand : public AbstractCommand {
               }
             }
         }
-        QString name() {
+        QString name() const {
             return tr("Delete content");
         }
 };
 
+//DONE
 /* This command manges movements of the content */
 class FrameCommand : public AbstractCommand {
     private:
         /* Private vars */
-        AbstractContent *m_content;
         quint32 m_previousClass, m_newClass;
         bool m_previousMirror, m_newMirror;
     public:
-        FrameCommand(AbstractContent *content, quint32 newClass, bool mirrored) : m_content(content)
-                                                                            , m_newClass(newClass)
-                                                                            , m_newMirror(mirrored)
-
+        FrameCommand(AbstractContent *content, quint32 newClass, bool mirrored) : m_newClass(newClass)
+                                                                                , m_newMirror(mirrored)
         {
+            m_content = content;
             m_previousClass = content->frameClass();
             m_previousMirror = content->mirrored();
         }
@@ -398,11 +406,19 @@ class FrameCommand : public AbstractCommand {
             m_content->setFrame(FrameFactory::createFrame(m_previousClass));
             m_content->setMirrored(m_previousMirror);
         }
-        QString name() {
+
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+            if(m_content == oldContent) {
+                m_content = newContent;
+            }
+        }
+
+        QString name() const {
             return tr("Change frame");
         }
 };
 
+//DONE
 /* Manage background content */
 class BackgroundContentCommand : public AbstractCommand {
     private:
@@ -420,12 +436,20 @@ class BackgroundContentCommand : public AbstractCommand {
         void unexec() {
             m_canvas->setBackContent(m_previousContent);
         }
-        QString name() {
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+            if(m_previousContent == oldContent) {
+                m_previousContent = newContent;
+            } else if(m_newContent == oldContent) {
+                m_newContent = newContent;
+            }
+        }
+        QString name() const {
             return tr("Change background");
         }
 
 };
 
+//DONE
 class BackgroundRatioCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
@@ -442,11 +466,12 @@ class BackgroundRatioCommand : public AbstractCommand {
         void unexec() {
             m_canvas->setBackContentRatio(m_previousRatio);
         }
-        QString name() {
+        QString name() const {
             return tr("New background ratio");
         }
 };
 
+//DONE
 class BackgroundModeCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
@@ -463,11 +488,12 @@ class BackgroundModeCommand : public AbstractCommand {
         void unexec() {
             m_canvas->setBackMode(m_previousMode);
         }
-        QString name() {
+        QString name() const {
             return tr("New background mode");
         }
 };
 
+//DONE
 class DecoTopBarCommand : public AbstractCommand {
     Canvas *m_canvas;
     bool m_state;
@@ -482,10 +508,11 @@ class DecoTopBarCommand : public AbstractCommand {
     void unexec() {
         m_canvas->setTopBarEnabled(!m_state);
     }
-    QString name() {
+    QString name() const {
         return tr("Top bar enabled/disabled");
     }
 };
+//DONE
 class DecoBottomBarCommand : public AbstractCommand {
     Canvas *m_canvas;
     bool m_state;
@@ -500,11 +527,12 @@ class DecoBottomBarCommand : public AbstractCommand {
     void unexec() {
         m_canvas->setBottomBarEnabled(!m_state);
     }
-    QString name() {
+    QString name() const {
         return tr("Bottom bar enabled/disabled");
     }
 };
 
+//DONE
 class DecoTitleCommand : public AbstractCommand {
     private:
         /* Private vars */
@@ -521,11 +549,12 @@ class DecoTitleCommand : public AbstractCommand {
         void unexec() {
             m_canvas->setTitleText(m_previousText);
         }
-        QString name() {
+        QString name() const {
             return tr("Text changed");
         }
 };
 
+//DONE
 class ColorPickerCommand : public AbstractCommand {
     ColorPickerItem *m_cItem;
     const QColor m_pColor, m_nColor;
@@ -541,18 +570,17 @@ class ColorPickerCommand : public AbstractCommand {
     void unexec() {
         m_cItem->setColor(m_pColor);
     }
-    QString name() {
+    QString name() const {
         return tr("Color changed");
     }
 };
 
+//DONE
 class StackCommand : public AbstractCommand {
-    AbstractContent * m_content;
     int m_pZ, m_nZ;
     public:
-    StackCommand(AbstractContent *c, int pZ, int nZ) : m_content(c)
-                                                       , m_pZ(pZ), m_nZ(nZ)
-    {}
+    StackCommand(AbstractContent *c, int pZ, int nZ) : m_pZ(pZ), m_nZ(nZ)
+    { m_content = c; }
 
     void exec() {
         m_content->setZValue(m_nZ);
@@ -560,8 +588,17 @@ class StackCommand : public AbstractCommand {
     void unexec() {
         m_content->setZValue(m_pZ);
     }
+    QString name() const {
+        return tr("Stack order");
+    }
+    void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+        if(m_content == oldContent) {
+            m_content = newContent;
+        }
+    }
 };
 
+//XXX: Delete modifications to apply
 class ShapeCommand : public AbstractCommand {
     TextContent* m_content;
     QList<QPointF >  m_pCps, m_nCps;

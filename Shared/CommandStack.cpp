@@ -24,7 +24,7 @@ CommandStack & CommandStack::instance()
 
 void CommandStack::doCommand(AbstractCommand *command)
 {
-    qDebug() << "do command << " << command->name();
+    qDebug() << "exec command << " << command->name();
     m_undoStack.push_back(command);
     command->exec();
 }
@@ -47,7 +47,7 @@ void CommandStack::undoLast()
 {
     if(m_undoStack.isEmpty()) return;
     AbstractCommand * command = m_undoStack.takeLast();
-    qDebug() << "undo command " << command->name();
+    qDebug() << "unexec command " << command->name();
     if(command != 0) {
         command->unexec();
         m_redoStack.push_back(command);

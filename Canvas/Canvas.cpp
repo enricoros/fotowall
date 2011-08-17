@@ -1434,6 +1434,7 @@ void Canvas::slotStackContent(int op)
     GroupedCommands *gc = new GroupedCommands();
     foreach (AbstractContent * content, m_content)
         gc->addCommand(new StackCommand(content, content->zValue(), z++));
+    gc -> setName(tr("Change content stack order"));
     CommandStack::instance().doCommand(gc);
 }
 
@@ -1512,6 +1513,7 @@ void Canvas::slotApplyEffect(const PictureEffect & effect, bool all)
             gc->addCommand(new EffectCommand(picture, effect));
         }
     }
+    gc->setName(tr("Change effects"));
     CommandStack::instance().doCommand(gc);
 }
 
@@ -1529,6 +1531,7 @@ void Canvas::slotFlipHorizontally()
     foreach (PictureContent * picture, pictures) {
         gc->addCommand(new EffectCommand(picture, PictureEffect::FlipH));
     }
+    gc->setName(tr("Horizontally flip pictures"));
     CommandStack::instance().doCommand(gc);
 }
 
@@ -1539,6 +1542,7 @@ void Canvas::slotFlipVertically()
     foreach (PictureContent * picture, pictures) {
         gc->addCommand(new EffectCommand(picture, PictureEffect::FlipV));
     }
+    gc->setName(tr("Vertically flip pictures"));
     CommandStack::instance().doCommand(gc);
 }
 

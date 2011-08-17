@@ -4,7 +4,7 @@ GroupedCommands::GroupedCommands()
 {}
 
 GroupedCommands::GroupedCommands(QList<AbstractCommand *> commands) : m_commands(commands)
-{}
+{ m_name = tr("Group Command"); }
 
 void GroupedCommands::addCommands(QList<AbstractCommand*> commands) {
     m_commands.append(commands);
@@ -24,4 +24,17 @@ void GroupedCommands::unexec() {
     foreach (AbstractCommand *c, m_commands) {
         c->unexec();
     }
+}
+
+void GroupedCommands::replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+    foreach (AbstractCommand *c, m_commands) {
+        c->replaceContent(oldContent, newContent);
+    }
+}
+
+void GroupedCommands::setName(const QString &name) {
+    m_name = name;
+}
+QString GroupedCommands::name() const {
+    return m_name;
 }

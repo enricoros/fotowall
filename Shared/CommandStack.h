@@ -18,7 +18,7 @@
 #include "AbstractCommand.h"
 #include <QList>
 
-/* This class keep a track of all the commands executed. It allows to do/undo each command
+/* This class keep a track of all the commands executed. It allows to exec/unexec each command
  * by calling AbstractCommand virtual functions.
  * It is a singleton, so it can be instancied only once. */
 class CommandStack
