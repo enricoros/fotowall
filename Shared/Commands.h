@@ -16,6 +16,7 @@
 #define __Command__
 
 #include "Shared/AbstractCommand.h"
+#include "Shared/CommandStack.h"
 #include "Shared/PictureEffect.h"
 #include "Shared/ColorPickerItem.h"
 
@@ -140,6 +141,12 @@ class MotionCommand : public AbstractCommand {
                                                                                    ,m_previous(previous)
                                                                                    ,m_newMotion(newMotion)
         {}
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+            if(m_content == oldContent) {
+                qDebug() << "MotionCommand: Replacing content... Oh Yeah!";
+                m_content = newContent;
+            }
+        }
         void exec() {
             m_content->setPos(m_newMotion);
         }
@@ -324,30 +331,38 @@ class NewWebcamCommand : public AbstractCommand {
         }
 };
 
-/* Hide the content instead of deleting */
 class DeleteContentCommand : public AbstractCommand {
     private:
+        AbstractContent *m_oldContent;
         AbstractContent *m_content;
         Canvas *m_canvas;
         QDomElement m_contentElt;
     public:
-        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_content(content), m_canvas(canvas)
-        { qDebug() << "constructor adress: " << content;
-        if(m_content==content) {qDebug()<<"ok";}}
+        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_oldContent(content), m_content(content), m_canvas(canvas)
+        { }
         void exec() {
+            // Saves the adress of the current content to be able to replace it by the new one in the stack later.
+            m_oldContent = m_content;
+
             // Get the content xml info, in order to recreate it correctly
             QDir t = QDir::currentPath();
             QDomDocument doc;
             m_contentElt = doc.createElement("content");
-            m_content->toXml(m_contentElt, t);
-            qDebug() << "adress: " << m_content;
+            m_content->toXml(m_contentElt, t); // XXX: why does it need a path ???
             m_canvas->deleteContent(m_content);
             m_content=0;
             // FIXME: segfault when undoing stuff done before deleting it. Obviously because the previous image is deleted, so it segfault because the pointer in the stack still points to the old image. Need to update it when recreating...
+
         }
         void unexec() {
             if(m_content==0) {
+                qDebug() << "DeleteContent: Content is deleted, recreate it";
                 m_content = m_canvas->addContentFromXml(m_contentElt);
+                qDebug() << "DeleteContent: Content restored";
+                if(m_oldContent != m_content) {
+                    qDebug() << "The new content is at a different adress than the previous one, update pointers in stack";
+                    CommandStack::instance().replaceContent(m_oldContent, m_content);
+              }
             }
         }
         QString name() {

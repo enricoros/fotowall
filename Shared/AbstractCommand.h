@@ -33,6 +33,10 @@ class AbstractCommand : public QObject {
         virtual AbstractContent * content() const {
             return m_content;
         }
+
+        virtual void replaceContent(AbstractContent *, AbstractContent *) {
+        }
+
         virtual void exec() = 0;
         virtual void unexec() = 0;
         virtual QString name() {

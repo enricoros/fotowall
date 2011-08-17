@@ -33,6 +33,8 @@ class CommandStack
         // (useful for letting Qt manage the moves for exemple)
         void addCommand(AbstractCommand *command);
 
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent);
+
         void undoLast();
         void redoLast();
 
