@@ -1467,6 +1467,7 @@ void Canvas::slotDeleteContent()
             return;
 
 // Undo/redo delete code
+    GroupedCommands *gc = new GroupedCommands();
     foreach (AbstractContent * content, selectedContent) {
         //deleteContent(content);
         if (content) {
@@ -1481,9 +1482,11 @@ void Canvas::slotDeleteContent()
                 }
             }
             DeleteContentCommand *command = new DeleteContentCommand(content, this);
-            CommandStack::instance().doCommand(command);
+            gc->addCommand(command);
         }
     }
+    gc->setName(tr("Delete selected contents"));
+    CommandStack::instance().doCommand(gc);
 }
 
 void Canvas::slotDeleteConfig()

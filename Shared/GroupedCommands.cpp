@@ -1,5 +1,7 @@
 #include "GroupedCommands.h"
 
+#include <QDebug>
+
 GroupedCommands::GroupedCommands()
 {}
 
@@ -16,12 +18,14 @@ void GroupedCommands::addCommand(AbstractCommand* command) {
 
 void GroupedCommands::exec() {
     foreach (AbstractCommand *c, m_commands) {
+        qDebug() << "\texec command (group)" << c->name();
         c->exec();
     }
 }
 
 void GroupedCommands::unexec() {
     foreach (AbstractCommand *c, m_commands) {
+        qDebug() << "\tunexec command (group) " << c->name();
         c->unexec();
     }
 }

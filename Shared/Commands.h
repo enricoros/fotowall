@@ -67,6 +67,7 @@ class EffectCommand : public AbstractCommand {
         }
 };
 
+//DONE
 /* This commands manage the text of the TextContent */
 class TextCommand : public AbstractCommand {
     private:
@@ -85,46 +86,54 @@ class TextCommand : public AbstractCommand {
         void unexec() {
             m_content->setHtml(m_previousText);
         }
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+            if(m_content == oldContent) {
+                m_content = dynamic_cast<TextContent *>(newContent);
+            }
+        }
         QString name() const {
             return tr("Text changed");
         }
 };
 
+//DONE
 /* This commands manage transformations: rotations and scaling */
 class TransformCommand : public AbstractCommand {
     private:
         /* Private vars */
-        AbstractContent *m_content;
         QTransform m_previous, m_new;
     public:
-        TransformCommand(AbstractContent *content, QTransform& previous_matrix, QTransform& new_matrix) : m_content(content)
-                                                              , m_previous(previous_matrix)
+        TransformCommand(AbstractContent *content, QTransform& previous_matrix, QTransform& new_matrix) : m_previous(previous_matrix)
                                                               , m_new(new_matrix)
-        {}
+        { m_content = content; }
         void exec() {
             m_content->setTransform(m_new);
         }
         void unexec() {
             m_content->setTransform(m_previous);
         }
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+            if(m_content == oldContent) {
+                m_content = newContent;
+            }
+        }
         QString name() const {
             return tr("Transformation");
         }
 };
 
+//DONE
 class RotateAndResizeCommand : public AbstractCommand {
     private:
         /* Private vars */
-        AbstractContent *m_content;
         const qreal m_pAngle, m_nAngle;
         const QRect m_pRect, m_nRect;
     public:
         RotateAndResizeCommand(AbstractContent *content,
                                 const qreal pAngle, const qreal nAngle,
-                                const QRect pRect, const QRect nRect) : m_content(content)
-                                                          , m_pAngle(pAngle) , m_nAngle(nAngle)
+                                const QRect pRect, const QRect nRect) : m_pAngle(pAngle) , m_nAngle(nAngle)
                                                           , m_pRect(pRect), m_nRect(nRect)
-       {}
+       { m_content = content; }
         void exec() {
             m_content->setRotation(m_nAngle);
             m_content->resizeContents(m_nRect);
@@ -133,11 +142,17 @@ class RotateAndResizeCommand : public AbstractCommand {
             m_content->setRotation(m_pAngle);
             m_content->resizeContents(m_pRect);
         }
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+            if(m_content == oldContent) {
+                m_content = newContent;
+            }
+        }
         QString name() const {
             return tr("Rotation and Resize");
         }
 };
 
+//DONE
 /* This command manges movements of the content */
 class MotionCommand : public AbstractCommand {
     private:
@@ -172,6 +187,7 @@ class MotionCommand : public AbstractCommand {
 };
 
 
+//XXX: TODO
 /* This command manages creation (and hidding when unexec) of new image content */
 class NewImageCommand : public AbstractCommand {
     private:
@@ -273,23 +289,44 @@ class NewFlickrImageCommand : public AbstractCommand {
 };*/
 
 /* This command manages creation (and hidding when unexec) of new text content */
+//DONE
 class NewTextCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
         TextContent *m_content;
+        QDomElement m_contentElt;
+        bool m_created;
     public:
-        NewTextCommand(Canvas *canvas) : m_canvas(canvas), m_content(0)
+        NewTextCommand(Canvas *canvas) : m_canvas(canvas), m_content(0), m_created(false)
         { m_oldContent = m_content; }
         void exec() {
-            if(m_content == 0)
-                m_content = m_canvas->addTextContent();
-            else
-                m_content->show();
+            if(m_content==0) {
+                if(!m_created) {
+                    m_content = m_canvas->addTextContent();
+                    m_created=true;
+                } else {
+                    qDebug() << "DeleteContent: Content is deleted, recreate it";
+//XXX: secure dynamic_cast
+                    m_content = dynamic_cast<TextContent *>(m_canvas->addContentFromXml(m_contentElt));
+                    qDebug() << "DeleteContent: Content restored";
+                    if(m_oldContent != m_content) {
+                        qDebug() << "The new content is at a different adress than the previous one, update pointers in stack";
+                        CommandStack::instance().replaceContent(m_oldContent, m_content);
+                    }
+                }
+            }
         }
         void unexec() {
-            //AbstractContent *c = dynamic_cast<AbstractContent *>(m_content);
-            //m_canvas->removeContent(c);
-            m_content->hide();
+            // Saves the adress of the current content to be able to replace it by the new one in the stack later.
+            m_oldContent = m_content;
+
+            // Get the content xml info, in order to recreate it correctly
+            QDir t = QDir::currentPath();
+            QDomDocument doc;
+            m_contentElt = doc.createElement("content");
+            m_content->toXml(m_contentElt, t); // XXX: why does it need a path ???
+            m_canvas->deleteContent(m_content);
+            m_content=0;
         }
         AbstractContent *content() {
             return m_content;
@@ -299,6 +336,7 @@ class NewTextCommand : public AbstractCommand {
         }
 };
 
+//XXX: todo (but I have to get a webcam working first
 /* This command manages creation (and hidding when unexec) of new webcam content */
 class NewWebcamCommand : public AbstractCommand {
     private:
@@ -359,7 +397,6 @@ class DeleteContentCommand : public AbstractCommand {
             m_content->toXml(m_contentElt, t); // XXX: why does it need a path ???
             m_canvas->deleteContent(m_content);
             m_content=0;
-            // FIXME: segfault when undoing stuff done before deleting it. Obviously because the previous image is deleted, so it segfault because the pointer in the stack still points to the old image. Need to update it when recreating...
 
         }
 
