@@ -451,7 +451,7 @@ class FrameCommand : public AbstractCommand {
         }
 
         QString name() const {
-            return tr("Change frame");
+            return tr("Change frame/mirror");
         }
 };
 

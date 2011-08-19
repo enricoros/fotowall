@@ -1499,10 +1499,8 @@ void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all)
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(selectedItems());
     foreach (AbstractContent * content, m_content) {
         if (all || content->isSelected()) {
-            if (content->frameClass() != frameClass) {
-                FrameCommand *command = new FrameCommand(content, frameClass, mirrored);
-                CommandStack::instance().doCommand(command);
-            }
+            FrameCommand *command = new FrameCommand(content, frameClass, mirrored);
+            CommandStack::instance().doCommand(command);
         }
     }
 }
