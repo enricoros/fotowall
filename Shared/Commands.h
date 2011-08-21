@@ -16,6 +16,7 @@
 #define __Command__
 
 #include "Shared/AbstractCommand.h"
+#include "Shared/GroupedCommands.h"
 #include "Shared/CommandStack.h"
 #include "Shared/PictureEffect.h"
 #include "Shared/ColorPickerItem.h"
@@ -186,34 +187,75 @@ class MotionCommand : public AbstractCommand {
         }
 };
 
+//DONE
+class DeleteContentCommand : public AbstractCommand {
+    private:
+        Canvas *m_canvas;
+        QDomElement m_contentElt;
+    public:
+        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_canvas(canvas)
+        {m_oldContent = content; m_content = content; }
 
-//XXX: TODO
+        void exec() {
+            qDebug() << "Saving and deleting image";
+            // Saves the adress of the current content to be able to replace it by the new one in the stack later.
+            m_oldContent = m_content;
+
+            // Get the content xml info, in order to recreate it correctly
+            QDir t = QDir::currentPath();
+            QDomDocument doc;
+            m_contentElt = doc.createElement("content");
+            m_content->toXml(m_contentElt, t); // XXX: why does it need a path ???
+
+            m_canvas->deleteContent(m_content);
+            m_content=0;
+        }
+
+        void unexec() {
+            if(m_content==0) {
+                qDebug() << "Restoring image";
+                qDebug() << "DeleteContent: Content is deleted, recreate it";
+                m_content = m_canvas->addContentFromXml(m_contentElt);
+                qDebug() << "DeleteContent: Content restored";
+                if(m_oldContent != m_content) {
+                    qDebug() << "The new content is at a different adress than the previous one, update pointers in stack";
+                    CommandStack::instance().replaceContent(m_oldContent, m_content);
+              }
+            }
+        }
+        QString name() const {
+            return tr("Delete content");
+        }
+};
+
+//DONE
 /* This command manages creation (and hidding when unexec) of new image content */
 class NewImageCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
         const QStringList m_imagesPath;
-        QList<PictureContent *> m_images;
+        GroupedCommands *m_gc;
+        bool m_created;
     public:
         NewImageCommand(Canvas *canvas, const QStringList& paths) : m_canvas(canvas), m_imagesPath(paths)
-        {}
+                                                                  , m_created(false)
+        { m_gc = new GroupedCommands(); }
         void exec() {
-            if(m_images.isEmpty()) {
-                m_images = m_canvas->addPictureContent(m_imagesPath);
-            } else {
-                foreach(AbstractContent *image, m_images) {
-                    image->show();
+            if(!m_created) {
+                QList<PictureContent *> images = m_canvas->addPictureContent(m_imagesPath);
+                foreach (PictureContent *content, images) {
+                    DeleteContentCommand *c = new DeleteContentCommand(content, m_canvas);
+                    m_gc->addCommand(c);
                 }
+                m_created = true;
+            } else {
+                m_gc->unexec();
             }
         }
         void unexec() {
-            // Instead of deleting images, keep them in memory.
-            // It's faster to restaure, and fix some other problems if redo is used :
-            // the stack would contains commands using the old deleted item...
-            foreach(AbstractContent *image, m_images) {
-                image->hide();
-            }
-            //m_canvas->removeContents(m_images);
+            m_gc->exec();
+        }
+        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
         }
         QString name() const {
             return tr("Add images");
@@ -377,44 +419,6 @@ class NewWebcamCommand : public AbstractCommand {
         }
 };
 
-//DONE
-class DeleteContentCommand : public AbstractCommand {
-    private:
-        Canvas *m_canvas;
-        QDomElement m_contentElt;
-    public:
-        DeleteContentCommand(AbstractContent *content, Canvas *canvas) : m_canvas(canvas)
-        {m_oldContent = content; m_content = content; }
-
-        void exec() {
-            // Saves the adress of the current content to be able to replace it by the new one in the stack later.
-            m_oldContent = m_content;
-
-            // Get the content xml info, in order to recreate it correctly
-            QDir t = QDir::currentPath();
-            QDomDocument doc;
-            m_contentElt = doc.createElement("content");
-            m_content->toXml(m_contentElt, t); // XXX: why does it need a path ???
-            m_canvas->deleteContent(m_content);
-            m_content=0;
-
-        }
-
-        void unexec() {
-            if(m_content==0) {
-                qDebug() << "DeleteContent: Content is deleted, recreate it";
-                m_content = m_canvas->addContentFromXml(m_contentElt);
-                qDebug() << "DeleteContent: Content restored";
-                if(m_oldContent != m_content) {
-                    qDebug() << "The new content is at a different adress than the previous one, update pointers in stack";
-                    CommandStack::instance().replaceContent(m_oldContent, m_content);
-              }
-            }
-        }
-        QString name() const {
-            return tr("Delete content");
-        }
-};
 
 //DONE
 /* This command manges movements of the content */

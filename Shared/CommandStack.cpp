@@ -36,9 +36,12 @@ void CommandStack::addCommand(AbstractCommand *command)
 }
 
 void CommandStack::replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
-    qDebug() << "Commandstack::replaceContent()";
     foreach (AbstractCommand *command, m_undoStack) {
-        qDebug() << "CommandStack: updating "<< command->name();
+        qDebug() << "CommandStack: updating undo stack"<< command->name();
+        command->replaceContent(oldContent, newContent);
+    }
+    foreach (AbstractCommand *command, m_redoStack) {
+        qDebug() << "CommandStack: updating redo stack"<< command->name();
         command->replaceContent(oldContent, newContent);
     }
 }
