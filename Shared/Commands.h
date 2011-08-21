@@ -47,9 +47,11 @@ class EffectCommand : public AbstractCommand {
             m_previousSize = content->contentRect();
         }
         void exec() {
+            if(!m_content) return;
             m_content->addEffect(m_newEffect);
         }
         void unexec() {
+            if(!m_content) return;
             // Reset the correct size (because of effects like crop).
             m_content->resizeContents(m_previousSize, false);
 
@@ -82,9 +84,11 @@ class TextCommand : public AbstractCommand {
             m_previousText = content->toHtml();
         }
         void exec() {
+            if(!m_content) return;
             m_content->setHtml(m_newText);
         }
         void unexec() {
+            if(!m_content) return;
             m_content->setHtml(m_previousText);
         }
         void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
@@ -255,8 +259,6 @@ class NewImageCommand : public AbstractCommand {
         void unexec() {
             m_gc->exec();
         }
-        void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
-        }
         QString name() const {
             return tr("Add images");
         }
@@ -348,7 +350,6 @@ class NewTextCommand : public AbstractCommand {
                     m_created=true;
                 } else {
                     qDebug() << "DeleteContent: Content is deleted, recreate it";
-//XXX: secure dynamic_cast
                     m_content = dynamic_cast<TextContent *>(m_canvas->addContentFromXml(m_contentElt));
                     qDebug() << "DeleteContent: Content restored";
                     if(m_oldContent != m_content) {
@@ -359,6 +360,7 @@ class NewTextCommand : public AbstractCommand {
             }
         }
         void unexec() {
+            if(!m_content) return;
             // Saves the adress of the current content to be able to replace it by the new one in the stack later.
             m_oldContent = m_content;
 
@@ -649,10 +651,17 @@ class ShapeCommand : public AbstractCommand {
     { }
 
     void exec() {
+        if(!m_content) return;
         m_content->setControlPoints(m_nCps);
     }
     void unexec() {
         m_content->setControlPoints(m_pCps);
+    }
+    void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+        if(!m_content) return;
+        if(m_content == oldContent) {
+            m_content = dynamic_cast<TextContent *>(newContent);
+        }
     }
 };
 
