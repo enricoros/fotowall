@@ -224,12 +224,13 @@ WebcamContent* Canvas::addWebcamContent(int webcamIndex)
     return w;
 }
 
-void Canvas::addWordcloudContent()
+WordcloudContent * Canvas::addWordcloudContent()
 {
     clearSelection();
     WordcloudContent * w = createWordcloud(visibleCenter(), true);
     w->manualInitialization();
     w->setSelected(true);
+    return w;
 }
 
 void Canvas::addManualContent(AbstractContent * content, const QPoint & pos)

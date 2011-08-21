@@ -430,7 +430,8 @@ void CanvasAppliance::slotAddWebcam()
 
 void CanvasAppliance::slotAddWordcloud()
 {
-    m_extCanvas->addWordcloudContent();
+    NewWordcloudCommand *c = new NewWordcloudCommand(m_extCanvas);
+    CommandStack::instance().doCommand(c);
     setFocusToScene();
 }
 

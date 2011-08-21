@@ -26,6 +26,7 @@
 #include "Canvas/PictureContent.h"
 #include "Canvas/TextContent.h"
 #include "Canvas/WebcamContent.h"
+#include "Canvas/WordcloudContent.h"
 #include "Frames/FrameFactory.h"
 #include <QStringList>
 #include <QUrl>
@@ -233,7 +234,7 @@ class DeleteContentCommand : public AbstractCommand {
 };
 
 //DONE
-/* This command manages creation (and hidding when unexec) of new image content */
+/* This command manages creation (and deletion when unexecuted) of image content */
 class NewImageCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
@@ -270,6 +271,7 @@ class NewImageCommand : public AbstractCommand {
             return desc;
         }
 };
+
 
 /*class NewNetworkImageCommand : public AbstractCommand {
     private:
@@ -372,11 +374,27 @@ class NewTextCommand : public AbstractCommand {
             m_canvas->deleteContent(m_content);
             m_content=0;
         }
-        AbstractContent *content() {
-            return m_content;
-        }
         QString name() const {
             return tr("Add text");
+        }
+};
+
+class NewWordcloudCommand : public AbstractCommand {
+    private:
+        Canvas *m_canvas;
+        WordcloudContent *m_content;
+        QDomElement m_contentElt;
+    public:
+        NewWordcloudCommand(Canvas *canvas) : m_canvas(canvas), m_content(0)
+        { m_content = m_canvas->addWordcloudContent(); }
+        void exec() {
+            m_content->show();
+        }
+        void unexec() {
+            m_content->hide();
+        }
+        QString name() const {
+            return tr("Add Wordcloud");
         }
 };
 
@@ -641,7 +659,7 @@ class StackCommand : public AbstractCommand {
     }
 };
 
-//XXX: Delete modifications to apply
+//DONE
 class ShapeCommand : public AbstractCommand {
     TextContent* m_content;
     QList<QPointF >  m_pCps, m_nCps;

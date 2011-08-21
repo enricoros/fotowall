@@ -52,7 +52,7 @@ class Canvas : public AbstractScene
         QList<PictureContent*> addPictureContent(const QStringList & fileNames);
         TextContent* addTextContent();
         WebcamContent* addWebcamContent(int input);
-        void addWordcloudContent();
+        WordcloudContent* addWordcloudContent();
         void addManualContent(AbstractContent * content, const QPoint & pos);
         void deleteContent(AbstractContent * content);
         void clearContent();
