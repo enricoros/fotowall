@@ -405,10 +405,13 @@ class NewWebcamCommand : public AbstractCommand {
         Canvas *m_canvas;
         int m_webcamIndex;
         WebcamContent *m_content;
+        DeleteContentCommand *m_deleteCommand;
     public:
         NewWebcamCommand(Canvas *canvas, int webcamIndex) : m_canvas(canvas), m_webcamIndex(webcamIndex)
-                                                            , m_content(0)
-        {}
+                                                          , m_content(0)
+        {
+            m_deleteCommand = 0;
+        }
 
         bool setContent(AbstractContent *content) {
             WebcamContent *c = dynamic_cast<WebcamContent *>(content);
@@ -423,15 +426,15 @@ class NewWebcamCommand : public AbstractCommand {
         }
 
         void exec() {
-            if(m_content == 0)
+            if(m_content == 0) {
                 m_content = m_canvas->addWebcamContent(m_webcamIndex);
+                m_deleteCommand = new DeleteContentCommand(m_content, m_canvas);
+            }
             else
-                m_content->show();
+                m_deleteCommand->unexec();
         }
         void unexec() {
-            m_content->hide();
-            //AbstractContent *c = dynamic_cast<AbstractContent *>(m_content);
-            //m_canvas->removeContent(c);
+            m_deleteCommand->exec();
         }
 
         QString name() const {
