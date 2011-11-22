@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#include "mainwindow.h"
+#include "mainwindow_posterazor.h"
 #include "controller.h"
 #if defined (FREEIMAGE_LIB)
 #   include "imageloaderfreeimage.h"
