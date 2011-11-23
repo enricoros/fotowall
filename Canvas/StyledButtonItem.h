@@ -21,6 +21,7 @@
 class StyledButtonItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+    Q_INTERFACES(QGraphicsItem)
     public:
         StyledButtonItem(const QString & text, const QFont & font, QGraphicsItem * parent = 0);
 
