@@ -84,7 +84,7 @@
     </palette>
    </property>
    <property name="title" stdset="0">
-    <string>ADD NEW</string>
+    <string>INSERT</string>
    </property>
    <property name="borderFlags" stdset="0">
     <number>2</number>

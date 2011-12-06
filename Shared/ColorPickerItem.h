@@ -18,8 +18,10 @@
 #include <QtGui/QGraphicsItem>
 #include <QtGui/QIcon>
 
-class ColorPickerItem : public QObject, public QGraphicsItem {
+class ColorPickerItem : public QObject, public QGraphicsItem
+{
     Q_OBJECT
+    Q_INTERFACES(QGraphicsItem)
     public:
         ColorPickerItem(int width, int height, QGraphicsItem * parent = 0);
 

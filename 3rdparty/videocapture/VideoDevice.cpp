@@ -128,6 +128,7 @@ QList<DeviceInfo> VideoDevice::scanDevices()
                  info.filePath = QString();
                  info.index = idx++;
                 devices.append(info);
+                qWarning() << "VFW devices:" << i << info.prettyName << info.version << info.filePath << info.index;
             }
         }
     }
@@ -347,9 +348,64 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
             break;
     }
 #elif defined(VD_BUILD_WIN_VFW)
-    // THIS IS RUDE!! :-/ FIXME TODO HELPME
-    pixelFormat = PIXELFORMAT_YUYV;
-    m_imageBuffer.size = QSize(640, 480);
+    if (vfwResolveSymbols()) {
+
+        // create a hidden top-level window for a native handle
+        if (!m_vWidget) {
+            m_vWidget = new QWidget;
+            m_vWidget->setAttribute(Qt::WA_NativeWindow);
+            m_vWidget->hide();
+        }
+        HWND parentHwnd = WindowFromDC(m_vWidget->getDC());
+        UpdateWindow(parentHwnd);
+
+        // start the capture preview window
+        m_vHwnd = pCapCreateCaptureWindowA((LPCSTR)"Capture Window", WS_CHILD | WS_VISIBLE,
+                                           0, 0, 640, 480, (HWND)parentHwnd, m_info.index);
+        if (!m_vHwnd) {
+            qDebug("VideoDevice::setCaptureSize: can't create capture window");
+            delete m_vWidget;
+            m_vWidget = 0;
+            return false;
+        }
+
+        if (!capDriverConnect(m_vHwnd, m_info.index)) {
+            qDebug("VideoDevice::setCaptureSize: can't connect cap driver (hwnd %x, index %d). stopping.", m_vHwnd, m_info.index);
+            DestroyWindow(m_vHwnd);
+            m_vHwnd = 0;
+            delete m_vWidget;
+            m_vWidget = 0;
+            return false;
+        }
+
+        // query the real size
+        CAPSTATUS capStatus;
+        capGetStatus(m_vHwnd, &capStatus, sizeof(CAPSTATUS));
+        m_maxSize = QSize(capStatus.uiImageWidth, capStatus.uiImageHeight);
+        m_minSize = m_maxSize;
+        m_imageBuffer.size = m_maxSize;
+
+        // show format dialog?
+        capDlgVideoFormat(m_vHwnd);
+
+        // force video format?
+        //capSetVideoFormat()
+        //capDlgVideoSource(m_vHwnd);
+        //capGetVideoFormatSize(m_vHwnd);
+        //capDlgVideoDisplay(m_vHwnd);
+
+        BITMAPINFO bi;
+        if (!capGetVideoFormat(m_vHwnd, &bi, sizeof(BITMAPINFO))) {
+            qDebug("VideoDevice::setCaptureSize: can't get video format. stopping.");
+            return false;
+        }
+        if (!bi.bmiHeader.biCompression)
+            pixelFormat = PIXELFORMAT_RGB24;
+        else if (bi.bmiHeader.biCompression == MAKEFOURCC('Y','U','Y','2'))
+            pixelFormat = PIXELFORMAT_YUYV;
+        else
+            qDebug("VideoDevice::setCaptureSize: unknown pixel format (%x). trying to continue.", bi.bmiHeader.biCompression);
+    }
 #endif
 
     // 4. setup imagebuffer
@@ -374,10 +430,19 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
 static ImageBuffer * s_imageBuffer = 0;
 static LRESULT videoCallback(__in HWND /*hWnd*/, __in LPVIDEOHDR lpVHdr)
 {
-    if (!s_imageBuffer || !(lpVHdr->dwFlags & VHDR_KEYFRAME))
+    if (!s_imageBuffer) {
+        qDebug("VFW::videoCallback: imagebuffer not ready");
         return 0;
+    }
+    /*if (!(lpVHdr->dwFlags & VHDR_KEYFRAME)) {
+        qDebug("VFW::videoCallback: bad frame flags");
+        return 0;
+    }*/
+    if ((int)lpVHdr->dwBufferLength < s_imageBuffer->data.size()) {
+        qDebug("VFW::videoCallback: mismatch in frame buffer sizes: %d vs %d", lpVHdr->dwBufferLength, s_imageBuffer->data.size());
+        return 0;
+    }
     memcpy(s_imageBuffer->data.data(), lpVHdr->lpData, s_imageBuffer->data.size());
-    qWarning("Got Data %d %d %d", lpVHdr->dwBufferLength, lpVHdr->dwBytesUsed, s_imageBuffer->data.size());
     s_imageBuffer = 0;
     return 0;
 }
@@ -463,50 +528,13 @@ bool VideoDevice::startCapturing()
             } break;
     }
 #elif defined(VD_BUILD_WIN_VFW)
-    if (!vfwResolveSymbols())
-        return false;
-
-    // create a hidden top-level window for a native handle
-    if (!m_vWidget) {
-        m_vWidget = new QWidget;
-        m_vWidget->setAttribute(Qt::WA_NativeWindow);
-        m_vWidget->hide();
+    if (vfwResolveSymbols()) {
+        capSetCallbackOnFrame(m_vHwnd, videoCallback);
+        //capPreviewRate(m_vHwnd, 40);
+        //capPreviewScale(m_vHwnd, TRUE);
+        //capPreview(m_vHwnd, TRUE);
+        //capDlgVideoFormat(m_vHwnd);
     }
-    HWND parentHwnd = WindowFromDC(m_vWidget->getDC());
-    UpdateWindow(parentHwnd);
-
-    // start the capture preview window
-    m_vHwnd = pCapCreateCaptureWindowA((LPCSTR)"Capture Window", WS_CHILD | WS_VISIBLE, 0, 0, 640, 480, (HWND)parentHwnd, m_info.index);
-    if (!m_vHwnd) {
-        delete m_vWidget;
-        m_vWidget = 0;
-        return false;
-    }
-
-    if (!capDriverConnect(m_vHwnd, m_info.index)) {
-        DestroyWindow(m_vHwnd);
-        m_vHwnd = 0;
-        delete m_vWidget;
-        m_vWidget = 0;
-        return false;
-    }
-
-    //capDlgVideoFormat(m_vHwnd);
-
-    CAPSTATUS capStatus;
-    capGetStatus(m_vHwnd, &capStatus, sizeof(CAPSTATUS));
-
-    m_maxSize = QSize(capStatus.uiImageWidth, capStatus.uiImageHeight);
-    m_minSize = m_maxSize;
-
-    qWarning() << "VideoDevice::startCapturing(VFW): size is" << m_maxSize;
-
-    capSetCallbackOnFrame(m_vHwnd, videoCallback);
-    //capPreviewRate(m_vHwnd, 40);
-    //capPreviewScale( hWndC, TRUE);
-    //capPreview(m_vHwnd, TRUE);
-    //capDlgVideoFormat(m_vHwnd);
-
 #endif
     qDebug("VideoDevice::startCapturing: started");
     m_capturing = true;
@@ -683,9 +711,10 @@ bool VideoDevice::captureFrame()
     }
 #elif defined(VD_BUILD_WIN_VFW)
     s_imageBuffer = &m_imageBuffer;
-    if (!capGrabFrameNoStop(m_vHwnd))
+    if (!capGrabFrameNoStop(m_vHwnd)) {
+        qDebug("VideoDevice::captureFrame: error capturing still frame");
         return false;
-    qWarning("preso!");
+    }
 #endif
     return true;
 }
@@ -753,12 +782,16 @@ bool VideoDevice::getLastFrame(QImage * qimage) const
         case PIXELFORMAT_RGB24	:
             {
                 int step=0;
-                for(int loop=0;loop < imgBytes;loop+=4) {
-                    imgData[loop]   = src[step];
-                    imgData[loop+1] = src[step+1];
-                    imgData[loop+2] = src[step+2];
-                    imgData[loop+3] = 255;
-                    step+=3;
+                for (int y = 0; y < H; y++) {
+                    int dstep=(H - 1 - y) * W * 4;
+                    for (int x = 0; x < W; x++) {
+                        imgData[dstep]   = src[step];
+                        imgData[dstep+1] = src[step+1];
+                        imgData[dstep+2] = src[step+2];
+                        imgData[dstep+3] = 255;
+                        dstep+=4;
+                        step+=3;
+                    }
                 }
                 decoded = true;
             }
@@ -1234,6 +1267,9 @@ PixelFormat VideoDevice::setPixelFormat(PixelFormat newformat) const
             }
             break;
     }
+#elif defined(VD_BUILD_WIN_VFW)
+    Q_UNUSED(newformat)
+    //WINTODO;
 #else
     Q_UNUSED(newformat)
     NEWTODO;
@@ -1311,6 +1347,9 @@ PixelFormat VideoDevice::pixelFormatFromPlatform(int platform) const
             }
             break;
     }
+#elif defined(VD_BUILD_WIN_VFW)
+    Q_UNUSED(platform)
+    //WINTODO;
 #else
     Q_UNUSED(platform)
     NEWTODO;
@@ -1373,6 +1412,9 @@ int VideoDevice::pixelFormatToPlatform(PixelFormat pixelformat) const
             }
             break;
     }
+#elif defined(VD_BUILD_WIN_VFW)
+    Q_UNUSED(pixelformat)
+    //WINTODO;
 #else
     Q_UNUSED(pixelformat)
     NEWTODO;
@@ -1529,6 +1571,9 @@ QString VideoDevice::pixelFormatNamePlatform(int pixelformat) const
             }
             break;
     }
+#elif defined(VD_BUILD_WIN_VFW)
+    Q_UNUSED(pixelformat)
+    //WINTODO;
 #else
     Q_UNUSED(pixelformat)
     NEWTODO;

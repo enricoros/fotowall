@@ -33,7 +33,7 @@ VideoProvider::VideoProvider()
 {
     // defer video initialization, to offload gui on startup...
     if (!Disable)
-        QTimer::singleShot(500, this, SLOT(initDevices()));
+        QTimer::singleShot(400, this, SLOT(initDevices()));
 }
 
 VideoProvider::~VideoProvider()

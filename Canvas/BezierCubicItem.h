@@ -24,6 +24,7 @@ class BezierCubicPath;
 class BezierCubicItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+    Q_INTERFACES(QGraphicsItem)
     public:
         BezierCubicItem(QGraphicsItem * parent = 0);
 

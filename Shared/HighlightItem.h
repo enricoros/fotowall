@@ -22,6 +22,7 @@
 class HighlightItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+    Q_INTERFACES(QGraphicsItem)
     public:
         HighlightItem(QGraphicsItem * parent = 0);
 
