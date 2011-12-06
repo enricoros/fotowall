@@ -950,6 +950,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
         foreach (const QUrl & url, event->mimeData()->urls()) {
             // handle network images
             if (url.scheme() == "http" || url.scheme() == "ftp") {
+                //XXX: TODO add undo command here !
                 PictureContent * p = createPicture(pos, true);
                 if (!p->loadFromNetwork(url.toString(), 0)) {
                     m_content.removeAll(p);

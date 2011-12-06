@@ -273,6 +273,7 @@ class NewImageCommand : public AbstractCommand {
 };
 
 
+//TODO
 /*class NewNetworkImageCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
@@ -334,8 +335,8 @@ class NewFlickrImageCommand : public AbstractCommand {
         }
 };*/
 
-/* This command manages creation (and hidding when unexec) of new text content */
 //DONE
+/* This command manages creation (and deletion when unexec) of new text content */
 class NewTextCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
@@ -379,6 +380,7 @@ class NewTextCommand : public AbstractCommand {
         }
 };
 
+//TODO
 class NewWordcloudCommand : public AbstractCommand {
     private:
         Canvas *m_canvas;
@@ -398,7 +400,7 @@ class NewWordcloudCommand : public AbstractCommand {
         }
 };
 
-//XXX: todo (but I have to get a webcam working first
+//DONE
 /* This command manages creation (and hidding when unexec) of new webcam content */
 class NewWebcamCommand : public AbstractCommand {
     private:
