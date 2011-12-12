@@ -41,8 +41,8 @@ symbian|simulator: {
     QT -= opengl
 }
 
-# disable the Webcam source (only stable on linux)
-macx|win32: CONFIG += no-webcam
+# disable the Webcam source (only stable on linux and experimental on win32)
+macx: CONFIG += no-webcam
 
 # Fotowall input files
 include(fotowall.pri)
