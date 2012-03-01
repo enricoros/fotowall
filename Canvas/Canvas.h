@@ -37,6 +37,7 @@ class QTimer;
 class TextContent;
 class WebcamContent;
 class WordcloudContent;
+class QNetworkReply;
 
 class Canvas : public AbstractScene
 {
@@ -50,6 +51,9 @@ class Canvas : public AbstractScene
         void addAutoContent(const QStringList & filePaths);
         void addCanvasViewContent(const QStringList & fwFilePaths);
         QList<PictureContent*> addPictureContent(const QStringList & fileNames);
+        PictureContent* addPictureContent(const QString &url);
+        PictureContent* addNetworkPictureContent(const QString &url);
+        PictureContent* addNetworkPictureContent(const QString &url, QNetworkReply *reply, QString title, int width, int height);
         TextContent* addTextContent();
         WebcamContent* addWebcamContent(int input);
         WordcloudContent* addWordcloudContent();

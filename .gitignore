@@ -5,3 +5,5 @@ Makefile
 fotowall
 *.swp
 tests/
+.cproject
+.project
