@@ -17,6 +17,7 @@
 
 #include "Shared/CommandStack.h"
 #include "Shared/Commands.h"
+#include "Shared/GroupedCommands.h"
 
 #include "Canvas/CanvasModeInfo.h"
 #include "Canvas/CanvasViewContent.h"
@@ -408,8 +409,17 @@ void CanvasAppliance::slotAddPicture()
     if (picFilePaths.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
-    NewImageCommand *c = new NewImageCommand(m_extCanvas, picFilePaths);
-    CommandStack::instance().doCommand(c);
+    QList<PictureContent *> images = m_extCanvas->addPictureContent(picFilePaths);
+    GroupedCommands *gc = new GroupedCommands();
+    QPoint pos = m_extCanvas->visibleCenter();
+    foreach (PictureContent *content, images) {
+        if(content != 0) {
+            content->setPos(pos);
+            gc->addCommand(new NewContentCommand(m_extCanvas, content));
+            pos += QPoint(30, 30);
+        }
+    }
+    CommandStack::instance().addCommand(gc);
     setFocusToScene();
 }
 
@@ -430,8 +440,10 @@ void CanvasAppliance::slotAddWebcam()
 
 void CanvasAppliance::slotAddWordcloud()
 {
-    NewWordcloudCommand *c = new NewWordcloudCommand(m_extCanvas);
-    CommandStack::instance().doCommand(c);
+    WordcloudContent * c = m_extCanvas->addWordcloudContent();
+    if(c!=0) {
+        CommandStack::instance().addCommand(new NewContentCommand(m_extCanvas, c));
+    }
     setFocusToScene();
 }
 

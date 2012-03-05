@@ -77,7 +77,6 @@ public:
 /* This commands manage the text of the TextContent */
 class TextCommand: public AbstractCommand {
 private:
-    /* Private vars */
     TextContent *m_content;
     QString m_previousText, m_newText;
 public:
@@ -111,8 +110,8 @@ public:
 /* This commands manage transformations: rotations and scaling */
 class TransformCommand: public AbstractCommand {
 private:
-    /* Private vars */
     QTransform m_previous, m_new;
+
 public:
     TransformCommand(AbstractContent *content, QTransform& previous_matrix,
             QTransform& new_matrix) :
@@ -139,7 +138,6 @@ public:
 //DONE
 class RotateAndResizeCommand: public AbstractCommand {
 private:
-    /* Private vars */
     const qreal m_pAngle, m_nAngle;
     const QRect m_pRect, m_nRect;
 public:
@@ -168,10 +166,9 @@ public:
 };
 
 //DONE
-/* This command manges movements of the content */
+/* This command manages movements of the content */
 class MotionCommand: public AbstractCommand {
 private:
-    /* Private vars */
     AbstractContent *m_content;
     QPointF m_previous, m_newMotion;
 public:
@@ -216,8 +213,12 @@ public:
     }
 
     void exec() {
-        qDebug() << "Saving and deleting image";
-        // Saves the adress of the current content to be able to replace it by the new one in the stack later.
+        qDebug() << "Saving and deleting content";
+        if(!m_content) {
+            qDebug() << "Invalid content";
+            return;
+        }
+            // Saves the adress of the current content to be able to replace it by the new one in the stack later.
         m_oldContent = m_content;
 
         // Get the content xml info, in order to recreate it correctly
@@ -249,88 +250,6 @@ public:
     }
 };
 
-//DONE
-/* This command manages creation (and deletion when unexecuted) of image content */
-class NewImageCommand: public AbstractCommand {
-private:
-    Canvas *m_canvas;
-    const QStringList m_imagesPath;
-    GroupedCommands *m_gc;
-    bool m_created;
-public:
-    NewImageCommand(Canvas *canvas, const QStringList& paths) :
-            m_canvas(canvas), m_imagesPath(paths), m_created(false) {
-        m_gc = new GroupedCommands();
-    }
-    void exec() {
-        if (!m_created) {
-            QList<PictureContent *> images = m_canvas->addPictureContent(
-                    m_imagesPath);
-            foreach (PictureContent *content, images) {
-                DeleteContentCommand *c = new DeleteContentCommand(content,
-                        m_canvas);
-                m_gc->addCommand(c);
-            }
-            m_created = true;
-        } else {
-            m_gc->unexec();
-        }
-    }
-    void unexec() {
-        m_gc->exec();
-    }
-    QString name() const {
-        return tr("Add images");
-    }
-    QString description() const {
-        QString desc;
-        foreach (QString path, m_imagesPath) {
-            desc += path += "\n";
-        }
-        return desc;
-    }
-};
-
-class NewSingleImageCommand: public AbstractCommand {
-private:
-    Canvas *m_canvas;
-    const QString m_url;
-    DeleteContentCommand *m_command;
-    bool m_created;
-public:
-    NewSingleImageCommand(Canvas *canvas, const QString &url) :
-            m_canvas(canvas), m_url(url), m_created(false) {
-        m_command = 0;
-        m_content = m_canvas->addPictureContent(m_url);
-    }
-
-    void exec() {
-        qDebug() << "exec";
-        if (!m_created) {
-            qDebug() << "Not created, create it";
-            m_command = new DeleteContentCommand(m_content, m_canvas);
-            m_created = true;
-        } else {
-            qDebug() << "Recreating image " << m_url;
-            if (m_command != 0)
-                m_command->unexec();
-        }
-    }
-    void unexec() {
-        qDebug() << "Deleting image " << m_url;
-        if (m_command != 0)
-            m_command->exec();
-        else
-            qDebug() << "error: no delete command";
-    }
-    QString name() const {
-        return tr("Add image");
-    }
-    QString description() const {
-        return m_url;
-    }
-};
-
 class NewContentCommand: public AbstractCommand {
 private:
     Canvas *m_canvas;
@@ -339,18 +258,17 @@ private:
 public:
     NewContentCommand(Canvas *canvas, AbstractContent *content) {
         m_canvas = canvas;
-        m_command = 0;
         setContent(content);
+        m_command = new DeleteContentCommand(content, m_canvas);
     }
     void exec() {
-        if (m_command != 0) {
-            m_command->unexec();
-        } else {
-            m_command = new DeleteContentCommand(m_content, m_canvas);
-        }
+        if(m_command != 0) m_command->unexec();
+
     }
     void unexec() {
-        m_command->exec();
+        if (m_command != 0) {
+            m_command->exec();
+        }
     }
     QString name() const {
         return tr("Add content");
@@ -359,68 +277,6 @@ public:
         return "";
     }
 };
-
-//TODO
-/*class NewNetworkImageCommand : public AbstractCommand {
- private:
- Canvas *m_canvas;
- const QList<QUrl> m_imagesPath;
- QList<AbstractContent *> m_images;
- QPoint m_pos;
- public:
- NewNetworkImageCommand(Canvas *desk, const QList<QUrl>& paths, QPoint pos) : m_canvas(desk) , m_imagesPath(paths)
- , m_pos(pos)
- {}
- void exec() {
- if(m_images.isEmpty()) {
- m_images = m_canvas->addNetworkPictures(m_imagesPath, m_pos);
- } else {
- foreach(AbstractContent *image, m_images) {
- image->show();
- }
- }
- }
- void unexec() {
- // Instead of deleting images, keep them in memory.
- // It's faster to restaure, and fix some other problems if redo is used :
- // the stack would contains commands using the old deleted item...
- foreach(AbstractContent *image, m_images) {
- image->hide();
- }
- //m_canvas->removeContents(m_images);
- }
- QString name() const {
- return tr("Add network images");
- }
- QString description() const {
- QString desc;
- foreach(QUrl url, m_imagesPath) {
- desc += url.toString() += "\n";
- }
- return desc;
- }
- };
-
- [> Manage the image created by flickr. Do not create it, Canvas::dropEvent does that <]
- class NewFlickrImageCommand : public AbstractCommand {
- private:
- PictureContent * m_image;
- public:
- NewFlickrImageCommand(PictureContent * image) : m_image(image)
- {}
- void exec() {
- m_image->show();
- }
- void unexec() {
- // Instead of deleting images, keep them in memory.
- // It's faster to restaure, and fix some other problems if redo is used :
- // the stack would contains commands using the old deleted item...
- m_image->hide();
- }
- QString name() const {
- return tr("Add Flickr image '%1'").arg(m_image->frameText());
- }
- };*/
 
 //DONE
 /* This command manages creation (and deletion when unexec) of new text content */
@@ -671,6 +527,7 @@ public:
         return tr("Top bar enabled/disabled");
     }
 };
+
 //DONE
 class DecoBottomBarCommand: public AbstractCommand {
     Canvas *m_canvas;
@@ -694,7 +551,6 @@ public:
 //DONE
 class DecoTitleCommand: public AbstractCommand {
 private:
-    /* Private vars */
     Canvas *m_canvas;
     QString m_previousText, m_newText;
 public:
@@ -777,6 +633,7 @@ public:
         m_content->setControlPoints(m_nCps);
     }
     void unexec() {
+        if(!m_content) return;
         m_content->setControlPoints(m_pCps);
     }
     void replaceContent(AbstractContent *oldContent,
