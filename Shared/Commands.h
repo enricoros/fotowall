@@ -280,49 +280,6 @@ public:
 };
 
 //DONE
-// XXX: TO remove when webcam has been tested
-/* This command manages creation (and hidding when unexec) of new webcam content */
-/*class NewWebcamCommand: public AbstractCommand {
- private:
- Canvas *m_canvas;
- int m_webcamIndex;
- WebcamContent *m_content;
- DeleteContentCommand *m_deleteCommand;
- public:
- NewWebcamCommand(Canvas *canvas, int webcamIndex) :
- m_canvas(canvas), m_webcamIndex(webcamIndex), m_content(0) {
- m_deleteCommand = 0;
- }
-
- bool setContent(AbstractContent *content) {
- WebcamContent *c = dynamic_cast<WebcamContent *>(content);
- if (c) {
- m_content = c;
- return true;
- } else
- return false;
- }
- AbstractContent *content() const {
- return m_content;
- }
-
- void exec() {
- if (m_content == 0) {
- m_content = m_canvas->addWebcamContent(m_webcamIndex);
- m_deleteCommand = new DeleteContentCommand(m_content, m_canvas);
- } else
- m_deleteCommand->unexec();
- }
- void unexec() {
- m_deleteCommand->exec();
- }
-
- QString name() const {
- return tr("Add webcam");
- }
- }; */
-
-//DONE
 /* This command manages movements of the content */
 class FrameCommand: public AbstractCommand {
 private:
