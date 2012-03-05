@@ -331,35 +331,32 @@ public:
     }
 };
 
-class NewNetworkImageCommand: public AbstractCommand {
+class NewContentCommand: public AbstractCommand {
 private:
     Canvas *m_canvas;
-    QString m_url;
     DeleteContentCommand *m_command;
 
-    bool m_created;
 public:
-    NewNetworkImageCommand(Canvas *canvas, const QString url) :
-            m_canvas(canvas), m_url(url), m_created(false) {
+    NewContentCommand(Canvas *canvas, AbstractContent *content) {
+        m_canvas = canvas;
+        m_command = 0;
+        setContent(content);
     }
     void exec() {
-        if (!m_created) {
-            m_content = m_canvas->addNetworkPictureContent(m_url);
-            m_command = new DeleteContentCommand(m_content, m_canvas);
-            m_created = true;
+        if (m_command != 0) {
+            m_command->unexec();
         } else {
-            if (m_command != 0)
-                m_command->unexec();
+            m_command = new DeleteContentCommand(m_content, m_canvas);
         }
     }
     void unexec() {
         m_command->exec();
     }
     QString name() const {
-        return tr("Add images");
+        return tr("Add content");
     }
     QString description() const {
-        return m_url;
+        return "";
     }
 };
 

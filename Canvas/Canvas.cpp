@@ -994,18 +994,15 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
         foreach (const QUrl & url, event->mimeData()->urls()) {
             // handle network images (dropped from an extern application)
             if (url.scheme() == "http" || url.scheme() == "ftp") {
-                //XXX: TODO add undo command here !
-                NewNetworkImageCommand *c = new NewNetworkImageCommand(this,
-                        url.toString());
-                PictureContent* p = dynamic_cast<PictureContent*>(c->content());
+                qDebug() << "Network pictures dropped";
+                PictureContent* p = addNetworkPictureContent(url.toString());
                 if (p != 0) {
-                    m_content.removeAll(p);
-                    delete p;
-                    delete c;
-                } else {
                     pos += QPoint(30, 30);
                     p->setPos(pos);
-                    gc->addCommand(c);
+                    gc->addCommand(new NewContentCommand(this, p));
+                } else {
+                    m_content.removeAll(p);
+                    delete p;
                 }
             }
 
@@ -1013,21 +1010,18 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
             QString picFilePath = url.toString(QUrl::RemoveScheme);
             if (QFile::exists(picFilePath)) {
                 qDebug() << "Local files dropped";
-                NewSingleImageCommand * c = new NewSingleImageCommand(this,
-                        picFilePath);
-                AbstractContent * p = c->content();
+                PictureContent * p = addPictureContent(picFilePath);
                 if (p != 0) {
                     qDebug() << "content created";
                     pos += QPoint(30, 30);
                     p->setPos(pos);
                     p->setVisible(true);
-                    gc->addCommand(c);
+                    gc->addCommand(new NewContentCommand(this, p));
 
                 } else {
                     qDebug() << "content not created";
                     m_content.removeAll(p);
                     delete p;
-                    delete c;
                 }
             }
         }
@@ -1039,6 +1033,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
     if (event->mimeData()->hasFormat("picturesearch/idx")
             && App::pictureService) {
 
+        qDebug() << "Network picture dropped";
         // download each picture
         QPoint insertPos = event->scenePos().toPoint();
         QStringList sIndexes = QString(
@@ -1063,19 +1058,18 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
 
             networkPaths.append(url);
             // create PictureContent from network
-            //if (!p->loadFromNetwork(url, reply, title, width, height)) {
             PictureContent *p = addNetworkPictureContent(url, reply, title,
                     width, height);
             if (p != 0) {
-                insertPos += QPoint(30, 30);
                 p->setPos(insertPos);
+                insertPos += QPoint(30, 30);
+                gc->addCommand(new NewContentCommand(this, p));
             } else {
                 m_content.removeAll(p);
                 delete p;
             }
         }
-        //NewImageCommand * c = new NewImageCommand(this, networkPaths);
-        //CommandStack::instance().addCommand(c);
+        CommandStack::instance().doCommand(gc);
         event->accept();
     }
 }
