@@ -214,11 +214,11 @@ public:
 
     void exec() {
         qDebug() << "Saving and deleting content";
-        if(!m_content) {
+        if (!m_content) {
             qDebug() << "Invalid content";
             return;
         }
-            // Saves the adress of the current content to be able to replace it by the new one in the stack later.
+        // Saves the adress of the current content to be able to replace it by the new one in the stack later.
         m_oldContent = m_content;
 
         // Get the content xml info, in order to recreate it correctly
@@ -262,7 +262,8 @@ public:
         m_command = new DeleteContentCommand(content, m_canvas);
     }
     void exec() {
-        if(m_command != 0) m_command->unexec();
+        if (m_command != 0)
+            m_command->unexec();
 
     }
     void unexec() {
@@ -279,126 +280,52 @@ public:
 };
 
 //DONE
-/* This command manages creation (and deletion when unexec) of new text content */
-class NewTextCommand: public AbstractCommand {
-private:
-    Canvas *m_canvas;
-    TextContent *m_content;
-    QDomElement m_contentElt;
-    bool m_created;
-public:
-    NewTextCommand(Canvas *canvas) :
-            m_canvas(canvas), m_content(0), m_created(false) {
-        m_oldContent = m_content;
-    }
-    void exec() {
-        if (m_content == 0) {
-            if (!m_created) {
-                m_content = m_canvas->addTextContent();
-                m_created = true;
-            } else {
-                qDebug() << "DeleteContent: Content is deleted, recreate it";
-                m_content =
-                        dynamic_cast<TextContent *>(m_canvas->addContentFromXml(
-                                m_contentElt));
-                qDebug() << "DeleteContent: Content restored";
-                if (m_oldContent != m_content) {
-                    qDebug()
-                            << "The new content is at a different adress than the previous one, update pointers in stack";
-                    CommandStack::instance().replaceContent(m_oldContent,
-                            m_content);
-                }
-            }
-        }
-    }
-    void unexec() {
-        if (!m_content)
-            return;
-        // Saves the adress of the current content to be able to replace it by the new one in the stack later.
-        m_oldContent = m_content;
-
-        // Get the content xml info, in order to recreate it correctly
-        QDir t = QDir::currentPath();
-        QDomDocument doc;
-        m_contentElt = doc.createElement("content");
-        m_content->toXml(m_contentElt, t); // XXX: why does it need a path ???
-        m_canvas->deleteContent(m_content);
-        m_content = 0;
-    }
-    QString name() const {
-        return tr("Add text");
-    }
-};
-
-//TODO
-class NewWordcloudCommand: public AbstractCommand {
-private:
-    Canvas *m_canvas;
-    WordcloudContent *m_content;
-    QDomElement m_contentElt;
-public:
-    NewWordcloudCommand(Canvas *canvas) :
-            m_canvas(canvas), m_content(0) {
-        m_content = m_canvas->addWordcloudContent();
-    }
-    void exec() {
-        m_content->show();
-    }
-    void unexec() {
-        m_content->hide();
-    }
-    QString name() const {
-        return tr("Add Wordcloud");
-    }
-};
-
-//DONE
+// XXX: TO remove when webcam has been tested
 /* This command manages creation (and hidding when unexec) of new webcam content */
-class NewWebcamCommand: public AbstractCommand {
-private:
-    Canvas *m_canvas;
-    int m_webcamIndex;
-    WebcamContent *m_content;
-    DeleteContentCommand *m_deleteCommand;
-public:
-    NewWebcamCommand(Canvas *canvas, int webcamIndex) :
-            m_canvas(canvas), m_webcamIndex(webcamIndex), m_content(0) {
-        m_deleteCommand = 0;
-    }
+/*class NewWebcamCommand: public AbstractCommand {
+ private:
+ Canvas *m_canvas;
+ int m_webcamIndex;
+ WebcamContent *m_content;
+ DeleteContentCommand *m_deleteCommand;
+ public:
+ NewWebcamCommand(Canvas *canvas, int webcamIndex) :
+ m_canvas(canvas), m_webcamIndex(webcamIndex), m_content(0) {
+ m_deleteCommand = 0;
+ }
 
-    bool setContent(AbstractContent *content) {
-        WebcamContent *c = dynamic_cast<WebcamContent *>(content);
-        if (c) {
-            m_content = c;
-            return true;
-        } else
-            return false;
-    }
-    AbstractContent *content() const {
-        return m_content;
-    }
+ bool setContent(AbstractContent *content) {
+ WebcamContent *c = dynamic_cast<WebcamContent *>(content);
+ if (c) {
+ m_content = c;
+ return true;
+ } else
+ return false;
+ }
+ AbstractContent *content() const {
+ return m_content;
+ }
 
-    void exec() {
-        if (m_content == 0) {
-            m_content = m_canvas->addWebcamContent(m_webcamIndex);
-            m_deleteCommand = new DeleteContentCommand(m_content, m_canvas);
-        } else
-            m_deleteCommand->unexec();
-    }
-    void unexec() {
-        m_deleteCommand->exec();
-    }
+ void exec() {
+ if (m_content == 0) {
+ m_content = m_canvas->addWebcamContent(m_webcamIndex);
+ m_deleteCommand = new DeleteContentCommand(m_content, m_canvas);
+ } else
+ m_deleteCommand->unexec();
+ }
+ void unexec() {
+ m_deleteCommand->exec();
+ }
 
-    QString name() const {
-        return tr("Add webcam");
-    }
-};
+ QString name() const {
+ return tr("Add webcam");
+ }
+ }; */
 
 //DONE
-/* This command manges movements of the content */
+/* This command manages movements of the content */
 class FrameCommand: public AbstractCommand {
 private:
-    /* Private vars */
     quint32 m_previousClass, m_newClass;
     bool m_previousMirror, m_newMirror;
 public:
@@ -633,7 +560,8 @@ public:
         m_content->setControlPoints(m_nCps);
     }
     void unexec() {
-        if(!m_content) return;
+        if (!m_content)
+            return;
         m_content->setControlPoints(m_pCps);
     }
     void replaceContent(AbstractContent *oldContent,

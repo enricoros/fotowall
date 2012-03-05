@@ -411,12 +411,9 @@ void CanvasAppliance::slotAddPicture()
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
     QList<PictureContent *> images = m_extCanvas->addPictureContent(picFilePaths);
     GroupedCommands *gc = new GroupedCommands();
-    QPoint pos = m_extCanvas->visibleCenter();
     foreach (PictureContent *content, images) {
         if(content != 0) {
-            content->setPos(pos);
             gc->addCommand(new NewContentCommand(m_extCanvas, content));
-            pos += QPoint(30, 30);
         }
     }
     CommandStack::instance().addCommand(gc);
@@ -425,16 +422,21 @@ void CanvasAppliance::slotAddPicture()
 
 void CanvasAppliance::slotAddText()
 {
-    NewTextCommand *c = new NewTextCommand(m_extCanvas);
-    CommandStack::instance().doCommand(c);
+
+    TextContent * textContent = m_extCanvas->addTextContent();
+    if(textContent != 0)
+    CommandStack::instance().addCommand(new NewContentCommand(m_extCanvas, textContent));
     setFocusToScene();
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
     int webcamIndex = sender()->property("index").toInt();
-    NewWebcamCommand *c = new NewWebcamCommand(m_extCanvas, webcamIndex);
-    CommandStack::instance().doCommand(c);
+    WebcamContent *webcamContent = m_extCanvas->addWebcamContent(webcamIndex);
+    if (webcamContent != 0) {
+        CommandStack::instance().addCommand(
+                new NewContentCommand(m_extCanvas, webcamContent));
+    }
     setFocusToScene();
 }
 

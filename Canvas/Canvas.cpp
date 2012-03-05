@@ -195,16 +195,21 @@ QList<PictureContent*> Canvas::addPictureContent(
         const QStringList & picFilePaths) {
     clearSelection();
     QList<PictureContent*> addedPictures;
-    int offset = -30 * (picFilePaths.size() - 1) / 2;
-    QPoint pos = visibleCenter() + QPoint(offset, offset);
+    int offset = 30 * (picFilePaths.size() - 1) / 2;
+    qDebug() << offset;
+
+    QPoint pos = visibleCenter();
     foreach (const QString & localFile, picFilePaths) {
         if (!QFile::exists(localFile))
             continue;
 
         // create picture and load the file
         PictureContent * p = addPictureContent(localFile);
-        if (p != 0)
+        if (p != 0) {
+            p->setPos(pos);
+            pos += QPoint(offset, offset);
             addedPictures << p;
+        }
     }
     return addedPictures;
 }
