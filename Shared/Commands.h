@@ -32,6 +32,15 @@
 #include <QUrl>
 #include <QDebug>
 
+/**
+ * TODO
+ * - Placement aléatoire
+ * - Type de canvas (cd, dvd...)
+ * - Group command when more than one object is selected
+ * - Undo crop
+ * - CanvasViewContent
+ */
+
 //DONE
 class EffectCommand: public AbstractCommand {
 private:

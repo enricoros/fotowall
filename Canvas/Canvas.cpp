@@ -175,6 +175,9 @@ void Canvas::addCanvasViewContent(const QStringList & fwFilePaths) {
         } else {
             d->setSelected(true);
             pos += QPoint(30, 30);
+            // FIXME : bugs when redo happens inside the created canvas, kinda expected since the
+            // address is still the one of the previous canvas, and not the new one when recreated.
+            //CommandStack::instance().addCommand(new NewContentCommand(this, d));
         }
     }
 }
@@ -1399,9 +1402,7 @@ void Canvas::slotSelectionChanged() {
 
 void Canvas::slotBackgroundContent() {
     AbstractContent *back = dynamic_cast<AbstractContent *>(sender());
-    BackgroundContentCommand * command = new BackgroundContentCommand(this,
-            m_backContent, back);
-    CommandStack::instance().doCommand(command);
+    CommandStack::instance().doCommand(new BackgroundContentCommand(this, m_backContent, back));
 }
 
 void Canvas::slotConfigureContent(const QPoint & scenePoint) {
@@ -1542,8 +1543,8 @@ void Canvas::slotCollateContent() {
 }
 
 void Canvas::slotDeleteContent() {
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem,
-            AbstractContent>(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(
+            selectedItems());
     AbstractContent * senderContent = dynamic_cast<AbstractContent *>(sender());
     if (senderContent && !selectedContent.contains(senderContent)) {
         selectedContent.clear();
@@ -1551,16 +1552,14 @@ void Canvas::slotDeleteContent() {
     }
     if (selectedContent.size() > 1)
         if (QMessageBox::question(0, tr("Delete content"),
-                tr(
-                        "All the %1 selected content will be deleted, do you want to continue ?").arg(
-                        selectedContent.size()),
-                QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+                tr("All the %1 selected content will be deleted, do you want to continue ?").arg(
+                        selectedContent.size()), QMessageBox::Yes | QMessageBox::No)
+                == QMessageBox::No)
             return;
 
-// Undo/redo delete code
+    // Undo/redo delete code
     GroupedCommands *gc = new GroupedCommands();
     foreach (AbstractContent * content, selectedContent) {
-        //deleteContent(content);
         if (content) {
             // unset background if deleting its content
             if (m_backContent == content)
@@ -1572,9 +1571,7 @@ void Canvas::slotDeleteContent() {
                     break;
                 }
             }
-            DeleteContentCommand *command = new DeleteContentCommand(content,
-                    this);
-            gc->addCommand(command);
+            gc->addCommand(new DeleteContentCommand(content, this));
         }
     }
     gc->setName(tr("Delete selected contents"));
@@ -1588,13 +1585,13 @@ void Canvas::slotDeleteConfig() {
 void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all) {
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem,
             AbstractContent>(selectedItems());
+    GroupedCommands *gc = new GroupedCommands();
     foreach (AbstractContent * content, m_content) {
         if (all || content->isSelected()) {
-            FrameCommand *command = new FrameCommand(content, frameClass,
-                    mirrored);
-            CommandStack::instance().doCommand(command);
+            gc->addCommand(new FrameCommand(content, frameClass, mirrored));
         }
     }
+    CommandStack::instance().doCommand(gc);
 }
 
 void Canvas::slotApplyEffect(const PictureEffect & effect, bool all) {
