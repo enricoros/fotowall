@@ -213,6 +213,14 @@ void AbstractContent::delayedDirty(int ms)
     m_transformRefreshTimer->start(ms);
 }
 
+QPointF AbstractContent::previousPos() const {
+    return m_previousPos;
+}
+
+void AbstractContent::setPreviousPos(const QPointF& previousPos) {
+    m_previousPos = previousPos;
+}
+
 void AbstractContent::setFrame(Frame * frame)
 {
     delete m_frame;
@@ -829,11 +837,7 @@ void AbstractContent::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 
 void AbstractContent::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-    MotionCommand *command = new MotionCommand(this, m_previousPos, event->lastScenePos());
-    CommandStack &stack = CommandStack::instance();
-    stack.addCommand(command);
     QGraphicsItem::mouseReleaseEvent(event);
-
 }
 
 void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)

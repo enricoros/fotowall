@@ -53,6 +53,10 @@ class AbstractContent : public AbstractDisposeable
         void resetContentsRatio();
         void delayedDirty(int ms = 400);
 
+        // position
+        QPointF previousPos() const;
+        void setPreviousPos(const QPointF& previousPos);
+
         // frame (and frame text)
         void setFrame(Frame * frame);
         quint32 frameClass() const;

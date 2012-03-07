@@ -129,6 +129,10 @@ class Canvas : public AbstractScene
         void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
         void dropEvent( QGraphicsSceneDragDropEvent * event );
         void keyPressEvent( QKeyEvent * keyEvent );
+
+        void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+        void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
+
         void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * event );
         void contextMenuEvent( QGraphicsSceneContextMenuEvent * event );
         void drawBackground( QPainter * painter, const QRectF & rect );

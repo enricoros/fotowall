@@ -985,6 +985,7 @@ void Canvas::dragMoveEvent(QGraphicsSceneDragDropEvent * event) {
 }
 
 void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
+    qDebug() << "drop";
     // Group all the content creation
     GroupedCommands *gc = new GroupedCommands();
     gc->setName("Grag'N'Drop images");
@@ -1086,6 +1087,31 @@ void Canvas::keyPressEvent(QKeyEvent * keyEvent) {
     QGraphicsScene::keyPressEvent(keyEvent);
     if (!keyEvent->isAccepted() && keyEvent->key() == Qt::Key_Delete)
         slotDeleteContent();
+}
+
+void Canvas::mousePressEvent(QGraphicsSceneMouseEvent * event) {
+    foreach(QGraphicsItem *item, selectedItems()) {
+           AbstractContent * content = dynamic_cast<AbstractContent *>(item);
+           if (content != 0) {
+               content->setPreviousPos(content->pos());
+           }
+    }
+    AbstractScene::mousePressEvent(event);
+}
+
+void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
+    qDebug() << "release";
+
+    GroupedCommands *gc = new GroupedCommands();
+    foreach(QGraphicsItem *item, selectedItems()) {
+        AbstractContent * content = dynamic_cast<AbstractContent *>(item);
+        if (content != 0) {
+            gc->addCommand(
+                    new MotionCommand(content, content->previousPos(), content->pos()));
+        }
+    }
+    CommandStack::instance().addCommand(gc);
+    AbstractScene::mouseReleaseEvent(event);
 }
 
 void Canvas::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent) {
