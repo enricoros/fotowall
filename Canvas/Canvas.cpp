@@ -57,10 +57,9 @@
 #define COLORPICKER_H 150
 
 Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent) :
-        AbstractScene(parent), m_filePath(), m_fileAbsDir(), m_modeInfo(
-                new CanvasModeInfo), m_backMode(BackGradient), m_backContent(0), m_backContentRatio(
-                Qt::KeepAspectRatioByExpanding), m_topBarEnabled(false), m_bottomBarEnabled(
-                false), m_forceFieldTimer(0), m_embeddedPainting(false), m_pendingChanges(
+        AbstractScene(parent), m_filePath(), m_fileAbsDir(), m_modeInfo(new CanvasModeInfo), m_backMode(
+                BackGradient), m_backContent(0), m_backContentRatio(Qt::KeepAspectRatioByExpanding), m_topBarEnabled(
+                false), m_bottomBarEnabled(false), m_forceFieldTimer(0), m_embeddedPainting(false), m_pendingChanges(
                 false) {
     // init modeinfo
     m_modeInfo->setScreenDpi(sDpiX, sDpiY);
@@ -105,8 +104,7 @@ Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent) :
     addItem(m_grad2ColorPicker);
 
     // selection self-hook
-    connect(this, SIGNAL(selectionChanged()), this,
-            SLOT(slotSelectionChanged()));
+    connect(this, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 
     // precreate background tile
     m_backTile = QPixmap(100, 100);
@@ -194,8 +192,7 @@ PictureContent* Canvas::addPictureContent(const QString &url) {
     return p;
 }
 
-QList<PictureContent*> Canvas::addPictureContent(
-        const QStringList & picFilePaths) {
+QList<PictureContent*> Canvas::addPictureContent(const QStringList & picFilePaths) {
     clearSelection();
     QList<PictureContent*> addedPictures;
     int offset = 30 * (picFilePaths.size() - 1) / 2;
@@ -231,8 +228,8 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url) {
     return p;
 }
 
-PictureContent* Canvas::addNetworkPictureContent(const QString &url,
-        QNetworkReply *reply, QString title, int width, int height) {
+PictureContent* Canvas::addNetworkPictureContent(const QString &url, QNetworkReply *reply,
+        QString title, int width, int height) {
     clearSelection();
     PictureContent * p = createPicture(visibleCenter(), true);
     if (!p->loadFromNetwork(url, reply, title, width, height)) {
@@ -308,8 +305,7 @@ void Canvas::resizeEvent() {
     // relayout contents
     m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
-    m_grad2ColorPicker->setPos(sceneWidth() - COLORPICKER_W,
-            sceneHeight() - COLORPICKER_H);
+    m_grad2ColorPicker->setPos(sceneWidth() - COLORPICKER_W, sceneHeight() - COLORPICKER_H);
     foreach (HighlightItem * highlight, m_highlightItems)
         highlight->reposition(sceneRect());
 
@@ -328,8 +324,7 @@ void Canvas::resizeEvent() {
 
 QString Canvas::filePath() const {
     if (m_filePath.isEmpty())
-        return tr("Unnamed %1").arg(QDate::currentDate().toString())
-                + ".fotowall";
+        return tr("Unnamed %1").arg(QDate::currentDate().toString()) + ".fotowall";
     return m_filePath;
 }
 
@@ -346,8 +341,7 @@ void Canvas::setFilePath(const QString & filePath) {
 
 QString Canvas::prettyBaseName() const {
     if (m_filePath.isEmpty())
-        return tr("Unnamed %1").arg(QDate::currentDate().toString())
-                + ".fotowall";
+        return tr("Unnamed %1").arg(QDate::currentDate().toString()) + ".fotowall";
     return QFileInfo(m_filePath).baseName();
 }
 
@@ -361,8 +355,7 @@ void Canvas::selectAllContent(bool selected) {
 void Canvas::setForceFieldEnabled(bool enabled) {
     if (enabled && !m_forceFieldTimer) {
         m_forceFieldTimer = new QTimer(this);
-        connect(m_forceFieldTimer, SIGNAL(timeout()), this,
-                SLOT(slotApplyForce()));
+        connect(m_forceFieldTimer, SIGNAL(timeout()), this, SLOT(slotApplyForce()));
         m_forceFieldTimer->start(10);
         m_forceFieldTime.start();
     }
@@ -391,6 +384,7 @@ bool Canvas::forceFieldEnabled() const {
 #endif
 
 void Canvas::randomizeContents(bool position, bool rotation, bool opacity) {
+    GroupedCommands *gc = new GroupedCommands("Randomize Contents");
     QRectF r = sceneRect();
     r.adjust(r.width() / 6, r.height() / 6, -r.width() / 6, -r.height() / 6);
     foreach (AbstractContent * content, m_content) {
@@ -400,19 +394,28 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity) {
             QPointF pos(r.left() + (qrand() % (int) r.width()),
                     r.top() + (qrand() % (int) r.height()));
             ANIMATE_PARAM(content, "pos", 200, pos);
+            gc->addCommand(new MotionCommand(content, content->pos(), pos));
         }
 
         // randomize rotation
         if (rotation) {
             int rot = -30 + (qrand() % 60);
             ANIMATE_PARAM(content, "rotation", 1000, rot);
+            gc->addCommand(
+                    new RotateAndResizeCommand(content, content->rotation(), rot,
+                            content->contentRect(), content->contentRect()));
         }
 
         // randomize opacity
         if (opacity) {
+            // TODO: undo
             qreal opa = 0.5 + (qreal) (qrand() % 100) / 99.0;
-            ANIMATE_PARAM(content, "contentOpacity", 2000, opa);
+          //  ANIMATE_PARAM(content, "contentOpacity", 2000, opacity);
+            OpacityCommand *oc = new OpacityCommand(content, opa);
+            oc->exec();
+            gc->addCommand(oc);
         }
+        CommandStack::instance().addCommand(gc);
     }
 }
 
@@ -501,8 +504,7 @@ void Canvas::setCDMarkers() {
 
     float xDiameter = 4.75 * screenDpi.x();
     float yDiameter = 4.75 * screenDpi.y();
-    QGraphicsEllipseItem * ellipse = addEllipse(
-            (screenPixels.width() - xDiameter) / 2.0,
+    QGraphicsEllipseItem * ellipse = addEllipse((screenPixels.width() - xDiameter) / 2.0,
             (screenPixels.height() - yDiameter) / 2.0, xDiameter, yDiameter);
     ellipse->setZValue(-1);
     ellipse->setPen(outerPen);
@@ -541,13 +543,12 @@ void Canvas::setDVDMarkers() {
     int faceW = 5.08 * screenDpi.x();
     int sideW = 0.67 * screenDpi.y();
     int height = m_modeInfo->fixedScreenPixels().height();
-    QGraphicsLineItem * line = addLine((qreal) faceW + 0.5, 0,
-            (qreal) faceW + 0.5, height);
+    QGraphicsLineItem * line = addLine((qreal) faceW + 0.5, 0, (qreal) faceW + 0.5, height);
     line->setPen(linePen);
     line->setZValue(-1);
     m_markerItems.push_back(line);
-    line = addLine((qreal) (faceW + sideW) + 0.5, 0,
-            (qreal) (faceW + sideW) + 0.5, height), line->setPen(linePen);
+    line = addLine((qreal) (faceW + sideW) + 0.5, 0, (qreal) (faceW + sideW) + 0.5, height), line->setPen(
+            linePen);
     line->setZValue(-1);
     m_markerItems.push_back(line);
 
@@ -556,23 +557,15 @@ void Canvas::setDVDMarkers() {
     markerFont.setItalic(true);
     QGraphicsTextItem *textBack = addText(tr("Back"), markerFont);
     textBack->setTransform(QTransform(-1, 0, 0, 0, 1, 0, 0, 0, 1));
-    textBack->setPos(
-            (faceW
-                    + textBack->document()->documentLayout()->documentSize().width())
-                    / 2,
-            (height
-                    - textBack->document()->documentLayout()->documentSize().height())
-                    / 2);
+    textBack->setPos((faceW + textBack->document()->documentLayout()->documentSize().width()) / 2,
+            (height - textBack->document()->documentLayout()->documentSize().height()) / 2);
     textBack->setZValue(-1);
     m_markerItems.push_back(textBack);
     QGraphicsTextItem *textFront = addText(tr("Front"), markerFont);
     textFront->setPos(
             (faceW + sideW) + faceW / 2
-                    - textFront->document()->documentLayout()->documentSize().width()
-                            / 2,
-            (height
-                    - textFront->document()->documentLayout()->documentSize().height())
-                    / 2);
+                    - textFront->document()->documentLayout()->documentSize().width() / 2,
+            (height - textFront->document()->documentLayout()->documentSize().height()) / 2);
     textFront->setZValue(-1);
     m_markerItems.push_back(textFront);
 }
@@ -613,9 +606,8 @@ CanvasModeInfo * Canvas::modeInfo() const {
     return m_modeInfo;
 }
 
-void Canvas::renderVisible(QPainter * painter, const QRectF & target,
-        const QRectF & source, Qt::AspectRatioMode aspectRatioMode,
-        bool hideTools) {
+void Canvas::renderVisible(QPainter * painter, const QRectF & target, const QRectF & source,
+        Qt::AspectRatioMode aspectRatioMode, bool hideTools) {
     if (hideTools) {
         clearSelection();
         foreach(QGraphicsItem *item, m_markerItems)
@@ -636,25 +628,23 @@ void Canvas::renderVisible(QPainter * painter, const QRectF & target,
     }
 }
 
-QImage Canvas::renderedImage(const QSize & iSize,
-        Qt::AspectRatioMode aspectRatioMode, bool hideTools) {
+QImage Canvas::renderedImage(const QSize & iSize, Qt::AspectRatioMode aspectRatioMode,
+        bool hideTools) {
     QImage result(iSize, QImage::Format_ARGB32);
     result.fill(0);
 
     QPainter painter(&result);
     painter.setRenderHints(
-            QPainter::Antialiasing | QPainter::TextAntialiasing
-                    | QPainter::SmoothPixmapTransform, true);
+            QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform,
+            true);
 
     QSize targetSize = sceneSize();
     targetSize.scale(iSize, aspectRatioMode);
     int offsetX = (iSize.width() - targetSize.width()) / 2;
     int offsetY = (iSize.height() - targetSize.height()) / 2;
 
-    QRect targetRect = QRect(offsetX, offsetY, targetSize.width(),
-            targetSize.height());
-    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio,
-            hideTools);
+    QRect targetRect = QRect(offsetX, offsetY, targetSize.width(), targetSize.height());
+    renderVisible(&painter, targetRect, sceneRect(), Qt::IgnoreAspectRatio, hideTools);
     painter.end();
 
     return result;
@@ -691,8 +681,7 @@ void Canvas::saveToXml(QDomElement & canvasElement) const {
         // save back Mode
         QDomElement backModeElement = doc.createElement("mode");
         backgroundElement.appendChild(backModeElement);
-        backModeElement.appendChild(
-                doc.createTextNode(QString::number((int) m_backMode)));
+        backModeElement.appendChild(doc.createTextNode(QString::number((int) m_backMode)));
 
         // save back Content Ratio
         QDomElement backRatioElement = doc.createElement("back-properties");
@@ -706,26 +695,21 @@ void Canvas::saveToXml(QDomElement & canvasElement) const {
 
         // save background Colors
         QColor color;
-        QDomElement redElement = doc.createElement("red"), greenElement =
-                doc.createElement("green"), blueElement = doc.createElement(
-                "blue"), redElement2 = doc.createElement("red"), greenElement2 =
-                doc.createElement("green"), blueElement2 = doc.createElement(
-                "blue"), rElement = doc.createElement("red"), gElement =
-                doc.createElement("green"), bElement = doc.createElement(
-                "blue"), rElement2 = doc.createElement("red"), gElement2 =
-                doc.createElement("green"), bElement2 = doc.createElement(
-                "blue");
+        QDomElement redElement = doc.createElement("red"), greenElement = doc.createElement(
+                "green"), blueElement = doc.createElement("blue"), redElement2 = doc.createElement(
+                "red"), greenElement2 = doc.createElement("green"), blueElement2 =
+                doc.createElement("blue"), rElement = doc.createElement("red"), gElement =
+                doc.createElement("green"), bElement = doc.createElement("blue"), rElement2 =
+                doc.createElement("red"), gElement2 = doc.createElement("green"), bElement2 =
+                doc.createElement("blue");
         QDomElement bgColorElement = doc.createElement("background-color");
         backgroundElement.appendChild(bgColorElement);
 
         QDomElement topColor = doc.createElement("top");
         color = m_grad1ColorPicker->color();
-        redElement.appendChild(
-                doc.createTextNode(QString::number(color.red())));
-        greenElement.appendChild(
-                doc.createTextNode(QString::number(color.green())));
-        blueElement.appendChild(
-                doc.createTextNode(QString::number(color.blue())));
+        redElement.appendChild(doc.createTextNode(QString::number(color.red())));
+        greenElement.appendChild(doc.createTextNode(QString::number(color.green())));
+        blueElement.appendChild(doc.createTextNode(QString::number(color.blue())));
         topColor.appendChild(redElement);
         topColor.appendChild(greenElement);
         topColor.appendChild(blueElement);
@@ -733,12 +717,9 @@ void Canvas::saveToXml(QDomElement & canvasElement) const {
 
         QDomElement bottomColor = doc.createElement("bottom");
         color = m_grad2ColorPicker->color();
-        redElement2.appendChild(
-                doc.createTextNode(QString::number(color.red())));
-        greenElement2.appendChild(
-                doc.createTextNode(QString::number(color.green())));
-        blueElement2.appendChild(
-                doc.createTextNode(QString::number(color.blue())));
+        redElement2.appendChild(doc.createTextNode(QString::number(color.red())));
+        greenElement2.appendChild(doc.createTextNode(QString::number(color.green())));
+        blueElement2.appendChild(doc.createTextNode(QString::number(color.blue())));
         bottomColor.appendChild(redElement2);
         bottomColor.appendChild(greenElement2);
         bottomColor.appendChild(blueElement2);
@@ -747,8 +728,7 @@ void Canvas::saveToXml(QDomElement & canvasElement) const {
         QDomElement titleColor = doc.createElement("title-color");
         color = m_titleColorPicker->color();
         rElement.appendChild(doc.createTextNode(QString::number(color.red())));
-        gElement.appendChild(
-                doc.createTextNode(QString::number(color.green())));
+        gElement.appendChild(doc.createTextNode(QString::number(color.green())));
         bElement.appendChild(doc.createTextNode(QString::number(color.blue())));
         titleColor.appendChild(rElement);
         titleColor.appendChild(gElement);
@@ -758,10 +738,8 @@ void Canvas::saveToXml(QDomElement & canvasElement) const {
         QDomElement foreColor = doc.createElement("foreground-color");
         color = m_foreColorPicker->color();
         rElement2.appendChild(doc.createTextNode(QString::number(color.red())));
-        gElement2.appendChild(
-                doc.createTextNode(QString::number(color.green())));
-        bElement2.appendChild(
-                doc.createTextNode(QString::number(color.blue())));
+        gElement2.appendChild(doc.createTextNode(QString::number(color.green())));
+        bElement2.appendChild(doc.createTextNode(QString::number(color.blue())));
         foreColor.appendChild(rElement2);
         foreColor.appendChild(gElement2);
         foreColor.appendChild(bElement2);
@@ -792,8 +770,7 @@ void Canvas::saveToXml(QDomElement & canvasElement) const {
     {
         // make up the PNG image
         Canvas * rwCanvas = (Canvas *) this;
-        QImage previewImage = rwCanvas->renderedImage(QSize(48, 48),
-                Qt::KeepAspectRatio, true);
+        QImage previewImage = rwCanvas->renderedImage(QSize(48, 48), Qt::KeepAspectRatio, true);
         if (!previewImage.isNull()) {
             QBuffer saveData;
             saveData.open(QIODevice::ReadWrite);
@@ -834,9 +811,7 @@ void Canvas::loadFromXml(QDomElement & canvasElement) {
         // find the 'mode' element
         QDomElement modeElement = canvasElement.firstChildElement("mode");
         if (!modeElement.isElement()) // 'Format 1'
-            modeElement =
-                    canvasElement.firstChildElement("project").firstChildElement(
-                            "mode");
+            modeElement = canvasElement.firstChildElement("project").firstChildElement("mode");
 
         // read and apply properties
         if (modeElement.isElement())
@@ -846,39 +821,34 @@ void Canvas::loadFromXml(QDomElement & canvasElement) {
     // BACKGROUND
     {
         // find the 'background' element
-        QDomElement backgroundElement = canvasElement.firstChildElement(
-                "background");
+        QDomElement backgroundElement = canvasElement.firstChildElement("background");
         if (!backgroundElement.isElement()) // 'Format 1'
             backgroundElement = canvasElement.firstChildElement("desk");
 
         // read and apply properties
         if (backgroundElement.isElement()) {
             // back Mode
-            QDomElement domElement = backgroundElement.firstChildElement(
-                    "mode");
+            QDomElement domElement = backgroundElement.firstChildElement("mode");
             if (domElement.isElement())
                 setBackMode((Canvas::BackMode) domElement.text().toInt());
 
             // back ratio mode
             domElement = backgroundElement.firstChildElement("back-properties");
             if (domElement.isElement())
-                m_backContentRatio = (Qt::AspectRatioMode) domElement.attribute(
-                        "ratio").toInt();
+                m_backContentRatio = (Qt::AspectRatioMode) domElement.attribute("ratio").toInt();
 
             // title text
             setTitleText(backgroundElement.firstChildElement("title").text());
 
             // colors
-            domElement =
-                    backgroundElement.firstChildElement("background-color").firstChildElement(
-                            "top");
+            domElement = backgroundElement.firstChildElement("background-color").firstChildElement(
+                    "top");
             int r = domElement.firstChildElement("red").text().toInt();
             int g = domElement.firstChildElement("green").text().toInt();
             int b = domElement.firstChildElement("blue").text().toInt();
             m_grad1ColorPicker->setColor(QColor(r, g, b));
-            domElement =
-                    backgroundElement.firstChildElement("background-color").firstChildElement(
-                            "bottom");
+            domElement = backgroundElement.firstChildElement("background-color").firstChildElement(
+                    "bottom");
             r = domElement.firstChildElement("red").text().toInt();
             g = domElement.firstChildElement("green").text().toInt();
             b = domElement.firstChildElement("blue").text().toInt();
@@ -888,8 +858,7 @@ void Canvas::loadFromXml(QDomElement & canvasElement) {
             g = domElement.firstChildElement("green").text().toInt();
             b = domElement.firstChildElement("blue").text().toInt();
             m_titleColorPicker->setColor(QColor(r, g, b));
-            domElement = backgroundElement.firstChildElement(
-                    "foreground-color");
+            domElement = backgroundElement.firstChildElement("foreground-color");
             r = domElement.firstChildElement("red").text().toInt();
             g = domElement.firstChildElement("green").text().toInt();
             b = domElement.firstChildElement("blue").text().toInt();
@@ -952,8 +921,7 @@ void Canvas::dragEnterEvent(QGraphicsSceneDragDropEvent * event) {
 
         // match local and remote urls against all supported extensions
         foreach (const QUrl & url, event->mimeData()->urls()) {
-            if (url.scheme() == "http" || url.scheme() == "ftp"
-                    || !url.toString().isEmpty()) {
+            if (url.scheme() == "http" || url.scheme() == "ftp" || !url.toString().isEmpty()) {
                 QString urlString = url.toString();
                 foreach (const QString & extension, extensions) {
                     if (urlString.endsWith(extension, Qt::CaseInsensitive)) {
@@ -1039,14 +1007,12 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
     }
 
     // handle as an own content drop event
-    if (event->mimeData()->hasFormat("picturesearch/idx")
-            && App::pictureService) {
+    if (event->mimeData()->hasFormat("picturesearch/idx") && App::pictureService) {
 
         qDebug() << "Network picture dropped";
         // download each picture
         QPoint insertPos = event->scenePos().toPoint();
-        QStringList sIndexes = QString(
-                event->mimeData()->data("picturesearch/idx")).split(",");
+        QStringList sIndexes = QString(event->mimeData()->data("picturesearch/idx")).split(",");
         QStringList networkPaths;
         foreach (const QString & sIndex, sIndexes) {
             int index = sIndex.toUInt();
@@ -1056,8 +1022,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
             QString title;
             int width = 0;
             int height = 0;
-            if (!App::pictureService->imageInfo(index, &url, &title, &width,
-                    &height))
+            if (!App::pictureService->imageInfo(index, &url, &title, &width, &height))
                 continue;
 
             // get the download
@@ -1067,8 +1032,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
 
             networkPaths.append(url);
             // create PictureContent from network
-            PictureContent *p = addNetworkPictureContent(url, reply, title,
-                    width, height);
+            PictureContent *p = addNetworkPictureContent(url, reply, title, width, height);
             if (p != 0) {
                 p->setPos(insertPos);
                 insertPos += QPoint(30, 30);
@@ -1091,10 +1055,10 @@ void Canvas::keyPressEvent(QKeyEvent * keyEvent) {
 
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent * event) {
     foreach(QGraphicsItem *item, selectedItems()) {
-           AbstractContent * content = dynamic_cast<AbstractContent *>(item);
-           if (content != 0) {
-               content->setPreviousPos(content->pos());
-           }
+        AbstractContent * content = dynamic_cast<AbstractContent *>(item);
+        if (content != 0) {
+            content->setPreviousPos(content->pos());
+        }
     }
     AbstractScene::mousePressEvent(event);
 }
@@ -1106,8 +1070,7 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
     foreach(QGraphicsItem *item, selectedItems()) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(item);
         if (content != 0) {
-            gc->addCommand(
-                    new MotionCommand(content, content->previousPos(), content->pos()));
+            gc->addCommand(new MotionCommand(content, content->previousPos(), content->pos()));
         }
     }
     CommandStack::instance().addCommand(gc);
@@ -1145,8 +1108,7 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect) {
         switch (m_backMode) {
         case BackNone:
             // draw checkboard to simulate a transparent background
-            if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering
-                    && !m_embeddedPainting)
+            if (!RenderOpts::ARGBWindow && !RenderOpts::HQRendering && !m_embeddedPainting)
                 painter->drawTiledPixmap(expRect, m_backTile,
                         QPointF(expRect.left() % 100, expRect.top() % 100));
             break;
@@ -1182,12 +1144,10 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect) {
         else {
             // regenerate full-size cache if needed
             if (m_backCache.isNull() || m_backCache.size() != sceneSize())
-                m_backCache = m_backContent->toPixmap(sceneSize(),
-                        m_backContentRatio);
+                m_backCache = m_backContent->toPixmap(sceneSize(), m_backContentRatio);
 
             // paint cached background
-            if (m_backContent->contentOpaque()
-                    && m_backContentRatio == Qt::IgnoreAspectRatio)
+            if (m_backContent->contentOpaque() && m_backContentRatio == Qt::IgnoreAspectRatio)
                 painter->setCompositionMode(QPainter::CompositionMode_Source);
             painter->drawPixmap(expRect, m_backCache, expRect);
             painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -1197,19 +1157,17 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect) {
 
 void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect) {
     // clip exposedRect to the scene
-    QRect targetRect = sceneRect().toAlignedRect().intersect(
-            exposedRect.toAlignedRect());
+    QRect targetRect = sceneRect().toAlignedRect().intersect(exposedRect.toAlignedRect());
 
     // draw header and footer 50px bars
     if (m_topBarEnabled || m_bottomBarEnabled) {
         QColor hColor = m_foreColorPicker->color();
         hColor.setAlpha(128);
         if (m_topBarEnabled && targetRect.top() < 50)
-            painter->fillRect(targetRect.left(), 0, targetRect.width(), 50,
-                    hColor);
+            painter->fillRect(targetRect.left(), 0, targetRect.width(), 50, hColor);
         if (m_bottomBarEnabled && targetRect.bottom() >= sceneHeight() - 50)
-            painter->fillRect(targetRect.left(), sceneHeight() - 50,
-                    targetRect.width(), 50, hColor);
+            painter->fillRect(targetRect.left(), sceneHeight() - 50, targetRect.width(), 50,
+                    hColor);
     }
 
     // draw Title text
@@ -1222,28 +1180,23 @@ void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect) {
         lg.setColorAt(0.51, titleColor.darker(150));
         lg.setColorAt(1.0, titleColor);
         painter->setPen(QPen(lg, 0));
-        painter->drawText(QRect(0, 0, sceneWidth(), 50), Qt::AlignCenter,
-                m_titleText);
+        painter->drawText(QRect(0, 0, sceneWidth(), 50), Qt::AlignCenter, m_titleText);
     }
 }
 
 void Canvas::initContent(AbstractContent * content, const QPoint & pos) {
     // listen to AbstractContent signals. dangerous ops (deletion, editing) have queued connections
-    connect(content, SIGNAL(changeStack(int)), this,
-            SLOT(slotStackContent(int)));
-    connect(content, SIGNAL(requestBackgrounding()), this,
-            SLOT(slotBackgroundContent()));
+    connect(content, SIGNAL(changeStack(int)), this, SLOT(slotStackContent(int)));
+    connect(content, SIGNAL(requestBackgrounding()), this, SLOT(slotBackgroundContent()));
     connect(content, SIGNAL(requestConfig(const QPoint &)), this,
             SLOT(slotConfigureContent(const QPoint &)));
-    connect(content, SIGNAL(requestEditing()), this, SLOT(slotEditContent()),
-            Qt::QueuedConnection);
+    connect(content, SIGNAL(requestEditing()), this, SLOT(slotEditContent()), Qt::QueuedConnection);
     connect(content, SIGNAL(requestRemoval()), this, SLOT(slotDeleteContent()),
             Qt::QueuedConnection);
 
     if (!pos.isNull())
         content->setPos(pos);
-    content->setZValue(
-            m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
+    content->setZValue(m_content.isEmpty() ? 1 : (m_content.last()->zValue() + 1));
     //content->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     content->show();
 
@@ -1260,16 +1213,14 @@ void Canvas::setBackContent(AbstractContent * content) {
 
     // re-show previous background
     if (m_backContent) {
-        disconnect(m_backContent, SIGNAL(contentChanged()), this,
-                SLOT(slotBackContentChanged()));
+        disconnect(m_backContent, SIGNAL(contentChanged()), this, SLOT(slotBackContentChanged()));
         m_backContent->show();
     }
 
     // hide content item
     m_backContent = content;
     if (m_backContent) {
-        connect(m_backContent, SIGNAL(contentChanged()), this,
-                SLOT(slotBackContentChanged()));
+        connect(m_backContent, SIGNAL(contentChanged()), this, SLOT(slotBackContentChanged()));
         m_backContent->hide();
     }
 
@@ -1284,8 +1235,7 @@ void Canvas::setBackContent(AbstractContent * content) {
     emit backConfigChanged();
 }
 
-CanvasViewContent * Canvas::createCanvasView(const QPoint & pos,
-        bool spontaneous) {
+CanvasViewContent * Canvas::createCanvasView(const QPoint & pos, bool spontaneous) {
     CanvasViewContent * d = new CanvasViewContent(spontaneous, this);
     initContent(d, pos);
     return d;
@@ -1300,15 +1250,13 @@ AbstractContent * Canvas::addContentFromXml(QDomElement &contentElt) {
     else if (contentElt.tagName() == "text")
         content = createText(QPoint(), false);
     else if (contentElt.tagName() == "webcam")
-        content = createWebcam(contentElt.attribute("input").toInt(), QPoint(),
-                false);
+        content = createWebcam(contentElt.attribute("input").toInt(), QPoint(), false);
     else if (contentElt.tagName() == "embedded-canvas")
         content = createCanvasView(QPoint(), false);
     else if (contentElt.tagName() == "wordcloud")
         content = createWordcloud(QPoint(), false);
     if (!content) {
-        qWarning("Canvas::fromXml: unknown content type '%s'",
-                qPrintable(contentElt.tagName()));
+        qWarning("Canvas::fromXml: unknown content type '%s'", qPrintable(contentElt.tagName()));
         return NULL;
     }
 
@@ -1322,8 +1270,7 @@ AbstractContent * Canvas::addContentFromXml(QDomElement &contentElt) {
     // restore the background element of the canvas
     if (contentElt.firstChildElement("set-as-background").isElement()) {
         if (m_backContent)
-            qWarning(
-                    "Canvas::fromXml: only 1 element with <set-as-background/> allowed");
+            qWarning("Canvas::fromXml: only 1 element with <set-as-background/> allowed");
         else
             setBackContent(content);
     }
@@ -1345,15 +1292,13 @@ TextContent * Canvas::createText(const QPoint & pos, bool spontaneous) {
     return t;
 }
 
-WebcamContent * Canvas::createWebcam(int webcamIndex, const QPoint & pos,
-        bool spontaneous) {
+WebcamContent * Canvas::createWebcam(int webcamIndex, const QPoint & pos, bool spontaneous) {
     WebcamContent * w = new WebcamContent(webcamIndex, spontaneous, this);
     initContent(w, pos);
     return w;
 }
 
-WordcloudContent * Canvas::createWordcloud(const QPoint & pos,
-        bool spontaneous) {
+WordcloudContent * Canvas::createWordcloud(const QPoint & pos, bool spontaneous) {
     WordcloudContent * w = new WordcloudContent(spontaneous, this);
     initContent(w, pos);
     return w;
@@ -1396,28 +1341,24 @@ void Canvas::slotSelectionChanged() {
     // show the config widget if 1 AbstractContent is selected
     QList<QGraphicsItem *> selection = selectedItems();
     if (selection.size() == 1) {
-        AbstractContent * content =
-                dynamic_cast<AbstractContent *>(selection.first());
+        AbstractContent * content = dynamic_cast<AbstractContent *>(selection.first());
         if (content) {
             QWidget * pWidget = content->createPropertyWidget();
             if (pWidget)
-                pWidget->setWindowTitle(
-                        tr("%1").arg(content->contentName().toUpper()));
+                pWidget->setWindowTitle(tr("%1").arg(content->contentName().toUpper()));
             emit showPropertiesWidget(pWidget);
             return;
         }
     }
 
     // show a 'selection' properties widget
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem,
-            AbstractContent>(selection);
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(
+            selection);
     if (!selectedContent.isEmpty()) {
-        SelectionProperties * pWidget = new SelectionProperties(
-                selectedContent);
-        connect(pWidget, SIGNAL(collateSelection()), this,
-                SLOT(slotCollateContent()));
-        connect(pWidget, SIGNAL(deleteSelection()), this,
-                SLOT(slotDeleteContent()), Qt::QueuedConnection);
+        SelectionProperties * pWidget = new SelectionProperties(selectedContent);
+        connect(pWidget, SIGNAL(collateSelection()), this, SLOT(slotCollateContent()));
+        connect(pWidget, SIGNAL(deleteSelection()), this, SLOT(slotDeleteContent()),
+                Qt::QueuedConnection);
         emit showPropertiesWidget(pWidget);
         return;
     }
@@ -1466,8 +1407,7 @@ void Canvas::slotConfigureContent(const QPoint & scenePoint) {
     addItem(p);
 #endif
     connect(p, SIGNAL(requestClose()), this, SLOT(slotDeleteConfig()));
-    connect(p, SIGNAL(applyLook(quint32,bool,bool)), this,
-            SLOT(slotApplyLook(quint32,bool,bool)));
+    connect(p, SIGNAL(applyLook(quint32,bool,bool)), this, SLOT(slotApplyLook(quint32,bool,bool)));
 #if !defined(MOBILE_UI)
     p->show();
     p->setPos(scenePoint - QPoint(10, 10));
@@ -1477,8 +1417,7 @@ void Canvas::slotConfigureContent(const QPoint & scenePoint) {
 #endif
     QGraphicsView * mainView = mainGraphicsView();
     if (mainView) {
-        QRect bounds =
-                mainView->mapToScene(mainView->viewport()->rect()).boundingRect().toRect();
+        QRect bounds = mainView->mapToScene(mainView->viewport()->rect()).boundingRect().toRect();
         p->keepInBoundaries(bounds);
     } else
         p->keepInBoundaries(sceneRect().toRect());
@@ -1553,8 +1492,8 @@ void Canvas::slotStackContent(int op) {
 }
 
 void Canvas::slotCollateContent() {
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem,
-            AbstractContent>(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(
+            selectedItems());
     if (selectedContent.isEmpty())
         return;
 
@@ -1609,8 +1548,8 @@ void Canvas::slotDeleteConfig() {
 }
 
 void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all) {
-    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem,
-            AbstractContent>(selectedItems());
+    QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(
+            selectedItems());
     GroupedCommands *gc = new GroupedCommands();
     foreach (AbstractContent * content, m_content) {
         if (all || content->isSelected()) {
@@ -1621,8 +1560,7 @@ void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all) {
 }
 
 void Canvas::slotApplyEffect(const PictureEffect & effect, bool all) {
-    QList<PictureContent *> pictures = projectList<AbstractContent,
-            PictureContent>(m_content);
+    QList<PictureContent *> pictures = projectList<AbstractContent, PictureContent>(m_content);
     GroupedCommands *gc = new GroupedCommands();
     foreach (PictureContent * picture, pictures) {
         if (all || picture->isSelected()) {
@@ -1634,15 +1572,13 @@ void Canvas::slotApplyEffect(const PictureEffect & effect, bool all) {
 }
 
 void Canvas::slotCrop() {
-    QList<PictureContent *> pictures =
-            projectList<QGraphicsItem, PictureContent>(selectedItems());
+    QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
     foreach (PictureContent * picture, pictures)
         picture->crop();
 }
 
 void Canvas::slotFlipHorizontally() {
-    QList<PictureContent *> pictures =
-            projectList<QGraphicsItem, PictureContent>(selectedItems());
+    QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
     GroupedCommands *gc = new GroupedCommands();
     foreach (PictureContent * picture, pictures) {
         gc->addCommand(new EffectCommand(picture, PictureEffect::FlipH));
@@ -1652,8 +1588,7 @@ void Canvas::slotFlipHorizontally() {
 }
 
 void Canvas::slotFlipVertically() {
-    QList<PictureContent *> pictures =
-            projectList<QGraphicsItem, PictureContent>(selectedItems());
+    QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
     GroupedCommands *gc = new GroupedCommands();
     foreach (PictureContent * picture, pictures) {
         gc->addCommand(new EffectCommand(picture, PictureEffect::FlipV));
@@ -1696,8 +1631,7 @@ void Canvas::slotApplyForce() {
     const qreal W = sRect.width();
     const qreal H = sRect.height();
     const qreal dT = 4.0
-            * qBound((qreal) 0.001,
-                    (qreal) m_forceFieldTime.restart() / (qreal) 1000.0,
+            * qBound((qreal) 0.001, (qreal) m_forceFieldTime.restart() / (qreal) 1000.0,
                     (qreal) 0.10);
 
     // pass 0

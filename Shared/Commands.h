@@ -82,6 +82,40 @@ public:
     }
 };
 
+class OpacityCommand: public AbstractCommand {
+private:
+    qreal previousOpacity;
+    qreal newOpacity;
+public:
+    OpacityCommand(AbstractContent *content, qreal nOpacity) {
+       setContent(content);
+       previousOpacity = content->opacity();
+       newOpacity = nOpacity;
+    }
+    void exec() {
+        if (!m_content)
+            return;
+        m_content->setOpacity(newOpacity);
+        //m_content->setProperty("contentOpacity", newOpacity);
+        m_content->update();
+    }
+    void unexec() {
+        if (!m_content)
+            return;
+        m_content->setOpacity(previousOpacity);
+        m_content->update();
+    }
+    void replaceContent(AbstractContent *oldContent,
+            AbstractContent *newContent) {
+        if (m_content == oldContent) {
+            m_content = newContent;
+        }
+    }
+    QString name() const {
+        return tr("Opacity command");
+    }
+};
+
 //DONE
 /* This commands manage the text of the TextContent */
 class TextCommand: public AbstractCommand {
