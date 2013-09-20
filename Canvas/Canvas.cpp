@@ -191,7 +191,7 @@ void Canvas::addPictureContent(const QStringList & picFilePaths)
 
         // create picture and load the file
         PictureContent * p = createPicture(pos, true);
-        if (!p->loadPhoto(localFile, true, true)) {
+        if (!p->loadFromFile(localFile, true, true, true)) {
             m_content.removeAll(p);
             delete p;
         } else {
@@ -983,7 +983,7 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event)
             QString picFilePath = url.toString(QUrl::RemoveScheme);
             if (QFile::exists(picFilePath)) {
                 PictureContent * p = createPicture(pos, true);
-                if (!p->loadPhoto(picFilePath, true, true)) {
+                if (!p->loadFromFile(picFilePath, true, true, true)) {
                     m_content.removeAll(p);
                     delete p;
                 } else

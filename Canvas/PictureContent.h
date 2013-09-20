@@ -32,9 +32,9 @@ class PictureContent : public AbstractContent
         PictureContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
         ~PictureContent();
 
-        bool loadPhoto(const QString & picFilePath, bool keepRatio = false, bool setName = false);
+        bool loadFromFile(const QString & picFilePath, bool setUrl, bool setRatio, bool setName);
         bool loadFromNetwork(const QString & url, QNetworkReply * reply = 0, const QString & title = QString(), int width = -1, int height = -1);
-        bool loadPixmap(const QPixmap & pixmap, const QString & title = QString());
+        bool loadPixmapForAccelTest(const QPixmap & pixmap, const QString & title = QString());
         void addEffect(const PictureEffect & effect);
         void crop();
 
@@ -65,7 +65,8 @@ class PictureContent : public AbstractContent
     private:
         void dropNetworkConnection();
         void applyPostLoadEffects();
-        QString     m_fileUrl;
+        QString     m_relativePath;
+        QStringList m_fileUrls;
         CPixmap *   m_photo;
         QPixmap     m_cachedPhoto;
         bool        m_opaquePhoto;

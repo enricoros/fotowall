@@ -22,7 +22,6 @@
 #include "Workflow.h"
 
 #include <QDesktopServices>
-#include <QMessageBox>
 #include <QPainter>
 #include <QLinearGradient>
 
