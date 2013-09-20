@@ -26,6 +26,12 @@ namespace Wordcloud {
     class Scanner : public QObject
     {
         public:
+            Scanner();
+
+            // settings
+            void setMinimumWordLength(int minimum = 0);
+            void setMaximumWordLength(int maximum = -1);
+
             // inputs
             bool addFromFile(const QString & txtFilePath);
             bool addFromString(const QString & string);
@@ -34,7 +40,7 @@ namespace Wordcloud {
             void clear();
 
             // outputs
-            WordList takeWords(bool cleanList);
+            WordList takeWords(bool cleanList, int maxCount);
             int wordCount() const;
             bool isEmpty() const;
 
@@ -43,10 +49,12 @@ namespace Wordcloud {
             void dumpWords() const;
 
         private:
-            void addWord(const QString & word);
+            bool addWord(const QString & word);
             void removeWordsByLanguage(QLocale::Language language);
             void removeWordsBelowCount(int count);
             WordList m_words;
+            int m_minimumLength;
+            int m_maximumLength;
     };
 
 }

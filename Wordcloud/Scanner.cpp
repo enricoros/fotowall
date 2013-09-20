@@ -24,6 +24,22 @@
 
 using namespace Wordcloud;
 
+Scanner::Scanner()
+  : m_minimumLength(0)
+  , m_maximumLength(-1)
+{
+}
+
+void Scanner::setMinimumWordLength(int minimum)
+{
+    m_minimumLength = minimum;
+}
+
+void Scanner::setMaximumWordLength(int maximum)
+{
+    m_maximumLength = maximum;
+}
+
 bool Scanner::addFromFile(const QString & txtFilePath)
 {
     QFile file(txtFilePath);
@@ -72,7 +88,7 @@ static bool wordFrequencySorter(const Word &w1, const Word &w2)
     return w1.count > w2.count;
 }
 
-WordList Scanner::takeWords(bool cleanList)
+WordList Scanner::takeWords(bool cleanList, int maxCount)
 {
     // remove common words, single ones, and sort by frequency
     if (cleanList) {
@@ -80,7 +96,7 @@ WordList Scanner::takeWords(bool cleanList)
         removeWordsByLanguage(QLocale::English);
         removeWordsByLanguage(QLocale::French);
         int count = 2;
-        while (m_words.size() >= 40) {
+        while (m_words.size() >= maxCount) {
             removeWordsBelowCount(count);
             ++count;
         }
@@ -141,8 +157,11 @@ void Scanner::dumpWords() const
     qWarning("WordList: %s", qPrintable(dumpString));
 }
 
-void Scanner::addWord(const QString & word)
+bool Scanner::addWord(const QString & word)
 {
+    int length = word.length();
+    if (length < m_minimumLength || (length > m_maximumLength && m_maximumLength > 0))
+        return false;
     QString lowerWord = word.toLower();
 
     // update existing entries
@@ -154,7 +173,7 @@ void Scanner::addWord(const QString & word)
                 i->variants[word]++;
             else
                 i->variants[word] = 1;
-            return;
+            return true;
         }
     }
 
@@ -164,6 +183,7 @@ void Scanner::addWord(const QString & word)
     w.count = 1;
     w.variants[word] = 1;
     m_words.append(w);
+    return true;
 }
 
 void Scanner::removeWordsByLanguage(QLocale::Language language)
@@ -198,7 +218,8 @@ void Scanner::removeWordsByLanguage(QLocale::Language language)
                 "dell", "della", "delle", "di", "dove", "due", "ed", "far.", "fino",
                 "fra", "gli", "i.", "l.", "loro", "nel", "nell", "nella", "nelle",
                 "non", "per", "pi.", "poi", "pu.", "quale", "quell.", "quest.", "sar.",
-                "s.", "senza", "su.", "sull", "sull.", "tali", "tra", "un", "un.", "uso"
+                "s.", "senza", "su.", "sull", "sull.", "tali", "tra", "un", "un.", "uso",
+                "ti", "sei", "ma", "tu.", "tutt."
             };
             regExps = r;
             regExpCount = sizeof(r) / sizeof(const char *);
