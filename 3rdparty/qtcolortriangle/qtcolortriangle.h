@@ -64,7 +64,7 @@
 #ifndef QTCOLORTRIANGLE_H
 #define QTCOLORTRIANGLE_H
 #include <QtGui/QImage>
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class QPointF;
 struct Vertex;
@@ -134,7 +134,7 @@ private:
 };
 
 
-#include <QtGui/QColorDialog>
+#include <QColorDialog>
 
 class QColorTriangleDialog : public QDialog
 {

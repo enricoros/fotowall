@@ -91,12 +91,12 @@ void PictureConfig::on_effectsList_itemActivated(QListWidgetItem * item)
     }
     //show opacity dialog
     else if (effect == PictureEffect::Opacity) {
-        int opacity = QInputDialog::getInteger(0, tr("Opacity"), tr("Opacity value.\n\n0: transparent\n100: opaque"), m_pictureContent->contentOpacity()*100, 0, 100);
+        int opacity = QInputDialog::getInt(0, tr("Opacity"), tr("Opacity value.\n\n0: transparent\n100: opaque"), m_pictureContent->contentOpacity()*100, 0, 100);
         param = (float)opacity/100.f;
     }
     // show autoblend dialog
     else if (effect == PictureEffect::AutoBlend) {
-        int strongness = QInputDialog::getInteger(0, tr("Auto Blending"), tr("Strength value.\n\n0: weak\n100: strong"), 50, 0, 100);
+        int strongness = QInputDialog::getInt(0, tr("Auto Blending"), tr("Strength value.\n\n0: weak\n100: strong"), 50, 0, 100);
         param = (float)strongness/100.f;
     }
 

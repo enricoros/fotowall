@@ -139,7 +139,7 @@ void WordcloudContent::returnResource(const QVariant & resource)
 
     // store reference back
     m_cloudTaken = false;
-    m_cloud = static_cast<Wordcloud::Cloud *>(qVariantValue<void *>(resource));
+    m_cloud = static_cast<Wordcloud::Cloud *>(resource.value<void*>());
     if (m_cloud)
         m_cloud->setScene(m_cloudScene);
     update();

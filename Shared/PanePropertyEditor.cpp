@@ -77,13 +77,13 @@ void PaneWidget::mousePressEvent(QMouseEvent * event)
     if (event->button() != Qt::LeftButton)
         return;
     m_pressed = true;
-    pressing(event->posF());
+    pressing(event->localPos ());
 }
 
 void PaneWidget::mouseMoveEvent(QMouseEvent * event)
 {
     if (m_pressed)
-        pressing(event->posF());
+        pressing(event->localPos ());
 }
 
 void PaneWidget::mouseReleaseEvent(QMouseEvent *)

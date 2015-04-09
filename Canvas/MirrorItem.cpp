@@ -88,7 +88,8 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         alphaGradient.setColorAt(1.0 , QColor(  0,   0,   0));
         alphaPainter.fillRect(alphaPixmap.rect(), alphaGradient);
         alphaPainter.end();
-        m_pixmap.setAlphaChannel(alphaPixmap);
+//       NOTE: revisar si tiene el mismo efecto m_pixmap.setAlphaChannel(alphaPixmap);
+        m_pixmap.fill(Qt::transparent);
 
         // reset dirty
         m_dirty = false;

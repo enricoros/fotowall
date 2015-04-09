@@ -15,8 +15,8 @@
 #ifndef __ColorPickerItem_h__
 #define __ColorPickerItem_h__
 
-#include <QtGui/QGraphicsItem>
-#include <QtGui/QIcon>
+#include <QGraphicsItem>
+#include <QIcon>
 
 class ColorPickerItem : public QObject, public QGraphicsItem
 {

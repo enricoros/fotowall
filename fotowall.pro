@@ -18,7 +18,8 @@ QT = core \
     gui \
     svg \
     network \
-    xml
+    xml \
+    printsupport
 
 # include OpenGL code paths where available
 contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {

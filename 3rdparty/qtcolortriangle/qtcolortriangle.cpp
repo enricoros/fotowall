@@ -66,19 +66,19 @@
 #include <QtCore/QEvent>
 #include <QtCore/QMap>
 #include <QtCore/QVarLengthArray>
-#include <QtGui/QColorDialog>
+#include <QColorDialog>
 #include <QtGui/QConicalGradient>
-#include <QtGui/QFrame>
+#include <QFrame>
 #include <QtGui/QImage>
 #include <QtGui/QKeyEvent>
-#include <QtGui/QLayout>
+#include <QLayout>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QPainterPath>
 #include <QtGui/QPixmap>
 #include <QtGui/QResizeEvent>
-#include <QtGui/QToolTip>
-#include <QtGui/QVBoxLayout>
+#include <QToolTip>
+#include <QVBoxLayout>
 
 #include <math.h>
 
@@ -546,7 +546,7 @@ void QtColorTriangle::paintEvent(QPaintEvent *e)
 {
     QPainter p(this);
     if (e->rect().intersects(contentsRect()))
-        p.setClipRegion(e->region().intersect(contentsRect()));
+        p.setClipRegion(e->region().intersected(contentsRect()));
     if (mustGenerateBackground) {
 	genBackground();
 	mustGenerateBackground = false;
@@ -1547,7 +1547,7 @@ QColor QtColorTriangle::colorFromPoint(const QPointF &p) const
 
 QRgb QColorTriangleDialog::customColor(int index)
 {
-    return QColorDialog::customColor(index);
+    return QColorDialog::customColor(index).toRgb ().rgb ();
 }
 
 int QColorTriangleDialog::customCount()

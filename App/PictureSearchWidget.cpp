@@ -28,6 +28,8 @@
 #include <QListWidget>
 #include <QPainter>
 #include <QTime>
+#include <QDrag>
+#include <QMimeData>
 
 #define FRAME_RADIUS 6
 

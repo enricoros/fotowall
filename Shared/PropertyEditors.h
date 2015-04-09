@@ -22,6 +22,7 @@
 #include <QMetaProperty>
 #include <QPointer>
 #include <QVariant>
+#include <QMetaMethod>
 
 template<class C>
 class PE_TypeControl : public QObject
@@ -94,11 +95,11 @@ class PE_Combo : public PE_TypeControl<QComboBox>
 #define PE_LISTEN_TO_PROPERTY(slotName) \
     if (m_property.hasNotifySignal()) { \
         QMetaMethod notifySignal = m_property.notifySignal(); \
-        const int nameLength = qstrlen(notifySignal.signature()); \
+        const int nameLength = qstrlen(notifySignal.methodSignature()); \
         if (nameLength < 255) { \
             char signalName[256]; \
             signalName[0] = '0' + QSIGNAL_CODE; \
-            qstrcpy(signalName + 1, notifySignal.signature()); \
+            qstrcpy(signalName + 1, notifySignal.methodSignature()); \
             connect(m_target.data(), signalName, this, SLOT(slotName)); \
         } \
     }
