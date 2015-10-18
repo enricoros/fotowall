@@ -3,7 +3,7 @@ DEPENDPATH += $$PWD
 
 # Input
 HEADERS += \
-    qtcolortriangle.h
+    $$PWD/qtcolortriangle.h
 
 SOURCES += \
-    qtcolortriangle.cpp
+    $$PWD/qtcolortriangle.cpp

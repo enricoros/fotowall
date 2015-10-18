@@ -1060,7 +1060,7 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
 {
     // clip exposedRect to the scene
     QRect sceneRect = this->sceneRect().toAlignedRect();
-    QRect expRect = sceneRect.intersect(exposedRect.toAlignedRect());
+    QRect expRect = sceneRect.intersected(exposedRect.toAlignedRect());
 
     // draw background if have any uncovered area
     bool contentOnly = m_backContent && m_backContent->contentOpaque() && m_backContentRatio == Qt::IgnoreAspectRatio;
@@ -1116,7 +1116,7 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect)
 void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect)
 {
     // clip exposedRect to the scene
-    QRect targetRect = sceneRect().toAlignedRect().intersect(exposedRect.toAlignedRect());
+    QRect targetRect = sceneRect().toAlignedRect().intersected(exposedRect.toAlignedRect());
 
     // draw header and footer 50px bars
     if (m_topBarEnabled || m_bottomBarEnabled) {

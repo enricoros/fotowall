@@ -83,25 +83,25 @@ QIcon createIconSet(QString iconName)
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
 
-#include <QtGui/QAction>
-#include <QtGui/QComboBox>
-#include <QtGui/QCursor>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QFontDatabase>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QIcon>
-#include <QtGui/QMenu>
-#include <QtGui/QMoveEvent>
-#include <QtGui/QPainter>
-#include <QtGui/QPushButton>
-#include <QtGui/QTabWidget>
-#include <QtGui/QTextCursor>
-#include <QtGui/QTextDocument>
-#include <QtGui/QTextBlock>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidgetAction>
+#include <QAction>
+#include <QComboBox>
+#include <QCursor>
+#include <QDialogButtonBox>
+#include <QFontDatabase>
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QMenu>
+#include <QMoveEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QTabWidget>
+#include <QTextCursor>
+#include <QTextDocument>
+#include <QTextBlock>
+#include <QToolBar>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QWidgetAction>
 
 ///static const char *RichTextDialogC = "RichTextDialog";
 ///static const char *Geometry = "Geometry";
@@ -700,7 +700,6 @@ void RichTextEditor::setDefaultFont(const QFont &font)
 QString RichTextEditor::text(Qt::TextFormat format) const
 {
     switch (format) {
-    case Qt::LogText:
     case Qt::PlainText:
         return toPlainText();
     case Qt::RichText:

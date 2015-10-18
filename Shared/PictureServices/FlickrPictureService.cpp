@@ -18,48 +18,52 @@
 #include <QXmlStreamAttributes>
 #include <QXmlStreamReader>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#   include <QUrlQuery>
+#endif
+
 namespace FlickrInternal {
-    struct F_PhotoDescription {
-        QString id;         // 3743354066
-        QString owner;      // 22046259@N04
-        QString secret;     // b0ba1ca158
-        QString server;     // 2646
-        QString farm;       // 3
-        QString title;      // Rescale Test 1
-        bool ispublic;      // 1
-        bool isfriend;      // 0
-        bool isfamily;      // 0
-        QUrl url_t;         // http://farm3.static.flickr.com/2548/3744077174_3f6efa0789_t.jpg
-        int height_t;       // 100
-        int width_t;        // 75
-        QUrl url_o;         // http://farm3.static.flickr.com/2548/3744077174_296535ff22_o.jpg
-        int height_o;       // 3000
-        int width_o;        // 4000
-    };
+struct F_PhotoDescription {
+    QString id;         // 3743354066
+    QString owner;      // 22046259@N04
+    QString secret;     // b0ba1ca158
+    QString server;     // 2646
+    QString farm;       // 3
+    QString title;      // Rescale Test 1
+    bool ispublic;      // 1
+    bool isfriend;      // 0
+    bool isfamily;      // 0
+    QUrl url_t;         // http://farm3.static.flickr.com/2548/3744077174_3f6efa0789_t.jpg
+    int height_t;       // 100
+    int width_t;        // 75
+    QUrl url_o;         // http://farm3.static.flickr.com/2548/3744077174_296535ff22_o.jpg
+    int height_o;       // 3000
+    int width_o;        // 4000
+};
 
-    struct Photo {
-        int idx;
-        F_PhotoDescription description;
-        bool thumbRequested;
-        QPixmap thumbnail;
-        QList<QNetworkReply *> jobs;
+struct Photo {
+    int idx;
+    F_PhotoDescription description;
+    bool thumbRequested;
+    QPixmap thumbnail;
+    QList<QNetworkReply *> jobs;
 
-        Photo() : idx(0), thumbRequested(false) {
+    Photo() : idx(0), thumbRequested(false) {
+    }
+    ~Photo() {
+        foreach (QNetworkReply * job, jobs) {
+            job->disconnect(0, 0, 0);
+            job->abort();
+            job->deleteLater();
         }
-        ~Photo() {
-            foreach (QNetworkReply * job, jobs) {
-                job->disconnect(0, 0, 0);
-                job->abort();
-                job->deleteLater();
-            }
-        }
-    };
+    }
+};
 }
 
 FlickrPictureService::FlickrPictureService(const QString & apiKey, QNetworkAccessManager * manager, QObject * parent)
-  : AbstractPictureService(manager, parent)
-  , m_apiKey(apiKey)
-  , m_searchJob(0)
+    : AbstractPictureService(manager, parent)
+    , m_apiKey(apiKey)
+    , m_searchJob(0)
 {
 }
 
@@ -258,12 +262,23 @@ bool FlickrPictureService::startNextThumbnailJobs(int count)
 
 QNetworkReply * FlickrPictureService::flickrApiCall(const QString & method, const KeyValueList & params)
 {
-    // build URL with method+apikey+params
-    QUrl url("http://api.flickr.com/services/rest/");
     KeyValueList fullList;
     fullList.append(KeyValue("method", method));
     fullList.append(KeyValue("api_key", m_apiKey));
     fullList.append(params);
+
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+    // build URL with method+apikey+params
+    QUrl url("http://api.flickr.com/services/rest/");
     url.setQueryItems(fullList);
     return get(url);
+#else
+    QUrl url;
+    QUrlQuery query("http://api.flickr.com/services/rest/");
+    query.setQueryItems (fullList);
+    url.setQuery (query);
+    get(url);
+#endif
+
+
 }

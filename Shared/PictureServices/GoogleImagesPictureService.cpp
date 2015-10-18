@@ -177,7 +177,7 @@ void GoogleImagesPictureService::searchPics(const QString & text)
 
     // make request and connect to reply
     QUrl url("http://images.google.com/images");
-    url.setEncodedQuery(requestString.toLatin1());
+    url.setQuery(requestString.toLatin1());
     m_searchJob = get(url);
     connect(m_searchJob, SIGNAL(finished()), this, SLOT(slotSearchJobFinished()));
 }

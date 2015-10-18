@@ -730,7 +730,7 @@ bool VideoDevice::getLastFrame(QImage * qimage) const
     //qDebug() << "VideoDevice::getImage: capturing in " << pixelFormatName(m_imageBuffer.pixelformat);
     const char * src = m_imageBuffer.data.constData();
     uchar * imgData = qimage->bits();
-    int imgBytes = qimage->numBytes();
+    int imgBytes = qimage->byteCount ();
     bool decoded = false;
     switch (m_imageBuffer.pixelformat) {
         case PIXELFORMAT_NONE	: break;
