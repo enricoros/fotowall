@@ -172,7 +172,7 @@ const QVector<QPair<QStringList, QString> > &ImageLoaderQt::imageFormats() const
         for (int i = 0; i < extensionListCount; i++) {
             QStringList extensions = extensionList[i].extensions.split(' ');
             foreach (const QString &extension, extensions)
-                if (supportedFormats.contains(extension.toLatin1 ())) {
+                if (supportedFormats.contains(extension.toLatin1())) {
                     formats.append(QPair<QStringList, QString> (extensions, extensionList[i].description));
                     break;
                 }

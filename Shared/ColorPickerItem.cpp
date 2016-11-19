@@ -18,10 +18,10 @@
 #include <QtCore/QtGlobal>
 #include <QtCore/QDebug>
 #include <QtCore/QTimer>
-#include <QtGui/QPainter>
-#include <QStyleOptionGraphicsItem>
-#include <QGraphicsSceneMouseEvent>
 #include <QtCore/QTimeLine>
+#include <QtGui/QPainter>
+#include <QtWidgets/QStyleOptionGraphicsItem>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
 
 #define COLORPICKER_MARGIN 8
 #define COLORPICKER_SPACING 10

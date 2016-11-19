@@ -17,7 +17,7 @@ DEPENDPATH += $$PWD
         $$PWD/LikeBackDialog.ui
 
     RESOURCES += \
-        $$PWDlikebackfrontend.qrc
+        $$PWD/likebackfrontend.qrc
 } else: {
     message("3rdparty/likebackfrontend won't be compiled")
     DEFINES -= HAS_LIKEBACK

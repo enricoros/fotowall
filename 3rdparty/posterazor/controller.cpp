@@ -501,7 +501,7 @@ void Controller::savePoster() const
             if (!fileExistsAskUserForOverwrite
                 || QMessageBox::Yes == (QMessageBox::question(m_view, "", QCoreApplication::translate("Main window", "The file '%1' already exists.\nDo you want to overwrite it?").arg(saveFileInfo.fileName()), QMessageBox::Yes, QMessageBox::No))
                 ) {
-                int result = savePoster(saveFileName.toLatin1 ());
+                int result = savePoster(saveFileName.toLatin1());
                 if (result != 0)
                     QMessageBox::critical(m_view, "", QCoreApplication::translate("Main window", "The file '%1' could not be saved.").arg(saveFileInfo.fileName()), QMessageBox::Ok, QMessageBox::NoButton);
                 else
