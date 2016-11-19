@@ -267,15 +267,10 @@ QNetworkReply * FlickrPictureService::flickrApiCall(const QString & method, cons
     fullList.append(KeyValue("api_key", m_apiKey));
     fullList.append(params);
 
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     // build URL with method+apikey+params
-    QUrl url("http://api.flickr.com/services/rest/");
-    url.setQueryItems(fullList);
-#else
-    QUrl url;
-    QUrlQuery query("http://api.flickr.com/services/rest/");
-    query.setQueryItems (fullList);
-    url.setQuery (query);
-#endif
+    QUrl url("https://api.flickr.com/services/rest/");
+    QUrlQuery query;
+    query.setQueryItems(fullList);
+    url.setQuery(query);
     return get(url);
 }
