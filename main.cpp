@@ -70,6 +70,7 @@ int main( int argc, char ** args )
     app.setApplicationName("Fotowall");
     app.setApplicationVersion("0.98-beta");
     app.setOrganizationName("Enrico Ros");
+    app.setAttribute(Qt::AA_EnableHighDpiScaling, true);
 
     // Lock Symbian orientation
 #ifdef Q_OS_SYMBIAN
