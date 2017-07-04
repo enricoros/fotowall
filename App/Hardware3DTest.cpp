@@ -31,8 +31,8 @@
 #endif
 
 
-#define FIXEDSIZE QSize(320, 240)
-#define TESTPOWER 5
+#define FIXEDSIZE QSize(800, 600)
+#define TESTPOWER 7
 #define TESTSIZE (1 << TESTPOWER)
 
 Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
