@@ -356,8 +356,8 @@ void Wizard::showWizardStepHelp(const QString &title, const QString &text)
     QMessageBox box(this);
     box.setWindowTitle(title);
     QString helpText = text;
-#if defined(Q_WS_MAC)
-    // Hack. Since QMessageBoxPrivate sets the whole font to bold on Q_WS_MAC (no matter which style),
+#if defined(Q_OS_MAC)
+    // Hack. Since QMessageBoxPrivate sets the whole font to bold on Q_OS_MAC (no matter which style),
     // we put emphasis on the key words by setting them to italic and into single quotes.
     helpText.replace("<b>", "<i>'");
     helpText.replace("</b>", "'</i>");

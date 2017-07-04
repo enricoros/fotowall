@@ -45,7 +45,7 @@ class QImage;
     #define VD_BUILD_LINUX_V4L2                 ///< build V4L2 code path
     #endif
 
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN) && 0 // NOTE: Doesn't currently work, so disable this
 
     #include <qt_windows.h>
     class QWidget;

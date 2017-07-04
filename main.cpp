@@ -62,7 +62,7 @@ QColor RenderOpts::hiColor;
 int main( int argc, char ** args )
 {
     // use the Raster GraphicsSystem on X11
-#if defined(Q_WS_X11)
+#if defined(Q_OS_LINUX)
     QApplication::setGraphicsSystem("raster");
 #endif
 
