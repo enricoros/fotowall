@@ -165,7 +165,13 @@ HomeScene::HomeScene(QObject * parent)
     // create the 3 buttons
 #if defined(HAS_WORDCLOUD_APPLIANCE)
     HomeLabel * newWordcloud = new HomeLabel(tr("Wordcloud"), QPixmap(":/data/home-newwordcloud.png"), this);
+#if 0
      connect(newWordcloud, SIGNAL(requestEditing()), this, SIGNAL(startWordcloud()));
+#else
+     // NOTE: this is not ready for 1.0, so disable it
+     newWordcloud->setEnabled(false);
+     newWordcloud->setContentOpacity(0.2);
+#endif
 #else
     HomeLabel * newWordcloud = new HomeLabel(tr("coming soon"), QPixmap(":/data/home-newwordcloud.png"), this);
      newWordcloud->setEnabled(false);

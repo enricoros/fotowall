@@ -22,6 +22,8 @@ class QNetworkAccessManager;
 class SearchSymbol;
 class Ui_PictureSearchWidget;
 
+// uncomment following to disable Google Images search (Google doesn't offer the API anymore)
+//#define ENABLE_GOOGLE_IMAGES_API
 // uncomment following to enable Ariya Hidayat's google suggestions code
 //#define ENABLE_GCOMPLETION
 

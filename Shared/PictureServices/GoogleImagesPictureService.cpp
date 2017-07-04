@@ -257,6 +257,7 @@ bool GoogleImagesPictureService::parseGoogleSearchReply(const QByteArray & data)
     int pos = m_rxStart.indexIn(html);
     if (pos == -1) {
         qWarning("GoogleImagesPictureService::parseSearchReply: Something changed in the google image page html source.\nThis function must be rewritten");
+        qWarning() << html;
         return false;
     }
 
