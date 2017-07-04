@@ -189,11 +189,18 @@ class LikeBack : public QObject
 	 * Set the path where LikeBack should send every comments.
 	 * It is composed of the server host name, the path to the PHP script used to send comments, and optionnaly a port number if it is not 80.
 	 * This call is mandatory for LikeBack to work.
-	 * @param hostName   The server host name to contact when sending comments. For instance "myapp.kde.org".
-	 * @param remotePath The path to the send script on the server. For instance, "/likeback/send.php".
-	 * @param hostPort   Optionnal port used to contact the server using the HTTP protocol. By default, it is port 80.
+     * @param hostScheme The server host scheme to contact when sending comments. For instance "https".
+     * @param hostName   The server host name to contact when sending comments. For instance "myapp.kde.org".
+     * @param remotePath The path to the send script on the server. For instance, "/likeback/send.php".
+     * @param hostPort   Optionnal port used to contact the server using the HTTP protocol. By default, it is left to the scheme.
 	 */
-	void setServer(const QString &hostName, const QString &remotePath, quint16 hostPort = 80);
+    void setServer(const QString &hostScheme, const QString &hostName, const QString &remotePath, quint16 hostPort = 0);
+
+    /**
+     * @returns The server host scheme to contact when sending comments.
+     * @see setServer()
+     */
+    QString hostScheme();
 
 	/**
 	 * @returns The server host name to contact when sending comments.
@@ -201,17 +208,18 @@ class LikeBack : public QObject
 	 */
 	QString hostName();
 
+    /**
+     * @returns The port used to contact the server using the HTTP protocol.
+     * @see setServer()
+     */
+    quint16 hostPort();
+
 	/**
 	 * @returns The path to the send script on the server.
 	 * @see setServer()
 	 */
 	QString remotePath();
 
-	/**
-	 * @returns The port used to contact the server using the HTTP protocol.
-	 * @see setServer()
-	 */
-	quint16 hostPort();
 
   /**
    * Create the menu actions.

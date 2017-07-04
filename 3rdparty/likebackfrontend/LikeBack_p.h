@@ -47,9 +47,10 @@ class LikeBackPrivate
         ~LikeBackPrivate();
 
         LikeBack::Button         buttons;
+        QString                  hostScheme;
         QString                  hostName;
-        QString                  remotePath;
         quint16                  hostPort;
+        QString                  remotePath;
         QStringList              acceptedLocales;
         LikeBack::WindowListing  windowListing;
         bool                     showBarByDefault;
@@ -64,9 +65,10 @@ class LikeBackPrivate
 // Constructor
 LikeBackPrivate::LikeBackPrivate()
   : buttons(LikeBack::DefaultButtons)
+  , hostScheme("http")
   , hostName()
+  , hostPort(0)
   , remotePath()
-  , hostPort(80)
   , acceptedLocales()
   , windowListing(LikeBack::NoListing)
   , showBarByDefault(false)

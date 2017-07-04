@@ -35,6 +35,7 @@
 
 // const strings
 #define FOTOWALL_FEEDBACK_LANGS "en,it,fr"
+#define FOTOWALL_FEEDBACK_SCHEME "http"
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
@@ -238,7 +239,7 @@ void MainWindow::createLikeBack()
 {
     m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
     m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
-    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
+    m_likeBack->setServer(FOTOWALL_FEEDBACK_SCHEME, FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
 }
 
 void MainWindow::slotClosePictureSearch()
