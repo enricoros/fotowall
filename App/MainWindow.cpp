@@ -89,7 +89,7 @@ MainWindow::MainWindow(QWidget * parent)
     BreadCrumbBar * helpBar = new BreadCrumbBar(ui->sceneView);
     connect(helpBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotHelpBarClicked(quint32)));
     helpBar->setBackgroundOffset(1);
-    helpBar->addNode(1, tr(" HELP "), 0);
+    helpBar->addNode(1, tr(" Help "), 0);
     addNavigationWidget(helpBar, 0, Qt::AlignRight);
 
     // show (with last geometry)
