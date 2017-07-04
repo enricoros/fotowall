@@ -61,8 +61,8 @@ QColor RenderOpts::hiColor;
 
 int main( int argc, char ** args )
 {
+#if defined(Q_OS_LINUX) && (QT_VERSION < QT_VERSION_CHECK(5,0,0))
     // use the Raster GraphicsSystem on X11
-#if defined(Q_OS_LINUX)
     QApplication::setGraphicsSystem("raster");
 #endif
 
@@ -70,7 +70,9 @@ int main( int argc, char ** args )
     app.setApplicationName("Fotowall");
     app.setApplicationVersion("0.98-beta");
     app.setOrganizationName("Enrico Ros");
+#if QT_VERSION > QT_VERSION_CHECK(5,6,0)
     app.setAttribute(Qt::AA_EnableHighDpiScaling, true);
+#endif
 
     // Lock Symbian orientation
 #ifdef Q_OS_SYMBIAN

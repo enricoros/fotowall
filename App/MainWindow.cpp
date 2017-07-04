@@ -39,6 +39,8 @@
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
+// uncomment the following to disable the blurring effects behind the windows
+#define DISABLE_BEHIND_BLUR
 
 MainWindow::MainWindow(QWidget * parent)
     : PlugGui::Container(parent)
@@ -391,6 +393,7 @@ void MainWindow::on_accelBox_toggled(bool checked)
     RenderOpts::OpenGLWindow = ui->sceneView->openGL();
 }
 
+#if !defined(DISABLE_BEHIND_BLUR)
 #if defined(Q_OS_LINUX)
 /**
   Blur behind windows (on KDE4.5+)
@@ -474,11 +477,14 @@ static bool dwmEnableBlurBehindWindow(QWidget * widget, bool enable)
     return result;
 }
 #endif
+#endif
 
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
+#if !defined(DISABLE_BEHIND_BLUR)
 #if defined(Q_OS_WIN)
     static Qt::WindowFlags initialWindowFlags = windowFlags();
+#endif
 #endif
     if (transparent) {
 #if defined(Q_OS_LINUX)
@@ -501,6 +507,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         RenderOpts::ARGBWindow = true;
 
         // enable blur behind
+#if !defined(DISABLE_BEHIND_BLUR)
 #if defined(Q_OS_LINUX)
         kde4EnableBlurBehindWindow(winId(), true);
 #elif defined(Q_OS_WIN)
@@ -510,7 +517,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
             show();
         }
 #endif
-
+#endif
         // disable appliance background too
         if (App::workflow)
             App::workflow->applianceCommand(App::AC_ClearBackground);
@@ -520,6 +527,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         setAttribute(Qt::WA_NoSystemBackground, false);
 
         // disable blur behind
+#if !defined(DISABLE_BEHIND_BLUR)
 #if defined(Q_OS_LINUX)
         kde4EnableBlurBehindWindow(winId(), false);
 #elif defined(Q_OS_WIN)
@@ -527,7 +535,7 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         setWindowFlags(initialWindowFlags);
         show();
 #endif
-
+#endif
         // hint the render that we're opaque again
         RenderOpts::ARGBWindow = false;
     }
