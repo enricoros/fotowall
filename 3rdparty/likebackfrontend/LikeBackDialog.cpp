@@ -264,7 +264,7 @@ void LikeBackDialog::slotSendData()
     if (m_likeBack->hostPort())
         remoteUrl.setPort(m_likeBack->hostPort());
 
-#if 1
+#if 0
     qDebug() << remoteUrl;
     qDebug() << data;
 #endif
