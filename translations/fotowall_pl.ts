@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pl">
+<TS version="2.1" language="pl">
 <context>
     <name>AbstractConfig</name>
     <message>
@@ -165,7 +165,7 @@ Użyj CTRL by anulować transformacje.</translation>
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+289"/>
+        <location filename="../Canvas/Canvas.cpp" line="+292"/>
         <location line="+19"/>
         <source>Unnamed %1</source>
         <translation>Bez nazwy %1</translation>
@@ -181,7 +181,7 @@ Użyj CTRL by anulować transformacje.</translation>
         <translation>Przód</translation>
     </message>
     <message>
-        <location line="+727"/>
+        <location line="+744"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
@@ -355,8 +355,8 @@ Użyj CTRL by anulować transformacje.</translation>
     </message>
     <message>
         <location line="+0"/>
-        <source>The Wordcloud editor will be ready in the Fotowall REVO (1.0) release.</source>
-        <translation>Edytor Wordcloud będzie gotowy w wydaniu Fotowall REVO (1.0).</translation>
+        <source>Would be great to have a Wordcloud editor, but we can only move things around for now.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+88"/>
@@ -373,11 +373,6 @@ Użyj CTRL by anulować transformacje.</translation>
     <name>CanvasApplianceElements</name>
     <message>
         <location filename="../App/CanvasAppliance.ui"/>
-        <source>ADD NEW</source>
-        <translation>DODAJ NOWE</translation>
-    </message>
-    <message>
-        <location/>
         <source>Add Picture</source>
         <translation>Dodaj zdjęcie</translation>
     </message>
@@ -455,6 +450,11 @@ Użyj CTRL by anulować transformacje.</translation>
         <location/>
         <source>Desktop</source>
         <translation>Desktop</translation>
+    </message>
+    <message>
+        <location/>
+        <source>INSERT</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -643,7 +643,7 @@ Przejdź do ustawień pulpitu i wybierz plik:
         <translation>Utworzone z %1</translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+116"/>
         <source>Unnamed %1.%2</source>
         <translation>Bez nazwy %1.%2</translation>
     </message>
@@ -984,14 +984,6 @@ Przejdź do ustawień pulpitu i wybierz plik:
     </message>
 </context>
 <context>
-    <name>FileBoxWidget</name>
-    <message>
-        <location filename="../App/HomeAppliance.cpp" line="+45"/>
-        <source>Open</source>
-        <translation>Otwórz</translation>
-    </message>
-</context>
-<context>
     <name>GlowEffectDialog</name>
     <message>
         <location filename="../Shared/GlowEffectDialog.ui"/>
@@ -1079,11 +1071,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location/>
-        <source>Fotowall&apos;s Website</source>
-        <translation>Blog FotoWall</translation>
-    </message>
-    <message>
-        <location/>
         <source>Video Tutorial (0.2)</source>
         <translation>Samouczek wideo (0.2)</translation>
     </message>
@@ -1094,8 +1081,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location/>
-        <source>Fotowall&apos;s Blog</source>
-        <translation>Blog Fotowall</translation>
+        <source>Mini Website</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>News</source>
+        <translation type="unfinished">Wiadomości</translation>
+    </message>
+    <message>
+        <location/>
+        <source>YouTube Tutorials</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1163,7 +1160,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HomeAppliance</name>
     <message>
-        <location filename="../App/HomeAppliance.cpp" line="+31"/>
+        <location filename="../App/HomeAppliance.cpp" line="+76"/>
         <source>RECENT FILES</source>
         <translation>OSTATNIO UŻYWANE PLIKI</translation>
     </message>
@@ -1186,7 +1183,7 @@ p, li { white-space: pre-wrap; }
         <translation>Wordcloud</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+9"/>
         <location line="+12"/>
         <source>coming soon</source>
         <translation>dostępny wkrótce</translation>
@@ -1208,7 +1205,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LikeBackDialog</name>
     <message>
-        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+166"/>
+        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+167"/>
         <source>Please, write it in &lt;b&gt;%1&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
         <comment>Feedback dialog text, message with one accepted language for the comments</comment>
         <translation>Proszę wpisz je tu &lt;b&gt;%1&lt;/b&gt; (możesz uzyć &lt;a href=&quot;%3&quot;&gt;automatu tłumaczącego&lt;/a&gt; z tąd).&lt;br/&gt;</translation>
@@ -1248,7 +1245,7 @@ p, li { white-space: pre-wrap; }
         <translation>Adres email jest nieprawidłowy i nie może być użyty: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+64"/>
         <source>Comment Sent</source>
         <comment>Dialog box title</comment>
         <translation>Wysyłanie komentarza</translation>
@@ -1322,12 +1319,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../App/MainWindow.cpp" line="+83"/>
-        <source> ? </source>
-        <translation> ? </translation>
+        <location filename="../App/MainWindow.cpp" line="+93"/>
+        <source> Help </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+241"/>
+        <location line="+57"/>
+        <source>&apos;RETRO&apos; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+187"/>
         <source>Accelerated Rendering</source>
         <translation>Akceleracja odtwarzania</translation>
     </message>
@@ -1352,7 +1354,7 @@ p, li { white-space: pre-wrap; }
         <translation>Test OpenGL</translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="+125"/>
         <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
         <translation>Ta funkcja wymaga kompozycji (compiz lub kwin4) by działała w Linuksie.&lt;br&gt;Jeśli pojawi się czarne tło oznacza to, że przezroczystość nie jest obsługiwana przez Twój system.</translation>
     </message>
@@ -1385,7 +1387,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+147"/>
+        <location line="+62"/>
+        <source>&apos;RETRO&apos; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+85"/>
         <source>Search Web Pictures</source>
         <translation type="unfinished">Szukaj zdjęcia z internetu</translation>
     </message>
@@ -1406,7 +1413,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OnlineServices</name>
     <message>
-        <location filename="../App/OnlineServices.cpp" line="+109"/>
+        <location filename="../App/OnlineServices.cpp" line="+110"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation>Otwórz blog autora Fotowall</translation>
     </message>
@@ -1418,7 +1425,7 @@ Do you want to open the web page?</source>
 Czy chcesz otworzyć tą stronę internetową?</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+22"/>
         <source>Opening the Web Tutorial</source>
         <translation>Otwórz internetowy samouczek</translation>
     </message>
@@ -1556,13 +1563,13 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../Canvas/PictureContent.cpp" line="+53"/>
-        <location line="+63"/>
+        <location filename="../Canvas/PictureContent.cpp" line="+57"/>
+        <location line="+65"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="-56"/>
+        <location line="-58"/>
         <source>Flip horizontally</source>
         <translation>Odbij poziomo</translation>
     </message>
@@ -1570,6 +1577,36 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
         <location line="+6"/>
         <source>Flip vertically</source>
         <translation>Odbij pionowo</translation>
+    </message>
+    <message>
+        <location line="+303"/>
+        <source>Missing image file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>I looked everywhere but I could not find &apos;%1&apos;. Please select a replacement.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Select replacement for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Images (%1)</source>
+        <translation type="unfinished">Obrazy (%1)</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Skipping file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>We will remove the image &apos;%1&apos; from the Canvas.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../Canvas/PictureContent.h" line="+42"/>
@@ -1640,12 +1677,12 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
         <translation>Ikona</translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+197"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+201"/>
         <source>Type here...</source>
         <translation type="unfinished">Wpisz tutaj...</translation>
     </message>
     <message>
-        <location line="+139"/>
+        <location line="+155"/>
         <source>Cancel</source>
         <translation>Anuluj</translation>
     </message>
@@ -1710,9 +1747,14 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
         <translation>Dodaj pliki Fotowall do płótna</translation>
     </message>
     <message>
-        <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+110"/>
+        <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+113"/>
         <source>Camera %1</source>
         <translation>Kamera %1</translation>
+    </message>
+    <message>
+        <location filename="../App/HomeAppliance.cpp" line="-45"/>
+        <source>Open</source>
+        <translation type="unfinished">Otwórz</translation>
     </message>
 </context>
 <context>
@@ -1876,7 +1918,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+542"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+541"/>
         <source>Source</source>
         <translation>Żródło</translation>
     </message>
@@ -1889,7 +1931,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location line="-350"/>
+        <location line="-349"/>
         <source>Bold</source>
         <translation>Pogrubienie</translation>
     </message>
@@ -1932,7 +1974,17 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../App/SceneView.cpp" line="+227"/>
+        <location filename="../App/SceneView.cpp" line="+87"/>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>CTRL+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+146"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
@@ -1986,7 +2038,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
         <translation>kliknij prawym by edytować...</translation>
     </message>
     <message>
-        <location line="+202"/>
+        <location line="+207"/>
         <source>PDF Export Warning</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1996,7 +2048,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Canvas/TextContent.h" line="+53"/>
+        <location filename="../Canvas/TextContent.h" line="+54"/>
         <source>Text</source>
         <translation>Tekst</translation>
     </message>
@@ -2114,7 +2166,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
 <context>
     <name>Wordcloud::Scanner</name>
     <message>
-        <location filename="../Wordcloud/Scanner.cpp" line="+118"/>
+        <location filename="../Wordcloud/Scanner.cpp" line="+134"/>
         <source>Word</source>
         <translation>Słowo</translation>
     </message>
@@ -2135,12 +2187,32 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
 <context>
     <name>WordcloudContent</name>
     <message>
-        <location filename="../Canvas/WordcloudContent.cpp" line="+47"/>
+        <location filename="../Canvas/WordcloudContent.cpp" line="+48"/>
         <source>Create a Wordcloud from a text file</source>
         <translation>Stwórz Wordcloud z pliki tekstowego</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+6"/>
+        <source>Minimum word length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Longer or equal to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>How many words</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Less or equal than these words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
         <source>Welcome to Wordcloud. Change options on the sidebar.</source>
         <translation>Witamy w Wordcloud. Zmień opcje w bocznym panelu.</translation>
     </message>
@@ -2191,7 +2263,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+176"/>
+        <location filename="../App/Workflow.cpp" line="+177"/>
         <source>Closing Fotowall...</source>
         <translation>Zamykanie Forowall...</translation>
     </message>

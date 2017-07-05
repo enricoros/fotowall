@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN" sourcelanguage="en">
+<TS version="2.1" language="zh_CN" sourcelanguage="en">
 <context>
     <name>AbstractConfig</name>
     <message>
@@ -165,7 +165,7 @@ CTRL 用来取消形变。</translation>
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+289"/>
+        <location filename="../Canvas/Canvas.cpp" line="+292"/>
         <location line="+19"/>
         <source>Unnamed %1</source>
         <translation>未命名 %1</translation>
@@ -181,7 +181,7 @@ CTRL 用来取消形变。</translation>
         <translation>置顶</translation>
     </message>
     <message>
-        <location line="+727"/>
+        <location line="+744"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
@@ -355,8 +355,8 @@ CTRL 用来取消形变。</translation>
     </message>
     <message>
         <location line="+0"/>
-        <source>The Wordcloud editor will be ready in the Fotowall REVO (1.0) release.</source>
-        <translation>使用云字框，敬请期待 Fotowall REVO (1.0) 的发布。</translation>
+        <source>Would be great to have a Wordcloud editor, but we can only move things around for now.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+88"/>
@@ -373,11 +373,6 @@ CTRL 用来取消形变。</translation>
     <name>CanvasApplianceElements</name>
     <message>
         <location filename="../App/CanvasAppliance.ui"/>
-        <source>ADD NEW</source>
-        <translation>新添加</translation>
-    </message>
-    <message>
-        <location/>
         <source>Add Picture</source>
         <translation>添加图片</translation>
     </message>
@@ -455,6 +450,11 @@ CTRL 用来取消形变。</translation>
         <location/>
         <source>Desktop</source>
         <translation>桌面</translation>
+    </message>
+    <message>
+        <location/>
+        <source>INSERT</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -643,7 +643,7 @@ Go to the Desktop Settings and select the file:
         <translation>%1 成功创建了图像</translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+116"/>
         <source>Unnamed %1.%2</source>
         <translation>未命名 %1.%2</translation>
     </message>
@@ -984,14 +984,6 @@ Go to the Desktop Settings and select the file:
     </message>
 </context>
 <context>
-    <name>FileBoxWidget</name>
-    <message>
-        <location filename="../App/HomeAppliance.cpp" line="+45"/>
-        <source>Open</source>
-        <translation>打开</translation>
-    </message>
-</context>
-<context>
     <name>GlowEffectDialog</name>
     <message>
         <location filename="../Shared/GlowEffectDialog.ui"/>
@@ -1069,11 +1061,6 @@ p, li { white-space: pre-wrap; }
     <name>HelpApplianceWidgets</name>
     <message>
         <location filename="../App/HelpAppliance.ui"/>
-        <source>Fotowall&apos;s Website</source>
-        <translation>Fotowall 网站</translation>
-    </message>
-    <message>
-        <location/>
         <source>Video Tutorial (0.2)</source>
         <translation>视频教程 (0.2)</translation>
     </message>
@@ -1084,13 +1071,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location/>
-        <source>Fotowall&apos;s Blog</source>
-        <translation>Fotowall 博客</translation>
+        <source>ONLINE</source>
+        <translation>在线</translation>
     </message>
     <message>
         <location/>
-        <source>ONLINE</source>
-        <translation>在线</translation>
+        <source>Mini Website</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>News</source>
+        <translation type="unfinished">新闻</translation>
+    </message>
+    <message>
+        <location/>
+        <source>YouTube Tutorials</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1158,7 +1155,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HomeAppliance</name>
     <message>
-        <location filename="../App/HomeAppliance.cpp" line="+31"/>
+        <location filename="../App/HomeAppliance.cpp" line="+76"/>
         <source>RECENT FILES</source>
         <translation>最近的文件</translation>
     </message>
@@ -1181,7 +1178,7 @@ p, li { white-space: pre-wrap; }
         <translation>云字框</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+9"/>
         <location line="+12"/>
         <source>coming soon</source>
         <translation>敬请期待</translation>
@@ -1203,7 +1200,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LikeBackDialog</name>
     <message>
-        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+166"/>
+        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+167"/>
         <source>Please, write it in &lt;b&gt;%1&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
         <comment>Feedback dialog text, message with one accepted language for the comments</comment>
         <translation>请用 &lt;b&gt;%1&lt;/b&gt; 书写（您或许想用一个&lt;a href=&quot;%3&quot;&gt;在线翻译工具&lt;/a&gt;）。&lt;br/&gt;</translation>
@@ -1243,7 +1240,7 @@ p, li { white-space: pre-wrap; }
         <translation>您输入的 email 地址不合法：“%1”</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+64"/>
         <source>Comment Sent</source>
         <comment>Dialog box title</comment>
         <translation>意见已发送</translation>
@@ -1316,22 +1313,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../App/MainWindow.cpp" line="+353"/>
+        <location filename="../App/MainWindow.cpp" line="+366"/>
         <source>OpenGL</source>
         <translation>OpenGL</translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+128"/>
         <source>Transparency</source>
         <translation>透明度</translation>
     </message>
     <message>
-        <location line="-394"/>
-        <source> ? </source>
-        <translation> ? </translation>
+        <location line="-401"/>
+        <source> Help </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+241"/>
+        <location line="+57"/>
+        <source>&apos;RETRO&apos; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+187"/>
         <source>Accelerated Rendering</source>
         <translation>加速渲染</translation>
     </message>
@@ -1351,7 +1353,7 @@ p, li { white-space: pre-wrap; }
         <translation>测试 OpenGL</translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="+125"/>
         <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
         <translation>在 Linux 上，这个功能需要窗口混合器（compiz 或 kwin4）才能工作。&lt;br&gt;如果您看到一个黑色的背景，那就意味着您的系统不支持透明。</translation>
     </message>
@@ -1379,7 +1381,12 @@ p, li { white-space: pre-wrap; }
         <translation>退出</translation>
     </message>
     <message>
-        <location line="+147"/>
+        <location line="+62"/>
+        <source>&apos;RETRO&apos; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+85"/>
         <source>Search Web Pictures</source>
         <translation>搜索互联网图片</translation>
     </message>
@@ -1400,7 +1407,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OnlineServices</name>
     <message>
-        <location filename="../App/OnlineServices.cpp" line="+109"/>
+        <location filename="../App/OnlineServices.cpp" line="+110"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation>打开 Fotowall 作者的博客</translation>
     </message>
@@ -1412,7 +1419,7 @@ Do you want to open the web page?</source>
 您想打开这个页面吗？</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+22"/>
         <source>Opening the Web Tutorial</source>
         <translation>打开网上教程</translation>
     </message>
@@ -1550,13 +1557,13 @@ Do you want to open the web page?</source>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../Canvas/PictureContent.cpp" line="+53"/>
-        <location line="+63"/>
+        <location filename="../Canvas/PictureContent.cpp" line="+57"/>
+        <location line="+65"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="-56"/>
+        <location line="-58"/>
         <source>Flip horizontally</source>
         <translation>横向翻转</translation>
     </message>
@@ -1564,6 +1571,36 @@ Do you want to open the web page?</source>
         <location line="+6"/>
         <source>Flip vertically</source>
         <translation>纵向翻转</translation>
+    </message>
+    <message>
+        <location line="+303"/>
+        <source>Missing image file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>I looked everywhere but I could not find &apos;%1&apos;. Please select a replacement.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Select replacement for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Images (%1)</source>
+        <translation type="unfinished">图片文件 (%1)</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Skipping file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>We will remove the image &apos;%1&apos; from the Canvas.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../Canvas/PictureContent.h" line="+42"/>
@@ -1634,12 +1671,12 @@ Do you want to open the web page?</source>
         <translation>图标</translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+197"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+201"/>
         <source>Type here...</source>
         <translation>请输入...</translation>
     </message>
     <message>
-        <location line="+139"/>
+        <location line="+155"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -1704,9 +1741,14 @@ Do you want to open the web page?</source>
         <translation>降 Fotowall 文件添加到画布</translation>
     </message>
     <message>
-        <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+110"/>
+        <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+113"/>
         <source>Camera %1</source>
         <translation>相机 %1</translation>
+    </message>
+    <message>
+        <location filename="../App/HomeAppliance.cpp" line="-45"/>
+        <source>Open</source>
+        <translation type="unfinished">打开</translation>
     </message>
 </context>
 <context>
@@ -1870,7 +1912,7 @@ Do you want to open the web page?</source>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+541"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+540"/>
         <source>Visual Editor</source>
         <translation>可视化编辑器</translation>
     </message>
@@ -1883,7 +1925,7 @@ Do you want to open the web page?</source>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location line="-351"/>
+        <location line="-350"/>
         <source>Bold</source>
         <translation>粗体</translation>
     </message>
@@ -1926,7 +1968,17 @@ Do you want to open the web page?</source>
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../App/SceneView.cpp" line="+227"/>
+        <location filename="../App/SceneView.cpp" line="+87"/>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>CTRL+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+146"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
@@ -1980,7 +2032,7 @@ Do you want to open the web page?</source>
         <translation>点右键来编辑...</translation>
     </message>
     <message>
-        <location line="+202"/>
+        <location line="+207"/>
         <source>PDF Export Warning</source>
         <translation>PDF 导出警告</translation>
     </message>
@@ -1990,7 +2042,7 @@ Do you want to open the web page?</source>
         <translation>无法将变形的文本导出到 PDF</translation>
     </message>
     <message>
-        <location filename="../Canvas/TextContent.h" line="+53"/>
+        <location filename="../Canvas/TextContent.h" line="+54"/>
         <source>Text</source>
         <translation>文本</translation>
     </message>
@@ -2108,7 +2160,7 @@ Do you want to open the web page?</source>
 <context>
     <name>Wordcloud::Scanner</name>
     <message>
-        <location filename="../Wordcloud/Scanner.cpp" line="+118"/>
+        <location filename="../Wordcloud/Scanner.cpp" line="+134"/>
         <source>Word</source>
         <translation>字</translation>
     </message>
@@ -2129,12 +2181,32 @@ Do you want to open the web page?</source>
 <context>
     <name>WordcloudContent</name>
     <message>
-        <location filename="../Canvas/WordcloudContent.cpp" line="+47"/>
+        <location filename="../Canvas/WordcloudContent.cpp" line="+48"/>
         <source>Create a Wordcloud from a text file</source>
         <translation>从文本文件创建云字框</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+6"/>
+        <source>Minimum word length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Longer or equal to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>How many words</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Less or equal than these words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
         <source>Welcome to Wordcloud. Change options on the sidebar.</source>
         <translation>欢迎使用云字框。请在边栏修改选项。</translation>
     </message>
@@ -2185,7 +2257,7 @@ Do you want to open the web page?</source>
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+176"/>
+        <location filename="../App/Workflow.cpp" line="+177"/>
         <source>Closing Fotowall...</source>
         <translation>正在关闭 Fotowall...</translation>
     </message>
