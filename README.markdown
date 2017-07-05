@@ -12,8 +12,7 @@ Check out the [home page](https://www.enricoros.com/opensource/fotowall), the
 ChangeLog
 ---------
 
-Fotowall "RETRO" 1.0 (2017-07-04):
-
+### Fotowall "RETRO" 1.0 (2017-07-04):
 * Picture cropping (reqby Rossana)
 * Exporters: vast improvements, high-quality print-ready PDF output
 * Wordcloud editor
@@ -24,8 +23,7 @@ Fotowall "RETRO" 1.0 (2017-07-04):
 * Arnaud's Undo/Redo system (not active yet)
 * Symbian port (not that anyone uses it anymore :D)
 
-Fotowall "Alchimia" 0.9 (2009-12-08):
-
+### Fotowall "Alchimia" 0.9 (2009-12-08):
 * Fast, Solid and Integrated Workflow with Home Screen
 * New Contents: Canvas and Wordcloud
 * Graphics Effects
@@ -45,8 +43,7 @@ Fotowall "Alchimia" 0.9 (2009-12-08):
   * Fixed the Exact Size modes
   * Fixed licensing
 
-Version 0.8 (2009-09-12):
-
+### Version 0.8 (2009-09-12):
 * Bezier Shaped Text
 * Pictures: Crop and change Opacity
 * Context-sensitive Top-Bar
@@ -68,8 +65,7 @@ Version 0.8 (2009-09-12):
   * fix: left alignment of some items
   * fix: resizing works only with the bottom right corner. fix the others.
 
-Version 0.7.1 (2009-07-23):
-
+### Version 0.7.1 (2009-07-23):
 * Flickr content download
 * Qt 4.6 GFX cuteness and network speed (4.6 highly recommended)
 * Rubberband selection of items
@@ -80,8 +76,7 @@ Version 0.7.1 (2009-07-23):
 * Check for updates
 * Fixed many bugs
 
-Version 0.6 (2009-04-29):
-
+### Version 0.6 (2009-04-29):
 * PosteRazor Integration
 * Live Video (Linux only, requires a WebCam)
 * Export Wizard (Wallpaper, Image, PosteRazor, Print)
@@ -93,8 +88,7 @@ Version 0.6 (2009-04-29):
 * Sepia Effect
 * Scale Text like Images
 
-Version 0.5 (2009-04-11):
-
+### Version 0.5 (2009-04-11):
 * CD/DVD Cover composition and printing (by Arnaud Tanguy)
 * Rich Text (with extended editing)
 * Glow effect (by Arnaud Tanguy)
@@ -108,16 +102,14 @@ Version 0.5 (2009-04-11):
 * Translation of the Introduction text (by Arnaud Tanguy)
 * Fall back to QTextDocument where QtWebkit is not available
 
-Version 0.4 (2009-03-29):
-
+### Version 0.4 (2009-03-29):
 * Windows executable on [github](http://github.com/enricoros/Fotowall/downloads)
 * Image Effects (by Arnaud Tanguy)
 * French Translation (by Arnaud Tanguy)
 * German translation [Martin]
 * Apply properties to All
 
-Version 0.3.1 (2009-03-13):
-
+### Version 0.3.1 (2009-03-13):
 * builds with Qt 4.4
 * Brazilian translation [Marcio Moraes]
 * Configuration Panel: right click on an image and edit properties
@@ -168,6 +160,35 @@ sudo make install
 ```
 Then, to make the static executable follow the procedure above, replacing 'qmake'
 with '/opt/qt-5.9.1-static/bin/qmake'.
+
+## Windows Static
+Start by creating static qt5 development libraries. Unpack the sources in c:\qt\src,
+or you'll risk too long FS paths. First add the following 2 lines to C:\qt\src\qtbase\mkspecs\win32-g++\qmake.conf:
+```
+QMAKE_LFLAGS += -static -static-libgcc
+DEFINES += QT_STATIC_BUILD
+```
+Then make sure you have mingw32 (likely installed via the Qt5 dynamic libs installer), and make
+sure the SSL includes and libraries (libcrypto, libssl) are in the default paths in the mingw distro.
+You may have to copy includes and libs all over the place.
+
+Then execute the following commands in Powershell (assuming you already downloaded and patched):
+```
+Set-StrictMode -Version 3
+$QtSrcDir = "C:\qt\src"
+$QtDir = "C:\qt\5.9.1-static"
+$MingwDir = "C:\p\apps\Qt\Tools\mingw530_32"
+$env:Path = "$MingwDir\bin;$MingwDir\opt\bin;$env:SystemRoot\system32;$env:SystemRoot"
+$env:LANG = "en"
+$env:QT_INSTALL_PREFIX = $QtDir
+$OPENSSL_LIBS = "-L/opt/ssl/lib -lssl -lcrypto"
+$env:OPENSSL_LIBS = "-L/opt/ssl/lib -lssl -lcrypto"
+Push-Location $QtSrcDir
+./configure.bat -static -release -platform win32-g++ -prefix $QtDir -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -opengl desktop -ssl -openssl-linked -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests
+mingw32-make -k -j4
+mingw32-make -k install
+```
+You can now clone Fotowall, open Creator and point it to the new libraries, and make the static executable.
 
 
 Sharing Ideas
