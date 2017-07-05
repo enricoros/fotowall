@@ -4,26 +4,25 @@ Fotowall
 Fotowall is a creative tool that allows you to layout your photos or pictures
 in a personal way. You can add pictures, then resize, move, change colors, text,
 shadows, etc..
-Check out the [home page](http://www.enricoros.com/opensource/fotowall) and the
-[blog](http://www.enricoros.com/blog/tag/fotowall/) too.
+Check out the [home page](https://www.enricoros.com/opensource/fotowall), the
+[news](https://www.enricoros.com/opensource/fotowall/news), and the
+[old blog](https://www.enricoros.com/oldblog/tag/fotowall/) too.
 *Focus is on simplicity, express your creativity! ;-)*
 
 ChangeLog
 ---------
 
+Fotowall "RETRO" 1.0 (2017-01-04):
 
-Fotowall "REVO" 1.0 (Unreleased):
-
-In progress:
-
-* Arnaud's Undo/Redo system
+* Picture cropping (reqby Rossana)
+* Exporters: vast improvements, high-quality print-ready PDF output
 * Wordcloud editor
-* Arrange Contents
-* Text shaking
-
+* Text: Color Triangle picker, and Shaking
+* Re-Arrange Contents
 * View perspective and rotation (reqby Nicolas Brisset)
-* Crop picture button (reqby Rossana)
-
+* Port to QT5
+* Arnaud's Undo/Redo system (not active yet)
+* Symbian port (not that anyone uses it anymore :D)
 
 Fotowall "Alchimia" 0.9 (2009-12-08):
 
@@ -136,6 +135,41 @@ Version 0.3.1 (2009-03-13):
 * Pictures stay on-screen
 
 
+Building
+--------
+This Fotowall package provides source code; to make an executable out of the
+sources you have to know a little about programming or ask one of your friends
+to do it ;-) Or just grab an 'executable package' from the project homepage.
+
+## Ubuntu
+Download Ubuntu 16.04 on a VM, then:
+```
+sudo apt-get update
+sudo apt-get install git qtbase5-dev libqt5svg5-dev qt5-default qtcreator pax-utils tree -y
+git clone https://github.com/enricoros/fotowall.git
+cd fotowall
+qmake
+make -j6
+./fotowall # enjoy
+```
+Optionally you can use 'sudo make install' to perform an installation in your system,
+including showing the icon in the system menu; however you just need the 'fotowall'
+executable.
+
+## Ubuntu Static
+Start by creating static qt5 development libraries. You can even use an older Ubuntu 14.04 for it, for greater compatibility.
+```
+wget https://download.qt.io/archive/qt/5.9/5.9.1/single/qt-everywhere-opensource-src-5.9.1.tar.xz
+tar xpf qt-everywhere-opensource-src-5.9.1.tar.xz
+cd qt-everywhere-opensource-src-5.9.1
+./configure -static -release -prefix /opt/qt-5.9.1-static -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -ssl -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests -qpa xcb -qt-xcb -opengl desktop -fontconfig
+time make -j6
+sudo make install
+```
+Then, to make the static executable follow the procedure above, replacing 'qmake'
+with '/opt/qt-5.9.1-static/bin/qmake'.
+
+
 Sharing Ideas
 -------------
 
@@ -147,7 +181,7 @@ improvement and the code is kept clean and small.
 - And if you have any Idea or Suggestion, just drop me a line, on the project
   homepage or by mail at  enrico.ros@gmail.com ;-)
 
-### Current Wishlist
+### Current Wishlist and user's requests
 
 * Make the propeties dialog moveable/stay in the current view (reqby Martin Zimmermann)
 * Integrate Marco Bavagnoli updates on the googleimagedownloader
@@ -203,32 +237,6 @@ improvement and the code is kept clean and small.
 * missing relicences
  - 3rdparty/richtextedit/richtexteditor*: redo 'cause non free
 
-
-Building
---------
-
-This Fotowall package provides source code; to make an executable out of the
-sources you have to know a little about programming or ask one of your friends
-to do it ;-) Or just grab an 'executable package' from the project homepage.
-
-In Linux/X11, Mac, or Windows, install the latest Qt development packages that
-you will find on http://www.trolltech.com:
-
-- on linux this is tested with Qt 4.4/4.5/4.6-git and GCC 4.0+
-- on windows this is tested witn Qt 4.5.2+ and MSVC Express 2005 and 2008
-- on mac it is tested with Qt 4.5+
-
-Just open a command prompt (win), shell (linux, mac) and go the sources
-location and issue the followings commands:
-
-- qmake  (or qmake-qt4 if your system is weird)
-- make   (or nmake, if you're on windows)
-- make install (on linux)
-
-The executable will be built and you can start enjoying Fotowall! ;-)
-
-Internal: To prepare the folder for release: make distclean; git clean -fdx; rm -fr Makefile data/sources .build .git .gitignore translations/.gitignore examples; qmake; rm -fr Makefile .build
-Internal: Check dependancies: find *.h -maxdepth 1 -exec grep -irH {} ../items/* \;
 
 Old News
 --------
