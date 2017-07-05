@@ -26,7 +26,7 @@
     <message>
         <location filename="../Canvas/AbstractConfig.ui"/>
         <source>General</source>
-        <translation>Ogółne</translation>
+        <translation>Ogólne</translation>
     </message>
     <message>
         <location/>
@@ -178,7 +178,7 @@ Użyj CTRL by anulować transformacje.</translation>
     <message>
         <location line="+6"/>
         <source>Front</source>
-        <translation>Przód</translation>
+        <translation>W przód</translation>
     </message>
     <message>
         <location line="+744"/>
@@ -630,12 +630,12 @@ Przejdź do ustawień pulpitu i wybierz plik:
     <message>
         <location line="+69"/>
         <source>PDF Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd PDF</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Error saving to the PDF file, try to chose another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd podczas zapisu do pliku PDF, spróbuj wybrać inny</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -660,7 +660,7 @@ Przejdź do ustawień pulpitu i wybierz plik:
     <message>
         <location line="+15"/>
         <source>Choose the PDF file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz plik PDF</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -680,7 +680,7 @@ Przejdź do ustawień pulpitu i wybierz plik:
     <message>
         <location line="+76"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Inny</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -905,12 +905,12 @@ Przejdź do ustawień pulpitu i wybierz plik:
     <message>
         <location/>
         <source>Landscape paper orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientacja papieru - pejzaż</translation>
     </message>
     <message>
         <location/>
         <source>Keep canvas proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Zachowaj proporcje</translation>
     </message>
     <message>
         <location/>
@@ -920,57 +920,57 @@ Przejdź do ustawień pulpitu i wybierz plik:
     <message>
         <location/>
         <source>Export to PDF file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport do pliku PDF</translation>
     </message>
     <message>
         <location/>
         <source>Output Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje wyjścia</translation>
     </message>
     <message>
         <location/>
         <source>Paper Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar papieru:</translation>
     </message>
     <message>
         <location/>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz</translation>
     </message>
     <message>
         <location/>
         <source>Scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala:</translation>
     </message>
     <message>
         <location/>
         <source>Original</source>
-        <translation type="unfinished"></translation>
+        <translation>Oryginalny</translation>
     </message>
     <message>
         <location/>
         <source>Fit the page</source>
-        <translation type="unfinished"></translation>
+        <translation>Dopasuj stronę</translation>
     </message>
     <message>
         <location/>
         <source>Position:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pozycja:</translation>
     </message>
     <message>
         <location/>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Góra lewo</translation>
     </message>
     <message>
         <location/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyśrodkuj</translation>
     </message>
     <message>
         <location/>
         <source>Resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczość</translation>
     </message>
     <message>
         <location/>
@@ -980,7 +980,7 @@ Przejdź do ustawień pulpitu i wybierz plik:
     <message>
         <location/>
         <source>Preview ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd ...</translation>
     </message>
 </context>
 <context>
@@ -1199,7 +1199,7 @@ p, li { white-space: pre-wrap; }
         <location line="+7"/>
         <source>Please, do not ask for new features: this kind of request will be ignored.&lt;br/&gt;</source>
         <comment>Feedback dialog text, text to disallow feature requests</comment>
-        <translation>Prosimy nie wnisić o nowe funkcje, tego typu prośby będą ignorowane.&lt;br/&gt;</translation>
+        <translation>Prosimy nie wnosić o nowe funkcje, tego typu prośby będą ignorowane.&lt;br/&gt;</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1632,7 +1632,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location/>
         <source>Any Size</source>
-        <translation>Każdy rozmiar</translation>
+        <translation>Dowolny rozmiar</translation>
     </message>
     <message>
         <location/>
@@ -1652,7 +1652,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location filename="../App/PictureSearchWidget.cpp" line="+201"/>
         <source>Type here...</source>
-        <translation type="unfinished">Wpisz tutaj...</translation>
+        <translation>Wpisz tutaj...</translation>
     </message>
     <message>
         <location line="+155"/>
@@ -1972,12 +1972,12 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location line="+10"/>
         <source>%1 pictures selected</source>
-        <translation>%1 zdjęć wybrano</translation>
+        <translation>wybrano %1 zdjęć</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>%1 objects selected</source>
-        <translation>%1 obiektów wybrano</translation>
+        <translation>wybrano %1 obiektów</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2162,7 +2162,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location filename="../Canvas/WordcloudContent.cpp" line="+48"/>
         <source>Create a Wordcloud from a text file</source>
-        <translation>Stwórz Wordcloud z pliki tekstowego</translation>
+        <translation>Stwórz Wordcloud z pliku tekstowego</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2238,7 +2238,7 @@ Czy chcesz otworzyć tą stronę internetową?</translation>
     <message>
         <location filename="../App/Workflow.cpp" line="+177"/>
         <source>Closing Fotowall...</source>
-        <translation>Zamykanie Forowall...</translation>
+        <translation>Zamykanie Fotowall...</translation>
     </message>
     <message>
         <location line="+2"/>
