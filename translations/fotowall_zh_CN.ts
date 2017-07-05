@@ -1118,38 +1118,11 @@ p, li { white-space: pre-wrap; }
    &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
    &lt;br/&gt;
    &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
+      Fotowall is licensed under LGPL 3.0, by Enrico Ros, 2009-2017.
    &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
-&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
-&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
-   &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;
-      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-        欢迎使用
-      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-   &lt;/span&gt;
-   &lt;br /&gt;
-   &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;
-      &lt;b&gt;Fotowall&lt;/b&gt; 易于&lt;b&gt;使用&lt;/b&gt;
-   &lt;/div&gt;
-   &lt;ul&gt;
-      &lt;li&gt;用&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;新添加&lt;/span&gt;&lt;/i&gt;按钮或是&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;删除&lt;/span&gt;&lt;/i&gt;按钮来&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt;添加内容&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;通过&lt;i&gt;拖拽图像的四个角&lt;/i&gt;来&lt;/span&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt;移动内容&lt;/b&gt;以及&lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt;旋转&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;右键点击图片&lt;/span&gt;&lt;/i&gt;或是&lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;使用工具栏&lt;/span&gt;&lt;/i&gt;来&lt;b&gt;修改属性&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;双击任何内容&lt;/i&gt;&lt;/span&gt;来&lt;b&gt;打开编辑器&lt;/b&gt;或是设置为&lt;b&gt;背景&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;……剩下的就交给你来发现啦！&lt;/li&gt;
-   &lt;/ul&gt;
-   &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;
-      记着跟你的朋友们分享你的佳作哦 ;-)
-   &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
-   &lt;br/&gt;
-   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall 遵循 LGPL。作者 Enrico Ros &lt;enrico.ros@gmail.com&gt; 于 2009 年。
-   &lt;/font&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

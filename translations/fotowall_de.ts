@@ -1117,38 +1117,11 @@ p, li { white-space: pre-wrap; }
    &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
    &lt;br/&gt;
    &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
+      Fotowall is licensed under LGPL 3.0, by Enrico Ros, 2009-2017.
    &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
-&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
-&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
-  &lt;div&gt;
-    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-    &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;Herzlich Willkommen&lt;/span&gt;
-    &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-  &lt;/div&gt;
-
-  &lt;br /&gt;
-  &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;&lt;b&gt;Einfach ausprobieren! Das Spielen mit Fotowall ist sehr einfach ...&lt;/b&gt;&lt;/div&gt;
-
-  &lt;div&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;img src=&quot;:/data/action-add.png&quot;&gt;&amp;nbsp;&amp;nbsp;Ein &lt;b&gt;neues Bild&lt;/b&gt; einfach mit &lt;i&gt;Bild hinzufügen oder per Drag and Drop&lt;/i&gt; hinzufügen.&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;img src=&quot;:/data/action-rotate.png&quot;&gt;&amp;nbsp;&amp;nbsp; &lt;/i&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;&lt;i&gt;Das Bild einfach irgendwo hinziehen&lt;/i&gt;&lt;/span&gt; und anschließend zum Modifizieren einfach jedes der kleinen Symbole auf dem Rahmen ausprobieren.&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;&lt;img src=&quot;:/data/action-configure.png&quot;&gt;&amp;nbsp;&amp;nbsp; Klicke mit der rechten Maustaste&lt;/i&gt; auf das Bild, um die &lt;b&gt;Eigenschaften des Bildes zu ändern&lt;/b&gt;.&lt;/li&gt;
-      &lt;li&gt; Mache einen &lt;i&gt;Doppelklick auf das Bild&lt;/i&gt;, um es als &lt;span style=&quot;font-weight: bold;&quot;&gt;Hintergrundbild&lt;/span&gt; zu nutzen.&lt;/li&gt;
-      &lt;li&gt;&lt;i&gt;Klicke auf die Bildecken&lt;/i&gt;, um die &lt;span style=&quot;font-weight: bold;&quot;&gt;Hintergrundfarben&lt;/span&gt; zu ändern.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-
-  &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;Es wäre toll, wenn du deine schönsten Arbeiten mit anderen Leuten teilen würdest :-)&lt;br&gt;&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
-
-  &lt;br/&gt;
-  &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;Fotowall is LGPL, by Enrico Ros &amp;lt;enrico.ros@gmail.com&amp;gt;, 2009&lt;/font&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -1117,39 +1117,11 @@ p, li { white-space: pre-wrap; }
    &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
    &lt;br/&gt;
    &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
+      Fotowall is licensed under LGPL 3.0, by Enrico Ros, 2009-2017.
    &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
-&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
-&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
-   &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;
-      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-        Bienvenue
-      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-   &lt;/span&gt;
-   &lt;br /&gt;
-   &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;
-      &lt;b&gt;S&apos;amuser&lt;/b&gt; avec &lt;b&gt;Fotowall&lt;/b&gt; est facile
-   &lt;/div&gt;
-   &lt;ul&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; ajouter du contenu&lt;/b&gt; en utilisant &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;AJOUTER NOUVEAU&lt;/span&gt;&lt;/i&gt; boutons ou &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;déposez le&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt; déplacer le contenu&lt;/b&gt; et &lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt; tournez les&lt;/b&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;en &lt;i&gt;glissant les coins&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;clic droit sur les objets&lt;/span&gt;&lt;/i&gt; ou &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;utiliser la barre du haut&lt;/span&gt;&lt;/i&gt; pour &lt;b&gt;modifier les propriétés&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;double cliquez n&apos;importe quel contenu&lt;/i&gt;&lt;/span&gt; pour &lt;b&gt;ouvrir l&apos;éditeur&lt;/b&gt; ou le mettre en &lt;b&gt;arrière plan&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;...et nous vous laisserons découvrir le reste !&lt;/li&gt;
-   &lt;/ul&gt;
-   &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;
-      Partagez vos réalisations avec vos amis ;-)
-   &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
-   &lt;br/&gt;
-   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall est sous LGPL, par Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
-   &lt;/font&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
