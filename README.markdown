@@ -181,12 +181,13 @@ $MingwDir = "C:\p\apps\Qt\Tools\mingw530_32"
 $env:Path = "$MingwDir\bin;$MingwDir\opt\bin;$env:SystemRoot\system32;$env:SystemRoot"
 $env:LANG = "en"
 $env:QT_INSTALL_PREFIX = $QtDir
-$OPENSSL_LIBS = "-L/opt/ssl/lib -lssl -lcrypto"
-$env:OPENSSL_LIBS = "-L/opt/ssl/lib -lssl -lcrypto"
 Push-Location $QtSrcDir
 ./configure.bat -static -release -platform win32-g++ -prefix $QtDir -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -opengl desktop -ssl -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests
 mingw32-make -k -j6
 mingw32-make -k install
+# note: the following don't work yet:
+# $env:OPENSSL_LIBS = "-L/opt/ssl/lib -lssl -lcrypto"
+# ./configure ... -openssl-linked
 ```
 In case of problems, take a look at http://doc.qt.io/qt-5/windows-requirements.html,
 and http://doc.qt.io/qt-5/ssl.html (for -openssl-linked ).
