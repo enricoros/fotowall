@@ -100,7 +100,7 @@ symbian|simulator: {
 }
 
 # static builds
-contains(CONFIG, static)|contains(CONFIG, qt_no_framework) {
+contains(CONFIG, static) {
     message("Static build enabled; bundling plugins in 'fotowall_plugin_import.cpp'")
 
     QTPLUGIN.bearer = -
