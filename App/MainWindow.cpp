@@ -60,7 +60,8 @@ MainWindow::MainWindow(QWidget * parent)
     ui->topBar->setFixedHeight(App::TopBarHeight);
 
 #if defined(Q_OS_LINUX)
-    ui->transpBox->setEnabled(true);
+    // DISABLE, it's too UNSTABLE
+    ui->transpBox->setEnabled(false);
 #else
     ui->transpBox->setEnabled(false);
     ui->transpBox->setVisible(false);
@@ -102,8 +103,9 @@ MainWindow::MainWindow(QWidget * parent)
 
     // re-apply transparency
 #if defined(Q_OS_LINUX)
-    if (App::settings->value("Fotowall/Tranlucent", false).toBool())
-        ui->transpBox->setChecked(true);
+    // DISABLE, it's too UNSTABLE
+    //if (App::settings->value("Fotowall/Tranlucent", false).toBool())
+    //    ui->transpBox->setChecked(true);
 #endif
 
     // start the workflow
