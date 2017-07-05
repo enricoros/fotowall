@@ -54,7 +54,7 @@ HelpItem::HelpItem(QGraphicsItem * parent)
         "   </b></font></div>\n"
         "   <br/>\n"
         "   <div><font color='#616161' style='font-size: 11px; font-weight: normal;'>\n"
-        "      Fotowall is LGPL, by Enrico Ros <enrico.ros@gmail.com>, 2009\n"
+        "      Fotowall is licensed under LGPL 3.0, by Enrico Ros, 2009-2017.\n"
         "   </font></div>\n"
         "</body>\n"
         "</html>"
