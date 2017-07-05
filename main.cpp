@@ -24,13 +24,6 @@
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
 
-#if defined(STATIC_LINK)
-Q_IMPORT_PLUGIN(qgif)
-Q_IMPORT_PLUGIN(qjpeg)
-Q_IMPORT_PLUGIN(qsvg)
-Q_IMPORT_PLUGIN(qtiff)
-#endif
-
 #if defined(HAS_TRANSLATIONS)
 #include <QTranslator>
 #endif
