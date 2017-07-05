@@ -25,6 +25,7 @@ namespace Wordcloud {
 
     class Scanner : public QObject
     {
+        Q_OBJECT
         public:
             Scanner();
 
