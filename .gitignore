@@ -4,3 +4,4 @@ Makefile
 fotowall
 *.swp
 *.user
+fotowall_plugin_import.cpp
