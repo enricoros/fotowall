@@ -35,7 +35,7 @@
 
 // const strings
 #define FOTOWALL_FEEDBACK_LANGS "en,it,fr"
-#define FOTOWALL_FEEDBACK_SCHEME "http"
+#define FOTOWALL_FEEDBACK_SCHEME "https"
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
