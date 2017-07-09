@@ -11,12 +11,10 @@ Check out the [home page](https://www.enricoros.com/opensource/fotowall), the
 [old blog](https://www.enricoros.com/oldblog/tag/fotowall/) too.
 *Focus is on simplicity, express your creativity! ;-)*
 
-Down###load
---------
+### Download
 Download it here, from the [Releases](https://github.com/enricoros/fotowall/releases/latest) page.
 
-ChangeLog
----------
+## ChangeLog
 ### Fotowall "RETRO" 1.0 (2017-07-09):
 * Picture cropping (reqby Rossana)
 * Exporters: vast improvements, high-quality print-ready PDF output
