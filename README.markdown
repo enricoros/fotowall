@@ -175,14 +175,13 @@ You may have to copy includes and libs all over the place.
 Then execute the following commands in Powershell (assuming you already downloaded and patched):
 ```
 Set-StrictMode -Version 3
-$QtSrcDir = "C:\qt\src"
-$QtDir = "C:\qt\5.9.1-static"
+$QtDir = "C:\qt\static-5.9.1"
 $MingwDir = "C:\p\apps\Qt\Tools\mingw530_32"
-$env:Path = "$MingwDir\bin;$MingwDir\opt\bin;$env:SystemRoot\system32;$env:SystemRoot"
+$OpenSSLDir = "C:\OpenSSL-Win32"
+$env:Path = "$OpenSSLDir\bin;$MingwDir\bin;$MingwDir\opt\bin;$env:SystemRoot\system32;$env:SystemRoot"
 $env:LANG = "en"
 $env:QT_INSTALL_PREFIX = $QtDir
-Push-Location $QtSrcDir
-./configure.bat -static -release -platform win32-g++ -prefix $QtDir -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -opengl desktop -ssl -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests
+./configure.bat -static -release -platform win32-g++ -prefix $QtDir -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -opengl desktop -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests -ssl -openssl-linked -I $OpenSSLDir\include -L $OpenSSLDir\lib\MinGW OPENSSL_LIBS="-leay32 -l:ssleay32.a"
 mingw32-make -k -j6
 mingw32-make -k install
 # note: the following don't work yet:
