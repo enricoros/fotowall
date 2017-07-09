@@ -12,7 +12,7 @@ Check out the [home page](https://www.enricoros.com/opensource/fotowall), the
 ChangeLog
 ---------
 
-### Fotowall "RETRO" 1.0 (2017-07-04):
+### Fotowall "RETRO" 1.0 (2017-07-09):
 * Picture cropping (reqby Rossana)
 * Exporters: vast improvements, high-quality print-ready PDF output
 * Wordcloud editor
