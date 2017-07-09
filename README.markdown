@@ -181,12 +181,11 @@ $OpenSSLDir = "C:\OpenSSL-Win32"
 $env:Path = "$OpenSSLDir\bin;$MingwDir\bin;$MingwDir\opt\bin;$env:SystemRoot\system32;$env:SystemRoot"
 $env:LANG = "en"
 $env:QT_INSTALL_PREFIX = $QtDir
-./configure.bat -static -release -platform win32-g++ -prefix $QtDir -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -opengl desktop -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests -ssl -openssl-linked -I $OpenSSLDir\include -L $OpenSSLDir\lib\MinGW OPENSSL_LIBS="-leay32 -l:ssleay32.a"
+./configure.bat -static -release -platform win32-g++ -prefix $QtDir -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -ssl -opengl desktop -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests
 mingw32-make -k -j6
 mingw32-make -k install
 # note: the following don't work yet:
-# $env:OPENSSL_LIBS = "-L/opt/ssl/lib -lssl -lcrypto"
-# ./configure ... -openssl-linked
+# ./configure ... -openssl-linked -I $OpenSSLDir\include -L $OpenSSLDir\lib\MinGW OPENSSL_LIBS="-leay32 -l:ssleay32.a"
 ```
 In case of problems, take a look at http://doc.qt.io/qt-5/windows-requirements.html,
 and http://doc.qt.io/qt-5/ssl.html (for -openssl-linked ).
