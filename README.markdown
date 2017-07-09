@@ -1,17 +1,22 @@
 Fotowall
 ========
 
-Fotowall is a creative tool that allows you to layout your photos or pictures
-in a personal way. You can add pictures, then resize, move, change colors, text,
-shadows, etc..
+Fotowall is a desktop APP that lets you create graphical compositions by layering
+and manipulating photos and pictures, text, live video, wordclouds, and drag&drop
+content from the internet. All to create a fun graphical composition with the
+maximum ease of use! 
+
 Check out the [home page](https://www.enricoros.com/opensource/fotowall), the
 [news](https://www.enricoros.com/opensource/fotowall/news), and the
 [old blog](https://www.enricoros.com/oldblog/tag/fotowall/) too.
 *Focus is on simplicity, express your creativity! ;-)*
 
+Down###load
+--------
+Download it here, from the [Releases](https://github.com/enricoros/fotowall/releases/latest) page.
+
 ChangeLog
 ---------
-
 ### Fotowall "RETRO" 1.0 (2017-07-09):
 * Picture cropping (reqby Rossana)
 * Exporters: vast improvements, high-quality print-ready PDF output
