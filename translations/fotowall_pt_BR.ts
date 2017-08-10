@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pt_BR">
+<TS version="2.1" language="pt_BR">
 <context>
     <name>AbstractConfig</name>
     <message>
@@ -167,7 +167,7 @@ RMB: Right Mouse Button - Botão direito do mouse</translatorcomment>
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="../Canvas/Canvas.cpp" line="+289"/>
+        <location filename="../Canvas/Canvas.cpp" line="+292"/>
         <location line="+19"/>
         <source>Unnamed %1</source>
         <translation>Não nomeado %1</translation>
@@ -183,7 +183,7 @@ RMB: Right Mouse Button - Botão direito do mouse</translatorcomment>
         <translation>Frente</translation>
     </message>
     <message>
-        <location line="+727"/>
+        <location line="+744"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
@@ -357,8 +357,8 @@ RMB: Right Mouse Button - Botão direito do mouse</translatorcomment>
     </message>
     <message>
         <location line="+0"/>
-        <source>The Wordcloud editor will be ready in the Fotowall REVO (1.0) release.</source>
-        <translation>O edito wordcloud estará pronto no lançamento do Fotowall REVO (1.0).</translation>
+        <source>Would be great to have a Wordcloud editor, but we can only move things around for now.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+88"/>
@@ -375,11 +375,6 @@ RMB: Right Mouse Button - Botão direito do mouse</translatorcomment>
     <name>CanvasApplianceElements</name>
     <message>
         <location filename="../App/CanvasAppliance.ui"/>
-        <source>ADD NEW</source>
-        <translation>ADICIONAR NOVO</translation>
-    </message>
-    <message>
-        <location/>
         <source>Add Picture</source>
         <translation>Adicionar uma imagem</translation>
     </message>
@@ -456,6 +451,11 @@ RMB: Right Mouse Button - Botão direito do mouse</translatorcomment>
     <message>
         <location/>
         <source>Desktop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>INSERT</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -645,7 +645,7 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
         <translation>Criado com %1</translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+116"/>
         <source>Unnamed %1.%2</source>
         <translation>Não nomeado %1.%2</translation>
     </message>
@@ -986,14 +986,6 @@ Vá para as Configirações da Área de Trabalho e selecione o arquivo:
     </message>
 </context>
 <context>
-    <name>FileBoxWidget</name>
-    <message>
-        <location filename="../App/HomeAppliance.cpp" line="+45"/>
-        <source>Open</source>
-        <translation>Abrir</translation>
-    </message>
-</context>
-<context>
     <name>GlowEffectDialog</name>
     <message>
         <location filename="../Shared/GlowEffectDialog.ui"/>
@@ -1081,11 +1073,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location/>
-        <source>Fotowall&apos;s Website</source>
-        <translation>Site do Fotowall</translation>
-    </message>
-    <message>
-        <location/>
         <source>Video Tutorial (0.2)</source>
         <translation>Tutorial em video (0.2)</translation>
     </message>
@@ -1096,8 +1083,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location/>
-        <source>Fotowall&apos;s Blog</source>
-        <translation>Blog do Fotowall</translation>
+        <source>Mini Website</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>News</source>
+        <translation type="unfinished">Notícias</translation>
+    </message>
+    <message>
+        <location/>
+        <source>YouTube Tutorials</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1128,44 +1125,17 @@ p, li { white-space: pre-wrap; }
    &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
    &lt;br/&gt;
    &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall is LGPL, by Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
+      Fotowall is licensed under LGPL 3.0, by Enrico Ros, 2009-2017.
    &lt;/font&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;
-&lt;html&gt;&lt;!--head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head--&gt;
-&lt;body style=&quot;font-family:&apos;Sans Serif&apos;;&quot;&gt;
-   &lt;span style=&apos;font-size: 26px; font-weight: normal; color: #FF0000;&apos;&gt;
-      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-        Welcome
-      &lt;img src=&apos;:/data/action-remove.png&apos;&gt;
-   &lt;/span&gt;
-   &lt;br /&gt;
-   &lt;div style=&apos;font-size: 16px; font-weight: normal;&apos;&gt;
-      &lt;b&gt;Brincar&lt;/b&gt; com &lt;b&gt;Fotowall&lt;/b&gt; é fácil
-   &lt;/div&gt;
-   &lt;ul&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-add.png&apos;&gt;&lt;b&gt; adicione conteúdos&lt;/b&gt; usando o botão &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;ADICIONAR NOVO&lt;/span&gt;&lt;/i&gt; ou &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;solte-os&lt;/span&gt;&lt;/i&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-move.png&apos;&gt;&lt;b&gt; mova conteúdos em volta &lt;/b&gt; e &lt;b&gt;&lt;img src=&apos;:/data/action-rotate.png&apos;&gt; rotacione-os&lt;/b&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;arrastando as bordas&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;img src=&apos;:/data/action-configure.png&apos;&gt;&lt;i&gt; &lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;clique com o botão direito nos objetos&lt;/span&gt;&lt;/i&gt; ou &lt;i&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;utilize a barra no topo&lt;/span&gt;&lt;/i&gt; para &lt;b&gt;modificar as suas propriedades&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;span style=&apos;background-color: rgb(255, 226, 0);&apos;&gt;&lt;i&gt;dê um duplo clique em qualquer conteúdo&lt;/i&gt;&lt;/span&gt; para &lt;b&gt;abrir o editor&lt;/b&gt; ou defina-o como &lt;b&gt;plano de fundo&lt;/b&gt;&lt;/li&gt;
-      &lt;li&gt;...e vamos deixar você descobrir o resto!&lt;/li&gt;
-   &lt;/ul&gt;
-   &lt;div&gt;&lt;font color=&apos;#2B2B2B&apos;&gt;&lt;b&gt;
-      Por favor, certifique-se de compartilhar o seu melhor trabalho com seus amigos ;-)
-   &lt;/b&gt;&lt;/font&gt;&lt;/div&gt;
-   &lt;br/&gt;
-   &lt;div&gt;&lt;font color=&apos;#616161&apos; style=&apos;font-size: 11px; font-weight: normal;&apos;&gt;
-      Fotowall é LGPL, por Enrico Ros &lt;enrico.ros@gmail.com&gt;, 2009
-   &lt;/font&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>HomeAppliance</name>
     <message>
-        <location filename="../App/HomeAppliance.cpp" line="+31"/>
+        <location filename="../App/HomeAppliance.cpp" line="+76"/>
         <source>RECENT FILES</source>
         <translation>Arquivos Recentes</translation>
     </message>
@@ -1188,7 +1158,7 @@ p, li { white-space: pre-wrap; }
         <translation>Wordcloud</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+9"/>
         <location line="+12"/>
         <source>coming soon</source>
         <translation>Brevemente</translation>
@@ -1210,7 +1180,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LikeBackDialog</name>
     <message>
-        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+166"/>
+        <location filename="../3rdparty/likebackfrontend/LikeBackDialog.cpp" line="+167"/>
         <source>Please, write it in &lt;b&gt;%1&lt;/b&gt; (you may want to use an &lt;a href=&quot;%3&quot;&gt;online translation tool&lt;/a&gt; for this).&lt;br/&gt;</source>
         <comment>Feedback dialog text, message with one accepted language for the comments</comment>
         <translatorcomment>Texto do Feedback, mensagem com um idioma aceito para os comentários</translatorcomment>
@@ -1255,7 +1225,7 @@ p, li { white-space: pre-wrap; }
         <translation>O endereço de e-mail que você digitou não é válido, e não pode ser usado: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+64"/>
         <source>Comment Sent</source>
         <comment>Dialog box title</comment>
         <translation>Enviar comentário</translation>
@@ -1329,12 +1299,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../App/MainWindow.cpp" line="+83"/>
-        <source> ? </source>
-        <translation> ? </translation>
+        <location filename="../App/MainWindow.cpp" line="+93"/>
+        <source> Help </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+241"/>
+        <location line="+57"/>
+        <source>&apos;RETRO&apos; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+187"/>
         <source>Accelerated Rendering</source>
         <translation>Renderização acelerada</translation>
     </message>
@@ -1359,7 +1334,7 @@ p, li { white-space: pre-wrap; }
         <translation>Teste OpenGL</translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="+125"/>
         <source>This feature requires compositing (compiz or kwin4) to work on Linux.&lt;br&gt;If you see a black background then transparency is not supported on your system.</source>
         <translation>Esta funcionalidade exige composições (compiz ou kwin4) para funcionar no Linux. &lt;br&gt; Se você ver um fundo preto, então a transparência não é suportado no seu sistema.</translation>
     </message>
@@ -1392,7 +1367,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+147"/>
+        <location line="+62"/>
+        <source>&apos;RETRO&apos; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+85"/>
         <source>Search Web Pictures</source>
         <translation type="unfinished">Pesquisar imagens na web</translation>
     </message>
@@ -1413,7 +1393,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OnlineServices</name>
     <message>
-        <location filename="../App/OnlineServices.cpp" line="+109"/>
+        <location filename="../App/OnlineServices.cpp" line="+110"/>
         <source>Opening Fotowall&apos;s author Blog</source>
         <translation>Abrir Blog do autor de Fotowall</translation>
     </message>
@@ -1425,7 +1405,7 @@ Do you want to open the web page?</source>
 Você deseja abrir a página web?</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+22"/>
         <source>Opening the Web Tutorial</source>
         <translation>Abrindo o Tutorial web</translation>
     </message>
@@ -1563,13 +1543,13 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>PictureContent</name>
     <message>
-        <location filename="../Canvas/PictureContent.cpp" line="+53"/>
-        <location line="+63"/>
+        <location filename="../Canvas/PictureContent.cpp" line="+57"/>
+        <location line="+65"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="-56"/>
+        <location line="-58"/>
         <source>Flip horizontally</source>
         <translation>Espelhar horizontalmente</translation>
     </message>
@@ -1577,6 +1557,36 @@ Você deseja abrir a página web?</translation>
         <location line="+6"/>
         <source>Flip vertically</source>
         <translation>Espelhar verticalmente</translation>
+    </message>
+    <message>
+        <location line="+303"/>
+        <source>Missing image file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>I looked everywhere but I could not find &apos;%1&apos;. Please select a replacement.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Select replacement for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Images (%1)</source>
+        <translation type="unfinished">Imagens (%1)</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Skipping file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>We will remove the image &apos;%1&apos; from the Canvas.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../Canvas/PictureContent.h" line="+42"/>
@@ -1647,12 +1657,12 @@ Você deseja abrir a página web?</translation>
         <translation>Ícone</translation>
     </message>
     <message>
-        <location filename="../App/PictureSearchWidget.cpp" line="+197"/>
+        <location filename="../App/PictureSearchWidget.cpp" line="+201"/>
         <source>Type here...</source>
         <translation type="unfinished">Tipo aqui...</translation>
     </message>
     <message>
-        <location line="+139"/>
+        <location line="+155"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
@@ -1717,9 +1727,14 @@ Você deseja abrir a página web?</translation>
         <translation>Adicionar arquivos Fotowall para a Tela</translation>
     </message>
     <message>
-        <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+110"/>
+        <location filename="../3rdparty/videocapture/VideoDevice.cpp" line="+113"/>
         <source>Camera %1</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../App/HomeAppliance.cpp" line="-45"/>
+        <source>Open</source>
+        <translation type="unfinished">Abrir</translation>
     </message>
 </context>
 <context>
@@ -1883,7 +1898,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>RichTextEditorDialog</name>
     <message>
-        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+542"/>
+        <location filename="../3rdparty/richtextedit/richtexteditor.cpp" line="+541"/>
         <source>Source</source>
         <translation>Fonte</translation>
     </message>
@@ -1896,7 +1911,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>RichTextEditorToolBar</name>
     <message>
-        <location line="-350"/>
+        <location line="-349"/>
         <source>Bold</source>
         <translation>Negrito</translation>
     </message>
@@ -1939,7 +1954,17 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>SceneView</name>
     <message>
-        <location filename="../App/SceneView.cpp" line="+227"/>
+        <location filename="../App/SceneView.cpp" line="+87"/>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>CTRL+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+146"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
@@ -1993,7 +2018,7 @@ Você deseja abrir a página web?</translation>
         <translation>Clique com o botão direito para editar...</translation>
     </message>
     <message>
-        <location line="+202"/>
+        <location line="+207"/>
         <source>PDF Export Warning</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2003,7 +2028,7 @@ Você deseja abrir a página web?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Canvas/TextContent.h" line="+53"/>
+        <location filename="../Canvas/TextContent.h" line="+54"/>
         <source>Text</source>
         <translation>Texto</translation>
     </message>
@@ -2121,7 +2146,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>Wordcloud::Scanner</name>
     <message>
-        <location filename="../Wordcloud/Scanner.cpp" line="+118"/>
+        <location filename="../Wordcloud/Scanner.cpp" line="+134"/>
         <source>Word</source>
         <translation>Palavra</translation>
     </message>
@@ -2142,12 +2167,32 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>WordcloudContent</name>
     <message>
-        <location filename="../Canvas/WordcloudContent.cpp" line="+47"/>
+        <location filename="../Canvas/WordcloudContent.cpp" line="+48"/>
         <source>Create a Wordcloud from a text file</source>
         <translation>Criar um Wordcloud de um arquivo texto</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+6"/>
+        <source>Minimum word length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Longer or equal to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>How many words</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Less or equal than these words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
         <source>Welcome to Wordcloud. Change options on the sidebar.</source>
         <translation>Bem-vindo ao Wordcloud. Altere opções no barra ao lado.</translation>
     </message>
@@ -2198,7 +2243,7 @@ Você deseja abrir a página web?</translation>
 <context>
     <name>Workflow</name>
     <message>
-        <location filename="../App/Workflow.cpp" line="+176"/>
+        <location filename="../App/Workflow.cpp" line="+177"/>
         <source>Closing Fotowall...</source>
         <translation>Fechando Fotowall...</translation>
     </message>

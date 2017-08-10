@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "CommandStack.h"
+#include "GroupedCommands.h"
 #include <QDebug>
 
 CommandStack & CommandStack::instance()
@@ -25,12 +26,17 @@ CommandStack & CommandStack::instance()
 void CommandStack::doCommand(AbstractCommand *command)
 {
     qDebug() << "exec command << " << command->name();
-    m_undoStack.push_back(command);
+    addCommand(command);
     command->exec();
 }
 
 void CommandStack::addCommand(AbstractCommand *command)
 {
+    // Check if GroupedCommand contains at least one element
+    if(GroupedCommands * c = dynamic_cast<GroupedCommands *>(command))
+    {
+      if(c->size() == 0) return;
+    }
     qDebug() << "add command << " << command->name();
     m_undoStack.push_back(command);
 }

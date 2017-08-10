@@ -363,8 +363,9 @@ void TextContent::keyPressEvent(QKeyEvent * event)
     AbstractContent::keyPressEvent(event);
 }
 
-void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
+void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
+    AbstractContent::mouseDoubleClickEvent(event);
     if (!locked()) {
         emit requestBackgrounding();
     }

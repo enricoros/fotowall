@@ -177,7 +177,7 @@ void GoogleImagesPictureService::searchPics(const QString & text)
 
     // make request and connect to reply
     QUrl url("http://images.google.com/images");
-    url.setEncodedQuery(requestString.toLatin1());
+    url.setQuery(requestString.toLatin1());
     m_searchJob = get(url);
     connect(m_searchJob, SIGNAL(finished()), this, SLOT(slotSearchJobFinished()));
 }
@@ -257,6 +257,7 @@ bool GoogleImagesPictureService::parseGoogleSearchReply(const QByteArray & data)
     int pos = m_rxStart.indexIn(html);
     if (pos == -1) {
         qWarning("GoogleImagesPictureService::parseSearchReply: Something changed in the google image page html source.\nThis function must be rewritten");
+        qWarning() << html;
         return false;
     }
 

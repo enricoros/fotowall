@@ -22,10 +22,8 @@
 #include "Workflow.h"
 
 #include <QDesktopServices>
-#include <QMessageBox>
 #include <QPainter>
 #include <QLinearGradient>
-
 
 /** Help Scene **/
 
@@ -78,8 +76,13 @@ HelpAppliance::HelpAppliance(QObject *parent)
     connect(App::onlineServices, SIGNAL(tutorialFound(bool)), ui.tutorialButton, SLOT(setVisible(bool)));
     connect(ui.webButton, SIGNAL(clicked()), App::onlineServices, SLOT(openWebpage()));
     connect(ui.blogButton, SIGNAL(clicked()), App::onlineServices, SLOT(openBlog()));
+    connect(ui.youtubeButton, SIGNAL(clicked()), App::onlineServices, SLOT(openYouTube()));
     connect(ui.tutorialButton, SIGNAL(clicked()), App::onlineServices, SLOT(openTutorial()));
+#if !defined(NO_UPDATE_CHECK)
     connect(ui.updateButton, SIGNAL(clicked()), App::onlineServices, SLOT(checkForUpdates()));
+#else
+    ui.updateButton->setVisible(false);
+#endif
 
     // listen to scene events
     connect(m_helpScene->helpItem, SIGNAL(closeMe()), this, SLOT(slotClose()));

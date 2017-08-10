@@ -409,7 +409,6 @@ void ExportWizard::setPage(int pageId)
                 m_pdfPrinter->setResolution(m_canvas->modeInfo()->printDpi());
                 m_pdfPrinter->setPaperSize(canvasNatInches(), QPrinter::Inch);
                 m_pdfPrinter->setPageMargins(0, 0, 0, 0, QPrinter::Inch);
-                //m_pdfPrinter->setOutputFileName("/tmp/aa.pdf");
                 initPageSizeNames();
                 slotPdfUpdateGui();
             }

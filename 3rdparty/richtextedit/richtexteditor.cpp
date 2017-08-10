@@ -83,25 +83,25 @@ QIcon createIconSet(QString iconName)
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
 
-#include <QtGui/QAction>
-#include <QtGui/QComboBox>
 #include <QtGui/QCursor>
-#include <QtGui/QDialogButtonBox>
 #include <QtGui/QFontDatabase>
-#include <QtGui/QHBoxLayout>
 #include <QtGui/QIcon>
-#include <QtGui/QMenu>
 #include <QtGui/QMoveEvent>
 #include <QtGui/QPainter>
-#include <QtGui/QPushButton>
-#include <QtGui/QTabWidget>
+#include <QtGui/QTextBlock>
 #include <QtGui/QTextCursor>
 #include <QtGui/QTextDocument>
-#include <QtGui/QTextBlock>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidgetAction>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidgetAction>
 
 ///static const char *RichTextDialogC = "RichTextDialog";
 ///static const char *Geometry = "Geometry";
@@ -609,7 +609,7 @@ void RichTextEditorToolBar::updateActions()
         return;
     }
 
-    const Qt::Alignment alignment = m_editor->alignment();
+//    const Qt::Alignment alignment = m_editor->alignment();
     const QTextCursor cursor = m_editor->textCursor();
     const QTextCharFormat charFormat = cursor.charFormat();
     const QFont font = charFormat.font();
@@ -700,7 +700,6 @@ void RichTextEditor::setDefaultFont(const QFont &font)
 QString RichTextEditor::text(Qt::TextFormat format) const
 {
     switch (format) {
-    case Qt::LogText:
     case Qt::PlainText:
         return toPlainText();
     case Qt::RichText:

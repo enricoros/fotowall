@@ -27,7 +27,7 @@ class Frame;
 class MirrorItem;
 class QGraphicsTextItem;
 class QPointF;
-
+class PE_AbstractSlider;
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
 class AbstractContent : public AbstractDisposeable
@@ -154,11 +154,13 @@ class AbstractContent : public AbstractDisposeable
         void slotSaveAs();
         void slotPressPerspective();
         void slotReleasePerspective(QGraphicsSceneMouseEvent *);
+        void slotOpacityChanged();
 
     private:
         void createCorner(Qt::Corner corner, bool noRescale);
         void layoutChildren();
         void applyTransforms();
+        PE_AbstractSlider   *m_opacitySlider;
         QTransform          m_previousTransform;
         QPointF             m_previousPos;
         QRect               m_contentRect;

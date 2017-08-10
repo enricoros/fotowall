@@ -29,6 +29,7 @@
 #endif
 
 #include <QTimer>
+#include <QVariant>
 
 // on mobile the "cancel" button doesn't behave in a good way.. use the "no" one
 #if defined(MOBILE_UI)
@@ -265,7 +266,7 @@ bool Workflow::processCommand(const Workflow::Command & command)
 
         case Command::SlaveCanvas: {
             // get the Canvas out of the resource
-            Canvas * canvas = static_cast<Canvas *>(qVariantValue<void *>(command.loaner->takeResource()));
+            Canvas * canvas = static_cast<Canvas *>(command.loaner->takeResource().value<void*>());
 
             // create the canvas appliance
             if (canvas) {
@@ -289,7 +290,7 @@ bool Workflow::processCommand(const Workflow::Command & command)
 
         case Command::SlaveWordcloud: {
             // get the Cloud out of the resource
-            Wordcloud::Cloud * cloud = static_cast<Wordcloud::Cloud *>(qVariantValue<void *>(command.loaner->takeResource()));
+            Wordcloud::Cloud * cloud = static_cast<Wordcloud::Cloud *>(command.loaner->takeResource().value<void*>());
 
             // create the wordcloud appliance
             WordcloudAppliance * wcApp = new WordcloudAppliance(cloud, this);

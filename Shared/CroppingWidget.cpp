@@ -57,7 +57,7 @@ MaskItem::MaskItem()
 void MaskItem::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     // fill each rect of the tassellated subtracted region
-    foreach (const QRect & rect, QRegion(geometry().toRect()).subtract(m_hole).rects())
+    foreach (const QRect & rect, QRegion(geometry().toRect()).subtracted(m_hole).rects())
         painter->fillRect(rect, QColor(0, 0, 0, (int)(128.0 * m_strength)));
 }
 

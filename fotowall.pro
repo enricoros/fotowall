@@ -18,20 +18,19 @@ QT = core \
     gui \
     svg \
     network \
-    xml
-# I had to add this in order to build with Fedora15. No idea why...
-unix {
-    LIBS+=-lX11
-}
+    xml \
+    printsupport
 
 # include OpenGL code paths where available
 contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
+    message("Using OpenGL")
     QT += opengl
 }
 
 # enable features for mobile user interfaces
 symbian|simulator: {
     contains(QT_VERSION, ^4\\.6\\..*): error("Use at least Qt 4.7 for symbian builds.")
+    message("Compiling for Symbian")
     CONFIG += mobile-ui
     CONFIG += no-wordcloud-appliance
     CONFIG += no-export
@@ -101,13 +100,19 @@ symbian|simulator: {
 }
 
 # static builds
-win32|macx {
-    contains(CONFIG, static)|contains(CONFIG, qt_no_framework) {
-        DEFINES += STATIC_LINK
-        QTPLUGIN += qgif \
-            qjpeg \
-            qsvg \
-            qtiff
+contains(CONFIG, static) {
+    message("Static build enabled; bundling plugins in 'fotowall_plugin_import.cpp'")
+
+    QTPLUGIN.bearer = -
+
+    QTPLUGIN.imageformats = qgif qjpeg qsvg qtiff qwbmp qwebp
+    macx:QTPLUGIN.imageformats += qicns
+    win32:QTPLUGIN.imageformats += qico
+
+    unix {
+        QTPLUGIN.platforms = qxcb
+        QTPLUGIN.xcbglintegrations = qxcb-glx-integration
+        QTPLUGIN.egldeviceintegrations = -
     }
 }
 

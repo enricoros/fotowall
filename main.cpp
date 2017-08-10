@@ -24,13 +24,6 @@
 #include "Shared/RenderOpts.h"
 #include "Shared/VideoProvider.h"
 
-#if defined(STATIC_LINK)
-Q_IMPORT_PLUGIN(qgif)
-Q_IMPORT_PLUGIN(qjpeg)
-Q_IMPORT_PLUGIN(qsvg)
-Q_IMPORT_PLUGIN(qtiff)
-#endif
-
 #if defined(HAS_TRANSLATIONS)
 #include <QTranslator>
 #endif
@@ -59,16 +52,20 @@ bool RenderOpts::OxygenStyleQuirks = false;
 bool VideoProvider::Disable = false;
 QColor RenderOpts::hiColor;
 
-int main(int argc, char ** args) {
+int main( int argc, char ** args )
+{
+#if defined(Q_OS_LINUX) && (QT_VERSION < QT_VERSION_CHECK(5,0,0))
     // use the Raster GraphicsSystem on X11
-#if defined(Q_WS_X11)
     QApplication::setGraphicsSystem("raster");
 #endif
 
     QApplication app(argc, args);
     app.setApplicationName("Fotowall");
-    app.setApplicationVersion("0.98-beta");
+    app.setApplicationVersion("1.0");
     app.setOrganizationName("Enrico Ros");
+#if QT_VERSION > QT_VERSION_CHECK(5,6,0)
+    app.setAttribute(Qt::AA_EnableHighDpiScaling, true);
+#endif
 
     // Lock Symbian orientation
 #ifdef Q_OS_SYMBIAN

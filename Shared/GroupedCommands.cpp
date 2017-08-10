@@ -2,9 +2,6 @@
 
 #include <QDebug>
 
-GroupedCommands::GroupedCommands()
-{}
-
 GroupedCommands::GroupedCommands(const QString &name)
 {
     m_name = name;
@@ -44,6 +41,11 @@ void GroupedCommands::replaceContent(AbstractContent *oldContent, AbstractConten
 void GroupedCommands::setName(const QString &name) {
     m_name = name;
 }
+
 QString GroupedCommands::name() const {
-    return m_name;
+    return QString("[Group] ") + m_name;
+}
+
+size_t GroupedCommands::size() const {
+  return m_commands.size();
 }

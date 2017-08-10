@@ -730,7 +730,7 @@ bool VideoDevice::getLastFrame(QImage * qimage) const
     //qDebug() << "VideoDevice::getImage: capturing in " << pixelFormatName(m_imageBuffer.pixelformat);
     const char * src = m_imageBuffer.data.constData();
     uchar * imgData = qimage->bits();
-    int imgBytes = qimage->numBytes();
+    int imgBytes = qimage->byteCount();
     bool decoded = false;
     switch (m_imageBuffer.pixelformat) {
         case PIXELFORMAT_NONE	: break;
@@ -962,7 +962,7 @@ bool VideoDevice::getLastFrame(QImage * qimage) const
     // Proccesses image for automatic Brightness/Contrast/Color correction
     if (m_frameOperations & (FO_AutoBrightnessContrast | FO_AutoColorCorrection)) {
         ///unsigned long long result=0;
-        unsigned long long R=0, G=0, B=0, /*A=0,*/ global=0;
+        unsigned long long R=0, G=0, B=0 /*, A=0*/ /*, global=0*/;
         int Rmax=0, Gmax=0, Bmax=0, /*Amax=0,*/ globalmax=0;
         int Rmin=255, Gmin=255, Bmin=255, /*Amin=255,*/ globalmin=255;
         int Rrange=255, Grange=255, Brange=255 /**, Arange=255, globarange=255**/;
@@ -982,7 +982,7 @@ bool VideoDevice::getLastFrame(QImage * qimage) const
             if (imgData[loop+2] > Bmax) Bmax = imgData[loop+2];
             //			if (bits[loop+3] > Amax) Amax = bits[loop+3];
         }
-        global = R + G + B;
+        //global = R + G + B;
         // Finds overall minimum and maximum intensity
         if (Rmin > Gmin) globalmin = Gmin; else globalmin = Rmin; if (Bmin < globalmin) globalmin = Bmin;
         if (Rmax > Gmax) globalmax = Rmax; else globalmax = Gmax; if (Bmax > globalmax) globalmax = Bmax;

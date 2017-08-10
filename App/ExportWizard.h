@@ -16,8 +16,9 @@
 #define __ExportWizard_h__
 
 #include <QtCore/QMap>
-#include <QtGui/QWizard>
-#include <QtGui/QPrinter>
+#include <QtPrintSupport/QPrinter>
+#include <QtWidgets/QWizard>
+
 class Canvas;
 class QPrinter;
 namespace Ui { class ExportWizard; }

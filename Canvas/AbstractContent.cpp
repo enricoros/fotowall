@@ -441,6 +441,11 @@ int AbstractContent::fxIndex() const
     return m_fxIndex;
 }
 
+// void AbstractContent::setOpacity(double opacity)
+// {
+//   setContentOpacity(opacity);
+// }
+
 bool AbstractContent::locked()
 {
     return m_locked;
@@ -719,7 +724,9 @@ QWidget * AbstractContent::createPropertyWidget(ContentProperties * __p)
     connect(cp->cConfigure, SIGNAL(clicked()), this, SLOT(slotConfigure()));
 
     // properties link
-    new PE_AbstractSlider(cp->cOpacity, this, "contentOpacity", cp);
+    m_opacitySlider = new PE_AbstractSlider(cp->cOpacity, this, "contentOpacity", cp);
+    connect(m_opacitySlider, SIGNAL(sliderReleased()), this, SLOT(slotOpacityChanged()));
+    connect(m_opacitySlider, SIGNAL(sliderPressed()), this, SLOT(slotOpacityChanged()));
     new PE_Combo(cp->cFxCombo, this, "fxIndex", cp);
     cp->cPerspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
     new PE_PaneWidget(cp->cPerspWidget, this, "perspective", cp);
@@ -732,12 +739,13 @@ QRectF AbstractContent::boundingRect() const
     return m_frameRect;
 }
 
-void AbstractContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
+void AbstractContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_locked) {
         // emitting the edit request by default. some subclasses request backgrounding
         emit requestEditing();
     }
+    event->accept();
 }
 
 void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
@@ -1144,6 +1152,11 @@ void AbstractContent::slotReleasePerspective(QGraphicsSceneMouseEvent* /* event 
     QTransform newTransform = transform();
     TransformCommand *tc = new TransformCommand(this, m_previousTransform, newTransform);
     CommandStack::instance().doCommand(tc);
+}
+
+void AbstractContent::slotOpacityChanged()
+{
+  CommandStack::instance().addCommand(new OpacityCommand(this, contentOpacity()));
 }
 
 void AbstractContent::applyTransforms()

@@ -160,7 +160,8 @@ QString LikeBackDialog::introductionText()
     QString languagesMessage;
     if ( ! acceptedLocales.isEmpty() ) {
         // TODO: Replace the URL with a localized one:
-        QString translationTool( "http://www.google.com/language_tools?hl=" + QLocale::system().name() );
+        //QString translationTool( "http://www.google.com/language_tools?hl=" + QLocale::system().name() );
+        QString translationTool = "https://translate.google.com";
 
         if ( acceptedLocales.count() == 1 )
             languagesMessage = tr( "Please, write it in <b>%1</b> (you may want to use an <a href=\"%3\">online translation tool</a> for this).<br/>",
@@ -255,19 +256,23 @@ void LikeBackDialog::slotSendData()
                   "email="    + QUrl::toPercentEncoding( emailAddress ) );
 
 
-#ifdef DEBUG_LIKEBACK
-    qDebug() << "http://" << m_likeBack->hostName() << ":" << m_likeBack->hostPort() << m_likeBack->remotePath();
+    // make up the URL
+    QUrl remoteUrl;
+    remoteUrl.setScheme(m_likeBack->hostScheme());
+    remoteUrl.setHost(m_likeBack->hostName());
+    remoteUrl.setPath(m_likeBack->remotePath());
+    if (m_likeBack->hostPort())
+        remoteUrl.setPort(m_likeBack->hostPort());
+
+#if 0
+    qDebug() << remoteUrl;
     qDebug() << data;
 #endif
 
-    // make up the URL
-    QUrl remoteUrl("http://");
-    remoteUrl.setHost(m_likeBack->hostName());
-    remoteUrl.setPort(m_likeBack->hostPort());
-    remoteUrl.setPath(m_likeBack->remotePath());
-
     // do the POST and listen for the reply
-    QNetworkReply * reply = m_nam->post(QNetworkRequest(remoteUrl), data.toUtf8());
+    QNetworkRequest request(remoteUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    QNetworkReply * reply = m_nam->post(request, data.toUtf8());
     connect(reply, SIGNAL(finished()), this, SLOT(slotRequestFinished()));
 }
 

@@ -28,10 +28,11 @@
 
 
 // const strings
-#define TUTORIAL_URL QUrl("http://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
+#define YOUTUBE_URL QUrl("https://www.youtube.com/results?search_query=Fotowall+tutorial")
+#define TUTORIAL_URL QUrl("https://fosswire.com/post/2008/09/fotowall-make-wallpaper-collages-from-your-photos/")
 #define TUTORIAL_STRING "Peter walks you through how to use Foto"
-#define FOTOWALL_WEBSITE_STRING "http://www.enricoros.com/opensource/fotowall/"
-#define ENRICO_BLOG_STRING "http://www.enricoros.com/blog/tag/fotowall/"
+#define FOTOWALL_WEBSITE_STRING "https://www.enricoros.com/opensource/fotowall/"
+#define ENRICO_BLOG_STRING "https://www.enricoros.com/opensource/fotowall/news/"
 
 
 
@@ -121,6 +122,11 @@ void OnlineServices::openBlog()
     QDesktopServices::openUrl(QUrl(ENRICO_BLOG_STRING));
 }
 
+void OnlineServices::openYouTube()
+{
+    QDesktopServices::openUrl(YOUTUBE_URL);
+}
+
 void OnlineServices::openTutorial()
 {
     int answer = QMessageBox::question(0, tr("Opening the Web Tutorial"), tr("The Tutorial is provided on Fosswire by Peter Upfold.\nIt's about Fotowall 0.2 a rather old version.\nDo you want to open the web page?"), QMessageBox::Yes, QMessageBox::No);
@@ -128,6 +134,7 @@ void OnlineServices::openTutorial()
         QDesktopServices::openUrl(TUTORIAL_URL);
 }
 
+#if !defined(NO_UPDATE_CHECK)
 void OnlineServices::checkForUpdates()
 {
     VersionCheckDialog vcd;
@@ -148,6 +155,7 @@ void OnlineServices::autoUpdate()
     if (lastCheck.daysTo(QDate::currentDate()) > 30)
         QTimer::singleShot(2000, this, SLOT(checkForUpdates()));
 }
+#endif
 
 void OnlineServices::slotCheckTutorialReply()
 {

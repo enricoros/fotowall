@@ -12,7 +12,6 @@ class GroupedCommands : public AbstractCommand
     QString m_name;
 
     public:
-    GroupedCommands();
     GroupedCommands(const QString &name);
     GroupedCommands(QList<AbstractCommand*> commands);
     void addCommands(QList<AbstractCommand*> commands);
@@ -23,6 +22,7 @@ class GroupedCommands : public AbstractCommand
 
     QString name() const;
     void setName(const QString &);
+    size_t size() const;
 
 };
 

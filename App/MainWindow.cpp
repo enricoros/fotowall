@@ -38,9 +38,12 @@
 
 // const strings
 #define FOTOWALL_FEEDBACK_LANGS "en,it,fr"
+#define FOTOWALL_FEEDBACK_SCHEME "https"
 #define FOTOWALL_FEEDBACK_SERVER "www.enricoros.com"
 #define FOTOWALL_FEEDBACK_PATH "/opensource/fotowall/feedback/send.php"
 
+// uncomment the following to disable the blurring effects behind the windows
+#define DISABLE_BEHIND_BLUR
 
 MainWindow::MainWindow(QWidget * parent)
     : PlugGui::Container(parent)
@@ -58,7 +61,14 @@ MainWindow::MainWindow(QWidget * parent)
     // init ui
     ui->setupUi(this);
     ui->topBar->setFixedHeight(App::TopBarHeight);
-    ui->transpBox->setEnabled(true);
+
+#if defined(Q_OS_LINUX)
+    // DISABLE, it's too UNSTABLE
+    ui->transpBox->setEnabled(false);
+#else
+    ui->transpBox->setEnabled(false);
+    ui->transpBox->setVisible(false);
+#endif
     ui->accelBox->setEnabled(ui->sceneView->supportsOpenGL());
     ui->accelTestButton->setEnabled(ui->sceneView->supportsOpenGL());
     ui->applianceSidebar->hide();
@@ -83,7 +93,7 @@ MainWindow::MainWindow(QWidget * parent)
     BreadCrumbBar * helpBar = new BreadCrumbBar(ui->sceneView);
     connect(helpBar, SIGNAL(nodeClicked(quint32)), this, SLOT(slotHelpBarClicked(quint32)));
     helpBar->setBackgroundOffset(1);
-    helpBar->addNode(1, tr(" ? "), 0);
+    helpBar->addNode(1, tr(" Help "), 0);
     addNavigationWidget(helpBar, 0, Qt::AlignRight);
 
     // show (with last geometry)
@@ -99,8 +109,11 @@ MainWindow::MainWindow(QWidget * parent)
 #endif
 
     // re-apply transparency
-    if (App::settings->value("Fotowall/Tranlucent", false).toBool())
-        ui->transpBox->setChecked(true);
+#if defined(Q_OS_LINUX)
+    // DISABLE, it's too UNSTABLE
+    //if (App::settings->value("Fotowall/Tranlucent", false).toBool())
+    //    ui->transpBox->setChecked(true);
+#endif
 
     // start the workflow
     new Workflow((PlugGui::Container *)this, workflowBar);
@@ -151,7 +164,7 @@ void MainWindow::applianceSetTitle(const QString & title)
     QString tString = title.isEmpty() ? QString() : title + " - ";
     tString += QCoreApplication::applicationName() + " ";
     if (title.isEmpty())
-        tString += "'REVO' ";
+        tString += tr("'RETRO' ");
     tString += QCoreApplication::applicationVersion();
     setWindowTitle(tString);
 }
@@ -255,7 +268,7 @@ void MainWindow::createLikeBack()
 {
     m_likeBack = new LikeBack(LikeBack::AllButtons, false, this);
     m_likeBack->setAcceptedLanguages(QString(FOTOWALL_FEEDBACK_LANGS).split(","));
-    m_likeBack->setServer(FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
+    m_likeBack->setServer(FOTOWALL_FEEDBACK_SCHEME, FOTOWALL_FEEDBACK_SERVER, FOTOWALL_FEEDBACK_PATH);
 }
 
 void MainWindow::slotClosePictureSearch()
@@ -285,11 +298,11 @@ void MainWindow::showLikeBack(int type)
 {
     int usageCount = App::settings->value("Fotowall/UsageCount").toInt();
     QString usageString = QString::number(usageCount);
-#if defined(Q_WS_X11)
+#if defined(Q_OS_LINUX)
     usageString += " x11";
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN)
     usageString += " win";
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
     usageString += " mac";
 #else
     usageString += " undef.";
@@ -399,7 +412,8 @@ void MainWindow::on_accelBox_toggled(bool checked)
     RenderOpts::OpenGLWindow = ui->sceneView->openGL();
 }
 
-#if defined(Q_WS_X11)
+#if !defined(DISABLE_BEHIND_BLUR)
+#if defined(Q_OS_LINUX)
 /**
   Blur behind windows (on KDE4.5+)
 
@@ -429,7 +443,7 @@ static bool kde4EnableBlurBehindWindow(WId window, bool enable, const QRegion &r
     }
     return true;
 }
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN)
 /**
   Blur behind windows (on Windows Vista/7)
 
@@ -460,7 +474,7 @@ static PtrDwmEnableBlurBehindWindow pDwmEnableBlurBehindWindow  = 0;
 static bool dwmResolveLibs()
 {
     if (!pDwmIsCompositionEnabled) {
-        QLibrary dwmLib(QString::fromAscii("dwmapi"));
+        QLibrary dwmLib(QString::fromLatin1("dwmapi"));
         pDwmIsCompositionEnabled = (PtrDwmIsCompositionEnabled)dwmLib.resolve("DwmIsCompositionEnabled");
         pDwmEnableBlurBehindWindow = (PtrDwmEnableBlurBehindWindow)dwmLib.resolve("DwmEnableBlurBehindWindow");
     }
@@ -475,21 +489,24 @@ static bool dwmEnableBlurBehindWindow(QWidget * widget, bool enable)
         bb.dwFlags = DWM_BB_ENABLE;
         bb.fEnable = enable;
         bb.hRgnBlur = NULL;
-        HRESULT hr = pDwmEnableBlurBehindWindow(widget->winId(), &bb);
+        HRESULT hr = pDwmEnableBlurBehindWindow((HWND)widget->winId(), &bb);
         if (SUCCEEDED(hr))
             result = true;
     }
     return result;
 }
 #endif
+#endif
 
 void MainWindow::on_transpBox_toggled(bool transparent)
 {
-#if defined(Q_WS_WIN)
+#if !defined(DISABLE_BEHIND_BLUR)
+#if defined(Q_OS_WIN)
     static Qt::WindowFlags initialWindowFlags = windowFlags();
 #endif
+#endif
     if (transparent) {
-#if defined(Q_WS_X11)
+#if defined(Q_OS_LINUX)
         // one-time warning
         ButtonsDialog warning("EnableTransparency", tr("Transparency"), tr("This feature requires compositing (compiz or kwin4) to work on Linux.<br>If you see a black background then transparency is not supported on your system."), QDialogButtonBox::Ok, true, true);
         warning.setIcon(QStyle::SP_MessageBoxInformation);
@@ -509,16 +526,17 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         RenderOpts::ARGBWindow = true;
 
         // enable blur behind
-#if defined(Q_WS_X11)
+#if !defined(DISABLE_BEHIND_BLUR)
+#if defined(Q_OS_LINUX)
         kde4EnableBlurBehindWindow(winId(), true);
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN)
         if (!dwmEnableBlurBehindWindow(this, true)) {
             // if blur fails, use a frameless window that's needed on XP for transparency
             setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
             show();
         }
 #endif
-
+#endif
         // disable appliance background too
         if (App::workflow)
             App::workflow->applianceCommand(App::AC_ClearBackground);
@@ -527,15 +545,16 @@ void MainWindow::on_transpBox_toggled(bool transparent)
         setAttribute(Qt::WA_TranslucentBackground, false);
         setAttribute(Qt::WA_NoSystemBackground, false);
 
-	// disable blur behind
-#if defined(Q_WS_X11)
+        // disable blur behind
+#if !defined(DISABLE_BEHIND_BLUR)
+#if defined(Q_OS_LINUX)
         kde4EnableBlurBehindWindow(winId(), false);
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN)
         // disable no-border on windows
         setWindowFlags(initialWindowFlags);
         show();
 #endif
-
+#endif
         // hint the render that we're opaque again
         RenderOpts::ARGBWindow = false;
     }

@@ -57,6 +57,7 @@ class Canvas : public AbstractScene
         TextContent* addTextContent();
         WebcamContent* addWebcamContent(int input);
         WordcloudContent* addWordcloudContent();
+
         void addManualContent(AbstractContent * content, const QPoint & pos);
         void deleteContent(AbstractContent * content);
         void clearContent();

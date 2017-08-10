@@ -4,8 +4,5 @@ tags
 Makefile
 fotowall
 *.swp
-tests/
-.cproject
-.project
-.settings
-.metadata
+*.user
+fotowall_plugin_import.cpp

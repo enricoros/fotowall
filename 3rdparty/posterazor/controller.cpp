@@ -423,7 +423,7 @@ void Controller::loadInputImage()
         QCoreApplication::translate("Main window", "Load an input image"),
         loadPathSettings.value(settingsKey_ImageLoadPath,
 #if QT_VERSION >= 0x040400
-            QDesktopServices::storageLocation(QDesktopServices::PicturesLocation)
+            QStandardPaths::PicturesLocation
 #else
             "."
 #endif
@@ -474,7 +474,7 @@ void Controller::savePoster() const
 
     QString saveFileName = savePathSettings.value(settingsKey_PosterSavePath,
 #if QT_VERSION >= 0x040400
-        QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)
+           QStandardPaths::DocumentsLocation
 #else
         "."
 #endif
@@ -501,7 +501,7 @@ void Controller::savePoster() const
             if (!fileExistsAskUserForOverwrite
                 || QMessageBox::Yes == (QMessageBox::question(m_view, "", QCoreApplication::translate("Main window", "The file '%1' already exists.\nDo you want to overwrite it?").arg(saveFileInfo.fileName()), QMessageBox::Yes, QMessageBox::No))
                 ) {
-                int result = savePoster(saveFileName.toAscii());
+                int result = savePoster(saveFileName.toLatin1());
                 if (result != 0)
                     QMessageBox::critical(m_view, "", QCoreApplication::translate("Main window", "The file '%1' could not be saved.").arg(saveFileInfo.fileName()), QMessageBox::Ok, QMessageBox::NoButton);
                 else

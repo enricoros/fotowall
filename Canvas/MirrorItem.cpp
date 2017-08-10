@@ -88,7 +88,12 @@ void MirrorItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         alphaGradient.setColorAt(1.0 , QColor(  0,   0,   0));
         alphaPainter.fillRect(alphaPixmap.rect(), alphaGradient);
         alphaPainter.end();
-        m_pixmap.setAlphaChannel(alphaPixmap);
+
+        // set the Alpha channel, using a deprecated path
+        // (pre-Qt5 was: m_pixmap.setAlphaChannel(alphaPixmap))
+        QImage pixmapImage = m_pixmap.toImage();
+        pixmapImage.setAlphaChannel(alphaPixmap.toImage());
+        m_pixmap = QPixmap::fromImage(pixmapImage);
 
         // reset dirty
         m_dirty = false;

@@ -89,20 +89,19 @@ private:
 public:
     OpacityCommand(AbstractContent *content, qreal nOpacity) {
        setContent(content);
-       previousOpacity = content->opacity();
+       previousOpacity = content->property("contentOpacity").toDouble();
        newOpacity = nOpacity;
     }
     void exec() {
         if (!m_content)
             return;
-        m_content->setOpacity(newOpacity);
-        //m_content->setProperty("contentOpacity", newOpacity);
+        m_content->setProperty("contentOpacity", newOpacity);
         m_content->update();
     }
     void unexec() {
         if (!m_content)
             return;
-        m_content->setOpacity(previousOpacity);
+        m_content->setProperty("contentOpacity", newOpacity);
         m_content->update();
     }
     void replaceContent(AbstractContent *oldContent,
@@ -112,7 +111,7 @@ public:
         }
     }
     QString name() const {
-        return tr("Opacity command");
+        return tr("Opacity command: ") + QString::number(previousOpacity) + " -> " + QString::number(newOpacity);
     }
 };
 
@@ -336,14 +335,10 @@ public:
         m_previousMirror = content->mirrored();
     }
     void exec() {
-        if (!m_newClass)
-            return;
         m_content->setFrame(FrameFactory::createFrame(m_newClass));
         m_content->setMirrored(m_newMirror);
     }
     void unexec() {
-        if (!m_previousClass)
-            return;
         m_content->setFrame(FrameFactory::createFrame(m_previousClass));
         m_content->setMirrored(m_previousMirror);
     }

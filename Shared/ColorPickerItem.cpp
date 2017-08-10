@@ -22,10 +22,10 @@
 #include <QtCore/QtGlobal>
 #include <QtCore/QDebug>
 #include <QtCore/QTimer>
-#include <QtGui/QPainter>
-#include <QtGui/QStyleOptionGraphicsItem>
-#include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtCore/QTimeLine>
+#include <QtGui/QPainter>
+#include <QtWidgets/QStyleOptionGraphicsItem>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
 
 #define COLORPICKER_MARGIN 8
 #define COLORPICKER_SPACING 10
@@ -51,7 +51,7 @@ ColorPickerItem::ColorPickerItem(int width, int height, QGraphicsItem * parent)
     m_hueSatRect = QRect(left, top, right - COLORPICKER_VALUE_WIDTH - COLORPICKER_MARGIN - left, bottom - top);
     m_valRect = QRect(right - COLORPICKER_VALUE_WIDTH, top, COLORPICKER_VALUE_WIDTH, bottom - top);
 
-    setAcceptsHoverEvents(true);
+    setAcceptHoverEvents(true);
 }
 
 void ColorPickerItem::setColor(const QColor & color)

@@ -31,8 +31,8 @@
 #endif
 
 
-#define FIXEDSIZE QSize(320, 240)
-#define TESTPOWER 5
+#define FIXEDSIZE QSize(800, 600)
+#define TESTPOWER 7
 #define TESTSIZE (1 << TESTPOWER)
 
 Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
@@ -72,7 +72,7 @@ Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
     m_results.resize((TESTPOWER + 1) * 2);
     for (int i = 0; i < TESTSIZE; i++) {
         PictureContent * p = new PictureContent(true, m_canvas);
-        p->loadPixmap(picturePix);
+        p->loadPixmapForAccelTest(picturePix);
         p->setRotation(-60 + (qrand() % 120));
         p->setContentOpacity((qreal)(qrand() % 100) / 99.0);
         m_canvas->addManualContent(p, QPoint(qrand() % FIXEDSIZE.width(), qrand() % FIXEDSIZE.height()));

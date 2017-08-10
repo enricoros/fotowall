@@ -3,11 +3,11 @@ DEPENDPATH += $$PWD
 
 # Input
 HEADERS += \
-    FloodGenerator.h \
-    FloodPoly.h \
-    PencilItem.h
+    $$PWD/FloodGenerator.h \
+    $$PWD/FloodPoly.h \
+    $$PWD/PencilItem.h
 
 SOURCES += \
-    FloodGenerator.cpp \
-    FloodPoly.cpp \
-    PencilItem.cpp
+    $$PWD/FloodGenerator.cpp \
+    $$PWD/FloodPoly.cpp \
+    $$PWD/PencilItem.cpp

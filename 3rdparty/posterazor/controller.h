@@ -77,9 +77,9 @@ public slots:
     void setPosterSizeModeAvailable(Types::PosterSizeModes mode, bool available);
 
 signals:
-    virtual void previewChanged() const;
-    virtual void imageFileNameChanged(const QString &fileName) const;
-    virtual void imageInfoChanged(int imageWidthInPixels, int imageHeightInPixels, double imageWidth,
+    void previewChanged() const;
+    void imageFileNameChanged(const QString &fileName) const;
+    void imageInfoChanged(int imageWidthInPixels, int imageHeightInPixels, double imageWidth,
         double imageHeight, Types::UnitsOfLength unitOfLength, double verticalDpi, double horizontalDpi,
         Types::ColorTypes colorType, int bitsPerPixel) const;
 

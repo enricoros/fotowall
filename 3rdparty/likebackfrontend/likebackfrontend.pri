@@ -5,19 +5,19 @@ DEPENDPATH += $$PWD
     DEFINES += HAS_LIKEBACK
 
     HEADERS += \
-        LikeBack.h \
-        LikeBack_p.h \
-        LikeBackDialog.h
+        $$PWD/LikeBack.h \
+        $$PWD/LikeBack_p.h \
+        $$PWD/LikeBackDialog.h
 
     SOURCES += \
-        LikeBack.cpp \
-        LikeBackDialog.cpp
+        $$PWD/LikeBack.cpp \
+        $$PWD/LikeBackDialog.cpp
 
     FORMS += \
-        LikeBackDialog.ui
+        $$PWD/LikeBackDialog.ui
 
     RESOURCES += \
-        likebackfrontend.qrc
+        $$PWD/likebackfrontend.qrc
 } else: {
     message("3rdparty/likebackfrontend won't be compiled")
     DEFINES -= HAS_LIKEBACK

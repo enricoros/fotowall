@@ -19,6 +19,7 @@
 #include <QGraphicsScene>
 #include <QFileDialog>
 #include <QPainter>
+#include <QInputDialog>
 
 WordcloudContent::WordcloudContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
   : AbstractContent(scene, spontaneous, false, parent)
@@ -45,20 +46,36 @@ void WordcloudContent::manualInitialization()
     // temporarily get words
     Wordcloud::Scanner scanner;
     QString txtFilePath = QFileDialog::getOpenFileName(0, tr("Create a Wordcloud from a text file"));
-    if (txtFilePath.isEmpty()) {
-        scanner.addFromString(tr("Welcome to Wordcloud. Change options on the sidebar."));
-        Wordcloud::WordList list = scanner.takeWords(false);
-        Wordcloud::WordList::iterator wIt = list.begin();
-        int ccc = list.size() + 1;
-        while (wIt != list.end()) {
-            wIt->count = ccc--;
-            ++wIt;
-        }
-        m_cloud->newCloud(list);
-    } else {
+
+    // from file
+    if (!txtFilePath.isEmpty()) {
+        // ask how many characters (at least) per word
+        bool ok = false;
+        int minLength = QInputDialog::getInt(0, tr("Minimum word length"), tr("Longer or equal to:"), 3, 1, 20, 1, &ok);
+        if (ok)
+            scanner.setMinimumWordLength(minLength);
+
         scanner.addFromFile(txtFilePath);
-        m_cloud->newCloud(scanner.takeWords(true));
+
+        // ask how many words (at most)
+        int maxCount = QInputDialog::getInt(0, tr("How many words"), tr("Less or equal than these words:"), 100, 1, 10000, 1, &ok);
+        if (!ok)
+            maxCount = 100;
+
+        m_cloud->newCloud(scanner.takeWords(true, maxCount));
+        return;
     }
+
+    // add few words if a file is not selected
+    scanner.addFromString(tr("Welcome to Wordcloud. Change options on the sidebar."));
+    Wordcloud::WordList list = scanner.takeWords(false, 100);
+    Wordcloud::WordList::iterator wIt = list.begin();
+    int ccc = list.size() + 1;
+    while (wIt != list.end()) {
+        wIt->count = ccc--;
+        ++wIt;
+    }
+    m_cloud->newCloud(list);
 }
 
 bool WordcloudContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
@@ -122,7 +139,7 @@ void WordcloudContent::returnResource(const QVariant & resource)
 
     // store reference back
     m_cloudTaken = false;
-    m_cloud = static_cast<Wordcloud::Cloud *>(qVariantValue<void *>(resource));
+    m_cloud = static_cast<Wordcloud::Cloud *>(resource.value<void*>());
     if (m_cloud)
         m_cloud->setScene(m_cloudScene);
     update();

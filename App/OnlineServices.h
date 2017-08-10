@@ -19,6 +19,8 @@
 #include <QList>
 class QNetworkAccessManager;
 
+// uncomment the following to stop the Updates checking
+#define NO_UPDATE_CHECK
 
 class OnlineServices : public QObject {
     Q_OBJECT
@@ -32,14 +34,19 @@ class OnlineServices : public QObject {
     public Q_SLOTS:
         void openWebpage();
         void openBlog();
+        void openYouTube();
         void openTutorial();
+#if !defined(NO_UPDATE_CHECK)
         void checkForUpdates();
+#endif
 
     Q_SIGNALS:
         void tutorialFound(bool);
 
     private:
+#if !defined(NO_UPDATE_CHECK)
         void autoUpdate();
+#endif
 
         enum PostFetchOp { OpenWebsite, OpenBlog };
         QNetworkAccessManager * m_nam;

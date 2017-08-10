@@ -35,7 +35,7 @@ CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * par
     , m_startRotation(parent->rotation())
     , m_hidden(false)
 {
-    setAcceptsHoverEvents(true);
+    setAcceptHoverEvents(true);
 }
 
 void CornerItem::relayout(const QRect & rect)

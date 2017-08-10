@@ -180,37 +180,29 @@ void Canvas::addCanvasViewContent(const QStringList & fwFilePaths) {
     }
 }
 
-PictureContent* Canvas::addPictureContent(const QString &url) {
-    clearSelection();
-    PictureContent *p = createPicture(visibleCenter(), true);
-    if (!p->loadPhoto(url, true, true)) {
-        m_content.removeAll(p);
-        delete p;
-    } else {
-        p->setSelected(true);
-    }
-    return p;
-}
-
 QList<PictureContent*> Canvas::addPictureContent(const QStringList & picFilePaths) {
     clearSelection();
     QList<PictureContent*> addedPictures;
-    int offset = 30 * (picFilePaths.size() - 1) / 2;
-    qDebug() << offset;
-
-    QPoint pos = visibleCenter();
+    int offset = -30 * (picFilePaths.size() - 1) / 2;
+    QPoint pos = visibleCenter() + QPoint(offset, offset);
+    GroupedCommands *gc = new GroupedCommands("Add Picture Content");
     foreach (const QString & localFile, picFilePaths) {
         if (!QFile::exists(localFile))
             continue;
 
         // create picture and load the file
-        PictureContent * p = addPictureContent(localFile);
-        if (p != 0) {
-            p->setPos(pos);
-            pos += QPoint(offset, offset);
+        PictureContent * p = createPicture(pos, true);
+        if (!p->loadFromFile(localFile, true, true, true)) {
+            m_content.removeAll(p);
+            delete p;
+        } else {
+            p->setSelected(true);
+            pos += QPoint(30, 30);
+            gc->addCommand(new NewContentCommand(this, p));
             addedPictures << p;
         }
     }
+    CommandStack::instance().addCommand(gc);
     return addedPictures;
 }
 
@@ -224,6 +216,7 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url) {
         p = 0;
     } else {
         p->setSelected(true);
+        CommandStack::instance().addCommand(new NewContentCommand(this, p));
     }
     return p;
 }
@@ -238,6 +231,7 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url, QNetworkRep
         p = 0;
     } else {
         p->setSelected(true);
+        CommandStack::instance().addCommand(new NewContentCommand(this, p));
     }
     return p;
 }
@@ -245,6 +239,9 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url, QNetworkRep
 TextContent* Canvas::addTextContent() {
     clearSelection();
     TextContent * t = createText(visibleCenter(), true);
+    if(t != 0) {
+      CommandStack::instance().addCommand(new NewContentCommand(this, t));
+    }
     t->setSelected(true);
     return t;
 }
@@ -252,13 +249,20 @@ TextContent* Canvas::addTextContent() {
 WebcamContent* Canvas::addWebcamContent(int webcamIndex) {
     clearSelection();
     WebcamContent * w = createWebcam(webcamIndex, visibleCenter(), true);
+    if (w != 0) {
+        CommandStack::instance().addCommand(
+                new NewContentCommand(this, w));
+    }
     w->setSelected(true);
     return w;
 }
 
-WordcloudContent * Canvas::addWordcloudContent() {
+WordcloudContent* Canvas::addWordcloudContent() {
     clearSelection();
     WordcloudContent * w = createWordcloud(visibleCenter(), true);
+    if (w != 0) {
+        CommandStack::instance().addCommand(new NewContentCommand(this, w));
+    }
     w->manualInitialization();
     w->setSelected(true);
     return w;
@@ -442,7 +446,7 @@ Canvas::BackMode Canvas::backMode() const {
 }
 
 void Canvas::clearBackContent() {
-    setBackContent(0);
+    CommandStack::instance().doCommand(new BackgroundContentCommand(this, m_backContent, 0));
 }
 
 bool Canvas::backContent() const {
@@ -954,10 +958,6 @@ void Canvas::dragMoveEvent(QGraphicsSceneDragDropEvent * event) {
 
 void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
     qDebug() << "drop";
-    // Group all the content creation
-    GroupedCommands *gc = new GroupedCommands();
-    gc->setName("Grag'N'Drop images");
-
     // handle by children
     event->ignore();
     QGraphicsScene::dropEvent(event);
@@ -976,7 +976,6 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
                 if (p != 0) {
                     pos += QPoint(30, 30);
                     p->setPos(pos);
-                    gc->addCommand(new NewContentCommand(this, p));
                 } else {
                     m_content.removeAll(p);
                     delete p;
@@ -986,23 +985,13 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
             // handle local files
             QString picFilePath = url.toString(QUrl::RemoveScheme);
             if (QFile::exists(picFilePath)) {
-                qDebug() << "Local files dropped";
-                PictureContent * p = addPictureContent(picFilePath);
-                if (p != 0) {
-                    qDebug() << "content created";
-                    pos += QPoint(30, 30);
-                    p->setPos(pos);
-                    p->setVisible(true);
-                    gc->addCommand(new NewContentCommand(this, p));
-
-                } else {
-                    qDebug() << "content not created";
+                PictureContent * p = createPicture(pos, true);
+                if (!p->loadFromFile(picFilePath, true, true, true)) {
                     m_content.removeAll(p);
                     delete p;
                 }
             }
         }
-        CommandStack::instance().doCommand(gc);
         return;
     }
 
@@ -1036,13 +1025,11 @@ void Canvas::dropEvent(QGraphicsSceneDragDropEvent * event) {
             if (p != 0) {
                 p->setPos(insertPos);
                 insertPos += QPoint(30, 30);
-                gc->addCommand(new NewContentCommand(this, p));
             } else {
                 m_content.removeAll(p);
                 delete p;
             }
         }
-        CommandStack::instance().doCommand(gc);
         event->accept();
     }
 }
@@ -1066,11 +1053,13 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent * event) {
 void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
     qDebug() << "release";
 
-    GroupedCommands *gc = new GroupedCommands();
+    GroupedCommands *gc = new GroupedCommands("Move items");
     foreach(QGraphicsItem *item, selectedItems()) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(item);
         if (content != 0) {
+          if(content->previousPos() != content->pos()) {
             gc->addCommand(new MotionCommand(content, content->previousPos(), content->pos()));
+          }
         }
     }
     CommandStack::instance().addCommand(gc);
@@ -1099,7 +1088,7 @@ void Canvas::contextMenuEvent(QGraphicsSceneContextMenuEvent * event) {
 void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect) {
     // clip exposedRect to the scene
     QRect sceneRect = this->sceneRect().toAlignedRect();
-    QRect expRect = sceneRect.intersect(exposedRect.toAlignedRect());
+    QRect expRect = sceneRect.intersected(exposedRect.toAlignedRect());
 
     // draw background if have any uncovered area
     bool contentOnly = m_backContent && m_backContent->contentOpaque()
@@ -1157,7 +1146,7 @@ void Canvas::drawBackground(QPainter * painter, const QRectF & exposedRect) {
 
 void Canvas::drawForeground(QPainter * painter, const QRectF & exposedRect) {
     // clip exposedRect to the scene
-    QRect targetRect = sceneRect().toAlignedRect().intersect(exposedRect.toAlignedRect());
+    QRect targetRect = sceneRect().toAlignedRect().intersected(exposedRect.toAlignedRect());
 
     // draw header and footer 50px bars
     if (m_topBarEnabled || m_bottomBarEnabled) {
@@ -1207,6 +1196,7 @@ void Canvas::initContent(AbstractContent * content, const QPoint & pos) {
 }
 
 void Canvas::setBackContent(AbstractContent * content) {
+  qDebug() << "Canvas::setBackContent " << content;
     // skip if unchanged
     if (content == m_backContent)
         return;
@@ -1368,6 +1358,7 @@ void Canvas::slotSelectionChanged() {
 }
 
 void Canvas::slotBackgroundContent() {
+  qDebug() << "Canvas::slotBackgroundContent";
     AbstractContent *back = dynamic_cast<AbstractContent *>(sender());
     CommandStack::instance().doCommand(new BackgroundContentCommand(this, m_backContent, back));
 }
@@ -1484,10 +1475,9 @@ void Canvas::slotStackContent(int op) {
 
     // reassign z-levels
     int z = 1;
-    GroupedCommands *gc = new GroupedCommands();
+    GroupedCommands *gc = new GroupedCommands(tr("Change content stack order"));
     foreach (AbstractContent * content, m_content)
         gc->addCommand(new StackCommand(content, content->zValue(), z++));
-    gc->setName(tr("Change content stack order"));
     CommandStack::instance().doCommand(gc);
 }
 
@@ -1523,7 +1513,7 @@ void Canvas::slotDeleteContent() {
             return;
 
     // Undo/redo delete code
-    GroupedCommands *gc = new GroupedCommands();
+    GroupedCommands *gc = new GroupedCommands(tr("Delete Selected Content"));
     foreach (AbstractContent * content, selectedContent) {
         if (content) {
             // unset background if deleting its content
@@ -1539,7 +1529,6 @@ void Canvas::slotDeleteContent() {
             gc->addCommand(new DeleteContentCommand(content, this));
         }
     }
-    gc->setName(tr("Delete selected contents"));
     CommandStack::instance().doCommand(gc);
 }
 
@@ -1550,7 +1539,7 @@ void Canvas::slotDeleteConfig() {
 void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all) {
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(
             selectedItems());
-    GroupedCommands *gc = new GroupedCommands();
+    GroupedCommands *gc = new GroupedCommands(tr("Frame Look"));
     foreach (AbstractContent * content, m_content) {
         if (all || content->isSelected()) {
             gc->addCommand(new FrameCommand(content, frameClass, mirrored));
@@ -1561,13 +1550,12 @@ void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all) {
 
 void Canvas::slotApplyEffect(const PictureEffect & effect, bool all) {
     QList<PictureContent *> pictures = projectList<AbstractContent, PictureContent>(m_content);
-    GroupedCommands *gc = new GroupedCommands();
+    GroupedCommands *gc = new GroupedCommands(tr("Change effects"));
     foreach (PictureContent * picture, pictures) {
         if (all || picture->isSelected()) {
             gc->addCommand(new EffectCommand(picture, effect));
         }
     }
-    gc->setName(tr("Change effects"));
     CommandStack::instance().doCommand(gc);
 }
 
@@ -1579,21 +1567,19 @@ void Canvas::slotCrop() {
 
 void Canvas::slotFlipHorizontally() {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
-    GroupedCommands *gc = new GroupedCommands();
+    GroupedCommands *gc = new GroupedCommands(tr("Horizontally flip pictures"));
     foreach (PictureContent * picture, pictures) {
         gc->addCommand(new EffectCommand(picture, PictureEffect::FlipH));
     }
-    gc->setName(tr("Horizontally flip pictures"));
     CommandStack::instance().doCommand(gc);
 }
 
 void Canvas::slotFlipVertically() {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
-    GroupedCommands *gc = new GroupedCommands();
+    GroupedCommands *gc = new GroupedCommands(tr("Vertically flip pictures"));
     foreach (PictureContent * picture, pictures) {
         gc->addCommand(new EffectCommand(picture, PictureEffect::FlipV));
     }
-    gc->setName(tr("Vertically flip pictures"));
     CommandStack::instance().doCommand(gc);
 }
 

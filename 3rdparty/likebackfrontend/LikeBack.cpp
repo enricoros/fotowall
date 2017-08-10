@@ -101,11 +101,19 @@ QStringList LikeBack::acceptedLocales()
 
 
 // Set the site address where to send feedback
-void LikeBack::setServer(const QString &hostName, const QString &remotePath, quint16 hostPort)
+void LikeBack::setServer(const QString &hostScheme, const QString &hostName, const QString &remotePath, quint16 hostPort)
 {
+  d->hostScheme = hostScheme;
   d->hostName   = hostName;
   d->remotePath = remotePath;
   d->hostPort   = hostPort;
+}
+
+
+// Get the developers site host scheme
+QString LikeBack::hostScheme()
+{
+  return d->hostScheme;
 }
 
 
@@ -118,18 +126,18 @@ QString LikeBack::hostName()
 
 
 
-// Get the path on the developers site
-QString LikeBack::remotePath()
-{
-  return d->remotePath;
-}
-
-
-
 // Get the developers site port
 quint16 LikeBack::hostPort()
 {
   return d->hostPort;
+}
+
+
+
+// Get the path on the developers site
+QString LikeBack::remotePath()
+{
+  return d->remotePath;
 }
 
 

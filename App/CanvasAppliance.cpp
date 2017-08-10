@@ -409,43 +409,27 @@ void CanvasAppliance::slotAddPicture()
     if (picFilePaths.isEmpty())
         return;
     App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(picFilePaths[0]).absolutePath());
-    QList<PictureContent *> images = m_extCanvas->addPictureContent(picFilePaths);
-    GroupedCommands *gc = new GroupedCommands();
-    foreach (PictureContent *content, images) {
-        if(content != 0) {
-            gc->addCommand(new NewContentCommand(m_extCanvas, content));
-        }
-    }
-    CommandStack::instance().addCommand(gc);
+    m_extCanvas->addPictureContent(picFilePaths);
     setFocusToScene();
 }
 
 void CanvasAppliance::slotAddText()
 {
 
-    TextContent * textContent = m_extCanvas->addTextContent();
-    if(textContent != 0)
-    CommandStack::instance().addCommand(new NewContentCommand(m_extCanvas, textContent));
+    m_extCanvas->addTextContent();
     setFocusToScene();
 }
 
 void CanvasAppliance::slotAddWebcam()
 {
     int webcamIndex = sender()->property("index").toInt();
-    WebcamContent *webcamContent = m_extCanvas->addWebcamContent(webcamIndex);
-    if (webcamContent != 0) {
-        CommandStack::instance().addCommand(
-                new NewContentCommand(m_extCanvas, webcamContent));
-    }
+    m_extCanvas->addWebcamContent(webcamIndex);
     setFocusToScene();
 }
 
 void CanvasAppliance::slotAddWordcloud()
 {
-    WordcloudContent * c = m_extCanvas->addWordcloudContent();
-    if(c!=0) {
-        CommandStack::instance().addCommand(new NewContentCommand(m_extCanvas, c));
-    }
+    m_extCanvas->addWordcloudContent();
     setFocusToScene();
 }
 
@@ -575,7 +559,7 @@ void CanvasAppliance::slotEditContent(AbstractContent *content)
         App::workflow->stackSlaveWordcloud_A(wc);
 #else
         Q_UNUSED(wc);
-        ButtonsDialog info("WordcloudMissingInfo", tr("Wordcloud Editor"), tr("The Wordcloud editor will be ready in the Fotowall REVO (1.0) release."), QDialogButtonBox::Ok, true, true);
+        ButtonsDialog info("WordcloudMissingInfo", tr("Wordcloud Editor"), tr("Would be great to have a Wordcloud editor, but we can only move things around for now."), QDialogButtonBox::Ok, true, true);
         info.execute();
 #endif
         return;

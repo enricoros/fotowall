@@ -17,7 +17,9 @@
 #include "3rdparty/gsuggest.h"
 #endif
 #include "Shared/PictureServices/FlickrPictureService.h"
+#if defined(ENABLE_GOOGLE_IMAGES_API)
 #include "Shared/PictureServices/GoogleImagesPictureService.h"
+#endif
 #include "App.h"
 #include <QApplication>
 #include <QBasicTimer>
@@ -28,6 +30,8 @@
 #include <QListWidget>
 #include <QPainter>
 #include <QTime>
+#include <QDrag>
+#include <QMimeData>
 
 #define FRAME_RADIUS 6
 
@@ -199,11 +203,16 @@ PictureSearchWidget::PictureSearchWidget(QNetworkAccessManager * extAccessManage
     connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(slotSearchClicked()));
     connect(m_ui->lineEdit, SIGNAL(returnPressed()), m_ui->searchButton, SLOT(click()));
     connect(m_ui->fRadio, SIGNAL(toggled(bool)), this, SLOT(slotProviderChanged()));
+#if defined(ENABLE_GOOGLE_IMAGES_API)
     connect(m_ui->gRadio, SIGNAL(toggled(bool)), this, SLOT(slotProviderChanged()));
-    if (LastProvider == 0)
-        m_ui->fRadio->setChecked(true);
-    else if (LastProvider == 1)
+    if (LastProvider == 1)
         m_ui->gRadio->setChecked(true);
+    else if (LastProvider == 0)
+        m_ui->fRadio->setChecked(true);
+#else
+    m_ui->fRadio->setChecked(true);
+    m_ui->gRadio->setVisible(false);
+#endif
     adjustSize();
 
     // init
@@ -218,10 +227,12 @@ PictureSearchWidget::PictureSearchWidget(QNetworkAccessManager * extAccessManage
 
 PictureSearchWidget::~PictureSearchWidget()
 {
-    if (m_ui->fRadio->isChecked())
-        LastProvider = 0;
-    else if (m_ui->gRadio->isChecked())
+#if defined(ENABLE_GOOGLE_IMAGES_API)
+    if (m_ui->gRadio->isChecked())
         LastProvider = 1;
+    else if (m_ui->fRadio->isChecked())
+#endif
+        LastProvider = 0;
     m_extAccessManager = 0;
 #ifdef ENABLE_GCOMPLETION
     delete m_completion;
@@ -251,10 +262,12 @@ void PictureSearchWidget::paintEvent(QPaintEvent * event)
 {
     QLinearGradient lg(0, 0, 0, 50);
     if (App::pictureService) {
-        if (m_ui->fRadio->isChecked())
-            lg.setColorAt(0.0, QColor(255, 200, 200, 200));
-        else if (m_ui->gRadio->isChecked())
+#if defined(ENABLE_GOOGLE_IMAGES_API)
+        if (m_ui->gRadio->isChecked())
             lg.setColorAt(0.0, QColor(200, 220, 255, 200));
+        else if (m_ui->fRadio->isChecked())
+#endif
+            lg.setColorAt(0.0, QColor(255, 200, 200, 200));
         lg.setColorAt(1.0, QColor(230, 230, 230, 220));
     } else {
         lg.setColorAt(0.0, QColor(255, 255, 255));
@@ -277,8 +290,12 @@ void PictureSearchWidget::paintEvent(QPaintEvent * event)
 
 void PictureSearchWidget::slotProviderChanged()
 {
+#if defined(ENABLE_GOOGLE_IMAGES_API)
     // no need to create the provider here, it will be created when searching
     m_ui->googleOptions->setVisible(m_ui->gRadio->isChecked());
+#else
+    m_ui->googleOptions->setVisible(false);
+#endif
     update();
 }
 
@@ -296,12 +313,15 @@ void PictureSearchWidget::slotSearchClicked()
 
         // start a picture search
         if (!App::pictureService) {
-            if (m_ui->fRadio->isChecked())
-                App::pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
-            else if (m_ui->gRadio->isChecked()) {
+#if defined(ENABLE_GOOGLE_IMAGES_API)
+            if (m_ui->gRadio->isChecked()) {
                 GoogleImagesPictureService * gis = new GoogleImagesPictureService(m_extAccessManager, this);
                 gis->configure(m_ui->contentCombo->currentIndex(), m_ui->sizeCombo->currentIndex());
                 App::pictureService = gis;
+            } else
+#endif
+            if (m_ui->fRadio->isChecked()) {
+                App::pictureService = new FlickrPictureService("292287089cdba89fdbd9994830cc4327", m_extAccessManager, this);
             } else {
                 qWarning("PictureSearchWidget::slotSearchClicked: unknown provider");
                 return;

@@ -17,6 +17,8 @@
 #include "Shared/Commands.h"
 #include "Shared/CommandStack.h"
 
+#include "App/App.h"
+#include "App/Settings.h"
 #include "Frames/Frame.h"
 #include "Shared/CPixmap.h"
 #include "Shared/CroppingDialog.h"
@@ -28,10 +30,12 @@
 
 #include <QDir>
 #include <QDirIterator>
+#include <QFileDialog>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -89,14 +93,13 @@ PictureContent::~PictureContent()
     delete m_photo;
 }
 
-bool PictureContent::loadPhoto(const QString & picFilePath, bool keepRatio, bool setName)
+bool PictureContent::loadFromFile(const QString & picFilePath, bool setUrl, bool setRatio, bool setName)
 {
     dropNetworkConnection();
     delete m_photo;
     m_cachedPhoto = QPixmap();
     m_opaquePhoto = false;
     m_photo = 0;
-    m_fileUrl = QString();
     m_netWidth = 0;
     m_netHeight = 0;
 
@@ -108,10 +111,13 @@ bool PictureContent::loadPhoto(const QString & picFilePath, bool keepRatio, bool
     }
 
     m_opaquePhoto = !m_photo->hasAlpha();
-    m_fileUrl = QDir(picFilePath).canonicalPath();
-    if (m_fileUrl.isEmpty())
-        m_fileUrl = picFilePath;
-    if (keepRatio)
+    if (setUrl) {
+        QString prettyUrl = QDir(picFilePath).canonicalPath();
+        if (prettyUrl.isEmpty())
+            prettyUrl = picFilePath;
+        m_fileUrls = QStringList(prettyUrl);
+    }
+    if (setRatio)
         resetContentsRatio();
     if (setName) {
         QString string = QFileInfo(picFilePath).fileName().section('.', 0, 0);
@@ -132,7 +138,8 @@ bool PictureContent::loadFromNetwork(const QString & url, QNetworkReply * reply,
     m_cachedPhoto = QPixmap();
     m_opaquePhoto = false;
     m_photo = 0;
-    m_fileUrl = url;
+    if (!m_fileUrls.contains(url))
+        m_fileUrls.append(url);
     m_netWidth = width;
     m_netHeight = height;
 
@@ -173,20 +180,23 @@ bool PictureContent::loadFromNetwork(const QString & url, QNetworkReply * reply,
     return true;
 }
 
-bool PictureContent::loadPixmap(const QPixmap & pixmap, const QString & title)
+/**
+ * The contract of this function is that the bitmap won't be saved, if exported to XML.
+ * That's why the name is complex.
+ */
+bool PictureContent::loadPixmapForAccelTest(const QPixmap & pixmap, const QString & title)
 {
     dropNetworkConnection();
     delete m_photo;
     m_cachedPhoto = QPixmap();
     m_opaquePhoto = false;
     m_photo = 0;
-    m_fileUrl = QString();
+    m_fileUrls = QStringList();
     m_netWidth = 0;
     m_netHeight = 0;
 
     m_photo = new CPixmap(pixmap.toImage());
     m_opaquePhoto = !pixmap.hasAlpha();
-    m_fileUrl = QString("data:/");
     resetContentsRatio();
     setFrameTextEnabled(!title.isEmpty());
     setFrameText(title);
@@ -204,6 +214,8 @@ void PictureContent::addEffect(const PictureEffect & effect)
 
     m_photo->addEffect(effect);
     // adapt picture ratio after cropping
+    if (effect.effect == PictureEffect::ClearEffects)
+      setContentOpacity(1);
     if (effect.effect == PictureEffect::Crop) {
         QRect actualContentRect = contentRect();
         if ((actualContentRect.height() + actualContentRect.width()) > 0) {
@@ -215,7 +227,9 @@ void PictureContent::addEffect(const PictureEffect & effect)
         }
     }
     else if(effect.effect == PictureEffect::Opacity)
+    {
         setContentOpacity(effect.param);
+    }
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
@@ -263,6 +277,11 @@ QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
     return pp;
 }
 
+static bool hasChildTags(QDomElement & element, const QString & tagName)
+{
+    return !element.elementsByTagName(tagName).isEmpty();
+}
+
 bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
 {
     AbstractContent::fromXml(contentElement, baseDir);
@@ -287,55 +306,102 @@ bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
         m_afterLoadEffects.append(fx);
     }
 
-    // load picture properties
-    QString path;
 
-    // try relative file path
-    const QString relPath = contentElement.firstChildElement("relativeFilePath").text();
-    if (!relPath.isEmpty() && baseDir.exists(relPath))
-        path = QDir::cleanPath(baseDir.filePath(relPath));
-
-    // or use absolute path/url
-    if (path.isEmpty())
-        path = contentElement.firstChildElement("fileUrl").text();
+    // get all the absolute paths/urls
+    m_relativePath = contentElement.firstChildElement("relativeFilePath").text();
+    m_fileUrls.clear();
+    QDomNodeList urlElements = contentElement.elementsByTagName("fileUrl");
+    for (int i = 0; i < urlElements.count(); i++)
+        m_fileUrls.append(urlElements.at(i).toElement().text());
 
     // RETROCOMP <= 0.8
-    if (path.isEmpty())
-        path = contentElement.firstChildElement("path").text();
+    if (m_fileUrls.isEmpty() && hasChildTags(contentElement, "path"))
+        m_fileUrls.append(contentElement.firstChildElement("path").text());
 
-    // load Network image
-    if (path.startsWith("http", Qt::CaseInsensitive) || path.startsWith("ftp", Qt::CaseInsensitive))
-        return loadFromNetwork(path, 0);
+    // A. load all non-relative urls until one works
+    foreach (const QString &url, m_fileUrls) {
+        // load Network image
+        if (url.startsWith("http:", Qt::CaseInsensitive) ||
+                url.startsWith("https:", Qt::CaseInsensitive) ||
+                url.startsWith("ftp:", Qt::CaseInsensitive))
+            return loadFromNetwork(url, 0);
 
-    // look for the file if can't find it anymore
-    if (!QFile::exists(path)) {
-        QString searchFileName = QFileInfo(path).fileName();
-        if (!searchFileName.isEmpty()) {
+        // load File
+        if (loadFromFile(url, false, false, false))
+            return true;
+    }
 
-            // find all replacements from the current basepath
-            qWarning("PictureContent::fromXml: file '%s' not found, scanning for replacements", qPrintable(path));
-            QDirIterator dIt(baseDir, QDirIterator::Subdirectories);
-            QStringList replacements;
-            while (dIt.hasNext()) {
-                dIt.next();
-                if (dIt.fileName() == searchFileName) {
-                    QString replacement = dIt.fileInfo().absoluteFilePath();
-                    replacements.append(replacement);
-                    qWarning("PictureContent::fromXml:    found '%s'", qPrintable(replacement));
-                }
-            }
-
-            // use the first replacement (### 1.0 display a selection dialog)
-            if (!replacements.isEmpty()) {
-                path = replacements.first();
-                qWarning("PictureContent::fromXml:    using '%s'", qPrintable(path));
-            } else
-                qWarning("PictureContent::fromXml:    no replacements found");
+    // B. search from the relative path (used to always try this first)
+    if (!m_relativePath.isEmpty() && baseDir.exists(m_relativePath)) {
+        QString cleanedFilePath = QDir::cleanPath(baseDir.filePath(m_relativePath));
+        if (loadFromFile(cleanedFilePath, false, false, false)) {
+            m_fileUrls.append(cleanedFilePath);
+            return true;
         }
     }
 
-    // load Local image
-    return loadPhoto(path, false, false);
+    // C. automatic file search from the relative name
+    QStringList candidateNames;
+    if (!m_relativePath.isEmpty()) {
+        candidateNames.append(m_relativePath);
+        const QString cleanedUp = QFileInfo(m_relativePath).fileName();
+        if (!cleanedUp.isEmpty() && cleanedUp != m_relativePath)
+            candidateNames.append(cleanedUp);
+    }
+    if (candidateNames.isEmpty() && !m_fileUrls.isEmpty())
+        candidateNames.append(m_fileUrls.first());
+
+    if (!candidateNames.isEmpty()) {
+        qWarning("PictureContent::fromXml: file '%s' not found, scanning for replacements", qPrintable(candidateNames.first()));
+
+        // find all replacements from the current basepath
+        QStringList matches, insensitiveMatches;
+        QDirIterator dIt(baseDir, QDirIterator::Subdirectories);
+        while (dIt.hasNext()) {
+            dIt.next();
+            foreach (const QString &match, candidateNames) {
+                const QString fileName = dIt.fileName();
+                const QString filePath = dIt.filePath();
+                const QString absoluteFilePath = dIt.fileInfo().absoluteFilePath();
+                if (fileName == match || filePath == match)
+                    matches.append(absoluteFilePath);
+                if (fileName.compare(match, Qt::CaseInsensitive) == 0)
+                    insensitiveMatches.append(absoluteFilePath);
+            }
+        }
+
+        // enqueue the insensitive to the precise matches
+        matches.append(insensitiveMatches);
+
+        // try to load each replacement, until we find one
+        foreach (const QString &absoluteFilePath, matches) {
+            if (loadFromFile(absoluteFilePath, false, false, false)) {
+                m_fileUrls.append(absoluteFilePath);
+                qWarning("PictureContent::fromXml:    found and using '%s'", qPrintable(absoluteFilePath));
+                return true;
+            }
+            qWarning("PictureContent::fromXml:    found, but couldn't load '%s'", qPrintable(absoluteFilePath));
+        }
+    }
+
+    // D. offer a manual selection dialog
+    QMessageBox::warning(0, tr("Missing image file"), tr("I looked everywhere but I could not find '%1'. Please select a replacement.").arg(m_relativePath));
+
+    const QString defaultLoadPath = App::settings->value("Fotowall/LoadImagesDir").toString();
+    const QString replacementFilePath = QFileDialog::getOpenFileName(0, tr("Select replacement for %1").arg(m_relativePath), defaultLoadPath, tr("Images (%1)").arg(App::supportedImageFormats()));
+    if (replacementFilePath.isEmpty())
+        return false;
+    App::settings->setValue("Fotowall/LoadImagesDir", QFileInfo(replacementFilePath).absolutePath());
+
+    if (loadFromFile(replacementFilePath, false, false, false)) {
+        m_fileUrls.append(replacementFilePath);
+        qWarning("PictureContent::fromXml:    replaced and using '%s'", qPrintable(replacementFilePath));
+        return true;
+    }
+
+    // give up
+    QMessageBox::information(0, tr("Skipping file"), tr("We will remove the image '%1' from the Canvas.").arg(m_relativePath));
+    return false;
 }
 
 void PictureContent::toXml(QDomElement & contentElement, const QDir & baseDir) const
@@ -348,12 +414,19 @@ void PictureContent::toXml(QDomElement & contentElement, const QDir & baseDir) c
     QDomDocument doc = contentElement.ownerDocument();
     QDomElement domElement;
 
-    // save image url (whether is a local path or remote url)
-    if (!m_fileUrl.isEmpty() && !m_fileUrl.startsWith("data:")) {
+    // save image urls (whether are local paths or remote urls)
+    bool firstRelative = true;
+    foreach (const QString &fileUrl, m_fileUrls) {
 
         // if file, save relative path (mandatory for relocating files)
-        if (!m_fileUrl.startsWith("http:", Qt::CaseInsensitive) && !m_fileUrl.startsWith("ftp:", Qt::CaseInsensitive)) {
-            QString relativePath = baseDir.relativeFilePath(m_fileUrl);
+        if (firstRelative &&
+                !fileUrl.startsWith("http:", Qt::CaseInsensitive) &&
+                !fileUrl.startsWith("https:", Qt::CaseInsensitive) &&
+                !fileUrl.startsWith("ftp:", Qt::CaseInsensitive)) {
+            firstRelative = false;
+            QString relativePath = m_relativePath;
+            if (relativePath.isEmpty())
+                relativePath = baseDir.relativeFilePath(fileUrl);
             if (!relativePath.isEmpty()) {
                 domElement = doc.createElement("relativeFilePath");
                 contentElement.appendChild(domElement);
@@ -364,7 +437,7 @@ void PictureContent::toXml(QDomElement & contentElement, const QDir & baseDir) c
         // save the url (mostly useful for non-local files)
         domElement = doc.createElement("fileUrl");
         contentElement.appendChild(domElement);
-        domElement.appendChild(doc.createTextNode(m_fileUrl));
+        domElement.appendChild(doc.createTextNode(fileUrl));
     }
 
     // save the effects
@@ -462,16 +535,19 @@ void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
     // load the first valid picture
     foreach (const QUrl & url, event->mimeData()->urls()) {
         // handle network drops
-        if (url.scheme() == "http" || url.scheme() == "ftp") {
+        if (url.scheme() == "http" || url.scheme() == "https" || url.scheme() == "ftp") {
+            QStringList prevUrls = m_fileUrls;
+            m_fileUrls.clear();
             if (loadFromNetwork(url.toString(), 0)) {
                 event->accept();
                 return;
             }
+            m_fileUrls = prevUrls;
         }
         // handle local drops
         QString picFilePath = url.toString();
         if (QFile::exists(picFilePath)) {
-            if (loadPhoto(picFilePath, true, true)) {
+            if (loadFromFile(picFilePath, true, true, true)) {
                 event->accept();
                 return;
             }
@@ -479,8 +555,9 @@ void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 }
 
-void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
+void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
+    AbstractContent::mouseDoubleClickEvent(event);
     if (!locked()) {
         emit requestBackgrounding();
     }
@@ -585,7 +662,9 @@ void PictureContent::slotGimpFinished()
     m_photo = newPhoto;
     m_cachedPhoto = QPixmap();
     m_opaquePhoto = !m_photo->hasAlpha();
-    m_fileUrl = QString();
+    // UNBREAK URL (pic will disappear!) copy locally
+    qWarning("PictureContent::slotGimpFinished: saving the picture won't work. fix it.");
+    m_fileUrls = QStringList();
     update();
 
     // notify image change

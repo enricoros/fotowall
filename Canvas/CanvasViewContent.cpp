@@ -164,7 +164,7 @@ void CanvasViewContent::returnResource(const QVariant & resource)
     }
 
     // store reference
-    m_canvas = static_cast<Canvas *>(qVariantValue<void *>(resource));
+    m_canvas = static_cast<Canvas *>(resource.value<void*>());
     m_canvas->setEmbeddedPainting(true);
     m_canvasCachedSize = m_canvas->sceneSize();
     m_canvasTaken = false;
