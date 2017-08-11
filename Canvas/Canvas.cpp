@@ -419,8 +419,8 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity) {
             oc->exec();
             gc->addCommand(oc);
         }
-        CommandStack::instance().addCommand(gc);
     }
+    CommandStack::instance().addCommand(gc);
 }
 
 /// Decorations
