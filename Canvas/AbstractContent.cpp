@@ -95,8 +95,7 @@ AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noResc
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag around to change the perspective.\nHold SHIFT to move faster.\nUse CTRL to cancel the transformations."));
     connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotSetPerspective(const QPointF&,Qt::KeyboardModifiers)));
-    connect(bPersp, SIGNAL(pressed()), this, SLOT(slotPressPerspective()));
-    connect(bPersp, SIGNAL(releaseEvent(QGraphicsSceneMouseEvent *)), this, SLOT(slotReleasePerspective(QGraphicsSceneMouseEvent *)));
+    connect(bPersp, SIGNAL(releaseEvent(QGraphicsSceneMouseEvent *)), this, SLOT(slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *)));
     connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slotClearPerspective()));
     addButtonItem(bPersp);
 
@@ -367,6 +366,7 @@ void AbstractContent::setPerspective(const QPointF & angles)
     if (locked() || m_fixedPerspective) return;
     if (angles != m_perspectiveAngles) {
         m_perspectiveAngles = angles;
+        qDebug() << "set perspective: " << m_perspectiveAngles;
         applyTransforms();
         emit perspectiveChanged();
     }
@@ -729,6 +729,7 @@ QWidget * AbstractContent::createPropertyWidget(ContentProperties * __p)
     connect(m_opacitySlider, SIGNAL(sliderPressed()), this, SLOT(slotOpacityChanging()));
     new PE_Combo(cp->cFxCombo, this, "fxIndex", cp);
     cp->cPerspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
+    connect(cp->cPerspWidget, SIGNAL(released()), this, SLOT(slotReleasePerspectivePane()));
     new PE_PaneWidget(cp->cPerspWidget, this, "perspective", cp);
 
     return cp;
@@ -1144,14 +1145,18 @@ void AbstractContent::layoutChildren()
     }
 }
 
-void AbstractContent::slotPressPerspective()
+void AbstractContent::slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *)
 {
-    m_previousTransform = transform();
+    CommandStack::instance().addCommand(new PerspectiveCommand(this, m_previousPerspectiveAngles, m_perspectiveAngles));
+    m_previousPerspectiveAngles = m_perspectiveAngles;
 }
-void AbstractContent::slotReleasePerspective(QGraphicsSceneMouseEvent* /* event */) {
-    QTransform newTransform = transform();
-    TransformCommand *tc = new TransformCommand(this, m_previousTransform, newTransform);
-    CommandStack::instance().doCommand(tc);
+
+void AbstractContent::slotReleasePerspectivePane()
+{
+    PaneWidget *w = qobject_cast<PaneWidget*>(sender());
+    PerspectiveCommand *tc = new PerspectiveCommand(this, m_previousPerspectiveAngles, w->endValue());
+    CommandStack::instance().addCommand(tc);
+    m_previousPerspectiveAngles = w->endValue();
 }
 
 void AbstractContent::slotOpacityChanging()

@@ -149,8 +149,40 @@ public:
     }
 };
 
+class PerspectiveCommand : public AbstractCommand
+{
+private:
+    QPointF m_previous, m_new;
+
+public:
+    PerspectiveCommand(AbstractContent* content, const QPointF& p, const QPointF &n) : m_previous(p), m_new(n)
+    {
+      m_content = content;
+    }
+
+    void exec() {
+      m_content->setPerspective(m_new);
+      qDebug() << "set perspective " << m_previous << " -> " << m_new;
+    }
+
+    void unexec() {
+      m_content->setPerspective(m_previous);
+      qDebug() << "set perspective " << m_new << " -> " << m_previous;
+    }
+    void replaceContent(AbstractContent *oldContent,
+            AbstractContent *newContent) {
+        if (m_content == oldContent) {
+            m_content = newContent;
+        }
+    }
+
+    QString name() const {
+        return tr("Perspective");
+    }
+};
+
 //DONE
-/* This commands manage transformations: rotations and scaling */
+/* This commands manages transformations: rotations and scaling */
 class TransformCommand: public AbstractCommand {
 private:
     QTransform m_previous, m_new;

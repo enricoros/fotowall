@@ -30,6 +30,7 @@ class PaneWidget : public QWidget
         PaneWidget(QWidget * parent = 0);
 
         QPointF value() const;
+        QPointF endValue() const;
         void setValue(const QPointF &);
 
         QRectF range() const;
@@ -38,6 +39,8 @@ class PaneWidget : public QWidget
     Q_SIGNALS:
         void valueChanged(const QPointF &);
         void rangeChanged(const QRectF &);
+        void pressed();
+        void released();
 
     protected:
         void enterEvent(QEvent *);
@@ -53,6 +56,7 @@ class PaneWidget : public QWidget
         QPointF screenMap(const QPointF & value) const;
         QRectF m_range;
         QPointF m_value;
+        QPointF m_endValue;
         bool m_hovered;
         bool m_pressed;
 };

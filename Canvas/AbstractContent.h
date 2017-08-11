@@ -152,8 +152,8 @@ class AbstractContent : public AbstractDisposeable
         void slotStackLower();
         void slotStackBack();
         void slotSaveAs();
-        void slotPressPerspective();
-        void slotReleasePerspective(QGraphicsSceneMouseEvent *);
+        void slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *);
+        void slotReleasePerspectivePane();
         void slotOpacityChanged();
         void slotOpacityChanging();
 
@@ -176,6 +176,7 @@ class AbstractContent : public AbstractDisposeable
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;
         QPointF             m_perspectiveAngles;
+        QPointF             m_previousPerspectiveAngles;
 #if QT_VERSION < 0x040600
         double              m_rotationAngle;
 #endif
