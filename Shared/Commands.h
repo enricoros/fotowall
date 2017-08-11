@@ -30,6 +30,7 @@
 #include "Frames/FrameFactory.h"
 #include <QStringList>
 #include <QUrl>
+#include <QAction>
 #include <QDebug>
 
 /**
@@ -433,17 +434,20 @@ public:
 //DONE
 class DecoTopBarCommand: public AbstractCommand {
     Canvas *m_canvas;
+    QAction *m_action;
     bool m_state;
 
 public:
-    DecoTopBarCommand(Canvas *canvas, bool state) :
-            m_canvas(canvas), m_state(state) {
+    DecoTopBarCommand(Canvas *canvas, QAction* action, bool state) :
+            m_canvas(canvas), m_action(action), m_state(state) {
     }
     void exec() {
         m_canvas->setTopBarEnabled(m_state);
+        m_action->setChecked(m_state);
     }
     void unexec() {
         m_canvas->setTopBarEnabled(!m_state);
+        m_action->setChecked(!m_state);
     }
     QString name() const {
         return tr("Top bar enabled/disabled");
@@ -453,17 +457,20 @@ public:
 //DONE
 class DecoBottomBarCommand: public AbstractCommand {
     Canvas *m_canvas;
+    QAction *m_action;
     bool m_state;
 
 public:
-    DecoBottomBarCommand(Canvas *canvas, bool state) :
-            m_canvas(canvas), m_state(state) {
+    DecoBottomBarCommand(Canvas *canvas, QAction *action, bool state) :
+            m_canvas(canvas), m_action(action), m_state(state) {
     }
     void exec() {
         m_canvas->setBottomBarEnabled(m_state);
+        m_action->setChecked(m_state);
     }
     void unexec() {
         m_canvas->setBottomBarEnabled(!m_state);
+        m_action->setChecked(!m_state);
     }
     QString name() const {
         return tr("Bottom bar enabled/disabled");

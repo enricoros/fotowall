@@ -86,6 +86,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
 
     // react to canvas
     connect(m_extCanvas, SIGNAL(backConfigChanged()), this, SLOT(slotBackConfigChanged()));
+
     connect(m_extCanvas, SIGNAL(requestContentEditing(AbstractContent*)), this, SLOT(slotEditContent(AbstractContent*)));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
     connect(m_extCanvas, SIGNAL(filePathChanged()), this, SLOT(slotFilePathChanged()));
@@ -492,13 +493,15 @@ void CanvasAppliance::slotArrangeShaped()
 
 void CanvasAppliance::slotDecoTopBar(bool checked)
 {
-    DecoTopBarCommand *c = new DecoTopBarCommand(m_extCanvas, checked);
+    QAction *aTop = qobject_cast<QAction *>(sender());
+    DecoTopBarCommand *c = new DecoTopBarCommand(m_extCanvas, aTop, checked);
     CommandStack::instance().doCommand(c);
 }
 
 void CanvasAppliance::slotDecoBottomBar(bool checked)
 {
-    DecoBottomBarCommand *c = new DecoBottomBarCommand(m_extCanvas, checked);
+    QAction *aBottom = qobject_cast<QAction *>(sender());
+    DecoBottomBarCommand *c = new DecoBottomBarCommand(m_extCanvas, aBottom, checked);
     CommandStack::instance().doCommand(c);
 }
 
