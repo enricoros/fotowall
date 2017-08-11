@@ -726,7 +726,7 @@ QWidget * AbstractContent::createPropertyWidget(ContentProperties * __p)
     // properties link
     m_opacitySlider = new PE_AbstractSlider(cp->cOpacity, this, "contentOpacity", cp);
     connect(m_opacitySlider, SIGNAL(sliderReleased()), this, SLOT(slotOpacityChanged()));
-    connect(m_opacitySlider, SIGNAL(sliderPressed()), this, SLOT(slotOpacityChanged()));
+    connect(m_opacitySlider, SIGNAL(sliderPressed()), this, SLOT(slotOpacityChanging()));
     new PE_Combo(cp->cFxCombo, this, "fxIndex", cp);
     cp->cPerspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
     new PE_PaneWidget(cp->cPerspWidget, this, "perspective", cp);
@@ -1154,9 +1154,15 @@ void AbstractContent::slotReleasePerspective(QGraphicsSceneMouseEvent* /* event 
     CommandStack::instance().doCommand(tc);
 }
 
+void AbstractContent::slotOpacityChanging()
+{
+  m_opacity = contentOpacity();
+}
+
 void AbstractContent::slotOpacityChanged()
 {
-  CommandStack::instance().addCommand(new OpacityCommand(this, contentOpacity()));
+  CommandStack::instance().addCommand(new OpacityCommand(this, m_opacity, contentOpacity()));
+  m_opacity = contentOpacity();
 }
 
 void AbstractContent::applyTransforms()

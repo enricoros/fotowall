@@ -87,9 +87,9 @@ private:
     qreal previousOpacity;
     qreal newOpacity;
 public:
-    OpacityCommand(AbstractContent *content, qreal nOpacity) {
+    OpacityCommand(AbstractContent *content, qreal pOpacity, qreal nOpacity) {
        setContent(content);
-       previousOpacity = content->property("contentOpacity").toDouble();
+       previousOpacity = pOpacity;
        newOpacity = nOpacity;
     }
     void exec() {
@@ -101,7 +101,7 @@ public:
     void unexec() {
         if (!m_content)
             return;
-        m_content->setProperty("contentOpacity", newOpacity);
+        m_content->setProperty("contentOpacity", previousOpacity);
         m_content->update();
     }
     void replaceContent(AbstractContent *oldContent,

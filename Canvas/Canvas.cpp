@@ -415,7 +415,7 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity) {
             // TODO: undo
             qreal opa = 0.5 + (qreal) (qrand() % 100) / 99.0;
           //  ANIMATE_PARAM(content, "contentOpacity", 2000, opacity);
-            OpacityCommand *oc = new OpacityCommand(content, opa);
+            OpacityCommand *oc = new OpacityCommand(content, content->contentOpacity(), opa);
             oc->exec();
             gc->addCommand(oc);
         }

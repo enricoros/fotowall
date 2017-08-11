@@ -155,6 +155,7 @@ class AbstractContent : public AbstractDisposeable
         void slotPressPerspective();
         void slotReleasePerspective(QGraphicsSceneMouseEvent *);
         void slotOpacityChanged();
+        void slotOpacityChanging();
 
     private:
         void createCorner(Qt::Corner corner, bool noRescale);
@@ -183,6 +184,7 @@ class AbstractContent : public AbstractDisposeable
         bool                m_locked;
         bool                m_fixedPosition;
         bool                m_fixedRotation, m_fixedPerspective;
+        qreal               m_opacity;
 
 
     private Q_SLOTS:
