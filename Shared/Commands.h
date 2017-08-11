@@ -35,10 +35,7 @@
 
 /**
  * TODO
- * - Placement aléatoire
- * - Type de canvas (cd, dvd...)
- * - Group command when more than one object is selected
- * - Undo crop
+ * - Type of canvas (cd, dvd...)
  * - CanvasViewContent
  */
 
@@ -75,6 +72,7 @@ public:
     void replaceContent(AbstractContent *oldContent,
             AbstractContent *newContent) {
         if (m_content == oldContent) {
+            m_content = 0;
             m_content = dynamic_cast<PictureContent *>(newContent);
         }
     }
@@ -104,12 +102,6 @@ public:
             return;
         m_content->setProperty("contentOpacity", previousOpacity);
         m_content->update();
-    }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = newContent;
-        }
     }
     QString name() const {
         return tr("Opacity command: ") + QString::number(previousOpacity) + " -> " + QString::number(newOpacity);
@@ -141,6 +133,7 @@ public:
     void replaceContent(AbstractContent *oldContent,
             AbstractContent *newContent) {
         if (m_content == oldContent) {
+            m_content = 0;
             m_content = dynamic_cast<TextContent *>(newContent);
         }
     }
@@ -169,12 +162,6 @@ public:
       m_content->setPerspective(m_previous);
       qDebug() << "set perspective " << m_new << " -> " << m_previous;
     }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = newContent;
-        }
-    }
 
     QString name() const {
         return tr("Perspective");
@@ -198,12 +185,6 @@ public:
     }
     void unexec() {
         m_content->setTransform(m_previous);
-    }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = newContent;
-        }
     }
     QString name() const {
         return tr("Transformation");
@@ -229,12 +210,6 @@ public:
         m_content->setRotation(m_pAngle);
         m_content->resizeContents(m_pRect);
     }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = newContent;
-        }
-    }
     QString name() const {
         return tr("Rotation and Resize");
     }
@@ -244,18 +219,11 @@ public:
 /* This command manages movements of the content */
 class MotionCommand: public AbstractCommand {
 private:
-    AbstractContent *m_content;
     QPointF m_previous, m_newMotion;
 public:
     MotionCommand(AbstractContent *content, QPointF previous, QPointF newMotion) :
-            m_content(content), m_previous(previous), m_newMotion(newMotion) {
-    }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            qDebug() << "\tMotionCommand: Replacing content... Oh Yeah!";
-            m_content = newContent;
-        }
+            m_previous(previous), m_newMotion(newMotion) {
+      m_content = content;
     }
     void exec() {
         m_content->setPos(m_newMotion);
@@ -374,13 +342,6 @@ public:
     void unexec() {
         m_content->setFrame(FrameFactory::createFrame(m_previousClass));
         m_content->setMirrored(m_previousMirror);
-    }
-
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = newContent;
-        }
     }
 
     QString name() const {
@@ -570,12 +531,6 @@ public:
     QString name() const {
         return tr("Stack order");
     }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = newContent;
-        }
-    }
 };
 
 //DONE
@@ -600,9 +555,8 @@ public:
     }
     void replaceContent(AbstractContent *oldContent,
             AbstractContent *newContent) {
-        if (!m_content)
-            return;
         if (m_content == oldContent) {
+            m_content = 0;
             m_content = dynamic_cast<TextContent *>(newContent);
         }
     }

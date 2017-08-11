@@ -37,7 +37,11 @@ class AbstractCommand : public QObject {
             return m_content;
         }
 
-        virtual void replaceContent(AbstractContent *, AbstractContent *) {
+        virtual void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+            if (m_content == oldContent) {
+                m_content = 0;
+                m_content = newContent;
+            }
         }
 
         virtual void exec() = 0;

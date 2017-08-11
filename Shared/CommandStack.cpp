@@ -42,12 +42,11 @@ void CommandStack::addCommand(AbstractCommand *command)
 }
 
 void CommandStack::replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+    qDebug() << "CommandStack: updating content in stack";
     foreach (AbstractCommand *command, m_undoStack) {
-        qDebug() << "CommandStack: updating undo stack"<< command->name();
         command->replaceContent(oldContent, newContent);
     }
     foreach (AbstractCommand *command, m_redoStack) {
-        qDebug() << "CommandStack: updating redo stack"<< command->name();
         command->replaceContent(oldContent, newContent);
     }
 }
@@ -56,7 +55,7 @@ void CommandStack::undoLast()
 {
     if(m_undoStack.isEmpty()) return;
     AbstractCommand * command = m_undoStack.takeLast();
-    qDebug() << "unexec command " << command->name();
+    qDebug() << "undo command " << command->name();
     if(command != 0) {
         command->unexec();
         m_redoStack.push_back(command);
