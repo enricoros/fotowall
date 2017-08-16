@@ -14,6 +14,8 @@
 
 #include "CommandStack.h"
 #include "GroupedCommands.h"
+#include "Commands.h"
+#include "Canvas/AbstractContent.h"
 #include <QDebug>
 #include <QMutexLocker>
 
@@ -42,21 +44,83 @@ void CommandStack::addCommand(AbstractCommand *command)
     m_undoStack.push_back(command);
 }
 
-void CommandStack::replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+void CommandStack::replaceContent(QList<void *> oldContents, QList<AbstractContent *> newContents) {
     qDebug() << "CommandStack: updating content in stack";
-    foreach (AbstractCommand *command, m_undoStack) {
-      qDebug() << "command: " << command->name() << ":\n"
-          << "content    : " << command->content()
-          <<"\noldContent: " << oldContent
-          <<"\nnewContent: " << newContent;
-        command->replaceContent(oldContent, newContent);
+    qDebug() << "undo: " << m_undoStack.size() << ", redo: " << m_redoStack.size();
+    qDebug() << "old: " << oldContents.size() << ", new: " << newContents.size();
+
+
+    QMap<AbstractCommand *, AbstractContent *> newCommandContent;
+    for(int i=0; i<oldContents.size(); ++i)
+    {
+      qDebug() << i;
+      qDebug() << oldContents.size();
+      qDebug() << newContents.size();
+      qDebug() << (void*)oldContents[i];
+      qDebug() << (void*)newContents[i];
+      void *oldContent = (void*)oldContents[i];
+      AbstractContent *newContent = newContents[i];
+      qDebug() << "old: " << (void*)oldContent;
+      qDebug() << "replacing in undo";
+      // Find commands containing this content
+      foreach(AbstractCommand *c, m_undoStack)
+      {
+        // XXX make this recursive
+        // if((NewContentCommand *nc = dynamic_cast<NewContentCommand*>(c))
+        //    || (DeleteContentCommand *dc = dynamic_cast<DeleteContentCommand *>(c))) {
+        //   // do nothing
+        // }
+        if(GroupedCommands *gc = dynamic_cast<GroupedCommands*>(c))
+        {
+          qDebug() << "grouped command: " << gc->name();
+          foreach(AbstractCommand *gc_c, gc->commands())
+          {
+            qDebug() << "gc_c: " << gc_c->name() << ", " << (void*)gc_c->content();
+            if(gc_c->hasContent(oldContent))
+            {
+              newCommandContent[gc_c] = newContent;
+            }
+          }
+        }
+        else if(c->hasContent(oldContent))
+        {
+          newCommandContent[c] = newContent;
+        }
+      }
+
+      qDebug() << "replacing in redo";
+      // Find commands containing this command
+      foreach(AbstractCommand *c, m_redoStack)
+      {
+        // XXX make this recursive
+        // if((NewContentCommand *nc = dynamic_cast<NewContentCommand*>(c))
+        //    || (DeleteContentCommand *dc = dynamic_cast<DeleteContentCommand *>(c))) {
+        //   // do nothing
+        // }
+        if(GroupedCommands *gc = dynamic_cast<GroupedCommands*>(c))
+        {
+          qDebug() << "grouped command: " << gc->name();
+          foreach(AbstractCommand *gc_c, gc->commands())
+          {
+            qDebug() << "gc_c: " << gc_c->name() << ", " << (void*)gc_c->content();
+            if(gc_c->hasContent((void*)oldContent))
+            {
+              newCommandContent[gc_c] = newContent;
+            }
+          }
+        }
+        else if(c->hasContent(oldContent))
+        {
+          qDebug() << "c: " << c->name() << ", " << (void*)c->content();
+          newCommandContent[c] = newContent;
+        }
+      }
     }
-    foreach (AbstractCommand *command, m_redoStack) {
-      qDebug() << "command: " << command->name() << ":\n"
-          << "content    : " << command->content()
-          <<"\noldContent: " << oldContent
-          <<"\nnewContent: " << newContent;
-        command->replaceContent(oldContent, newContent);
+
+    QMapIterator<AbstractCommand *, AbstractContent *> i(newCommandContent);
+    while (i.hasNext()) {
+        i.next();
+        i.key()->setContent(i.value());
     }
 }
 

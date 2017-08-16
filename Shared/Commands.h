@@ -83,12 +83,10 @@ public:
     {
       return m_content;
     }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = 0;
-            m_content = dynamic_cast<PictureContent *>(newContent);
-        }
+    virtual bool setContent(AbstractContent *newContent) {
+        m_content = 0;
+        m_content = dynamic_cast<PictureContent *>(newContent);
+        return true;
     }
     QString name() const {
         return tr("New effects");
@@ -143,12 +141,10 @@ public:
             return;
         m_content->setHtml(m_previousText);
     }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = 0;
-            m_content = dynamic_cast<TextContent *>(newContent);
-        }
+    virtual bool setContent(AbstractContent *content) {
+        m_content = 0;
+        m_content = dynamic_cast<TextContent *>(content);
+        return true;
     }
     virtual AbstractContent* content() const
     {
@@ -263,49 +259,55 @@ public:
 //DONE
 class DeleteContentCommand: public AbstractCommand {
 private:
+    QList<AbstractContent *> m_contents;
+    QList<void *> oldContents;
+    QList<QDomElement> m_contentElts;
     Canvas *m_canvas;
-    QDomElement m_contentElt;
-    AbstractContent *m_oldContent;
 public:
-    DeleteContentCommand(AbstractContent *content, Canvas *canvas) :
-            m_canvas(canvas) {
-        m_oldContent = content;
-        m_content = content;
+    DeleteContentCommand(const QList<AbstractContent *> &contents, Canvas *canvas) :
+        m_contents(contents), m_canvas(canvas) {
+      m_content = 0;
+      foreach(AbstractContent *c, contents) {
+        oldContents.push_back((void*)c);
+      }
     }
 
     void exec() {
         qDebug() << "DeleteContentCommand::exec";
-        // Saves the adress of the current content to be able to replace it by the new one in the stack later.
-        m_oldContent = m_content;
+        m_contentElts.clear();
+        oldContents.clear();
+        foreach (AbstractContent * content, m_contents) {
+          // Get the content xml info, in order to recreate it correctly
+          QDir t = QDir::currentPath();
+          QDomDocument doc;
+          QDomElement contentElt = doc.createElement("content");
+          content->toXml(contentElt, t); // XXX: why does it need a path ???
+          m_contentElts.push_back(contentElt);
 
-        // Get the content xml info, in order to recreate it correctly
-        QDir t = QDir::currentPath();
-        QDomDocument doc;
-        m_contentElt = doc.createElement("content");
-        m_content->toXml(m_contentElt, t); // XXX: why does it need a path ???
-
-        m_canvas->deleteContent(m_content);
-        // Content is deleted
-        m_content = 0;
+          oldContents.push_back((void*)content);
+          // Actually delete the content
+          m_canvas->deleteContent(content);
+        }
     }
 
     void unexec() {
       qDebug() << "DeleteContentCommand::unexec";
-      // Recreate content from xml
-      m_content = m_canvas->addContentFromXml(m_contentElt);
-      if(m_content == 0)
+      QList<AbstractContent*> newContents;
+      foreach (const QDomElement& contentElt, m_contentElts)
       {
-        qDebug() << "DeleteContentCommand: error reloading content";
-        return;
+        // Recreate content from xml
+        AbstractContent *content = m_canvas->addContentFromXml(contentElt);
+        // Content is restored with a new address now
+        newContents.push_back(content);
       }
-      else
-      {
-        // Replace content address in stack
-        CommandStack::instance().replaceContent(m_oldContent, m_content);
-      }
-    }
+      qDebug() << "content created";
+      qDebug() << oldContents.size();
 
-    virtual void replaceContent(AbstractContent * /*oldContent*/, AbstractContent * /*newContent*/) {
+      qDebug() << "oldcontents0 " << (void*)oldContents[0];
+      qDebug() << "newcontents0 " << (void*)newContents[0];
+      // Now replace old content addresses with new content addresses in stack
+      CommandStack::instance().replaceContent(oldContents, newContents);
+      m_contents = newContents;
     }
 
     virtual AbstractContent* content() const
@@ -320,15 +322,22 @@ public:
 
 class NewContentCommand: public AbstractCommand {
 private:
-    Canvas *m_canvas;
     DeleteContentCommand *m_command;
 
 public:
-    NewContentCommand(Canvas *canvas, AbstractContent *content) {
-        m_canvas = canvas;
+    NewContentCommand(AbstractContent * content, Canvas *canvas) {
+      QList<AbstractContent *> contents;
+      contents.push_back(content);
+      init(contents, canvas);
+    }
+
+    NewContentCommand(const QList<AbstractContent *>& contents, Canvas *canvas) {
+      init(contents, canvas);
+    }
+    void init(const QList<AbstractContent *>& contents, Canvas *canvas) {
         // Content is handled by DeleteContentCommand instead
         m_content = 0;
-        m_command = new DeleteContentCommand(content, m_canvas);
+        m_command = new DeleteContentCommand(contents, canvas);
     }
     void exec() {
       qDebug() << "NewContentCommand:exec: ";
@@ -338,10 +347,6 @@ public:
     void unexec() {
       qDebug() << "NewContentCommand::unexec";
       m_command->exec();
-    }
-
-    virtual void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
-      m_command->replaceContent(oldContent, newContent);
     }
 
     virtual AbstractContent* content() const
@@ -401,14 +406,18 @@ public:
     void unexec() {
         m_canvas->setBackContent(m_previousContent);
     }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_previousContent == oldContent) {
-            m_previousContent = newContent;
-        } else if (m_newContent == oldContent) {
-            m_newContent = newContent;
-        }
+
+    virtual bool setContent(AbstractContent *content) {
+      m_newContent = content;
+      return true;
     }
+    // void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
+    //     if (m_previousContent == oldContent) {
+    //         m_previousContent = newContent;
+    //     } else if (m_newContent == oldContent) {
+    //         m_newContent = newContent;
+    //     }
+    // }
     QString name() const {
         return tr("Change background");
     }
@@ -591,12 +600,11 @@ public:
     {
       return m_content;
     }
-    void replaceContent(AbstractContent *oldContent,
-            AbstractContent *newContent) {
-        if (m_content == oldContent) {
-            m_content = 0;
-            m_content = dynamic_cast<TextContent *>(newContent);
-        }
+
+    virtual bool setContent(AbstractContent *content) {
+        m_content = 0;
+        m_content = dynamic_cast<TextContent *>(content);
+        return true;
     }
 };
 

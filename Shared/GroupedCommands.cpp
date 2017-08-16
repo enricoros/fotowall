@@ -18,6 +18,10 @@ void GroupedCommands::addCommand(AbstractCommand* command) {
     m_commands.append(command);
 }
 
+QList<AbstractCommand *> GroupedCommands::commands() const {
+  return m_commands;
+}
+
 void GroupedCommands::exec() {
     foreach (AbstractCommand *c, m_commands) {
         qDebug() << "\t" << c->name();
@@ -30,6 +34,13 @@ void GroupedCommands::unexec() {
         qDebug() << "\t" << c->name();
         c->unexec();
     }
+}
+
+bool GroupedCommands::hasContent(void* content) const {
+  foreach(AbstractCommand *c, m_commands) {
+    return ((void*)c->content() == (void*)content);
+  }
+  return false;
 }
 
 void GroupedCommands::replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {

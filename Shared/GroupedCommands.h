@@ -16,9 +16,11 @@ class GroupedCommands : public AbstractCommand
     GroupedCommands(QList<AbstractCommand*> commands);
     void addCommands(QList<AbstractCommand*> commands);
     void addCommand(AbstractCommand *command);
+    QList<AbstractCommand *> commands() const;
     void exec();
     void unexec();
     void replaceContent(AbstractContent *oldContent, AbstractContent *newContent);
+    bool hasContent(void *content) const;
 
     QString name() const;
     void setName(const QString &);

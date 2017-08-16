@@ -50,7 +50,7 @@ class Canvas : public AbstractScene
         // add/remove content
         void addAutoContent(const QStringList & filePaths);
         void addCanvasViewContent(const QStringList & fwFilePaths);
-        QList<PictureContent*> addPictureContent(const QStringList & fileNames);
+        QList<AbstractContent*> addPictureContent(const QStringList & fileNames);
         PictureContent* addPictureContent(const QString &url);
         PictureContent* addNetworkPictureContent(const QString &url);
         PictureContent* addNetworkPictureContent(const QString &url, QNetworkReply *reply, QString title, int width, int height);
@@ -116,7 +116,7 @@ class Canvas : public AbstractScene
         // load & save
         void saveToXml(QDomElement & canvasElement) const;
         void loadFromXml(QDomElement & canvasElement);
-        AbstractContent * addContentFromXml(QDomElement &contentElt);
+        AbstractContent * addContentFromXml(const QDomElement &contentElt);
 
     Q_SIGNALS:
         void backConfigChanged();

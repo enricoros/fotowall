@@ -91,7 +91,7 @@ class AbstractContent : public AbstractDisposeable
 
         // to be reimplemented by subclasses
         virtual QString contentName() const = 0;
-        virtual bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        virtual bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
         virtual void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         virtual void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio) = 0;
         virtual QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);

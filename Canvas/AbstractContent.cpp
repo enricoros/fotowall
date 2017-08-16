@@ -479,7 +479,7 @@ bool AbstractContent::beingTransformed() const
     return m_dirtyTransforming;
 }
 
-bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseDir*/)
+bool AbstractContent::fromXml(const QDomElement & contentElement, const QDir & /*baseDir*/)
 {
     // restore content properties
     QDomElement domElement;

@@ -75,7 +75,7 @@ void WebcamContent::setPixmap(const QPixmap & pixmap)
     emit contentChanged();
 }
 
-bool WebcamContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
+bool WebcamContent::fromXml(const QDomElement & contentElement, const QDir & baseDir)
 {
     AbstractContent::fromXml(contentElement, baseDir);
 

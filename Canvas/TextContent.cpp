@@ -154,7 +154,7 @@ QWidget * TextContent::createPropertyWidget(ContentProperties * __p)
     return tp;
 }
 
-bool TextContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
+bool TextContent::fromXml(const QDomElement & contentElement, const QDir & baseDir)
 {
     // FIRST load text properties and shape
     // NOTE: order matters here, we don't want to override the size restored later

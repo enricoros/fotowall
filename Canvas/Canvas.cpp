@@ -180,12 +180,11 @@ void Canvas::addCanvasViewContent(const QStringList & fwFilePaths) {
     }
 }
 
-QList<PictureContent*> Canvas::addPictureContent(const QStringList & picFilePaths) {
+QList<AbstractContent*> Canvas::addPictureContent(const QStringList & picFilePaths) {
     clearSelection();
-    QList<PictureContent*> addedPictures;
+    QList<AbstractContent*> addedPictures;
     int offset = -30 * (picFilePaths.size() - 1) / 2;
     QPoint pos = visibleCenter() + QPoint(offset, offset);
-    GroupedCommands *gc = new GroupedCommands("Add Picture Content");
     foreach (const QString & localFile, picFilePaths) {
         if (!QFile::exists(localFile))
             continue;
@@ -198,11 +197,10 @@ QList<PictureContent*> Canvas::addPictureContent(const QStringList & picFilePath
         } else {
             p->setSelected(true);
             pos += QPoint(30, 30);
-            gc->addCommand(new NewContentCommand(this, p));
             addedPictures << p;
         }
     }
-    CommandStack::instance().addCommand(gc);
+    CommandStack::instance().addCommand(new NewContentCommand(addedPictures, this));
     return addedPictures;
 }
 
@@ -216,7 +214,7 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url) {
         p = 0;
     } else {
         p->setSelected(true);
-        CommandStack::instance().addCommand(new NewContentCommand(this, p));
+        CommandStack::instance().addCommand(new NewContentCommand(p, this));
     }
     return p;
 }
@@ -231,7 +229,7 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url, QNetworkRep
         p = 0;
     } else {
         p->setSelected(true);
-        CommandStack::instance().addCommand(new NewContentCommand(this, p));
+        CommandStack::instance().addCommand(new NewContentCommand(p, this));
     }
     return p;
 }
@@ -240,7 +238,7 @@ TextContent* Canvas::addTextContent() {
     clearSelection();
     TextContent * t = createText(visibleCenter(), true);
     if(t != 0) {
-      CommandStack::instance().addCommand(new NewContentCommand(this, t));
+      CommandStack::instance().addCommand(new NewContentCommand(t, this));
     }
     t->setSelected(true);
     return t;
@@ -251,7 +249,7 @@ WebcamContent* Canvas::addWebcamContent(int webcamIndex) {
     WebcamContent * w = createWebcam(webcamIndex, visibleCenter(), true);
     if (w != 0) {
         CommandStack::instance().addCommand(
-                new NewContentCommand(this, w));
+                new NewContentCommand(w, this));
     }
     w->setSelected(true);
     return w;
@@ -261,7 +259,7 @@ WordcloudContent* Canvas::addWordcloudContent() {
     clearSelection();
     WordcloudContent * w = createWordcloud(visibleCenter(), true);
     if (w != 0) {
-        CommandStack::instance().addCommand(new NewContentCommand(this, w));
+        CommandStack::instance().addCommand(new NewContentCommand(w, this));
     }
     w->manualInitialization();
     w->setSelected(true);
@@ -1229,7 +1227,7 @@ CanvasViewContent * Canvas::createCanvasView(const QPoint & pos, bool spontaneou
     return d;
 }
 
-AbstractContent * Canvas::addContentFromXml(QDomElement &contentElt) {
+AbstractContent * Canvas::addContentFromXml(const QDomElement &contentElt) {
     // create the right kind of content
     AbstractContent * content = 0;
     qDebug() << contentElt.tagName();
@@ -1511,23 +1509,9 @@ void Canvas::slotDeleteContent() {
             return;
 
     // Undo/redo delete code
-    GroupedCommands *gc = new GroupedCommands(tr("Delete Selected Content"));
-    foreach (AbstractContent * content, selectedContent) {
-        if (content) {
-            // unset background if deleting its content
-            if (m_backContent == content)
-                setBackContent(0);
+    AbstractCommand *c = new DeleteContentCommand(selectedContent, this);
+    CommandStack::instance().doCommand(c);
 
-            foreach (AbstractConfig * config, m_configs) {
-                if (config->content() == content) {
-                    config->hide();
-                    break;
-                }
-            }
-            gc->addCommand(new DeleteContentCommand(content, this));
-        }
-    }
-    CommandStack::instance().doCommand(gc);
 }
 
 void Canvas::slotDeleteConfig() {

@@ -277,12 +277,12 @@ QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
     return pp;
 }
 
-static bool hasChildTags(QDomElement & element, const QString & tagName)
+static bool hasChildTags(const QDomElement & element, const QString & tagName)
 {
     return !element.elementsByTagName(tagName).isEmpty();
 }
 
-bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
+bool PictureContent::fromXml(const QDomElement & contentElement, const QDir & baseDir)
 {
     AbstractContent::fromXml(contentElement, baseDir);
 
