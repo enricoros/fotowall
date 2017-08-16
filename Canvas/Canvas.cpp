@@ -1051,8 +1051,6 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent * event) {
 }
 
 void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
-    qDebug() << "release";
-
     GroupedCommands *gc = new GroupedCommands("Move items");
     foreach(QGraphicsItem *item, selectedItems()) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(item);

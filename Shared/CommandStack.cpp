@@ -15,6 +15,7 @@
 #include "CommandStack.h"
 #include "GroupedCommands.h"
 #include <QDebug>
+#include <QMutexLocker>
 
 CommandStack & CommandStack::instance()
 {
@@ -25,8 +26,8 @@ CommandStack & CommandStack::instance()
 
 void CommandStack::doCommand(AbstractCommand *command)
 {
-    qDebug() << "exec command << " << command->name();
     addCommand(command);
+    qDebug() << "exec command << " << command->name();
     command->exec();
 }
 
@@ -44,31 +45,61 @@ void CommandStack::addCommand(AbstractCommand *command)
 void CommandStack::replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
     qDebug() << "CommandStack: updating content in stack";
     foreach (AbstractCommand *command, m_undoStack) {
+      qDebug() << "command: " << command->name() << ":\n"
+          << "content    : " << command->content()
+          <<"\noldContent: " << oldContent
+          <<"\nnewContent: " << newContent;
         command->replaceContent(oldContent, newContent);
     }
     foreach (AbstractCommand *command, m_redoStack) {
+      qDebug() << "command: " << command->name() << ":\n"
+          << "content    : " << command->content()
+          <<"\noldContent: " << oldContent
+          <<"\nnewContent: " << newContent;
         command->replaceContent(oldContent, newContent);
     }
 }
 
 void CommandStack::undoLast()
 {
-    if(m_undoStack.isEmpty()) return;
-    AbstractCommand * command = m_undoStack.takeLast();
-    qDebug() << "undo command " << command->name();
-    if(command != 0) {
-        command->unexec();
-        m_redoStack.push_back(command);
-    }
+  QMutexLocker lock(&m_mutex);
+  // Do not run if redo is in progress
+  // XXX undo must wait on redo to complete
+  if(m_undoStack.isEmpty()) return;
+  AbstractCommand * command = m_undoStack.last();
+  qDebug() << "undo command " << command->name();
+  qDebug() << "redo stack size: " << m_redoStack.size();
+  if(command != 0) {
+    command->unexec();
+    m_redoStack.push_back(command);
+  }
+  else
+  {
+    qDebug() << "undoLast: Error: null command!";
+  }
+  m_undoStack.takeLast();
+  qDebug() << "undo finished";
+  lock.unlock();
 }
 
 void CommandStack::redoLast()
 {
-    if(m_redoStack.isEmpty()) return;
-    AbstractCommand *command = m_redoStack.takeLast();
-    qDebug() << "redo command " << command->name();
-    if(command != 0) {
-        command->exec();
-        m_undoStack.push_back(command);
-    }
+  QMutexLocker lock(&m_mutex);
+  // Do not run if undo is in progress.
+  // redo must wait on undo to complete
+  if(m_redoStack.isEmpty()) return;
+  AbstractCommand *command = m_redoStack.last();
+  qDebug() << "redo command " << command->name();
+  qDebug() << "undo stack size: " << m_undoStack.size();
+  if(command != 0) {
+    command->exec();
+    m_undoStack.push_back(command);
+  }
+  else
+  {
+    qDebug() << "redoLast: Error: null command!";
+  }
+  m_redoStack.takeLast();
+  qDebug() << "redo finished";
+  lock.unlock();
 }

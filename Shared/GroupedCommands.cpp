@@ -20,20 +20,24 @@ void GroupedCommands::addCommand(AbstractCommand* command) {
 
 void GroupedCommands::exec() {
     foreach (AbstractCommand *c, m_commands) {
-        qDebug() << "\texec command (group)" << c->name();
+        qDebug() << "\t" << c->name();
         c->exec();
     }
 }
 
 void GroupedCommands::unexec() {
     foreach (AbstractCommand *c, m_commands) {
-        qDebug() << "\tunexec command (group) " << c->name();
+        qDebug() << "\t" << c->name();
         c->unexec();
     }
 }
 
 void GroupedCommands::replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
     foreach (AbstractCommand *c, m_commands) {
+        qDebug() << "command: " << c->name()
+        <<"\ncontent   : " << c->content()
+        <<"\noldContent: " << oldContent
+        <<"\nnewContent: " << newContent;
         c->replaceContent(oldContent, newContent);
     }
 }

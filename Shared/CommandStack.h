@@ -17,6 +17,8 @@
 
 #include "AbstractCommand.h"
 #include <QList>
+#include <QMutex>
+#include <QMutexLocker>
 
 /* This class keep a track of all the commands executed. It allows to exec/unexec each command
  * by calling AbstractCommand virtual functions.
@@ -45,6 +47,9 @@ class CommandStack
         // Unable copy
         CommandStack( const CommandStack & );
         CommandStack & operator =( const CommandStack & );
+
+        // Prevents undo and redo to be running simultaneously
+        QMutex m_mutex;
 
     protected:
         QList<AbstractCommand *> m_undoStack;

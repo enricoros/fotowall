@@ -24,7 +24,6 @@ class AbstractContent;
  * It provides pure virtual function to do/undo an action. */
 class AbstractCommand : public QObject {
     protected:
-        AbstractContent *m_oldContent;
         AbstractContent *m_content;
 
     public:
