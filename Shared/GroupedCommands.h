@@ -20,7 +20,7 @@ class GroupedCommands : public AbstractCommand
     void exec();
     void unexec();
     void replaceContent(AbstractContent *oldContent, AbstractContent *newContent);
-    bool hasContent(void *content) const;
+    bool hasContent(const void *content) const;
 
     QString name() const;
     void setName(const QString &);

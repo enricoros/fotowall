@@ -36,7 +36,7 @@ void GroupedCommands::unexec() {
     }
 }
 
-bool GroupedCommands::hasContent(void* content) const {
+bool GroupedCommands::hasContent(const void* content) const {
   foreach(AbstractCommand *c, m_commands) {
     return c->contentAddr() == content;
   }

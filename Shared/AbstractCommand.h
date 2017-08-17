@@ -38,7 +38,7 @@ class AbstractCommand : public QObject {
         virtual void* contentAddr() const {
           return (void*)content();
         }
-        virtual bool hasContent(void *c) const {
+        virtual bool hasContent(const void *c) const {
           return contentAddr() == c;
         }
 
