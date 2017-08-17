@@ -55,7 +55,6 @@ void CommandStack::addCommand(AbstractCommand* command) {
 void CommandStack::replaceContent(const QList<AbstractCommand*>& commands, const void* oldContent, AbstractContent* newContent, QMap<AbstractCommand*, AbstractContent*>& newCommandContent) {
     // Find commands containing this content
     foreach (AbstractCommand* c, commands) {
-        // XXX make this recursive
         if (GroupedCommands* gc = dynamic_cast<GroupedCommands*>(c)) {
             replaceContent(gc->commands(), oldContent, newContent, newCommandContent);
         } else if (c->hasContent(oldContent)) {

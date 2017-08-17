@@ -1,14 +1,11 @@
 #include "GroupedCommands.h"
-
 #include <QDebug>
 
-GroupedCommands::GroupedCommands(const QString &name)
-{
+GroupedCommands::GroupedCommands(const QString& name) {
     m_name = name;
 }
 
-GroupedCommands::GroupedCommands(QList<AbstractCommand *> commands) : m_commands(commands)
-{ m_name = tr("Group Command"); }
+GroupedCommands::GroupedCommands(QList<AbstractCommand*> commands) : m_commands(commands) { m_name = tr("Group Command"); }
 
 void GroupedCommands::addCommands(QList<AbstractCommand*> commands) {
     m_commands.append(commands);
@@ -18,42 +15,32 @@ void GroupedCommands::addCommand(AbstractCommand* command) {
     m_commands.append(command);
 }
 
-QList<AbstractCommand *> GroupedCommands::commands() const {
-  return m_commands;
+QList<AbstractCommand*> GroupedCommands::commands() const {
+    return m_commands;
 }
 
 void GroupedCommands::exec() {
-    foreach (AbstractCommand *c, m_commands) {
+    foreach (AbstractCommand* c, m_commands) {
         qDebug() << "\t" << c->name();
         c->exec();
     }
 }
 
 void GroupedCommands::unexec() {
-    foreach (AbstractCommand *c, m_commands) {
+    foreach (AbstractCommand* c, m_commands) {
         qDebug() << "\t" << c->name();
         c->unexec();
     }
 }
 
 bool GroupedCommands::hasContent(const void* content) const {
-  foreach(AbstractCommand *c, m_commands) {
-    return c->contentAddr() == content;
-  }
-  return false;
-}
-
-void GroupedCommands::replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
-    foreach (AbstractCommand *c, m_commands) {
-        qDebug() << "command: " << c->name()
-        <<"\ncontent   : " << c->content()
-        <<"\noldContent: " << oldContent
-        <<"\nnewContent: " << newContent;
-        c->replaceContent(oldContent, newContent);
+    foreach (AbstractCommand* c, m_commands) {
+        return c->contentAddr() == content;
     }
+    return false;
 }
 
-void GroupedCommands::setName(const QString &name) {
+void GroupedCommands::setName(const QString& name) {
     m_name = name;
 }
 
@@ -62,5 +49,5 @@ QString GroupedCommands::name() const {
 }
 
 size_t GroupedCommands::size() const {
-  return m_commands.size();
+    return m_commands.size();
 }
