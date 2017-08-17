@@ -35,8 +35,11 @@ class AbstractCommand : public QObject {
         virtual AbstractContent * content() const {
             return m_content;
         }
+        virtual void* contentAddr() const {
+          return (void*)content();
+        }
         virtual bool hasContent(void *c) const {
-          return content() == c;
+          return contentAddr() == c;
         }
 
         virtual void replaceContent(AbstractContent *oldContent, AbstractContent *newContent) {
