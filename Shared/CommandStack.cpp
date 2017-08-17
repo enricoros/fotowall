@@ -54,7 +54,7 @@ void CommandStack::addCommand(AbstractCommand *command)
     m_undoStack.push_back(command);
 }
 
-void CommandStack::replaceContent(QList<void *> oldContents, QList<AbstractContent *> newContents) {
+void CommandStack::replaceContent(const QList<void *>& oldContents, const QList<AbstractContent *>& newContents) {
     qDebug() << "[CommandStack] updating content in stack";
 
     QMap<AbstractCommand *, AbstractContent *> newCommandContent;
@@ -66,10 +66,6 @@ void CommandStack::replaceContent(QList<void *> oldContents, QList<AbstractConte
       foreach(AbstractCommand *c, m_undoStack)
       {
         // XXX make this recursive
-        // if((NewContentCommand *nc = dynamic_cast<NewContentCommand*>(c))
-        //    || (DeleteContentCommand *dc = dynamic_cast<DeleteContentCommand *>(c))) {
-        //   // do nothing
-        // }
         if(GroupedCommands *gc = dynamic_cast<GroupedCommands*>(c))
         {
           foreach(AbstractCommand *gc_c, gc->commands())
@@ -90,10 +86,6 @@ void CommandStack::replaceContent(QList<void *> oldContents, QList<AbstractConte
       foreach(AbstractCommand *c, m_redoStack)
       {
         // XXX make this recursive
-        // if((NewContentCommand *nc = dynamic_cast<NewContentCommand*>(c))
-        //    || (DeleteContentCommand *dc = dynamic_cast<DeleteContentCommand *>(c))) {
-        //   // do nothing
-        // }
         if(GroupedCommands *gc = dynamic_cast<GroupedCommands*>(c))
         {
           foreach(AbstractCommand *gc_c, gc->commands())

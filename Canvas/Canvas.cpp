@@ -355,6 +355,11 @@ void Canvas::selectAllContent(bool selected) {
 
 /// Arrangement
 void Canvas::setForceFieldEnabled(bool enabled) {
+    if(enabled) {
+        foreach(AbstractContent *c, m_content) {
+          c->setPreviousPos(c->pos());
+        }
+    }
     if (enabled && !m_forceFieldTimer) {
         m_forceFieldTimer = new QTimer(this);
         connect(m_forceFieldTimer, SIGNAL(timeout()), this, SLOT(slotApplyForce()));
@@ -365,6 +370,19 @@ void Canvas::setForceFieldEnabled(bool enabled) {
     if (!enabled && m_forceFieldTimer) {
         delete m_forceFieldTimer;
         m_forceFieldTimer = 0;
+    }
+
+    if(!enabled)
+    {
+      GroupedCommands *gc = 0;
+      MotionCommand *mc = 0;
+      gc = new GroupedCommands("Force Field");
+      foreach(AbstractContent *c, m_content)
+      {
+        mc = new MotionCommand(c, c->previousPos(), c->pos());
+        gc->addCommand(mc);
+      }
+      CommandStack::instance().addCommand(gc);
     }
 }
 
@@ -1041,7 +1059,7 @@ void Canvas::keyPressEvent(QKeyEvent * keyEvent) {
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent * event) {
     foreach(QGraphicsItem *item, selectedItems()) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(item);
-        if (content != 0) {
+        if (!forceFieldEnabled() && content != 0) {
             content->setPreviousPos(content->pos());
         }
     }

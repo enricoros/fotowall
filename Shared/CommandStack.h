@@ -35,7 +35,7 @@ class CommandStack
         // (useful for letting Qt manage the moves for exemple)
         void addCommand(AbstractCommand *command);
 
-        void replaceContent(QList<void *> oldContent, QList<AbstractContent *> newContent);
+        void replaceContent(const QList<void *>& oldContent, const QList<AbstractContent *>& newContent);
 
         void undoLast();
         void redoLast();
