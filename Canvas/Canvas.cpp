@@ -326,6 +326,7 @@ void Canvas::resizeEvent() {
     }
 
     CommandStack::instance().addCommand(gc);
+
     // reblink after mobile relayout
 #if defined(MOBILE_UI)
     //if (m_backMode == BackGradient && sceneWidth() > 200 && sceneHeight() > 200)

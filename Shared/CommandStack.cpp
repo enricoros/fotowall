@@ -27,19 +27,26 @@ CommandStack& CommandStack::instance() {
 CommandStack::CommandStack() : m_undoInProgress(false), m_redoInProgress(false) {
 }
 
-void CommandStack::doCommand(AbstractCommand* command) {
+bool CommandStack::doCommand(AbstractCommand* command) {
     if (command == 0)
-        return;
-    addCommand(command);
+        return false;
     qDebug() << "[CommandStack] exec command << " << command->name();
     command->exec();
+    addCommand(command);
+    return true;
 }
 
-void CommandStack::addCommand(AbstractCommand* command) {
+bool CommandStack::addCommandSafe(AbstractCommand* command) {
     // Only add command if it is valid and we are not currently undoing/redoing
     // actions
-    if (command == 0 || isUndoInProgress() || isRedoInProgress())
-        return;
+    if (command == 0 || isUndoInProgress() || isRedoInProgress()) {
+        return false;
+    }
+    // Only add GroupedCommand if they contain at least one element
+    else if (GroupedCommands* c = dynamic_cast<GroupedCommands*>(command)) {
+      if (c->size() == 0)
+        return false;
+    }
 
     // Clear redo stack when adding new command
     // NOTE: Could be made configurable to allow redo to occur after
@@ -48,13 +55,17 @@ void CommandStack::addCommand(AbstractCommand* command) {
     qDeleteAll(m_redoStack);
     m_redoStack.clear();
 
-    // Only add GroupedCommand if they contain at least one element
-    if (GroupedCommands* c = dynamic_cast<GroupedCommands*>(command)) {
-        if (c->size() == 0)
-            return;
-    }
     qDebug() << "[CommandStack] add command << " << command->name() << "\t" << command->description();
     m_undoStack.push_back(command);
+    return true;
+}
+
+bool CommandStack::addCommand(AbstractCommand* command) {
+  bool ret = addCommandSafe(command);
+  if(!ret) {
+    if(command != 0) delete command;
+  }
+  return ret;
 }
 
 void CommandStack::replaceContent(const QList<AbstractCommand*>& commands, const void* oldContent, AbstractContent* newContent, QMap<AbstractCommand*, AbstractContent*>& newCommandContent) {

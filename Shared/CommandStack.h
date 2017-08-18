@@ -29,10 +29,10 @@ class CommandStack {
     static CommandStack& instance();
 
     // Add the command in the stack, and execute it
-    void doCommand(AbstractCommand* command);
+    bool doCommand(AbstractCommand* command);
     // Add the command in the stack, but do not execute it
     // (useful for letting Qt manage the moves for exemple)
-    void addCommand(AbstractCommand* command);
+    bool addCommand(AbstractCommand* command);
 
     // Recursively map and replace old (deleted) content with their new
     // (recreated) counterpart
@@ -52,6 +52,8 @@ class CommandStack {
     // Unable copy
     CommandStack(const CommandStack&);
     CommandStack& operator=(const CommandStack&);
+
+    bool addCommandSafe(AbstractCommand *);
 
     // Maps old addresses to new addresses in commands
     void replaceContent(const QList<AbstractCommand*>& commands, const void* oldContent, AbstractContent* newContent, QMap<AbstractCommand*, AbstractContent*>& newCommandContent);

@@ -7,6 +7,10 @@ GroupedCommands::GroupedCommands(const QString& name) {
 
 GroupedCommands::GroupedCommands(QList<AbstractCommand*> commands) : m_commands(commands) { m_name = tr("Group Command"); }
 
+GroupedCommands::~GroupedCommands() {
+  qDeleteAll(m_commands);
+}
+
 void GroupedCommands::addCommands(QList<AbstractCommand*> commands) {
     m_commands.append(commands);
 }

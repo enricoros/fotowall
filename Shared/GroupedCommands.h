@@ -10,6 +10,7 @@ class GroupedCommands : public AbstractCommand {
   public:
     GroupedCommands(const QString& name);
     GroupedCommands(QList<AbstractCommand*> commands);
+    ~GroupedCommands();
     void addCommands(QList<AbstractCommand*> commands);
     void addCommand(AbstractCommand* command);
     QList<AbstractCommand*> commands() const;
