@@ -24,6 +24,9 @@ CommandStack& CommandStack::instance() {
     return instance;
 }
 
+CommandStack::CommandStack() : m_undoInProgress(false), m_redoInProgress(false) {
+}
+
 void CommandStack::doCommand(AbstractCommand* command) {
     if (command == 0)
         return;
@@ -33,7 +36,9 @@ void CommandStack::doCommand(AbstractCommand* command) {
 }
 
 void CommandStack::addCommand(AbstractCommand* command) {
-    if (command == 0)
+    // Only add command if it is valid and we are not currently undoing/redoing
+    // actions
+    if (command == 0 || isUndoInProgress() || isRedoInProgress())
         return;
 
     // Clear redo stack when adding new command
@@ -48,7 +53,7 @@ void CommandStack::addCommand(AbstractCommand* command) {
         if (c->size() == 0)
             return;
     }
-    qDebug() << "[CommandStack] add command << " << command->name();
+    qDebug() << "[CommandStack] add command << " << command->name() << "\t" << command->description();
     m_undoStack.push_back(command);
 }
 
@@ -87,9 +92,17 @@ void CommandStack::replaceContent(const QList<void*>& oldContents, const QList<A
     }
 }
 
+bool CommandStack::isUndoInProgress() const {
+    return m_undoInProgress;
+}
+bool CommandStack::isRedoInProgress() const {
+    return m_redoInProgress;
+}
+
 void CommandStack::undoLast() {
     // Do not run until redo finishes
     QMutexLocker lock(&m_mutex);
+    m_undoInProgress = true;
 
     if (m_undoStack.isEmpty())
         return;
@@ -98,12 +111,14 @@ void CommandStack::undoLast() {
     command->unexec();
     m_redoStack.push_back(command);
     m_undoStack.takeLast();
+    m_undoInProgress = false;
     lock.unlock();
 }
 
 void CommandStack::redoLast() {
     // Do not run until undo finishes
     QMutexLocker lock(&m_mutex);
+    m_redoInProgress = true;
 
     if (m_redoStack.isEmpty())
         return;
@@ -112,5 +127,6 @@ void CommandStack::redoLast() {
     command->exec();
     m_undoStack.push_back(command);
     m_redoStack.takeLast();
+    m_redoInProgress = false;
     lock.unlock();
 }

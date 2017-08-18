@@ -21,6 +21,7 @@
 #include "Shared/GroupedCommands.h"
 #include "Shared/PictureEffect.h"
 
+#include "App/CanvasAppliance.h"
 #include "Canvas/AbstractContent.h"
 #include "Canvas/Canvas.h"
 #include "Canvas/PictureContent.h"
@@ -601,6 +602,30 @@ class ShapeCommand : public AbstractCommand {
         m_content = 0;
         m_content = dynamic_cast<TextContent*>(content);
         return true;
+    }
+};
+
+class ProjectModeCommand : public AbstractCommand {
+    CanvasAppliance* m_app;
+    int m_pMode, m_nMode;
+
+  public:
+    ProjectModeCommand(CanvasAppliance* app, const int pMode, const int nMode)
+        : m_app(app)
+        , m_pMode(pMode), m_nMode(nMode) {}
+
+    virtual void exec() {
+      m_app->setProjectMode(m_nMode);
+    }
+
+    virtual void unexec() {
+      m_app->setProjectMode(m_pMode);
+    }
+    virtual QString name() const {
+      return tr("Project Mode");
+    }
+    virtual QString description() const {
+        return tr("Changed project mode from %1 to %2").arg(QString::number(m_pMode), QString::number(m_nMode));
     }
 };
 

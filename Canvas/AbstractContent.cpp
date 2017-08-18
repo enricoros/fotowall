@@ -465,6 +465,7 @@ bool AbstractContent::fixedPerspective()
 
 void AbstractContent::ensureVisible(const QRectF & rect)
 {
+    m_previousPos = pos();
     // keep the center inside the scene rect
     QPointF center = pos();
     if (!rect.contains(center)) {

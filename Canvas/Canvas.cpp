@@ -304,6 +304,9 @@ void Canvas::resize(const QSize & size) {
 }
 
 void Canvas::resizeEvent() {
+    GroupedCommands *gc = new GroupedCommands("Resize Canvas");
+
+    // XXX handle undo for these too
     // relayout contents
     m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
@@ -312,11 +315,17 @@ void Canvas::resizeEvent() {
         highlight->reposition(sceneRect());
 
     // ensure visibility
-    foreach (AbstractContent * content, m_content)
+    foreach (AbstractContent * content, m_content) {
         content->ensureVisible(sceneRect());
-    foreach (AbstractConfig * config, m_configs)
+        MotionCommand *c = new MotionCommand(content, content->previousPos(), content->pos());
+        gc->addCommand(c);
+    }
+    foreach (AbstractConfig * config, m_configs) {
+        // XXX should handle undo for config as well
         config->keepInBoundaries(sceneRect());
+    }
 
+    CommandStack::instance().addCommand(gc);
     // reblink after mobile relayout
 #if defined(MOBILE_UI)
     //if (m_backMode == BackGradient && sceneWidth() > 200 && sceneHeight() > 200)

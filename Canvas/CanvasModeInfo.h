@@ -50,6 +50,7 @@ class CanvasModeInfo
 
         void setProjectMode(Mode mode);
         Mode projectMode() const;
+        Mode previousProjectMode() const;
 
         // storage
         void toXml(QDomElement & canvasModeElement) const;
@@ -60,7 +61,7 @@ class CanvasModeInfo
         QPointF m_canvasDpi;
         float m_printDpi;
         bool m_landscape;
-        Mode m_projectMode;
+        Mode m_projectMode, m_previousProjectMode;
 };
 
 #endif

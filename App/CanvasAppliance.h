@@ -37,6 +37,7 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         bool applianceCommand(int command);
         bool appliancePendingChanges() const;
         bool applianceSave(const QString & filePath = QString());
+        void setProjectMode(const int mode);
 
     private:
         QMenu * createArrangeMenu();

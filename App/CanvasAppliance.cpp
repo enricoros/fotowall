@@ -309,7 +309,6 @@ QMenu * CanvasAppliance::createDecorationMenu()
 
 void CanvasAppliance::setNormalProject()
 {
-    ui.projectCombo->setCurrentIndex(0);
     m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches();
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
@@ -319,7 +318,6 @@ void CanvasAppliance::setNormalProject()
 
 void CanvasAppliance::setExactSizeProject(bool usePrevious)
 {
-    ui.projectCombo->setCurrentIndex(1);
     m_extCanvas->clearMarkers();
     if (!usePrevious || !m_extCanvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
@@ -356,7 +354,6 @@ void CanvasAppliance::setWallpaperProject()
     QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
     if (!wallSize.isValid() || screenDpi.x() <= 0 || screenDpi.y() <= 0)
         return;
-    ui.projectCombo->setCurrentIndex(2);
     m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF((qreal)wallSize.width() / screenDpi.x(), (qreal)wallSize.height() / screenDpi.y()));
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeWallpaper);
@@ -366,7 +363,6 @@ void CanvasAppliance::setWallpaperProject()
 
 void CanvasAppliance::setCDProject()
 {
-    ui.projectCombo->setCurrentIndex(3);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
@@ -377,7 +373,6 @@ void CanvasAppliance::setCDProject()
 
 void CanvasAppliance::setDVDProject()
 {
-    ui.projectCombo->setCurrentIndex(4);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
     m_extCanvas->modeInfo()->setPrintLandscape(true);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
@@ -446,14 +441,29 @@ void CanvasAppliance::slotBackContentRemove(bool checked)
         m_extCanvas->clearBackContent();
 }
 
-void CanvasAppliance::slotProjectComboActivated(int index)
+void CanvasAppliance::setProjectMode(const int index)
 {
+    // Prevent combobox from emiting signals while changing its index
+    bool oldState = ui.projectCombo->blockSignals(true);
+    ui.projectCombo->setCurrentIndex(index);
+    ui.projectCombo->blockSignals(oldState);
+
     switch (index) {
         case 0: setNormalProject();             break;
         case 1: setExactSizeProject(!sender()); break;
         case 2: setWallpaperProject();          break;
         case 3: setCDProject();                 break;
         case 4: setDVDProject();                break;
+    }
+}
+
+void CanvasAppliance::slotProjectComboActivated(int index)
+{
+    int previousMode = m_extCanvas->modeInfo()->previousProjectMode();
+    if(previousMode != index) {
+        setProjectMode(index);
+        CommandStack::instance().addCommand(
+            new ProjectModeCommand(this, previousMode, index));
     }
 }
 

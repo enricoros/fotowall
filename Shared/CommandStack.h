@@ -42,10 +42,12 @@ class CommandStack {
 
     void undoLast();
     void redoLast();
+    bool isUndoInProgress() const;
+    bool isRedoInProgress() const;
 
   private:
     // Private constructor, so it is impossible to create an instant without using instance()
-    CommandStack() {}
+    CommandStack();
 
     // Unable copy
     CommandStack(const CommandStack&);
@@ -57,6 +59,10 @@ class CommandStack {
 
     // Prevents undo and redo to be running simultaneously
     QMutex m_mutex;
+
+    // True when undo/redo in progress
+    bool m_undoInProgress;
+    bool m_redoInProgress;
 
   protected:
     QList<AbstractCommand*> m_undoStack;
