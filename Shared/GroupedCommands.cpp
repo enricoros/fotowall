@@ -8,7 +8,7 @@ GroupedCommands::GroupedCommands(const QString& name) {
 GroupedCommands::GroupedCommands(QList<AbstractCommand*> commands) : m_commands(commands) { m_name = tr("Group Command"); }
 
 GroupedCommands::~GroupedCommands() {
-  qDeleteAll(m_commands);
+    qDeleteAll(m_commands);
 }
 
 void GroupedCommands::addCommands(QList<AbstractCommand*> commands) {
@@ -37,11 +37,11 @@ void GroupedCommands::unexec() {
     }
 }
 
-bool GroupedCommands::hasContent(const void* content) const {
+bool GroupedCommands::replaceContent(const QList<const void*> old, const QList<AbstractContent*> content) {
     foreach (AbstractCommand* c, m_commands) {
-        return c->contentAddr() == content;
+        c->replaceContent(old, content);
     }
-    return false;
+    return true;
 }
 
 void GroupedCommands::setName(const QString& name) {

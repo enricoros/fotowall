@@ -15,6 +15,7 @@
 #ifndef __AbstractCommand__
 #define __AbstractCommand__
 
+#include <QDebug>
 #include <QObject>
 #include <QString>
 
@@ -24,22 +25,27 @@ class AbstractContent;
  * It provides pure virtual function to do/undo an action. */
 class AbstractCommand : public QObject {
   protected:
-    AbstractContent* m_content;
+    QList<AbstractContent*> m_content;
 
   public:
-    AbstractCommand() { m_content = 0; }
-    virtual bool setContent(AbstractContent* content) {
-        m_content = content;
-        return true;
+    AbstractCommand() {}
+    AbstractCommand(AbstractContent* content) {
+        m_content.push_back(content);
     }
-    virtual AbstractContent* content() const {
-        return m_content;
-    }
-    virtual void* contentAddr() const {
-        return (void*)content();
-    }
-    virtual bool hasContent(const void* c) const {
-        return contentAddr() == c;
+    AbstractCommand(const QList<AbstractContent*>& content)
+        : m_content(content) {}
+
+    virtual bool replaceContent(const QList<const void*> old, const QList<AbstractContent*> content) {
+        for (int i = 0; i < m_content.size(); ++i) {
+            AbstractContent* old_c = m_content[i];
+            for (int j = 0; j < old.size(); ++j) {
+                if (old[j] == old_c) {
+                    qDebug() << "[AbstractCommand] Replace content in command " << name() << " " << old[j] << " -> " << content[i];
+                    m_content[i] = content[j];
+                }
+            }
+        }
+        return false;
     }
 
     virtual void exec() = 0;

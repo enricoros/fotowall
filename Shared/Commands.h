@@ -43,48 +43,37 @@
 //DONE
 class EffectCommand : public AbstractCommand {
   private:
-    PictureContent* m_content;
     QList<PictureEffect> m_previousEffects;
     PictureEffect m_newEffect;
     QRect m_previousSize;
 
   public:
-    EffectCommand(PictureContent* content, const PictureEffect& effect) : m_content(content), m_newEffect(effect) {
+    EffectCommand(PictureContent* content, const PictureEffect& effect) : AbstractCommand(content), m_newEffect(effect) {
         m_previousEffects = content->effects();
         m_previousSize = content->contentRect();
     }
     void exec() {
-        if (m_content == 0) {
-            qDebug() << "EffectCommand::exec - null content";
+        PictureContent* c = dynamic_cast<PictureContent*>(m_content[0]);
+        if (!c)
             return;
-        }
-        m_content->addEffect(m_newEffect);
+        c->addEffect(m_newEffect);
     }
     void unexec() {
-        qDebug() << "unexec new effect on " << m_content;
-        if (m_content == 0) {
-            qDebug() << "EffectCommand::unexec - null content";
+        PictureContent* c = dynamic_cast<PictureContent*>(m_content[0]);
+        if (!c)
             return;
-        }
+
         // Reset the correct size (because of effects like crop).
-        m_content->resizeContents(m_previousSize, false);
+        c->resizeContents(m_previousSize, false);
         qDebug() << "content resized";
 
-        m_content->addEffect(PictureEffect::ClearEffects);
+        c->addEffect(PictureEffect::ClearEffects);
         qDebug() << "effect cleared";
         foreach (PictureEffect effect, m_previousEffects) {
             qDebug() << "add effect";
-            m_content->addEffect(effect);
+            c->addEffect(effect);
         }
         qDebug() << "unexec new effect done";
-    }
-    virtual AbstractContent* content() const {
-        return m_content;
-    }
-    virtual bool setContent(AbstractContent* newContent) {
-        m_content = 0;
-        m_content = dynamic_cast<PictureContent*>(newContent);
-        return true;
     }
     QString name() const {
         return tr("New effects");
@@ -93,29 +82,29 @@ class EffectCommand : public AbstractCommand {
 
 class OpacityCommand : public AbstractCommand {
   private:
-    qreal previousOpacity;
-    qreal newOpacity;
+    qreal m_pOpacity;
+    qreal m_nOpacity;
 
   public:
-    OpacityCommand(AbstractContent* content, qreal pOpacity, qreal nOpacity) {
-        setContent(content);
-        previousOpacity = pOpacity;
-        newOpacity = nOpacity;
+    OpacityCommand(AbstractContent* content, qreal pOpacity, qreal nOpacity)
+        : AbstractCommand(content), m_pOpacity(pOpacity), m_nOpacity(nOpacity) {
     }
     void exec() {
-        if (!m_content)
+        AbstractContent* c = m_content[0];
+        if (!c)
             return;
-        m_content->setProperty("contentOpacity", newOpacity);
-        m_content->update();
+        c->setProperty("contentOpacity", m_nOpacity);
+        c->update();
     }
     void unexec() {
-        if (!m_content)
+        AbstractContent* c = m_content[0];
+        if (!c)
             return;
-        m_content->setProperty("contentOpacity", previousOpacity);
-        m_content->update();
+        c->setProperty("contentOpacity", m_pOpacity);
+        c->update();
     }
     QString name() const {
-        return tr("Opacity command: ") + QString::number(previousOpacity) + " -> " + QString::number(newOpacity);
+        return tr("Opacity command: ") + QString::number(m_pOpacity) + " -> " + QString::number(m_nOpacity);
     }
 };
 
@@ -123,30 +112,24 @@ class OpacityCommand : public AbstractCommand {
 /* This commands manage the text of the TextContent */
 class TextCommand : public AbstractCommand {
   private:
-    TextContent* m_content;
     QString m_previousText, m_newText;
 
   public:
-    TextCommand(TextContent* content, QString newText) : m_content(content), m_newText(newText) {
+    TextCommand(TextContent* content, QString newText)
+        : AbstractCommand(content), m_newText(newText) {
         m_previousText = content->toHtml();
     }
     void exec() {
-        if (!m_content)
+        TextContent* c = dynamic_cast<TextContent*>(m_content[0]);
+        if (!c)
             return;
-        m_content->setHtml(m_newText);
+        c->setHtml(m_newText);
     }
     void unexec() {
-        if (!m_content)
+        TextContent* c = dynamic_cast<TextContent*>(m_content[0]);
+        if (!c)
             return;
-        m_content->setHtml(m_previousText);
-    }
-    virtual bool setContent(AbstractContent* content) {
-        m_content = 0;
-        m_content = dynamic_cast<TextContent*>(content);
-        return true;
-    }
-    virtual AbstractContent* content() const {
-        return m_content;
+        c->setHtml(m_previousText);
     }
     QString name() const {
         return tr("Text changed");
@@ -158,17 +141,19 @@ class PerspectiveCommand : public AbstractCommand {
     QPointF m_previous, m_new;
 
   public:
-    PerspectiveCommand(AbstractContent* content, const QPointF& p, const QPointF& n) : m_previous(p), m_new(n) {
-        m_content = content;
+    PerspectiveCommand(AbstractContent* content, const QPointF& p, const QPointF& n)
+        : AbstractCommand(content), m_previous(p), m_new(n) {
     }
 
     void exec() {
-        m_content->setPerspective(m_new);
+        AbstractContent* c = m_content[0];
+        c->setPerspective(m_new);
         qDebug() << "set perspective " << m_previous << " -> " << m_new;
     }
 
     void unexec() {
-        m_content->setPerspective(m_previous);
+        AbstractContent* c = m_content[0];
+        c->setPerspective(m_previous);
         qDebug() << "set perspective " << m_new << " -> " << m_previous;
     }
 
@@ -185,14 +170,14 @@ class TransformCommand : public AbstractCommand {
 
   public:
     TransformCommand(AbstractContent* content, QTransform& previous_matrix,
-                     QTransform& new_matrix) : m_previous(previous_matrix), m_new(new_matrix) {
-        m_content = content;
+                     QTransform& new_matrix)
+        : AbstractCommand(content), m_previous(previous_matrix), m_new(new_matrix) {
     }
     void exec() {
-        m_content->setTransform(m_new);
+        m_content[0]->setTransform(m_new);
     }
     void unexec() {
-        m_content->setTransform(m_previous);
+        m_content[0]->setTransform(m_previous);
     }
     QString name() const {
         return tr("Transformation");
@@ -207,16 +192,15 @@ class RotateAndResizeCommand : public AbstractCommand {
 
   public:
     RotateAndResizeCommand(AbstractContent* content, const qreal pAngle,
-                           const qreal nAngle, const QRect pRect, const QRect nRect) : m_pAngle(pAngle), m_nAngle(nAngle), m_pRect(pRect), m_nRect(nRect) {
-        m_content = content;
-    }
+                           const qreal nAngle, const QRect pRect, const QRect nRect)
+        : AbstractCommand(content), m_pAngle(pAngle), m_nAngle(nAngle), m_pRect(pRect), m_nRect(nRect) {}
     void exec() {
-        m_content->setRotation(m_nAngle);
-        m_content->resizeContents(m_nRect);
+        m_content[0]->setRotation(m_nAngle);
+        m_content[0]->resizeContents(m_nRect);
     }
     void unexec() {
-        m_content->setRotation(m_pAngle);
-        m_content->resizeContents(m_pRect);
+        m_content[0]->setRotation(m_pAngle);
+        m_content[0]->resizeContents(m_pRect);
     }
     QString name() const {
         return tr("Rotation and Resize");
@@ -230,14 +214,14 @@ class MotionCommand : public AbstractCommand {
     QPointF m_previous, m_newMotion;
 
   public:
-    MotionCommand(AbstractContent* content, QPointF previous, QPointF newMotion) : m_previous(previous), m_newMotion(newMotion) {
-        m_content = content;
+    MotionCommand(AbstractContent* content, QPointF previous, QPointF newMotion)
+        : AbstractCommand(content), m_previous(previous), m_newMotion(newMotion) {
     }
     void exec() {
-        m_content->setPos(m_newMotion);
+        m_content[0]->setPos(m_newMotion);
     }
     void unexec() {
-        m_content->setPos(m_previous);
+        m_content[0]->setPos(m_previous);
     }
     void setPrevious(const QPointF& prev) {
         m_previous = prev;
@@ -268,14 +252,13 @@ class MotionCommand : public AbstractCommand {
  */
 class DeleteContentCommand : public AbstractCommand {
   private:
-    QList<AbstractContent*> m_contents;
-    QList<void*> oldContents;
+    QList<const void*> oldContents;
     QList<QDomElement> m_contentElts;
     Canvas* m_canvas;
 
   public:
-    DeleteContentCommand(const QList<AbstractContent*>& contents, Canvas* canvas) : m_contents(contents), m_canvas(canvas) {
-        m_content = 0;
+    DeleteContentCommand(const QList<AbstractContent*>& contents, Canvas* canvas)
+        : AbstractCommand(contents), m_canvas(canvas) {
         foreach (AbstractContent* c, contents) {
             oldContents.push_back((void*)c);
         }
@@ -285,7 +268,8 @@ class DeleteContentCommand : public AbstractCommand {
         qDebug() << "DeleteContentCommand::exec";
         m_contentElts.clear();
         oldContents.clear();
-        foreach (AbstractContent* content, m_contents) {
+        foreach (AbstractContent* content, m_content) {
+            qDebug() << " deleting: " << (void*)content;
             // Get the content xml info, in order to recreate it correctly
             QDir t = QDir::currentPath();
             QDomDocument doc;
@@ -300,7 +284,7 @@ class DeleteContentCommand : public AbstractCommand {
     }
 
     void unexec() {
-        qDebug() << "DeleteContentCommand::unexec";
+        qDebug() << (void*)this << "DeleteContentCommand::unexec";
         QList<AbstractContent*> newContents;
         foreach (const QDomElement& contentElt, m_contentElts) {
             // Recreate content from xml
@@ -315,11 +299,6 @@ class DeleteContentCommand : public AbstractCommand {
         qDebug() << "newcontents0 " << (void*)newContents[0];
         // Now replace old content addresses with new content addresses in stack
         CommandStack::instance().replaceContent(oldContents, newContents);
-        m_contents = newContents;
-    }
-
-    virtual AbstractContent* content() const {
-        return m_content;
     }
 
     QString name() const {
@@ -347,8 +326,6 @@ class NewContentCommand : public AbstractCommand {
         init(contents, canvas);
     }
     void init(const QList<AbstractContent*>& contents, Canvas* canvas) {
-        // Content is handled by DeleteContentCommand instead
-        m_content = 0;
         m_command = new DeleteContentCommand(contents, canvas);
     }
     void exec() {
@@ -360,9 +337,10 @@ class NewContentCommand : public AbstractCommand {
         m_command->exec();
     }
 
-    virtual AbstractContent* content() const {
-        return m_command->content();
+    virtual bool replaceContent(const QList<const void*> old, const QList<AbstractContent*> content) {
+        return m_command->replaceContent(old, content);
     }
+
     QString name() const {
         return tr("Add content");
     }
@@ -379,18 +357,18 @@ class FrameCommand : public AbstractCommand {
     bool m_previousMirror, m_newMirror;
 
   public:
-    FrameCommand(AbstractContent* content, quint32 newClass, bool mirrored) : m_newClass(newClass), m_newMirror(mirrored) {
-        m_content = content;
+    FrameCommand(AbstractContent* content, quint32 newClass, bool mirrored)
+        : AbstractCommand(content), m_newClass(newClass), m_newMirror(mirrored) {
         m_previousClass = content->frameClass();
         m_previousMirror = content->mirrored();
     }
     void exec() {
-        m_content->setFrame(FrameFactory::createFrame(m_newClass));
-        m_content->setMirrored(m_newMirror);
+        m_content[0]->setFrame(FrameFactory::createFrame(m_newClass));
+        m_content[0]->setMirrored(m_newMirror);
     }
     void unexec() {
-        m_content->setFrame(FrameFactory::createFrame(m_previousClass));
-        m_content->setMirrored(m_previousMirror);
+        m_content[0]->setFrame(FrameFactory::createFrame(m_previousClass));
+        m_content[0]->setMirrored(m_previousMirror);
     }
 
     QString name() const {
@@ -403,22 +381,18 @@ class FrameCommand : public AbstractCommand {
 class BackgroundContentCommand : public AbstractCommand {
   private:
     Canvas* m_canvas;
-    AbstractContent *m_previousContent, *m_newContent;
 
   public:
-    BackgroundContentCommand(Canvas* desk, AbstractContent* previousContent,
-                             AbstractContent* newContent) : m_canvas(desk), m_previousContent(previousContent), m_newContent(newContent) {
+    BackgroundContentCommand(Canvas* canvas, AbstractContent* previousContent,
+                             AbstractContent* newContent) : m_canvas(canvas) {
+        m_content.push_back(previousContent);
+        m_content.push_back(newContent);
     }
     void exec() {
-        m_canvas->setBackContent(m_newContent);
+        m_canvas->setBackContent(m_content[1]);
     }
     void unexec() {
-        m_canvas->setBackContent(m_previousContent);
-    }
-
-    virtual bool setContent(AbstractContent* content) {
-        m_newContent = content;
-        return true;
+        m_canvas->setBackContent(m_content[0]);
     }
     QString name() const {
         return tr("Change background");
@@ -432,9 +406,9 @@ class BackgroundRatioCommand : public AbstractCommand {
     const Qt::AspectRatioMode m_previousRatio, m_newRatio;
 
   public:
-    BackgroundRatioCommand(Canvas* desk,
+    BackgroundRatioCommand(Canvas* canvas,
                            const Qt::AspectRatioMode& previousRatio,
-                           const Qt::AspectRatioMode& newRatio) : m_canvas(desk), m_previousRatio(previousRatio), m_newRatio(newRatio) {
+                           const Qt::AspectRatioMode& newRatio) : m_canvas(canvas), m_previousRatio(previousRatio), m_newRatio(newRatio) {
     }
     void exec() {
         m_canvas->setBackContentRatio(m_newRatio);
@@ -504,6 +478,8 @@ class DecoBottomBarCommand : public AbstractCommand {
         m_action->setChecked(m_state);
     }
     void unexec() {
+        qDebug() << "canvas: " << (void*)m_canvas;
+        qDebug() << "action: " << (void*)m_action;
         m_canvas->setBottomBarEnabled(!m_state);
         m_action->setChecked(!m_state);
     }
@@ -560,14 +536,14 @@ class StackCommand : public AbstractCommand {
 
   public:
     StackCommand(AbstractContent* c, int pZ, int nZ) : m_pZ(pZ), m_nZ(nZ) {
-        m_content = c;
+        m_content.push_back(c);
     }
 
     void exec() {
-        m_content->setZValue(m_nZ);
+        m_content[0]->setZValue(m_nZ);
     }
     void unexec() {
-        m_content->setZValue(m_pZ);
+        m_content[0]->setZValue(m_pZ);
     }
     QString name() const {
         return tr("Stack order");
@@ -576,32 +552,27 @@ class StackCommand : public AbstractCommand {
 
 //DONE
 class ShapeCommand : public AbstractCommand {
-    TextContent* m_content;
     QList<QPointF> m_pCps, m_nCps;
 
   public:
     ShapeCommand(TextContent* c, const QList<QPointF>& pCps,
-                 const QList<QPointF>& nCps) : m_content(c), m_pCps(pCps), m_nCps(nCps) {
+                 const QList<QPointF>& nCps) : AbstractCommand(c), m_pCps(pCps), m_nCps(nCps) {
     }
 
     void exec() {
-        if (!m_content)
+        TextContent* c = dynamic_cast<TextContent*>(m_content[0]);
+        if (!c)
             return;
-        m_content->setControlPoints(m_nCps);
+        c->setControlPoints(m_nCps);
     }
     void unexec() {
-        if (!m_content)
+        TextContent* c = dynamic_cast<TextContent*>(m_content[0]);
+        if (!c)
             return;
-        m_content->setControlPoints(m_pCps);
+        c->setControlPoints(m_pCps);
     }
-    virtual AbstractContent* content() const {
-        return m_content;
-    }
-
-    virtual bool setContent(AbstractContent* content) {
-        m_content = 0;
-        m_content = dynamic_cast<TextContent*>(content);
-        return true;
+    QString name() const {
+        return tr("Text Shape");
     }
 };
 
@@ -611,18 +582,17 @@ class ProjectModeCommand : public AbstractCommand {
 
   public:
     ProjectModeCommand(CanvasAppliance* app, const int pMode, const int nMode)
-        : m_app(app)
-        , m_pMode(pMode), m_nMode(nMode) {}
+        : m_app(app), m_pMode(pMode), m_nMode(nMode) {}
 
     virtual void exec() {
-      m_app->setProjectMode(m_nMode);
+        m_app->setProjectMode(m_nMode);
     }
 
     virtual void unexec() {
-      m_app->setProjectMode(m_pMode);
+        m_app->setProjectMode(m_pMode);
     }
     virtual QString name() const {
-      return tr("Project Mode");
+        return tr("Project Mode");
     }
     virtual QString description() const {
         return tr("Changed project mode from %1 to %2").arg(QString::number(m_pMode), QString::number(m_nMode));
@@ -630,25 +600,25 @@ class ProjectModeCommand : public AbstractCommand {
 };
 
 class FxCommand : public AbstractCommand {
-  int m_pIndex, m_nIndex;
+    int m_pIndex, m_nIndex;
 
- public:
-  FxCommand(AbstractContent *content, int pIndex, int nIndex) : m_pIndex(pIndex), m_nIndex(nIndex) {
-    m_content = content;
-  }
-  virtual void exec() {
-    m_content->setFxIndex(m_nIndex);
-  }
+  public:
+    FxCommand(AbstractContent* content, int pIndex, int nIndex)
+        : AbstractCommand(content), m_pIndex(pIndex), m_nIndex(nIndex) {
+    }
+    virtual void exec() {
+        m_content[0]->setFxIndex(m_nIndex);
+    }
 
-  virtual void unexec() {
-    m_content->setFxIndex(m_pIndex);
-  }
-  virtual QString name() const {
-    return tr("Content Fx");
-  }
-  virtual QString description() const {
-    return QString();
-  }
+    virtual void unexec() {
+        m_content[0]->setFxIndex(m_pIndex);
+    }
+    virtual QString name() const {
+        return tr("Content Fx");
+    }
+    virtual QString description() const {
+        return QString();
+    }
 };
 
 #endif

@@ -31,12 +31,14 @@ bool CommandStack::doCommand(AbstractCommand* command) {
     if (command == 0)
         return false;
     qDebug() << "[CommandStack] exec command << " << command->name();
-    command->exec();
-    addCommand(command);
+    if(addCommand(command)) {
+        command->exec();
+    }
     return true;
 }
 
 bool CommandStack::addCommandSafe(AbstractCommand* command) {
+  qDebug() << "add command " << (void*)command << ", " << isUndoInProgress() << ", " << isRedoInProgress();
     // Only add command if it is valid and we are not currently undoing/redoing
     // actions
     if (command == 0 || isUndoInProgress() || isRedoInProgress()) {
@@ -44,10 +46,11 @@ bool CommandStack::addCommandSafe(AbstractCommand* command) {
     }
     // Only add GroupedCommand if they contain at least one element
     else if (GroupedCommands* c = dynamic_cast<GroupedCommands*>(command)) {
-      if (c->size() == 0)
-        return false;
+        if (c->size() == 0)
+            return false;
     }
 
+    qDebug() << "passgrounp";
     // Clear redo stack when adding new command
     // NOTE: Could be made configurable to allow redo to occur after
     // modifications have been made to the content. If so, one would need
@@ -61,45 +64,23 @@ bool CommandStack::addCommandSafe(AbstractCommand* command) {
 }
 
 bool CommandStack::addCommand(AbstractCommand* command) {
-  bool ret = addCommandSafe(command);
-  if(!ret) {
-    if(command != 0) delete command;
-  }
-  return ret;
-}
-
-void CommandStack::replaceContent(const QList<AbstractCommand*>& commands, const void* oldContent, AbstractContent* newContent, QMap<AbstractCommand*, AbstractContent*>& newCommandContent) {
-    // Find commands containing this content
-    foreach (AbstractCommand* c, commands) {
-        if (GroupedCommands* gc = dynamic_cast<GroupedCommands*>(c)) {
-            replaceContent(gc->commands(), oldContent, newContent, newCommandContent);
-        } else if (c->hasContent(oldContent)) {
-            newCommandContent[c] = newContent;
-        }
+    bool ret = addCommandSafe(command);
+    if (!ret) {
+        if (command != 0)
+            delete command;
     }
+    return ret;
 }
 
-void CommandStack::replaceContent(const QList<AbstractCommand*>& commands, const QList<void*>& oldContents, const QList<AbstractContent*>& newContents, QMap<AbstractCommand*, AbstractContent*>& newCommandContent) {
-    for (int i = 0; i < oldContents.size(); ++i) {
-        void* oldContent = (void*)oldContents[i];
-        AbstractContent* newContent = newContents[i];
-        replaceContent(commands, oldContent, newContent, newCommandContent);
-    }
-}
-
-void CommandStack::replaceContent(const QList<void*>& oldContents, const QList<AbstractContent*>& newContents) {
+void CommandStack::replaceContent(const QList<const void*>& oldContents, const QList<AbstractContent*>& newContents) {
     qDebug() << "[CommandStack] updating content in stack";
 
-    // Maps old (deleted) content addresses to new content addresses
-    QMap<AbstractCommand*, AbstractContent*> newCommandContent;
-    replaceContent(m_undoStack, oldContents, newContents, newCommandContent);
-    replaceContent(m_redoStack, oldContents, newContents, newCommandContent);
+    foreach (AbstractCommand* c, m_undoStack) {
+        c->replaceContent(oldContents, newContents);
+    }
 
-    // Replace old content with new mapped addresses
-    QMapIterator<AbstractCommand*, AbstractContent*> i(newCommandContent);
-    while (i.hasNext()) {
-        i.next();
-        i.key()->setContent(i.value());
+    foreach (AbstractCommand* c, m_redoStack) {
+        c->replaceContent(oldContents, newContents);
     }
 }
 
@@ -113,10 +94,11 @@ bool CommandStack::isRedoInProgress() const {
 void CommandStack::undoLast() {
     // Do not run until redo finishes
     QMutexLocker lock(&m_mutex);
-    m_undoInProgress = true;
 
     if (m_undoStack.isEmpty())
         return;
+
+    m_undoInProgress = true;
     AbstractCommand* command = m_undoStack.last();
     qDebug() << "[CommandStack] undo command " << command->name();
     command->unexec();
@@ -129,10 +111,10 @@ void CommandStack::undoLast() {
 void CommandStack::redoLast() {
     // Do not run until undo finishes
     QMutexLocker lock(&m_mutex);
-    m_redoInProgress = true;
-
     if (m_redoStack.isEmpty())
         return;
+
+    m_redoInProgress = true;
     AbstractCommand* command = m_redoStack.last();
     qDebug() << "[CommandStack] redo command " << command->name();
     command->exec();

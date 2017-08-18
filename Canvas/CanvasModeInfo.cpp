@@ -22,6 +22,7 @@ CanvasModeInfo::CanvasModeInfo()
   , m_printDpi(DEFAULT_PRINT_DPI)
   , m_landscape(false)
   , m_projectMode(ModeNormal)
+  , m_previousProjectMode(ModeNormal)
 {
 }
 

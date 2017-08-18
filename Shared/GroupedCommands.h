@@ -16,7 +16,7 @@ class GroupedCommands : public AbstractCommand {
     QList<AbstractCommand*> commands() const;
     void exec();
     void unexec();
-    bool hasContent(const void* content) const;
+    virtual bool replaceContent(const QList<const void*> old, const QList<AbstractContent*> content);
 
     QString name() const;
     void setName(const QString&);

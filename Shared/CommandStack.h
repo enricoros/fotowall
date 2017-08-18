@@ -38,7 +38,7 @@ class CommandStack {
     // (recreated) counterpart
     // This is used when recreating previously deleted content to update the
     // pointer addresses in the whole command stack
-    void replaceContent(const QList<void*>& oldContent, const QList<AbstractContent*>& newContent);
+    void replaceContent(const QList<const void*>& oldContent, const QList<AbstractContent*>& newContent);
 
     void undoLast();
     void redoLast();
@@ -53,11 +53,7 @@ class CommandStack {
     CommandStack(const CommandStack&);
     CommandStack& operator=(const CommandStack&);
 
-    bool addCommandSafe(AbstractCommand *);
-
-    // Maps old addresses to new addresses in commands
-    void replaceContent(const QList<AbstractCommand*>& commands, const void* oldContent, AbstractContent* newContent, QMap<AbstractCommand*, AbstractContent*>& newCommandContent);
-    void replaceContent(const QList<AbstractCommand*>& commands, const QList<void*>& oldContents, const QList<AbstractContent*>& newContents, QMap<AbstractCommand*, AbstractContent*>& newCommandContent);
+    bool addCommandSafe(AbstractCommand*);
 
     // Prevents undo and redo to be running simultaneously
     QMutex m_mutex;
