@@ -503,22 +503,16 @@ void CanvasAppliance::slotArrangeShaped()
 
 void CanvasAppliance::slotDecoTopBar(bool checked)
 {
-    if(m_extCanvas->topBarEnabled() != checked)
-    {
-      QAction *aTop = qobject_cast<QAction *>(sender());
-      DecoTopBarCommand *c = new DecoTopBarCommand(m_extCanvas, aTop, checked);
-      CommandStack::instance().doCommand(c);
-    }
+    QAction *aTop = qobject_cast<QAction *>(sender());
+    DecoTopBarCommand *c = new DecoTopBarCommand(m_extCanvas, aTop, checked);
+    CommandStack::instance().doCommand(c);
 }
 
 void CanvasAppliance::slotDecoBottomBar(bool checked)
 {
-    if(m_extCanvas->bottomBarEnabled() != checked)
-    {
-      QAction *aBottom = qobject_cast<QAction *>(sender());
-      DecoBottomBarCommand *c = new DecoBottomBarCommand(m_extCanvas, aBottom, checked);
-      CommandStack::instance().doCommand(c);
-    }
+    QAction *aBottom = qobject_cast<QAction *>(sender());
+    DecoBottomBarCommand *c = new DecoBottomBarCommand(m_extCanvas, aBottom, checked);
+    CommandStack::instance().doCommand(c);
 }
 
 void CanvasAppliance::slotDecoSetTitle()

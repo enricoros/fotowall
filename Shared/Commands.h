@@ -629,4 +629,26 @@ class ProjectModeCommand : public AbstractCommand {
     }
 };
 
+class FxCommand : public AbstractCommand {
+  int m_pIndex, m_nIndex;
+
+ public:
+  FxCommand(AbstractContent *content, int pIndex, int nIndex) : m_pIndex(pIndex), m_nIndex(nIndex) {
+    m_content = content;
+  }
+  virtual void exec() {
+    m_content->setFxIndex(m_nIndex);
+  }
+
+  virtual void unexec() {
+    m_content->setFxIndex(m_pIndex);
+  }
+  virtual QString name() const {
+    return tr("Content Fx");
+  }
+  virtual QString description() const {
+    return QString();
+  }
+};
+
 #endif

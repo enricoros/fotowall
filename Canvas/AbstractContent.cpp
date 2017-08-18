@@ -366,7 +366,6 @@ void AbstractContent::setPerspective(const QPointF & angles)
     if (locked() || m_fixedPerspective) return;
     if (angles != m_perspectiveAngles) {
         m_perspectiveAngles = angles;
-        qDebug() << "set perspective: " << m_perspectiveAngles;
         applyTransforms();
         emit perspectiveChanged();
     }
@@ -398,6 +397,8 @@ void AbstractContent::setFxIndex(int index)
 {
     if (m_fxIndex == index)
         return;
+    FxCommand * c = new FxCommand(this, m_fxIndex, index);
+    CommandStack::instance().addCommand(c);
     m_fxIndex = index;
     // apply graphics effect
 #if QT_VERSION >= 0x040600
