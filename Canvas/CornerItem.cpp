@@ -181,7 +181,6 @@ void CornerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
 void CornerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
-    if (m_hidden) return;
     if (RenderOpts::HQRendering)
         return;
 
@@ -194,10 +193,4 @@ void CornerItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
     } else
         color.setAlpha(128);
     painter->fillRect(boundingRect(), color);
-}
-
-void CornerItem::setHidden(bool state)
-{
-    m_hidden = state;
-    update();
 }

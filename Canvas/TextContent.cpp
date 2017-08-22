@@ -366,9 +366,7 @@ void TextContent::keyPressEvent(QKeyEvent * event)
 void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     AbstractContent::mouseDoubleClickEvent(event);
-    if (!locked()) {
-        emit requestBackgrounding();
-    }
+    emit requestBackgrounding();
 }
 
 QPainterPath TextContent::shapePath() const

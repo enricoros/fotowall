@@ -62,7 +62,6 @@ QRectF ButtonItem::boundingRect() const
 
 void ButtonItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
-    if (m_buttonHidden) return;
     if (RenderOpts::HQRendering)
         return;
     bool over = option->state & QStyle::State_MouseOver;
@@ -77,13 +76,6 @@ void ButtonItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * opti
         m_icon.paint(painter, boundingRect().toRect(), Qt::AlignCenter, over ? QIcon::Active : QIcon::Normal);
         painter->setRenderHint(QPainter::SmoothPixmapTransform, false);
     }
-}
-
-void ButtonItem::setHidden(bool state)
-{
-    m_buttonHidden = state;
-    if (state) this->hide();
-    update();
 }
 
 void ButtonItem::mousePressEvent(QGraphicsSceneMouseEvent * event)

@@ -6,20 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>467</width>
-    <height>298</height>
+    <width>406</width>
+    <height>271</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QTabWidget" name="tab">
-     <property name="locale">
-      <locale language="English" country="UnitedStates"/>
-     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tabGeneral">
+     <widget class="QWidget" name="tab_3">
       <attribute name="title">
        <string>General</string>
       </attribute>
@@ -159,12 +156,6 @@
          </item>
          <item row="1" column="1">
           <widget class="QToolButton" name="background">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>31</height>
-            </size>
-           </property>
            <property name="text">
             <string>To Background</string>
            </property>
@@ -217,53 +208,49 @@
         </layout>
        </item>
        <item>
-        <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0">
-         <item row="0" column="0" colspan="4">
-          <widget class="QLabel" name="label_4">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Position</string>
-           </property>
-          </widget>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0" colspan="2">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Looks</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="newFrame">
+             <property name="text">
+              <string>new frame</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="lookApplyAll">
+             <property name="text">
+              <string>apply to all</string>
+             </property>
+             <property name="toolButtonStyle">
+              <enum>Qt::ToolButtonTextBesideIcon</enum>
+             </property>
+             <property name="autoRaise">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="contentLocked">
-           <property name="toolTip">
-            <string>The content position and transformations are locked. Useful to create templates with fixed elements.</string>
-           </property>
-           <property name="text">
-            <string>Locked</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QCheckBox" name="fixedPosition">
-           <property name="text">
-            <string>Position fixed</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QCheckBox" name="fixedRotation">
-           <property name="text">
-            <string>Rotation fixed</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QCheckBox" name="fixedPerspective">
-           <property name="text">
-            <string>Perspective fixed</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <spacer name="horizontalSpacer_5">
+         <item row="1" column="0" rowspan="2">
+          <spacer name="horizontalSpacer_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -278,205 +265,57 @@
            </property>
           </spacer>
          </item>
-         <item row="1" column="3">
-          <spacer name="horizontalSpacer_11">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
+         <item row="1" column="1">
+          <widget class="QListWidget" name="framesList">
+           <property name="minimumSize">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>310</width>
+             <height>36</height>
             </size>
            </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apparence&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="0" column="1">
-            <widget class="QCheckBox" name="reflection">
-             <property name="text">
-              <string>Show Reflection</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <spacer name="horizontalSpacer_9">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>16</width>
-               <height>16</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="2">
-            <spacer name="horizontalSpacer_10">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabApparences">
-      <attribute name="title">
-       <string>Frames</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="looksLabel">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Frames</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
+           <property name="maximumSize">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>16777215</width>
+             <height>36</height>
             </size>
            </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="newFrame">
-           <property name="toolTip">
-            <string>Add a new frame</string>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
            </property>
-           <property name="text">
-            <string/>
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
            </property>
-           <property name="icon">
-            <iconset resource="../fotowall.qrc">
-             <normaloff>:/data/action-add.png</normaloff>:/data/action-add.png</iconset>
+           <property name="dragDropMode">
+            <enum>QAbstractItemView::DragDrop</enum>
            </property>
-           <property name="default">
-            <bool>false</bool>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
            </property>
-           <property name="flat">
-            <bool>true</bool>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="removeFrame">
-           <property name="toolTip">
-            <string>Remove a frame from the list</string>
+           <property name="verticalScrollMode">
+            <enum>QAbstractItemView::ScrollPerPixel</enum>
            </property>
-           <property name="text">
-            <string/>
+           <property name="resizeMode">
+            <enum>QListView::Adjust</enum>
            </property>
-           <property name="icon">
-            <iconset resource="../fotowall.qrc">
-             <normaloff>:/data/action-delete.png</normaloff>:/data/action-delete.png</iconset>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
+           <property name="viewMode">
+            <enum>QListView::IconMode</enum>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="lookApplyAll">
+         <item row="2" column="1">
+          <widget class="QCheckBox" name="reflection">
            <property name="text">
-            <string>Apply to all</string>
-           </property>
-           <property name="autoRepeatInterval">
-            <number>100</number>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
+            <string>Show Reflection</string>
            </property>
           </widget>
          </item>
         </layout>
-       </item>
-       <item>
-        <widget class="QListWidget" name="framesList">
-         <property name="minimumSize">
-          <size>
-           <width>310</width>
-           <height>36</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>500</height>
-          </size>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::DragDrop</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="verticalScrollMode">
-          <enum>QAbstractItemView::ScrollPerPixel</enum>
-         </property>
-         <property name="resizeMode">
-          <enum>QListView::Adjust</enum>
-         </property>
-         <property name="viewMode">
-          <enum>QListView::IconMode</enum>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

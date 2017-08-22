@@ -36,7 +36,6 @@ class ButtonItem : public QObject, public QGraphicsItem
         // ::QGraphicsItem
         QRectF boundingRect() const;
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-        void setHidden(bool state);
         void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
         void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
@@ -54,7 +53,6 @@ class ButtonItem : public QObject, public QGraphicsItem
         QIcon       m_icon;
         QBrush      m_brush;
         bool        m_selectsParent;
-        bool        m_buttonHidden;
         QPointF     m_startPos;
 };
 
