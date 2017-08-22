@@ -233,8 +233,8 @@ class MotionCommand : public AbstractCommand {
         return tr("Move");
     }
     QString description() const {
-        QString previousStr = QString::number(m_previous.x()) + QString::number(m_previous.y());
-        QString newMotionStr = QString::number(m_newMotion.x()) + QString::number(m_newMotion.y());
+        QString previousStr = "(" + QString::number(m_previous.x()) + ", " + QString::number(m_previous.y()) + ")";
+        QString newMotionStr = "(" + QString::number(m_newMotion.x()) + ", " + QString::number(m_newMotion.y()) + ")";
         return tr("Moved from %1 to %2").arg(previousStr, newMotionStr);
     }
 };

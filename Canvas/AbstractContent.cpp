@@ -217,6 +217,12 @@ void AbstractContent::setPreviousPos(const QPointF& previousPos) {
     m_previousPos = previousPos;
 }
 
+void AbstractContent::setPosUndo(const QPointF& pos) {
+    m_previousPos = this->pos();
+    setPos(pos);
+    CommandStack::instance().addCommand(new MotionCommand(this, m_previousPos, pos));
+}
+
 void AbstractContent::setFrame(Frame * frame)
 {
     delete m_frame;
@@ -815,10 +821,10 @@ void AbstractContent::keyPressEvent(QKeyEvent * event)
     int step = (event->modifiers() & Qt::ShiftModifier) ? 50 : (event->modifiers() & Qt::ControlModifier ? 1 : 10);
     switch (event->key()) {
         // cursor keys: 10px, 50 if Shift pressed, 1 if Control pressed
-        case Qt::Key_Left:      setPos(pos() - QPointF(step, 0));   break;
-        case Qt::Key_Up:        setPos(pos() - QPointF(0, step));   break;
-        case Qt::Key_Right:     setPos(pos() + QPointF(step, 0));   break;
-        case Qt::Key_Down:      setPos(pos() + QPointF(0, step));   break;
+        case Qt::Key_Left:      setPosUndo(pos() - QPointF(step, 0));   break;
+        case Qt::Key_Up:        setPosUndo(pos() - QPointF(0, step));   break;
+        case Qt::Key_Right:     setPosUndo(pos() + QPointF(step, 0));   break;
+        case Qt::Key_Down:      setPosUndo(pos() + QPointF(0, step));   break;
         // deletion
         case Qt::Key_Delete: emit requestRemoval(); break;
 

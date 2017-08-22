@@ -56,6 +56,7 @@ class AbstractContent : public AbstractDisposeable
         // position
         QPointF previousPos() const;
         void setPreviousPos(const QPointF& previousPos);
+        void setPosUndo(const QPointF& pos);
 
         // frame (and frame text)
         void setFrame(Frame * frame);

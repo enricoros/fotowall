@@ -38,7 +38,6 @@ bool CommandStack::doCommand(AbstractCommand* command) {
 }
 
 bool CommandStack::addCommandSafe(AbstractCommand* command) {
-  qDebug() << "add command " << (void*)command << ", " << isUndoInProgress() << ", " << isRedoInProgress();
     // Only add command if it is valid and we are not currently undoing/redoing
     // actions
     if (command == 0 || isUndoInProgress() || isRedoInProgress()) {
@@ -49,6 +48,7 @@ bool CommandStack::addCommandSafe(AbstractCommand* command) {
         if (c->size() == 0)
             return false;
     }
+    qDebug() << "add command " << command->name() << ", " << (void*)command << ", " << isUndoInProgress() << ", " << isRedoInProgress();
 
     qDebug() << "passgrounp";
     // Clear redo stack when adding new command
