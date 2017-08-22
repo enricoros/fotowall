@@ -85,6 +85,7 @@ class PictureContent : public AbstractContent
         bool slotLoadNetworkData();
         void slotNetworkError();
         void slotNetworkProgress(qint64, qint64);
+        void slotRotate();
 };
 
 #endif

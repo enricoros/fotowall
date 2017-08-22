@@ -56,6 +56,7 @@ class EffectCommand : public AbstractCommand {
         PictureContent* c = dynamic_cast<PictureContent*>(m_content[0]);
         if (!c)
             return;
+        m_previousSize = c->contentRect();
         c->addEffect(m_newEffect);
     }
     void unexec() {
@@ -63,17 +64,11 @@ class EffectCommand : public AbstractCommand {
         if (!c)
             return;
 
-        // Reset the correct size (because of effects like crop).
-        c->resizeContents(m_previousSize, false);
-        qDebug() << "content resized";
-
         c->addEffect(PictureEffect::ClearEffects);
-        qDebug() << "effect cleared";
         foreach (PictureEffect effect, m_previousEffects) {
-            qDebug() << "add effect";
             c->addEffect(effect);
         }
-        qDebug() << "unexec new effect done";
+        c->resizeContents(m_previousSize);
     }
     QString name() const {
         return tr("New effects");

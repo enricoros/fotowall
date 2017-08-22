@@ -64,6 +64,9 @@ void CPixmap::addEffect(const PictureEffect & effect) {
         case PictureEffect::AutoBlend:
             toAutoBlend(effect.param);
             break;
+        case PictureEffect::Rotate:
+            rotate();
+            break;
     }
 }
 
@@ -231,6 +234,18 @@ void CPixmap::toAutoBlend(qreal strength)
         }
     }
     updateImage(dest);
+}
+
+void CPixmap::rotate()
+{
+    m_effects.push_back(PictureEffect::Rotate);
+    const QImage srcImg = this->toImage();
+    QPoint center = srcImg.rect().center();
+    QMatrix matrix;
+    matrix.translate(center.x(), center.y());
+    matrix.rotate(-90);
+    QImage dstImg = srcImg.transformed(matrix);
+    updateImage(dstImg);
 }
 
 void CPixmap::updateImage(const QImage & newImage)

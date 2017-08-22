@@ -75,6 +75,12 @@ PictureContent::PictureContent(bool spontaneous, QGraphicsScene * scene, QGraphi
     addButtonItem(bFlipV);
     connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
 
+    ButtonItem * bRotate = new ButtonItem(ButtonItem::Rotate, Qt::blue, QIcon(":/data/action-rotate.png"), this);
+    bRotate->setToolTip(tr("Rotate"));
+    bRotate->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+    addButtonItem(bRotate);
+    connect(bRotate, SIGNAL(clicked()), this, SLOT(slotRotate()));
+
 #if 0
     // add cropping button (TODO: enable this?)
     ButtonItem * bCrop = new ButtonItem(ButtonItem::Control, Qt::blue, QIcon(":/data/action-scale.png"), this);
@@ -229,6 +235,13 @@ void PictureContent::addEffect(const PictureEffect & effect)
     else if(effect.effect == PictureEffect::Opacity)
     {
         setContentOpacity(effect.param);
+    }
+    else if(effect.effect == PictureEffect::Rotate)
+    {
+        QRect newContentRect = contentRect();
+        newContentRect.setWidth(contentRect().height());
+        newContentRect.setHeight(contentRect().width());
+        resizeContents(newContentRect);
     }
     m_cachedPhoto = QPixmap();
     update();
@@ -630,6 +643,12 @@ void PictureContent::applyPostLoadEffects()
     m_afterLoadEffects.clear();
     update();
     GFX_CHANGED();
+}
+
+void PictureContent::slotRotate()
+{
+    CommandStack::instance().doCommand(new EffectCommand(this, PictureEffect::Rotate));
+    update();
 }
 
 void PictureContent::slotGimpCompressNotifies()

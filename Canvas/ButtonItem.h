@@ -25,7 +25,7 @@ class ButtonItem : public QObject, public QGraphicsItem
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)
     public:
-        enum Type {Control, FlipV, FlipH};
+        enum Type {Control, FlipV, FlipH, Rotate};
         ButtonItem(Type type, const QBrush & brush, const QIcon & icon, QGraphicsItem * parent);
 
         Type buttonType() const;
