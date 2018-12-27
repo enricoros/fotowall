@@ -33,7 +33,8 @@ include(3rdparty/videocapture/videocapture.pri)
         translations/fotowall_fr.ts \
         translations/fotowall_it.ts \
         translations/fotowall_pl.ts \
-        translations/fotowall_pt_BR.ts
+        translations/fotowall_pt_BR.ts \
+        translations/fotowall_ru_Ru.ts
 } else: {
     message("Translations won't be compiled")
     DEFINES -= HAS_TRANSLATIONS
