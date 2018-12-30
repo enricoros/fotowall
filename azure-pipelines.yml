@@ -1,0 +1,19 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: |
+    sudo apt-get install git qtbase5-dev libqt5svg5-dev qt5-default qtcreator pax-utils tree -y
+    make ts
+    make qm
+    git status
+    ls -l
+  displayName: 'Run a multi-line script'
