@@ -30,7 +30,7 @@ steps:
     echo Pre Status
     git status -sb
     echo Post Status
-    git add -A translations
+    git add -Af translations
     git status -sb
     ls -l
 
