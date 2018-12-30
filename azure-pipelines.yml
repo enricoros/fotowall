@@ -14,7 +14,7 @@ steps:
     sudo apt-get install git qtbase5-dev libqt5svg5-dev qt5-default qtcreator pax-utils tree -y
     qmake
     echo Update QM binaries from existing TS
-    make qm
+    echo make qm
     echo Update TS strings from the source code
     make ts
     echo Update QM from the updated TS
@@ -23,7 +23,7 @@ steps:
     echo Pre Status
     git status -sb
     echo Post Status
-    git add -a translations
+    git add -A translations
     git status -sb
     ls -l
   displayName: 'Run a multi-line script'
