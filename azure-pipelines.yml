@@ -14,11 +14,9 @@ steps:
   displayName: 'Run a one-line script'
 
 - script: |
-    apt-get install git qtbase5-dev libqt5svg5-dev qt5-default qtcreator pax-utils tree -y
+    sudo apt-get install git qtbase5-dev libqt5svg5-dev qt5-default qtcreator pax-utils tree -y
+    qmake
+    make
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
-    ls -l
-    qmake
-    make -j6
-    echo Done
   displayName: 'Run a multi-line script'
