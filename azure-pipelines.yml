@@ -16,6 +16,8 @@ steps:
     
     echo "Generating makefiles"
     qmake
+
+    ls -l translations
     
     echo "Updating translation books and regenerating binary translations"
     echo Update TS strings from the source code
@@ -31,6 +33,11 @@ steps:
     git add -A translations
     git status -sb
     ls -l
+
+    ls -l translations
+
+    echo "Generating makefiles"
+    qmake
 
     echo "Done"
   displayName: 'Run a multi-line script'
