@@ -11,14 +11,19 @@ pool:
 
 steps:
 - script: |
+    echo "Adding Qt5 dev environment"
     sudo apt-get install git qtbase5-dev libqt5svg5-dev qt5-default qtcreator pax-utils tree -y
+    
+    echo "Generating makefiles"
     qmake
-    echo Update QM binaries from existing TS
-    echo make qm
+    
+    echo "Updating translation books and regenerating binary translations"
     echo Update TS strings from the source code
     make ts
     echo Update QM from the updated TS
     make qm
+
+    echo "Generating a pull request with the updated /translations/"
     ls -l translations/
     echo Pre Status
     git status -sb
@@ -26,4 +31,6 @@ steps:
     git add -A translations
     git status -sb
     ls -l
+
+    echo "Done"
   displayName: 'Run a multi-line script'
