@@ -15,6 +15,8 @@
 #ifndef __CanvasAppliance_h__
 #define __CanvasAppliance_h__
 
+#include <QActionGroup>
+
 #include "Shared/PlugGui/AbstractAppliance.h"
 #include "ui_CanvasAppliance.h"
 class QMenu;
