@@ -286,9 +286,9 @@ class Matrix3
 #define M_PI 3.141592653589793238462643
 #endif // !M_PI
 
-#if !defined(Q_CC_GNU) || defined(Q_OS_WIN32) || defined(Q_OS_OS2) || defined(Q_OS_ANDROID) || defined(Q_OS_OPENBSD)
+#if !defined(Q_CC_GNU) || defined(Q_OS_WIN32) || defined(Q_OS_OS2) || defined(Q_OS_ANDROID)
 #if !defined(__MINGW32__)
-//sincos is not defined in win32, MAC, OS/2, Android and OpenBSD
+//sincos is not defined in win32, MAC, OS/2 and Android
 static inline void sincos(double th, double *s, double *c)
 {
     *s = sin(th);
