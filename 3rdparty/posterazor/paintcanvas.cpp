@@ -23,6 +23,7 @@
 #include "paintcanvas.h"
 #include <QImage>
 #include <QPainter>
+#include <QPainterPath>
 
 PaintCanvas::PaintCanvas(QWidget *parent)
     : QWidget(parent)
