@@ -22,19 +22,22 @@ include(3rdparty/richtextedit/richtextedit.pri)
 include(3rdparty/videocapture/videocapture.pri)
 
 # Include Fotowall translations (of the above components)
+# Please keep translations in alphabetical order
 !contains(CONFIG, no-translations): {
     DEFINES += HAS_TRANSLATIONS
 
     TRANSLATIONS += \
-        translations/fotowall_zh_CN.ts \
         translations/fotowall_de.ts \
+        translations/fotowall_el.ts \
         translations/fotowall_en.ts \
         translations/fotowall_es.ts \
         translations/fotowall_fr.ts \
         translations/fotowall_it.ts \
         translations/fotowall_pl.ts \
         translations/fotowall_pt_BR.ts \
-        translations/fotowall_ru_RU.ts
+        translations/fotowall_ru_RU.ts \
+        translations/fotowall_zh_CN.ts \
+        translations/fotowall_zh_TW.ts
 } else: {
     message("Translations won't be compiled")
     DEFINES -= HAS_TRANSLATIONS
