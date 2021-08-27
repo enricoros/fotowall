@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.1" language="ru">
 <context>
     <name>AbstractConfig</name>
     <message>
@@ -1113,7 +1113,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location/>
         <source>YouTube Tutorials</source>
-        <translation>Уроки YouTube </translation>
+        <translation>Уроки YouTube</translation>
     </message>
 </context>
 <context>
@@ -1432,7 +1432,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+62"/>
         <source>&apos;RETRO&apos; </source>
-        <translation>&apos;РЕТРО&apos;</translation>
+        <translation>&apos;РЕТРО&apos; </translation>
     </message>
     <message>
         <location line="+85"/>
