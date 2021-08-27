@@ -35,6 +35,7 @@
 #include "Settings.h"
 #include "Workflow.h"
 
+#include <QActionGroup>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QInputDialog>
