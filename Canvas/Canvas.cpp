@@ -159,6 +159,7 @@ void Canvas::addAutoContent(const QStringList & filePaths) {
 
 void Canvas::addCanvasViewContent(const QStringList & fwFilePaths) {
     clearSelection();
+    QList<AbstractContent*> addedCanvas;
     int offset = -30 * (fwFilePaths.size() - 1) / 2;
     QPoint pos = visibleCenter() + QPoint(offset, offset);
     foreach (const QString & localFile, fwFilePaths) {
@@ -167,17 +168,17 @@ void Canvas::addCanvasViewContent(const QStringList & fwFilePaths) {
 
         // create picture and load the file
         CanvasViewContent * d = createCanvasView(pos, true);
+        qDebug() << "Canvas::addCanvasViewContent from file: " << localFile;
         if (!d->loadFromFile(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
         } else {
             d->setSelected(true);
             pos += QPoint(30, 30);
-            // FIXME : bugs when redo happens inside the created canvas, kinda expected since the
-            // address is still the one of the previous canvas, and not the new one when recreated.
-            //CommandStack::instance().addCommand(new NewContentCommand(this, d));
+            addedCanvas << d;
         }
     }
+    CommandStack::instance().addCommand(new NewContentCommand(addedCanvas, this));
 }
 
 QList<AbstractContent*> Canvas::addPictureContent(const QStringList & picFilePaths) {
@@ -1251,6 +1252,7 @@ void Canvas::setBackContent(AbstractContent * content) {
 
 CanvasViewContent * Canvas::createCanvasView(const QPoint & pos, bool spontaneous) {
     CanvasViewContent * d = new CanvasViewContent(spontaneous, this);
+    qDebug() << "Canvas::createCanvasView: " << d;
     initContent(d, pos);
     return d;
 }
@@ -1258,7 +1260,7 @@ CanvasViewContent * Canvas::createCanvasView(const QPoint & pos, bool spontaneou
 AbstractContent * Canvas::addContentFromXml(const QDomElement &contentElt) {
     // create the right kind of content
     AbstractContent * content = 0;
-    qDebug() << contentElt.tagName();
+    qDebug() << "Canvas::addContentFromXml: " << contentElt.tagName();
     if (contentElt.tagName() == "picture")
         content = createPicture(QPoint(), false);
     else if (contentElt.tagName() == "text")
@@ -1275,7 +1277,9 @@ AbstractContent * Canvas::addContentFromXml(const QDomElement &contentElt) {
     }
 
     // load item properties, and delete it if something goes wrong
+    qDebug() << "Canvas::addContentFromXml: fromXml";
     if (!content->fromXml(contentElt, m_fileAbsDir)) {
+      qDebug() << "Canvas::addContentFromXml: fromXml FAILED";
         m_content.removeAll(content);
         delete content;
         return NULL;
