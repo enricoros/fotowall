@@ -97,15 +97,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // set the startup project mode
-    int pComboIndex = 0;
-    switch (extCanvas->modeInfo()->projectMode()) {
-        case CanvasModeInfo::ModeNormal:    pComboIndex = 0; break;
-        case CanvasModeInfo::ModeCD:        pComboIndex = 3; break;
-        case CanvasModeInfo::ModeDVD:       pComboIndex = 4; break;
-        case CanvasModeInfo::ModeExactSize: pComboIndex = 1; break;
-        case CanvasModeInfo::ModeWallpaper: pComboIndex = 2; break;
-    }
-    slotProjectComboActivated(pComboIndex);
+    setProjectMode(extCanvas->modeInfo()->projectMode());
 }
 
 CanvasAppliance::~CanvasAppliance()
@@ -313,8 +305,6 @@ void CanvasAppliance::setNormalProject()
     m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches();
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
-    m_extCanvas->adjustSceneSize();
-    configurePrint(false);
 }
 
 void CanvasAppliance::setExactSizeProject(bool usePrevious)
@@ -345,8 +335,6 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
         m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(cm?(double)w/2.54:w, cm?(double)h/2.54:h));
     }
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
-    m_extCanvas->adjustSceneSize();
-    configurePrint(true);
 }
 
 void CanvasAppliance::setWallpaperProject()
@@ -358,8 +346,6 @@ void CanvasAppliance::setWallpaperProject()
     m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF((qreal)wallSize.width() / screenDpi.x(), (qreal)wallSize.height() / screenDpi.y()));
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeWallpaper);
-    m_extCanvas->adjustSceneSize();
-    configurePrint(false);
 }
 
 void CanvasAppliance::setCDProject()
@@ -367,9 +353,6 @@ void CanvasAppliance::setCDProject()
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    m_extCanvas->adjustSceneSize();
-    m_extCanvas->setCDMarkers();
-    configurePrint(true);
 }
 
 void CanvasAppliance::setDVDProject()
@@ -377,9 +360,66 @@ void CanvasAppliance::setDVDProject()
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
     m_extCanvas->modeInfo()->setPrintLandscape(true);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
+}
+
+void CanvasAppliance::updateProjectMode()
+{
     m_extCanvas->adjustSceneSize();
-    m_extCanvas->setDVDMarkers();
-    configurePrint(true);
+    m_extCanvas->clearMarkers();
+    switch(m_extCanvas->modeInfo()->projectMode())
+    {
+        case CanvasModeInfo::ModeDVD:
+            m_extCanvas->setDVDMarkers();
+            configurePrint(true);
+            break;
+        case CanvasModeInfo::ModeCD:
+            m_extCanvas->setCDMarkers();
+            configurePrint(true);
+            break;
+        case CanvasModeInfo::ModeWallpaper:
+            configurePrint(false);
+            break;
+        case CanvasModeInfo::ModeExactSize:
+            configurePrint(true);
+            break;
+        case CanvasModeInfo::ModeNormal:
+            configurePrint(false);
+            break;
+    }
+}
+
+CanvasModeInfo::Mode CanvasAppliance::projectModeFromComboIndex(const int index) const
+{
+    switch (index) {
+    case 0:
+        return CanvasModeInfo::ModeNormal;
+    case 1:
+        return CanvasModeInfo::ModeExactSize;
+    case 2:
+        return CanvasModeInfo::ModeWallpaper;
+    case 3:
+        return CanvasModeInfo::ModeCD;
+    case 4:
+        return CanvasModeInfo::ModeDVD;
+    }
+    throw std::runtime_error("Missing project mode mappping!");
+}
+
+int CanvasAppliance::projectComboIndexFromMode(const CanvasModeInfo::Mode mode) const
+{
+    switch (mode) {
+    case CanvasModeInfo::ModeNormal:
+        return 0;
+    case CanvasModeInfo::ModeExactSize:
+        return 1;
+    case CanvasModeInfo::ModeWallpaper:
+        return 2;
+    case CanvasModeInfo::ModeCD:
+        return 3;
+    case CanvasModeInfo::ModeDVD:
+        return 4;
+    }
+    throw std::runtime_error("Missing project mode mappping!");
 }
 
 void CanvasAppliance::configurePrint(bool enabled)
@@ -442,30 +482,42 @@ void CanvasAppliance::slotBackContentRemove(bool checked)
         m_extCanvas->clearBackContent();
 }
 
-void CanvasAppliance::setProjectMode(const int index)
+void CanvasAppliance::setProjectMode(const CanvasModeInfo::Mode mode)
 {
     // Prevent combobox from emiting signals while changing its index
     bool oldState = ui.projectCombo->blockSignals(true);
-    ui.projectCombo->setCurrentIndex(index);
+    ui.projectCombo->setCurrentIndex(projectComboIndexFromMode(mode));
     ui.projectCombo->blockSignals(oldState);
 
-    switch (index) {
-        case 0: setNormalProject();             break;
-        case 1: setExactSizeProject(!sender()); break;
-        case 2: setWallpaperProject();          break;
-        case 3: setCDProject();                 break;
-        case 4: setDVDProject();                break;
+    switch (mode) {
+      case CanvasModeInfo::ModeNormal: setNormalProject();             break;
+      case CanvasModeInfo::ModeExactSize: setExactSizeProject(!sender()); break;
+      case CanvasModeInfo::ModeWallpaper: setWallpaperProject();          break;
+      case CanvasModeInfo::ModeCD: setCDProject();                 break;
+      case CanvasModeInfo::ModeDVD: setDVDProject();                break;
     }
+    updateProjectMode();
+}
+
+void CanvasAppliance::setProjectMode(const CanvasModeInfo & mode)
+{
+  // Prevent combobox from emiting signals while changing its index
+  bool oldState = ui.projectCombo->blockSignals(true);
+  ui.projectCombo->setCurrentIndex(projectComboIndexFromMode(mode.projectMode()));
+  ui.projectCombo->blockSignals(oldState);
+
+  *m_extCanvas->modeInfo() = mode;
+  updateProjectMode();
 }
 
 void CanvasAppliance::slotProjectComboActivated(int index)
 {
-    int previousMode = m_extCanvas->modeInfo()->previousProjectMode();
-    if(previousMode != index) {
-        setProjectMode(index);
-        CommandStack::instance().addCommand(
-            new ProjectModeCommand(this, previousMode, index));
-    }
+    CanvasModeInfo previousMode = *m_extCanvas->modeInfo();
+    setProjectMode(projectModeFromComboIndex(index));
+    CommandStack::instance().addCommand(
+        new ProjectModeCommand(this,
+                               previousMode,
+                               *m_extCanvas->modeInfo()));
 }
 
 void CanvasAppliance::slotSetBackMode(QAction* action)

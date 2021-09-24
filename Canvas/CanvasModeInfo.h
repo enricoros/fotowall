@@ -19,6 +19,8 @@
 #include <QSize>
 #include <QPointF>
 #include <QDomElement>
+#include <QString>
+#include <QObject>
 
 class CanvasModeInfo
 {
@@ -55,6 +57,29 @@ class CanvasModeInfo
         // storage
         void toXml(QDomElement & canvasModeElement) const;
         void fromXml(QDomElement & canvasModeElement);
+
+        QString projectModeName() const
+        {
+          return modeName(m_projectMode);
+        }
+
+        QString previousProjectModeName() const
+        {
+          return modeName(m_previousProjectMode);
+        }
+
+        static QString modeName(const Mode mode)
+        {
+            switch(mode)
+            {
+                case ModeNormal: return QObject::tr("Normal");
+                case ModeCD: return QObject::tr("CD");
+                case ModeDVD: return QObject::tr("DVD");
+                case ModeExactSize: return QObject::tr("Exact");
+                case ModeWallpaper: return QObject::tr("Wallpaper");
+                default: return QObject::tr("Unknown");
+            }
+        }
 
     private:
         QSizeF m_realSizeInches;

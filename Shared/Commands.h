@@ -573,24 +573,26 @@ class ShapeCommand : public AbstractCommand {
 
 class ProjectModeCommand : public AbstractCommand {
     CanvasAppliance* m_app;
-    int m_pMode, m_nMode;
+    CanvasModeInfo m_pMode, m_nMode;
 
   public:
-    ProjectModeCommand(CanvasAppliance* app, const int pMode, const int nMode)
+    ProjectModeCommand(CanvasAppliance* app, const CanvasModeInfo pMode, const CanvasModeInfo nMode)
         : m_app(app), m_pMode(pMode), m_nMode(nMode) {}
 
-    virtual void exec() {
+    void exec() override {
         m_app->setProjectMode(m_nMode);
     }
 
-    virtual void unexec() {
+    void unexec() override {
         m_app->setProjectMode(m_pMode);
     }
-    virtual QString name() const {
+
+    QString name() const override {
         return tr("Project Mode");
     }
-    virtual QString description() const {
-        return tr("Changed project mode from %1 to %2").arg(QString::number(m_pMode), QString::number(m_nMode));
+
+    QString description() const override {
+        return tr("Changed project mode from %1 to %2").arg(m_pMode.projectModeName(), m_nMode.projectModeName());
     }
 };
 
