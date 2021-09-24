@@ -16,6 +16,9 @@
 #include "3rdparty/richtextedit/richtexteditor_p.h"
 #include "TextContent.h"
 
+#include "Shared/Commands.h"
+#include "Shared/CommandStack.h"
+
 TextConfig::TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent)
     : AbstractConfig(textContent, parent)
     , m_textContent(textContent)
@@ -34,6 +37,8 @@ TextConfig::TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent
 
 void TextConfig::slotOkClicked()
 {
-    m_textContent->setHtml(m_editor->text(Qt::RichText));
+    TextCommand *c = new TextCommand(m_textContent, m_editor->text(Qt::RichText));
+    CommandStack::instance().doCommand(c);
+
     emit requestClose();
 }

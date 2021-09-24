@@ -37,6 +37,11 @@ QPointF PaneWidget::value() const
     return m_value;
 }
 
+QPointF PaneWidget::endValue() const
+{
+  return m_endValue;
+}
+
 void PaneWidget::setValue(const QPointF & value)
 {
     if (value != m_value) {
@@ -77,6 +82,7 @@ void PaneWidget::mousePressEvent(QMouseEvent * event)
     if (event->button() != Qt::LeftButton)
         return;
     m_pressed = true;
+    emit pressed();
     pressing(event->localPos());
 }
 
@@ -89,6 +95,7 @@ void PaneWidget::mouseMoveEvent(QMouseEvent * event)
 void PaneWidget::mouseReleaseEvent(QMouseEvent *)
 {
     m_pressed = false;
+    emit released();
     update();
 }
 
@@ -136,17 +143,17 @@ void PaneWidget::pressing(const QPointF & pos)
         return;
     double px = m_range.left() + m_range.width() * pos.x() / (double)(width() - 1);
     double py = m_range.top() + m_range.height() * pos.y() / (double)(height() - 1);
-    QPointF endValue = QPointF(qBound(m_range.left(), (qreal)px, m_range.right()), qBound(m_range.top(), (qreal)py, m_range.bottom()));
+    m_endValue = QPointF(qBound(m_range.left(), (qreal)px, m_range.right()), qBound(m_range.top(), (qreal)py, m_range.bottom()));
 #if QT_VERSION >= 0x040600
     // animate the change
     QPropertyAnimation * ani = new QPropertyAnimation(this, "value");
     ani->setEasingCurve(QEasingCurve::OutCubic);
     ani->setDuration(500);
-    ani->setEndValue(endValue);
+    ani->setEndValue(m_endValue);
     ani->start(QPropertyAnimation::DeleteWhenStopped);
 #else
     // set the final value
-    setValue(endValue);
+    setValue(m_endValue);
 #endif
 }
 

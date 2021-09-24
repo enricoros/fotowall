@@ -25,6 +25,8 @@ PE_AbstractSlider::PE_AbstractSlider(QAbstractSlider * _slider, QObject * _targe
 
     // link to the slider changes
     connect(m_control.data(), SIGNAL(valueChanged(int)), this, SLOT(slotSliderValueChanged(int)));
+    connect(_slider, SIGNAL(sliderReleased()), this, SIGNAL(sliderReleased()));
+    connect(_slider, SIGNAL(sliderPressed()), this, SIGNAL(sliderPressed()));
 
     // allow Int and Double properties only
     if (m_property.type() != QVariant::Int && m_property.type() != QVariant::Double && m_property.type() != SYMBIAN_STRANGE_VARIANT)
@@ -87,14 +89,14 @@ void PE_AbstractSlider::slotPropertyChanged()
 
 
 PE_AbstractButton::PE_AbstractButton(QAbstractButton * _button, QObject * _target, const char * propertyName, QObject * parent)
-  : PE_TypeControl<QAbstractButton>(_button, _target, propertyName, parent)
-{
-    // read initial value and link to property changes
-    slotPropertyChanged();
-    PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
+    : PE_TypeControl<QAbstractButton>(_button, _target, propertyName, parent)
+  {
+      // read initial value and link to property changes
+      slotPropertyChanged();
+      PE_LISTEN_TO_PROPERTY(slotPropertyChanged());
 
-    // link to the abstract button checkstate change
-    connect(m_control.data(), SIGNAL(toggled(bool)), this, SLOT(slotButtonChecked(bool)));
+      // link to the abstract button checkstate change
+      connect(m_control.data(), SIGNAL(toggled(bool)), this, SLOT(slotButtonChecked(bool)));
 
     // allow Bool properties only
     if (m_property.type() != QVariant::Bool)

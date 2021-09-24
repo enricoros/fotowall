@@ -48,7 +48,7 @@ BrowserItem::BrowserItem(QGraphicsItem * parent)
 
     // enable keyboard focus and mouse tracking
     setFlag(QGraphicsItem::ItemIsFocusable, true);
-    setAcceptsHoverEvents(true);
+    setAcceptHoverEvents(true);
 }
 
 void BrowserItem::write(const QString & html, const QUrl & url)

@@ -41,6 +41,8 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtNetwork>
+#include <QHeaderView>
+#include <QApplication>
 #include "gsuggest.h"
 
 ///#include "ui_search.h"

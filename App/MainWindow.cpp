@@ -14,6 +14,9 @@
 
 #include "App/MainWindow.h"
 
+#include "Shared/CommandStack.h"
+#include "Shared/Commands.h"
+
 #include "3rdparty/likebackfrontend/LikeBack.h"
 #include "Shared/BreadCrumbBar.h"
 #include "Shared/ButtonsDialog.h"
@@ -94,12 +97,16 @@ MainWindow::MainWindow(QWidget * parent)
     addNavigationWidget(helpBar, 0, Qt::AlignRight);
 
     // show (with last geometry)
+#if defined(Q_OS_SYMBIAN)
+    showFullScreen();
+#else
     if (!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray())) {
         QRect desktopGeometry = QApplication::desktop()->availableGeometry();
         resize(2 * desktopGeometry.width() / 3, 2 * desktopGeometry.height() / 3);
         showMaximized();
     } else
         show();
+#endif
 
     // re-apply transparency
 #if defined(Q_OS_LINUX)
@@ -119,6 +126,16 @@ MainWindow::MainWindow(QWidget * parent)
     if (App::settings->firstTime())
         App::workflow->stackHelpAppliance();
 #endif
+
+    QAction * undo = new QAction(tr("Undo"), this);
+    undo->setShortcut(tr("CTRL+Z"));
+    connect(undo, SIGNAL(triggered()), this, SLOT(slotUndo()));
+    addAction(undo);
+
+    QAction * redo = new QAction(tr("Redo"), this);
+    redo->setShortcut(tr("CTRL+Y"));
+    connect(redo, SIGNAL(triggered()), this, SLOT(slotRedo()));
+    addAction(redo);
 }
 
 MainWindow::~MainWindow()
@@ -546,4 +563,17 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 
     // remember in settings
     App::settings->setValue("Fotowall/Tranlucent", transparent);
+}
+
+
+void MainWindow::slotUndo()
+{
+    CommandStack &commandStack = CommandStack::instance();
+    commandStack.undoLast();
+}
+
+void MainWindow::slotRedo()
+{
+    CommandStack &commandStack = CommandStack::instance();
+    commandStack.redoLast();
 }

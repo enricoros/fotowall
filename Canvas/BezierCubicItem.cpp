@@ -13,7 +13,6 @@
  ***************************************************************************/
 
 #include "BezierCubicItem.h"
-#include <QDebug>
 #include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
 #include <QGraphicsPathItem>
@@ -32,6 +31,7 @@ class BezierControlPoint : public QGraphicsItem
         // ::QGraphicsItem
         QRectF boundingRect() const;
         void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
     private:
@@ -103,7 +103,7 @@ void BezierCubicItem::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     painter->drawLine(0, -5, 0, 5);
 }
 
-void BezierCubicItem::controlPointMoved(int index)
+void BezierCubicItem::controlPointMoved(int index, bool moveFinished)
 {
     // solid move
     if (index == 0 || index == 2) {
@@ -123,6 +123,14 @@ void BezierCubicItem::controlPointMoved(int index)
     path.cubicTo(m_cps[1]->pos(), m_cps[3]->pos(), m_cps[2]->pos());
     m_path->setPath(path);
     emit shapeChanged(path);
+
+    if(moveFinished) {
+        QList<QPointF> cps;
+        foreach(BezierControlPoint * pt, m_cps) {
+            cps.append(pt->pos());
+        }
+        emit shapeControlPointChanged(cps);
+    }
 }
 
 
@@ -148,6 +156,11 @@ void BezierControlPoint::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
         setPos(mapToParent(event->pos()));
         m_parent->controlPointMoved(m_index);
     }
+}
+
+void BezierControlPoint::mouseReleaseEvent(QGraphicsSceneMouseEvent * /* event */)
+{
+        m_parent->controlPointMoved(m_index, true);
 }
 
 void BezierControlPoint::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)

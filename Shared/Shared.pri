@@ -24,7 +24,12 @@ HEADERS += \
     Shared/PixmapButton.h \
     Shared/PropertyEditors.h \
     Shared/RenderOpts.h \
-    Shared/VideoProvider.h
+    Shared/VideoProvider.h \
+    Shared/AbstractCommand.h \
+    Shared/Commands.h \
+    Shared/GroupedCommands.h \
+    Shared/CommandStack.h
+
 
 SOURCES += \
     Shared/PlugGui/AbstractAppliance.cpp \
@@ -49,7 +54,9 @@ SOURCES += \
     Shared/PixmapButton.cpp \
     Shared/PropertyEditors.cpp \
     Shared/MetaXmlReader.cpp \
-    Shared/VideoProvider.cpp
+    Shared/VideoProvider.cpp \
+    Shared/CommandStack.cpp \
+    Shared/GroupedCommands.cpp
 
 FORMS += \
     Shared/CroppingDialog.ui \

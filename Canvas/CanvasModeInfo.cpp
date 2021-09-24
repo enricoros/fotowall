@@ -22,6 +22,7 @@ CanvasModeInfo::CanvasModeInfo()
   , m_printDpi(DEFAULT_PRINT_DPI)
   , m_landscape(false)
   , m_projectMode(ModeNormal)
+  , m_previousProjectMode(ModeNormal)
 {
 }
 
@@ -86,12 +87,18 @@ bool CanvasModeInfo::printLandscape() const
 
 void CanvasModeInfo::setProjectMode(Mode mode)
 {
+    m_previousProjectMode = m_projectMode;
     m_projectMode = mode;
 }
 
 CanvasModeInfo::Mode CanvasModeInfo::projectMode() const
 {
     return m_projectMode;
+}
+
+CanvasModeInfo::Mode CanvasModeInfo::previousProjectMode() const
+{
+    return m_previousProjectMode;
 }
 
 void CanvasModeInfo::toXml(QDomElement & canvasModeElement) const

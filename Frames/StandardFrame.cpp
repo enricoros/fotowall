@@ -45,6 +45,10 @@ void StandardFrame::layoutButtons(QList<ButtonItem *> buttons, const QRect & fra
                 button->setPos((left + right) / 2, top + button->height() / 2);
                 break;
 
+            case ButtonItem::Rotate:
+                button->setPos(left + button->width() / 2, (top + bottom - button->height()) / 2);
+                break;
+
             default:
                 button->setPos(offset - button->width() / 2, bottom - button->height() / 2);
                 offset -= button->width() + spacing;

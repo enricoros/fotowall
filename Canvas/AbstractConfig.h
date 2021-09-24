@@ -82,6 +82,7 @@ class AbstractConfig : public AbstractConfig_TYPE {
 
     private Q_SLOTS:
         void slotAddFrame();
+        void slotRemoveFrame();
         void slotLookApplyAll();
         void slotFrameSelectionChanged();
         void slotReflectionToggled(bool checked);

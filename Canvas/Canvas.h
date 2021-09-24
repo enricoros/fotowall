@@ -37,6 +37,7 @@ class QTimer;
 class TextContent;
 class WebcamContent;
 class WordcloudContent;
+class QNetworkReply;
 
 class Canvas : public AbstractScene
 {
@@ -49,11 +50,16 @@ class Canvas : public AbstractScene
         // add/remove content
         void addAutoContent(const QStringList & filePaths);
         void addCanvasViewContent(const QStringList & fwFilePaths);
-        void addPictureContent(const QStringList & picFilePaths);
-        void addTextContent();
-        void addWebcamContent(int webcamIndex);
-        void addWordcloudContent();
+        QList<AbstractContent*> addPictureContent(const QStringList & fileNames);
+        PictureContent* addPictureContent(const QString &url);
+        PictureContent* addNetworkPictureContent(const QString &url);
+        PictureContent* addNetworkPictureContent(const QString &url, QNetworkReply *reply, QString title, int width, int height);
+        TextContent* addTextContent();
+        WebcamContent* addWebcamContent(int input);
+        WordcloudContent* addWordcloudContent();
+
         void addManualContent(AbstractContent * content, const QPoint & pos);
+        void deleteContent(AbstractContent * content);
         void clearContent();
         QPoint visibleCenter() const;
 
@@ -75,11 +81,14 @@ class Canvas : public AbstractScene
         void randomizeContents(bool position, bool rotation, bool opacity);
 
         // decorations
+        void setBackContent(AbstractContent * content);
+
         enum BackMode { BackNone = 0, BackBlack = 1, BackWhite = 2, BackGradient = 3 };
         void setBackMode(BackMode mode);
         BackMode backMode() const;
         void clearBackContent();
         bool backContent() const;
+
         void setBackContentRatio(Qt::AspectRatioMode mode);
         Qt::AspectRatioMode backContentRatio() const;
         void setTopBarEnabled(bool enabled);
@@ -107,6 +116,7 @@ class Canvas : public AbstractScene
         // load & save
         void saveToXml(QDomElement & canvasElement) const;
         void loadFromXml(QDomElement & canvasElement);
+        AbstractContent * addContentFromXml(const QDomElement &contentElt);
 
     Q_SIGNALS:
         void backConfigChanged();
@@ -120,6 +130,10 @@ class Canvas : public AbstractScene
         void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
         void dropEvent( QGraphicsSceneDragDropEvent * event );
         void keyPressEvent( QKeyEvent * keyEvent );
+
+        void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+        void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
+
         void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * event );
         void contextMenuEvent( QGraphicsSceneContextMenuEvent * event );
         void drawBackground( QPainter * painter, const QRectF & rect );
@@ -127,13 +141,11 @@ class Canvas : public AbstractScene
 
     private:
         void initContent(AbstractContent * content, const QPoint & pos);
-        void setBackContent(AbstractContent * content);
         CanvasViewContent * createCanvasView(const QPoint & pos, bool spontaneous);
         PictureContent * createPicture(const QPoint & pos, bool spontaneous);
         TextContent * createText(const QPoint & pos, bool spontaneous);
         WebcamContent * createWebcam(int webcamIndex, const QPoint & pos, bool spontaneous);
         WordcloudContent * createWordcloud(const QPoint & pos, bool spontaneous);
-        void deleteContent(AbstractContent * content);
         void deleteConfig(AbstractConfig * config);
         QGraphicsView * mainGraphicsView() const;
 

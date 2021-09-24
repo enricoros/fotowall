@@ -73,27 +73,31 @@ int main( int argc, char ** args )
     //    appUi->SetOrientationL(CAknAppUi::EAppUiOrientationLandscape);
 #endif
 
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
 
 #if defined(HAS_TRANSLATIONS)
     // translate fotowall + default-qt messages
     QString locale;
     QStringList arguments = app.arguments();
     // Check for specified locale, or use the system one.
-    int pos=arguments.indexOf("-locale");
-    if (pos != -1 && pos < arguments.size()-1) locale = arguments.at(pos+1);
-    else locale = QLocale::system().name();
+    int pos = arguments.indexOf("-locale");
+    if (pos != -1 && pos < arguments.size() - 1)
+        locale = arguments.at(pos + 1);
+    else
+        locale = QLocale::system().name();
 
     QTranslator translator;
     translator.load(QString(":/translations/fotowall_%1").arg(locale));
     app.installTranslator(&translator);
     QTranslator qtTranslator;
-    qtTranslator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    qtTranslator.load(QString("qt_") + locale,
+            QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
 #endif
 
     App::settings = new Settings(app.arguments().contains("-clearconfig"));
-    RenderOpts::OxygenStyleQuirks = app.style()->objectName() == QLatin1String("oxygen");
+    RenderOpts::OxygenStyleQuirks = app.style()->objectName()
+            == QLatin1String("oxygen");
     RenderOpts::hiColor = app.palette().color(QPalette::Highlight);
     VideoProvider::Disable = app.arguments().contains("-novideo");
 

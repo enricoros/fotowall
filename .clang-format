@@ -1,0 +1,11 @@
+---
+BasedOnStyle: LLVM
+ColumnLimit: 0
+IndentWidth: 4
+#AccessModifierOffset: 0
+---
+Language: Cpp
+# Force pointers to the type for C++.
+DerivePointerAlignment: false
+PointerAlignment: Left
+...

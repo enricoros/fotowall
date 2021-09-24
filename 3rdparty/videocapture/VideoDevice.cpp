@@ -115,7 +115,7 @@ QList<DeviceInfo> VideoDevice::scanDevices()
          info.filePath = dirIt.next();
          info.index = idx++;
         devices.append(info);
-    }    
+    }
 #elif defined(VD_BUILD_WIN_VFW)
     if (vfwResolveSymbols()) {
         char szDeviceName[80];      // driver name
@@ -318,7 +318,7 @@ bool VideoDevice::setCaptureSize(const QSize & newSize)
     }
     if (pixelFormat == PIXELFORMAT_NONE)
         qWarning("VideoDevice::setCaptureSize: can't set a pixel format. trying to proceed anyways");
-    
+
     // 2. keep the size into boundaries
     m_imageBuffer.size = QSize( qBound(m_minSize.width(),  newSize.width(),  m_maxSize.width()  ),
                                 qBound(m_minSize.height(), newSize.height(), m_maxSize.height() ) );

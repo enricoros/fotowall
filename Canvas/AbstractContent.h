@@ -27,7 +27,7 @@ class Frame;
 class MirrorItem;
 class QGraphicsTextItem;
 class QPointF;
-
+class PE_AbstractSlider;
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
 class AbstractContent : public AbstractDisposeable
@@ -52,6 +52,11 @@ class AbstractContent : public AbstractDisposeable
         void resizeContents(const QRect & rect, bool keepRatio = false);
         void resetContentsRatio();
         void delayedDirty(int ms = 400);
+
+        // position
+        QPointF previousPos() const;
+        void setPreviousPos(const QPointF& previousPos);
+        void setPosUndo(const QPointF& pos);
 
         // frame (and frame text)
         void setFrame(Frame * frame);
@@ -82,7 +87,7 @@ class AbstractContent : public AbstractDisposeable
 
         // to be reimplemented by subclasses
         virtual QString contentName() const = 0;
-        virtual bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        virtual bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
         virtual void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         virtual void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio) = 0;
         virtual QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
@@ -124,9 +129,11 @@ class AbstractContent : public AbstractDisposeable
         // ::QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
         void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void keyPressEvent(QKeyEvent * event);
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
@@ -137,11 +144,18 @@ class AbstractContent : public AbstractDisposeable
         void slotStackLower();
         void slotStackBack();
         void slotSaveAs();
+        void slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *);
+        void slotReleasePerspectivePane();
+        void slotOpacityChanged();
+        void slotOpacityChanging();
 
     private:
         void createCorner(Qt::Corner corner, bool noRescale);
         void layoutChildren();
         void applyTransforms();
+        PE_AbstractSlider   *m_opacitySlider;
+        QTransform          m_previousTransform;
+        QPointF             m_previousPos;
         QRect               m_contentRect;
         QRectF              m_frameRect;
         Frame *             m_frame;
@@ -154,10 +168,13 @@ class AbstractContent : public AbstractDisposeable
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;
         QPointF             m_perspectiveAngles;
+        QPointF             m_previousPerspectiveAngles;
 #if QT_VERSION < 0x040600
         double              m_rotationAngle;
 #endif
         int                 m_fxIndex;
+
+        qreal               m_opacity;
 
     private Q_SLOTS:
         void slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);
