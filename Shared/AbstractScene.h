@@ -23,8 +23,8 @@
 class AbstractScene : public QGraphicsScene
 {
     Q_OBJECT
-    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY scenePerspectiveChanged)
-    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY sceneRotationChanged)
+    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective_ NOTIFY scenePerspectiveChanged)
+    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation_ NOTIFY sceneRotationChanged)
     public:
         AbstractScene(QObject * parent = 0);
 
@@ -49,8 +49,10 @@ class AbstractScene : public QGraphicsScene
 
         // properties
         void setPerspective(const QPointF & angles);
+        void setPerspective_(const QPointF & angles);
         QPointF perspective() const;
         void setRotation(qreal rotation);
+        void setRotation_(qreal rotation);
         qreal rotation() const;
 
     Q_SIGNALS:
@@ -64,7 +66,7 @@ class AbstractScene : public QGraphicsScene
 
     private:
         QPointF m_perspectiveAngles;
-        qreal m_rotationAngle;
+        qreal m_rotationAngle = 0;
 };
 
 #endif

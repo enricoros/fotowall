@@ -43,6 +43,7 @@
 #endif
 
 #include "Canvas/Canvas.h" // for CommandStack helpers
+
 bool do_canvas_command(QObject * maybeCanvas, QUndoCommand* command)
 {
     if(maybeCanvas == nullptr)
@@ -1059,7 +1060,7 @@ void AbstractContent::slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *)
 void AbstractContent::slotReleasePerspectivePane()
 {
     PaneWidget *w = qobject_cast<PaneWidget*>(sender());
-    PerspectiveCommand *tc = new PerspectiveCommand(this, m_previousPerspectiveAngles, w->endValue());
+    auto *tc = new PerspectiveCommand(this, m_previousPerspectiveAngles, w->endValue());
     do_canvas_command(scene(), tc);
     m_previousPerspectiveAngles = w->endValue();
 }

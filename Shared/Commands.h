@@ -33,6 +33,13 @@
 #include <QStringList>
 #include <QUrl>
 
+// Unique ID for each command that requires mergeWith
+enum class CommandsID
+{
+    PerspectiveCommand = 0,
+    SceneRotationCommand
+};
+
 class EffectCommand : public QUndoCommand {
   private:
     QList<PictureEffect> m_previousEffects;
@@ -120,24 +127,70 @@ class TextCommand : public QUndoCommand {
     }
 };
 
+// T is AbstractContent or AbstractScne
+template <typename T = AbstractContent>
 class PerspectiveCommand : public QUndoCommand {
   private:
-    AbstractContent* m_content;
+    T * m_content;
     QPointF m_previous, m_new;
 
   public:
-    PerspectiveCommand(AbstractContent* content, const QPointF& p, const QPointF& n)
+    PerspectiveCommand(T* content, const QPointF& p, const QPointF& n)
         : QUndoCommand(QObject::tr("Perspective")), m_content(content), m_previous(p), m_new(n) {
     }
 
     void redo() override {
         m_content->setPerspective(m_new);
-        qDebug() << "set perspective " << m_previous << " -> " << m_new;
     }
 
     void undo() override {
         m_content->setPerspective(m_previous);
-        qDebug() << "set perspective " << m_new << " -> " << m_previous;
+    }
+
+    int id() const override
+    {
+        return static_cast<int>(CommandsID::PerspectiveCommand);
+    }
+
+    bool mergeWith(const QUndoCommand *command) override
+    {
+        if (command->id() != id()) // make sure other is also a PerspectiveCommand
+            return false;
+        auto * other = static_cast<const PerspectiveCommand<T>*>(command);
+        m_new = other->m_new;
+        return true;
+    }
+};
+
+class SceneRotationCommand : public QUndoCommand {
+  private:
+    AbstractScene * m_scene = nullptr;
+    qreal m_previous, m_new;
+
+  public:
+    SceneRotationCommand(AbstractScene * scene, qreal p, qreal n)
+        : QUndoCommand(QObject::tr("Scene Rotation")), m_scene(scene), m_previous(p), m_new(n) {
+    }
+
+    int id() const override
+    {
+        return static_cast<int>(CommandsID::SceneRotationCommand);
+    }
+
+    void redo() override {
+        m_scene->setRotation(m_new);
+    }
+    void undo() override {
+        m_scene->setRotation(m_previous);
+    }
+
+    bool mergeWith(const QUndoCommand *command) override
+    {
+        if (command->id() != id()) // make sure other is also a SceneRotationCommand
+            return false;
+        auto * other = static_cast<const SceneRotationCommand*>(command);
+        m_new = other->m_new;
+        return true;
     }
 };
 
