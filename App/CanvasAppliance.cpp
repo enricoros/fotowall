@@ -100,9 +100,9 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     // set the startup project mode
     setProjectMode(extCanvas->modeInfo()->projectMode());
 
-    ui.undoButton->setShortcut(QKeySequence("Ctrl+Z"));
+    ui.undoButton->setToolTip(QString(tr("Undo (%1)")).arg(ui.undoButton->shortcut().toString()));
     connect(ui.undoButton, SIGNAL(clicked()), m_extCanvas, SLOT(undoSlot()));
-    ui.redoButton->setShortcut(QKeySequence("Ctrl+Shift+Z"));
+    ui.redoButton->setToolTip(QString(tr("Redo (%1)")).arg(ui.redoButton->shortcut().toString()));
     connect(ui.redoButton, SIGNAL(clicked()), m_extCanvas, SLOT(redoSlot()));
 }
 
