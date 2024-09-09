@@ -35,19 +35,6 @@ class AbstractCommand : public QObject {
     AbstractCommand(const QList<AbstractContent*>& content)
         : m_content(content) {}
 
-    virtual bool replaceContent(const QList<const void*> old, const QList<AbstractContent*> content) {
-        for (int i = 0; i < m_content.size(); ++i) {
-            AbstractContent* old_c = m_content[i];
-            for (int j = 0; j < old.size(); ++j) {
-                if (old[j] == old_c) {
-                    qDebug() << "[AbstractCommand] Replace content in command " << name() << " " << old[j] << " -> " << content[i];
-                    m_content[i] = content[j];
-                }
-            }
-        }
-        return false;
-    }
-
     virtual void exec() = 0;
     virtual void unexec() = 0;
     virtual QString name() const {

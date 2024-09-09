@@ -37,13 +37,6 @@ void GroupedCommands::unexec() {
     }
 }
 
-bool GroupedCommands::replaceContent(const QList<const void*> old, const QList<AbstractContent*> content) {
-    foreach (AbstractCommand* c, m_commands) {
-        c->replaceContent(old, content);
-    }
-    return true;
-}
-
 void GroupedCommands::setName(const QString& name) {
     m_name = name;
 }

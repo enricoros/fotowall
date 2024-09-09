@@ -238,62 +238,28 @@ class MotionCommand : public AbstractCommand {
 /**
  * @brief DeleteContentCommand handles the deletion and reloading of contents
  *
- * - To reduce memory consumption, content deletion effectively removes the content from memory.
- *   The content is saved as XML for future reloading.
- * - Reloading is done by assigning memory for a new content, and loading it
- *   from the XML backup. This new content, having been assigned a new address
- *   different from the one previously used in the command stack, it is
- *   necessary to swap the old and new address in the whole command stack.
+ * WARNING: Deleting a large amount of content will keep them in memory until the command stack is cleared. This can lead to high memory consumption
  */
 class DeleteContentCommand : public AbstractCommand {
-  private:
-    QList<const void*> oldContents;
-    QList<QDomElement> m_contentElts;
     Canvas* m_canvas;
 
   public:
     DeleteContentCommand(const QList<AbstractContent*>& contents, Canvas* canvas)
         : AbstractCommand(contents), m_canvas(canvas) {
-        foreach (AbstractContent* c, contents) {
-            oldContents.push_back((void*)c);
-        }
     }
 
     void exec() {
         qDebug() << "DeleteContentCommand::exec";
-        m_contentElts.clear();
-        oldContents.clear();
         foreach (AbstractContent* content, m_content) {
-            qDebug() << " deleting: " << (void*)content;
-            // Get the content xml info, in order to recreate it correctly
-            QDir t = QDir::currentPath();
-            QDomDocument doc;
-            QDomElement contentElt = doc.createElement("content");
-            content->toXml(contentElt, t); // XXX: why does it need a path ???
-            m_contentElts.push_back(contentElt);
-
-            oldContents.push_back((void*)content);
-            // Actually delete the content
-            m_canvas->deleteContent(content);
+            content->setVisible(false);
         }
     }
 
     void unexec() {
-        qDebug() << (void*)this << "DeleteContentCommand::unexec";
-        QList<AbstractContent*> newContents;
-        foreach (const QDomElement& contentElt, m_contentElts) {
-            // Recreate content from xml
-            AbstractContent* content = m_canvas->addContentFromXml(contentElt);
-            // Content is restored with a new address now
-            newContents.push_back(content);
+        foreach (AbstractContent* content, m_content) {
+            qDebug() << " restoring : " << (void*)content;
+            content->setVisible(true);
         }
-        qDebug() << "content created";
-        qDebug() << oldContents.size();
-
-        qDebug() << "oldcontents0 " << (void*)oldContents[0];
-        qDebug() << "newcontents0 " << (void*)newContents[0];
-        // Now replace old content addresses with new content addresses in stack
-        m_canvas->commandStack().replaceContent(oldContents, newContents);
     }
 
     QString name() const {
@@ -330,10 +296,6 @@ class NewContentCommand : public AbstractCommand {
     void unexec() {
         qDebug() << "NewContentCommand::unexec";
         m_command->exec();
-    }
-
-    virtual bool replaceContent(const QList<const void*> old, const QList<AbstractContent*> content) {
-        return m_command->replaceContent(old, content);
     }
 
     QString name() const {

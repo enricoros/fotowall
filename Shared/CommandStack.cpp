@@ -61,18 +61,6 @@ bool CommandStack::addCommand(AbstractCommand* command) {
     return ret;
 }
 
-void CommandStack::replaceContent(const QList<const void*>& oldContents, const QList<AbstractContent*>& newContents) {
-    qDebug() << "[CommandStack] updating content in stack";
-
-    foreach (AbstractCommand* c, m_undoStack) {
-        c->replaceContent(oldContents, newContents);
-    }
-
-    foreach (AbstractCommand* c, m_redoStack) {
-        c->replaceContent(oldContents, newContents);
-    }
-}
-
 bool CommandStack::isUndoInProgress() const {
     return m_undoInProgress;
 }

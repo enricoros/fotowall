@@ -41,12 +41,6 @@ class CommandStack {
     // (useful for letting Qt manage the moves for exemple)
     bool addCommand(AbstractCommand* command);
 
-    // Recursively map and replace old (deleted) content with their new
-    // (recreated) counterpart
-    // This is used when recreating previously deleted content to update the
-    // pointer addresses in the whole command stack
-    void replaceContent(const QList<const void*>& oldContent, const QList<AbstractContent*>& newContent);
-
     void undoLast();
     void redoLast();
     bool isUndoInProgress() const;
