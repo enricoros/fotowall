@@ -38,7 +38,7 @@ TextConfig::TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent
 void TextConfig::slotOkClicked()
 {
     TextCommand *c = new TextCommand(m_textContent, m_editor->text(Qt::RichText));
-    CommandStack::instance().doCommand(c);
+    do_canvas_command(m_textContent->scene(), c);
 
     emit requestClose();
 }

@@ -17,16 +17,9 @@
 #include "Shared/Commands.h"
 #include "Shared/CommandStack.h"
 
-#include "App/App.h"
-#include "App/Settings.h"
-#include "Frames/Frame.h"
 #include "Shared/CPixmap.h"
 #include "Shared/CroppingDialog.h"
-#include "Shared/PanePropertyEditor.h"
-#include "Shared/PropertyEditors.h"
-#include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
-#include "PictureProperties.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -43,6 +36,14 @@
 #include <QProcess>
 #include <QTimer>
 #include <QUrl>
+
+#include "App/App.h"
+#include "App/Settings.h"
+#include "Frames/Frame.h"
+#include "Shared/PropertyEditors.h"
+#include "Shared/RenderOpts.h"
+#include "PictureProperties.h"
+
 
 PictureContent::PictureContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, spontaneous, false, parent)
@@ -269,8 +270,7 @@ void PictureContent::crop()
     QRect cropRect = dial.getCroppingRect();
     if (!cropRect.isNull()) {
         EffectCommand * command = new EffectCommand(this, PictureEffect(PictureEffect::Crop, 0, cropRect));
-        CommandStack &stack = CommandStack::instance();
-        stack.doCommand(command);
+        do_canvas_command(parent(), command);
     }
 }
 
@@ -647,7 +647,7 @@ void PictureContent::applyPostLoadEffects()
 
 void PictureContent::slotRotate()
 {
-    CommandStack::instance().doCommand(new EffectCommand(this, PictureEffect::Rotate));
+    do_canvas_command(this->parent(), new EffectCommand(this, PictureEffect::Rotate));
     update();
 }
 

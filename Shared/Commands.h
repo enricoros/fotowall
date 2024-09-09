@@ -293,7 +293,7 @@ class DeleteContentCommand : public AbstractCommand {
         qDebug() << "oldcontents0 " << (void*)oldContents[0];
         qDebug() << "newcontents0 " << (void*)newContents[0];
         // Now replace old content addresses with new content addresses in stack
-        CommandStack::instance().replaceContent(oldContents, newContents);
+        m_canvas->commandStack().replaceContent(oldContents, newContents);
     }
 
     QString name() const {
@@ -567,7 +567,10 @@ class ShapeCommand : public AbstractCommand {
         c->setControlPoints(m_pCps);
     }
     QString name() const {
-        return tr("Text Shape");
+        return tr("[ShapeCommand] Text Shape");
+    }
+    QString description() const {
+        return tr("Previous control points: ") + QString(m_pCps.size()) + tr(", new control points: ") + QString(m_nCps.size());
     }
 };
 

@@ -15,7 +15,7 @@
 #include "TextContent.h"
 
 #include "Shared/Commands.h"
-#include "Shared/CommandStack.h"
+#include "Canvas/Canvas.h"
 
 #include "Frames/Frame.h"
 #include "Shared/PropertyEditors.h"
@@ -34,8 +34,8 @@
 #include <QTextFrame>
 #include <QUrl>
 
-TextContent::TextContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, spontaneous, false, parent)
+TextContent::TextContent(bool spontaneous, QGraphicsScene * scene /* canvas */)
+    : AbstractContent(scene, spontaneous, false, 0)
     , m_text(0)
     , m_textRect(0, 0, 0, 0)
     , m_textMargin(4)
@@ -111,6 +111,7 @@ bool TextContent::isShapeEditing() const
 void TextContent::setShapeEditing(bool enabled)
 {
     if (enabled) {
+        add_canvas_command(scene(), new ShapeCommand(this, m_previousCps, m_shapeEditor->controlPoints()));
         // shape editor on
         if (!m_shapeEditor->isVisible()) {
             m_shapeEditor->show();
@@ -350,6 +351,13 @@ void TextContent::selectionChanged(bool selected)
 
 void TextContent::setControlPoints(const QList<QPointF> & cps) {
     m_shapeEditor->setControlPoints(cps);
+    if(cps.size() == 0)
+    {
+        m_shapePath = QPainterPath();
+        m_shapeEditor->setVisible(false);
+    }
+    setShapePath(m_shapePath);
+    updateTextConstraints();
 }
 
 void TextContent::keyPressEvent(QKeyEvent * event)
@@ -393,7 +401,7 @@ void TextContent::setShapePath(const QPainterPath & path)
 void TextContent::slotControlPointChanged(const QList<QPointF >& m_ncps)
 {
     ShapeCommand *c = new ShapeCommand(this, m_previousCps, m_ncps);
-    CommandStack::instance().addCommand(c);
+    add_canvas_command(scene(), c);
     m_previousCps = m_shapeEditor->controlPoints();
 }
 

@@ -126,16 +126,6 @@ MainWindow::MainWindow(QWidget * parent)
     if (App::settings->firstTime())
         App::workflow->stackHelpAppliance();
 #endif
-
-    QAction * undo = new QAction(tr("Undo"), this);
-    undo->setShortcut(tr("CTRL+Z"));
-    connect(undo, SIGNAL(triggered()), this, SLOT(slotUndo()));
-    addAction(undo);
-
-    QAction * redo = new QAction(tr("Redo"), this);
-    redo->setShortcut(tr("CTRL+Y"));
-    connect(redo, SIGNAL(triggered()), this, SLOT(slotRedo()));
-    addAction(redo);
 }
 
 MainWindow::~MainWindow()
@@ -563,17 +553,4 @@ void MainWindow::on_transpBox_toggled(bool transparent)
 
     // remember in settings
     App::settings->setValue("Fotowall/Tranlucent", transparent);
-}
-
-
-void MainWindow::slotUndo()
-{
-    CommandStack &commandStack = CommandStack::instance();
-    commandStack.undoLast();
-}
-
-void MainWindow::slotRedo()
-{
-    CommandStack &commandStack = CommandStack::instance();
-    commandStack.redoLast();
 }

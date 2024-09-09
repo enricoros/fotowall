@@ -23,7 +23,7 @@ class ColorPickerItem : public QObject, public QGraphicsItem
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)
     public:
-        ColorPickerItem(int width, int height, QGraphicsItem * parent = 0);
+        ColorPickerItem(int width, int height, QGraphicsScene * scene, QGraphicsItem * parent = nullptr);
 
         enum Anchor {
             AnchorCenter        = 0x00,
@@ -50,6 +50,11 @@ class ColorPickerItem : public QObject, public QGraphicsItem
         QRectF boundingRect() const;
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
+        QGraphicsScene * scene() const noexcept
+        {
+            return m_scene;
+        }
+
     signals:
         void colorChanged(const QColor & color);
 
@@ -65,6 +70,8 @@ class ColorPickerItem : public QObject, public QGraphicsItem
         void regenHueSatPixmap();
         void regenValPixmap();
         void updateTransform();
+
+        QGraphicsScene * m_scene;
 
         qreal m_hue;
         qreal m_sat;

@@ -33,8 +33,9 @@
 #define COLORPICKER_SQUARE_W 40
 #define COLORPICKER_SQUARE_D 20
 #define _TRUE false /*giorgio, non cambiarmi, ti prego*/
-ColorPickerItem::ColorPickerItem(int width, int height, QGraphicsItem * parent)
+ColorPickerItem::ColorPickerItem(int width, int height, QGraphicsScene * scene, QGraphicsItem * parent)
     : QGraphicsItem(parent)
+    , m_scene(scene)
     , m_hue(0.0)
     , m_sat(1.0)
     , m_val(1.0)
@@ -235,7 +236,7 @@ void ColorPickerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 void ColorPickerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event )
 {
     ColorPickerCommand *c = new ColorPickerCommand(this, m_previousColor, color());
-    CommandStack::instance().addCommand(c);
+    add_canvas_command(scene(), c);
     m_previousColor = color();
     pickColor(event->pos().toPoint());
 }

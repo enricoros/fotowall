@@ -22,7 +22,7 @@ class AbstractContent;
 class CornerItem : public QGraphicsItem
 {
     public:
-        CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * parent);
+        CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * content);
 
         void relayout(const QRect & rect);
 
@@ -52,6 +52,7 @@ class CornerItem : public QGraphicsItem
         qreal m_startRotation;
         QRect m_startContentRect;
         bool m_hidden;
+        QObject * m_parent;
 };
 
 #endif

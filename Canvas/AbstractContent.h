@@ -28,6 +28,18 @@ class MirrorItem;
 class QGraphicsTextItem;
 class QPointF;
 class PE_AbstractSlider;
+class AbstractCommand;
+
+/**
+ * XXX: We need to fetch the undo/redo command stack from the canvas.
+ * Howevers items store the canvas as a QWidget, thus:
+ * - If we can cast to Canvas, then we add the command to the undo stack for that Canvas
+ * - Else we execute the command without adding it to a command stack
+ *
+ * @return true if the command was added to a command stack, false otherwise
+ */
+bool do_canvas_command(QObject * maybeCanvas, AbstractCommand* command);
+bool add_canvas_command(QObject * maybeCanvas, AbstractCommand* command);
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
 class AbstractContent : public AbstractDisposeable
@@ -99,6 +111,11 @@ class AbstractContent : public AbstractDisposeable
         QRectF boundingRect() const;
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+
+        QGraphicsScene * scene() const noexcept
+        {
+            return m_scene;
+        }
 
     Q_SIGNALS:
         // to canvas
@@ -175,6 +192,8 @@ class AbstractContent : public AbstractDisposeable
         int                 m_fxIndex;
 
         qreal               m_opacity;
+
+        QGraphicsScene *m_scene = nullptr;
 
     private Q_SLOTS:
         void slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);

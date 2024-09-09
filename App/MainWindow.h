@@ -72,10 +72,6 @@ class MainWindow : public PlugGui::Container
         bool on_accelTestButton_clicked();
         void on_accelBox_toggled(bool checked);
         void on_transpBox_toggled(bool checked);
-
-        // Undo/redo
-        void slotUndo();
-        void slotRedo();
 };
 
 #endif

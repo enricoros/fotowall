@@ -212,6 +212,7 @@ set(SOURCE_FILES
   ${CMAKE_SOURCE_DIR}/main.cpp)
 
 add_executable(fotowall ${SOURCE_FILES})
+add_compile_definitions(HAS_EXPORTDIALOG)
 target_link_libraries(fotowall Qt5::Gui Qt5::Widgets Qt5::Xml Qt5::Network Qt5::Svg Qt5::OpenGL Qt5::Core Qt5::WebKit Qt5::WebKitWidgets Qt5::PrintSupport X11)
 target_include_directories(fotowall PRIVATE ${CMAKE_SOURCE_DIR}/3rdparty/posterazor/)
 

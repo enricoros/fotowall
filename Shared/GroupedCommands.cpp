@@ -49,7 +49,16 @@ void GroupedCommands::setName(const QString& name) {
 }
 
 QString GroupedCommands::name() const {
-    return QString("[Group] ") + m_name;
+    return QString("[GroupedCommands] ") + m_name;
+}
+
+QString GroupedCommands::description() const {
+    QString commands;
+    foreach (AbstractCommand* c, m_commands)
+    {
+        commands.append("[Command] " + c->name() + ": " + c->description());
+    }
+    return commands;
 }
 
 size_t GroupedCommands::size() const {

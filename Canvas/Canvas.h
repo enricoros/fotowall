@@ -15,6 +15,7 @@
 #ifndef __Canvas_h__
 #define __Canvas_h__
 
+#include "Shared/CommandStack.h"
 #include "Shared/AbstractScene.h"
 #include <QDataStream>
 #include <QDir>
@@ -118,6 +119,12 @@ class Canvas : public AbstractScene
         void loadFromXml(QDomElement & canvasElement);
         AbstractContent * addContentFromXml(const QDomElement &contentElt);
 
+        // accessor to get a reference to the command CommandStack
+        inline CommandStack & commandStack() { return m_commandStack; }
+        // const accessor to get a reference to the command CommandStack
+        inline const CommandStack & commandStack() const { return m_commandStack; }
+
+
     Q_SIGNALS:
         void backConfigChanged();
         void requestContentEditing(AbstractContent * content);
@@ -173,6 +180,8 @@ class Canvas : public AbstractScene
         bool m_embeddedPainting;
         bool m_pendingChanges;
 
+        CommandStack m_commandStack;
+
     private Q_SLOTS:
         friend class AbstractConfig; // HACK here, only to call 1 method
         friend class PixmapButton; // HACK here, only to call 1 method
@@ -198,6 +207,9 @@ class Canvas : public AbstractScene
         void slotMarkChanges();
         void slotResetChanges();
         void slotApplyForce();
+
+        void undoSlot();
+        void redoSlot();
 };
 
 #endif

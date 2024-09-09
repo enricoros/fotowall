@@ -20,13 +20,20 @@
 #include <QMutex>
 #include <QMutexLocker>
 
-/* This class keep a track of all the commands executed. It allows to exec/unexec each command
+/*
+ * This class keep a track of all the commands executed. It allows to exec/unexec each command
  * by calling AbstractCommand virtual functions.
- * It is a singleton, so it can be instancied only once. */
+ */
 class CommandStack {
   public:
-    // Function to get the single instance of the class
-    static CommandStack& instance();
+    CommandStack() = default;
+
+    // delete copy constructor and assignment operator
+    CommandStack(const CommandStack&) = delete;
+    CommandStack& operator=(const CommandStack&) = delete;
+    // delete move constructor and assignment operator
+    CommandStack(CommandStack&&) = delete;
+    CommandStack& operator=(CommandStack&&) = delete;
 
     // Add the command in the stack, and execute it
     bool doCommand(AbstractCommand* command);
@@ -46,12 +53,6 @@ class CommandStack {
     bool isRedoInProgress() const;
 
   private:
-    // Private constructor, so it is impossible to create an instant without using instance()
-    CommandStack();
-
-    // Unable copy
-    CommandStack(const CommandStack&);
-    CommandStack& operator=(const CommandStack&);
 
     bool addCommandSafe(AbstractCommand*);
 
@@ -59,8 +60,8 @@ class CommandStack {
     QMutex m_mutex;
 
     // True when undo/redo in progress
-    bool m_undoInProgress;
-    bool m_redoInProgress;
+    bool m_undoInProgress = false;
+    bool m_redoInProgress = false;
 
   protected:
     QList<AbstractCommand*> m_undoStack;

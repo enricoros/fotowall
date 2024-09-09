@@ -14,11 +14,12 @@ class GroupedCommands : public AbstractCommand {
     void addCommands(QList<AbstractCommand*> commands);
     void addCommand(AbstractCommand* command);
     QList<AbstractCommand*> commands() const;
-    void exec();
-    void unexec();
-    virtual bool replaceContent(const QList<const void*> old, const QList<AbstractContent*> content);
+    void exec() override;
+    void unexec() override;
+    virtual bool replaceContent(const QList<const void*> old, const QList<AbstractContent*> content) override;
 
-    QString name() const;
+    QString name() const override;
+    QString description() const override;
     void setName(const QString&);
     size_t size() const;
 

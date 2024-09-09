@@ -18,15 +18,6 @@
 #include "GroupedCommands.h"
 #include <QDebug>
 #include <QMutexLocker>
-
-CommandStack& CommandStack::instance() {
-    static CommandStack instance; // instance unique cachée dans la fonction. Ne pas oublier le static !
-    return instance;
-}
-
-CommandStack::CommandStack() : m_undoInProgress(false), m_redoInProgress(false) {
-}
-
 bool CommandStack::doCommand(AbstractCommand* command) {
     if (command == 0)
         return false;
@@ -40,7 +31,7 @@ bool CommandStack::doCommand(AbstractCommand* command) {
 bool CommandStack::addCommandSafe(AbstractCommand* command) {
     // Only add command if it is valid and we are not currently undoing/redoing
     // actions
-    if (command == 0 || isUndoInProgress() || isRedoInProgress()) {
+    if (command == nullptr || isUndoInProgress() || isRedoInProgress()) {
         return false;
     }
     // Only add GroupedCommand if they contain at least one element
@@ -48,9 +39,8 @@ bool CommandStack::addCommandSafe(AbstractCommand* command) {
         if (c->size() == 0)
             return false;
     }
-    qDebug() << "add command " << command->name() << ", " << (void*)command << ", " << isUndoInProgress() << ", " << isRedoInProgress();
+    qDebug() << "[CommandStack] add command: \n" << command->name() << "\n " << command->description();
 
-    qDebug() << "passgrounp";
     // Clear redo stack when adding new command
     // NOTE: Could be made configurable to allow redo to occur after
     // modifications have been made to the content. If so, one would need
@@ -58,7 +48,6 @@ bool CommandStack::addCommandSafe(AbstractCommand* command) {
     qDeleteAll(m_redoStack);
     m_redoStack.clear();
 
-    qDebug() << "[CommandStack] add command << " << command->name() << "\t" << command->description();
     m_undoStack.push_back(command);
     return true;
 }

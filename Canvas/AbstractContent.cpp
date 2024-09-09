@@ -43,9 +43,52 @@
 #include <QGraphicsDropShadowEffect>
 #endif
 
+#include "Canvas/Canvas.h" // for CommandStack helpers
+bool do_canvas_command(QObject * maybeCanvas, AbstractCommand* command)
+{
+    if(maybeCanvas == nullptr)
+    {
+        qDebug() << "Failed to add the do command " << command->name() << " to the command stack: parent is null";
+        command->exec();
+    }
+
+    if(auto * canvas = dynamic_cast<Canvas *>(maybeCanvas); canvas != nullptr)
+    {;
+        canvas->commandStack().doCommand(command);
+        return true;
+    }
+    else
+    {
+        qDebug() << "Failed to add command " << command->name() << " to the command stack: element is not a Canvas and does not have a command stack";
+        command->exec();
+        return false;
+    }
+}
+
+bool add_canvas_command(QObject * maybeCanvas, AbstractCommand* command)
+{
+    if(maybeCanvas == nullptr)
+    {
+        qDebug() << "Failed to add command " << command->name() << " to the command stack: parent is null";
+        return false;
+    }
+    if(auto * canvas = dynamic_cast<Canvas *>(maybeCanvas); canvas != nullptr)
+    {
+        canvas->commandStack().addCommand(command);
+        return true;
+    }
+    else
+    {
+        qDebug() << "Failed to add command " << command->name() << " to the command stack: element " << maybeCanvas->objectName() << " is not a Canvas and does not have a command stack";
+
+        return false;
+    }
+}
+
 
 AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noRescale, QGraphicsItem * parent)
     : AbstractDisposeable(fadeIn, parent)
+    , m_scene(scene)
     , m_contentRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)
@@ -220,7 +263,7 @@ void AbstractContent::setPreviousPos(const QPointF& previousPos) {
 void AbstractContent::setPosUndo(const QPointF& pos) {
     m_previousPos = this->pos();
     setPos(pos);
-    CommandStack::instance().addCommand(new MotionCommand(this, m_previousPos, pos));
+    add_canvas_command(scene(), new MotionCommand(this, m_previousPos, pos));
 }
 
 void AbstractContent::setFrame(Frame * frame)
@@ -400,7 +443,7 @@ void AbstractContent::setFxIndex(int index)
     if (m_fxIndex == index)
         return;
     FxCommand * c = new FxCommand(this, m_fxIndex, index);
-    CommandStack::instance().addCommand(c);
+    add_canvas_command(scene(), c);
     m_fxIndex = index;
     // apply graphics effect
 #if QT_VERSION >= 0x040600
@@ -1027,7 +1070,7 @@ void AbstractContent::layoutChildren()
 
 void AbstractContent::slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *)
 {
-    CommandStack::instance().addCommand(new PerspectiveCommand(this, m_previousPerspectiveAngles, m_perspectiveAngles));
+    add_canvas_command(scene(), new PerspectiveCommand(this, m_previousPerspectiveAngles, m_perspectiveAngles));
     m_previousPerspectiveAngles = m_perspectiveAngles;
 }
 
@@ -1035,7 +1078,7 @@ void AbstractContent::slotReleasePerspectivePane()
 {
     PaneWidget *w = qobject_cast<PaneWidget*>(sender());
     PerspectiveCommand *tc = new PerspectiveCommand(this, m_previousPerspectiveAngles, w->endValue());
-    CommandStack::instance().addCommand(tc);
+    add_canvas_command(scene(), tc);
     m_previousPerspectiveAngles = w->endValue();
 }
 
@@ -1046,7 +1089,7 @@ void AbstractContent::slotOpacityChanging()
 
 void AbstractContent::slotOpacityChanged()
 {
-  CommandStack::instance().addCommand(new OpacityCommand(this, m_opacity, contentOpacity()));
+  add_canvas_command(scene(), new OpacityCommand(this, m_opacity, contentOpacity()));
   m_opacity = contentOpacity();
 }
 

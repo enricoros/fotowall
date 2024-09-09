@@ -25,14 +25,14 @@
 #include <QStyleOptionGraphicsItem>
 #include <math.h>
 
-CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * parent)
-    : QGraphicsItem(parent)
-    , m_content(parent)
+CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * content)
+    : QGraphicsItem(content)
+    , m_content(content)
     , m_corner(corner)
     , m_opMask(rotateOnly ? Rotate | FixRotate : AllowAll)
     , m_side(8)
     , m_operation(Off)
-    , m_startRotation(parent->rotation())
+    , m_startRotation(content->rotation())
     , m_hidden(false)
 {
     setAcceptHoverEvents(true);
@@ -172,7 +172,7 @@ void CornerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
     RotateAndResizeCommand *command = new RotateAndResizeCommand(m_content, m_startRotation, m_content->rotation(),
                                                                 m_startContentRect, m_content->contentRect());
-    CommandStack::instance().addCommand(command);
+    add_canvas_command(m_content->scene(), command);
 
     // clicked
     if (accepted) {
