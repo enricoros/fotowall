@@ -14,9 +14,6 @@
 
 #include "App/MainWindow.h"
 
-#include "Shared/CommandStack.h"
-#include "Shared/Commands.h"
-
 #include "3rdparty/likebackfrontend/LikeBack.h"
 #include "Shared/BreadCrumbBar.h"
 #include "Shared/ButtonsDialog.h"

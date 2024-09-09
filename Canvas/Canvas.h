@@ -15,7 +15,7 @@
 #ifndef __Canvas_h__
 #define __Canvas_h__
 
-#include "Shared/CommandStack.h"
+#include <QUndoStack>
 #include "Shared/AbstractScene.h"
 #include <QDataStream>
 #include <QDir>
@@ -120,9 +120,9 @@ class Canvas : public AbstractScene
         AbstractContent * addContentFromXml(const QDomElement &contentElt);
 
         // accessor to get a reference to the command CommandStack
-        inline CommandStack & commandStack() { return m_commandStack; }
+        inline QUndoStack & commandStack() { return *m_commandStack; }
         // const accessor to get a reference to the command CommandStack
-        inline const CommandStack & commandStack() const { return m_commandStack; }
+        inline const QUndoStack & commandStack() const { return *m_commandStack; }
 
 
     Q_SIGNALS:
@@ -180,7 +180,7 @@ class Canvas : public AbstractScene
         bool m_embeddedPainting;
         bool m_pendingChanges;
 
-        CommandStack m_commandStack;
+        QUndoStack * m_commandStack;
 
     private Q_SLOTS:
         friend class AbstractConfig; // HACK here, only to call 1 method

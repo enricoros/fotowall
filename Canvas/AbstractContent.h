@@ -19,6 +19,7 @@
 #include "3rdparty/enricomath.h"
 #include <QDomElement>
 #include <QDir>
+#include <QUndoCommand>
 class AbstractConfig;
 class ButtonItem;
 class ContentProperties;
@@ -28,7 +29,6 @@ class MirrorItem;
 class QGraphicsTextItem;
 class QPointF;
 class PE_AbstractSlider;
-class AbstractCommand;
 
 /**
  * XXX: We need to fetch the undo/redo command stack from the canvas.
@@ -38,8 +38,8 @@ class AbstractCommand;
  *
  * @return true if the command was added to a command stack, false otherwise
  */
-bool do_canvas_command(QObject * maybeCanvas, AbstractCommand* command);
-bool add_canvas_command(QObject * maybeCanvas, AbstractCommand* command);
+bool do_canvas_command(QObject * maybeCanvas, QUndoCommand* command);
+bool add_canvas_command(QObject * maybeCanvas, QUndoCommand* command);
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
 class AbstractContent : public AbstractDisposeable

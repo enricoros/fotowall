@@ -12,17 +12,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "Shared/GroupedCommands.h"
 #include "CanvasAppliance.h"
 
-#include "Shared/CommandStack.h"
-#include "Shared/Commands.h"
-#include "Shared/GroupedCommands.h"
 #include <QShortcut>
 
 #include "Canvas/CanvasModeInfo.h"
 #include "Canvas/CanvasViewContent.h"
 #include "Canvas/Canvas.h"
+#include "Shared/Commands.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/PanePropertyEditor.h"
 #include "Shared/VideoProvider.h"
@@ -520,7 +517,7 @@ void CanvasAppliance::slotProjectComboActivated(int index)
 {
     CanvasModeInfo previousMode = *m_extCanvas->modeInfo();
     setProjectMode(projectModeFromComboIndex(index));
-    m_extCanvas->commandStack().addCommand(
+    m_extCanvas->commandStack().push(
         new ProjectModeCommand(this,
                                previousMode,
                                *m_extCanvas->modeInfo()));
@@ -530,14 +527,16 @@ void CanvasAppliance::slotSetBackMode(QAction* action)
 {
     Canvas::BackMode mode = (Canvas::BackMode)action->property("modeId").toInt();
     BackgroundModeCommand *command = new BackgroundModeCommand(m_extCanvas, m_extCanvas->backMode(), mode);
-    m_extCanvas->commandStack().doCommand(command);
+    command->redo();
+    m_extCanvas->commandStack().push(command);
 }
 
 void CanvasAppliance::slotSetBackRatio(QAction* action)
 {
     Qt::AspectRatioMode ratio = (Qt::AspectRatioMode)action->property("ratioId").toInt();
     BackgroundRatioCommand *command = new BackgroundRatioCommand(m_extCanvas, m_extCanvas->backContentRatio(), ratio);
-    m_extCanvas->commandStack().doCommand(command);
+    command->redo();
+    m_extCanvas->commandStack().push(command);
 }
 
 void CanvasAppliance::slotArrangeForceField(bool checked)
@@ -564,14 +563,16 @@ void CanvasAppliance::slotDecoTopBar(bool checked)
 {
     QAction *aTop = qobject_cast<QAction *>(sender());
     DecoTopBarCommand *c = new DecoTopBarCommand(m_extCanvas, aTop, checked);
-    m_extCanvas->commandStack().doCommand(c);
+    c->redo();
+    m_extCanvas->commandStack().push(c);
 }
 
 void CanvasAppliance::slotDecoBottomBar(bool checked)
 {
     QAction *aBottom = qobject_cast<QAction *>(sender());
     DecoBottomBarCommand *c = new DecoBottomBarCommand(m_extCanvas, aBottom, checked);
-    m_extCanvas->commandStack().doCommand(c);
+    c->redo();
+    m_extCanvas->commandStack().push(c);
 }
 
 void CanvasAppliance::slotDecoSetTitle()
@@ -581,7 +582,8 @@ void CanvasAppliance::slotDecoSetTitle()
     QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_extCanvas->titleText(), &ok);
     if (ok) {
         DecoTitleCommand *c = new DecoTitleCommand(m_extCanvas, title);
-        m_extCanvas->commandStack().doCommand(c);
+        c->redo();
+        m_extCanvas->commandStack().push(c);
     }
 
     // set a dummy title, if none
@@ -593,7 +595,8 @@ void CanvasAppliance::slotDecoSetTitle()
 void CanvasAppliance::slotDecoClearTitle()
 {
     DecoTitleCommand *c = new DecoTitleCommand(m_extCanvas, QString());
-    m_extCanvas->commandStack().doCommand(c);
+    c->redo();
+    m_extCanvas->commandStack().push(c);
 }
 
 bool CanvasAppliance::slotFileLoad()

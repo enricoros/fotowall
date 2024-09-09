@@ -147,8 +147,6 @@ set(SOURCE_FILES
   ${CMAKE_SOURCE_DIR}/Frames/PlasmaFrame.h
   ${CMAKE_SOURCE_DIR}/Frames/StandardFrame.cpp
   ${CMAKE_SOURCE_DIR}/Frames/StandardFrame.h
-  ${CMAKE_SOURCE_DIR}/Shared/CommandStack.cpp
-  ${CMAKE_SOURCE_DIR}/Shared/GroupedCommands.cpp
   ${CMAKE_SOURCE_DIR}/Shared/PictureServices/AbstractPictureService.cpp
   ${CMAKE_SOURCE_DIR}/Shared/PictureServices/AbstractPictureService.h
   ${CMAKE_SOURCE_DIR}/Shared/PictureServices/FlickrPictureService.cpp

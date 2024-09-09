@@ -17,7 +17,6 @@
 #include "ColorPickerItem.h"
 
 #include "Shared/Commands.h"
-#include "Shared/CommandStack.h"
 
 #include <QtCore/QtGlobal>
 #include <QtCore/QDebug>

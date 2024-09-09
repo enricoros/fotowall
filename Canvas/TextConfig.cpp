@@ -17,7 +17,6 @@
 #include "TextContent.h"
 
 #include "Shared/Commands.h"
-#include "Shared/CommandStack.h"
 
 TextConfig::TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent)
     : AbstractConfig(textContent, parent)

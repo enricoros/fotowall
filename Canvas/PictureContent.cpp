@@ -15,7 +15,6 @@
 #include "PictureContent.h"
 
 #include "Shared/Commands.h"
-#include "Shared/CommandStack.h"
 
 #include "Shared/CPixmap.h"
 #include "Shared/CroppingDialog.h"

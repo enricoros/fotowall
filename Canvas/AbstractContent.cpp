@@ -14,7 +14,6 @@
 
 #include "AbstractContent.h"
 
-#include "Shared/CommandStack.h"
 #include "Shared/Commands.h"
 
 #include "Frames/FrameFactory.h"
@@ -44,42 +43,43 @@
 #endif
 
 #include "Canvas/Canvas.h" // for CommandStack helpers
-bool do_canvas_command(QObject * maybeCanvas, AbstractCommand* command)
+bool do_canvas_command(QObject * maybeCanvas, QUndoCommand* command)
 {
     if(maybeCanvas == nullptr)
     {
-        qDebug() << "Failed to add the do command " << command->name() << " to the command stack: parent is null";
-        command->exec();
+        qDebug() << "Failed to add the do command " << command->text() << " to the command stack: parent is null";
+        command->redo();
     }
 
     if(auto * canvas = dynamic_cast<Canvas *>(maybeCanvas); canvas != nullptr)
     {;
-        canvas->commandStack().doCommand(command);
+        canvas->commandStack().push(command);
+        command->redo(); // execute command immediately
         return true;
     }
     else
     {
-        qDebug() << "Failed to add command " << command->name() << " to the command stack: element is not a Canvas and does not have a command stack";
-        command->exec();
+        qDebug() << "Failed to add command " << command->text() << " to the command stack: element is not a Canvas and does not have a command stack";
+        command->redo();
         return false;
     }
 }
 
-bool add_canvas_command(QObject * maybeCanvas, AbstractCommand* command)
+bool add_canvas_command(QObject * maybeCanvas, QUndoCommand* command)
 {
     if(maybeCanvas == nullptr)
     {
-        qDebug() << "Failed to add command " << command->name() << " to the command stack: parent is null";
+        qDebug() << "Failed to add command " << command->text() << " to the command stack: parent is null";
         return false;
     }
     if(auto * canvas = dynamic_cast<Canvas *>(maybeCanvas); canvas != nullptr)
     {
-        canvas->commandStack().addCommand(command);
+        canvas->commandStack().push(command);
         return true;
     }
     else
     {
-        qDebug() << "Failed to add command " << command->name() << " to the command stack: element " << maybeCanvas->objectName() << " is not a Canvas and does not have a command stack";
+        qDebug() << "Failed to add command " << command->text() << " to the command stack: element " << maybeCanvas->objectName() << " is not a Canvas and does not have a command stack";
 
         return false;
     }

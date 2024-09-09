@@ -25,10 +25,7 @@ HEADERS += \
     Shared/PropertyEditors.h \
     Shared/RenderOpts.h \
     Shared/VideoProvider.h \
-    Shared/AbstractCommand.h \
-    Shared/Commands.h \
-    Shared/GroupedCommands.h \
-    Shared/CommandStack.h
+    Shared/Commands.h
 
 
 SOURCES += \
@@ -54,9 +51,7 @@ SOURCES += \
     Shared/PixmapButton.cpp \
     Shared/PropertyEditors.cpp \
     Shared/MetaXmlReader.cpp \
-    Shared/VideoProvider.cpp \
-    Shared/CommandStack.cpp \
-    Shared/GroupedCommands.cpp
+    Shared/VideoProvider.cpp
 
 FORMS += \
     Shared/CroppingDialog.ui \

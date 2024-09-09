@@ -14,15 +14,12 @@
 
 #include "Canvas.h"
 
-#include "Shared/CommandStack.h"
-#include "Shared/Commands.h"
-#include "Shared/GroupedCommands.h"
-
 #include "App/App.h"    // this violates insulation (only for the pic service)
 #include "Shared/PictureServices/AbstractPictureService.h"
 #include "Shared/ColorPickerItem.h"
 #include "Shared/HighlightItem.h"
 #include "Shared/RenderOpts.h"
+#include "Shared/Commands.h"
 #include "CanvasModeInfo.h"
 #include "CanvasViewContent.h"
 #include "PictureContent.h"
@@ -58,7 +55,7 @@ Canvas::Canvas(int sDpiX, int sDpiY, QObject *parent) :
         AbstractScene(parent), m_filePath(), m_fileAbsDir(), m_modeInfo(new CanvasModeInfo), m_backMode(
                 BackGradient), m_backContent(0), m_backContentRatio(Qt::KeepAspectRatioByExpanding), m_topBarEnabled(
                 false), m_bottomBarEnabled(false), m_forceFieldTimer(0), m_embeddedPainting(false), m_pendingChanges(
-                false) {
+                false), m_commandStack(new QUndoStack(parent)) {
     // init modeinfo
     m_modeInfo->setScreenDpi(sDpiX, sDpiY);
 
@@ -176,7 +173,7 @@ void Canvas::addCanvasViewContent(const QStringList & fwFilePaths) {
             addedCanvas << d;
         }
     }
-    m_commandStack.addCommand(new NewContentCommand(addedCanvas, this));
+    m_commandStack->push(new NewContentCommand(addedCanvas, this));
 }
 
 QList<AbstractContent*> Canvas::addPictureContent(const QStringList & picFilePaths) {
@@ -199,7 +196,7 @@ QList<AbstractContent*> Canvas::addPictureContent(const QStringList & picFilePat
             addedPictures << p;
         }
     }
-    m_commandStack.addCommand(new NewContentCommand(addedPictures, this));
+    m_commandStack->push(new NewContentCommand(addedPictures, this));
     return addedPictures;
 }
 
@@ -213,7 +210,7 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url) {
         p = 0;
     } else {
         p->setSelected(true);
-        m_commandStack.addCommand(new NewContentCommand(p, this));
+        m_commandStack->push(new NewContentCommand(p, this));
     }
     return p;
 }
@@ -228,7 +225,7 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url, QNetworkRep
         p = 0;
     } else {
         p->setSelected(true);
-        m_commandStack.addCommand(new NewContentCommand(p, this));
+        m_commandStack->push(new NewContentCommand(p, this));
     }
     return p;
 }
@@ -237,7 +234,7 @@ TextContent* Canvas::addTextContent() {
     clearSelection();
     TextContent * t = createText(visibleCenter(), true);
     if(t != 0) {
-      m_commandStack.addCommand(new NewContentCommand(t, this));
+      m_commandStack->push(new NewContentCommand(t, this));
     }
     t->setSelected(true);
     return t;
@@ -247,8 +244,7 @@ WebcamContent* Canvas::addWebcamContent(int webcamIndex) {
     clearSelection();
     WebcamContent * w = createWebcam(webcamIndex, visibleCenter(), true);
     if (w != 0) {
-        m_commandStack.addCommand(
-                new NewContentCommand(w, this));
+        m_commandStack->push(new NewContentCommand(w, this));
     }
     w->setSelected(true);
     return w;
@@ -258,7 +254,7 @@ WordcloudContent* Canvas::addWordcloudContent() {
     clearSelection();
     WordcloudContent * w = createWordcloud(visibleCenter(), true);
     if (w != 0) {
-        m_commandStack.addCommand(new NewContentCommand(w, this));
+        m_commandStack->push(new NewContentCommand(w, this));
     }
     w->manualInitialization();
     w->setSelected(true);
@@ -303,7 +299,7 @@ void Canvas::resize(const QSize & size) {
 }
 
 void Canvas::resizeEvent() {
-    GroupedCommands *gc = new GroupedCommands("Resize Canvas");
+    m_commandStack->beginMacro(tr("Resize Canvas"));
 
     // XXX handle undo for these too
     // relayout contents
@@ -317,14 +313,14 @@ void Canvas::resizeEvent() {
     foreach (AbstractContent * content, m_content) {
         content->ensureVisible(sceneRect());
         MotionCommand *c = new MotionCommand(content, content->previousPos(), content->pos());
-        gc->addCommand(c);
+        m_commandStack->push(c);
     }
     foreach (AbstractConfig * config, m_configs) {
         // XXX should handle undo for config as well
         config->keepInBoundaries(sceneRect());
     }
 
-    m_commandStack.addCommand(gc);
+    m_commandStack->endMacro();
 
     // reblink after mobile relayout
 #if defined(MOBILE_UI)
@@ -383,15 +379,14 @@ void Canvas::setForceFieldEnabled(bool enabled) {
 
     if(!enabled)
     {
-      GroupedCommands *gc = 0;
       MotionCommand *mc = 0;
-      gc = new GroupedCommands("Force Field");
+      m_commandStack->beginMacro(tr("Force Field"));
       foreach(AbstractContent *c, m_content)
       {
         mc = new MotionCommand(c, c->previousPos(), c->pos());
-        gc->addCommand(mc);
+        m_commandStack->push(mc);
       }
-      m_commandStack.addCommand(gc);
+      m_commandStack->endMacro();
     }
 }
 
@@ -413,7 +408,7 @@ bool Canvas::forceFieldEnabled() const {
 #endif
 
 void Canvas::randomizeContents(bool position, bool rotation, bool opacity) {
-    GroupedCommands *gc = new GroupedCommands("Randomize Contents");
+    m_commandStack->beginMacro(tr("Randomize Contents"));
     QRectF r = sceneRect();
     r.adjust(r.width() / 6, r.height() / 6, -r.width() / 6, -r.height() / 6);
     foreach (AbstractContent * content, m_content) {
@@ -423,14 +418,14 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity) {
             QPointF pos(r.left() + (qrand() % (int) r.width()),
                     r.top() + (qrand() % (int) r.height()));
             ANIMATE_PARAM(content, "pos", 200, pos);
-            gc->addCommand(new MotionCommand(content, content->pos(), pos));
+            m_commandStack->push(new MotionCommand(content, content->pos(), pos));
         }
 
         // randomize rotation
         if (rotation) {
             int rot = -30 + (qrand() % 60);
             ANIMATE_PARAM(content, "rotation", 1000, rot);
-            gc->addCommand(
+            m_commandStack->push(
                     new RotateAndResizeCommand(content, content->rotation(), rot,
                             content->contentRect(), content->contentRect()));
         }
@@ -441,11 +436,11 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity) {
             qreal opa = 0.5 + (qreal) (qrand() % 100) / 99.0;
           //  ANIMATE_PARAM(content, "contentOpacity", 2000, opacity);
             OpacityCommand *oc = new OpacityCommand(content, content->contentOpacity(), opa);
-            oc->exec();
-            gc->addCommand(oc);
+            oc->redo();
+            m_commandStack->push(oc);
         }
     }
-    m_commandStack.addCommand(gc);
+    m_commandStack->endMacro();
 }
 
 /// Decorations
@@ -471,7 +466,9 @@ Canvas::BackMode Canvas::backMode() const {
 }
 
 void Canvas::clearBackContent() {
-    m_commandStack.doCommand(new BackgroundContentCommand(this, m_backContent, 0));
+    auto * command = new BackgroundContentCommand(this, m_backContent, 0);
+    command->redo();
+    m_commandStack->push(command);
 }
 
 bool Canvas::backContent() const {
@@ -1076,16 +1073,16 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent * event) {
 }
 
 void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
-    GroupedCommands *gc = new GroupedCommands("Move items");
+    m_commandStack->beginMacro(tr("Move Items"));
     foreach(QGraphicsItem *item, selectedItems()) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(item);
         if (content != nullptr) {
           if(content->previousPos() != content->pos()) {
-            gc->addCommand(new MotionCommand(content, content->previousPos(), content->pos()));
+            m_commandStack->push(new MotionCommand(content, content->previousPos(), content->pos()));
           }
         }
     }
-    m_commandStack.addCommand(gc);
+    m_commandStack->endMacro();
     AbstractScene::mouseReleaseEvent(event);
 }
 
@@ -1386,7 +1383,9 @@ void Canvas::slotSelectionChanged() {
 void Canvas::slotBackgroundContent() {
   qDebug() << "Canvas::slotBackgroundContent";
     AbstractContent *back = dynamic_cast<AbstractContent *>(sender());
-    m_commandStack.doCommand(new BackgroundContentCommand(this, m_backContent, back));
+    auto * command = new BackgroundContentCommand(this, m_backContent, back);
+    command->redo();
+    m_commandStack->push(command);
 }
 
 void Canvas::slotConfigureContent(const QPoint & scenePoint) {
@@ -1501,10 +1500,15 @@ void Canvas::slotStackContent(int op) {
 
     // reassign z-levels
     int z = 1;
-    GroupedCommands *gc = new GroupedCommands(tr("Change content stack order"));
+    m_commandStack->beginMacro(tr("Change content stack order"));
     foreach (AbstractContent * content, m_content)
-        gc->addCommand(new StackCommand(content, content->zValue(), z++));
-    m_commandStack.doCommand(gc);
+    {
+        auto * command = new StackCommand(content, content->zValue(), z++);
+        command->redo();
+        m_commandStack->push(command);
+
+    }
+    m_commandStack->endMacro();
 }
 
 void Canvas::slotCollateContent() {
@@ -1539,8 +1543,9 @@ void Canvas::slotDeleteContent() {
             return;
 
     // Undo/redo delete code
-    AbstractCommand *c = new DeleteContentCommand(selectedContent, this);
-    m_commandStack.doCommand(c);
+    auto *command = new DeleteContentCommand(selectedContent, this);
+    command->redo();
+    m_commandStack->push(command);
 
 }
 
@@ -1551,24 +1556,28 @@ void Canvas::slotDeleteConfig() {
 void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all) {
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(
             selectedItems());
-    GroupedCommands *gc = new GroupedCommands(tr("Frame Look"));
+    m_commandStack->beginMacro(tr("Frame Look"));
     foreach (AbstractContent * content, m_content) {
         if (all || content->isSelected()) {
-            gc->addCommand(new FrameCommand(content, frameClass, mirrored));
+            auto * command = new FrameCommand(content, frameClass, mirrored);
+            command->redo();
+            m_commandStack->push(command);
         }
     }
-    m_commandStack.doCommand(gc);
+    m_commandStack->endMacro();
 }
 
 void Canvas::slotApplyEffect(const PictureEffect & effect, bool all) {
     QList<PictureContent *> pictures = projectList<AbstractContent, PictureContent>(m_content);
-    GroupedCommands *gc = new GroupedCommands(tr("Change effects"));
+    m_commandStack->beginMacro(tr("Change effects"));
     foreach (PictureContent * picture, pictures) {
         if (all || picture->isSelected()) {
-            gc->addCommand(new EffectCommand(picture, effect));
+            auto * command = new EffectCommand(picture, effect);
+            command->redo();
+            m_commandStack->push(command);
         }
     }
-    m_commandStack.doCommand(gc);
+    m_commandStack->endMacro();
 }
 
 void Canvas::slotCrop() {
@@ -1579,20 +1588,24 @@ void Canvas::slotCrop() {
 
 void Canvas::slotFlipHorizontally() {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
-    GroupedCommands *gc = new GroupedCommands(tr("Horizontally flip pictures"));
+    m_commandStack->beginMacro(tr("Horizontally flip pictures"));
     foreach (PictureContent * picture, pictures) {
-        gc->addCommand(new EffectCommand(picture, PictureEffect::FlipH));
+        auto * command =new EffectCommand(picture, PictureEffect::FlipH);
+        command->redo();
+        m_commandStack->push(command);
     }
-    m_commandStack.doCommand(gc);
+    m_commandStack->endMacro();
 }
 
 void Canvas::slotFlipVertically() {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
-    GroupedCommands *gc = new GroupedCommands(tr("Vertically flip pictures"));
+    m_commandStack->beginMacro(tr("Vertically flip pictures"));
     foreach (PictureContent * picture, pictures) {
-        gc->addCommand(new EffectCommand(picture, PictureEffect::FlipV));
+        auto * command =new EffectCommand(picture, PictureEffect::FlipV);
+        command->redo();
+        m_commandStack->push(command);
     }
-    m_commandStack.doCommand(gc);
+    m_commandStack->endMacro();
 }
 
 void Canvas::slotTitleColorChanged() {
@@ -1677,10 +1690,12 @@ void Canvas::slotApplyForce() {
 
 void Canvas::undoSlot()
 {
-    commandStack().undoLast();
+    qDebug() << "[Canvas] Undo command: " << commandStack().undoText();
+    commandStack().undo();
 }
 
 void Canvas::redoSlot()
 {
-    commandStack().redoLast();
+    qDebug() << "[Canvas] Redo command: " << commandStack().undoText();
+    commandStack().redo();
 }

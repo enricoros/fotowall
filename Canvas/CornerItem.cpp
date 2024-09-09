@@ -18,7 +18,6 @@
 #include "AbstractContent.h"
 
 #include "Shared/Commands.h"
-#include "Shared/CommandStack.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
