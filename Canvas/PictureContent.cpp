@@ -646,7 +646,7 @@ void PictureContent::applyPostLoadEffects()
 
 void PictureContent::slotRotate()
 {
-    do_canvas_command(this->parent(), new EffectCommand(this, PictureEffect::Rotate));
+    do_canvas_command(scene(), new EffectCommand(this, PictureEffect::Rotate));
     update();
 }
 
