@@ -39,7 +39,6 @@ class PE_AbstractSlider;
  * @return true if the command was added to a command stack, false otherwise
  */
 bool do_canvas_command(QObject * maybeCanvas, QUndoCommand* command);
-bool add_canvas_command(QObject * maybeCanvas, QUndoCommand* command);
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
 class AbstractContent : public AbstractDisposeable
@@ -51,7 +50,7 @@ class AbstractContent : public AbstractDisposeable
 #endif
     Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
     Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
-    Q_PROPERTY(int fxIndex READ fxIndex WRITE setFxIndex NOTIFY fxIndexChanged)
+    Q_PROPERTY(int fxIndex READ fxIndex WRITE setFxIndex_ NOTIFY fxIndexChanged)
     public:
         AbstractContent(QGraphicsScene * scene, bool fadeIn, bool noRescale, QGraphicsItem * parent);
         virtual ~AbstractContent();
@@ -90,6 +89,7 @@ class AbstractContent : public AbstractDisposeable
         void setRotation(qreal angle);
         qreal rotation() const;
 #endif
+        void setFxIndex_(int index);
         void setFxIndex(int index);
         int fxIndex() const;
 

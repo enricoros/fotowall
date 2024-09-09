@@ -269,7 +269,7 @@ void PictureContent::crop()
     QRect cropRect = dial.getCroppingRect();
     if (!cropRect.isNull()) {
         EffectCommand * command = new EffectCommand(this, PictureEffect(PictureEffect::Crop, 0, cropRect));
-        do_canvas_command(parent(), command);
+        do_canvas_command(scene(), command);
     }
 }
 

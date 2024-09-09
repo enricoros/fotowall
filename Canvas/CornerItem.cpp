@@ -171,7 +171,7 @@ void CornerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
     RotateAndResizeCommand *command = new RotateAndResizeCommand(m_content, m_startRotation, m_content->rotation(),
                                                                 m_startContentRect, m_content->contentRect());
-    add_canvas_command(m_content->scene(), command);
+    do_canvas_command(m_content->scene(), command);
 
     // clicked
     if (accepted) {

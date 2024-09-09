@@ -41,22 +41,25 @@ class EffectCommand : public QUndoCommand {
     PictureContent* m_content;
 
   public:
-    EffectCommand(PictureContent* content, const PictureEffect& effect) : QUndoCommand(QObject::tr("New Effects")), m_content(content), m_newEffect(effect) {
+    EffectCommand(PictureContent* content, const PictureEffect& effect) :
+        QUndoCommand(QObject::tr("New Effects")), m_content(content), m_newEffect(effect) {
         m_previousEffects = m_content->effects();
         m_previousSize = m_content->contentRect();
-    }
-    void undo() override {
-        PictureContent* c = dynamic_cast<PictureContent*>(m_content);
-        if (!c)
-            return;
-        m_previousSize = c->contentRect();
-        c->addEffect(m_newEffect);
     }
     void redo() override {
         PictureContent* c = dynamic_cast<PictureContent*>(m_content);
         if (!c)
             return;
+        qDebug() << "Redo picture effect";
+        m_previousSize = c->contentRect();
+        c->addEffect(m_newEffect);
+    }
+    void undo() override {
+        PictureContent* c = dynamic_cast<PictureContent*>(m_content);
+        if (!c)
+            return;
 
+        qDebug() << "Undo picture effect";
         c->addEffect(PictureEffect::ClearEffects);
         foreach (PictureEffect effect, m_previousEffects) {
             c->addEffect(effect);
@@ -220,7 +223,6 @@ class DeleteContentCommand : public QUndoCommand {
     }
 
     void redo() override {
-        qDebug() << "DeleteContentCommand::exec";
         foreach (AbstractContent* content, m_contents) {
             content->setVisible(false);
         }
@@ -259,11 +261,9 @@ class NewContentCommand : public QUndoCommand {
         m_command = new DeleteContentCommand(contents, canvas);
     }
     void redo() override {
-        qDebug() << "NewContentCommand:exec: ";
         m_command->undo();
     }
     void undo() override {
-        qDebug() << "NewContentCommand::unexec";
         m_command->redo();
     }
 };
@@ -289,6 +289,9 @@ class FrameCommand : public QUndoCommand {
     void undo() override {
         m_content->setFrame(FrameFactory::createFrame(m_previousClass));
         m_content->setMirrored(m_previousMirror);
+    }
+    bool hasEffect() {
+        return m_previousClass != m_newClass || m_previousMirror != m_newMirror;
     }
 };
 
@@ -390,8 +393,6 @@ class DecoBottomBarCommand : public QUndoCommand {
         m_action->setChecked(m_state);
     }
     void undo() override {
-        qDebug() << "canvas: " << (void*)m_canvas;
-        qDebug() << "action: " << (void*)m_action;
         m_canvas->setBottomBarEnabled(!m_state);
         m_action->setChecked(!m_state);
     }
@@ -449,10 +450,10 @@ class StackCommand : public QUndoCommand {
         m_pZ(pZ), m_nZ(nZ) {
     }
 
-    void redo() const {
+    void redo() override {
         m_content->setZValue(m_nZ);
     }
-    void undo() const {
+    void undo() override {
         m_content->setZValue(m_pZ);
     }
 };
@@ -468,13 +469,13 @@ class ShapeCommand : public QUndoCommand {
         QUndoCommand(QObject::tr("Text Shape changed")), m_content (c), m_pCps(pCps), m_nCps(nCps) {
     }
 
-    void exec() {
+    void redo() override {
         TextContent* c = dynamic_cast<TextContent*>(m_content);
         if (!c)
             return;
         c->setControlPoints(m_nCps);
     }
-    void unexec() {
+    void undo() override {
         TextContent* c = dynamic_cast<TextContent*>(m_content);
         if (!c)
             return;

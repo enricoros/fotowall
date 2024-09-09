@@ -54,7 +54,6 @@ bool do_canvas_command(QObject * maybeCanvas, QUndoCommand* command)
     if(auto * canvas = dynamic_cast<Canvas *>(maybeCanvas); canvas != nullptr)
     {;
         canvas->commandStack().push(command);
-        command->redo(); // execute command immediately
         return true;
     }
     else
@@ -64,27 +63,6 @@ bool do_canvas_command(QObject * maybeCanvas, QUndoCommand* command)
         return false;
     }
 }
-
-bool add_canvas_command(QObject * maybeCanvas, QUndoCommand* command)
-{
-    if(maybeCanvas == nullptr)
-    {
-        qDebug() << "Failed to add command " << command->text() << " to the command stack: parent is null";
-        return false;
-    }
-    if(auto * canvas = dynamic_cast<Canvas *>(maybeCanvas); canvas != nullptr)
-    {
-        canvas->commandStack().push(command);
-        return true;
-    }
-    else
-    {
-        qDebug() << "Failed to add command " << command->text() << " to the command stack: element " << maybeCanvas->objectName() << " is not a Canvas and does not have a command stack";
-
-        return false;
-    }
-}
-
 
 AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noRescale, QGraphicsItem * parent)
     : AbstractDisposeable(fadeIn, parent)
@@ -262,8 +240,7 @@ void AbstractContent::setPreviousPos(const QPointF& previousPos) {
 
 void AbstractContent::setPosUndo(const QPointF& pos) {
     m_previousPos = this->pos();
-    setPos(pos);
-    add_canvas_command(scene(), new MotionCommand(this, m_previousPos, pos));
+    do_canvas_command(scene(), new MotionCommand(this, m_previousPos, pos));
 }
 
 void AbstractContent::setFrame(Frame * frame)
@@ -438,12 +415,17 @@ qreal AbstractContent::rotation() const
 }
 #endif
 
-void AbstractContent::setFxIndex(int index)
+void AbstractContent::setFxIndex_(int index)
 {
     if (m_fxIndex == index)
         return;
-    FxCommand * c = new FxCommand(this, m_fxIndex, index);
-    add_canvas_command(scene(), c);
+    do_canvas_command(
+            scene(),
+            new FxCommand(this, m_fxIndex, index));
+}
+
+void AbstractContent::setFxIndex(int index)
+{
     m_fxIndex = index;
     // apply graphics effect
 #if QT_VERSION >= 0x040600
@@ -1070,7 +1052,7 @@ void AbstractContent::layoutChildren()
 
 void AbstractContent::slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *)
 {
-    add_canvas_command(scene(), new PerspectiveCommand(this, m_previousPerspectiveAngles, m_perspectiveAngles));
+    do_canvas_command(scene(), new PerspectiveCommand(this, m_previousPerspectiveAngles, m_perspectiveAngles));
     m_previousPerspectiveAngles = m_perspectiveAngles;
 }
 
@@ -1078,7 +1060,7 @@ void AbstractContent::slotReleasePerspectivePane()
 {
     PaneWidget *w = qobject_cast<PaneWidget*>(sender());
     PerspectiveCommand *tc = new PerspectiveCommand(this, m_previousPerspectiveAngles, w->endValue());
-    add_canvas_command(scene(), tc);
+    do_canvas_command(scene(), tc);
     m_previousPerspectiveAngles = w->endValue();
 }
 
@@ -1089,7 +1071,7 @@ void AbstractContent::slotOpacityChanging()
 
 void AbstractContent::slotOpacityChanged()
 {
-  add_canvas_command(scene(), new OpacityCommand(this, m_opacity, contentOpacity()));
+  do_canvas_command(scene(), new OpacityCommand(this, m_opacity, contentOpacity()));
   m_opacity = contentOpacity();
 }
 

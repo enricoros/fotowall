@@ -299,9 +299,8 @@ void Canvas::resize(const QSize & size) {
 }
 
 void Canvas::resizeEvent() {
-    m_commandStack->beginMacro(tr("Resize Canvas"));
 
-    // XXX handle undo for these too
+    // FIXME(undo) handle undo for these too
     // relayout contents
     m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
@@ -309,18 +308,23 @@ void Canvas::resizeEvent() {
     foreach (HighlightItem * highlight, m_highlightItems)
         highlight->reposition(sceneRect());
 
-    // ensure visibility
-    foreach (AbstractContent * content, m_content) {
-        content->ensureVisible(sceneRect());
-        MotionCommand *c = new MotionCommand(content, content->previousPos(), content->pos());
-        m_commandStack->push(c);
+
+    if(m_content.size())
+    {
+        m_commandStack->beginMacro(tr("Resize Canvas"));
+        // ensure visibility
+        foreach (AbstractContent * content, m_content) {
+            content->ensureVisible(sceneRect());
+            MotionCommand *c = new MotionCommand(content, content->previousPos(), content->pos());
+            m_commandStack->push(c);
+        }
+        m_commandStack->endMacro();
     }
     foreach (AbstractConfig * config, m_configs) {
         // XXX should handle undo for config as well
         config->keepInBoundaries(sceneRect());
     }
 
-    m_commandStack->endMacro();
 
     // reblink after mobile relayout
 #if defined(MOBILE_UI)
@@ -380,13 +384,16 @@ void Canvas::setForceFieldEnabled(bool enabled) {
     if(!enabled)
     {
       MotionCommand *mc = 0;
-      m_commandStack->beginMacro(tr("Force Field"));
-      foreach(AbstractContent *c, m_content)
+      if(m_content.size())
       {
-        mc = new MotionCommand(c, c->previousPos(), c->pos());
-        m_commandStack->push(mc);
+        m_commandStack->beginMacro(tr("Force Field"));
+        foreach(AbstractContent *c, m_content)
+        {
+          mc = new MotionCommand(c, c->previousPos(), c->pos());
+          m_commandStack->push(mc);
+        }
+        m_commandStack->endMacro();
       }
-      m_commandStack->endMacro();
     }
 }
 
@@ -408,6 +415,8 @@ bool Canvas::forceFieldEnabled() const {
 #endif
 
 void Canvas::randomizeContents(bool position, bool rotation, bool opacity) {
+    if(m_content.isEmpty()) return;
+
     m_commandStack->beginMacro(tr("Randomize Contents"));
     QRectF r = sceneRect();
     r.adjust(r.width() / 6, r.height() / 6, -r.width() / 6, -r.height() / 6);
@@ -1073,17 +1082,22 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent * event) {
 }
 
 void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
+    AbstractScene::mouseReleaseEvent(event);
+    if(selectedItems().isEmpty()) return;
+
     m_commandStack->beginMacro(tr("Move Items"));
+    bool moved = false;
     foreach(QGraphicsItem *item, selectedItems()) {
         AbstractContent * content = dynamic_cast<AbstractContent *>(item);
         if (content != nullptr) {
           if(content->previousPos() != content->pos()) {
             m_commandStack->push(new MotionCommand(content, content->previousPos(), content->pos()));
+            moved = true;
           }
         }
     }
     m_commandStack->endMacro();
-    AbstractScene::mouseReleaseEvent(event);
+    if(!moved) m_commandStack->undo();
 }
 
 void Canvas::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent) {
@@ -1504,9 +1518,7 @@ void Canvas::slotStackContent(int op) {
     foreach (AbstractContent * content, m_content)
     {
         auto * command = new StackCommand(content, content->zValue(), z++);
-        command->redo();
         m_commandStack->push(command);
-
     }
     m_commandStack->endMacro();
 }
@@ -1557,41 +1569,52 @@ void Canvas::slotApplyLook(quint32 frameClass, bool mirrored, bool all) {
     QList<AbstractContent *> selectedContent = projectList<QGraphicsItem, AbstractContent>(
             selectedItems());
     m_commandStack->beginMacro(tr("Frame Look"));
+    bool frameChanged = false;
     foreach (AbstractContent * content, m_content) {
         if (all || content->isSelected()) {
             auto * command = new FrameCommand(content, frameClass, mirrored);
-            command->redo();
-            m_commandStack->push(command);
+            if(command->hasEffect())
+            {
+                frameChanged = true;
+                command->redo();
+                m_commandStack->push(command);
+            }
         }
     }
     m_commandStack->endMacro();
+    if(!frameChanged) m_commandStack->undo();
 }
 
 void Canvas::slotApplyEffect(const PictureEffect & effect, bool all) {
     QList<PictureContent *> pictures = projectList<AbstractContent, PictureContent>(m_content);
     m_commandStack->beginMacro(tr("Change effects"));
+    bool changed = false;
     foreach (PictureContent * picture, pictures) {
         if (all || picture->isSelected()) {
             auto * command = new EffectCommand(picture, effect);
-            command->redo();
             m_commandStack->push(command);
+            changed = true; // XXX: should detect if we do an actual effect change or a no-op
         }
     }
     m_commandStack->endMacro();
+    if(!changed) m_commandStack->undo();
 }
 
 void Canvas::slotCrop() {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
     foreach (PictureContent * picture, pictures)
+    {
         picture->crop();
+    }
 }
 
 void Canvas::slotFlipHorizontally() {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
+    if(pictures.isEmpty()) return;
+
     m_commandStack->beginMacro(tr("Horizontally flip pictures"));
     foreach (PictureContent * picture, pictures) {
-        auto * command =new EffectCommand(picture, PictureEffect::FlipH);
-        command->redo();
+        auto * command = new EffectCommand(picture, PictureEffect::FlipH);
         m_commandStack->push(command);
     }
     m_commandStack->endMacro();
@@ -1599,10 +1622,11 @@ void Canvas::slotFlipHorizontally() {
 
 void Canvas::slotFlipVertically() {
     QList<PictureContent *> pictures = projectList<QGraphicsItem, PictureContent>(selectedItems());
+    if(pictures.isEmpty()) return;
+
     m_commandStack->beginMacro(tr("Vertically flip pictures"));
     foreach (PictureContent * picture, pictures) {
         auto * command =new EffectCommand(picture, PictureEffect::FlipV);
-        command->redo();
         m_commandStack->push(command);
     }
     m_commandStack->endMacro();
@@ -1696,6 +1720,6 @@ void Canvas::undoSlot()
 
 void Canvas::redoSlot()
 {
-    qDebug() << "[Canvas] Redo command: " << commandStack().undoText();
+    qDebug() << "[Canvas] Redo command: " << commandStack().redoText();
     commandStack().redo();
 }

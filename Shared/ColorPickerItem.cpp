@@ -235,7 +235,7 @@ void ColorPickerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 void ColorPickerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event )
 {
     ColorPickerCommand *c = new ColorPickerCommand(this, m_previousColor, color());
-    add_canvas_command(scene(), c);
+    do_canvas_command(scene(), c);
     m_previousColor = color();
     pickColor(event->pos().toPoint());
 }

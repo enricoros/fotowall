@@ -111,7 +111,7 @@ bool TextContent::isShapeEditing() const
 void TextContent::setShapeEditing(bool enabled)
 {
     if (enabled) {
-        add_canvas_command(scene(), new ShapeCommand(this, m_previousCps, m_shapeEditor->controlPoints()));
+        do_canvas_command(scene(), new ShapeCommand(this, m_previousCps, m_shapeEditor->controlPoints()));
         // shape editor on
         if (!m_shapeEditor->isVisible()) {
             m_shapeEditor->show();
@@ -401,7 +401,7 @@ void TextContent::setShapePath(const QPainterPath & path)
 void TextContent::slotControlPointChanged(const QList<QPointF >& m_ncps)
 {
     ShapeCommand *c = new ShapeCommand(this, m_previousCps, m_ncps);
-    add_canvas_command(scene(), c);
+    do_canvas_command(scene(), c);
     m_previousCps = m_shapeEditor->controlPoints();
 }
 

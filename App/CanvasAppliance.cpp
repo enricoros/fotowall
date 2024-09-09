@@ -565,17 +565,19 @@ void CanvasAppliance::slotArrangeShaped()
 
 void CanvasAppliance::slotDecoTopBar(bool checked)
 {
+    if(m_extCanvas->topBarEnabled() && checked || !m_extCanvas->topBarEnabled() && !checked) return;
+
     QAction *aTop = qobject_cast<QAction *>(sender());
     DecoTopBarCommand *c = new DecoTopBarCommand(m_extCanvas, aTop, checked);
-    c->redo();
     m_extCanvas->commandStack().push(c);
 }
 
 void CanvasAppliance::slotDecoBottomBar(bool checked)
 {
+    if(m_extCanvas->bottomBarEnabled() && checked || !m_extCanvas->bottomBarEnabled() && !checked) return;
+
     QAction *aBottom = qobject_cast<QAction *>(sender());
     DecoBottomBarCommand *c = new DecoBottomBarCommand(m_extCanvas, aBottom, checked);
-    c->redo();
     m_extCanvas->commandStack().push(c);
 }
 
@@ -586,7 +588,6 @@ void CanvasAppliance::slotDecoSetTitle()
     QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_extCanvas->titleText(), &ok);
     if (ok) {
         DecoTitleCommand *c = new DecoTitleCommand(m_extCanvas, title);
-        c->redo();
         m_extCanvas->commandStack().push(c);
     }
 
@@ -599,7 +600,6 @@ void CanvasAppliance::slotDecoSetTitle()
 void CanvasAppliance::slotDecoClearTitle()
 {
     DecoTitleCommand *c = new DecoTitleCommand(m_extCanvas, QString());
-    c->redo();
     m_extCanvas->commandStack().push(c);
 }
 
