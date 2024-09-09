@@ -119,10 +119,10 @@ class Canvas : public AbstractScene
         void loadFromXml(QDomElement & canvasElement);
         AbstractContent * addContentFromXml(const QDomElement &contentElt);
 
-        // accessor to get a reference to the command CommandStack
         inline QUndoStack & commandStack() { return *m_commandStack; }
-        // const accessor to get a reference to the command CommandStack
         inline const QUndoStack & commandStack() const { return *m_commandStack; }
+        inline QUndoStack * commandStackPtr() { return m_commandStack; }
+        inline const QUndoStack * commandStackPtr() const { return m_commandStack; }
 
 
     Q_SIGNALS:

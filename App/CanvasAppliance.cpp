@@ -97,10 +97,14 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     // set the startup project mode
     setProjectMode(extCanvas->modeInfo()->projectMode());
 
-    ui.undoButton->setToolTip(QString(tr("Undo (%1)")).arg(ui.undoButton->shortcut().toString()));
+    ui.undoButton->setEnabled(false);
+    m_extCanvas->commandStack().createRedoAction(ui.redoButton, tr("Redo"));
     connect(ui.undoButton, SIGNAL(clicked()), m_extCanvas, SLOT(undoSlot()));
-    ui.redoButton->setToolTip(QString(tr("Redo (%1)")).arg(ui.redoButton->shortcut().toString()));
+    connect(m_extCanvas->commandStackPtr(), SIGNAL(undoTextChanged(const QString &)), this, SLOT(slotUndoTextChanged(const QString &)));
+
+    ui.redoButton->setEnabled(false);
     connect(ui.redoButton, SIGNAL(clicked()), m_extCanvas, SLOT(redoSlot()));
+    connect(m_extCanvas->commandStackPtr(), SIGNAL(redoTextChanged(const QString &)), this, SLOT(slotRedoTextChanged(const QString &)));
 }
 
 CanvasAppliance::~CanvasAppliance()
@@ -728,4 +732,28 @@ void CanvasAppliance::slotVerifyVideoInputs(int count)
         ui.addWebcamLayout->addWidget(p);
         m_webcamButtons.append(p);
     }
+}
+
+void CanvasAppliance::slotUndoTextChanged(const QString & text)
+{
+    QString tooltip = tr("Undo");
+    if(text.size())
+    {
+        tooltip += " " + text;
+    }
+    tooltip += " (" + ui.undoButton->shortcut().toString() + ")";
+    ui.undoButton->setToolTip(tooltip);
+    ui.undoButton->setEnabled(m_extCanvas->commandStack().canUndo());
+}
+
+void CanvasAppliance::slotRedoTextChanged(const QString & text)
+{
+    QString tooltip = tr("Redo");
+    if(text.size())
+    {
+        tooltip += " " + text;
+    }
+    tooltip += " (" + ui.redoButton->shortcut().toString() + ")";
+    ui.redoButton->setToolTip(tooltip);
+    ui.redoButton->setEnabled(m_extCanvas->commandStack().canRedo());
 }

@@ -103,6 +103,9 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 
         // other actions
         void slotVerifyVideoInputs(int count);
+
+        void slotUndoTextChanged(const QString &);
+        void slotRedoTextChanged(const QString &);
 };
 
 #endif
