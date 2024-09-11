@@ -57,7 +57,6 @@ class EffectCommand : public QUndoCommand {
         PictureContent* c = dynamic_cast<PictureContent*>(m_content);
         if (!c)
             return;
-        qDebug() << "Redo picture effect";
         m_previousSize = c->contentRect();
         c->addEffect(m_newEffect);
     }
@@ -66,7 +65,6 @@ class EffectCommand : public QUndoCommand {
         if (!c)
             return;
 
-        qDebug() << "Undo picture effect";
         c->addEffect(PictureEffect::ClearEffects);
         foreach (PictureEffect effect, m_previousEffects) {
             c->addEffect(effect);
