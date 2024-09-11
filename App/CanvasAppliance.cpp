@@ -14,8 +14,6 @@
 
 #include "CanvasAppliance.h"
 
-#include <QShortcut>
-
 #include "Canvas/CanvasModeInfo.h"
 #include "Canvas/CanvasViewContent.h"
 #include "Canvas/Canvas.h"

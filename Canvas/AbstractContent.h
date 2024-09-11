@@ -31,10 +31,12 @@ class QPointF;
 class PE_AbstractSlider;
 
 /**
- * XXX: We need to fetch the undo/redo command stack from the canvas.
- * Howevers items store the canvas as a QWidget, thus:
- * - If we can cast to Canvas, then we add the command to the undo stack for that Canvas
- * - Else we execute the command without adding it to a command stack
+ * Convenience function to push a command to the canvas' undo stack
+ *
+ * We need to fetch the undo/redo command stack from the canvas.
+ * However items store the canvas as a their base QObject, thus:
+ * - If we can cast to Canvas, then we push the command to the undo stack for that Canvas
+ * - Else we still execute the command without adding it to a command stack. Tthis only happens if maybeCanvas is not a canvas, if used properly this should not happen.
  *
  * @return true if the command was added to a command stack, false otherwise
  */
