@@ -123,7 +123,7 @@ class Canvas : public AbstractScene
         inline const QUndoStack & commandStack() const { return *m_commandStack; }
         inline QUndoStack * commandStackPtr() { return m_commandStack; }
         inline const QUndoStack * commandStackPtr() const { return m_commandStack; }
-
+        void pushCurrentContentPositionToCommandStack();
 
     Q_SIGNALS:
         void backConfigChanged();

@@ -157,23 +157,25 @@ void Canvas::addCanvasViewContent(const QStringList & fwFilePaths) {
     QList<AbstractContent*> addedCanvas;
     int offset = -30 * (fwFilePaths.size() - 1) / 2;
     QPoint pos = visibleCenter() + QPoint(offset, offset);
+    m_commandStack->beginMacro(tr("Add Canvas View"));
     foreach (const QString & localFile, fwFilePaths) {
         if (!QFile::exists(localFile))
             continue;
 
         // create picture and load the file
         CanvasViewContent * d = createCanvasView(pos, true);
-        qDebug() << "Canvas::addCanvasViewContent from file: " << localFile;
         if (!d->loadFromFile(localFile, true, true)) {
             m_content.removeAll(d);
             delete d;
         } else {
             d->setSelected(true);
             pos += QPoint(30, 30);
+            m_commandStack->push(new NewContentCommand(d, this));
             addedCanvas << d;
         }
     }
-    m_commandStack->push(new NewContentCommand(addedCanvas, this));
+    m_commandStack->endMacro();
+    if(addedCanvas.isEmpty()) m_commandStack->undo();
 }
 
 QList<AbstractContent*> Canvas::addPictureContent(const QStringList & picFilePaths) {
@@ -181,6 +183,7 @@ QList<AbstractContent*> Canvas::addPictureContent(const QStringList & picFilePat
     QList<AbstractContent*> addedPictures;
     int offset = -30 * (picFilePaths.size() - 1) / 2;
     QPoint pos = visibleCenter() + QPoint(offset, offset);
+    m_commandStack->beginMacro(tr("Add pictures"));
     foreach (const QString & localFile, picFilePaths) {
         if (!QFile::exists(localFile))
             continue;
@@ -193,10 +196,12 @@ QList<AbstractContent*> Canvas::addPictureContent(const QStringList & picFilePat
         } else {
             p->setSelected(true);
             pos += QPoint(30, 30);
+            m_commandStack->push(new NewContentCommand(p, this));
             addedPictures << p;
         }
     }
-    m_commandStack->push(new NewContentCommand(addedPictures, this));
+    m_commandStack->endMacro();
+    if(addedPictures.isEmpty()) m_commandStack->undo();
     return addedPictures;
 }
 
@@ -210,7 +215,9 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url) {
         p = 0;
     } else {
         p->setSelected(true);
+        m_commandStack->beginMacro(tr("Add Network Picture"));
         m_commandStack->push(new NewContentCommand(p, this));
+        m_commandStack->endMacro();
     }
     return p;
 }
@@ -225,7 +232,9 @@ PictureContent* Canvas::addNetworkPictureContent(const QString &url, QNetworkRep
         p = 0;
     } else {
         p->setSelected(true);
+        m_commandStack->beginMacro(tr("Add Network Picture"));
         m_commandStack->push(new NewContentCommand(p, this));
+        m_commandStack->endMacro();
     }
     return p;
 }
@@ -234,7 +243,9 @@ TextContent* Canvas::addTextContent() {
     clearSelection();
     TextContent * t = createText(visibleCenter(), true);
     if(t != 0) {
+      m_commandStack->beginMacro(tr("Add Text Content"));
       m_commandStack->push(new NewContentCommand(t, this));
+      m_commandStack->endMacro();
     }
     t->setSelected(true);
     return t;
@@ -244,7 +255,9 @@ WebcamContent* Canvas::addWebcamContent(int webcamIndex) {
     clearSelection();
     WebcamContent * w = createWebcam(webcamIndex, visibleCenter(), true);
     if (w != 0) {
+        m_commandStack->beginMacro(tr("Add Webcam Content"));
         m_commandStack->push(new NewContentCommand(w, this));
+        m_commandStack->endMacro();
     }
     w->setSelected(true);
     return w;
@@ -254,7 +267,9 @@ WordcloudContent* Canvas::addWordcloudContent() {
     clearSelection();
     WordcloudContent * w = createWordcloud(visibleCenter(), true);
     if (w != 0) {
+        m_commandStack->beginMacro(tr("Add Wordcloud Content"));
         m_commandStack->push(new NewContentCommand(w, this));
+        m_commandStack->endMacro();
     }
     w->manualInitialization();
     w->setSelected(true);
@@ -299,8 +314,8 @@ void Canvas::resize(const QSize & size) {
 }
 
 void Canvas::resizeEvent() {
+    // The resizeEvent only occurs when changing project mode since the canvas is contained within a scroll area. Thus we don't need to save the changes occuring here to the undo stack, as they will be recomputed when the next change of project mode occurs.
 
-    // FIXME(undo) handle undo for these too
     // relayout contents
     m_titleColorPicker->setPos((sceneWidth() - COLORPICKER_W) / 2.0, 10);
     m_grad1ColorPicker->setPos(sceneWidth() - COLORPICKER_W, 0);
@@ -311,17 +326,11 @@ void Canvas::resizeEvent() {
 
     if(m_content.size())
     {
-        m_commandStack->beginMacro(tr("Resize Canvas"));
-        // ensure visibility
         foreach (AbstractContent * content, m_content) {
             content->ensureVisible(sceneRect());
-            MotionCommand *c = new MotionCommand(content, content->previousPos(), content->pos());
-            m_commandStack->push(c);
         }
-        m_commandStack->endMacro();
     }
     foreach (AbstractConfig * config, m_configs) {
-        // XXX should handle undo for config as well
         config->keepInBoundaries(sceneRect());
     }
 
@@ -1555,10 +1564,13 @@ void Canvas::slotDeleteContent() {
             return;
 
     // Undo/redo delete code
-    auto *command = new DeleteContentCommand(selectedContent, this);
-    command->redo();
-    m_commandStack->push(command);
-
+    m_commandStack->beginMacro(tr("Delete %1 content").arg(selectedContent.size()));
+    for(const auto content : selectedContent)
+    {
+        auto *command = new DeleteContentCommand(content, this);
+        m_commandStack->push(command);
+    }
+    m_commandStack->endMacro();
 }
 
 void Canvas::slotDeleteConfig() {
@@ -1723,3 +1735,13 @@ void Canvas::redoSlot()
     qDebug() << "[Canvas] Redo command: " << commandStack().redoText();
     commandStack().redo();
 }
+
+void Canvas::pushCurrentContentPositionToCommandStack()
+{
+    commandStack().beginMacro("Save current content position");
+    for(const auto & c : m_content) {
+        commandStack().push(new MotionCommand(c, c->pos(), c->pos()));
+    }
+    commandStack().endMacro();
+}
+

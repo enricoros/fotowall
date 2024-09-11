@@ -267,25 +267,20 @@ class MotionCommand : public QUndoCommand {
  * WARNING: Deleting a large amount of content will keep them in memory until the command stack is cleared. This can lead to high memory consumption
  */
 class DeleteContentCommand : public QUndoCommand {
-    QList<AbstractContent*> m_contents;
+    AbstractContent* m_content;
     Canvas* m_canvas;
 
   public:
-    DeleteContentCommand(const QList<AbstractContent*>& contents, Canvas* canvas)
-        : QUndoCommand(QObject::tr("Delete content(s)")), m_contents(contents), m_canvas(canvas) {
+    DeleteContentCommand(AbstractContent* content, Canvas* canvas)
+        : QUndoCommand(QObject::tr("Delete content(s)")), m_content(content), m_canvas(canvas) {
     }
 
     void redo() override {
-        foreach (AbstractContent* content, m_contents) {
-            content->setVisible(false);
-        }
+        m_content->setVisible(false);
     }
 
     void undo() override {
-        foreach (AbstractContent* content, m_contents) {
-            qDebug() << " restoring : " << (void*)content;
-            content->setVisible(true);
-        }
+        m_content->setVisible(true);
     }
 };
 
@@ -300,22 +295,15 @@ class NewContentCommand : public QUndoCommand {
 
   public:
     NewContentCommand(AbstractContent* content, Canvas* canvas)
-        : QUndoCommand(QObject::tr("New content"))
+    : QUndoCommand(QObject::tr("New content"))
     {
-        QList<AbstractContent*> contents;
-        contents.push_back(content);
-        init(contents, canvas);
+        m_command = new DeleteContentCommand(content, canvas);
     }
 
-    NewContentCommand(const QList<AbstractContent*>& contents, Canvas* canvas) {
-        init(contents, canvas);
-    }
-    void init(const QList<AbstractContent*>& contents, Canvas* canvas) {
-        m_command = new DeleteContentCommand(contents, canvas);
-    }
     void redo() override {
         m_command->undo();
     }
+
     void undo() override {
         m_command->redo();
     }

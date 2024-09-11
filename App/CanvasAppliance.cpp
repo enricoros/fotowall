@@ -503,7 +503,6 @@ void CanvasAppliance::setProjectMode(const CanvasModeInfo::Mode mode)
       case CanvasModeInfo::ModeCD: setCDProject();                 break;
       case CanvasModeInfo::ModeDVD: setDVDProject();                break;
     }
-    updateProjectMode();
 }
 
 void CanvasAppliance::setProjectMode(const CanvasModeInfo & mode)
@@ -520,11 +519,15 @@ void CanvasAppliance::setProjectMode(const CanvasModeInfo & mode)
 void CanvasAppliance::slotProjectComboActivated(int index)
 {
     CanvasModeInfo previousMode = *m_extCanvas->modeInfo();
+    auto & commandStack = m_extCanvas->commandStack();
+    commandStack.beginMacro("Set Project Mode");
+    m_extCanvas->pushCurrentContentPositionToCommandStack();
     setProjectMode(projectModeFromComboIndex(index));
     m_extCanvas->commandStack().push(
         new ProjectModeCommand(this,
                                previousMode,
                                *m_extCanvas->modeInfo()));
+    commandStack.endMacro();
 }
 
 void CanvasAppliance::slotSetBackMode(QAction* action)

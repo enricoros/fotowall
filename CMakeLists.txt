@@ -3,11 +3,12 @@ project(fotowall)
 
 find_package(Qt5 COMPONENTS REQUIRED Core Widgets Gui Network Svg Xml OpenGL WebKit WebKitWidgets PrintSupport)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 
 set(SOURCE_FILES
   ${CMAKE_SOURCE_DIR}/fotowall.qrc
