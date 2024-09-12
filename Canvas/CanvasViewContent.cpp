@@ -61,7 +61,6 @@ bool CanvasViewContent::loadFromFile(const QString & fwFilePath, bool /*keepRati
 
 bool CanvasViewContent::fromXml(const QDomElement & contentElement, const QDir & baseDir)
 {
-    qDebug() << "CanvasViewContent::fromXml";
     AbstractContent::fromXml(contentElement, baseDir);
 
     // sanity check
