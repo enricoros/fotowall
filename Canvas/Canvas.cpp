@@ -25,6 +25,7 @@
 #include "Shared/HighlightItem.h"
 #include "Shared/PictureServices/AbstractPictureService.h"
 #include "Shared/RenderOpts.h"
+#include "Shared/Compat.h"
 #include "TextConfig.h"
 #include "TextContent.h"
 #include "WebcamContent.h"
@@ -108,20 +109,6 @@ Canvas::Canvas(int sDpiX, int sDpiY, QObject * parent)
 
   // set a placeholder size, the real one will be set on resize
   resize(QSize(1, 1));
-
-  // crazy background stuff
-#if 0
-#  define RP QPointF(-400 + qrand() % 2000, -300 + qrand() % 1500)
-    for ( int i = 0; i < 100; i++ ) {
-        QGraphicsPathItem * p = new QGraphicsPathItem();
-        addItem(p);
-        p->show();
-        p->setPen(QPen(QColor::fromHsv(qrand() % 20, 128 + qrand() % 127, qrand() % 255)));
-        QPainterPath path(RP);
-        path.cubicTo(RP, RP, RP);
-        p->setPath(path);
-    }
-#endif
 }
 
 Canvas::~Canvas()
@@ -327,7 +314,7 @@ QPoint Canvas::visibleCenter() const
   }
   else
     center = sceneRect().center().toPoint();
-  return center + QPoint(2 - (qrand() % 5), 2 - (qrand() % 5));
+  return center + QPoint(2 - (compat::qrand() % 5), 2 - (compat::qrand() % 5));
 }
 
 void Canvas::resize(const QSize & size)
@@ -467,7 +454,7 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity)
     // randomize position
     if(position)
     {
-      QPointF pos(r.left() + (qrand() % (int)r.width()), r.top() + (qrand() % (int)r.height()));
+      QPointF pos(r.left() + (compat::qrand() % (int)r.width()), r.top() + (compat::qrand() % (int)r.height()));
       ANIMATE_PARAM(content, "pos", 200, pos);
       m_commandStack->push(new MotionCommand(content, content->pos(), pos));
     }
@@ -475,7 +462,7 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity)
     // randomize rotation
     if(rotation)
     {
-      int rot = -30 + (qrand() % 60);
+      int rot = -30 + (compat::qrand() % 60);
       ANIMATE_PARAM(content, "rotation", 1000, rot);
       m_commandStack->push(new RotateAndResizeCommand(content, content->rotation(), rot, content->contentRect(),
                                                       content->contentRect()));
@@ -485,7 +472,7 @@ void Canvas::randomizeContents(bool position, bool rotation, bool opacity)
     if(opacity)
     {
       // TODO: undo
-      qreal opa = 0.5 + (qreal)(qrand() % 100) / 99.0;
+      qreal opa = 0.5 + (qreal)(compat::qrand() % 100) / 99.0;
       //  ANIMATE_PARAM(content, "contentOpacity", 2000, opacity);
       OpacityCommand * oc = new OpacityCommand(content, content->contentOpacity(), opa);
       oc->redo();

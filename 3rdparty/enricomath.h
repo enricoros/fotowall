@@ -26,7 +26,6 @@ class Vector3;
 class Quaternion;
 class Matrix3;
 
-
 /**
  * @short 2D Vector
  *

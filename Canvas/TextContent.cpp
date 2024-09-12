@@ -33,6 +33,7 @@
 #include <QTextDocument>
 #include <QTextFrame>
 #include <QUrl>
+#include "Shared/Compat.h"
 
 TextContent::TextContent(bool spontaneous, QGraphicsScene * scene /* canvas */)
 : AbstractContent(scene, spontaneous, false, 0), m_text(0), m_textRect(0, 0, 0, 0), m_textMargin(4), m_shakeRadius(0),
@@ -320,8 +321,8 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::
             QPointF pt = m_shapePath.pointAtPercent(t);
             qreal angle = -m_shapePath.angleAtPercent(t);
             if(m_shakeRadius > 0)
-              pt += QPointF(1 + (qrand() % m_shakeRadius) - m_shakeRadius / 2,
-                            1 + (qrand() % (2 * m_shakeRadius)) - m_shakeRadius);
+              pt += QPointF(1 + (compat::qrand() % m_shakeRadius) - m_shakeRadius / 2,
+                            1 + (compat::qrand() % (2 * m_shakeRadius)) - m_shakeRadius);
 
             // draw rotated letter
             painter->save();

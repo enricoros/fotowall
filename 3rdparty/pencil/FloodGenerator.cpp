@@ -19,6 +19,7 @@
 #include <QDomElement>
 #include <QFile>
 #include <QStringList>
+#include "Shared/Compat.h"
 
 
 FloodPoly FloodGenerator::fromQPainterPath( const QPainterPath & /*painterPath*/ )
@@ -209,7 +210,7 @@ FloodPolys FloodGenerator::starPolys( const FloodPolys & source, double mag )
         for ( ; nIt != nEnd; ++nIt ) {
             FloodPoly::Node & node = *nIt;
             Vector2 v1 = node.point - polyCenter;
-            node.point = polyCenter + v1 * (1.0 + mag * ((double)qrand() / RAND_MAX));
+            node.point = polyCenter + v1 * (1.0 + mag * ((double)compat::qrand() / RAND_MAX));
         }
 
         starred.append( poly );
@@ -228,8 +229,8 @@ FloodPolys FloodGenerator::spreadPolys( const FloodPolys & source, const QRect &
     FloodPolys::const_iterator it = source.begin(), end = source.end();
     for ( ; it != end; ++it ) {
         FloodPoly poly = *it;
-        double hRad = rad + (qrand() % (rad/8));
-        Control2 posPolar( hRad, 2 * M_PI * ((double)qrand() / RAND_MAX) );
+        double hRad = rad + (compat::qrand() % (rad/8));
+        Control2 posPolar( hRad, 2 * M_PI * ((double)compat::qrand() / RAND_MAX) );
         Vector2 posXY = posPolar.toVector2() + center;
         poly.setPos( posXY.x(), posXY.y() );
         spread.append( poly );
@@ -241,7 +242,7 @@ FloodPolys FloodGenerator::heavyPolys( const FloodPolys & source, double G, doub
 {
     FloodPolys polys;
     foreach ( const FloodPoly & poly, source ) {
-        double acc = G * (1 + 2 * ((double)qrand() / RAND_MAX));
+        double acc = G * (1 + 2 * ((double)compat::qrand() / RAND_MAX));
         double dY = acc * dT * dT * 0.5;
 
         // add dY to each node

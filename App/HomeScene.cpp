@@ -20,6 +20,7 @@
 #include "Frames/StandardFrame.h"
 #include "Settings.h"
 #include "Shared/RenderOpts.h"
+#include "Shared/Compat.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
@@ -92,7 +93,7 @@ public:
   {
 #if !defined(MOBILE_UI)
     ANIMATE_PARAM(this, "scale", 300, 1.2);
-    // ANIMATE_PARAM(this, "rotation", 300, (-20 + (qrand() % 41)));
+    // ANIMATE_PARAM(this, "rotation", 300, (-20 + (compat::qrand() % 41)));
 #endif
   }
 
@@ -188,7 +189,7 @@ HomeScene::HomeScene(QObject * parent)
 
 #if defined(HAVE_PENCIL_ITEM)
   // create the pencil item the first time
-  if(App::settings->firstTime() || !(qrand() % 5)) QTimer::singleShot(1000, this, SLOT(slotCreatePencil()));
+  if(App::settings->firstTime() || !(compat::qrand() % 5)) QTimer::singleShot(1000, this, SLOT(slotCreatePencil()));
 #endif
 }
 

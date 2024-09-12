@@ -18,6 +18,7 @@
 #include "FotowallFile.h"
 #include "Shared/GlowEffectWidget.h"
 #include "Shared/PixmapButton.h"
+#include "Shared/Compat.h"
 
 #include <QFile>
 #include <QHBoxLayout>
@@ -68,7 +69,7 @@ void UrlHistoryBox::changeUrls(const QList<QUrl> & urls, bool delayPreview)
     button->setProperty("url", url);
     button->setHoverText(QString::number(i + 1));
     button->setToolTip(url.toString());
-    int mag = (qrand() % 7) + (qrand() % 7);
+    int mag = (compat::qrand() % 7) + (compat::qrand() % 7);
     static bool dir = true;
     dir = !dir;
     int angle = dir ? mag : -mag;

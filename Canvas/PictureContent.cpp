@@ -15,6 +15,7 @@
 #include "PictureContent.h"
 
 #include "Shared/Commands.h"
+#include "Shared/Compat.h"
 
 #include "ButtonItem.h"
 #include "Shared/CPixmap.h"
@@ -592,7 +593,7 @@ void PictureContent::setExternalEdit(bool enabled)
   if(enabled && !m_watcher)
   {
     // save the pic to a file
-    QString tmpFile = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(qrand() % 999999) + ".png";
+    QString tmpFile = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(compat::qrand() % 999999) + ".png";
     if(!m_photo->save(tmpFile, "PNG"))
     {
       qWarning("PictureContent::slotGimpEdit: can't save the image");

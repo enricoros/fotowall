@@ -21,6 +21,7 @@
 #include <QStyle>
 #include <QStyleOptionFocusRect>
 #include <QStyleOptionGraphicsItem>
+#include "Shared/Compat.h"
 
 using namespace Wordcloud;
 
@@ -185,8 +186,8 @@ void WordItem::regeneratePath()
   {
     QTransform pathForm;
     // perspective rotation
-    // pathForm.rotate(-60 + (qrand() % 120), Qt::XAxis);
-    // pathForm.rotate(-60 + (qrand() % 120), Qt::YAxis);
+    // pathForm.rotate(-60 + (compat::qrand() % 120), Qt::XAxis);
+    // pathForm.rotate(-60 + (compat::qrand() % 120), Qt::YAxis);
     // planar rotation
     pathForm.rotate(m_rotation, Qt::ZAxis);
     path = pathForm.map(path);

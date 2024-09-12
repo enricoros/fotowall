@@ -22,6 +22,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPen>
+#include "Shared/Compat.h"
 
 class BezierControlPoint : public QGraphicsItem
 {
@@ -61,7 +62,7 @@ BezierCubicItem::BezierCubicItem(QGraphicsItem * parent) : QGraphicsItem(parent)
   for(int i = 0; i < 4; i++)
   {
     m_cps[i] = new BezierControlPoint(this, i);
-    m_cps[i]->setPos(-100 + qrand() % 200, -70 + qrand() % 140);
+    m_cps[i]->setPos(-100 + compat::qrand() % 200, -70 + compat::qrand() % 140);
   }
   controlPointMoved(0);
   controlPointMoved(2);

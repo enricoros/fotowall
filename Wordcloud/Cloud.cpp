@@ -20,6 +20,7 @@
 #include <QCoreApplication>
 #include <QGraphicsScene>
 #include <QProgressDialog>
+#include "Shared/Compat.h"
 
 using namespace Wordcloud;
 
@@ -52,9 +53,9 @@ void Cloud::newCloud(const WordList & words)
   foreach(const Word & word, words)
   {
 #if 1
-    double rot = ((qrand() % 4) == 1) ? 90 : 0.0;
+    double rot = ((compat::qrand() % 4) == 1) ? 90 : 0.0;
 #else
-    double rot = qrand() % 360;
+    double rot = compat::qrand() % 360;
 #endif
     WordItem * wordItem = new WordItem(word, m_appearance.font, rot, minCount, maxCount);
     wordItem->show();
@@ -76,11 +77,11 @@ void Cloud::regenCloud()
 void Cloud::randomCloud()
 {
   // randomize placement
-  m_placement = (Placement)(qrand() % Placement_COUNT);
+  m_placement = (Placement)(compat::qrand() % Placement_COUNT);
 
   // randomize appearance
-  m_appearance.quadraticFont = !(qrand() & 0x1);
-  m_appearance.textGradient = !(qrand() & 0x1);
+  m_appearance.quadraticFont = !(compat::qrand() & 0x1);
+  m_appearance.textGradient = !(compat::qrand() & 0x1);
   // TODO: randomize more
 
   process();
@@ -197,7 +198,7 @@ void Cloud::process()
       // randomize the color
       QColor color = m_appearance.textColors.isEmpty()
                          ? Qt::black
-                         : m_appearance.textColors.at(qrand() % m_appearance.textColors.size());
+                         : m_appearance.textColors.at(compat::qrand() % m_appearance.textColors.size());
       if(m_appearance.textGradient)
       {
         QLinearGradient lg(0, 0, 0, 1);
@@ -222,7 +223,7 @@ void Cloud::process()
   if(m_placement == RandomPosition)
   {
     foreach(WordItem * word, m_wordItems)
-      word->setPos((qrand() % tExtWidth) - tExtWidth / 2, (qrand() % tExtHeight) - tExtHeight / 2);
+      word->setPos((compat::qrand() % tExtWidth) - tExtWidth / 2, (compat::qrand() % tExtHeight) - tExtHeight / 2);
     return;
   }
 
@@ -251,7 +252,7 @@ void Cloud::process()
     // randomize the first word inside the area
     if(placed.isEmpty())
     {
-      word->setPos((qrand() % tExtWidth) - tExtWidth / 2, (qrand() % tExtHeight) - tExtHeight / 2);
+      word->setPos((compat::qrand() % tExtWidth) - tExtWidth / 2, (compat::qrand() % tExtHeight) - tExtHeight / 2);
       word->tmpPlacedRect = word->boundingRect().translated(word->pos().x(), word->pos().y());
       placed.append(word);
       continue;
