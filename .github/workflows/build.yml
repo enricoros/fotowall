@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04]
-        build-type: [Release] # [Debug, RelWithDebInfo, Release]
+        build-type: [Debug, RelWithDebInfo, Release]
         compiler: [gcc, clang]
     runs-on: ${{ matrix.os }}
     steps:
