@@ -131,10 +131,11 @@ class PerspectiveCommand : public QUndoCommand {
   private:
     T * m_content;
     QPointF m_previous, m_new;
+    bool m_merge = false;
 
   public:
-    PerspectiveCommand(T* content, const QPointF& p, const QPointF& n)
-        : QUndoCommand(QObject::tr("Perspective")), m_content(content), m_previous(p), m_new(n) {
+    PerspectiveCommand(T* content, const QPointF& p, const QPointF& n, bool merge = false)
+        : QUndoCommand(QObject::tr("Perspective")), m_content(content), m_previous(p), m_new(n), m_merge(merge) {
     }
 
     void redo() override {
@@ -152,6 +153,7 @@ class PerspectiveCommand : public QUndoCommand {
 
     bool mergeWith(const QUndoCommand *command) override
     {
+        if(!m_merge) return false;
         if (command->id() != id()) // make sure other is also a PerspectiveCommand
             return false;
         auto * other = static_cast<const PerspectiveCommand<T>*>(command);

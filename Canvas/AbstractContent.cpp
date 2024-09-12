@@ -1053,15 +1053,14 @@ void AbstractContent::layoutChildren()
 
 void AbstractContent::slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *)
 {
-    do_canvas_command(scene(), new PerspectiveCommand(this, m_previousPerspectiveAngles, m_perspectiveAngles));
+    do_canvas_command(scene(), new PerspectiveCommand(this, m_previousPerspectiveAngles, m_perspectiveAngles, false));
     m_previousPerspectiveAngles = m_perspectiveAngles;
 }
 
 void AbstractContent::slotReleasePerspectivePane()
 {
     PaneWidget *w = qobject_cast<PaneWidget*>(sender());
-    auto *tc = new PerspectiveCommand(this, m_previousPerspectiveAngles, w->endValue());
-    do_canvas_command(scene(), tc);
+    do_canvas_command(scene(), new PerspectiveCommand(this, m_previousPerspectiveAngles, w->endValue(), false));
     m_previousPerspectiveAngles = w->endValue();
 }
 

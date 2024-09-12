@@ -186,8 +186,8 @@ class AbstractContent : public AbstractDisposeable
         QTimer *            m_transformRefreshTimer;
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;
-        QPointF             m_perspectiveAngles;
-        QPointF             m_previousPerspectiveAngles;
+        QPointF             m_perspectiveAngles = QPointF(0, 0);
+        QPointF             m_previousPerspectiveAngles = QPointF(0, 0);
 #if QT_VERSION < 0x040600
         double              m_rotationAngle;
 #endif
