@@ -95,7 +95,7 @@ void CornerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
     case Qt::RightButton:
       m_operation = Scale | FixScale;
       break;
-    case Qt::MidButton:
+    case Qt::MiddleButton:
       m_operation = Scale;
       break;
     default:

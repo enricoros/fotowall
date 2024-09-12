@@ -288,9 +288,9 @@ void SceneView::wheelEvent(QWheelEvent * event)
 {
   if(event->modifiers() == Qt::ControlModifier && m_abstractScene && m_abstractScene->sceneSelectable())
   {
-    if(event->delta() < 0 && m_viewScale > 0.1)
+    if(event->angleDelta().y() < 0 && m_viewScale > 0.1)
       setViewScale(m_viewScale * 0.707106781187);
-    else if(event->delta() > 0 && m_viewScale < 15)
+    else if(event->angleDelta().y() > 0 && m_viewScale < 15)
       setViewScale(m_viewScale * 1.41421356237);
     event->accept();
     return;

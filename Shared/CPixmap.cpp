@@ -255,7 +255,7 @@ void CPixmap::rotate()
   m_effects.push_back(PictureEffect::Rotate);
   const QImage srcImg = this->toImage();
   QPoint center = srcImg.rect().center();
-  QMatrix matrix;
+  QTransform matrix;
   matrix.translate(center.x(), center.y());
   matrix.rotate(-90);
   QImage dstImg = srcImg.transformed(matrix);

@@ -39,6 +39,10 @@
 #include <QSlider>
 #include <QWidgetAction>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+#  include <QScreen>
+#endif
+
 CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
 : QObject(parent), m_extCanvas(extCanvas), m_dummyWidget(new QWidget), m_gBackModeGroup(0), m_gBackRatioGroup(0),
   m_gBackContentAction(0)
@@ -346,7 +350,11 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
 
 void CanvasAppliance::setWallpaperProject()
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+  QSize wallSize = QGuiApplication::primaryScreen()->size();
+#else
   QSize wallSize = QApplication::desktop()->screenGeometry().size();
+#endif
   QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
   if(!wallSize.isValid() || screenDpi.x() <= 0 || screenDpi.y() <= 0) return;
   m_extCanvas->clearMarkers();

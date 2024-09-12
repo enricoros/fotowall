@@ -19,6 +19,7 @@
 #include <QDataStream>
 #include <QDir>
 #include <QDomElement>
+#include <QElapsedTimer>
 #include <QPainter>
 #include <QPixmap>
 #include <QRect>
@@ -192,7 +193,7 @@ private:
   QPixmap m_backCache;
   QList<QGraphicsItem *> m_markerItems; // used by some modes to show information items, which won't be rendered
   QTimer * m_forceFieldTimer;
-  QTime m_forceFieldTime;
+  QElapsedTimer m_forceFieldTime;
   bool m_embeddedPainting;
   bool m_pendingChanges;
 

@@ -26,7 +26,7 @@ class Hardware3DTest : public QDialog
 {
   Q_OBJECT
 public:
-  Hardware3DTest(QWidget * parent = 0, Qt::WindowFlags f = 0);
+  Hardware3DTest(QWidget * parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
   // run the software & hardware render tests
   enum ExitState

@@ -16,9 +16,9 @@
 
 #include "Canvas/Canvas.h"
 #include "FotowallFile.h"
+#include "Shared/Compat.h"
 #include "Shared/GlowEffectWidget.h"
 #include "Shared/PixmapButton.h"
-#include "Shared/Compat.h"
 
 #include <QFile>
 #include <QHBoxLayout>

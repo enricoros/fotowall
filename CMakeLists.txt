@@ -16,6 +16,8 @@ find_package(
   WebKitWidgets
   PrintSupport)
 
+message(STATUS "Qt Version is: ${Qt5_VERSION}")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
@@ -182,8 +184,8 @@ set(SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/Shared/BlinkingToolButton.h
     ${CMAKE_SOURCE_DIR}/Shared/BreadCrumbBar.cpp
     ${CMAKE_SOURCE_DIR}/Shared/BreadCrumbBar.h
-    ${CMAKE_SOURCE_DIR}/Shared/BrowserItem.cpp
-    ${CMAKE_SOURCE_DIR}/Shared/BrowserItem.h
+    # ${CMAKE_SOURCE_DIR}/Shared/BrowserItem.cpp
+    # ${CMAKE_SOURCE_DIR}/Shared/BrowserItem.h
     ${CMAKE_SOURCE_DIR}/Shared/ButtonsDialog.cpp
     ${CMAKE_SOURCE_DIR}/Shared/ButtonsDialog.h
     ${CMAKE_SOURCE_DIR}/Shared/ColorPickerItem.cpp
@@ -225,6 +227,7 @@ set(SOURCE_FILES
 
 add_executable(fotowall ${SOURCE_FILES})
 add_compile_definitions(HAS_EXPORTDIALOG)
+add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x051200)
 target_link_libraries(
   fotowall
   Qt5::Gui

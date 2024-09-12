@@ -123,7 +123,7 @@ QVariant WordcloudContent::takeResource()
   m_cloudTaken = true;
   Wordcloud::Cloud * cloud = m_cloud;
   m_cloud = 0;
-  return qVariantFromValue((void *)cloud);
+  return QVariant::fromValue((void *)cloud);
 }
 
 void WordcloudContent::returnResource(const QVariant & resource)

@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "StyledButtonItem.h"
+#include "Shared/Compat.h"
 #include <QFontMetrics>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
@@ -41,7 +42,7 @@ void StyledButtonItem::setText(const QString & text)
   m_text = text;
 
   QFontMetrics metrics(m_font);
-  int width = metrics.width(text) + 16 * 2;
+  int width = metrics.horizontalAdvance(text) + 16 * 2;
   int height = metrics.height() + 1 * 2;
   m_rect = QRectF(0, 0, width, height);
 }

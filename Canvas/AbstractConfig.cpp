@@ -201,8 +201,7 @@ void AbstractConfig::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 void AbstractConfig::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
   // speed up svg drawing and unbreak proxy widget
-  painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing,
-                          false);
+  painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
 
   // draw cached frame background
   QRect rect = boundingRect().toRect();

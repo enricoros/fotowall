@@ -150,7 +150,7 @@ QVariant CanvasViewContent::takeResource()
   Canvas * canvas = m_canvas;
   m_canvas = 0;
   update();
-  return qVariantFromValue((void *)canvas);
+  return QVariant::fromValue((void *)canvas);
 }
 
 void CanvasViewContent::returnResource(const QVariant & resource)

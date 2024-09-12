@@ -154,7 +154,7 @@ void GlowEffectWidget::paintEvent(QPaintEvent * e)
 
 void GlowEffectWidget::wheelEvent(QWheelEvent * e)
 {
-  setGlowRadius((e->delta() > 0) ? m_radius + 1 : m_radius - 1);
+  setGlowRadius((e->angleDelta().y() > 0) ? m_radius + 1 : m_radius - 1);
 }
 
 void GlowEffectWidget::drawRadiusBox(QPainter * p)
@@ -164,7 +164,7 @@ void GlowEffectWidget::drawRadiusBox(QPainter * p)
   p->setRenderHint(QPainter::Antialiasing, true);
   p->setPen(QPen(Qt::black));
   p->setBrush(QBrush(QColor(193, 193, 193, 127)));
-  p->drawRoundRect(10, 540, 160, 50, 10, 20);
+  p->drawRoundedRect(10, 540, 160, 50, 10, 20);
 
   QFont font("Arial", 16);
   font.setUnderline(true);

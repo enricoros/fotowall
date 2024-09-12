@@ -44,6 +44,9 @@
 #include <QTimer>
 #include <QUrl>
 #include <math.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+#  include <QScreen>
+#endif
 
 #if defined(Q_OS_WIN)
 #  include <windows.h> // for background changing stuff
@@ -147,7 +150,7 @@ void ExportWizard::setWallpaper()
   // render the image
   QImage image;
   QSize sceneSize(m_canvas->width(), m_canvas->height());
-  QSize desktopSize = QApplication::desktop()->screenGeometry().size();
+  QSize desktopSize = QGuiApplication::primaryScreen()->size();
   if(m_ui->wbZoom->isChecked())
     image = m_canvas->renderedImage(desktopSize, Qt::KeepAspectRatioByExpanding);
   else if(m_ui->wbScaleKeep->isChecked())
@@ -189,12 +192,12 @@ void ExportWizard::setWallpaper()
                              .arg(wFilePath));
 
   // KDE3
-  QString kde3cmd = "dcop kdesktop KBackgroundIface setWallpaper '" + wFilePath + "' 6";
-  QProcess::startDetached(kde3cmd);
+  QProcess::startDetached("dcop", QStringList()
+                                      << "kdesktop" << "KBackgroundIface" << "setWallpaper" << wFilePath << "6");
 
   // Gnome2
-  QString gnome2Cmd = "gconftool -t string -s /desktop/gnome/background/picture_filename " + wFilePath;
-  QProcess::startDetached(gnome2Cmd);
+  QProcess::startDetached("gconftool", QStringList() << "-t" << "string" << "-s"
+                                                     << "/desktop/gnome/background/picture_filename" << wFilePath);
 #else
 #  warning "Implement background change for this OS"
 #endif
@@ -226,7 +229,7 @@ void ExportWizard::saveImage()
   if(m_ui->saveLandscape->isChecked())
   {
     // Save in landscape mode, so rotate
-    QMatrix matrix;
+    QTransform matrix;
     matrix.rotate(90);
     image = image.transformed(matrix);
   }
@@ -305,7 +308,7 @@ bool ExportWizard::printPaper()
   // setup printer
   QPrinter printer;
   printer.setResolution(printDpi);
-  printer.setPaperSize(QPrinter::A4);
+  printer.setPageSize(QPageSize(QPageSize::A4));
 
   // configure printer via the print dialog
   QPrintDialog printDialog(&printer);
@@ -316,7 +319,7 @@ bool ExportWizard::printPaper()
   if(m_ui->printLandscape->isChecked())
   {
     // Print in landscape mode, so rotate
-    QMatrix matrix;
+    QTransform matrix;
     matrix.rotate(90);
     image = image.transformed(matrix);
   }
@@ -434,8 +437,8 @@ void ExportWizard::setPage(int pageId)
         m_pdfPrinter = new QPrinter;
         m_pdfPrinter->setOutputFormat(QPrinter::PdfFormat);
         m_pdfPrinter->setResolution(m_canvas->modeInfo()->printDpi());
-        m_pdfPrinter->setPaperSize(canvasNatInches(), QPrinter::Inch);
-        m_pdfPrinter->setPageMargins(0, 0, 0, 0, QPrinter::Inch);
+        m_pdfPrinter->setPageSize(QPageSize(canvasNatInches(), QPageSize::Inch));
+        m_pdfPrinter->setPageMargins(QMarginsF(0, 0, 0, 0), QPageLayout::Inch);
         initPageSizeNames();
         slotPdfUpdateGui();
       }
@@ -473,37 +476,37 @@ QSizeF ExportWizard::canvasNatInches() const
 
 void ExportWizard::initPageSizeNames()
 {
-  m_paperSizeNames[QPrinter::A0] = QPrintDialog::tr("A0");
-  m_paperSizeNames[QPrinter::A1] = QPrintDialog::tr("A1");
-  m_paperSizeNames[QPrinter::A2] = QPrintDialog::tr("A2");
-  m_paperSizeNames[QPrinter::A3] = QPrintDialog::tr("A3");
-  m_paperSizeNames[QPrinter::A4] = QPrintDialog::tr("A4");
-  m_paperSizeNames[QPrinter::A5] = QPrintDialog::tr("A5");
-  m_paperSizeNames[QPrinter::A6] = QPrintDialog::tr("A6");
-  m_paperSizeNames[QPrinter::A7] = QPrintDialog::tr("A7");
-  m_paperSizeNames[QPrinter::A8] = QPrintDialog::tr("A8");
-  m_paperSizeNames[QPrinter::A9] = QPrintDialog::tr("A9");
-  m_paperSizeNames[QPrinter::B0] = QPrintDialog::tr("B0");
-  m_paperSizeNames[QPrinter::B1] = QPrintDialog::tr("B1");
-  m_paperSizeNames[QPrinter::B2] = QPrintDialog::tr("B2");
-  m_paperSizeNames[QPrinter::B3] = QPrintDialog::tr("B3");
-  m_paperSizeNames[QPrinter::B4] = QPrintDialog::tr("B4");
-  m_paperSizeNames[QPrinter::B5] = QPrintDialog::tr("B5");
-  m_paperSizeNames[QPrinter::B6] = QPrintDialog::tr("B6");
-  m_paperSizeNames[QPrinter::B7] = QPrintDialog::tr("B7");
-  m_paperSizeNames[QPrinter::B8] = QPrintDialog::tr("B8");
-  m_paperSizeNames[QPrinter::B9] = QPrintDialog::tr("B9");
-  m_paperSizeNames[QPrinter::B10] = QPrintDialog::tr("B10");
-  m_paperSizeNames[QPrinter::C5E] = QPrintDialog::tr("C5E");
-  m_paperSizeNames[QPrinter::DLE] = QPrintDialog::tr("DLE");
-  m_paperSizeNames[QPrinter::Executive] = QPrintDialog::tr("Executive");
-  m_paperSizeNames[QPrinter::Folio] = QPrintDialog::tr("Folio");
-  m_paperSizeNames[QPrinter::Ledger] = QPrintDialog::tr("Ledger");
-  m_paperSizeNames[QPrinter::Legal] = QPrintDialog::tr("Legal");
-  m_paperSizeNames[QPrinter::Letter] = QPrintDialog::tr("Letter");
-  m_paperSizeNames[QPrinter::Tabloid] = QPrintDialog::tr("Tabloid");
-  m_paperSizeNames[QPrinter::Comm10E] = QPrintDialog::tr("US Common #10 Envelope");
-  m_paperSizeNames[QPrinter::Custom] = QPrintDialog::tr("Custom");
+  m_paperSizeNames[QPageSize::A0] = QPrintDialog::tr("A0");
+  m_paperSizeNames[QPageSize::A1] = QPrintDialog::tr("A1");
+  m_paperSizeNames[QPageSize::A2] = QPrintDialog::tr("A2");
+  m_paperSizeNames[QPageSize::A3] = QPrintDialog::tr("A3");
+  m_paperSizeNames[QPageSize::A4] = QPrintDialog::tr("A4");
+  m_paperSizeNames[QPageSize::A5] = QPrintDialog::tr("A5");
+  m_paperSizeNames[QPageSize::A6] = QPrintDialog::tr("A6");
+  m_paperSizeNames[QPageSize::A7] = QPrintDialog::tr("A7");
+  m_paperSizeNames[QPageSize::A8] = QPrintDialog::tr("A8");
+  m_paperSizeNames[QPageSize::A9] = QPrintDialog::tr("A9");
+  m_paperSizeNames[QPageSize::B0] = QPrintDialog::tr("B0");
+  m_paperSizeNames[QPageSize::B1] = QPrintDialog::tr("B1");
+  m_paperSizeNames[QPageSize::B2] = QPrintDialog::tr("B2");
+  m_paperSizeNames[QPageSize::B3] = QPrintDialog::tr("B3");
+  m_paperSizeNames[QPageSize::B4] = QPrintDialog::tr("B4");
+  m_paperSizeNames[QPageSize::B5] = QPrintDialog::tr("B5");
+  m_paperSizeNames[QPageSize::B6] = QPrintDialog::tr("B6");
+  m_paperSizeNames[QPageSize::B7] = QPrintDialog::tr("B7");
+  m_paperSizeNames[QPageSize::B8] = QPrintDialog::tr("B8");
+  m_paperSizeNames[QPageSize::B9] = QPrintDialog::tr("B9");
+  m_paperSizeNames[QPageSize::B10] = QPrintDialog::tr("B10");
+  m_paperSizeNames[QPageSize::C5E] = QPrintDialog::tr("C5E");
+  m_paperSizeNames[QPageSize::DLE] = QPrintDialog::tr("DLE");
+  m_paperSizeNames[QPageSize::Executive] = QPrintDialog::tr("Executive");
+  m_paperSizeNames[QPageSize::Folio] = QPrintDialog::tr("Folio");
+  m_paperSizeNames[QPageSize::Ledger] = QPrintDialog::tr("Ledger");
+  m_paperSizeNames[QPageSize::Legal] = QPrintDialog::tr("Legal");
+  m_paperSizeNames[QPageSize::Letter] = QPrintDialog::tr("Letter");
+  m_paperSizeNames[QPageSize::Tabloid] = QPrintDialog::tr("Tabloid");
+  m_paperSizeNames[QPageSize::Comm10E] = QPrintDialog::tr("US Common #10 Envelope");
+  m_paperSizeNames[QPageSize::PageSizeId::Custom] = QPrintDialog::tr("Custom");
 }
 
 static QString getSavePath(const QString & initialValue,
@@ -629,12 +632,12 @@ void ExportWizard::slotPdfUpdateGui()
   if(!m_pdfPrinter) return;
 
   // change paper button text
-  QPrinter::PaperSize pNumber = m_pdfPrinter->paperSize();
+  QPageSize::PageSizeId pNumber = m_pdfPrinter->pageLayout().pageSize().id();
   QString paperName = m_paperSizeNames.contains(pNumber) ? m_paperSizeNames[pNumber] : tr("Other");
   m_ui->pdfPageButton->setText(paperName);
   //    if (pNumber == QPrinter::Custom) {
   bool useInches = QLocale::system().measurementSystem() == QLocale::ImperialSystem;
-  QSizeF paperSize = m_pdfPrinter->paperSize(useInches ? QPrinter::Inch : QPrinter::Millimeter);
+  QSizeF paperSize = m_pdfPrinter->pageLayout().pageSize().size(useInches ? QPageSize::Inch : QPageSize::Millimeter);
   if(useInches)
     m_ui->pdfPageButton->setText(
         tr("%1  (%2 x %3 inch)").arg(paperName).arg(paperSize.width()).arg(paperSize.height()));

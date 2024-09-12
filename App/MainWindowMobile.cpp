@@ -65,14 +65,14 @@ MainWindowMobile::MainWindowMobile(QWidget * parent)
 
   // vertical layout
   QVBoxLayout * mainLayout = new QVBoxLayout(this);
-  mainLayout->setMargin(0);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
   mainLayout->setSpacing(0);
 
   // container for the navigation bar
   QWidget * nbContainer = new NavibarContainer(this);
   mainLayout->addWidget(nbContainer);
   QLayout * nbLayout = new QHBoxLayout(nbContainer);
-  nbLayout->setMargin(0);
+  nbLayout->setContentsMargins(0, 0, 0, 0);
 
   // create the Workflow navigation bar
   BreadCrumbBar * workflowBar = new BreadCrumbBar(nbContainer);
@@ -111,7 +111,7 @@ MainWindowMobile::MainWindowMobile(QWidget * parent)
   m_topbarContainer->setFixedHeight(App::TopBarHeight);
   m_topbarContainer->show();
   QHBoxLayout * topbarLayout = new QHBoxLayout(m_topbarContainer);
-  topbarLayout->setMargin(0);
+  topbarLayout->setContentsMargins(0, 0, 0, 0);
   topbarLayout->setSpacing(0);
 
   // show (with last geometry)

@@ -16,11 +16,11 @@
 
 #include "WordItem.h"
 
+#include "Shared/Compat.h"
 #include "math.h"
 #include <QCoreApplication>
 #include <QGraphicsScene>
 #include <QProgressDialog>
-#include "Shared/Compat.h"
 
 using namespace Wordcloud;
 
@@ -203,8 +203,8 @@ void Cloud::process()
       {
         QLinearGradient lg(0, 0, 0, 1);
         lg.setCoordinateMode(QGradient::StretchToDeviceMode);
-        lg.setColorAt(0.0, color.light());
-        lg.setColorAt(1.0, color.dark());
+        lg.setColorAt(0.0, color.lighter());
+        lg.setColorAt(1.0, color.darker());
         item->setBrush(lg);
       }
       else

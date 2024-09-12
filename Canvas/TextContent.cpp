@@ -23,6 +23,7 @@
 #include "Shared/RenderOpts.h"
 #include "TextProperties.h"
 
+#include "Shared/Compat.h"
 #include <QAbstractTextDocumentLayout>
 #include <QDebug>
 #include <QGraphicsScene>
@@ -33,7 +34,6 @@
 #include <QTextDocument>
 #include <QTextFrame>
 #include <QUrl>
-#include "Shared/Compat.h"
 
 TextContent::TextContent(bool spontaneous, QGraphicsScene * scene /* canvas */)
 : AbstractContent(scene, spontaneous, false, 0), m_text(0), m_textRect(0, 0, 0, 0), m_textMargin(4), m_shakeRadius(0),
@@ -313,7 +313,7 @@ void TextContent::drawContent(QPainter * painter, const QRect & targetRect, Qt::
         QString text = frag.text();
         foreach(const QChar & textChar, text)
         {
-          const qreal charWidth = metrics.width(textChar);
+          const qreal charWidth = metrics.horizontalAdvance(textChar);
           if(shapedPaint)
           {
             // find point on shape and angle
@@ -456,7 +456,7 @@ void TextContent::updateTextConstraints()
       if(textRect.top() < blockRect.top()) blockRect.setTop(textRect.top());
       if(textRect.bottom() > blockRect.bottom()) blockRect.setBottom(textRect.bottom());
 
-      int textWidth = metrics.width(text);
+      int textWidth = metrics.horizontalAdvance(text);
       blockRect.setWidth(blockRect.width() + textWidth);
     }
     // 2.1.B. calc the Block size of blank lines

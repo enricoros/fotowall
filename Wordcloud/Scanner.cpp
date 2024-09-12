@@ -46,7 +46,12 @@ bool Scanner::addFromFile(const QString & txtFilePath)
   QTextStream ts(&file);
   while(!ts.atEnd())
   {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    QStringList words = ts.readLine().split(splitNonWords, Qt::SkipEmptyParts);
+#else
     QStringList words = ts.readLine().split(splitNonWords, QString::SkipEmptyParts);
+#endif
+
     foreach(const QString & word, words) addWord(word);
   }
   return true;
@@ -55,7 +60,13 @@ bool Scanner::addFromFile(const QString & txtFilePath)
 bool Scanner::addFromString(const QString & string)
 {
   QRegExp splitNonWords("\\W");
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  QStringList words = string.split(splitNonWords, Qt::SkipEmptyParts);
+#else
   QStringList words = string.split(splitNonWords, QString::SkipEmptyParts);
+#endif
+
   foreach(const QString & word, words) addWord(word);
   return true;
 }
@@ -96,7 +107,7 @@ WordList Scanner::takeWords(bool cleanList, int maxCount)
       removeWordsBelowCount(count);
       ++count;
     }
-    qSort(m_words.begin(), m_words.end(), wordFrequencySorter);
+    std::sort(m_words.begin(), m_words.end(), wordFrequencySorter);
   }
 
   // FIXME find out common words (FAKE: use the first..)

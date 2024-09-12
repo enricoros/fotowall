@@ -94,7 +94,7 @@ void GroupBoxWidget::setTitleSize(int titleSize)
 
 int GroupBoxWidget::calcMinWidth() const
 {
-  return qMax(QFontMetrics(m_titleFont).width(m_titleText) + 12, QWidget::sizeHint().width());
+  return qMax(QFontMetrics(m_titleFont).horizontalAdvance(m_titleText) + 12, QWidget::sizeHint().width());
 }
 
 bool GroupBoxWidget::isCheckable() const

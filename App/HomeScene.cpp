@@ -19,8 +19,8 @@
 #include "Canvas/AbstractContent.h"
 #include "Frames/StandardFrame.h"
 #include "Settings.h"
-#include "Shared/RenderOpts.h"
 #include "Shared/Compat.h"
+#include "Shared/RenderOpts.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>

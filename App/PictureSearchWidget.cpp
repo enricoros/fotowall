@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QBasicTimer>
 #include <QDrag>
+#include <QElapsedTimer>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsScene>
 #include <QLabel>
@@ -66,7 +67,7 @@ protected:
 
 private:
   QBasicTimer m_timer;
-  QTime m_time;
+  QElapsedTimer m_time;
 };
 
 class PicturesListWidget : public QListWidget

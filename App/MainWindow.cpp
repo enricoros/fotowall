@@ -31,6 +31,7 @@
 #include <QCloseEvent>
 #include <QDesktopWidget>
 #include <QNetworkAccessManager>
+#include <QScreen>
 #include <QVariant>
 
 // const strings
@@ -94,7 +95,7 @@ MainWindow::MainWindow(QWidget * parent)
 #else
   if(!restoreGeometry(App::settings->value("Fotowall/Geometry").toByteArray()))
   {
-    QRect desktopGeometry = QApplication::desktop()->availableGeometry();
+    QRect desktopGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     resize(2 * desktopGeometry.width() / 3, 2 * desktopGeometry.height() / 3);
     showMaximized();
   }

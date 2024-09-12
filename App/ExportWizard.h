@@ -68,7 +68,7 @@ private:
   int m_nextId;
   QSizeF m_printSizeInches;
   QPrinter * m_pdfPrinter;
-  QMap<QPrinter::PageSize, QString> m_paperSizeNames;
+  QMap<QPageSize::PageSizeId, QString> m_paperSizeNames;
 
 private slots:
   // contents related

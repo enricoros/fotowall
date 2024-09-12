@@ -16,8 +16,8 @@
 
 #include "Canvas/Canvas.h"
 #include "Canvas/PictureContent.h"
-#include "Shared/RenderOpts.h"
 #include "Shared/Compat.h"
+#include "Shared/RenderOpts.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -44,7 +44,7 @@ Hardware3DTest::Hardware3DTest(QWidget * parent, Qt::WindowFlags flags)
   setWindowModality(Qt::ApplicationModal);
   setLayout(new QVBoxLayout);
   layout()->setAlignment(Qt::AlignCenter);
-  layout()->setMargin(0);
+  layout()->setContentsMargins(0, 0, 0, 0);
 
   // create the timed SceneView
   m_view = new TimedSceneView(this);

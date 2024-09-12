@@ -14,6 +14,7 @@
 
 #include "WordItem.h"
 
+#include "Shared/Compat.h"
 #include <QApplication>
 #include <QPainter>
 #include <QPainterPathStroker>
@@ -21,7 +22,6 @@
 #include <QStyle>
 #include <QStyleOptionFocusRect>
 #include <QStyleOptionGraphicsItem>
-#include "Shared/Compat.h"
 
 using namespace Wordcloud;
 

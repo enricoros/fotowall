@@ -73,8 +73,6 @@ int main(int argc, char ** args)
   //     appUi->SetOrientationL(CAknAppUi::EAppUiOrientationLandscape);
 #endif
 
-  qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
-
 #if defined(HAS_TRANSLATIONS)
   // translate fotowall + default-qt messages
   QString locale;

@@ -593,7 +593,8 @@ void PictureContent::setExternalEdit(bool enabled)
   if(enabled && !m_watcher)
   {
     // save the pic to a file
-    QString tmpFile = QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(compat::qrand() % 999999) + ".png";
+    QString tmpFile =
+        QDir::tempPath() + QDir::separator() + "TEMP" + QString::number(compat::qrand() % 999999) + ".png";
     if(!m_photo->save(tmpFile, "PNG"))
     {
       qWarning("PictureContent::slotGimpEdit: can't save the image");

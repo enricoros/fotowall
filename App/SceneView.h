@@ -15,6 +15,7 @@
 #ifndef __SceneView_h__
 #define __SceneView_h__
 
+#include <QElapsedTimer>
 #include <QGraphicsView>
 #include <QTime>
 class AbstractScene;
@@ -65,7 +66,7 @@ private:
   AbstractScene * m_abstractScene;
   RubberBandStyle * m_style;
   QPixmap * m_shadowTile;
-  QTime m_paintTime;
+  QElapsedTimer m_paintTime;
   QTimer * m_heavyTimer;
   int m_heavyCounter;
 

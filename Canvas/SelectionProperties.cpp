@@ -45,7 +45,7 @@ SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWi
   else
     label = new QLabel(tr("%1 objects selected").arg(selection.size()), this);
   QGridLayout * lay = new QGridLayout(this);
-  lay->setMargin(0);
+  lay->setContentsMargins(0, 0, 0, 0);
   lay->addWidget(label, 0, 0, 1, 2);
   ADD_BUTTON(deleteButton, tr("Delete"), SIGNAL(deleteSelection()));
   lay->addWidget(deleteButton, 1, 0);

@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "BezierCubicItem.h"
+#include "Shared/Compat.h"
 #include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
 #include <QGraphicsPathItem>
@@ -22,7 +23,6 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPen>
-#include "Shared/Compat.h"
 
 class BezierControlPoint : public QGraphicsItem
 {

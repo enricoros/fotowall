@@ -68,7 +68,7 @@ class GSuggestCompletion : public QObject
     private:
         QLineEdit *editor;
         QTreeWidget *popup;
-        QTimer *timer;
+        QTimer * timer;
         QNetworkAccessManager networkManager;
 };
 

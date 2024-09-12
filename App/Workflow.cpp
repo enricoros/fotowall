@@ -334,7 +334,7 @@ bool Workflow::popNode(bool allowSave)
     {
       Canvas * canvas = cApp->takeCanvas();
       if(node.loaner)
-        node.loaner->returnResource(qVariantFromValue((void *)canvas));
+        node.loaner->returnResource(QVariant::fromValue((void *)canvas));
       else
         delete canvas;
 #if defined(HAS_WORDCLOUD_APPLIANCE)
@@ -343,7 +343,7 @@ bool Workflow::popNode(bool allowSave)
     {
       Wordcloud::Cloud * cloud = wApp->takeCloud();
       if(node.loaner)
-        node.loaner->returnResource(qVariantFromValue((void *)cloud));
+        node.loaner->returnResource(QVariant::fromValue((void *)cloud));
       else
         delete cloud;
 #endif
