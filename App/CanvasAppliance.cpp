@@ -17,6 +17,7 @@
 #include "Canvas/CanvasModeInfo.h"
 #include "Canvas/CanvasViewContent.h"
 #include "Canvas/Canvas.h"
+#include "Shared/Commands.h"
 #include "Shared/ButtonsDialog.h"
 #include "Shared/PanePropertyEditor.h"
 #include "Shared/VideoProvider.h"
@@ -82,6 +83,7 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
 
     // react to canvas
     connect(m_extCanvas, SIGNAL(backConfigChanged()), this, SLOT(slotBackConfigChanged()));
+
     connect(m_extCanvas, SIGNAL(requestContentEditing(AbstractContent*)), this, SLOT(slotEditContent(AbstractContent*)));
     connect(m_extCanvas, SIGNAL(showPropertiesWidget(QWidget*)), this, SLOT(slotShowPropertiesWidget(QWidget*)));
     connect(m_extCanvas, SIGNAL(filePathChanged()), this, SLOT(slotFilePathChanged()));
@@ -91,15 +93,16 @@ CanvasAppliance::CanvasAppliance(Canvas * extCanvas, QObject * parent)
     connect(VideoProvider::instance(), SIGNAL(inputCountChanged(int)), this, SLOT(slotVerifyVideoInputs(int)));
 
     // set the startup project mode
-    int pComboIndex = 0;
-    switch (extCanvas->modeInfo()->projectMode()) {
-        case CanvasModeInfo::ModeNormal:    pComboIndex = 0; break;
-        case CanvasModeInfo::ModeCD:        pComboIndex = 3; break;
-        case CanvasModeInfo::ModeDVD:       pComboIndex = 4; break;
-        case CanvasModeInfo::ModeExactSize: pComboIndex = 1; break;
-        case CanvasModeInfo::ModeWallpaper: pComboIndex = 2; break;
-    }
-    slotProjectComboActivated(pComboIndex);
+    setProjectMode(extCanvas->modeInfo()->projectMode());
+
+    ui.undoButton->setEnabled(false);
+    m_extCanvas->commandStack().createRedoAction(ui.redoButton, tr("Redo"));
+    connect(ui.undoButton, SIGNAL(clicked()), m_extCanvas, SLOT(undoSlot()));
+    connect(m_extCanvas->commandStackPtr(), SIGNAL(undoTextChanged(const QString &)), this, SLOT(slotUndoTextChanged(const QString &)));
+
+    ui.redoButton->setEnabled(false);
+    connect(ui.redoButton, SIGNAL(clicked()), m_extCanvas, SLOT(redoSlot()));
+    connect(m_extCanvas->commandStackPtr(), SIGNAL(redoTextChanged(const QString &)), this, SLOT(slotRedoTextChanged(const QString &)));
 }
 
 CanvasAppliance::~CanvasAppliance()
@@ -304,17 +307,13 @@ QMenu * CanvasAppliance::createDecorationMenu()
 
 void CanvasAppliance::setNormalProject()
 {
-    ui.projectCombo->setCurrentIndex(0);
     m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches();
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeNormal);
-    m_extCanvas->adjustSceneSize();
-    configurePrint(false);
 }
 
 void CanvasAppliance::setExactSizeProject(bool usePrevious)
 {
-    ui.projectCombo->setCurrentIndex(1);
     m_extCanvas->clearMarkers();
     if (!usePrevious || !m_extCanvas->modeInfo()->fixedSize()) {
         ExactSizeDialog sizeDialog;
@@ -341,8 +340,6 @@ void CanvasAppliance::setExactSizeProject(bool usePrevious)
         m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(cm?(double)w/2.54:w, cm?(double)h/2.54:h));
     }
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeExactSize);
-    m_extCanvas->adjustSceneSize();
-    configurePrint(true);
 }
 
 void CanvasAppliance::setWallpaperProject()
@@ -351,34 +348,83 @@ void CanvasAppliance::setWallpaperProject()
     QPointF screenDpi = m_extCanvas->modeInfo()->screenDpi();
     if (!wallSize.isValid() || screenDpi.x() <= 0 || screenDpi.y() <= 0)
         return;
-    ui.projectCombo->setCurrentIndex(2);
     m_extCanvas->clearMarkers();
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF((qreal)wallSize.width() / screenDpi.x(), (qreal)wallSize.height() / screenDpi.y()));
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeWallpaper);
-    m_extCanvas->adjustSceneSize();
-    configurePrint(false);
 }
 
 void CanvasAppliance::setCDProject()
 {
-    ui.projectCombo->setCurrentIndex(3);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(4.75, 4.75));
     m_extCanvas->modeInfo()->setPrintLandscape(false);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeCD);
-    m_extCanvas->adjustSceneSize();
-    m_extCanvas->setCDMarkers();
-    configurePrint(true);
 }
 
 void CanvasAppliance::setDVDProject()
 {
-    ui.projectCombo->setCurrentIndex(4);
     m_extCanvas->modeInfo()->setFixedSizeInches(QSizeF(10.83, 7.2));
     m_extCanvas->modeInfo()->setPrintLandscape(true);
     m_extCanvas->modeInfo()->setProjectMode(CanvasModeInfo::ModeDVD);
+}
+
+void CanvasAppliance::updateProjectMode()
+{
     m_extCanvas->adjustSceneSize();
-    m_extCanvas->setDVDMarkers();
-    configurePrint(true);
+    m_extCanvas->clearMarkers();
+    switch(m_extCanvas->modeInfo()->projectMode())
+    {
+        case CanvasModeInfo::ModeDVD:
+            m_extCanvas->setDVDMarkers();
+            configurePrint(true);
+            break;
+        case CanvasModeInfo::ModeCD:
+            m_extCanvas->setCDMarkers();
+            configurePrint(true);
+            break;
+        case CanvasModeInfo::ModeWallpaper:
+            configurePrint(false);
+            break;
+        case CanvasModeInfo::ModeExactSize:
+            configurePrint(true);
+            break;
+        case CanvasModeInfo::ModeNormal:
+            configurePrint(false);
+            break;
+    }
+}
+
+CanvasModeInfo::Mode CanvasAppliance::projectModeFromComboIndex(const int index) const
+{
+    switch (index) {
+    case 0:
+        return CanvasModeInfo::ModeNormal;
+    case 1:
+        return CanvasModeInfo::ModeExactSize;
+    case 2:
+        return CanvasModeInfo::ModeWallpaper;
+    case 3:
+        return CanvasModeInfo::ModeCD;
+    case 4:
+        return CanvasModeInfo::ModeDVD;
+    }
+    throw std::runtime_error("Missing project mode mappping!");
+}
+
+int CanvasAppliance::projectComboIndexFromMode(const CanvasModeInfo::Mode mode) const
+{
+    switch (mode) {
+    case CanvasModeInfo::ModeNormal:
+        return 0;
+    case CanvasModeInfo::ModeExactSize:
+        return 1;
+    case CanvasModeInfo::ModeWallpaper:
+        return 2;
+    case CanvasModeInfo::ModeCD:
+        return 3;
+    case CanvasModeInfo::ModeDVD:
+        return 4;
+    }
+    throw std::runtime_error("Missing project mode mappping!");
 }
 
 void CanvasAppliance::configurePrint(bool enabled)
@@ -411,6 +457,7 @@ void CanvasAppliance::slotAddPicture()
 
 void CanvasAppliance::slotAddText()
 {
+
     m_extCanvas->addTextContent();
     setFocusToScene();
 }
@@ -440,27 +487,61 @@ void CanvasAppliance::slotBackContentRemove(bool checked)
         m_extCanvas->clearBackContent();
 }
 
+void CanvasAppliance::setProjectMode(const CanvasModeInfo::Mode mode)
+{
+    // Prevent combobox from emiting signals while changing its index
+    bool oldState = ui.projectCombo->blockSignals(true);
+    ui.projectCombo->setCurrentIndex(projectComboIndexFromMode(mode));
+    ui.projectCombo->blockSignals(oldState);
+
+    switch (mode) {
+      case CanvasModeInfo::ModeNormal: setNormalProject();             break;
+      case CanvasModeInfo::ModeExactSize: setExactSizeProject(!sender()); break;
+      case CanvasModeInfo::ModeWallpaper: setWallpaperProject();          break;
+      case CanvasModeInfo::ModeCD: setCDProject();                 break;
+      case CanvasModeInfo::ModeDVD: setDVDProject();                break;
+    }
+}
+
+void CanvasAppliance::setProjectMode(const CanvasModeInfo & mode)
+{
+  // Prevent combobox from emiting signals while changing its index
+  bool oldState = ui.projectCombo->blockSignals(true);
+  ui.projectCombo->setCurrentIndex(projectComboIndexFromMode(mode.projectMode()));
+  ui.projectCombo->blockSignals(oldState);
+
+  *m_extCanvas->modeInfo() = mode;
+  updateProjectMode();
+}
+
 void CanvasAppliance::slotProjectComboActivated(int index)
 {
-    switch (index) {
-        case 0: setNormalProject();             break;
-        case 1: setExactSizeProject(!sender()); break;
-        case 2: setWallpaperProject();          break;
-        case 3: setCDProject();                 break;
-        case 4: setDVDProject();                break;
-    }
+    CanvasModeInfo previousMode = *m_extCanvas->modeInfo();
+    auto & commandStack = m_extCanvas->commandStack();
+    commandStack.beginMacro("Set Project Mode");
+    m_extCanvas->pushCurrentContentPositionToCommandStack();
+    setProjectMode(projectModeFromComboIndex(index));
+    m_extCanvas->commandStack().push(
+        new ProjectModeCommand(this,
+                               previousMode,
+                               *m_extCanvas->modeInfo()));
+    commandStack.endMacro();
 }
 
 void CanvasAppliance::slotSetBackMode(QAction* action)
 {
     Canvas::BackMode mode = (Canvas::BackMode)action->property("modeId").toInt();
-    m_extCanvas->setBackMode(mode);
+    BackgroundModeCommand *command = new BackgroundModeCommand(m_extCanvas, m_extCanvas->backMode(), mode);
+    command->redo();
+    m_extCanvas->commandStack().push(command);
 }
 
 void CanvasAppliance::slotSetBackRatio(QAction* action)
 {
     Qt::AspectRatioMode ratio = (Qt::AspectRatioMode)action->property("ratioId").toInt();
-    m_extCanvas->setBackContentRatio(ratio);
+    BackgroundRatioCommand *command = new BackgroundRatioCommand(m_extCanvas, m_extCanvas->backContentRatio(), ratio);
+    command->redo();
+    m_extCanvas->commandStack().push(command);
 }
 
 void CanvasAppliance::slotArrangeForceField(bool checked)
@@ -485,30 +566,42 @@ void CanvasAppliance::slotArrangeShaped()
 
 void CanvasAppliance::slotDecoTopBar(bool checked)
 {
-    m_extCanvas->setTopBarEnabled(checked);
+    if(m_extCanvas->topBarEnabled() && checked || !m_extCanvas->topBarEnabled() && !checked) return;
+
+    QAction *aTop = qobject_cast<QAction *>(sender());
+    DecoTopBarCommand *c = new DecoTopBarCommand(m_extCanvas, aTop, checked);
+    m_extCanvas->commandStack().push(c);
 }
 
 void CanvasAppliance::slotDecoBottomBar(bool checked)
 {
-    m_extCanvas->setBottomBarEnabled(checked);
+    if(m_extCanvas->bottomBarEnabled() && checked || !m_extCanvas->bottomBarEnabled() && !checked) return;
+
+    QAction *aBottom = qobject_cast<QAction *>(sender());
+    DecoBottomBarCommand *c = new DecoBottomBarCommand(m_extCanvas, aBottom, checked);
+    m_extCanvas->commandStack().push(c);
 }
 
 void CanvasAppliance::slotDecoSetTitle()
 {
+    // change title dialog
+    bool ok = false;
+    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_extCanvas->titleText(), &ok);
+    if (ok) {
+        DecoTitleCommand *c = new DecoTitleCommand(m_extCanvas, title);
+        m_extCanvas->commandStack().push(c);
+    }
+
     // set a dummy title, if none
     if (m_extCanvas->titleText().isEmpty())
         m_extCanvas->setTitleText("...");
 
-    // change title dialog
-    bool ok = false;
-    QString title = QInputDialog::getText(0, tr("Title"), tr("Insert the title"), QLineEdit::Normal, m_extCanvas->titleText(), &ok);
-    if (ok)
-        m_extCanvas->setTitleText(title);
 }
 
 void CanvasAppliance::slotDecoClearTitle()
 {
-    m_extCanvas->setTitleText(QString());
+    DecoTitleCommand *c = new DecoTitleCommand(m_extCanvas, QString());
+    m_extCanvas->commandStack().push(c);
 }
 
 bool CanvasAppliance::slotFileLoad()
@@ -640,4 +733,28 @@ void CanvasAppliance::slotVerifyVideoInputs(int count)
         ui.addWebcamLayout->addWidget(p);
         m_webcamButtons.append(p);
     }
+}
+
+void CanvasAppliance::slotUndoTextChanged(const QString & text)
+{
+    QString tooltip = tr("Undo");
+    if(text.size())
+    {
+        tooltip += " " + text;
+    }
+    tooltip += " (" + ui.undoButton->shortcut().toString() + ")";
+    ui.undoButton->setToolTip(tooltip);
+    ui.undoButton->setEnabled(m_extCanvas->commandStack().canUndo());
+}
+
+void CanvasAppliance::slotRedoTextChanged(const QString & text)
+{
+    QString tooltip = tr("Redo");
+    if(text.size())
+    {
+        tooltip += " " + text;
+    }
+    tooltip += " (" + ui.redoButton->shortcut().toString() + ")";
+    ui.redoButton->setToolTip(tooltip);
+    ui.redoButton->setEnabled(m_extCanvas->commandStack().canRedo());
 }

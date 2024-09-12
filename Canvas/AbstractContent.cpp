@@ -14,6 +14,8 @@
 
 #include "AbstractContent.h"
 
+#include "Shared/Commands.h"
+
 #include "Frames/FrameFactory.h"
 #include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
@@ -40,9 +42,32 @@
 #include <QGraphicsDropShadowEffect>
 #endif
 
+#include "Canvas/Canvas.h" // for CommandStack helpers
+
+bool do_canvas_command(QObject * maybeCanvas, QUndoCommand* command)
+{
+    if(maybeCanvas == nullptr)
+    {
+        qDebug() << "Failed to add the do command " << command->text() << " to the command stack: parent is null";
+        command->redo();
+    }
+
+    if(auto * canvas = dynamic_cast<Canvas *>(maybeCanvas); canvas != nullptr)
+    {;
+        canvas->commandStack().push(command);
+        return true;
+    }
+    else
+    {
+        qDebug() << "Failed to add command " << command->text() << " to the command stack: element is not a Canvas and does not have a command stack";
+        command->redo();
+        return false;
+    }
+}
 
 AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noRescale, QGraphicsItem * parent)
     : AbstractDisposeable(fadeIn, parent)
+    , m_scene(scene)
     , m_contentRect(-100, -75, 200, 150)
     , m_frame(0)
     , m_frameTextItem(0)
@@ -89,6 +114,7 @@ AbstractContent::AbstractContent(QGraphicsScene *scene, bool fadeIn, bool noResc
     ButtonItem * bPersp = new ButtonItem(ButtonItem::Control, Qt::red, QIcon(":/data/action-perspective.png"), this);
     bPersp->setToolTip(tr("Drag around to change the perspective.\nHold SHIFT to move faster.\nUse CTRL to cancel the transformations."));
     connect(bPersp, SIGNAL(dragging(const QPointF&,Qt::KeyboardModifiers)), this, SLOT(slotSetPerspective(const QPointF&,Qt::KeyboardModifiers)));
+    connect(bPersp, SIGNAL(releaseEvent(QGraphicsSceneMouseEvent *)), this, SLOT(slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *)));
     connect(bPersp, SIGNAL(doubleClicked()), this, SLOT(slotClearPerspective()));
     addButtonItem(bPersp);
 
@@ -203,6 +229,19 @@ void AbstractContent::delayedDirty(int ms)
         m_transformRefreshTimer->setSingleShot(true);
     }
     m_transformRefreshTimer->start(ms);
+}
+
+QPointF AbstractContent::previousPos() const {
+    return m_previousPos;
+}
+
+void AbstractContent::setPreviousPos(const QPointF& previousPos) {
+    m_previousPos = previousPos;
+}
+
+void AbstractContent::setPosUndo(const QPointF& pos) {
+    m_previousPos = this->pos();
+    do_canvas_command(scene(), new MotionCommand(this, m_previousPos, pos));
 }
 
 void AbstractContent::setFrame(Frame * frame)
@@ -363,6 +402,7 @@ QPointF AbstractContent::perspective() const
 #if QT_VERSION < 0x040600
 void AbstractContent::setRotation(qreal angle)
 {
+    if (m_fixedRotation) return;
     if (m_rotationAngle != angle) {
         m_rotationAngle = angle;
         applyTransforms();
@@ -376,10 +416,17 @@ qreal AbstractContent::rotation() const
 }
 #endif
 
-void AbstractContent::setFxIndex(int index)
+void AbstractContent::setFxIndex_(int index)
 {
     if (m_fxIndex == index)
         return;
+    do_canvas_command(
+            scene(),
+            new FxCommand(this, m_fxIndex, index));
+}
+
+void AbstractContent::setFxIndex(int index)
+{
     m_fxIndex = index;
     // apply graphics effect
 #if QT_VERSION >= 0x040600
@@ -425,6 +472,7 @@ int AbstractContent::fxIndex() const
 
 void AbstractContent::ensureVisible(const QRectF & rect)
 {
+    m_previousPos = pos();
     // keep the center inside the scene rect
     QPointF center = pos();
     if (!rect.contains(center)) {
@@ -439,7 +487,7 @@ bool AbstractContent::beingTransformed() const
     return m_dirtyTransforming;
 }
 
-bool AbstractContent::fromXml(QDomElement & contentElement, const QDir & /*baseDir*/)
+bool AbstractContent::fromXml(const QDomElement & contentElement, const QDir & /*baseDir*/)
 {
     // restore content properties
     QDomElement domElement;
@@ -638,9 +686,12 @@ QWidget * AbstractContent::createPropertyWidget(ContentProperties * __p)
     connect(cp->cConfigure, SIGNAL(clicked()), this, SLOT(slotConfigure()));
 
     // properties link
-    new PE_AbstractSlider(cp->cOpacity, this, "contentOpacity", cp);
+    m_opacitySlider = new PE_AbstractSlider(cp->cOpacity, this, "contentOpacity", cp);
+    connect(m_opacitySlider, SIGNAL(sliderReleased()), this, SLOT(slotOpacityChanged()));
+    connect(m_opacitySlider, SIGNAL(sliderPressed()), this, SLOT(slotOpacityChanging()));
     new PE_Combo(cp->cFxCombo, this, "fxIndex", cp);
     cp->cPerspWidget->setRange(QRectF(-70.0, -70.0, 140.0, 140.0));
+    connect(cp->cPerspWidget, SIGNAL(released()), this, SLOT(slotReleasePerspectivePane()));
     new PE_PaneWidget(cp->cPerspWidget, this, "perspective", cp);
 
     return cp;
@@ -651,10 +702,11 @@ QRectF AbstractContent::boundingRect() const
     return m_frameRect;
 }
 
-void AbstractContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
+void AbstractContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     // emitting the edit request by default. some subclasses request backgrounding
     emit requestEditing();
+    event->accept();
 }
 
 void AbstractContent::paint(QPainter * painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
@@ -752,6 +804,11 @@ void AbstractContent::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
     setControlsVisible(false);
 }
 
+void AbstractContent::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+    QGraphicsItem::mouseReleaseEvent(event);
+}
+
 void AbstractContent::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     event->accept();
@@ -770,6 +827,13 @@ void AbstractContent::mousePressEvent(QGraphicsSceneMouseEvent * event)
         setSelected(true);
         emit requestConfig(event->scenePos().toPoint());
     }
+    m_previousPos = scenePos();
+}
+
+void AbstractContent::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+    QGraphicsItem::mouseMoveEvent(event);
+    event->accept();
 }
 
 void AbstractContent::keyPressEvent(QKeyEvent * event)
@@ -783,11 +847,10 @@ void AbstractContent::keyPressEvent(QKeyEvent * event)
     int step = (event->modifiers() & Qt::ShiftModifier) ? 50 : (event->modifiers() & Qt::ControlModifier ? 1 : 10);
     switch (event->key()) {
         // cursor keys: 10px, 50 if Shift pressed, 1 if Control pressed
-        case Qt::Key_Left:      setPos(pos() - QPointF(step, 0));   break;
-        case Qt::Key_Up:        setPos(pos() - QPointF(0, step));   break;
-        case Qt::Key_Right:     setPos(pos() + QPointF(step, 0));   break;
-        case Qt::Key_Down:      setPos(pos() + QPointF(0, step));   break;
-
+        case Qt::Key_Left:      setPosUndo(pos() - QPointF(step, 0));   break;
+        case Qt::Key_Up:        setPosUndo(pos() - QPointF(0, step));   break;
+        case Qt::Key_Right:     setPosUndo(pos() + QPointF(step, 0));   break;
+        case Qt::Key_Down:      setPosUndo(pos() + QPointF(0, step));   break;
         // deletion
         case Qt::Key_Delete: emit requestRemoval(); break;
 
@@ -972,6 +1035,10 @@ void AbstractContent::layoutChildren()
                     button->setPos((left + right) / 2, top + button->height() / 2);
                     break;
 
+                case ButtonItem::Rotate:
+                    button->setPos(left + button->width() / 2, (top + bottom) / 2);
+                    break;
+
                 default:
                     button->setPos(offset - button->width() / 2, bottom - button->height() / 2);
                     offset -= button->width() + spacing;
@@ -984,14 +1051,39 @@ void AbstractContent::layoutChildren()
     }
 }
 
+void AbstractContent::slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *)
+{
+    do_canvas_command(scene(), new PerspectiveCommand(this, m_previousPerspectiveAngles, m_perspectiveAngles, false));
+    m_previousPerspectiveAngles = m_perspectiveAngles;
+}
+
+void AbstractContent::slotReleasePerspectivePane()
+{
+    PaneWidget *w = qobject_cast<PaneWidget*>(sender());
+    do_canvas_command(scene(), new PerspectiveCommand(this, m_previousPerspectiveAngles, w->endValue(), false));
+    m_previousPerspectiveAngles = w->endValue();
+}
+
+void AbstractContent::slotOpacityChanging()
+{
+  m_opacity = contentOpacity();
+}
+
+void AbstractContent::slotOpacityChanged()
+{
+  do_canvas_command(scene(), new OpacityCommand(this, m_opacity, contentOpacity()));
+  m_opacity = contentOpacity();
+}
+
 void AbstractContent::applyTransforms()
 {
-    setTransform(QTransform().rotate(m_perspectiveAngles.y(), Qt::XAxis)
-                 .rotate(m_perspectiveAngles.x(), Qt::YAxis)
+    setTransform(QTransform().rotate(m_perspectiveAngles.y(), Qt::XAxis).rotate(m_perspectiveAngles.x(), Qt::YAxis)
 #if QT_VERSION < 0x040600
-                 .rotate(m_rotationAngle, Qt::ZAxis)
+            .rotate(m_rotationAngle, Qt::ZAxis)
 #endif
-                 , false);
+            , false);
+
+
 }
 
 void AbstractContent::slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers)

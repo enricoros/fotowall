@@ -64,6 +64,10 @@ class PE_AbstractSlider : public PE_TypeControl<QAbstractSlider>
     public:
         PE_AbstractSlider(QAbstractSlider * slider, QObject * target, const char * propertyName, QObject * parent = 0);
 
+    Q_SIGNALS:
+        void sliderReleased();
+        void sliderPressed();
+
     private Q_SLOTS:
         void slotSliderValueChanged(int);
         void slotPropertyChanged();

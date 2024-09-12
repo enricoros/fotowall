@@ -20,6 +20,8 @@
 #include "StyledButtonItem.h"
 #include "ui_AbstractConfig.h"
 
+#include <QSettings>
+
 #include <QGraphicsSceneMouseEvent>
 #include <QFileDialog>
 #include <QListWidgetItem>
@@ -77,7 +79,6 @@ AbstractConfig::AbstractConfig(AbstractContent * content, AbstractConfig_PARENT 
 
     // read other properties
     m_commonUi->reflection->setChecked(m_content->mirrored());
-
     connect(m_commonUi->front, SIGNAL(clicked()), m_content, SLOT(slotStackFront()));
     connect(m_commonUi->raise, SIGNAL(clicked()), m_content, SLOT(slotStackRaise()));
     connect(m_commonUi->lower, SIGNAL(clicked()), m_content, SLOT(slotStackLower()));
@@ -274,6 +275,15 @@ void AbstractConfig::slotAddFrame()
             FrameFactory::addSvgFrame(frame);
         populateFrameList();
     }
+}
+
+void AbstractConfig::slotRemoveFrame()
+{
+    QList<QListWidgetItem *> selectedFrames = m_commonUi->framesList->selectedItems();
+    foreach (QListWidgetItem *item, selectedFrames) {
+            FrameFactory::removeFrame(item->data(Qt::UserRole).toInt());
+    }
+    populateFrameList();
 }
 
 void AbstractConfig::slotLookApplyAll()

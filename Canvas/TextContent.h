@@ -17,6 +17,7 @@
 
 #include "AbstractContent.h"
 class BezierCubicItem;
+class BezierControlPoint;
 class QTextDocument;
 
 /// \brief TODO
@@ -28,7 +29,7 @@ class TextContent : public AbstractContent
     Q_PROPERTY(bool shapeEditing READ isShapeEditing WRITE setShapeEditing NOTIFY notifyShapeEditing)
     Q_PROPERTY(QPainterPath shapePath READ shapePath WRITE setShapePath)
     public:
-        TextContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
+        TextContent(bool spontaneous, QGraphicsScene * scene);
         ~TextContent();
 
     public Q_SLOTS:
@@ -45,6 +46,8 @@ class TextContent : public AbstractContent
         QPainterPath shapePath() const;
         void setShapePath(const QPainterPath & path);
 
+        void slotControlPointChanged(const QList<QPointF> &);
+
     Q_SIGNALS:
         void notifyHasShape(bool);
         void notifyShapeEditing(bool);
@@ -53,11 +56,13 @@ class TextContent : public AbstractContent
         // ::AbstractContent
         QString contentName() const { return tr("Text"); }
         QWidget * createPropertyWidget(ContentProperties * __p = 0);
-        bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
         void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
         int contentHeightForWidth(int width) const;
         void selectionChanged(bool selected);
+
+        void setControlPoints(const QList<QPointF >& cps);
 
         // ::QGraphicsItem
         void keyPressEvent(QKeyEvent *event);
@@ -77,6 +82,7 @@ class TextContent : public AbstractContent
         // shape related stuff
         BezierCubicItem * m_shapeEditor;
         QPainterPath m_shapePath;
+        QList<QPointF> m_previousCps;
         QRect m_shapeRect;
 
     private Q_SLOTS:

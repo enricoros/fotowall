@@ -14,16 +14,11 @@
 
 #include "PictureContent.h"
 
-#include "App/App.h"
-#include "App/Settings.h"
-#include "Frames/Frame.h"
+#include "Shared/Commands.h"
+
 #include "Shared/CPixmap.h"
 #include "Shared/CroppingDialog.h"
-#include "Shared/PanePropertyEditor.h"
-#include "Shared/PropertyEditors.h"
-#include "Shared/RenderOpts.h"
 #include "ButtonItem.h"
-#include "PictureProperties.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -40,6 +35,14 @@
 #include <QProcess>
 #include <QTimer>
 #include <QUrl>
+
+#include "App/App.h"
+#include "App/Settings.h"
+#include "Frames/Frame.h"
+#include "Shared/PropertyEditors.h"
+#include "Shared/RenderOpts.h"
+#include "PictureProperties.h"
+
 
 PictureContent::PictureContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, spontaneous, false, parent)
@@ -71,6 +74,12 @@ PictureContent::PictureContent(bool spontaneous, QGraphicsScene * scene, QGraphi
     bFlipV->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     addButtonItem(bFlipV);
     connect(bFlipV, SIGNAL(clicked()), this, SIGNAL(flipVertically()));
+
+    ButtonItem * bRotate = new ButtonItem(ButtonItem::Rotate, Qt::blue, QIcon(":/data/action-rotate.png"), this);
+    bRotate->setToolTip(tr("Rotate"));
+    bRotate->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
+    addButtonItem(bRotate);
+    connect(bRotate, SIGNAL(clicked()), this, SLOT(slotRotate()));
 
 #if 0
     // add cropping button (TODO: enable this?)
@@ -211,6 +220,8 @@ void PictureContent::addEffect(const PictureEffect & effect)
 
     m_photo->addEffect(effect);
     // adapt picture ratio after cropping
+    if (effect.effect == PictureEffect::ClearEffects)
+      setContentOpacity(1);
     if (effect.effect == PictureEffect::Crop) {
         QRect actualContentRect = contentRect();
         if ((actualContentRect.height() + actualContentRect.width()) > 0) {
@@ -222,13 +233,27 @@ void PictureContent::addEffect(const PictureEffect & effect)
         }
     }
     else if(effect.effect == PictureEffect::Opacity)
+    {
         setContentOpacity(effect.param);
+    }
+    else if(effect.effect == PictureEffect::Rotate)
+    {
+        QRect newContentRect = contentRect();
+        newContentRect.setWidth(contentRect().height());
+        newContentRect.setHeight(contentRect().width());
+        resizeContents(newContentRect);
+    }
     m_cachedPhoto = QPixmap();
     update();
     GFX_CHANGED();
 
     // notify image change
     emit contentChanged();
+}
+
+QList<PictureEffect> PictureContent::effects() const
+{
+    return m_photo->effects();
 }
 
 void PictureContent::crop()
@@ -242,8 +267,10 @@ void PictureContent::crop()
     if (dial.exec() != QDialog::Accepted)
         return;
     QRect cropRect = dial.getCroppingRect();
-    if (!cropRect.isNull())
-        addEffect(PictureEffect(PictureEffect::Crop, 0, cropRect));
+    if (!cropRect.isNull()) {
+        EffectCommand * command = new EffectCommand(this, PictureEffect(PictureEffect::Crop, 0, cropRect));
+        do_canvas_command(scene(), command);
+    }
 }
 
 QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
@@ -262,12 +289,12 @@ QWidget * PictureContent::createPropertyWidget(ContentProperties * __p)
     return pp;
 }
 
-static bool hasChildTags(QDomElement & element, const QString & tagName)
+static bool hasChildTags(const QDomElement & element, const QString & tagName)
 {
     return !element.elementsByTagName(tagName).isEmpty();
 }
 
-bool PictureContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
+bool PictureContent::fromXml(const QDomElement & contentElement, const QDir & baseDir)
 {
     AbstractContent::fromXml(contentElement, baseDir);
 
@@ -540,8 +567,9 @@ void PictureContent::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
 }
 
-void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
+void PictureContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
+    AbstractContent::mouseDoubleClickEvent(event);
     emit requestBackgrounding();
 }
 
@@ -614,6 +642,12 @@ void PictureContent::applyPostLoadEffects()
     m_afterLoadEffects.clear();
     update();
     GFX_CHANGED();
+}
+
+void PictureContent::slotRotate()
+{
+    do_canvas_command(scene(), new EffectCommand(this, PictureEffect::Rotate));
+    update();
 }
 
 void PictureContent::slotGimpCompressNotifies()

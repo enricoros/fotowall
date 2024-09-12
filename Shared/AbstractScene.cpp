@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "AbstractScene.h"
+#include "Shared/Commands.h"
 
 AbstractScene::AbstractScene(QObject * parent)
   : QGraphicsScene(parent)
@@ -68,6 +69,13 @@ void AbstractScene::setPerspective(const QPointF & angles)
     }
 }
 
+void AbstractScene::setPerspective_(const QPointF & angles)
+{
+    if (angles != m_perspectiveAngles) {
+        do_canvas_command(this, new PerspectiveCommand<AbstractScene>(this, m_perspectiveAngles, angles));
+    }
+}
+
 QPointF AbstractScene::perspective() const
 {
     return m_perspectiveAngles;
@@ -78,6 +86,13 @@ void AbstractScene::setRotation(qreal rotation)
     if (rotation != m_rotationAngle) {
         m_rotationAngle = rotation;
         emit sceneRotationChanged();
+    }
+}
+
+void AbstractScene::setRotation_(qreal rotation)
+{
+    if (rotation != m_rotationAngle) {
+        do_canvas_command(this, new SceneRotationCommand(this, m_rotationAngle, rotation));
     }
 }
 

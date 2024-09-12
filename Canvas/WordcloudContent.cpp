@@ -78,7 +78,7 @@ void WordcloudContent::manualInitialization()
     m_cloud->newCloud(list);
 }
 
-bool WordcloudContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
+bool WordcloudContent::fromXml(const QDomElement & contentElement, const QDir & baseDir)
 {
     AbstractContent::fromXml(contentElement, baseDir);
 

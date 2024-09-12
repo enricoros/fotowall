@@ -14,6 +14,9 @@
 
 #include "TextContent.h"
 
+#include "Shared/Commands.h"
+#include "Canvas/Canvas.h"
+
 #include "Frames/Frame.h"
 #include "Shared/PropertyEditors.h"
 #include "Shared/RenderOpts.h"
@@ -31,8 +34,8 @@
 #include <QTextFrame>
 #include <QUrl>
 
-TextContent::TextContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
-    : AbstractContent(scene, spontaneous, false, parent)
+TextContent::TextContent(bool spontaneous, QGraphicsScene * scene /* canvas */)
+    : AbstractContent(scene, spontaneous, false, 0)
     , m_text(0)
     , m_textRect(0, 0, 0, 0)
     , m_textMargin(4)
@@ -61,6 +64,8 @@ TextContent::TextContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem
     m_shapeEditor->setVisible(false);
     m_shapeEditor->setControlPoints(QList<QPointF>() << QPointF(-100, -50) << QPointF(-10, 40) << QPointF(100, -50) << QPointF(100, 50));
     connect(m_shapeEditor, SIGNAL(shapeChanged(const QPainterPath &)), this, SLOT(setShapePath(const QPainterPath &)));
+    connect(m_shapeEditor, SIGNAL(shapeControlPointChanged(const QList<QPointF> & )),
+                this, SLOT(slotControlPointChanged(const QList<QPointF> &)));
 }
 
 TextContent::~TextContent()
@@ -106,6 +111,7 @@ bool TextContent::isShapeEditing() const
 void TextContent::setShapeEditing(bool enabled)
 {
     if (enabled) {
+        do_canvas_command(scene(), new ShapeCommand(this, m_previousCps, m_shapeEditor->controlPoints()));
         // shape editor on
         if (!m_shapeEditor->isVisible()) {
             m_shapeEditor->show();
@@ -119,6 +125,7 @@ void TextContent::setShapeEditing(bool enabled)
 
             // use new shape
             setShapePath(m_shapeEditor->shape());
+            m_previousCps = m_shapeEditor->controlPoints();
             emit notifyHasShape(true);
         }
     } else {
@@ -148,7 +155,7 @@ QWidget * TextContent::createPropertyWidget(ContentProperties * __p)
     return tp;
 }
 
-bool TextContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
+bool TextContent::fromXml(const QDomElement & contentElement, const QDir & baseDir)
 {
     // FIRST load text properties and shape
     // NOTE: order matters here, we don't want to override the size restored later
@@ -342,6 +349,17 @@ void TextContent::selectionChanged(bool selected)
         setShapeEditing(false);
 }
 
+void TextContent::setControlPoints(const QList<QPointF> & cps) {
+    m_shapeEditor->setControlPoints(cps);
+    if(cps.size() == 0)
+    {
+        m_shapePath = QPainterPath();
+        m_shapeEditor->setVisible(false);
+    }
+    setShapePath(m_shapePath);
+    updateTextConstraints();
+}
+
 void TextContent::keyPressEvent(QKeyEvent * event)
 {
     // use F2 to edit the text
@@ -353,8 +371,9 @@ void TextContent::keyPressEvent(QKeyEvent * event)
     AbstractContent::keyPressEvent(event);
 }
 
-void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
+void TextContent::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
+    AbstractContent::mouseDoubleClickEvent(event);
     emit requestBackgrounding();
 }
 
@@ -377,6 +396,13 @@ void TextContent::setShapePath(const QPainterPath & path)
 
     // regenerate text layouting
     updateTextConstraints();
+}
+
+void TextContent::slotControlPointChanged(const QList<QPointF >& m_ncps)
+{
+    ShapeCommand *c = new ShapeCommand(this, m_previousCps, m_ncps);
+    do_canvas_command(scene(), c);
+    m_previousCps = m_shapeEditor->controlPoints();
 }
 
 void TextContent::updateTextConstraints()

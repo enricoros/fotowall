@@ -33,15 +33,15 @@ class CanvasViewContent : public AbstractContent, public SingleResourceLoaner
         bool loadFromFile(const QString & fwFilePath, bool keepRatio = false, bool setName = false);
 
         // ::AbstractContent
-        QString contentName() const { return tr("Canvas View"); }
-        bool fromXml(QDomElement & contentElement, const QDir & baseDir);
-        void toXml(QDomElement & contentElement, const QDir & baseDir) const;
-        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
-        int contentHeightForWidth(int width) const;
+        QString contentName() const override { return tr("Canvas View"); }
+        bool fromXml(const QDomElement & contentElement, const QDir & baseDir) override;
+        void toXml(QDomElement & contentElement, const QDir & baseDir) const override;
+        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio) override;
+        int contentHeightForWidth(int width) const override;
 
         // ::SingleResourceProvider
-        QVariant takeResource();
-        void returnResource(const QVariant &);
+        QVariant takeResource() override;
+        void returnResource(const QVariant &) override;
 
     private:
         Canvas * m_canvas;

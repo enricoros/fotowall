@@ -17,18 +17,22 @@
 #include "Shared/RenderOpts.h"
 #include "AbstractContent.h"
 
+#include "Shared/Commands.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <math.h>
 
-CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * parent)
-    : QGraphicsItem(parent)
-    , m_content(parent)
+CornerItem::CornerItem(Qt::Corner corner, bool rotateOnly, AbstractContent * content)
+    : QGraphicsItem(content)
+    , m_content(content)
     , m_corner(corner)
     , m_opMask(rotateOnly ? Rotate | FixRotate : AllowAll)
     , m_side(8)
     , m_operation(Off)
+    , m_startRotation(content->rotation())
+    , m_hidden(false)
 {
     setAcceptHoverEvents(true);
 }
@@ -84,8 +88,10 @@ void CornerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
     m_operation &= m_opMask;
 
     // intial parameters
-    QRect cRect = m_content->contentRect();
-    m_startRatio = (double)cRect.width() / (double)cRect.height();
+    m_startContentRect = m_content->contentRect();
+    m_startRatio = (double)m_startContentRect.width() / (double)m_startContentRect.height();
+
+    m_startRotation = m_content->rotation();
 
     update();
 }
@@ -162,6 +168,10 @@ void CornerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     bool accepted = m_operation != Off;
     m_operation = Off;
     update();
+
+    RotateAndResizeCommand *command = new RotateAndResizeCommand(m_content, m_startRotation, m_content->rotation(),
+                                                                m_startContentRect, m_content->contentRect());
+    do_canvas_command(m_content->scene(), command);
 
     // clicked
     if (accepted) {

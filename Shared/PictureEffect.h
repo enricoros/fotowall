@@ -31,6 +31,7 @@ struct PictureEffect {
         Opacity         =  8,
         Crop            =  9,
         AutoBlend       = 10,
+        Rotate          = 11
     } effect;
     qreal param;
     QRect rect;

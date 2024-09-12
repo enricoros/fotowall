@@ -41,6 +41,7 @@ public:
    void toSepia();  // Old photo style
    void toCropped(const QRect &cropRect);
    void toAutoBlend(qreal strength);
+   void rotate();
    //void toLuminosity(int value);
 
 private:

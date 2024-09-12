@@ -24,7 +24,9 @@ HEADERS += \
     Shared/PixmapButton.h \
     Shared/PropertyEditors.h \
     Shared/RenderOpts.h \
-    Shared/VideoProvider.h
+    Shared/VideoProvider.h \
+    Shared/Commands.h
+
 
 SOURCES += \
     Shared/PlugGui/AbstractAppliance.cpp \

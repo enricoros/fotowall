@@ -208,7 +208,9 @@ improvement and the code is kept clean and small.
 
 ### Current Wishlist and user's requests
 
-* Make the propeties dialog moveable/stay in the current view (reqby Martin Zimmermann)
+* Add the possibility to create a template ("like specify the elements you can readily replace (like photos and design elements)
+ and specify those that are permanent.. this would be very useful for album layouting.") - assigned to Arnaud TANGUY
+* Make the propeties dialog moveable/stay in the current view (reqby Martin Zimmermann, and many French users)
 * Integrate Marco Bavagnoli updates on the googleimagedownloader
 * Parametric "Random placement", so the image can not be rotated, for example
 * Change all pictures opacity at the same time (workaround for the 'random placement' that changes opacity too)
@@ -258,7 +260,9 @@ improvement and the code is kept clean and small.
 * scene matrix (global perspective)
 * regional links to web resources
  - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
- - french: ubuntu-fr ?
+ - french: http://forum.ubuntu-fr.org/viewtopic.php?id=308200
+           http://geenux.wordpress.com/tag/fotowall/  (Arnaud Tanguy's blog) 
+           http://benoit.balon.free.fr/?tag=fotowall  (Benoît Bâlon's blog)
 * missing relicences
  - 3rdparty/richtextedit/richtexteditor*: redo 'cause non free
 

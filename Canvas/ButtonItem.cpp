@@ -101,6 +101,7 @@ void ButtonItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 void ButtonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
     event->accept();
+    emit releaseEvent(event);
     bool dragging = !m_startPos.isNull();
     m_startPos = QPointF();
     update();

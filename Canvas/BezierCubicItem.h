@@ -38,10 +38,11 @@ class BezierCubicItem : public QObject, public QGraphicsItem
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
         // called by control points
-        void controlPointMoved(int index);
+        void controlPointMoved(int index, bool moveFinished = false);
 
     Q_SIGNALS:
         void shapeChanged(const QPainterPath & path);
+        void shapeControlPointChanged(const QList<QPointF >& );
 
     private:
         QVector<BezierControlPoint *> m_cps;

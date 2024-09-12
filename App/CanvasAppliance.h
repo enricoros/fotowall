@@ -17,6 +17,7 @@
 
 #include <QActionGroup>
 
+#include "Canvas/CanvasModeInfo.h"
 #include "Shared/PlugGui/AbstractAppliance.h"
 #include "ui_CanvasAppliance.h"
 class QMenu;
@@ -39,6 +40,8 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         bool applianceCommand(int command);
         bool appliancePendingChanges() const;
         bool applianceSave(const QString & filePath = QString());
+        void setProjectMode(const CanvasModeInfo::Mode mode);
+        void setProjectMode(const CanvasModeInfo & mode);
 
     private:
         QMenu * createArrangeMenu();
@@ -49,7 +52,10 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
         void setWallpaperProject();
         void setCDProject();
         void setDVDProject();
+        void updateProjectMode();
         void configurePrint(bool enabled);
+        int projectComboIndexFromMode(const CanvasModeInfo::Mode mode) const;
+        CanvasModeInfo::Mode projectModeFromComboIndex(const int index) const;
 
     private:
         Ui::CanvasApplianceElements ui;
@@ -97,6 +103,9 @@ class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 
         // other actions
         void slotVerifyVideoInputs(int count);
+
+        void slotUndoTextChanged(const QString &);
+        void slotRedoTextChanged(const QString &);
 };
 
 #endif

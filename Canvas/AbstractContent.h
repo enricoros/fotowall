@@ -19,6 +19,7 @@
 #include "3rdparty/enricomath.h"
 #include <QDomElement>
 #include <QDir>
+#include <QUndoCommand>
 class AbstractConfig;
 class ButtonItem;
 class ContentProperties;
@@ -27,7 +28,19 @@ class Frame;
 class MirrorItem;
 class QGraphicsTextItem;
 class QPointF;
+class PE_AbstractSlider;
 
+/**
+ * Convenience function to push a command to the canvas' undo stack
+ *
+ * We need to fetch the undo/redo command stack from the canvas.
+ * However items store the canvas as a their base QObject, thus:
+ * - If we can cast to Canvas, then we push the command to the undo stack for that Canvas
+ * - Else we still execute the command without adding it to a command stack. Tthis only happens if maybeCanvas is not a canvas, if used properly this should not happen.
+ *
+ * @return true if the command was added to a command stack, false otherwise
+ */
+bool do_canvas_command(QObject * maybeCanvas, QUndoCommand* command);
 
 /// \brief Base class of Canvas Item (with lots of gadgets!)
 class AbstractContent : public AbstractDisposeable
@@ -39,7 +52,7 @@ class AbstractContent : public AbstractDisposeable
 #endif
     Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged)
     Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective NOTIFY perspectiveChanged)
-    Q_PROPERTY(int fxIndex READ fxIndex WRITE setFxIndex NOTIFY fxIndexChanged)
+    Q_PROPERTY(int fxIndex READ fxIndex WRITE setFxIndex_ NOTIFY fxIndexChanged)
     public:
         AbstractContent(QGraphicsScene * scene, bool fadeIn, bool noRescale, QGraphicsItem * parent);
         virtual ~AbstractContent();
@@ -52,6 +65,11 @@ class AbstractContent : public AbstractDisposeable
         void resizeContents(const QRect & rect, bool keepRatio = false);
         void resetContentsRatio();
         void delayedDirty(int ms = 400);
+
+        // position
+        QPointF previousPos() const;
+        void setPreviousPos(const QPointF& previousPos);
+        void setPosUndo(const QPointF& pos);
 
         // frame (and frame text)
         void setFrame(Frame * frame);
@@ -73,6 +91,7 @@ class AbstractContent : public AbstractDisposeable
         void setRotation(qreal angle);
         qreal rotation() const;
 #endif
+        void setFxIndex_(int index);
         void setFxIndex(int index);
         int fxIndex() const;
 
@@ -82,7 +101,7 @@ class AbstractContent : public AbstractDisposeable
 
         // to be reimplemented by subclasses
         virtual QString contentName() const = 0;
-        virtual bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        virtual bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
         virtual void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         virtual void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio) = 0;
         virtual QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
@@ -94,6 +113,11 @@ class AbstractContent : public AbstractDisposeable
         QRectF boundingRect() const;
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
         void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+
+        QGraphicsScene * scene() const noexcept
+        {
+            return m_scene;
+        }
 
     Q_SIGNALS:
         // to canvas
@@ -124,9 +148,11 @@ class AbstractContent : public AbstractDisposeable
         // ::QGraphicsItem
         void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
         void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
         void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
         void dropEvent(QGraphicsSceneDragDropEvent * event);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
         void keyPressEvent(QKeyEvent * event);
         QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 
@@ -137,11 +163,18 @@ class AbstractContent : public AbstractDisposeable
         void slotStackLower();
         void slotStackBack();
         void slotSaveAs();
+        void slotReleasePerspectiveButton(QGraphicsSceneMouseEvent *);
+        void slotReleasePerspectivePane();
+        void slotOpacityChanged();
+        void slotOpacityChanging();
 
     private:
         void createCorner(Qt::Corner corner, bool noRescale);
         void layoutChildren();
         void applyTransforms();
+        PE_AbstractSlider   *m_opacitySlider;
+        QTransform          m_previousTransform;
+        QPointF             m_previousPos;
         QRect               m_contentRect;
         QRectF              m_frameRect;
         Frame *             m_frame;
@@ -153,11 +186,16 @@ class AbstractContent : public AbstractDisposeable
         QTimer *            m_transformRefreshTimer;
         QTimer *            m_gfxChangeTimer;
         MirrorItem *        m_mirrorItem;
-        QPointF             m_perspectiveAngles;
+        QPointF             m_perspectiveAngles = QPointF(0, 0);
+        QPointF             m_previousPerspectiveAngles = QPointF(0, 0);
 #if QT_VERSION < 0x040600
         double              m_rotationAngle;
 #endif
         int                 m_fxIndex;
+
+        qreal               m_opacity;
+
+        QGraphicsScene *m_scene = nullptr;
 
     private Q_SLOTS:
         void slotSetPerspective(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);

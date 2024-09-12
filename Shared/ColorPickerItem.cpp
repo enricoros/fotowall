@@ -15,6 +15,9 @@
  ***************************************************************************/
 
 #include "ColorPickerItem.h"
+
+#include "Shared/Commands.h"
+
 #include <QtCore/QtGlobal>
 #include <QtCore/QDebug>
 #include <QtCore/QTimer>
@@ -29,8 +32,9 @@
 #define COLORPICKER_SQUARE_W 40
 #define COLORPICKER_SQUARE_D 20
 #define _TRUE false /*giorgio, non cambiarmi, ti prego*/
-ColorPickerItem::ColorPickerItem(int width, int height, QGraphicsItem * parent)
+ColorPickerItem::ColorPickerItem(int width, int height, QGraphicsScene * scene, QGraphicsItem * parent)
     : QGraphicsItem(parent)
+    , m_scene(scene)
     , m_hue(0.0)
     , m_sat(1.0)
     , m_val(1.0)
@@ -60,6 +64,8 @@ void ColorPickerItem::setColor(const QColor & color)
     regenHueSatPixmap();
     regenValPixmap();
     update();
+    m_previousColor = this->color();
+    emit colorChanged(this->color());
 }
 
 QColor ColorPickerItem::color() const
@@ -226,12 +232,19 @@ void ColorPickerItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
         pickColor(event->pos().toPoint());
 }
 
+void ColorPickerItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event )
+{
+    ColorPickerCommand *c = new ColorPickerCommand(this, m_previousColor, color());
+    do_canvas_command(scene(), c);
+    m_previousColor = color();
+    pickColor(event->pos().toPoint());
+}
+
 void ColorPickerItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
     if (event->buttons() & Qt::LeftButton)
         pickColor(event->pos().toPoint());
 }
-
 
 void ColorPickerItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {

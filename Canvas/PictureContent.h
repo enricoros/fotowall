@@ -36,12 +36,13 @@ class PictureContent : public AbstractContent
         bool loadFromNetwork(const QString & url, QNetworkReply * reply = 0, const QString & title = QString(), int width = -1, int height = -1);
         bool loadPixmapForAccelTest(const QPixmap & pixmap, const QString & title = QString());
         void addEffect(const PictureEffect & effect);
+        QList<PictureEffect> effects() const;
         void crop();
 
         // ::AbstractContent
         QString contentName() const { return tr("Picture"); }
         QWidget * createPropertyWidget(ContentProperties * p = 0);
-        bool fromXml(QDomElement & contentElement, const QDir & baseDir);
+        bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
         void toXml(QDomElement & contentElement, const QDir & baseDir) const;
         void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
         QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
@@ -84,6 +85,7 @@ class PictureContent : public AbstractContent
         bool slotLoadNetworkData();
         void slotNetworkError();
         void slotNetworkProgress(qint64, qint64);
+        void slotRotate();
 };
 
 #endif

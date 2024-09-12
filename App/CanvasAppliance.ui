@@ -443,6 +443,105 @@
     <property name="spacing">
      <number>0</number>
     </property>
+    <item row="1" column="0">
+     <widget class="QToolButton" name="backButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Background</string>
+      </property>
+      <property name="popupMode">
+       <enum>QToolButton::InstantPopup</enum>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QToolButton" name="arrangeButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Arrange</string>
+      </property>
+      <property name="popupMode">
+       <enum>QToolButton::InstantPopup</enum>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="undoButton">
+      <property name="toolTip">
+       <string>Undo</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton:hover {
+    border: 2px solid #8f8f91;
+    border-radius: 6px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
+    min-width: 80px;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset theme="undo">
+        <normaloff>.</normaloff>.</iconset>
+      </property>
+      <property name="shortcut">
+       <string>Ctrl+Z</string>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="decoButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Decorations</string>
+      </property>
+      <property name="popupMode">
+       <enum>QToolButton::InstantPopup</enum>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QComboBox" name="projectCombo">
       <property name="sizePolicy">
@@ -478,59 +577,44 @@
       </item>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QToolButton" name="decoButton">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="redoButton">
+      <property name="toolTip">
+       <string>Redo</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton:hover {
+    border: 2px solid #8f8f91;
+    border-radius: 6px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
+    min-width: 80px;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
       </property>
       <property name="text">
-       <string>Decorations</string>
+       <string/>
       </property>
-      <property name="popupMode">
-       <enum>QToolButton::InstantPopup</enum>
+      <property name="icon">
+       <iconset theme="redo">
+        <normaloff>.</normaloff>.</iconset>
       </property>
-      <property name="autoRaise">
-       <bool>true</bool>
+      <property name="shortcut">
+       <string>Ctrl+Shift+Z</string>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QToolButton" name="backButton">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Background</string>
-      </property>
-      <property name="popupMode">
-       <enum>QToolButton::InstantPopup</enum>
-      </property>
-      <property name="autoRaise">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QToolButton" name="arrangeButton">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Arrange</string>
-      </property>
-      <property name="popupMode">
-       <enum>QToolButton::InstantPopup</enum>
-      </property>
-      <property name="autoRaise">
+      <property name="flat">
        <bool>true</bool>
       </property>
      </widget>

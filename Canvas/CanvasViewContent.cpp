@@ -22,6 +22,7 @@
 #include <QGraphicsView>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QDebug>
 
 CanvasViewContent::CanvasViewContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent)
     : AbstractContent(scene, spontaneous, false, parent)
@@ -58,7 +59,7 @@ bool CanvasViewContent::loadFromFile(const QString & fwFilePath, bool /*keepRati
     return ok;
 }
 
-bool CanvasViewContent::fromXml(QDomElement & contentElement, const QDir & baseDir)
+bool CanvasViewContent::fromXml(const QDomElement & contentElement, const QDir & baseDir)
 {
     AbstractContent::fromXml(contentElement, baseDir);
 
