@@ -15,26 +15,27 @@
 #ifndef __SelectionProperties_h__
 #define __SelectionProperties_h__
 
-#include <QWidget>
-#include <QList>
 #include "AbstractContent.h"
+#include <QList>
+#include <QWidget>
 class PictureContent;
 class TextContent;
 
-class SelectionProperties : public QWidget {
-    Q_OBJECT
-    public:
-        SelectionProperties(QList<AbstractContent *> selection, QWidget * parent = 0);
-        ~SelectionProperties();
+class SelectionProperties : public QWidget
+{
+  Q_OBJECT
+public:
+  SelectionProperties(QList<AbstractContent *> selection, QWidget * parent = 0);
+  ~SelectionProperties();
 
-    Q_SIGNALS:
-        void collateSelection();
-        void deleteSelection();
+Q_SIGNALS:
+  void collateSelection();
+  void deleteSelection();
 
-    private:
-        QList<AbstractContent *> m_content;
-        QList<PictureContent *> m_pictures;
-        QList<TextContent *> m_texts;
+private:
+  QList<AbstractContent *> m_content;
+  QList<PictureContent *> m_pictures;
+  QList<TextContent *> m_texts;
 };
 
 #endif

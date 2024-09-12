@@ -596,8 +596,8 @@ void RichTextEditorToolBar::paintEvent(QPaintEvent * /*event*/) // +fotowall
     QColor windowColor = palette().brush(QPalette::Window).color();
     QLinearGradient lg(0, 0, 0, 1);
     lg.setCoordinateMode(QGradient::ObjectBoundingMode);
-    lg.setColorAt(0.0, windowColor.light(150));
-    lg.setColorAt(1.0, windowColor.dark(110));
+    lg.setColorAt(0.0, windowColor.lighter(150));
+    lg.setColorAt(1.0, windowColor.darker(110));
     p.setCompositionMode(QPainter::CompositionMode_Source);
     p.fillRect(rect(), lg);
 }
@@ -663,7 +663,7 @@ QToolBar *RichTextEditor::createToolBar(QWidget *parent)
 
 void RichTextEditor::wheelEvent(QWheelEvent * e)    // +fotowall
 {
-    emit wheelScrolled(e->delta() / 120);
+    emit wheelScrolled(e->angleDelta().y() / 120);
 }
 
 void RichTextEditor::setFontBold(bool b)
@@ -745,7 +745,7 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
 
     QWidget *rich_edit = new QWidget;
     QGridLayout *rich_edit_layout = new QGridLayout(rich_edit);
-    rich_edit_layout->setMargin(0);     // +fotowall
+    rich_edit_layout->setContentsMargins(0, 0, 0, 0);     // +fotowall
     rich_edit_layout->setSpacing(0);    // +fotowall
     rich_edit_layout->addWidget(tool_bar, 0, 0, 1, 2);
     rich_edit_layout->addWidget(m_editor, 1, 0, 1, 1);
@@ -753,7 +753,7 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
 
     QWidget *plain_edit = new QWidget;
     QVBoxLayout *plain_edit_layout = new QVBoxLayout(plain_edit);
-    plain_edit_layout->setMargin(0);    // +fotowall
+    plain_edit_layout->setContentsMargins(0, 0, 0, 0);    // +fotowall
     plain_edit_layout->addWidget(m_text_edit);
 
     m_tab_widget->setTabPosition(QTabWidget::South);
@@ -772,7 +772,7 @@ RichTextEditorDialog::RichTextEditorDialog(QWidget *parent)  :
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));*/
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setMargin(0);   // +fotowall
+    layout->setContentsMargins(0, 0, 0, 0);   // +fotowall
     layout->addWidget(m_tab_widget);
     ///layout->addWidget(buttonBox);
 

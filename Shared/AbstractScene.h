@@ -22,51 +22,51 @@
 
 class AbstractScene : public QGraphicsScene
 {
-    Q_OBJECT
-    Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective_ NOTIFY scenePerspectiveChanged)
-    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation_ NOTIFY sceneRotationChanged)
-    public:
-        AbstractScene(QObject * parent = 0);
+  Q_OBJECT
+  Q_PROPERTY(QPointF perspective READ perspective WRITE setPerspective_ NOTIFY scenePerspectiveChanged)
+  Q_PROPERTY(qreal rotation READ rotation WRITE setRotation_ NOTIFY sceneRotationChanged)
+public:
+  AbstractScene(QObject * parent = 0);
 
-        // tells the views to update their layouts
-        void adjustSceneSize();
+  // tells the views to update their layouts
+  void adjustSceneSize();
 
-        // scene size
-        void resizeAutoFit();
-        virtual void resize(const QSize & size);
-        virtual void resizeEvent();
-        inline int sceneWidth() const { return m_size.width(); }
-        inline int sceneHeight() const { return m_size.height(); }
-        inline QSize sceneSize() const { return m_size; }
-        inline QRectF sceneRect() const { return m_rect; }
-        inline QPointF sceneCenter() const { return m_rect.center(); }
+  // scene size
+  void resizeAutoFit();
+  virtual void resize(const QSize & size);
+  virtual void resizeEvent();
+  inline int sceneWidth() const { return m_size.width(); }
+  inline int sceneHeight() const { return m_size.height(); }
+  inline QSize sceneSize() const { return m_size; }
+  inline QRectF sceneRect() const { return m_rect; }
+  inline QPointF sceneCenter() const { return m_rect.center(); }
 
-        // how to view the scene (defaults to true)
-        virtual bool sceneSelectable() const;
+  // how to view the scene (defaults to true)
+  virtual bool sceneSelectable() const;
 
-        // notifications
-        virtual void pasteFromClipboard() {}
+  // notifications
+  virtual void pasteFromClipboard() {}
 
-        // properties
-        void setPerspective(const QPointF & angles);
-        void setPerspective_(const QPointF & angles);
-        QPointF perspective() const;
-        void setRotation(qreal rotation);
-        void setRotation_(qreal rotation);
-        qreal rotation() const;
+  // properties
+  void setPerspective(const QPointF & angles);
+  void setPerspective_(const QPointF & angles);
+  QPointF perspective() const;
+  void setRotation(qreal rotation);
+  void setRotation_(qreal rotation);
+  qreal rotation() const;
 
-    Q_SIGNALS:
-        void sceneSizeChanged();
-        void scenePerspectiveChanged();
-        void sceneRotationChanged();
+Q_SIGNALS:
+  void sceneSizeChanged();
+  void scenePerspectiveChanged();
+  void sceneRotationChanged();
 
-    protected:
-        QSize m_size;
-        QRectF m_rect;
+protected:
+  QSize m_size;
+  QRectF m_rect;
 
-    private:
-        QPointF m_perspectiveAngles;
-        qreal m_rotationAngle = 0;
+private:
+  QPointF m_perspectiveAngles;
+  qreal m_rotationAngle = 0;
 };
 
 #endif

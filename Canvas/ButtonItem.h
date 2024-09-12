@@ -15,45 +15,51 @@
 #ifndef __ButtonItem_h__
 #define __ButtonItem_h__
 
+#include <QBrush>
 #include <QGraphicsItem>
 #include <QIcon>
-#include <QBrush>
 #include <QPointF>
 
 class ButtonItem : public QObject, public QGraphicsItem
 {
-    Q_OBJECT
-    Q_INTERFACES(QGraphicsItem)
-    public:
-        enum Type {Control, FlipV, FlipH, Rotate};
-        ButtonItem(Type type, const QBrush & brush, const QIcon & icon, QGraphicsItem * parent);
+  Q_OBJECT
+  Q_INTERFACES(QGraphicsItem)
+public:
+  enum Type
+  {
+    Control,
+    FlipV,
+    FlipH,
+    Rotate
+  };
+  ButtonItem(Type type, const QBrush & brush, const QIcon & icon, QGraphicsItem * parent);
 
-        Type buttonType() const;
-        int width() const;
-        int height() const;
-        void setSelectsParent(bool selects);
+  Type buttonType() const;
+  int width() const;
+  int height() const;
+  void setSelectsParent(bool selects);
 
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-        void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
-        void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
-        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+  // ::QGraphicsItem
+  QRectF boundingRect() const;
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+  void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+  void mousePressEvent(QGraphicsSceneMouseEvent * event);
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+  void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
-    Q_SIGNALS:
-        void dragging(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);
-        void pressed();
-        void clicked();
-        void doubleClicked();
-        void releaseEvent(QGraphicsSceneMouseEvent * event);
+Q_SIGNALS:
+  void dragging(const QPointF & sceneRelPoint, Qt::KeyboardModifiers modifiers);
+  void pressed();
+  void clicked();
+  void doubleClicked();
+  void releaseEvent(QGraphicsSceneMouseEvent * event);
 
-    private:
-        Type        m_type;
-        QIcon       m_icon;
-        QBrush      m_brush;
-        bool        m_selectsParent;
-        QPointF     m_startPos;
+private:
+  Type m_type;
+  QIcon m_icon;
+  QBrush m_brush;
+  bool m_selectsParent;
+  QPointF m_startPos;
 };
 
 #endif

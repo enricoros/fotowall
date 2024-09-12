@@ -15,8 +15,8 @@
 #ifndef __VideoProvider_h__
 #define __VideoProvider_h__
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 class QPixmap;
 class QTimer;
 class VideoInput;
@@ -26,63 +26,66 @@ class VideoInput;
 */
 class VideoProvider : public QObject
 {
-    Q_OBJECT
-    public:
-        /// options
-        static bool Disable;
+  Q_OBJECT
+public:
+  /// options
+  static bool Disable;
 
-        /// singleton
-        static VideoProvider * instance();
-        VideoProvider();
-        ~VideoProvider();
+  /// singleton
+  static VideoProvider * instance();
+  VideoProvider();
+  ~VideoProvider();
 
-        // how many inputs
-        int inputCount() const;
+  // how many inputs
+  int inputCount() const;
 
-        // register to an input
-        bool connectInput(int input, QObject * receiver, const char * method);
-        void disconnectReceiver(QObject * receiver);
+  // register to an input
+  bool connectInput(int input, QObject * receiver, const char * method);
+  void disconnectReceiver(QObject * receiver);
 
-        // enable swapping of an input
-        void setSwapped(int input, bool swapped);
-        bool swapped(int input) const;
+  // enable swapping of an input
+  void setSwapped(int input, bool swapped);
+  bool swapped(int input) const;
 
-    Q_SIGNALS:
-        void inputCountChanged(int count);
+Q_SIGNALS:
+  void inputCountChanged(int count);
 
-    private:
-        QTimer * m_snapTimer;
-        QList<VideoInput *> m_inputs;
-        bool m_swapVideo;
+private:
+  QTimer * m_snapTimer;
+  QList<VideoInput *> m_inputs;
+  bool m_swapVideo;
 
-    private Q_SLOTS:
-        void initDevices();
-        void slotCaptureFromDevices();
+private Q_SLOTS:
+  void initDevices();
+  void slotCaptureFromDevices();
 };
 
 #if defined(HAS_VIDEOCAPTURE)
-namespace VideoCapture { class VideoDevice; }
+namespace VideoCapture
+{
+class VideoDevice;
+}
 #endif
 
 /// @internal not in cpp for MOC-ing purpose only
 class VideoInput : public QObject
 {
-    Q_OBJECT
-    public:
-        VideoInput();
-        ~VideoInput();
+  Q_OBJECT
+public:
+  VideoInput();
+  ~VideoInput();
 
-        int channels;
-        bool active;
-        bool swapped;
-        QList<QObject *> receivers;
+  int channels;
+  bool active;
+  bool swapped;
+  QList<QObject *> receivers;
 #if defined(HAS_VIDEOCAPTURE)
-        VideoCapture::VideoDevice * device;
+  VideoCapture::VideoDevice * device;
 #endif
 
-    Q_SIGNALS:
-        friend class VideoProvider;
-        void newPixmap(const QPixmap & pixmap);
+Q_SIGNALS:
+  friend class VideoProvider;
+  void newPixmap(const QPixmap & pixmap);
 };
 
 #endif

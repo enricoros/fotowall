@@ -22,27 +22,27 @@
 */
 class MirrorItem : public AbstractDisposeable
 {
-    Q_OBJECT
-    public:
-        MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent = 0);
-        ~MirrorItem();
+  Q_OBJECT
+public:
+  MirrorItem(QGraphicsItem * sourceItem, QGraphicsItem * parent = 0);
+  ~MirrorItem();
 
-        // ::AbstractDisposeable
-        //void dispose();
+  // ::AbstractDisposeable
+  // void dispose();
 
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+  // ::QGraphicsItem
+  QRectF boundingRect() const;
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
-    public Q_SLOTS:
-        void sourceMoved();
-        void sourceChanged();
+public Q_SLOTS:
+  void sourceMoved();
+  void sourceChanged();
 
-    private:
-        QGraphicsItem * m_source;
-        QRectF m_boundingRect;
-        QPixmap m_pixmap;
-        bool m_dirty;
+private:
+  QGraphicsItem * m_source;
+  QRectF m_boundingRect;
+  QPixmap m_pixmap;
+  bool m_dirty;
 };
 
 #endif

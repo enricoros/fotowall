@@ -15,47 +15,52 @@
 #ifndef __OnlineServices_h__
 #define __OnlineServices_h__
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 class QNetworkAccessManager;
 
 // uncomment the following to stop the Updates checking
 #define NO_UPDATE_CHECK
 
-class OnlineServices : public QObject {
-    Q_OBJECT
-    public:
-        OnlineServices(QNetworkAccessManager *, QObject * parent = 0);
-        ~OnlineServices();
+class OnlineServices : public QObject
+{
+  Q_OBJECT
+public:
+  OnlineServices(QNetworkAccessManager *, QObject * parent = 0);
+  ~OnlineServices();
 
-        // return true if already present, otherwise start a search
-        bool checkForTutorial();
+  // return true if already present, otherwise start a search
+  bool checkForTutorial();
 
-    public Q_SLOTS:
-        void openWebpage();
-        void openBlog();
-        void openYouTube();
-        void openTutorial();
+public Q_SLOTS:
+  void openWebpage();
+  void openBlog();
+  void openYouTube();
+  void openTutorial();
 #if !defined(NO_UPDATE_CHECK)
-        void checkForUpdates();
+  void checkForUpdates();
 #endif
 
-    Q_SIGNALS:
-        void tutorialFound(bool);
+Q_SIGNALS:
+  void tutorialFound(bool);
 
-    private:
+private:
 #if !defined(NO_UPDATE_CHECK)
-        void autoUpdate();
+  void autoUpdate();
 #endif
 
-        enum PostFetchOp { OpenWebsite, OpenBlog };
-        QNetworkAccessManager * m_nam;
-        bool                    m_haveTutorial;
-        QList<PostFetchOp>      m_postOps;
+  enum PostFetchOp
+  {
+    OpenWebsite,
+    OpenBlog
+  };
+  QNetworkAccessManager * m_nam;
+  bool m_haveTutorial;
+  QList<PostFetchOp> m_postOps;
 
-    private Q_SLOTS:
-        void slotCheckTutorialReply();
-        void slotConnectorFinished();
+private Q_SLOTS:
+  void slotCheckTutorialReply();
+  void slotConnectorFinished();
 };
 
 #endif

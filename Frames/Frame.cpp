@@ -17,41 +17,39 @@
 
 QRect Frame::frameRect(const QRect & contentsRect) const
 {
-    return contentsRect;
+  return contentsRect;
 }
 
 bool Frame::clipContents() const
 {
-    return false;
+  return false;
 }
 
 QPainterPath Frame::contentsClipPath(const QRect & /*contentsRect*/) const
 {
-    return QPainterPath();
+  return QPainterPath();
 }
 
 bool Frame::isShaped() const
 {
-    return false;
+  return false;
 }
 
 QPainterPath Frame::frameShape(const QRect & frameRect) const
 {
-    QPainterPath path;
-    path.addRect(frameRect);
-    return path;
+  QPainterPath path;
+  path.addRect(frameRect);
+  return path;
 }
 
 QPixmap Frame::preview(int width, int height)
 {
-    QPixmap pixmap(128, 128);
-    pixmap.fill(Qt::transparent);
-    QPainter pixPainter(&pixmap);
-    drawFrame(&pixPainter, QRect(0, 0, 128, 128), false, false);
-    pixPainter.end();
-    return pixmap.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+  QPixmap pixmap(128, 128);
+  pixmap.fill(Qt::transparent);
+  QPainter pixPainter(&pixmap);
+  drawFrame(&pixPainter, QRect(0, 0, 128, 128), false, false);
+  pixPainter.end();
+  return pixmap.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
-Frame::~Frame()
-{
-}
+Frame::~Frame() {}

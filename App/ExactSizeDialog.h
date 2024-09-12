@@ -19,10 +19,9 @@
 
 class ExactSizeDialog : public QDialog
 {
-    public:
-        ExactSizeDialog(QWidget *parent=0);
-        Ui::ExactSizeDialog ui;
+public:
+  ExactSizeDialog(QWidget * parent = 0);
+  Ui::ExactSizeDialog ui;
 };
 
 #endif
-

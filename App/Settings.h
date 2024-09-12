@@ -22,27 +22,27 @@
 
 class Settings : public QSettings
 {
-    public:
-        Settings(bool clearConfig = false);
-        ~Settings();
+public:
+  Settings(bool clearConfig = false);
+  ~Settings();
 
-        // is this the first time Fotowall is executed
-        bool firstTime() const;
-        int usageCount() const;
+  // is this the first time Fotowall is executed
+  bool firstTime() const;
+  int usageCount() const;
 
-        // the recent load/save history
-        QList<QUrl> recentFotowallUrls() const;
-        void addRecentFotowallUrl(const QUrl & url);
-        void removeRecentFotowallUrl(const QUrl & url);
+  // the recent load/save history
+  QList<QUrl> recentFotowallUrls() const;
+  void addRecentFotowallUrl(const QUrl & url);
+  void removeRecentFotowallUrl(const QUrl & url);
 
-        // commandline files
-        void addCommandlineUrl(const QString & url);
-        QStringList commandlineUrls() const;
+  // commandline files
+  void addCommandlineUrl(const QString & url);
+  QStringList commandlineUrls() const;
 
-    private:
-        bool m_firstTime;
-        QList<QUrl> m_recentFotowallUrls;
-        QStringList m_commandlineUrls;
+private:
+  bool m_firstTime;
+  QList<QUrl> m_recentFotowallUrls;
+  QStringList m_commandlineUrls;
 };
 
 #endif

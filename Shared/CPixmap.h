@@ -15,43 +15,44 @@
 #ifndef ARNAUD_H_CPIXMAP
 #define ARNAUD_H_CPIXMAP
 
-#include <QPixmap>
 #include "PictureEffect.h"
+#include <QPixmap>
 
-class CPixmap : public QPixmap {
+class CPixmap : public QPixmap
+{
 public:
-   CPixmap();
-   CPixmap(const QString &filePath);
-   CPixmap(const QImage &image);
+  CPixmap();
+  CPixmap(const QString & filePath);
+  CPixmap(const QImage & image);
 
-   // effects
-   void addEffect(const PictureEffect & effect);
-   void clearEffects();
+  // effects
+  void addEffect(const PictureEffect & effect);
+  void clearEffects();
 
-   // the ordered sequence of effects
-   QList<PictureEffect> effects() const;
+  // the ordered sequence of effects
+  QList<PictureEffect> effects() const;
 
-   // manual operations
-   void toNVG();
-   void toInvertedColors();
-   void toHFlip();
-   void toVFlip();
-   void toBlackAndWhite();
-   void toGlow(int radius);
-   void toSepia();  // Old photo style
-   void toCropped(const QRect &cropRect);
-   void toAutoBlend(qreal strength);
-   void rotate();
-   //void toLuminosity(int value);
+  // manual operations
+  void toNVG();
+  void toInvertedColors();
+  void toHFlip();
+  void toVFlip();
+  void toBlackAndWhite();
+  void toGlow(int radius);
+  void toSepia(); // Old photo style
+  void toCropped(const QRect & cropRect);
+  void toAutoBlend(qreal strength);
+  void rotate();
+  // void toLuminosity(int value);
 
 private:
-    CPixmap(const QPixmap &pixmap);
-    void updateImage(const QImage & newImage);
+  CPixmap(const QPixmap & pixmap);
+  void updateImage(const QImage & newImage);
 
-    QImage m_image;
-    QString m_filePath;
-    // Ordered list of currently applied effects
-    QList<PictureEffect> m_effects;
+  QImage m_image;
+  QString m_filePath;
+  // Ordered list of currently applied effects
+  QList<PictureEffect> m_effects;
 };
 
 #endif /* ARNAUD_H_CPIXMAP */

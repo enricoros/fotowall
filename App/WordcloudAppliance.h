@@ -23,49 +23,49 @@ class WordcloudSidebar;
 
 class WordcloudAppliance : public QObject, public PlugGui::AbstractAppliance
 {
-    Q_OBJECT
-    public:
-        WordcloudAppliance(Wordcloud::Cloud * extCloud, QObject * parent = 0);
-        ~WordcloudAppliance();
+  Q_OBJECT
+public:
+  WordcloudAppliance(Wordcloud::Cloud * extCloud, QObject * parent = 0);
+  ~WordcloudAppliance();
 
-        // take the cloud (NOTE: DELETE THE OBJECT RIGHT AFTER THIS!)
-        Wordcloud::Cloud * takeCloud();
+  // take the cloud (NOTE: DELETE THE OBJECT RIGHT AFTER THIS!)
+  Wordcloud::Cloud * takeCloud();
 
-        // peek into the cloud
-        Wordcloud::Cloud * cloud() const;
+  // peek into the cloud
+  Wordcloud::Cloud * cloud() const;
 
-        // ::Appliance::AbstractAppliance
-        QString applianceName() const { return tr("Wordcloud"); }
-        bool appliancePendingChanges() const;
-        bool applianceSave(const QString & filePath = QString());
+  // ::Appliance::AbstractAppliance
+  QString applianceName() const { return tr("Wordcloud"); }
+  bool appliancePendingChanges() const;
+  bool applianceSave(const QString & filePath = QString());
 
-    private:
-        Wordcloud::Cloud * m_extCloud;
-        AbstractScene * m_scene;
-        Ui::WordcloudApplianceElements * ui;
-        QWidget * m_dummyWidget;
-        WordcloudSidebar * m_sidebar;
+private:
+  Wordcloud::Cloud * m_extCloud;
+  AbstractScene * m_scene;
+  Ui::WordcloudApplianceElements * ui;
+  QWidget * m_dummyWidget;
+  WordcloudSidebar * m_sidebar;
 
-    private Q_SLOTS:
-        void slotRegenCloud();
-        void slotRandomizeCloud();
+private Q_SLOTS:
+  void slotRegenCloud();
+  void slotRandomizeCloud();
 };
 
 #include "Shared/AbstractScene.h"
 class WordcloudScene : public AbstractScene
 {
-    Q_OBJECT
-    public:
-        WordcloudScene(Wordcloud::Cloud * cloud, QObject * parent = 0);
+  Q_OBJECT
+public:
+  WordcloudScene(Wordcloud::Cloud * cloud, QObject * parent = 0);
 
-        // ::AbstractScene
-        void resize(const QSize & size);
+  // ::AbstractScene
+  void resize(const QSize & size);
 
-    private:
-        Wordcloud::Cloud * m_cloud;
+private:
+  Wordcloud::Cloud * m_cloud;
 
-    private Q_SLOTS:
-        void slotWordMoved();
+private Q_SLOTS:
+  void slotWordMoved();
 };
 
 #endif

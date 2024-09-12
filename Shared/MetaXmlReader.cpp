@@ -30,161 +30,162 @@
 
 using namespace MetaXml;
 
-Reader_1::Reader_1(const QByteArray & data)
-  : QXmlStreamReader(data)
+Reader_1::Reader_1(const QByteArray & data) : QXmlStreamReader(data)
 {
-    read();
+  read();
 }
 
 void Reader_1::read()
 {
-    while (!atEnd()) {
-        readNext();
-        if (isEndElement())
-            break;
-        if (isStartElement()) {
-            if (name() == QLatin1String("fotowall-meta"))
-                continue;
-            else if (name() == QLatin1String("releases"))
-                readReleases();
-            else if (name() == QLatin1String("websites"))
-                readWebsites();
-            else
-                readElementText();
-        }
+  while(!atEnd())
+  {
+    readNext();
+    if(isEndElement()) break;
+    if(isStartElement())
+    {
+      if(name() == QLatin1String("fotowall-meta"))
+        continue;
+      else if(name() == QLatin1String("releases"))
+        readReleases();
+      else if(name() == QLatin1String("websites"))
+        readWebsites();
+      else
+        readElementText();
     }
+  }
 }
 
 void Reader_1::readReleases()
 {
-    releases.clear();
-    while (!atEnd()) {
-        readNext();
-        if (isEndElement())
-            break;
-        if (isStartElement()) {
-            if (name() == QLatin1String("release"))
-                releases.append(readRelease());
-            else
-                readElementText();
-        }
+  releases.clear();
+  while(!atEnd())
+  {
+    readNext();
+    if(isEndElement()) break;
+    if(isStartElement())
+    {
+      if(name() == QLatin1String("release"))
+        releases.append(readRelease());
+      else
+        readElementText();
     }
+  }
 }
 
 Release Reader_1::readRelease()
 {
-    Release r;
-    r.name = attributes().value("name").toString();
-    while (!atEnd()) {
-        readNext();
-        if (isEndElement())
-            break;
-        if (isStartElement()) {
-            if (name() == QLatin1String("version"))
-                r.version = readElementText();
-            else if (name() == QLatin1String("download-url"))
-                r.url = readElementText();
-            else
-                readElementText();
-        }
+  Release r;
+  r.name = attributes().value("name").toString();
+  while(!atEnd())
+  {
+    readNext();
+    if(isEndElement()) break;
+    if(isStartElement())
+    {
+      if(name() == QLatin1String("version"))
+        r.version = readElementText();
+      else if(name() == QLatin1String("download-url"))
+        r.url = readElementText();
+      else
+        readElementText();
     }
-    return r;
+  }
+  return r;
 }
 
 void Reader_1::readWebsites()
 {
-    websites.clear();
-    while (!atEnd()) {
-        readNext();
-        if (isEndElement())
-            break;
-        if (isStartElement()) {
-            if (name() == QLatin1String("homepage") || name() == QLatin1String("blog") || name() == QLatin1String("site")) {
-                Website w;
-                w.name = attributes().value("name").toString();
-                w.url = readElementText();
-                if (name() == QLatin1String("homepage"))
-                    w.type = Website::HomePage;
-                else if (name() == QLatin1String("blog") || w.name.contains("blog", Qt::CaseInsensitive))
-                    w.type = Website::Blog;
-                else
-                    w.type = Website::Other;
-                if (name() == QLatin1String("homepage"))
-                    websites.prepend(w);
-                else
-                    websites.append(w);
-            } else
-                readElementText();
-        }
+  websites.clear();
+  while(!atEnd())
+  {
+    readNext();
+    if(isEndElement()) break;
+    if(isStartElement())
+    {
+      if(name() == QLatin1String("homepage") || name() == QLatin1String("blog") || name() == QLatin1String("site"))
+      {
+        Website w;
+        w.name = attributes().value("name").toString();
+        w.url = readElementText();
+        if(name() == QLatin1String("homepage"))
+          w.type = Website::HomePage;
+        else if(name() == QLatin1String("blog") || w.name.contains("blog", Qt::CaseInsensitive))
+          w.type = Website::Blog;
+        else
+          w.type = Website::Other;
+        if(name() == QLatin1String("homepage"))
+          websites.prepend(w);
+        else
+          websites.append(w);
+      }
+      else
+        readElementText();
     }
+  }
 }
-
 
 /* Connector */
 
 Q_GLOBAL_STATIC(Connector, connectorInstance);
 Connector * Connector::instance()
 {
-    return connectorInstance();
+  return connectorInstance();
 }
 
-Connector::Connector()
-  : m_nam(new QNetworkAccessManager)
-  , m_reader(0)
+Connector::Connector() : m_nam(new QNetworkAccessManager), m_reader(0)
 {
-    QNetworkRequest request(QUrl(METAXML_BASE_URL));
-    QNetworkReply * reply = m_nam->get(request);
-    connect(reply, SIGNAL(finished()), this, SLOT(slotGotReply()));
-    QTimer::singleShot(NETWORK_TIMEOUT, this, SLOT(slotTimeOut()));
+  QNetworkRequest request(QUrl(METAXML_BASE_URL));
+  QNetworkReply * reply = m_nam->get(request);
+  connect(reply, SIGNAL(finished()), this, SLOT(slotGotReply()));
+  QTimer::singleShot(NETWORK_TIMEOUT, this, SLOT(slotTimeOut()));
 }
 
 bool Connector::hasDone() const
 {
-    return !m_nam;
+  return !m_nam;
 }
 
 bool Connector::isValid() const
 {
-    return m_reader;
+  return m_reader;
 }
 
 const Reader_1 * Connector::reader() const
 {
-    return m_reader;
+  return m_reader;
 }
 
 void Connector::slotGotReply()
 {
-    // dispose the QNAM
-    if (!m_nam)
-        return;
-    m_nam->deleteLater();
-    m_nam = 0;
+  // dispose the QNAM
+  if(!m_nam) return;
+  m_nam->deleteLater();
+  m_nam = 0;
 
-    // get the data from the network reply
-    QNetworkReply * reply = static_cast<QNetworkReply *>(sender());
-    QByteArray replyData = reply->readAll();
-    QNetworkReply::NetworkError error = reply->error();
-    reply->deleteLater();
-    if (error != QNetworkReply::NoError) {
-        emit fetchError(tr("Network Error"));
-        return;
-    }
+  // get the data from the network reply
+  QNetworkReply * reply = static_cast<QNetworkReply *>(sender());
+  QByteArray replyData = reply->readAll();
+  QNetworkReply::NetworkError error = reply->error();
+  reply->deleteLater();
+  if(error != QNetworkReply::NoError)
+  {
+    emit fetchError(tr("Network Error"));
+    return;
+  }
 
-    // parse the data and notify the completion
-    delete m_reader;
-    m_reader = new Reader_1(replyData);
-    emit fetched();
+  // parse the data and notify the completion
+  delete m_reader;
+  m_reader = new Reader_1(replyData);
+  emit fetched();
 }
 
 void Connector::slotTimeOut()
 {
-    // dispose the QNAM
-    if (!m_nam)
-        return;
-    m_nam->deleteLater();
-    m_nam = 0;
+  // dispose the QNAM
+  if(!m_nam) return;
+  m_nam->deleteLater();
+  m_nam = 0;
 
-    // emit the error signal
-    emit fetchError(tr("Network Timeout"));
+  // emit the error signal
+  emit fetchError(tr("Network Timeout"));
 }

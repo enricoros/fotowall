@@ -22,29 +22,29 @@ class UrlHistoryBox;
 
 class HomeAppliance : public QObject, public PlugGui::AbstractAppliance
 {
-    Q_OBJECT
-    public:
-        HomeAppliance(QObject * parent = 0);
-        ~HomeAppliance();
+  Q_OBJECT
+public:
+  HomeAppliance(QObject * parent = 0);
+  ~HomeAppliance();
 
-        // ::Appliance::AbstractAppliance
-        QString applianceName() const { return tr("Home"); }
+  // ::Appliance::AbstractAppliance
+  QString applianceName() const { return tr("Home"); }
 
-    private:
-        HomeScene * m_scene;
-        FileBoxWidget * m_fileBox;
-        UrlHistoryBox * m_historyBox;
+private:
+  HomeScene * m_scene;
+  FileBoxWidget * m_fileBox;
+  UrlHistoryBox * m_historyBox;
 
-    private Q_SLOTS:
-        void slotSceneKeyPressed(int qtKey);
-        void slotLoadCanvas(const QUrl & url);
-        void slotRemoveFromHistory(const QUrl & url);
-        void slotOpenFile();
-        void slotStartCanvas();
+private Q_SLOTS:
+  void slotSceneKeyPressed(int qtKey);
+  void slotLoadCanvas(const QUrl & url);
+  void slotRemoveFromHistory(const QUrl & url);
+  void slotOpenFile();
+  void slotStartCanvas();
 #if defined(HAS_WORDCLOUD_APPLIANCE)
-        void slotStartWordcloud();
+  void slotStartWordcloud();
 #endif
-        void slotStartWizard();
+  void slotStartWizard();
 };
 
 #endif

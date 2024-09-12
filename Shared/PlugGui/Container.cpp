@@ -16,7 +16,4 @@
 
 using namespace PlugGui;
 
-Container::Container(QWidget * parent)
-  : QWidget(parent)
-{
-}
+Container::Container(QWidget * parent) : QWidget(parent) {}

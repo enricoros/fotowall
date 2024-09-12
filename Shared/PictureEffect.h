@@ -15,33 +15,33 @@
 #ifndef __PictureEffect_h__
 #define __PictureEffect_h__
 
-#include <QtGlobal>
 #include <QRect>
+#include <QtGlobal>
 
-struct PictureEffect {
-    enum Effect {
-        ClearEffects    = -1,
-        FlipH           =  1,
-        FlipV           =  2,
-        InvertColors    =  3,
-        NVG             =  4,
-        BlackAndWhite   =  5,
-        Glow            =  6,
-        Sepia           =  7,
-        Opacity         =  8,
-        Crop            =  9,
-        AutoBlend       = 10,
-        Rotate          = 11
-    } effect;
-    qreal param;
-    QRect rect;
+struct PictureEffect
+{
+  enum Effect
+  {
+    ClearEffects = -1,
+    FlipH = 1,
+    FlipV = 2,
+    InvertColors = 3,
+    NVG = 4,
+    BlackAndWhite = 5,
+    Glow = 6,
+    Sepia = 7,
+    Opacity = 8,
+    Crop = 9,
+    AutoBlend = 10,
+    Rotate = 11
+  } effect;
+  qreal param;
+  QRect rect;
 
-    PictureEffect(Effect effect = ClearEffects, qreal param = 0.0, const QRect & rect = QRect())
-      : effect(effect)
-      , param(param)
-      , rect(rect)
-    {
-    }
+  PictureEffect(Effect effect = ClearEffects, qreal param = 0.0, const QRect & rect = QRect())
+  : effect(effect), param(param), rect(rect)
+  {
+  }
 };
 
 #endif

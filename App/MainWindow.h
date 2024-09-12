@@ -16,7 +16,10 @@
 #define __MainWindow_h__
 
 #include "Shared/PlugGui/Container.h"
-namespace Ui { class MainWindow; }
+namespace Ui
+{
+class MainWindow;
+}
 class LikeBack;
 class QGridLayout;
 class QNetworkAccessManager;
@@ -25,53 +28,53 @@ class Workflow;
 
 class MainWindow : public PlugGui::Container
 {
-    Q_OBJECT
-    public:
-        MainWindow(QWidget * parent = 0);
-        ~MainWindow();
+  Q_OBJECT
+public:
+  MainWindow(QWidget * parent = 0);
+  ~MainWindow();
 
-    protected:
-        // ::PlugGui::Container
-        QSize sceneViewSize() const;
-        void applianceSetTitle(const QString & title);
-        void applianceSetScene(AbstractScene * scene);
-        void applianceSetTopbar(const QList<QWidget *> & widgets);
-        void applianceSetSidebar(QWidget * widget);
-        void applianceSetCentralwidget(QWidget * widget);
-        void applianceSetValue(quint32 key, const QVariant & value);
-        void applianceSetFocusToScene();
+protected:
+  // ::PlugGui::Container
+  QSize sceneViewSize() const;
+  void applianceSetTitle(const QString & title);
+  void applianceSetScene(AbstractScene * scene);
+  void applianceSetTopbar(const QList<QWidget *> & widgets);
+  void applianceSetSidebar(QWidget * widget);
+  void applianceSetCentralwidget(QWidget * widget);
+  void applianceSetValue(quint32 key, const QVariant & value);
+  void applianceSetFocusToScene();
 
-        // ::QWidget
-        void closeEvent(QCloseEvent * event);
+  // ::QWidget
+  void closeEvent(QCloseEvent * event);
 
-    private:
-        void createLikeBack();
-        void showLikeBack(int type);
-        void addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment);
-        void removeNavigationWidget(QWidget * widget);
+private:
+  void createLikeBack();
+  void showLikeBack(int type);
+  void addNavigationWidget(QWidget * widget, int row, Qt::Alignment alignment);
+  void removeNavigationWidget(QWidget * widget);
 
-        Ui::MainWindow *        ui;
-        QNetworkAccessManager * m_networkAccessManager;
-        QGridLayout *           m_navigationLayout;
-        PictureSearchWidget *   m_pictureSearch;
-        LikeBack *              m_likeBack;
-        bool                    m_applyingAccelState;
+  Ui::MainWindow * ui;
+  QNetworkAccessManager * m_networkAccessManager;
+  QGridLayout * m_navigationLayout;
+  PictureSearchWidget * m_pictureSearch;
+  LikeBack * m_likeBack;
+  bool m_applyingAccelState;
 
-    private Q_SLOTS:
-        // notifications
-        void slotClosePictureSearch();
-        void slotHelpBarClicked(quint32);
-        void slotRenderingSlow();
+private Q_SLOTS:
+  // notifications
+  void slotClosePictureSearch();
+  void slotHelpBarClicked(quint32);
+  void slotRenderingSlow();
 
-        // help box
-        void on_lbBug_clicked();
-        void on_lbFeature_clicked();
-        void on_lbLike_clicked();
+  // help box
+  void on_lbBug_clicked();
+  void on_lbFeature_clicked();
+  void on_lbLike_clicked();
 
-        // setup box
-        bool on_accelTestButton_clicked();
-        void on_accelBox_toggled(bool checked);
-        void on_transpBox_toggled(bool checked);
+  // setup box
+  bool on_accelTestButton_clicked();
+  void on_accelBox_toggled(bool checked);
+  void on_transpBox_toggled(bool checked);
 };
 
 #endif

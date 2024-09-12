@@ -15,8 +15,8 @@
 #ifndef __AbstractPictureService_h__
 #define __AbstractPictureService_h__
 
-#include <QObject>
 #include <QNetworkRequest>
+#include <QObject>
 #include <QPixmap>
 #include <QUrl>
 class QNetworkAccessManager;
@@ -25,38 +25,38 @@ class QNetworkReply;
 /// \brief Base class for accessing Online picture services
 class AbstractPictureService : public QObject
 {
-    Q_OBJECT
-    public:
-        // construct the object using a shared networkaccessmanager
-        AbstractPictureService(QNetworkAccessManager * manager, QObject * parent = 0);
+  Q_OBJECT
+public:
+  // construct the object using a shared networkaccessmanager
+  AbstractPictureService(QNetworkAccessManager * manager, QObject * parent = 0);
 
-        // search pictures
-        virtual void searchPics(const QString & text) = 0;
-        virtual void dropSearch() = 0;
+  // search pictures
+  virtual void searchPics(const QString & text) = 0;
+  virtual void dropSearch() = 0;
 
-        // describe a search result
-        virtual bool imageInfo(int idx, QString * url, QString * title, int * width, int * height) = 0;
+  // describe a search result
+  virtual bool imageInfo(int idx, QString * url, QString * title, int * width, int * height) = 0;
 
-        // download a picture
-        virtual QNetworkReply * download(int idx) = 0;
-        virtual void startPrefetch(int idx) = 0;
-        virtual void stopPrefetch(int idx) = 0;
+  // download a picture
+  virtual QNetworkReply * download(int idx) = 0;
+  virtual void startPrefetch(int idx) = 0;
+  virtual void stopPrefetch(int idx) = 0;
 
-    Q_SIGNALS:
-        // signals are emitted in the following order
-        void searchStarted();
-        void searchResult(int idx, const QString & text, int thumb_width, int thumb_height);
-        void searchThumbnail(int idx, const QPixmap & icon);
-        void searchEnded(bool error);
+Q_SIGNALS:
+  // signals are emitted in the following order
+  void searchStarted();
+  void searchResult(int idx, const QString & text, int thumb_width, int thumb_height);
+  void searchThumbnail(int idx, const QPixmap & icon);
+  void searchEnded(bool error);
 
-    protected:
-        // will be used by subclasses to access the network
-        QNetworkReply * get(const QNetworkRequest & request);
-        QNetworkReply * get(const QUrl & url);
+protected:
+  // will be used by subclasses to access the network
+  QNetworkReply * get(const QNetworkRequest & request);
+  QNetworkReply * get(const QUrl & url);
 
-    private:
-        AbstractPictureService();
-        QNetworkAccessManager * m_nam;
+private:
+  AbstractPictureService();
+  QNetworkAccessManager * m_nam;
 };
 
 #endif

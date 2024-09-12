@@ -17,18 +17,17 @@
 #include <QNetworkAccessManager>
 
 AbstractPictureService::AbstractPictureService(QNetworkAccessManager * manager, QObject * parent)
-  : QObject(parent)
-  , m_nam(manager)
+: QObject(parent), m_nam(manager)
 {
 }
 
 QNetworkReply * AbstractPictureService::get(const QNetworkRequest & request)
 {
-    return m_nam->get(request);
+  return m_nam->get(request);
 }
 
 QNetworkReply * AbstractPictureService::get(const QUrl & url)
 {
-    QNetworkRequest request(url);
-    return m_nam->get(request);
+  QNetworkRequest request(url);
+  return m_nam->get(request);
 }

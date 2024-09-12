@@ -15,40 +15,40 @@
 #ifndef __FrameFactory_h__
 #define __FrameFactory_h__
 
+#include "Frame.h"
 #include <QMap>
 #include <QString>
-#include "Frame.h"
 
 class FrameFactory
 {
-    public:
-        // enumerate all available frames
-        static QList<quint32> classes();
+public:
+  // enumerate all available frames
+  static QList<quint32> classes();
 
-        // create a frame
-        static Frame * createFrame(quint32 frameClass);
-        static Frame * defaultPanelFrame();
-        static Frame * defaultPictureFrame();
+  // create a frame
+  static Frame * createFrame(quint32 frameClass);
+  static Frame * defaultPanelFrame();
+  static Frame * defaultPictureFrame();
 
-        // add new types
-        static void addSvgFrame(const QString & frameFilePath);
-        static void removeFrame(const quint32 frameClass);
+  // add new types
+  static void addSvgFrame(const QString & frameFilePath);
+  static void removeFrame(const quint32 frameClass);
 
-        // change the default class
-        static quint32 defaultPanelClass();
-        static void setDefaultPanelClass(quint32 frameClass);
-        static quint32 defaultPictureClass();
-        static void setDefaultPictureClass(quint32 frameClass);
+  // change the default class
+  static quint32 defaultPanelClass();
+  static void setDefaultPanelClass(quint32 frameClass);
+  static quint32 defaultPictureClass();
+  static void setDefaultPictureClass(quint32 frameClass);
 
-    private:
-        quint32 m_defaultPanel;
-        quint32 m_defaultPicture;
-        quint32 m_svgClassIndex;
-        QMap<quint32, QString> m_svgMap;
+private:
+  quint32 m_defaultPanel;
+  quint32 m_defaultPicture;
+  quint32 m_svgClassIndex;
+  QMap<quint32, QString> m_svgMap;
 
-    public:
-        FrameFactory();
-        ~FrameFactory();
+public:
+  FrameFactory();
+  ~FrameFactory();
 };
 
 #endif

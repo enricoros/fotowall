@@ -18,48 +18,46 @@
 #include "TextContent.h"
 #include "WebcamContent.h"
 
+#include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QToolButton>
-#include <QGridLayout>
 
-#define ADD_BUTTON(Object, Name, Slot) \
-    QToolButton * Object = new QToolButton(this); \
-    Object->setText(Name); \
-    connect(Object, SIGNAL(clicked()), this, Slot);
+#define ADD_BUTTON(Object, Name, Slot)          \
+  QToolButton * Object = new QToolButton(this); \
+  Object->setText(Name);                        \
+  connect(Object, SIGNAL(clicked()), this, Slot);
 
-SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWidget * parent)
-  : QWidget(parent)
+SelectionProperties::SelectionProperties(QList<AbstractContent *> selection, QWidget * parent) : QWidget(parent)
 {
-    // customize box appearance
-    setWindowTitle(tr("SELECTION"));
+  // customize box appearance
+  setWindowTitle(tr("SELECTION"));
 
-    // gather info on the selection
-    m_pictures = projectList<AbstractContent, PictureContent>(selection);
-    m_texts = projectList<AbstractContent, TextContent>(selection);
-    bool allPictures = m_pictures.size() == selection.size();
+  // gather info on the selection
+  m_pictures = projectList<AbstractContent, PictureContent>(selection);
+  m_texts = projectList<AbstractContent, TextContent>(selection);
+  bool allPictures = m_pictures.size() == selection.size();
 
-    // create the controls
-    QLabel * label;
-    if (allPictures)
-        label = new QLabel(tr("%1 pictures selected").arg(selection.size()), this);
-    else
-        label = new QLabel(tr("%1 objects selected").arg(selection.size()), this);
-    QGridLayout * lay = new QGridLayout(this);
-    lay->setMargin(0);
-    lay->addWidget(label, 0, 0, 1, 2);
-    ADD_BUTTON(deleteButton, tr("Delete"), SIGNAL(deleteSelection()));
-    lay->addWidget(deleteButton, 1, 0);
+  // create the controls
+  QLabel * label;
+  if(allPictures)
+    label = new QLabel(tr("%1 pictures selected").arg(selection.size()), this);
+  else
+    label = new QLabel(tr("%1 objects selected").arg(selection.size()), this);
+  QGridLayout * lay = new QGridLayout(this);
+  lay->setContentsMargins(0, 0, 0, 0);
+  lay->addWidget(label, 0, 0, 1, 2);
+  ADD_BUTTON(deleteButton, tr("Delete"), SIGNAL(deleteSelection()));
+  lay->addWidget(deleteButton, 1, 0);
 
-    // pure pictures
-    if (allPictures) {
-        // TODO emit some signal or call the Collation manager?
-        ADD_BUTTON(button, tr("Collate"), SIGNAL(collateSelection()));
-        button->setEnabled(false);
-        lay->addWidget(button, 1, 1);
-    }
+  // pure pictures
+  if(allPictures)
+  {
+    // TODO emit some signal or call the Collation manager?
+    ADD_BUTTON(button, tr("Collate"), SIGNAL(collateSelection()));
+    button->setEnabled(false);
+    lay->addWidget(button, 1, 1);
+  }
 }
 
-SelectionProperties::~SelectionProperties()
-{
-}
+SelectionProperties::~SelectionProperties() {}

@@ -15,56 +15,57 @@
 #ifndef __Cloud_h__
 #define __Cloud_h__
 
-#include <QObject>
-#include <QDomElement>
 #include "Bits.h"
 #include "WordItem.h"
+#include <QDomElement>
+#include <QObject>
 
-namespace Wordcloud {
+namespace Wordcloud
+{
 
-    class Cloud : public QObject
-    {
-        Q_OBJECT
-        public:
-            Cloud(QObject * parent = 0);
+class Cloud : public QObject
+{
+  Q_OBJECT
+public:
+  Cloud(QObject * parent = 0);
 
-            // set/take word items !!
-            void newCloud(const WordList & word);
-            void regenCloud();
-            void randomCloud();
+  // set/take word items !!
+  void newCloud(const WordList & word);
+  void regenCloud();
+  void randomCloud();
 
-            // set the scene where to display items
-            void setScene(QGraphicsScene * scene);
-            QGraphicsScene * scene() const;
-            void removeFromScene();
+  // set the scene where to display items
+  void setScene(QGraphicsScene * scene);
+  QGraphicsScene * scene() const;
+  void removeFromScene();
 
-            void setPlacement(Wordcloud::Placement);
-            Wordcloud::Placement placement() const;
+  void setPlacement(Wordcloud::Placement);
+  Wordcloud::Placement placement() const;
 
-            void setAccurate(bool accurate);
-            bool accurate() const;
+  void setAccurate(bool accurate);
+  bool accurate() const;
 
-            void setAppearance(const Wordcloud::Appearance &);
-            Wordcloud::Appearance appearance() const;
+  void setAppearance(const Wordcloud::Appearance &);
+  Wordcloud::Appearance appearance() const;
 
-            void setBusyMode(Wordcloud::BusyMode mode);
-            Wordcloud::BusyMode busyMode() const;
+  void setBusyMode(Wordcloud::BusyMode mode);
+  Wordcloud::BusyMode busyMode() const;
 
-            // load/save
-            bool loadFromXml(QDomElement & cloudElement);
-            void saveToXml(QDomElement & cloudElement) const;
+  // load/save
+  bool loadFromXml(QDomElement & cloudElement);
+  void saveToXml(QDomElement & cloudElement) const;
 
-        private:
-            void process();
-            QGraphicsScene * m_scene;
-            WordItemList m_wordItems;
-            bool m_dirty;
-            Placement m_placement;
-            bool m_accurate;
-            Appearance m_appearance;
-            BusyMode m_busyMode;
-    };
+private:
+  void process();
+  QGraphicsScene * m_scene;
+  WordItemList m_wordItems;
+  bool m_dirty;
+  Placement m_placement;
+  bool m_accurate;
+  Appearance m_appearance;
+  BusyMode m_busyMode;
+};
 
-}
+} // namespace Wordcloud
 
 #endif

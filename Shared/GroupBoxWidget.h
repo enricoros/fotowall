@@ -15,8 +15,8 @@
 #ifndef __GroupBoxWidget_h__
 #define __GroupBoxWidget_h__
 
-#include <QWidget>
 #include <QFont>
+#include <QWidget>
 class QTimer;
 
 /**
@@ -27,108 +27,108 @@ class QTimer;
 
 class GroupBoxWidget : public QWidget
 {
-    Q_OBJECT
-    Q_PROPERTY(QString title READ title WRITE setTitle)
-    Q_PROPERTY(int titleSize READ titleSize WRITE setTitleSize)
-    Q_PROPERTY(int fixedWidth READ minimumWidth WRITE setFixedWidth)
+  Q_OBJECT
+  Q_PROPERTY(QString title READ title WRITE setTitle)
+  Q_PROPERTY(int titleSize READ titleSize WRITE setTitleSize)
+  Q_PROPERTY(int fixedWidth READ minimumWidth WRITE setFixedWidth)
 #if !defined(MOBILE_UI)
-    Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
-    Q_PROPERTY(bool checked READ isChecked WRITE setChecked)
-    Q_PROPERTY(int borderFlags READ borderFlags WRITE setBorderFlags)
+  Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
+  Q_PROPERTY(bool checked READ isChecked WRITE setChecked)
+  Q_PROPERTY(int borderFlags READ borderFlags WRITE setBorderFlags)
 #else
-    Q_PROPERTY(QPoint basePos READ basePos WRITE setBasePos);
+  Q_PROPERTY(QPoint basePos READ basePos WRITE setBasePos);
 #endif
-    public:
-        GroupBoxWidget(QWidget * parent = 0);
+public:
+  GroupBoxWidget(QWidget * parent = 0);
 
-        QString title() const;
-        void setTitle(const QString & title);
+  QString title() const;
+  void setTitle(const QString & title);
 
-        int titleSize() const;
-        void setTitleSize(int titleSize);
+  int titleSize() const;
+  void setTitleSize(int titleSize);
 
-        int calcMinWidth() const;
+  int calcMinWidth() const;
 
 #if !defined(MOBILE_UI)
-        bool isCheckable() const;
-        void setCheckable(bool checkable);
+  bool isCheckable() const;
+  void setCheckable(bool checkable);
 
-        bool isChecked() const;
-        void setChecked(bool checked);
+  bool isChecked() const;
+  void setChecked(bool checked);
 
-        int borderFlags() const;
-        void setBorderFlags(int flags);
+  int borderFlags() const;
+  void setBorderFlags(int flags);
 
-        // an elegant alternative to show and hide
-        void collapse();
-        void expand();
+  // an elegant alternative to show and hide
+  void collapse();
+  void expand();
 #else
-        void setSmartPanel(bool);
+  void setSmartPanel(bool);
 
-        QPoint basePos() const;
-        void setBasePos(const QPoint &);
+  QPoint basePos() const;
+  void setBasePos(const QPoint &);
 
-        int labelWidth() const;
+  int labelWidth() const;
 
-        void disappear();
+  void disappear();
 
-        void smartFall();
-        void smartRaise();
+  void smartFall();
+  void smartRaise();
 #endif
 
-    Q_SIGNALS:
+Q_SIGNALS:
 #if !defined(MOBILE_UI)
-        void toggled(bool on);
+  void toggled(bool on);
 #else
-        void labelSizeChanged();
-        void panelRaising();
-        void panelLowering();
+  void labelSizeChanged();
+  void panelRaising();
+  void panelLowering();
 #endif
 
-    protected:
-        void mousePressEvent(QMouseEvent *);
-        void paintEvent(QPaintEvent * event);
+protected:
+  void mousePressEvent(QMouseEvent *);
+  void paintEvent(QPaintEvent * event);
 #if !defined(MOBILE_UI)
-        void enterEvent(QEvent *);
-        void leaveEvent(QEvent *);
+  void enterEvent(QEvent *);
+  void leaveEvent(QEvent *);
 #endif
 
-    private:
-        // for internal animation only
+private:
+  // for internal animation only
 #if !defined(MOBILE_UI)
-        Q_PROPERTY(qreal cAnim READ checkValue WRITE setCheckValue)
-        qreal checkValue() const;
-        void setCheckValue(qreal value);
-        Q_PROPERTY(qreal hAnim READ hoverValue WRITE setHoverValue)
-        qreal hoverValue() const;
-        void setHoverValue(qreal value);
+  Q_PROPERTY(qreal cAnim READ checkValue WRITE setCheckValue)
+  qreal checkValue() const;
+  void setCheckValue(qreal value);
+  Q_PROPERTY(qreal hAnim READ hoverValue WRITE setHoverValue)
+  qreal hoverValue() const;
+  void setHoverValue(qreal value);
 #else
-        Q_PROPERTY(qreal panelState READ panelState WRITE setPanelState);
-        qreal panelState() const;
-        void setPanelState(qreal);
+  Q_PROPERTY(qreal panelState READ panelState WRITE setPanelState);
+  qreal panelState() const;
+  void setPanelState(qreal);
 #endif
-        void updateDesign();
-        QTimer * m_redesignTimer;
-        QString m_titleText;
-        QFont m_titleFont;
+  void updateDesign();
+  QTimer * m_redesignTimer;
+  QString m_titleText;
+  QFont m_titleFont;
 #if !defined(MOBILE_UI)
-        bool m_collapsed;
-        bool m_checkable;
-        bool m_checked;
-        int m_borderFlags;
-        qreal m_checkValue;
-        qreal m_hoverValue;
+  bool m_collapsed;
+  bool m_checkable;
+  bool m_checked;
+  int m_borderFlags;
+  qreal m_checkValue;
+  qreal m_hoverValue;
 #else
-        int verticalOffset() const;
-        bool m_smartPanel;
-        QRect m_labelRect;
-        QPoint m_basePos;
-        qreal m_panelState;
+  int verticalOffset() const;
+  bool m_smartPanel;
+  QRect m_labelRect;
+  QPoint m_basePos;
+  qreal m_panelState;
 #endif
 
-   private Q_SLOTS:
-        void slotAnimateDesign();
-        void slotFinalizeDesign();
+private Q_SLOTS:
+  void slotAnimateDesign();
+  void slotFinalizeDesign();
 };
 
 #endif

@@ -15,35 +15,36 @@
 #ifndef __ApplianceContainer_h__
 #define __ApplianceContainer_h__
 
-#include <QWidget>
 #include <QSize>
+#include <QWidget>
 class AbstractScene;
 
-namespace PlugGui {
+namespace PlugGui
+{
 
-    class AbstractAppliance;
+class AbstractAppliance;
 
-    class Container : public QWidget
-    {
-        Q_OBJECT
-        public:
-            Container(QWidget * parent = 0);
+class Container : public QWidget
+{
+  Q_OBJECT
+public:
+  Container(QWidget * parent = 0);
 
-            // const queries to the container
-            virtual QSize sceneViewSize() const = 0;
+  // const queries to the container
+  virtual QSize sceneViewSize() const = 0;
 
-        protected:
-            // called by appliances
-            friend class PlugGui::AbstractAppliance;
-            virtual void applianceSetTitle(const QString & title) = 0;
-            virtual void applianceSetScene(AbstractScene * scene) = 0;
-            virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
-            virtual void applianceSetSidebar(QWidget * widget) = 0;
-            virtual void applianceSetCentralwidget(QWidget * widget) = 0;
-            virtual void applianceSetValue(quint32 key, const QVariant & value) = 0;
-            virtual void applianceSetFocusToScene() = 0;
-    };
+protected:
+  // called by appliances
+  friend class PlugGui::AbstractAppliance;
+  virtual void applianceSetTitle(const QString & title) = 0;
+  virtual void applianceSetScene(AbstractScene * scene) = 0;
+  virtual void applianceSetTopbar(const QList<QWidget *> & widgets) = 0;
+  virtual void applianceSetSidebar(QWidget * widget) = 0;
+  virtual void applianceSetCentralwidget(QWidget * widget) = 0;
+  virtual void applianceSetValue(quint32 key, const QVariant & value) = 0;
+  virtual void applianceSetFocusToScene() = 0;
+};
 
-}
+} // namespace PlugGui
 
 #endif

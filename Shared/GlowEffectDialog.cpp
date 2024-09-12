@@ -16,18 +16,18 @@
 
 GlowEffectDialog::GlowEffectDialog(const QImage & previewImage)
 {
-    ui.setupUi(this);
-    ui.glowEffectWidget->setPreviewImage(previewImage);
-    connect(ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  ui.setupUi(this);
+  ui.glowEffectWidget->setPreviewImage(previewImage);
+  connect(ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 int GlowEffectDialog::currentRadius() const
 {
-    return ui.glowEffectWidget->glowRadius();
+  return ui.glowEffectWidget->glowRadius();
 }
 
-QImage GlowEffectDialog::glow(const QImage &image, int radius) const
+QImage GlowEffectDialog::glow(const QImage & image, int radius) const
 {
-    return ui.glowEffectWidget->glown(image, radius);
+  return ui.glowEffectWidget->glown(image, radius);
 }

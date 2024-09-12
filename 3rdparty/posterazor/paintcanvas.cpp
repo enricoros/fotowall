@@ -82,7 +82,7 @@ void PaintCanvas::drawOverlayText(const QPointF &position, int flags, int size, 
     m_qPainter->setOpacity(0.70);
     const QColor fontColor(0xeeeeee);
     QFontMetricsF fontMetrics(font);
-    const qreal textWidth = fontMetrics.width(text);
+    const qreal textWidth = fontMetrics.horizontalAdvance(text);
     const QPointF fontOffset(QPointF(-textWidth / 2, fontMetrics.xHeight() * 1.5));
     if (size > 35) {
         m_qPainter->setPen(0x656565);

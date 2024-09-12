@@ -25,67 +25,66 @@ class RubberBandItem;
 /**
  \brief This widget provides a way to select a region of a photo
 */
-class CroppingWidget : public QGraphicsView {
-    public:
-        CroppingWidget(QWidget *parent=0);
-        void setPixmap(QPixmap *pix);
-        QRect getCroppingRect() const;
+class CroppingWidget : public QGraphicsView
+{
+public:
+  CroppingWidget(QWidget * parent = 0);
+  void setPixmap(QPixmap * pix);
+  QRect getCroppingRect() const;
 
-    protected:
-        // ::QGraphicsView
-        void drawBackground(QPainter *painter, const QRectF &rect);
-        void resizeEvent(QResizeEvent *event);
+protected:
+  // ::QGraphicsView
+  void drawBackground(QPainter * painter, const QRectF & rect);
+  void resizeEvent(QResizeEvent * event);
 
-    private:
-        QGraphicsScene * m_scene;
-        MaskItem * m_maskItem;
-        RubberBandItem * m_rubberBand;
-        QPixmap m_previewPixmap;
-        QPoint m_origin;
-        float m_previewScale;
+private:
+  QGraphicsScene * m_scene;
+  MaskItem * m_maskItem;
+  RubberBandItem * m_rubberBand;
+  QPixmap m_previewPixmap;
+  QPoint m_origin;
+  float m_previewScale;
 };
-
 
 // The following are here for MOC puropose only
 
 class MaskItem : public QGraphicsWidget
 {
-    Q_OBJECT
-    Q_PROPERTY(qreal strength READ strength WRITE setStrength)
+  Q_OBJECT
+  Q_PROPERTY(qreal strength READ strength WRITE setStrength)
 
 public slots:
-    void resizeToScene();
-    void setHole(const QRect & rect);
+  void resizeToScene();
+  void setHole(const QRect & rect);
 
 public:
-    MaskItem();
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem * option, QWidget *widget = 0);
+  MaskItem();
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
 private:
-    qreal strength() const;
-    void setStrength(qreal strength);
-    QRect m_hole;
-    qreal m_strength;
+  qreal strength() const;
+  void setStrength(qreal strength);
+  QRect m_hole;
+  qreal m_strength;
 };
-
 
 class RubberBandItem : public QGraphicsWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 signals:
-    void geometryChanged(const QRect & rect);
+  void geometryChanged(const QRect & rect);
 
 public:
-    RubberBandItem();
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void resizeEvent(QGraphicsSceneResizeEvent * event);
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
+  RubberBandItem();
+  void mousePressEvent(QGraphicsSceneMouseEvent * event);
+  void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+  void resizeEvent(QGraphicsSceneResizeEvent * event);
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
 private:
-    QList<QRect> m_corners;
-    QPoint m_displace;
-    int m_handle;
+  QList<QRect> m_corners;
+  QPoint m_displace;
+  int m_handle;
 };
 
 #endif

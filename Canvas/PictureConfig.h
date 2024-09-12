@@ -19,26 +19,29 @@
 #include "Shared/PictureEffect.h"
 class QListWidgetItem;
 class PictureContent;
-namespace Ui { class PictureConfig; }
+namespace Ui
+{
+class PictureConfig;
+}
 
+class PictureConfig : public AbstractConfig
+{
+  Q_OBJECT
+public:
+  PictureConfig(PictureContent * pictureContent, AbstractConfig_PARENT * parent = 0);
+  ~PictureConfig();
 
-class PictureConfig : public AbstractConfig {
-    Q_OBJECT
-    public:
-        PictureConfig(PictureContent * pictureContent, AbstractConfig_PARENT * parent = 0);
-        ~PictureConfig();
+Q_SIGNALS:
+  void applyEffect(const PictureEffect & effect, bool allPictures);
 
-    Q_SIGNALS:
-        void applyEffect(const PictureEffect & effect, bool allPictures);
+private:
+  Ui::PictureConfig * m_pictureUi;
+  PictureContent * m_pictureContent;
+  PictureEffect m_currentEffect;
 
-    private:
-        Ui::PictureConfig * m_pictureUi;
-        PictureContent *    m_pictureContent;
-        PictureEffect       m_currentEffect;
-
-    private Q_SLOTS:
-        void on_applyEffects_clicked();
-        void on_effectsList_itemActivated(QListWidgetItem * item);
+private Q_SLOTS:
+  void on_applyEffects_clicked();
+  void on_effectsList_itemActivated(QListWidgetItem * item);
 };
 
 #endif

@@ -19,25 +19,24 @@
 #include "Shared/Commands.h"
 
 TextConfig::TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent)
-    : AbstractConfig(textContent, parent)
-    , m_textContent(textContent)
+: AbstractConfig(textContent, parent), m_textContent(textContent)
 {
-    // inject Text Editor
-    m_editor = new RichTextEditorDialog();
-    m_editor->setMinimumSize(500, 200);
-    m_editor->setText(m_textContent->toHtml());
-    m_editor->adjustSize();
-    addTab(m_editor, tr("Text"), false, true);
-    m_editor->focusEditor();
+  // inject Text Editor
+  m_editor = new RichTextEditorDialog();
+  m_editor->setMinimumSize(500, 200);
+  m_editor->setText(m_textContent->toHtml());
+  m_editor->adjustSize();
+  addTab(m_editor, tr("Text"), false, true);
+  m_editor->focusEditor();
 
-    // show the ok button
-    showOkButton(true);
+  // show the ok button
+  showOkButton(true);
 }
 
 void TextConfig::slotOkClicked()
 {
-    TextCommand *c = new TextCommand(m_textContent, m_editor->text(Qt::RichText));
-    do_canvas_command(m_textContent->scene(), c);
+  TextCommand * c = new TextCommand(m_textContent, m_editor->text(Qt::RichText));
+  do_canvas_command(m_textContent->scene(), c);
 
-    emit requestClose();
+  emit requestClose();
 }

@@ -19,9 +19,9 @@
 
 class SingleResourceLoaner
 {
-    public:
-        virtual QVariant takeResource() = 0;
-        virtual void returnResource(const QVariant &) = 0;
+public:
+  virtual QVariant takeResource() = 0;
+  virtual void returnResource(const QVariant &) = 0;
 };
 
 #endif

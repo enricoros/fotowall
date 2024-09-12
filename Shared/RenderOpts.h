@@ -19,21 +19,21 @@
 
 class RenderOpts
 {
-    public:
-        // defaults
-        static bool LastMirrored;
+public:
+  // defaults
+  static bool LastMirrored;
 
-        // global options
-        static bool HQRendering;
-        static bool PDFExporting;
-        static bool ARGBWindow;
-        static bool OpenGLWindow;
+  // global options
+  static bool HQRendering;
+  static bool PDFExporting;
+  static bool ARGBWindow;
+  static bool OpenGLWindow;
 
-        // other options
-        static bool OxygenStyleQuirks;
+  // other options
+  static bool OxygenStyleQuirks;
 
-        // global highlight color
-        static QColor hiColor;
+  // global highlight color
+  static QColor hiColor;
 };
 
 #endif

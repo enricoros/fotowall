@@ -15,13 +15,13 @@
 #ifndef __Frame_h__
 #define __Frame_h__
 
+#include "Canvas/ButtonItem.h"
 #include <QGraphicsItem>
 #include <QList>
-#include <QPainterPath>
 #include <QPainter>
+#include <QPainterPath>
 #include <QRect>
 #include <QSize>
-#include "Canvas/ButtonItem.h"
 class QPainter;
 
 /**
@@ -29,33 +29,41 @@ class QPainter;
     G: geometry
     P: painting
 */
-class Frame {
-    public:
-        // class identification
-        virtual quint32 frameClass() const = 0;
-        enum { NoFrame = 0, StandardFrame = 1, HeartFrame = 2, /*skip 3, removed!*/ StandardFrame2 = 4, BasePlasmaFrame = 0x1000 };
+class Frame
+{
+public:
+  // class identification
+  virtual quint32 frameClass() const = 0;
+  enum
+  {
+    NoFrame = 0,
+    StandardFrame = 1,
+    HeartFrame = 2,
+    /*skip 3, removed!*/ StandardFrame2 = 4,
+    BasePlasmaFrame = 0x1000
+  };
 
-        // G: frame geometry
-        virtual QRect frameRect(const QRect & contentsRect) const;
+  // G: frame geometry
+  virtual QRect frameRect(const QRect & contentsRect) const;
 
-        // G: contents clipping
-        virtual bool clipContents() const;
-        virtual QPainterPath contentsClipPath(const QRect & contentsRect) const;
+  // G: contents clipping
+  virtual bool clipContents() const;
+  virtual QPainterPath contentsClipPath(const QRect & contentsRect) const;
 
-        // G: frame shape
-        virtual bool isShaped() const;
-        virtual QPainterPath frameShape(const QRect & frameRect) const;
+  // G: frame shape
+  virtual bool isShaped() const;
+  virtual QPainterPath frameShape(const QRect & frameRect) const;
 
-        // G: layouting sub-items
-        virtual void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const = 0;
-        virtual void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const = 0;
+  // G: layouting sub-items
+  virtual void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const = 0;
+  virtual void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const = 0;
 
-        // P: painting
-        virtual void drawFrame(QPainter * painter, const QRect & geometry, bool selected, bool opaqueContents) = 0;
-        virtual QPixmap preview(int width = 32, int height = 32);
+  // P: painting
+  virtual void drawFrame(QPainter * painter, const QRect & geometry, bool selected, bool opaqueContents) = 0;
+  virtual QPixmap preview(int width = 32, int height = 32);
 
-        // unbreak stuff
-        virtual ~Frame();
+  // unbreak stuff
+  virtual ~Frame();
 };
 
 #endif

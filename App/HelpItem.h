@@ -20,21 +20,21 @@ class Frame;
 
 class HelpItem : public AbstractDisposeable
 {
-    Q_OBJECT
-    public:
-        HelpItem(QGraphicsItem * parent = 0);
-        ~HelpItem();
+  Q_OBJECT
+public:
+  HelpItem(QGraphicsItem * parent = 0);
+  ~HelpItem();
 
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
+  // ::QGraphicsItem
+  QRectF boundingRect() const;
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+  void mousePressEvent(QGraphicsSceneMouseEvent * event);
 
-    Q_SIGNALS:
-        void closeMe();
+Q_SIGNALS:
+  void closeMe();
 
-    private:
-        Frame * m_frame;
+private:
+  Frame * m_frame;
 };
 
 #endif

@@ -17,7 +17,6 @@
 #include <QFile>
 #include <QImageReader>
 
-
 /// Global Instances
 
 Settings * App::settings = 0;
@@ -25,54 +24,52 @@ Workflow * App::workflow = 0;
 OnlineServices * App::onlineServices = 0;
 AbstractPictureService * App::pictureService = 0;
 
-
 /// Functions
 
 QString App::supportedImageFormats()
 {
-    static QString extensions;
-    if (extensions.isEmpty())
-        foreach (const QByteArray & format, QImageReader::supportedImageFormats())
-            extensions += "*." + format + " *." + format.toUpper() + " ";
-    return extensions;
+  static QString extensions;
+  if(extensions.isEmpty())
+    foreach(const QByteArray & format, QImageReader::supportedImageFormats())
+      extensions += "*." + format + " *." + format.toUpper() + " ";
+  return extensions;
 }
 
 bool App::isPictureFile(const QString & picFilePath)
 {
-    QString extension = picFilePath.section('.', -1);
-    foreach (const QByteArray & format, QImageReader::supportedImageFormats())
-        if (!extension.compare(QString(format), Qt::CaseInsensitive))
-            return true;
-    return false;
+  QString extension = picFilePath.section('.', -1);
+  foreach(const QByteArray & format, QImageReader::supportedImageFormats())
+    if(!extension.compare(QString(format), Qt::CaseInsensitive)) return true;
+  return false;
 }
 
 bool App::isFotowallFile(const QString & fwFilePath)
 {
-    return fwFilePath.endsWith(".fotowall", Qt::CaseInsensitive);
+  return fwFilePath.endsWith(".fotowall", Qt::CaseInsensitive);
 }
 
 bool App::isContentUrl(const QString & url)
 {
-    // check file domain
-    if (QFile::exists(url) || url.startsWith("http:/", Qt::CaseInsensitive) ||
-        url.startsWith("ftp:/", Qt::CaseInsensitive)) {
+  // check file domain
+  if(QFile::exists(url) || url.startsWith("http:/", Qt::CaseInsensitive)
+     || url.startsWith("ftp:/", Qt::CaseInsensitive))
+  {
 
-        // check extension
-        if (isFotowallFile(url) || isPictureFile(url))
-            return true;
-    }
+    // check extension
+    if(isFotowallFile(url) || isPictureFile(url)) return true;
+  }
 
-    // unsupported local or remote content url
-    return false;
+  // unsupported local or remote content url
+  return false;
 }
 
 bool App::validateFotowallUrl(const QString & url)
 {
-    if (isFotowallFile(url) && QFile::exists(url))
-        return true;
-    if (url.startsWith("http:/", Qt::CaseInsensitive) || url.startsWith("ftp:/", Qt::CaseInsensitive)) {
-        qWarning("App::validateFotowallUrl: http or ftp urls not allowed for now");
-        return false;
-    }
+  if(isFotowallFile(url) && QFile::exists(url)) return true;
+  if(url.startsWith("http:/", Qt::CaseInsensitive) || url.startsWith("ftp:/", Qt::CaseInsensitive))
+  {
+    qWarning("App::validateFotowallUrl: http or ftp urls not allowed for now");
     return false;
+  }
+  return false;
 }

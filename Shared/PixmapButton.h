@@ -16,54 +16,54 @@
 #define __PixmapButton_h__
 
 #include <QAbstractButton>
-#include <QPixmap>
 #include <QFont>
+#include <QPixmap>
 
 class PixmapButton : public QAbstractButton
 {
-    Q_OBJECT
-    Q_PROPERTY(QSize fixedSize READ fixedSize WRITE setFixedSize)
-    Q_PROPERTY(QPixmap hoverPixmap READ hoverPixmap WRITE setHoverPixmap)
-    Q_PROPERTY(QPixmap pixmap READ pixmap WRITE setPixmap)
-    Q_PROPERTY(bool fadeInactive READ fadeInactive WRITE setFadeInactive)
-    public:
-        PixmapButton(QWidget * parent = 0);
+  Q_OBJECT
+  Q_PROPERTY(QSize fixedSize READ fixedSize WRITE setFixedSize)
+  Q_PROPERTY(QPixmap hoverPixmap READ hoverPixmap WRITE setHoverPixmap)
+  Q_PROPERTY(QPixmap pixmap READ pixmap WRITE setPixmap)
+  Q_PROPERTY(bool fadeInactive READ fadeInactive WRITE setFadeInactive)
+public:
+  PixmapButton(QWidget * parent = 0);
 
-        // change pixmap
-        void setPixmap(const QPixmap & pixmap);
-        QPixmap pixmap() const;
+  // change pixmap
+  void setPixmap(const QPixmap & pixmap);
+  QPixmap pixmap() const;
 
-        // hover text (accelerator like)
-        void setHoverText(const QString & text);
-        QString hoverText() const;
+  // hover text (accelerator like)
+  void setHoverText(const QString & text);
+  QString hoverText() const;
 
-        // change mouse-over pixmap
-        void setHoverPixmap(const QPixmap & pixmap);
-        QPixmap hoverPixmap() const;
+  // change mouse-over pixmap
+  void setHoverPixmap(const QPixmap & pixmap);
+  QPixmap hoverPixmap() const;
 
-        // fade out if non-hovered/focused
-        void setFadeInactive(bool);
-        bool fadeInactive() const;
+  // fade out if non-hovered/focused
+  void setFadeInactive(bool);
+  bool fadeInactive() const;
 
-        // enforce the fixed size notion
-        void setFixedSize(const QSize & size);
-        void setFixedSize(int w, int h);
-        QSize fixedSize() const;
+  // enforce the fixed size notion
+  void setFixedSize(const QSize & size);
+  void setFixedSize(int w, int h);
+  QSize fixedSize() const;
 
-    protected:
-        // ::QAbstractButton
-        void enterEvent(QEvent *);
-        void leaveEvent(QEvent *);
-        void paintEvent(QPaintEvent *);
+protected:
+  // ::QAbstractButton
+  void enterEvent(QEvent *);
+  void leaveEvent(QEvent *);
+  void paintEvent(QPaintEvent *);
 
-    private:
-        QSize m_fixedSize;
-        QPixmap m_fixedPixmap;
-        QFont m_hoverFont;
-        QString m_hoverText;
-        QPixmap m_hoverPixmap;
-        bool m_fadeInactive;
-        bool m_hovering;
+private:
+  QSize m_fixedSize;
+  QPixmap m_fixedPixmap;
+  QFont m_hoverFont;
+  QString m_hoverText;
+  QPixmap m_hoverPixmap;
+  bool m_fadeInactive;
+  bool m_hovering;
 };
 
 #endif

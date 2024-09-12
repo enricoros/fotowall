@@ -21,15 +21,15 @@ class TextContent;
 
 class TextConfig : public AbstractConfig
 {
-    Q_OBJECT
-    public:
-        TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent = 0);
+  Q_OBJECT
+public:
+  TextConfig(TextContent * textContent, AbstractConfig_PARENT * parent = 0);
 
-    private:
-        // ::AbstractConfig
-        void slotOkClicked();
-        TextContent * m_textContent;
-        RichTextEditorDialog * m_editor;
+private:
+  // ::AbstractConfig
+  void slotOkClicked();
+  TextContent * m_textContent;
+  RichTextEditorDialog * m_editor;
 };
 
 #endif

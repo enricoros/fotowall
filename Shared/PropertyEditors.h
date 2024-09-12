@@ -15,97 +15,94 @@
 #ifndef __PropertyEditors_h__
 #define __PropertyEditors_h__
 
-#include <QObject>
 #include <QAbstractButton>
 #include <QAbstractSlider>
 #include <QComboBox>
+#include <QMetaMethod>
 #include <QMetaProperty>
+#include <QObject>
 #include <QPointer>
 #include <QVariant>
-#include <QMetaMethod>
 
 template<class C>
 class PE_TypeControl : public QObject
 {
-    public:
-        PE_TypeControl(C * control, QObject * target, const char * propertyName, QObject * parent = 0)
-          : QObject(parent)
-          , m_control(control)
-          , m_target(target)
-          , m_isValid(false)
-        {
-            // find the property
-            int idx = m_target->metaObject()->indexOfProperty(propertyName);
-            if (idx == -1) {
-                qWarning("PE_TypeControl: target has no property '%s'", propertyName ? propertyName : "NULL");
-                return;
-            }
-            m_property = m_target->metaObject()->property(idx);
-        }
+public:
+  PE_TypeControl(C * control, QObject * target, const char * propertyName, QObject * parent = 0)
+  : QObject(parent), m_control(control), m_target(target), m_isValid(false)
+  {
+    // find the property
+    int idx = m_target->metaObject()->indexOfProperty(propertyName);
+    if(idx == -1)
+    {
+      qWarning("PE_TypeControl: target has no property '%s'", propertyName ? propertyName : "NULL");
+      return;
+    }
+    m_property = m_target->metaObject()->property(idx);
+  }
 
-        bool isValid() const
-        {
-            return m_isValid;
-        }
+  bool isValid() const { return m_isValid; }
 
-    protected:
-        QPointer<C> m_control;
-        QPointer<QObject> m_target;
-        QMetaProperty m_property;
-        bool m_isValid;
+protected:
+  QPointer<C> m_control;
+  QPointer<QObject> m_target;
+  QMetaProperty m_property;
+  bool m_isValid;
 
-    private:
-        PE_TypeControl();
+private:
+  PE_TypeControl();
 };
 
 class PE_AbstractSlider : public PE_TypeControl<QAbstractSlider>
 {
-    Q_OBJECT
-    public:
-        PE_AbstractSlider(QAbstractSlider * slider, QObject * target, const char * propertyName, QObject * parent = 0);
+  Q_OBJECT
+public:
+  PE_AbstractSlider(QAbstractSlider * slider, QObject * target, const char * propertyName, QObject * parent = 0);
 
-    Q_SIGNALS:
-        void sliderReleased();
-        void sliderPressed();
+Q_SIGNALS:
+  void sliderReleased();
+  void sliderPressed();
 
-    private Q_SLOTS:
-        void slotSliderValueChanged(int);
-        void slotPropertyChanged();
+private Q_SLOTS:
+  void slotSliderValueChanged(int);
+  void slotPropertyChanged();
 };
 
 class PE_AbstractButton : public PE_TypeControl<QAbstractButton>
 {
-    Q_OBJECT
-    public:
-        PE_AbstractButton(QAbstractButton * button, QObject * target, const char * propertyName, QObject * parent = 0);
+  Q_OBJECT
+public:
+  PE_AbstractButton(QAbstractButton * button, QObject * target, const char * propertyName, QObject * parent = 0);
 
-    private Q_SLOTS:
-        void slotButtonChecked(bool checked);
-        void slotPropertyChanged();
+private Q_SLOTS:
+  void slotButtonChecked(bool checked);
+  void slotPropertyChanged();
 };
 
 class PE_Combo : public PE_TypeControl<QComboBox>
 {
-    Q_OBJECT
-    public:
-        PE_Combo(QComboBox * combo, QObject * target, const char * propertyName, QObject * parent = 0);
+  Q_OBJECT
+public:
+  PE_Combo(QComboBox * combo, QObject * target, const char * propertyName, QObject * parent = 0);
 
-    private Q_SLOTS:
-        void slotComboChanged(int index);
-        void slotPropertyChanged();
+private Q_SLOTS:
+  void slotComboChanged(int index);
+  void slotPropertyChanged();
 };
 
 // used by all reimpls for being notified when the property changes
-#define PE_LISTEN_TO_PROPERTY(slotName) \
-    if (m_property.hasNotifySignal()) { \
-        QMetaMethod notifySignal = m_property.notifySignal(); \
-        const int nameLength = qstrlen(notifySignal.methodSignature()); \
-        if (nameLength < 255) { \
-            char signalName[256]; \
-            signalName[0] = '0' + QSIGNAL_CODE; \
-            qstrcpy(signalName + 1, notifySignal.methodSignature()); \
-            connect(m_target.data(), signalName, this, SLOT(slotName)); \
-        } \
-    }
+#define PE_LISTEN_TO_PROPERTY(slotName)                             \
+  if(m_property.hasNotifySignal())                                  \
+  {                                                                 \
+    QMetaMethod notifySignal = m_property.notifySignal();           \
+    const int nameLength = qstrlen(notifySignal.methodSignature()); \
+    if(nameLength < 255)                                            \
+    {                                                               \
+      char signalName[256];                                         \
+      signalName[0] = '0' + QSIGNAL_CODE;                           \
+      qstrcpy(signalName + 1, notifySignal.methodSignature());      \
+      connect(m_target.data(), signalName, this, SLOT(slotName));   \
+    }                                                               \
+  }
 
 #endif

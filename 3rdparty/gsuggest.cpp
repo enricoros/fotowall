@@ -149,7 +149,7 @@ void GSuggestCompletion::showCompletion(const QStringList &choices, const QStrin
         item->setText(0, choices[i]);
         item->setText(1, hits[i]);
         item->setTextAlignment(1, Qt::AlignRight);
-        item->setTextColor(1, color);
+        item->setForeground(1, color);
     }
     popup->setCurrentItem(popup->topLevelItem(0));
     popup->resizeColumnToContents(0);

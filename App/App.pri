@@ -92,4 +92,3 @@ FORMS += \
     message("Wordcloud appliance won't be compiled")
     DEFINES -= HAS_WORDCLOUD_APPLIANCE
 }
-

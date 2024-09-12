@@ -21,61 +21,73 @@
 
 class Canvas;
 class QPrinter;
-namespace Ui { class ExportWizard; }
+namespace Ui
+{
+class ExportWizard;
+}
 
-class ExportWizard : public QWizard {
-    Q_OBJECT
-    public:
-        ExportWizard(Canvas * canvas, bool printPreferred);
-        ~ExportWizard();
+class ExportWizard : public QWizard
+{
+  Q_OBJECT
+public:
+  ExportWizard(Canvas * canvas, bool printPreferred);
+  ~ExportWizard();
 
-    public Q_SLOTS:
-        // the main functions
-        void setWallpaper();
-        void saveImage();
-        void startPosterazor();
-        bool printPaper();
-        bool printPdf();
-        void saveSvg();
+public Q_SLOTS:
+  // the main functions
+  void setWallpaper();
+  void saveImage();
+  void startPosterazor();
+  bool printPaper();
+  bool printPdf();
+  void saveSvg();
 
-    protected:
-        // manually sets a page
-        void setPage(int pageId);
+protected:
+  // manually sets a page
+  void setPage(int pageId);
 
-        // ::QWizard
-        int nextId() const;
+  // ::QWizard
+  int nextId() const;
 
-    private:
-        enum PageCode { PageMode = 0, PageWallpaper = 1, PageImage = 2,
-            PagePosteRazor = 3, PagePrint = 4, PageSvg = 5, PagePdf = 6 };
-        QSizeF canvasNatInches() const;
-        void initPageSizeNames();
-        Ui::ExportWizard * m_ui;
-        Canvas * m_canvas;
-        bool m_printPreferred;
-        int m_nextId;
-        QSizeF m_printSizeInches;
-        QPrinter *m_pdfPrinter;
-        QMap<QPrinter::PageSize, QString> m_paperSizeNames;
+private:
+  enum PageCode
+  {
+    PageMode = 0,
+    PageWallpaper = 1,
+    PageImage = 2,
+    PagePosteRazor = 3,
+    PagePrint = 4,
+    PageSvg = 5,
+    PagePdf = 6
+  };
+  QSizeF canvasNatInches() const;
+  void initPageSizeNames();
+  Ui::ExportWizard * m_ui;
+  Canvas * m_canvas;
+  bool m_printPreferred;
+  int m_nextId;
+  QSizeF m_printSizeInches;
+  QPrinter * m_pdfPrinter;
+  QMap<QPageSize::PageSizeId, QString> m_paperSizeNames;
 
-    private slots:
-        // contents related
-        void slotChoosePath();
-        void slotChoosePdfPage();
-        void slotChoosePdfPath();
-        void slotChooseSvgPath();
-        void slotImageFromCanvas();
-        void slotImageFromDpi();
-        void slotPrintUnityChanged(int);
-        void slotPrintSizeChanged();
-        void slotPdfPreview();
-        void slotPdfResChanged(int);
-        void slotPdfUpdateGui();
+private slots:
+  // contents related
+  void slotChoosePath();
+  void slotChoosePdfPage();
+  void slotChoosePdfPath();
+  void slotChooseSvgPath();
+  void slotImageFromCanvas();
+  void slotImageFromDpi();
+  void slotPrintUnityChanged(int);
+  void slotPrintSizeChanged();
+  void slotPdfPreview();
+  void slotPdfResChanged(int);
+  void slotPdfUpdateGui();
 
-        // wizard related
-        void slotFinished(int);
-        void slotModeButtonClicked();
-        void slotOpenLink(const QString & address);
+  // wizard related
+  void slotFinished(int);
+  void slotModeButtonClicked();
+  void slotOpenLink(const QString & address);
 };
 
 #endif

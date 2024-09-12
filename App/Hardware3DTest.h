@@ -15,69 +15,80 @@
 #ifndef __Hardware3DTest_h__
 #define __Hardware3DTest_h__
 
+#include "SceneView.h"
 #include <QDialog>
 #include <QTime>
-#include "SceneView.h"
 class Canvas;
 class TimedSceneView;
 class PictureContent;
 
 class Hardware3DTest : public QDialog
 {
-    Q_OBJECT
-    public:
-        Hardware3DTest(QWidget * parent = 0, Qt::WindowFlags f = 0);
+  Q_OBJECT
+public:
+  Hardware3DTest(QWidget * parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
-        // run the software & hardware render tests
-        enum ExitState { Canceled, UseSoftware, UseOpenGL };
-        ExitState run();
+  // run the software & hardware render tests
+  enum ExitState
+  {
+    Canceled,
+    UseSoftware,
+    UseOpenGL
+  };
+  ExitState run();
 
-    Q_SIGNALS:
-        void testStarted();
-        void testEnded(bool openglWins);
+Q_SIGNALS:
+  void testStarted();
+  void testEnded(bool openglWins);
 
-    private:
-        Canvas * m_canvas;
-        TimedSceneView * m_view;
-        QVector<PictureContent *> m_pictures;
-        QVector<int> m_results;
-        int m_resultIdx;
-        ExitState m_retCode;
+private:
+  Canvas * m_canvas;
+  TimedSceneView * m_view;
+  QVector<PictureContent *> m_pictures;
+  QVector<int> m_results;
+  int m_resultIdx;
+  ExitState m_retCode;
 
-        // state variables (TODO 1.0: replace with QStateMachine)
-        enum State { Off, TestingSoftware, TestingOpenGL, Finished };
-        State m_state;
-        int m_statePhase;   // 0 .. TESTPOWER
+  // state variables (TODO 1.0: replace with QStateMachine)
+  enum State
+  {
+    Off,
+    TestingSoftware,
+    TestingOpenGL,
+    Finished
+  };
+  State m_state;
+  int m_statePhase; // 0 .. TESTPOWER
 
-    private Q_SLOTS:
-        void showResults();
-        void nextStep();
-        void slotViewRepainted(qreal duration);
-        void slotUseSoftware();
-        void slotUseOpenGL();
+private Q_SLOTS:
+  void showResults();
+  void nextStep();
+  void slotViewRepainted(qreal duration);
+  void slotUseSoftware();
+  void slotUseOpenGL();
 };
 
 class TimedSceneView : public SceneView
 {
-    Q_OBJECT
-    public:
-        TimedSceneView(QWidget * parent = 0);
+  Q_OBJECT
+public:
+  TimedSceneView(QWidget * parent = 0);
 
-        // start a measure, will emit 'repainted' upon completion
-        void measureNextRepaint();
+  // start a measure, will emit 'repainted' upon completion
+  void measureNextRepaint();
 
-        // flush updats
-        void flushPaints();
+  // flush updats
+  void flushPaints();
 
-    Q_SIGNALS:
-        void repainted(qreal duration);
+Q_SIGNALS:
+  void repainted(qreal duration);
 
-    protected:
-        // ::QWidget
-        void paintEvent(QPaintEvent * event);
+protected:
+  // ::QWidget
+  void paintEvent(QPaintEvent * event);
 
-    private:
-        bool m_measureRepaint;
+private:
+  bool m_measureRepaint;
 };
 
 #endif

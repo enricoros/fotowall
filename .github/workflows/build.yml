@@ -1,0 +1,42 @@
+name: CI of fotowall
+
+on:
+  push:
+    paths-ignore:
+      # Changes to those files don't mandate running CI
+      - ".github/workflows/package.yml"
+      - ".github/workflows/sources/*"
+      - ".github/workflows/build-others.yml"
+      - ".github/workflows/docker/*"
+      - "debian/**"
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04]
+        build-type: [Debug, RelWithDebInfo, Release]
+        compiler: [gcc, clang]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Install dependencies
+      uses: jrl-umi3218/github-actions/install-dependencies@master
+      with:
+        compiler: ${{ matrix.compiler }}
+        build-type: ${{ matrix.build-type }}
+        ubuntu: |
+          apt: qtbase5-dev libqt5svg5-dev libqt5webkit5-dev
+    - name: Build and test
+      uses: jrl-umi3218/github-actions/build-cmake-project@master
+      with:
+        compiler: ${{ matrix.compiler }}
+        build-type: ${{ matrix.build-type }}

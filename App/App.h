@@ -26,36 +26,38 @@ class Workflow;
 
 class App
 {
-    public:
-        // uniquely instanced objects
-        static Settings * settings;
-        static Workflow * workflow;
-        static OnlineServices * onlineServices;
-        static AbstractPictureService * pictureService;
+public:
+  // uniquely instanced objects
+  static Settings * settings;
+  static Workflow * workflow;
+  static OnlineServices * onlineServices;
+  static AbstractPictureService * pictureService;
 
-        // consts
-        static const int TopBarHeight = 80;
+  // consts
+  static const int TopBarHeight = 80;
 
-        // commands understood by container
-        enum {
-            CC_ShowPictureSearch    = 0x0001,
+  // commands understood by container
+  enum
+  {
+    CC_ShowPictureSearch = 0x0001,
 #if defined(MOBILE_UI)
-            CC_HideTopBar           = 0x0002,
+    CC_HideTopBar = 0x0002,
 #endif
-        };
+  };
 
-        // commands understood by appliances
-        enum {
-            AC_ClearBackground      = 0x0001,
-            AC_ClosePicureSearch    = 0x0002
-        };
+  // commands understood by appliances
+  enum
+  {
+    AC_ClearBackground = 0x0001,
+    AC_ClosePicureSearch = 0x0002
+  };
 
-        // utility functions
-        static QString supportedImageFormats();
-        static bool isPictureFile(const QString & picFilePath);
-        static bool isFotowallFile(const QString & fwFilePath);
-        static bool isContentUrl(const QString & url);
-        static bool validateFotowallUrl(const QString & url);
+  // utility functions
+  static QString supportedImageFormats();
+  static bool isPictureFile(const QString & picFilePath);
+  static bool isFotowallFile(const QString & fwFilePath);
+  static bool isContentUrl(const QString & url);
+  static bool validateFotowallUrl(const QString & url);
 };
 
 #endif
