@@ -15,45 +15,45 @@
 #ifndef __HighLightItem_h__
 #define __HighLightItem_h__
 
-#include <QObject>
-#include <QGraphicsItem>
 #include <QBasicTimer>
+#include <QGraphicsItem>
+#include <QObject>
 
 class HighlightItem : public QObject, public QGraphicsItem
 {
-    Q_OBJECT
-    Q_INTERFACES(QGraphicsItem)
-    public:
-        HighlightItem(QGraphicsItem * parent = 0);
+  Q_OBJECT
+  Q_INTERFACES(QGraphicsItem)
+public:
+  HighlightItem(QGraphicsItem * parent = 0);
 
-        // normalized position
-        void setPos(double x, double y);
-        void setPosF(double xn, double yn);
-        void reposition(const QRectF & rect = QRectF());
+  // normalized position
+  void setPos(double x, double y);
+  void setPosF(double xn, double yn);
+  void reposition(const QRectF & rect = QRectF());
 
-        // dispose item after next animation
-        void deleteAfterAnimation();
+  // dispose item after next animation
+  void deleteAfterAnimation();
 
-        // ::QGraphicsItem
-        QRectF boundingRect() const;
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+  // ::QGraphicsItem
+  QRectF boundingRect() const;
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
-        // ::QObject
-        void timerEvent(QTimerEvent * event);
+  // ::QObject
+  void timerEvent(QTimerEvent * event);
 
-    private:
-        QRectF parentRect() const;
+private:
+  QRectF parentRect() const;
 
-        // normalized position
-        bool m_unset;
-        double m_xn;
-        double m_yn;
+  // normalized position
+  bool m_unset;
+  double m_xn;
+  double m_yn;
 
-        // animation
-        QBasicTimer m_timer;
-        int m_phase;
-        double m_radius;
-        bool m_closing;
+  // animation
+  QBasicTimer m_timer;
+  int m_phase;
+  double m_radius;
+  bool m_closing;
 };
 
 #endif

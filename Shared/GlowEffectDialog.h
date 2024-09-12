@@ -15,21 +15,20 @@
 #ifndef ARNAUD_GLOWEFFECTDIALOG_H
 #define ARNAUD_GLOWEFFECTDIALOG_H
 
-#include <QDialog>
-#include "ui_GlowEffectDialog.h"
 #include "GlowEffectWidget.h"
+#include "ui_GlowEffectDialog.h"
+#include <QDialog>
 
 class GlowEffectDialog : public QDialog
 {
-    public:
-        GlowEffectDialog(const QImage & previewImage);
+public:
+  GlowEffectDialog(const QImage & previewImage);
 
-        int currentRadius() const;
-        QImage glow(const QImage & image, int radius) const;
+  int currentRadius() const;
+  QImage glow(const QImage & image, int radius) const;
 
-    private:
-        Ui::GlowEffectDialog ui;
+private:
+  Ui::GlowEffectDialog ui;
 };
 
 #endif
-

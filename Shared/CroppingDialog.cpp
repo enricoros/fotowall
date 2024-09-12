@@ -14,16 +14,16 @@
 
 #include "CroppingDialog.h"
 
-CroppingDialog::CroppingDialog(QPixmap *pix) : QDialog()
+CroppingDialog::CroppingDialog(QPixmap * pix) : QDialog()
 {
-    ui.setupUi(this);
-    ui.croppingWidget->setPixmap(pix);
+  ui.setupUi(this);
+  ui.croppingWidget->setPixmap(pix);
 
-    connect(ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 QRect CroppingDialog::getCroppingRect() const
 {
-    return ui.croppingWidget->getCroppingRect();
+  return ui.croppingWidget->getCroppingRect();
 }

@@ -25,31 +25,31 @@ class Canvas;
 */
 class CanvasViewContent : public AbstractContent, public SingleResourceLoaner
 {
-    Q_OBJECT
-    public:
-        CanvasViewContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
-        ~CanvasViewContent();
+  Q_OBJECT
+public:
+  CanvasViewContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
+  ~CanvasViewContent();
 
-        bool loadFromFile(const QString & fwFilePath, bool keepRatio = false, bool setName = false);
+  bool loadFromFile(const QString & fwFilePath, bool keepRatio = false, bool setName = false);
 
-        // ::AbstractContent
-        QString contentName() const override { return tr("Canvas View"); }
-        bool fromXml(const QDomElement & contentElement, const QDir & baseDir) override;
-        void toXml(QDomElement & contentElement, const QDir & baseDir) const override;
-        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio) override;
-        int contentHeightForWidth(int width) const override;
+  // ::AbstractContent
+  QString contentName() const override { return tr("Canvas View"); }
+  bool fromXml(const QDomElement & contentElement, const QDir & baseDir) override;
+  void toXml(QDomElement & contentElement, const QDir & baseDir) const override;
+  void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio) override;
+  int contentHeightForWidth(int width) const override;
 
-        // ::SingleResourceProvider
-        QVariant takeResource() override;
-        void returnResource(const QVariant &) override;
+  // ::SingleResourceProvider
+  QVariant takeResource() override;
+  void returnResource(const QVariant &) override;
 
-    private:
-        Canvas * m_canvas;
-        QSize m_canvasCachedSize;
-        bool m_canvasTaken;
+private:
+  Canvas * m_canvas;
+  QSize m_canvasCachedSize;
+  bool m_canvasTaken;
 
-    private Q_SLOTS:
-        void slotRepaintCanvas(const QList<QRectF> & exposed);
+private Q_SLOTS:
+  void slotRepaintCanvas(const QList<QRectF> & exposed);
 };
 
 #endif

@@ -14,14 +14,13 @@
 
 #include "ContentProperties.h"
 
-ContentProperties::ContentProperties(QWidget *parent)
-  : QWidget(parent)
+ContentProperties::ContentProperties(QWidget * parent) : QWidget(parent)
 {
-    setupUi(this);
+  setupUi(this);
 #if defined(MOBILE_UI)
-    cHS1->setStyleSheet(QString());
+  cHS1->setStyleSheet(QString());
 #endif
 #if QT_VERSION < 0x040600
-    cFxCombo->hide();
+  cFxCombo->hide();
 #endif
 }

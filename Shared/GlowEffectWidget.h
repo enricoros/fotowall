@@ -18,36 +18,40 @@
 #ifndef __GlowEffectWidget_h__
 #define __GlowEffectWidget_h__
 
-#include <QWidget>
-#include <QPixmap>
 #include <QImage>
+#include <QPixmap>
+#include <QWidget>
 class QPaintEvent;
 
 class GlowEffectWidget : public QWidget
 {
-    Q_OBJECT
-    public:
-        GlowEffectWidget(QWidget *parent=0);
-        void setPreviewImage(const QImage &preview);
-        void setGlowRadius(int radius);
-        int glowRadius() const;
+  Q_OBJECT
+public:
+  GlowEffectWidget(QWidget * parent = 0);
+  void setPreviewImage(const QImage & preview);
+  void setGlowRadius(int radius);
+  int glowRadius() const;
 
-        static QImage glown(const QImage &image, int radius);
-        static QImage dropShadow(const QImage &image, const QColor & shadowColor, int radius, int xOffset = 0, int yOffset = 0);
+  static QImage glown(const QImage & image, int radius);
+  static QImage dropShadow(const QImage & image,
+                           const QColor & shadowColor,
+                           int radius,
+                           int xOffset = 0,
+                           int yOffset = 0);
 
-    protected:
-        // ::QWidget
-        void mousePressEvent(QMouseEvent *e);
-        void mouseReleaseEvent(QMouseEvent *e);
-        void paintEvent(QPaintEvent *e);
-        void wheelEvent(QWheelEvent *e);
+protected:
+  // ::QWidget
+  void mousePressEvent(QMouseEvent * e);
+  void mouseReleaseEvent(QMouseEvent * e);
+  void paintEvent(QPaintEvent * e);
+  void wheelEvent(QWheelEvent * e);
 
-    private:
-        void drawRadiusBox(QPainter *p);
-        QImage  m_image;
-        int     m_radius;
-        QPixmap m_tile;
-        bool    m_mousePressed;
+private:
+  void drawRadiusBox(QPainter * p);
+  QImage m_image;
+  int m_radius;
+  QPixmap m_tile;
+  bool m_mousePressed;
 };
 
 #endif

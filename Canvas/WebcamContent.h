@@ -24,37 +24,37 @@ class QSvgRenderer;
 */
 class WebcamContent : public AbstractContent
 {
-    Q_OBJECT
-    public:
-        WebcamContent(int webcamIndex, bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
-        ~WebcamContent();
+  Q_OBJECT
+public:
+  WebcamContent(int webcamIndex, bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
+  ~WebcamContent();
 
-        // ::AbstractContent
-        QString contentName() const { return tr("Webcam"); }
-        bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
-        void toXml(QDomElement & contentElement, const QDir & baseDir) const;
-        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
-        QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
-        int contentHeightForWidth(int width) const;
-        bool contentOpaque() const;
+  // ::AbstractContent
+  QString contentName() const { return tr("Webcam"); }
+  bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
+  void toXml(QDomElement & contentElement, const QDir & baseDir) const;
+  void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
+  QPixmap toPixmap(const QSize & size, Qt::AspectRatioMode ratio);
+  int contentHeightForWidth(int width) const;
+  bool contentOpaque() const;
 
-        // ::QGraphicsItem
-        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+  // ::QGraphicsItem
+  void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
-    public Q_SLOTS:
-        void setPixmap(const QPixmap & pixmap);
+public Q_SLOTS:
+  void setPixmap(const QPixmap & pixmap);
 
-    private:
-        int m_input;
-        bool m_still;
-        QPixmap m_pixmap;
-        QPixmap m_dummyPixmap;
-        QSvgRenderer * m_dummyRenderer;
-        bool m_broken;
+private:
+  int m_input;
+  bool m_still;
+  QPixmap m_pixmap;
+  QPixmap m_dummyPixmap;
+  QSvgRenderer * m_dummyRenderer;
+  bool m_broken;
 
-    private Q_SLOTS:
-        void slotToggleStill();
-        void slotToggleSwap();
+private Q_SLOTS:
+  void slotToggleStill();
+  void slotToggleSwap();
 };
 
 #endif

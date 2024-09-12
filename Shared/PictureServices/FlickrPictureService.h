@@ -16,45 +16,46 @@
 #define __FlickrPictureService_h__
 
 #include "AbstractPictureService.h"
-#include <QMap>
 #include <QList>
+#include <QMap>
 #include <QPair>
 #include <QUrl>
-namespace FlickrInternal {
-    struct Photo;
+namespace FlickrInternal
+{
+struct Photo;
 };
 
 class FlickrPictureService : public AbstractPictureService
 {
-    Q_OBJECT
-    public:
-        FlickrPictureService(const QString & apiKey, QNetworkAccessManager * manager, QObject * parent = 0);
-        ~FlickrPictureService();
+  Q_OBJECT
+public:
+  FlickrPictureService(const QString & apiKey, QNetworkAccessManager * manager, QObject * parent = 0);
+  ~FlickrPictureService();
 
-        // ::AbstractPictureService
-        void searchPics(const QString & text);
-        void dropSearch();
-        bool imageInfo(int idx, QString * url, QString * title, int * width, int * height);
-        QNetworkReply * download(int idx);
-        void startPrefetch(int idx);
-        void stopPrefetch(int idx);
+  // ::AbstractPictureService
+  void searchPics(const QString & text);
+  void dropSearch();
+  bool imageInfo(int idx, QString * url, QString * title, int * width, int * height);
+  QNetworkReply * download(int idx);
+  void startPrefetch(int idx);
+  void stopPrefetch(int idx);
 
-    private:
-        bool startNextThumbnailJobs(int count = 1);
+private:
+  bool startNextThumbnailJobs(int count = 1);
 
-        typedef QPair<QString, QString> KeyValue;
-        typedef QList<KeyValue> KeyValueList;
+  typedef QPair<QString, QString> KeyValue;
+  typedef QList<KeyValue> KeyValueList;
 
-        QNetworkReply * flickrApiCall(const QString & method, const KeyValueList & params);
+  QNetworkReply * flickrApiCall(const QString & method, const KeyValueList & params);
 
-        QString m_apiKey;
-        QNetworkReply * m_searchJob;
-        QList<FlickrInternal::Photo *> m_searchResults;
-        QMap<int, QNetworkReply *> m_prefetches;
+  QString m_apiKey;
+  QNetworkReply * m_searchJob;
+  QList<FlickrInternal::Photo *> m_searchResults;
+  QMap<int, QNetworkReply *> m_prefetches;
 
-    private Q_SLOTS:
-        void slotSearchJobFinished();
-        void slotThumbJobFinished();
+private Q_SLOTS:
+  void slotSearchJobFinished();
+  void slotThumbJobFinished();
 };
 
 #endif

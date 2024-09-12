@@ -15,41 +15,42 @@
 #ifndef __Stacker_h__
 #define __Stacker_h__
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 
-namespace PlugGui {
+namespace PlugGui
+{
 
-    class Container;
-    class AbstractAppliance;
+class Container;
+class AbstractAppliance;
 
-    class Stacker
-    {
-        public:
-            Stacker();
-            virtual ~Stacker();
+class Stacker
+{
+public:
+  Stacker();
+  virtual ~Stacker();
 
-            // set container (runtime changeable)
-            void setContainer(Container * container);
-            Container * container() const;
+  // set container (runtime changeable)
+  void setContainer(Container * container);
+  Container * container() const;
 
-            // appliance stacking operations
-            virtual void stackAppliance(AbstractAppliance * appliance);
-            virtual QList<AbstractAppliance *> stackedAppliances() const;
-            virtual AbstractAppliance * currentAppliance() const;
-            virtual int applianceCount() const;
-            virtual void popAppliance();
-            virtual void clearAppliances();
+  // appliance stacking operations
+  virtual void stackAppliance(AbstractAppliance * appliance);
+  virtual QList<AbstractAppliance *> stackedAppliances() const;
+  virtual AbstractAppliance * currentAppliance() const;
+  virtual int applianceCount() const;
+  virtual void popAppliance();
+  virtual void clearAppliances();
 
-        protected:
-            // notify (ex. on a push/pop operation)
-            virtual void structureChanged();
+protected:
+  // notify (ex. on a push/pop operation)
+  virtual void structureChanged();
 
-        private:
-            Container * m_container;
-            QList<AbstractAppliance *> m_appliances;
-    };
+private:
+  Container * m_container;
+  QList<AbstractAppliance *> m_appliances;
+};
 
-}
+} // namespace PlugGui
 
 #endif

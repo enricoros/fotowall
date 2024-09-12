@@ -15,19 +15,19 @@
 #ifndef __CroppingDialog__
 #define __CroppingDialog__
 
-#include <QDialog>
-#include "ui_CroppingDialog.h"
 #include "CroppingWidget.h"
+#include "ui_CroppingDialog.h"
+#include <QDialog>
 
 class CroppingDialog : public QDialog
 {
-    Q_OBJECT
-    public:
-        CroppingDialog(QPixmap *pix);
-        QRect getCroppingRect() const;
-    private:
-        Ui::CroppingDialog ui;
+  Q_OBJECT
+public:
+  CroppingDialog(QPixmap * pix);
+  QRect getCroppingRect() const;
+
+private:
+  Ui::CroppingDialog ui;
 };
 
 #endif
-

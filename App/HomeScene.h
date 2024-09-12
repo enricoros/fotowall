@@ -26,37 +26,37 @@ class PencilItem;
 */
 class HomeScene : public AbstractScene
 {
-    Q_OBJECT
-    public:
-        HomeScene(QObject * parent = 0);
-        ~HomeScene();
+  Q_OBJECT
+public:
+  HomeScene(QObject * parent = 0);
+  ~HomeScene();
 
-        // ::QGraphicsScene
-        void drawBackground(QPainter *painter, const QRectF &rect);
-        void drawForeground(QPainter *painter, const QRectF &rect);
-        void keyPressEvent(QKeyEvent *event);
+  // ::QGraphicsScene
+  void drawBackground(QPainter * painter, const QRectF & rect);
+  void drawForeground(QPainter * painter, const QRectF & rect);
+  void keyPressEvent(QKeyEvent * event);
 
-        // ::AbstractScene
-        void resize(const QSize & size);
-        bool sceneSelectable() const;
+  // ::AbstractScene
+  void resize(const QSize & size);
+  bool sceneSelectable() const;
 
-    Q_SIGNALS:
-        void keyPressed(int qtKey);
-        void startCanvas();
+Q_SIGNALS:
+  void keyPressed(int qtKey);
+  void startCanvas();
 #if defined(HAS_WORDCLOUD_APPLIANCE)
-        void startWordcloud();
+  void startWordcloud();
 #endif
-        void startWizard();
+  void startWizard();
 
-    private:
-        QList<QGraphicsItem *> m_labels;
-        QPixmap m_logoPixmap;
-        QRect m_logoRect;
-        PencilItem * m_pencil;
+private:
+  QList<QGraphicsItem *> m_labels;
+  QPixmap m_logoPixmap;
+  QRect m_logoRect;
+  PencilItem * m_pencil;
 
-    private Q_SLOTS:
-        void slotCreatePencil();
-        void slotStartCanvas();
+private Q_SLOTS:
+  void slotCreatePencil();
+  void slotStartCanvas();
 };
 
 #endif

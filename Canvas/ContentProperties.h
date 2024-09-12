@@ -15,14 +15,15 @@
 #ifndef __ContentProperties_h__
 #define __ContentProperties_h__
 
-#include <QWidget>
 #include "ui_ContentProperties.h"
+#include <QWidget>
 
-class ContentProperties : public QWidget, public Ui::ContentProperties {
-    Q_OBJECT
-    public:
-        friend class AbstractContent;
-        ContentProperties(QWidget *parent = 0);
+class ContentProperties : public QWidget, public Ui::ContentProperties
+{
+  Q_OBJECT
+public:
+  friend class AbstractContent;
+  ContentProperties(QWidget * parent = 0);
 };
 
 #endif

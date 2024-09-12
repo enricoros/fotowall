@@ -15,24 +15,24 @@
 #ifndef __FotowallFile_h__
 #define __FotowallFile_h__
 
-#include <QtGlobal>
-#include <QStringList>
 #include <QImage>
+#include <QStringList>
+#include <QtGlobal>
 class Canvas;
 
 namespace FotowallFile
 {
-    // read a .fotowall file and setup the Canvas
-    bool read(const QString & fwFilePath, Canvas * canvas, bool inHistory);
-    QImage embeddedPreview(const QString & fwFilePath);
+// read a .fotowall file and setup the Canvas
+bool read(const QString & fwFilePath, Canvas * canvas, bool inHistory);
+QImage embeddedPreview(const QString & fwFilePath);
 
-    // save the given Canvas to a .fotowall file
-    bool saveV2(const QString & fwFilePath, const Canvas * canvas);
+// save the given Canvas to a .fotowall file
+bool saveV2(const QString & fwFilePath, const Canvas * canvas);
 
-    // file selector dialogs
-    QString getLoadFotowallFile();
-    QStringList getLoadFotowallFiles();
-    QString getSaveFotowallFile(const QString & defaultFilePath);
-};
+// file selector dialogs
+QString getLoadFotowallFile();
+QStringList getLoadFotowallFiles();
+QString getSaveFotowallFile(const QString & defaultFilePath);
+}; // namespace FotowallFile
 
 #endif

@@ -15,26 +15,29 @@
 #ifndef __VersionCheckDialog_h__
 #define __VersionCheckDialog_h__
 
-#include <QDialog>
 #include "Shared/MetaXmlReader.h"
-namespace Ui { class VersionCheckDialog; }
+#include <QDialog>
+namespace Ui
+{
+class VersionCheckDialog;
+}
 
 class VersionCheckDialog : public QDialog
 {
-    Q_OBJECT
-    public:
-        VersionCheckDialog(QWidget * parent = 0);
-        ~VersionCheckDialog();
+  Q_OBJECT
+public:
+  VersionCheckDialog(QWidget * parent = 0);
+  ~VersionCheckDialog();
 
-    private Q_SLOTS:
-        void slotFetched();
-        void slotError(const QString & error);
-        void slotDownload();
+private Q_SLOTS:
+  void slotFetched();
+  void slotError(const QString & error);
+  void slotDownload();
 
-    private:
-        Ui::VersionCheckDialog * ui;
-        MetaXml::Connector * m_connector;
-        MetaXml::Release m_release;
+private:
+  Ui::VersionCheckDialog * ui;
+  MetaXml::Connector * m_connector;
+  MetaXml::Release m_release;
 };
 
 #endif

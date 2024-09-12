@@ -25,38 +25,38 @@ class Workflow;
 
 class MainWindowMobile : public PlugGui::Container
 {
-    Q_OBJECT
-    public:
-        MainWindowMobile(QWidget * parent = 0);
-        ~MainWindowMobile();
+  Q_OBJECT
+public:
+  MainWindowMobile(QWidget * parent = 0);
+  ~MainWindowMobile();
 
-    protected:
-        // ::PlugGui::Container
-        QSize sceneViewSize() const;
-        void applianceSetTitle(const QString & title);
-        void applianceSetScene(AbstractScene * scene);
-        void applianceSetTopbar(const QList<QWidget *> & widgets);
-        void applianceSetSidebar(QWidget * widget);
-        void applianceSetCentralwidget(QWidget * widget);
-        void applianceSetValue(quint32 key, const QVariant & value);
-        void applianceSetFocusToScene();
+protected:
+  // ::PlugGui::Container
+  QSize sceneViewSize() const;
+  void applianceSetTitle(const QString & title);
+  void applianceSetScene(AbstractScene * scene);
+  void applianceSetTopbar(const QList<QWidget *> & widgets);
+  void applianceSetSidebar(QWidget * widget);
+  void applianceSetCentralwidget(QWidget * widget);
+  void applianceSetValue(quint32 key, const QVariant & value);
+  void applianceSetFocusToScene();
 
-        // ::QWidget
-        void closeEvent(QCloseEvent *);
-        void resizeEvent(QResizeEvent *);
+  // ::QWidget
+  void closeEvent(QCloseEvent *);
+  void resizeEvent(QResizeEvent *);
 
-    private:
-        QNetworkAccessManager * m_networkAccessManager;
-        PictureSearchWidget *   m_pictureSearch;
-        SceneView *             m_sceneView;
-        TopbarContainer *       m_topbarContainer;
-        QList<GroupBoxWidget *> m_panels;
+private:
+  QNetworkAccessManager * m_networkAccessManager;
+  PictureSearchWidget * m_pictureSearch;
+  SceneView * m_sceneView;
+  TopbarContainer * m_topbarContainer;
+  QList<GroupBoxWidget *> m_panels;
 
-    private Q_SLOTS:
-        void slotClosePictureSearch();
-        void slotHideOtherPanels();
-        void slotShowOtherPanels();
-        void slotPanelLabelSizeChanged();
+private Q_SLOTS:
+  void slotClosePictureSearch();
+  void slotHideOtherPanels();
+  void slotShowOtherPanels();
+  void slotPanelLabelSizeChanged();
 };
 
 #endif

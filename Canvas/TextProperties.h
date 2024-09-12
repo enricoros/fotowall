@@ -18,11 +18,12 @@
 #include "ContentProperties.h"
 #include "ui_TextProperties.h"
 
-class TextProperties : public ContentProperties, public Ui::TextProperties {
-    Q_OBJECT
-    public:
-        friend class TextContent;
-        TextProperties(QWidget * parent = 0);
+class TextProperties : public ContentProperties, public Ui::TextProperties
+{
+  Q_OBJECT
+public:
+  friend class TextContent;
+  TextProperties(QWidget * parent = 0);
 };
 
 #endif

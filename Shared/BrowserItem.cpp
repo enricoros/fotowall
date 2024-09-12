@@ -23,216 +23,236 @@
 // this class 'unprotects' QWebPage from BrowserItem
 class WebPage : public QWebPage
 {
-    public:
-        friend class BrowserItem;
-        WebPage(QObject * parent = 0) : QWebPage(parent) {}
+public:
+  friend class BrowserItem;
+  WebPage(QObject * parent = 0) : QWebPage(parent) {}
 };
 
 /// Little QGraphicsWidget that renders HTML
 BrowserItem::BrowserItem(QGraphicsItem * parent)
-    : QGraphicsWidget(parent)
-    , m_webPage(new WebPage(this))
-    , m_readOnly(false)
+: QGraphicsWidget(parent), m_webPage(new WebPage(this)), m_readOnly(false)
 {
-    // set the page as transparent and link it
-    QPalette pal;
+  // set the page as transparent and link it
+  QPalette pal;
 #if QT_VERSION < 0x040500
-    pal.setBrush(QPalette::Window, Qt::transparent);
+  pal.setBrush(QPalette::Window, Qt::transparent);
 #else
-    pal.setBrush(QPalette::Base, Qt::transparent);
+  pal.setBrush(QPalette::Base, Qt::transparent);
 #endif
-    m_webPage->setPalette(pal);
-    connect(m_webPage, SIGNAL(linkClicked(const QUrl &)), this, SIGNAL(linkClicked(const QUrl &)));
-    connect(m_webPage, SIGNAL(scrollRequested(int,int,const QRect&)), this, SLOT(slotScrollRequested(int,int,const QRect&)));
-    connect(m_webPage, SIGNAL(repaintRequested(const QRect&)), this, SLOT(slotUpdateRequested(const QRect&)));
+  m_webPage->setPalette(pal);
+  connect(m_webPage, SIGNAL(linkClicked(const QUrl &)), this, SIGNAL(linkClicked(const QUrl &)));
+  connect(m_webPage, SIGNAL(scrollRequested(int, int, const QRect &)), this,
+          SLOT(slotScrollRequested(int, int, const QRect &)));
+  connect(m_webPage, SIGNAL(repaintRequested(const QRect &)), this, SLOT(slotUpdateRequested(const QRect &)));
 
-    // enable keyboard focus and mouse tracking
-    setFlag(QGraphicsItem::ItemIsFocusable, true);
-    setAcceptHoverEvents(true);
+  // enable keyboard focus and mouse tracking
+  setFlag(QGraphicsItem::ItemIsFocusable, true);
+  setAcceptHoverEvents(true);
 }
 
 void BrowserItem::write(const QString & html, const QUrl & url)
 {
-    m_webPage->mainFrame()->setHtml(html, url);
-    update();
+  m_webPage->mainFrame()->setHtml(html, url);
+  update();
 }
 
 void BrowserItem::browse(const QString & url)
 {
-    m_webPage->mainFrame()->load(QUrl(url));
-    update();
+  m_webPage->mainFrame()->load(QUrl(url));
+  update();
 }
 
 void BrowserItem::historyBack()
 {
-    m_webPage->triggerAction(QWebPage::Back);
+  m_webPage->triggerAction(QWebPage::Back);
 }
 
 void BrowserItem::historyForward()
 {
-    m_webPage->triggerAction(QWebPage::Forward);
+  m_webPage->triggerAction(QWebPage::Forward);
 }
 
 bool BrowserItem::readOnly() const
 {
-    return m_readOnly;
+  return m_readOnly;
 }
 
 void BrowserItem::setReadOnly(bool on)
 {
-    m_readOnly = on;
+  m_readOnly = on;
 }
 
 void BrowserItem::resizeEvent(QGraphicsSceneResizeEvent * event)
 {
-    m_webPage->setViewportSize(event->newSize().toSize());
-    update();
+  m_webPage->setViewportSize(event->newSize().toSize());
+  update();
 }
 
-void BrowserItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/ )
+void BrowserItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
-    painter->setRenderHints(QPainter::TextAntialiasing);
-    m_webPage->mainFrame()->render(painter, option->exposedRect.toAlignedRect());
+  painter->setRenderHints(QPainter::TextAntialiasing);
+  m_webPage->mainFrame()->render(painter, option->exposedRect.toAlignedRect());
 }
 
 void BrowserItem::slotScrollRequested(int dx, int dy, const QRect & scrollViewRect)
 {
-    scroll(dx, dy, scrollViewRect);
+  scroll(dx, dy, scrollViewRect);
 }
 
 void BrowserItem::slotUpdateRequested(const QRect & rect)
 {
-    update(rect);
+  update(rect);
 }
 
 // utility function for passing events / calling method's base impl
-#define PASS2(__orig, __fctn) \
-    if (m_readOnly) QGraphicsWidget::__fctn(__orig); \
-    else m_webPage->event(__orig)
+#define PASS2(__orig, __fctn)        \
+  if(m_readOnly)                     \
+    QGraphicsWidget::__fctn(__orig); \
+  else                               \
+    m_webPage->event(__orig)
 
-#define PASS3(__e, __orig, __fctn) \
-    if (m_readOnly) QGraphicsWidget::__fctn(__orig); \
-    else {(__e)->setAccepted(__orig->isAccepted()); m_webPage->event(__e);}
+#define PASS3(__e, __orig, __fctn)            \
+  if(m_readOnly)                              \
+    QGraphicsWidget::__fctn(__orig);          \
+  else                                        \
+  {                                           \
+    (__e)->setAccepted(__orig->isAccepted()); \
+    m_webPage->event(__e);                    \
+  }
 
 /** Focusing **/
 void BrowserItem::focusInEvent(QFocusEvent * event)
 {
-    PASS2(event, focusInEvent);
+  PASS2(event, focusInEvent);
 }
 
 void BrowserItem::focusOutEvent(QFocusEvent * event)
 {
-    PASS2(event, focusOutEvent);
+  PASS2(event, focusOutEvent);
 }
 
 /** Keyboard **/
 void BrowserItem::keyPressEvent(QKeyEvent * event)
 {
-    PASS2(event, keyPressEvent);
+  PASS2(event, keyPressEvent);
 }
 
 void BrowserItem::keyReleaseEvent(QKeyEvent * event)
 {
-    PASS2(event, keyReleaseEvent);
+  PASS2(event, keyReleaseEvent);
 }
 
 void BrowserItem::inputMethodEvent(QInputMethodEvent * event)
 {
-    PASS2(event, inputMethodEvent);
+  PASS2(event, inputMethodEvent);
 }
 
 QVariant BrowserItem::inputMethodQuery(Qt::InputMethodQuery query) const
 {
-    return m_webPage->inputMethodQuery(query);
+  return m_webPage->inputMethodQuery(query);
 }
 
 /** Mouse **/
 void BrowserItem::hoverMoveEvent(QGraphicsSceneHoverEvent * event)
 {
-    QMouseEvent e(QEvent::MouseMove, event->pos().toPoint(), event->screenPos(), Qt::NoButton, Qt::NoButton, event->modifiers());
-    PASS3(&e, event, hoverMoveEvent);
+  QMouseEvent e(QEvent::MouseMove, event->pos().toPoint(), event->screenPos(), Qt::NoButton, Qt::NoButton,
+                event->modifiers());
+  PASS3(&e, event, hoverMoveEvent);
 }
 
 void BrowserItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-    QMouseEvent e(QEvent::MouseMove, event->pos().toPoint(), event->screenPos(), event->button(), event->buttons(), event->modifiers());
-    PASS3(&e, event, mouseMoveEvent);
+  QMouseEvent e(QEvent::MouseMove, event->pos().toPoint(), event->screenPos(), event->button(), event->buttons(),
+                event->modifiers());
+  PASS3(&e, event, mouseMoveEvent);
 }
 
 void BrowserItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    QMouseEvent e(QEvent::MouseButtonPress, event->pos().toPoint(), event->screenPos(), event->button(), event->buttons(), event->modifiers());
-    PASS3(&e, event, mousePressEvent);
+  QMouseEvent e(QEvent::MouseButtonPress, event->pos().toPoint(), event->screenPos(), event->button(), event->buttons(),
+                event->modifiers());
+  PASS3(&e, event, mousePressEvent);
 }
 
 void BrowserItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-    QMouseEvent e(QEvent::MouseButtonRelease, event->pos().toPoint(), event->screenPos(), event->button(), event->buttons(), event->modifiers());
-    PASS3(&e, event, mouseReleaseEvent);
+  QMouseEvent e(QEvent::MouseButtonRelease, event->pos().toPoint(), event->screenPos(), event->button(),
+                event->buttons(), event->modifiers());
+  PASS3(&e, event, mouseReleaseEvent);
 }
 
 void BrowserItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
-    QMouseEvent e(QEvent::MouseButtonDblClick, event->pos().toPoint(), event->screenPos(), event->button(), event->buttons(), event->modifiers());
-    PASS3(&e, event, mouseDoubleClickEvent);
+  QMouseEvent e(QEvent::MouseButtonDblClick, event->pos().toPoint(), event->screenPos(), event->button(),
+                event->buttons(), event->modifiers());
+  PASS3(&e, event, mouseDoubleClickEvent);
 }
 
 void BrowserItem::contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
 {
-    QContextMenuEvent e((QContextMenuEvent::Reason)event->reason(), event->pos().toPoint(), event->screenPos());
-    PASS3(&e, event, contextMenuEvent);
+  QContextMenuEvent e((QContextMenuEvent::Reason)event->reason(), event->pos().toPoint(), event->screenPos());
+  PASS3(&e, event, contextMenuEvent);
 }
 
 void BrowserItem::wheelEvent(QGraphicsSceneWheelEvent * event)
 {
-    QWheelEvent e(event->pos().toPoint(), event->screenPos(), event->delta(), event->buttons(), event->modifiers(), event->orientation());
-    PASS3(&e, event, wheelEvent);
+  QWheelEvent e(event->pos().toPoint(), event->screenPos(), event->delta(), event->buttons(), event->modifiers(),
+                event->orientation());
+  PASS3(&e, event, wheelEvent);
 }
 
 /** Drag & Drop **/
 void BrowserItem::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
-    QDragEnterEvent e(event->pos().toPoint(), event->dropAction(), event->mimeData(), event->buttons(), event->modifiers());
-    PASS3(&e, event, dragEnterEvent);
+  QDragEnterEvent e(event->pos().toPoint(), event->dropAction(), event->mimeData(), event->buttons(),
+                    event->modifiers());
+  PASS3(&e, event, dragEnterEvent);
 }
 
 void BrowserItem::dragLeaveEvent(QGraphicsSceneDragDropEvent * event)
 {
-    QDragLeaveEvent e;
-    PASS3(&e, event, dragLeaveEvent);
+  QDragLeaveEvent e;
+  PASS3(&e, event, dragLeaveEvent);
 }
 
 void BrowserItem::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
-    QDragMoveEvent e(event->pos().toPoint(), event->dropAction(), event->mimeData(), event->buttons(), event->modifiers());
-    PASS3(&e, event, dragMoveEvent);
+  QDragMoveEvent e(event->pos().toPoint(), event->dropAction(), event->mimeData(), event->buttons(),
+                   event->modifiers());
+  PASS3(&e, event, dragMoveEvent);
 }
 
 void BrowserItem::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
-    QDropEvent e(event->pos().toPoint(), event->dropAction(), event->mimeData(), event->buttons(), event->modifiers());
-    PASS3(&e, event, dropEvent);
+  QDropEvent e(event->pos().toPoint(), event->dropAction(), event->mimeData(), event->buttons(), event->modifiers());
+  PASS3(&e, event, dropEvent);
 }
 
 /** some Magic **/
 bool BrowserItem::sceneEvent(QEvent * event)
 {
-    // directly dispatch key events (to avoid tab eating in QGraphicsItem)
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent * ke = static_cast<QKeyEvent *>(event);
-        if (ke->key() == Qt::Key_Tab) {
-            m_webPage->focusNextPrevChild(true);
-            ke->setAccepted(true);
-        } else if (ke->key() == Qt::Key_Backtab) {
-            m_webPage->focusNextPrevChild(false);
-            ke->setAccepted(true);
-        } else {
-            ke->setAccepted(false);
-            keyPressEvent(ke);
-        }
-        return true;
+  // directly dispatch key events (to avoid tab eating in QGraphicsItem)
+  if(event->type() == QEvent::KeyPress)
+  {
+    QKeyEvent * ke = static_cast<QKeyEvent *>(event);
+    if(ke->key() == Qt::Key_Tab)
+    {
+      m_webPage->focusNextPrevChild(true);
+      ke->setAccepted(true);
     }
+    else if(ke->key() == Qt::Key_Backtab)
+    {
+      m_webPage->focusNextPrevChild(false);
+      ke->setAccepted(true);
+    }
+    else
+    {
+      ke->setAccepted(false);
+      keyPressEvent(ke);
+    }
+    return true;
+  }
 
-    // unbreak GW
-    return QGraphicsWidget::sceneEvent(event);
+  // unbreak GW
+  return QGraphicsWidget::sceneEvent(event);
 }

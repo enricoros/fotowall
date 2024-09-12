@@ -23,31 +23,31 @@ class PixmapButton;
 /// \brief Shows Preview of Fotowall files and emit clicks
 class UrlHistoryBox : public GroupBoxWidget
 {
-    Q_OBJECT
-    public:
-        UrlHistoryBox(const QList<QUrl> & urls, QWidget * parent = 0);
-        ~UrlHistoryBox();
+  Q_OBJECT
+public:
+  UrlHistoryBox(const QList<QUrl> & urls, QWidget * parent = 0);
+  ~UrlHistoryBox();
 
-        // get the url for an entry (zero based)
-        QUrl urlForEntry(int index) const;
+  // get the url for an entry (zero based)
+  QUrl urlForEntry(int index) const;
 
-        // change the urls (can be fewer or equal size)
-        void changeUrls(const QList<QUrl> & urls, bool delayPreview);
+  // change the urls (can be fewer or equal size)
+  void changeUrls(const QList<QUrl> & urls, bool delayPreview);
 
-    Q_SIGNALS:
-        void urlClicked(const QUrl & url);
-        void urlRemoved(const QUrl & url);
+Q_SIGNALS:
+  void urlClicked(const QUrl & url);
+  void urlRemoved(const QUrl & url);
 
-    private:
-        QPixmap prettyPixmap(const QImage & image, int angle);
-        void genPreview(PixmapButton *);
-        QList<PixmapButton *> m_entries;
-        int m_previewIndex;
+private:
+  QPixmap prettyPixmap(const QImage & image, int angle);
+  void genPreview(PixmapButton *);
+  QList<PixmapButton *> m_entries;
+  int m_previewIndex;
 
-    private Q_SLOTS:
-        void slotClicked();
-        void slotContextMenu(const QPoint &);
-        void slotNextPreview();
+private Q_SLOTS:
+  void slotClicked();
+  void slotContextMenu(const QPoint &);
+  void slotNextPreview();
 };
 
 #endif

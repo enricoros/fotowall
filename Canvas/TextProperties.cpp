@@ -14,9 +14,8 @@
 
 #include "TextProperties.h"
 
-TextProperties::TextProperties(QWidget *parent)
-  : ContentProperties(parent)
+TextProperties::TextProperties(QWidget * parent) : ContentProperties(parent)
 {
-    // inject in the merge widget
-    Ui_TextProperties::setupUi(cBottomMerge);
+  // inject in the merge widget
+  Ui_TextProperties::setupUi(cBottomMerge);
 }

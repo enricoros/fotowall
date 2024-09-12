@@ -15,49 +15,50 @@
 #ifndef __Scanner_h__
 #define __Scanner_h__
 
-#include <QObject>
-#include <QLocale>
-#include <QUrl>
 #include "Cloud.h"
+#include <QLocale>
+#include <QObject>
+#include <QUrl>
 class QTableWidget;
 
-namespace Wordcloud {
+namespace Wordcloud
+{
 
-    class Scanner : public QObject
-    {
-        Q_OBJECT
-        public:
-            Scanner();
+class Scanner : public QObject
+{
+  Q_OBJECT
+public:
+  Scanner();
 
-            // settings
-            void setMinimumWordLength(int minimum = 0);
-            void setMaximumWordLength(int maximum = -1);
+  // settings
+  void setMinimumWordLength(int minimum = 0);
+  void setMaximumWordLength(int maximum = -1);
 
-            // inputs
-            bool addFromFile(const QString & txtFilePath);
-            bool addFromString(const QString & string);
-            bool addFromUrl(const QUrl & url);
-            bool addFromRss(const QUrl & rss);
-            void clear();
+  // inputs
+  bool addFromFile(const QString & txtFilePath);
+  bool addFromString(const QString & string);
+  bool addFromUrl(const QUrl & url);
+  bool addFromRss(const QUrl & rss);
+  void clear();
 
-            // outputs
-            WordList takeWords(bool cleanList, int maxCount);
-            int wordCount() const;
-            bool isEmpty() const;
+  // outputs
+  WordList takeWords(bool cleanList, int maxCount);
+  int wordCount() const;
+  bool isEmpty() const;
 
-            // debug
-            void dumpOnTable(QTableWidget * table);
-            void dumpWords() const;
+  // debug
+  void dumpOnTable(QTableWidget * table);
+  void dumpWords() const;
 
-        private:
-            bool addWord(const QString & word);
-            void removeWordsByLanguage(QLocale::Language language);
-            void removeWordsBelowCount(int count);
-            WordList m_words;
-            int m_minimumLength;
-            int m_maximumLength;
-    };
+private:
+  bool addWord(const QString & word);
+  void removeWordsByLanguage(QLocale::Language language);
+  void removeWordsBelowCount(int count);
+  WordList m_words;
+  int m_minimumLength;
+  int m_maximumLength;
+};
 
-}
+} // namespace Wordcloud
 
 #endif

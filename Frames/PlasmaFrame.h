@@ -21,21 +21,21 @@ struct PlasmaFramePrivate;
 
 class PlasmaFrame : public Frame
 {
-    public:
-        PlasmaFrame(quint32 frameClass, const QString & frameFilePath);
-        ~PlasmaFrame();
+public:
+  PlasmaFrame(quint32 frameClass, const QString & frameFilePath);
+  ~PlasmaFrame();
 
-        bool isValid() const;
+  bool isValid() const;
 
-        // ::Frame
-        quint32 frameClass() const;
-        QRect frameRect(const QRect & contentsRect) const;
-        void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
-        void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
-        void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
+  // ::Frame
+  quint32 frameClass() const;
+  QRect frameRect(const QRect & contentsRect) const;
+  void layoutButtons(QList<ButtonItem *> buttons, const QRect & frameRect) const;
+  void layoutText(QGraphicsItem * textItem, const QRect & frameRect) const;
+  void drawFrame(QPainter * painter, const QRect & frameRect, bool selected, bool opaqueContents);
 
-    private:
-        PlasmaFramePrivate * d;
+private:
+  PlasmaFramePrivate * d;
 };
 
 #endif

@@ -27,85 +27,85 @@ class PixmapButton;
 
 class CanvasAppliance : public QObject, public PlugGui::AbstractAppliance
 {
-    Q_OBJECT
-    public:
-        CanvasAppliance(Canvas * extCanvas, QObject * parent = 0);
-        ~CanvasAppliance();
+  Q_OBJECT
+public:
+  CanvasAppliance(Canvas * extCanvas, QObject * parent = 0);
+  ~CanvasAppliance();
 
-        // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
-        Canvas * takeCanvas();
+  // take the canvas (NOTE: IMMEDIATELY DELETE AFTER THIS)
+  Canvas * takeCanvas();
 
-        // ::Appliance::AbstractAppliance
-        QString applianceName() const { return tr("Canvas"); }
-        bool applianceCommand(int command);
-        bool appliancePendingChanges() const;
-        bool applianceSave(const QString & filePath = QString());
-        void setProjectMode(const CanvasModeInfo::Mode mode);
-        void setProjectMode(const CanvasModeInfo & mode);
+  // ::Appliance::AbstractAppliance
+  QString applianceName() const { return tr("Canvas"); }
+  bool applianceCommand(int command);
+  bool appliancePendingChanges() const;
+  bool applianceSave(const QString & filePath = QString());
+  void setProjectMode(const CanvasModeInfo::Mode mode);
+  void setProjectMode(const CanvasModeInfo & mode);
 
-    private:
-        QMenu * createArrangeMenu();
-        QMenu * createBackgroundMenu();
-        QMenu * createDecorationMenu();
-        void setNormalProject();
-        void setExactSizeProject(bool usePrevious);
-        void setWallpaperProject();
-        void setCDProject();
-        void setDVDProject();
-        void updateProjectMode();
-        void configurePrint(bool enabled);
-        int projectComboIndexFromMode(const CanvasModeInfo::Mode mode) const;
-        CanvasModeInfo::Mode projectModeFromComboIndex(const int index) const;
+private:
+  QMenu * createArrangeMenu();
+  QMenu * createBackgroundMenu();
+  QMenu * createDecorationMenu();
+  void setNormalProject();
+  void setExactSizeProject(bool usePrevious);
+  void setWallpaperProject();
+  void setCDProject();
+  void setDVDProject();
+  void updateProjectMode();
+  void configurePrint(bool enabled);
+  int projectComboIndexFromMode(const CanvasModeInfo::Mode mode) const;
+  CanvasModeInfo::Mode projectModeFromComboIndex(const int index) const;
 
-    private:
-        Ui::CanvasApplianceElements ui;
-        Canvas *                    m_extCanvas;
-        QWidget *                   m_dummyWidget;
-        QActionGroup *              m_gBackModeGroup;
-        QActionGroup *              m_gBackRatioGroup;
-        QAction *                   m_gBackContentAction;
-        QList<PixmapButton *>       m_webcamButtons;
+private:
+  Ui::CanvasApplianceElements ui;
+  Canvas * m_extCanvas;
+  QWidget * m_dummyWidget;
+  QActionGroup * m_gBackModeGroup;
+  QActionGroup * m_gBackRatioGroup;
+  QAction * m_gBackContentAction;
+  QList<PixmapButton *> m_webcamButtons;
 
-    private Q_SLOTS:
+private Q_SLOTS:
 
-        // actions in the Add contents box
-        void slotAddCanvas();
-        void slotAddPicture();
-        void slotAddText();
-        void slotAddWebcam();
-        void slotAddWordcloud();
-        void slotSearchPicturesToggled(bool on);
+  // actions in the Add contents box
+  void slotAddCanvas();
+  void slotAddPicture();
+  void slotAddText();
+  void slotAddWebcam();
+  void slotAddWordcloud();
+  void slotSearchPicturesToggled(bool on);
 
-        // actions in the Canvas box
-        void slotBackContentRemove(bool checked);
-        void slotProjectComboActivated(int index);
-        void slotSetBackMode(QAction* action);
-        void slotSetBackRatio(QAction* action);
-        void slotArrangeForceField(bool enabled);
-        void slotArrangeColorCollage();
-        void slotArrangeRandom();
-        void slotArrangeShaped();
-        void slotDecoTopBar(bool checked);
-        void slotDecoBottomBar(bool checked);
-        void slotDecoSetTitle();
-        void slotDecoClearTitle();
+  // actions in the Canvas box
+  void slotBackContentRemove(bool checked);
+  void slotProjectComboActivated(int index);
+  void slotSetBackMode(QAction * action);
+  void slotSetBackRatio(QAction * action);
+  void slotArrangeForceField(bool enabled);
+  void slotArrangeColorCollage();
+  void slotArrangeRandom();
+  void slotArrangeShaped();
+  void slotDecoTopBar(bool checked);
+  void slotDecoBottomBar(bool checked);
+  void slotDecoSetTitle();
+  void slotDecoClearTitle();
 
-        // actions in the File box
-        bool slotFileLoad();
-        bool slotFileSave();
-        bool slotFileExport();
+  // actions in the File box
+  bool slotFileLoad();
+  bool slotFileSave();
+  bool slotFileExport();
 
-        // signals from the canvas
-        void slotEditContent(AbstractContent * content);
-        void slotBackConfigChanged();
-        void slotShowPropertiesWidget(QWidget *);
-        void slotFilePathChanged();
+  // signals from the canvas
+  void slotEditContent(AbstractContent * content);
+  void slotBackConfigChanged();
+  void slotShowPropertiesWidget(QWidget *);
+  void slotFilePathChanged();
 
-        // other actions
-        void slotVerifyVideoInputs(int count);
+  // other actions
+  void slotVerifyVideoInputs(int count);
 
-        void slotUndoTextChanged(const QString &);
-        void slotRedoTextChanged(const QString &);
+  void slotUndoTextChanged(const QString &);
+  void slotRedoTextChanged(const QString &);
 };
 
 #endif

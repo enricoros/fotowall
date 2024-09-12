@@ -24,60 +24,60 @@ class RubberBandStyle;
 
 class SceneView : public QGraphicsView
 {
-    Q_OBJECT
-    Q_PROPERTY(bool openGL READ openGL WRITE setOpenGL)
-    Q_PROPERTY(qreal viewScale READ viewScale WRITE setViewScale NOTIFY viewScaleChanged)
-    public:
-        SceneView(QWidget * parent = 0);
-        ~SceneView();
+  Q_OBJECT
+  Q_PROPERTY(bool openGL READ openGL WRITE setOpenGL)
+  Q_PROPERTY(qreal viewScale READ viewScale WRITE setViewScale NOTIFY viewScaleChanged)
+public:
+  SceneView(QWidget * parent = 0);
+  ~SceneView();
 
-        // sets the scene used by this view
-        void setScene(AbstractScene * scene);
-        AbstractScene * scene() const;
-        AbstractScene * takeScene();
+  // sets the scene used by this view
+  void setScene(AbstractScene * scene);
+  AbstractScene * scene() const;
+  AbstractScene * takeScene();
 
-        // enable/disable OpenGL acceleration
-        bool supportsOpenGL() const;
-        bool openGL() const;
-        void setOpenGL(bool enabled);
+  // enable/disable OpenGL acceleration
+  bool supportsOpenGL() const;
+  bool openGL() const;
+  void setOpenGL(bool enabled);
 
-        // properties
-        qreal viewScale() const;
-        void setViewScale(qreal scale);
+  // properties
+  qreal viewScale() const;
+  void setViewScale(qreal scale);
 
-    Q_SIGNALS:
-        void heavyRepaint();
+Q_SIGNALS:
+  void heavyRepaint();
 
-        // properties notifications
-        void viewScaleChanged();
+  // properties notifications
+  void viewScaleChanged();
 
-    protected:
-        // ::QGraphicsView
-        void drawForeground(QPainter * painter, const QRectF & rect);
-        // ::QWidget
-        void paintEvent(QPaintEvent * event);
-        void resizeEvent(QResizeEvent * event);
-        void wheelEvent(QWheelEvent *event);
+protected:
+  // ::QGraphicsView
+  void drawForeground(QPainter * painter, const QRectF & rect);
+  // ::QWidget
+  void paintEvent(QPaintEvent * event);
+  void resizeEvent(QResizeEvent * event);
+  void wheelEvent(QWheelEvent * event);
 
-    private:
-        qreal m_viewScale;
-        bool m_openGL;
-        AbstractScene * m_abstractScene;
-        RubberBandStyle * m_style;
-        QPixmap * m_shadowTile;
-        QTime m_paintTime;
-        QTimer * m_heavyTimer;
-        int m_heavyCounter;
+private:
+  qreal m_viewScale;
+  bool m_openGL;
+  AbstractScene * m_abstractScene;
+  RubberBandStyle * m_style;
+  QPixmap * m_shadowTile;
+  QTime m_paintTime;
+  QTimer * m_heavyTimer;
+  int m_heavyCounter;
 
-    private Q_SLOTS:
-        // layout scene and scrollbars
-        void slotLayoutScene();
-        // update the view for scale and scene transform
-        void slotUpdateViewTransform();
-        // paste action
-        void slotPasteActionTriggered();
-        // dereference deleted AbstractScenes
-        void slotSceneDestroyed(QObject *);
+private Q_SLOTS:
+  // layout scene and scrollbars
+  void slotLayoutScene();
+  // update the view for scale and scene transform
+  void slotUpdateViewTransform();
+  // paste action
+  void slotPasteActionTriggered();
+  // dereference deleted AbstractScenes
+  void slotSceneDestroyed(QObject *);
 };
 
 #endif

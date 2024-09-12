@@ -22,65 +22,65 @@ class WebPage;
 
 class BrowserItem : public QGraphicsWidget
 {
-    Q_OBJECT
-    public:
-        BrowserItem(QGraphicsItem * parent = 0);
+  Q_OBJECT
+public:
+  BrowserItem(QGraphicsItem * parent = 0);
 
-        // browser actions
-        void write(const QString & html, const QUrl & baseUrl = QUrl());
-        void browse(const QString & url);
-        void historyBack();
-        void historyForward();
+  // browser actions
+  void write(const QString & html, const QUrl & baseUrl = QUrl());
+  void browse(const QString & url);
+  void historyBack();
+  void historyForward();
 
-        // read only (NOTE: this is raw, set this ASAP and forget ;-)
-        bool readOnly() const;
-        void setReadOnly(bool on);
+  // read only (NOTE: this is raw, set this ASAP and forget ;-)
+  bool readOnly() const;
+  void setReadOnly(bool on);
 
-    Q_SIGNALS:
-        void linkClicked(const QUrl & url);
+Q_SIGNALS:
+  void linkClicked(const QUrl & url);
 
-    protected:
-        // ::QGraphicsWidget
-        void resizeEvent(QGraphicsSceneResizeEvent * event);
-        void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+protected:
+  // ::QGraphicsWidget
+  void resizeEvent(QGraphicsSceneResizeEvent * event);
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
 
-    private:
-        WebPage * m_webPage;
-        bool m_readOnly;
+private:
+  WebPage * m_webPage;
+  bool m_readOnly;
 
-    private Q_SLOTS:
-        void slotScrollRequested(int dx, int dy, const QRect & scrollViewRect);
-        void slotUpdateRequested(const QRect & dirtyRect);
+private Q_SLOTS:
+  void slotScrollRequested(int dx, int dy, const QRect & scrollViewRect);
+  void slotUpdateRequested(const QRect & dirtyRect);
 
-    // ::QGaphicsItem -> to QtWebkit
-    private:
-        // focus
-        void focusInEvent(QFocusEvent * event);
-        void focusOutEvent(QFocusEvent * event);
+  // ::QGaphicsItem -> to QtWebkit
+private:
+  // focus
+  void focusInEvent(QFocusEvent * event);
+  void focusOutEvent(QFocusEvent * event);
 
-        // keyboard
-        void keyPressEvent(QKeyEvent * event);
-        void keyReleaseEvent(QKeyEvent * event);
-        void inputMethodEvent(QInputMethodEvent * event);
-        QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
+  // keyboard
+  void keyPressEvent(QKeyEvent * event);
+  void keyReleaseEvent(QKeyEvent * event);
+  void inputMethodEvent(QInputMethodEvent * event);
+  QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
 
-        // mouse
-        void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
-        void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
-        void mousePressEvent(QGraphicsSceneMouseEvent * event);
-        void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
-        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-        void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
-        void wheelEvent(QGraphicsSceneWheelEvent * event);
+  // mouse
+  void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
+  void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+  void mousePressEvent(QGraphicsSceneMouseEvent * event);
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+  void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+  void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
+  void wheelEvent(QGraphicsSceneWheelEvent * event);
 
-        // drag & drop
-        void dragEnterEvent(QGraphicsSceneDragDropEvent * event);
-        void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
-        void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
-        void dropEvent(QGraphicsSceneDragDropEvent * event);
+  // drag & drop
+  void dragEnterEvent(QGraphicsSceneDragDropEvent * event);
+  void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
+  void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
+  void dropEvent(QGraphicsSceneDragDropEvent * event);
 
-        // glue and tricks
-        bool sceneEvent(QEvent * event);
+  // glue and tricks
+  bool sceneEvent(QEvent * event);
 };
 
 #endif

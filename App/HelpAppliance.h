@@ -21,22 +21,21 @@ class HelpScene;
 
 class HelpAppliance : public QObject, public PlugGui::AbstractAppliance
 {
-    Q_OBJECT
-    public:
-        HelpAppliance(QObject * parent = 0);
-        ~HelpAppliance();
+  Q_OBJECT
+public:
+  HelpAppliance(QObject * parent = 0);
+  ~HelpAppliance();
 
-        // ::Appliance::AbstractAppliance
-        QString applianceName() const { return tr("Help"); }
+  // ::Appliance::AbstractAppliance
+  QString applianceName() const { return tr("Help"); }
 
-    private:
-        Ui::HelpApplianceWidgets ui;
-        HelpScene * m_helpScene;
-        QWidget *   m_dummyWidget;
+private:
+  Ui::HelpApplianceWidgets ui;
+  HelpScene * m_helpScene;
+  QWidget * m_dummyWidget;
 
-    private Q_SLOTS:
-        void slotClose();
-
+private Q_SLOTS:
+  void slotClose();
 };
 
 #endif

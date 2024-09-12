@@ -20,62 +20,72 @@
 #include <QXmlStreamReader>
 class QNetworkAccessManager;
 
-namespace MetaXml {
+namespace MetaXml
+{
 
 // structures definition
-struct Release {
-    QString name;
-    QString version;
-    QString url;
+struct Release
+{
+  QString name;
+  QString version;
+  QString url;
 };
 
-struct Website {
-    enum Type { HomePage, Blog, Other } type;
-    QString name;
-    QString url;
+struct Website
+{
+  enum Type
+  {
+    HomePage,
+    Blog,
+    Other
+  } type;
+  QString name;
+  QString url;
 };
 
 /// Reader class
-class Reader_1 : public QXmlStreamReader {
-    public:
-        Reader_1(const QByteArray & data);
+class Reader_1 : public QXmlStreamReader
+{
+public:
+  Reader_1(const QByteArray & data);
 
-        // out data
-        QList<Release> releases;
-        QList<Website> websites;
+  // out data
+  QList<Release> releases;
+  QList<Website> websites;
 
-    private:
-        void read();
-        void readReleases();
-        Release readRelease();
-        void readWebsites();
+private:
+  void read();
+  void readReleases();
+  Release readRelease();
+  void readWebsites();
 };
 
 /// Fetcher class
-class Connector : public QObject {
-    Q_OBJECT
-    public:
-        static Connector * instance();
-        Connector();
+class Connector : public QObject
+{
+  Q_OBJECT
+public:
+  static Connector * instance();
+  Connector();
 
-        bool hasDone() const;
-        bool isValid() const;
+  bool hasDone() const;
+  bool isValid() const;
 
-        const Reader_1 * reader() const;
+  const Reader_1 * reader() const;
 
-    Q_SIGNALS:
-        void fetched();
-        void fetchError(const QString & description);
+Q_SIGNALS:
+  void fetched();
+  void fetchError(const QString & description);
 
-    private:
-        QNetworkAccessManager * m_nam;
-        Reader_1 * m_reader;
+private:
+  QNetworkAccessManager * m_nam;
+  Reader_1 * m_reader;
 
-    private Q_SLOTS:
-        void slotGotReply();
-        void slotTimeOut();
+private Q_SLOTS:
+  void slotGotReply();
+  void slotTimeOut();
 };
 
-}
+} // namespace MetaXml
 
 #endif

@@ -15,18 +15,18 @@
 #ifndef __WordcloudSidebar_h__
 #define __WordcloudSidebar_h__
 
-#include <QWidget>
 #include "ui_WordcloudSidebar.h"
+#include <QWidget>
 
-class WordcloudSidebar : public QWidget, public Ui::WordcloudSidebar {
-    Q_OBJECT
-    public:
-        WordcloudSidebar(QWidget * parent = 0);
-        ~WordcloudSidebar();
+class WordcloudSidebar : public QWidget, public Ui::WordcloudSidebar
+{
+  Q_OBJECT
+public:
+  WordcloudSidebar(QWidget * parent = 0);
+  ~WordcloudSidebar();
 
-    private:
-        friend class WordcloudAppliance;
-
+private:
+  friend class WordcloudAppliance;
 };
 
 #endif

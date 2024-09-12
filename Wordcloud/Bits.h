@@ -21,34 +21,37 @@
 #include <QMap>
 #include <QString>
 
-namespace Wordcloud {
+namespace Wordcloud
+{
 
-    /// Word statistical description
-    struct Word {
-        QString commonString;
-        QString lowerString;
-        int count;
-        QMap<QString, int> variants;
-    };
-
-    // convenience alias
-    typedef QList<Word> WordList;
-
-    /// Looks of displayed data
-    struct Appearance {
-        // colors
-        QList<QColor> textColors;
-        QColor backColor;
-        bool textGradient;
-        // fonts
-        QFont font;
-        double minFontSize;
-        double maxFontSize;
-        bool quadraticFont;
-
-        Appearance();
-    };
-
+/// Word statistical description
+struct Word
+{
+  QString commonString;
+  QString lowerString;
+  int count;
+  QMap<QString, int> variants;
 };
+
+// convenience alias
+typedef QList<Word> WordList;
+
+/// Looks of displayed data
+struct Appearance
+{
+  // colors
+  QList<QColor> textColors;
+  QColor backColor;
+  bool textGradient;
+  // fonts
+  QFont font;
+  double minFontSize;
+  double maxFontSize;
+  bool quadraticFont;
+
+  Appearance();
+};
+
+}; // namespace Wordcloud
 
 #endif

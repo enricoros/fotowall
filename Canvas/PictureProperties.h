@@ -18,11 +18,12 @@
 #include "ContentProperties.h"
 #include "ui_PictureProperties.h"
 
-class PictureProperties : public ContentProperties, public Ui::PictureProperties {
-    Q_OBJECT
-    public:
-        friend class PictureContent;
-        PictureProperties(QWidget * parent = 0);
+class PictureProperties : public ContentProperties, public Ui::PictureProperties
+{
+  Q_OBJECT
+public:
+  friend class PictureContent;
+  PictureProperties(QWidget * parent = 0);
 };
 
 #endif

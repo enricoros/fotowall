@@ -4,7 +4,7 @@ Fotowall
 Fotowall is a desktop APP that lets you create graphical compositions by layering
 and manipulating photos and pictures, text, live video, wordclouds, and drag&drop
 content from the internet. All to create a fun graphical composition with the
-maximum ease of use! 
+maximum ease of use!
 
 Check out the [home page](https://www.enricoros.com/opensource/fotowall), the
 [news](https://www.enricoros.com/opensource/fotowall/news), and the
@@ -261,7 +261,7 @@ improvement and the code is kept clean and small.
 * regional links to web resources
  - italian: http://www.dylanblog.com/2009/05/27/creare-dei-wallpaper-personalizzati-con-fotowall-061/
  - french: http://forum.ubuntu-fr.org/viewtopic.php?id=308200
-           http://geenux.wordpress.com/tag/fotowall/  (Arnaud Tanguy's blog) 
+           http://geenux.wordpress.com/tag/fotowall/  (Arnaud Tanguy's blog)
            http://benoit.balon.free.fr/?tag=fotowall  (Benoît Bâlon's blog)
 * missing relicences
  - 3rdparty/richtextedit/richtexteditor*: redo 'cause non free

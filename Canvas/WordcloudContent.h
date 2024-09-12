@@ -27,30 +27,30 @@ class QGraphicsScene;
 */
 class WordcloudContent : public AbstractContent, public SingleResourceLoaner
 {
-    Q_OBJECT
-    public:
-        WordcloudContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
-        ~WordcloudContent();
+  Q_OBJECT
+public:
+  WordcloudContent(bool spontaneous, QGraphicsScene * scene, QGraphicsItem * parent = 0);
+  ~WordcloudContent();
 
-        void manualInitialization();
+  void manualInitialization();
 
-        // ::AbstractContent
-        QString contentName() const { return tr("Wordcloud"); }
-        bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
-        void toXml(QDomElement & contentElement, const QDir & baseDir) const;
-        void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
+  // ::AbstractContent
+  QString contentName() const { return tr("Wordcloud"); }
+  bool fromXml(const QDomElement & contentElement, const QDir & baseDir);
+  void toXml(QDomElement & contentElement, const QDir & baseDir) const;
+  void drawContent(QPainter * painter, const QRect & targetRect, Qt::AspectRatioMode ratio);
 
-        // ::SingleResourceLoaner
-        QVariant takeResource();
-        void returnResource(const QVariant &);
+  // ::SingleResourceLoaner
+  QVariant takeResource();
+  void returnResource(const QVariant &);
 
-    private:
-        QGraphicsScene * m_cloudScene;
-        Wordcloud::Cloud * m_cloud;
-        bool m_cloudTaken;
+private:
+  QGraphicsScene * m_cloudScene;
+  Wordcloud::Cloud * m_cloud;
+  bool m_cloudTaken;
 
-    private Q_SLOTS:
-        void slotRepaintScene(const QList<QRectF> & exposed);
+private Q_SLOTS:
+  void slotRepaintScene(const QList<QRectF> & exposed);
 };
 
 #endif

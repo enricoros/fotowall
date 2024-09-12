@@ -16,18 +16,14 @@
 
 #include <QPalette>
 
-
-WordcloudSidebar::WordcloudSidebar(QWidget *parent)
-  : QWidget(parent)
+WordcloudSidebar::WordcloudSidebar(QWidget * parent) : QWidget(parent)
 {
-    setupUi(this);
+  setupUi(this);
 
-    setAutoFillBackground(true);
-    QPalette pal;
-    pal.setBrush(QPalette::Window, Qt::lightGray);
-    setPalette(pal);
+  setAutoFillBackground(true);
+  QPalette pal;
+  pal.setBrush(QPalette::Window, Qt::lightGray);
+  setPalette(pal);
 }
 
-WordcloudSidebar::~WordcloudSidebar()
-{
-}
+WordcloudSidebar::~WordcloudSidebar() {}
